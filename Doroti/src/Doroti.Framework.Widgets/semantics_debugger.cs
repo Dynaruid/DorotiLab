@@ -10,17 +10,28 @@ public class SemanticsDebugger : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual TextStyle labelStyle { get; private set; } = default!;
 
-    public SemanticsDebugger(Key? key = null, Widget child = default!, TextStyle labelStyle = default!) : base(key: key)
+    public SemanticsDebugger(
+        Key? key = null,
+        Widget child = default!,
+        TextStyle labelStyle = default!
+    )
+        : base(key: key)
     {
-        TextStyle __labelStyle = labelStyle ?? new TextStyle(color: new Color(0xFF000000), fontSize: 10.0, height: 0.8);
+        TextStyle __labelStyle =
+            labelStyle ?? new TextStyle(color: new Color(0xFF000000), fontSize: 10.0, height: 0.8);
         this.child = child;
         this.labelStyle = __labelStyle;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SemanticsDebuggerState__semantics_debugger());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SemanticsDebuggerState__semantics_debugger()
+        );
 }
 
-internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebugger>, WidgetsBindingObserver
+internal class _SemanticsDebuggerState__semantics_debugger
+    : State<SemanticsDebugger>,
+        WidgetsBindingObserver
 {
     internal virtual PipelineOwner? _pipelineOwner { get; set; } = default;
     internal virtual SemanticsHandle? _semanticsHandle { get; set; } = default;
@@ -57,23 +68,22 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
 
     public virtual void didChangeMetrics()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     internal virtual void _update()
     {
         _generation++;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-        {
-            if (mounted)
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) =>
             {
-                setState(() =>
+                if (mounted)
                 {
-                });
-            }
-        }, debugLabel: "SemanticsDebugger.update");
+                    setState(() => { });
+                }
+            },
+            debugLabel: "SemanticsDebugger.update"
+        );
     }
 
     internal virtual void _handlePointerDown(Gestures.PointerDownEvent @event)
@@ -87,7 +97,10 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
     internal virtual void _handleTap()
     {
         DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
-        _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.tap);
+        _performAction(
+            DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+            SemanticsAction.tap
+        );
         setState(() =>
         {
             _lastPointerDownLocation = null;
@@ -97,7 +110,10 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
     internal virtual void _handleLongPress()
     {
         DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
-        _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.longPress);
+        _performAction(
+            DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+            SemanticsAction.longPress
+        );
         setState(() =>
         {
             _lastPointerDownLocation = null;
@@ -116,24 +132,42 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
         {
             if (Math.Sign(vx) < 0L)
             {
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.decrease);
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollLeft);
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.decrease
+                );
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.scrollLeft
+                );
             }
             else
             {
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.increase);
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollRight);
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.increase
+                );
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.scrollRight
+                );
             }
         }
         else
         {
             if (Math.Sign(vy) < 0L)
             {
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollUp);
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.scrollUp
+                );
             }
             else
             {
-                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollDown);
+                _performAction(
+                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    SemanticsAction.scrollDown
+                );
             }
         }
         setState(() =>
@@ -149,10 +183,29 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
 
     public override Widget build(BuildContext context)
     {
-        return new CustomPaint(foregroundPainter: new _SemanticsDebuggerPainter__semantics_debugger(_pipelineOwner!, _generation, _lastPointerDownLocation, View.of(context).devicePixelRatio, widget.labelStyle), child: new GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _handleTap(), onLongPress: () => _handleLongPress(), onPanEnd: _handlePanEnd, excludeFromSemantics: true, child: new Listener(onPointerDown: _handlePointerDown, behavior: HitTestBehavior.opaque, child: new _IgnorePointerWithSemantics__semantics_debugger(child: widget.child))));
+        return new CustomPaint(
+            foregroundPainter: new _SemanticsDebuggerPainter__semantics_debugger(
+                _pipelineOwner!,
+                _generation,
+                _lastPointerDownLocation,
+                View.of(context).devicePixelRatio,
+                widget.labelStyle
+            ),
+            child: new GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _handleTap(),
+                onLongPress: () => _handleLongPress(),
+                onPanEnd: _handlePanEnd,
+                excludeFromSemantics: true,
+                child: new Listener(
+                    onPointerDown: _handlePointerDown,
+                    behavior: HitTestBehavior.opaque,
+                    child: new _IgnorePointerWithSemantics__semantics_debugger(child: widget.child)
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
@@ -163,7 +216,13 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
     public virtual double devicePixelRatio { get; private set; } = default!;
     public virtual TextStyle labelStyle { get; private set; } = default!;
 
-    internal _SemanticsDebuggerPainter__semantics_debugger(PipelineOwner owner, long generation, Offset? pointerPosition, double devicePixelRatio, TextStyle labelStyle)
+    internal _SemanticsDebuggerPainter__semantics_debugger(
+        PipelineOwner owner,
+        long generation,
+        Offset? pointerPosition,
+        double devicePixelRatio,
+        TextStyle labelStyle
+    )
     {
         this.owner = owner;
         this.generation = generation;
@@ -174,11 +233,9 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
 
     internal virtual SemanticsNode? _rootSemanticsNode
     {
-        get
-        {
-            return owner.semanticsOwner?.rootSemanticsNode;
-        }
+        get { return owner.semanticsOwner?.rootSemanticsNode; }
     }
+
     public override void paint(Canvas canvas, Size size)
     {
         SemanticsNode? rootNode = _rootSemanticsNode;
@@ -193,7 +250,11 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             Offset pointerPosition__value6557 = DartRuntimePrimitives.RequireValue(pointerPosition);
             var paintLocal = new Paint();
             paintLocal.color = new Color(2130743551L);
-            canvas.drawCircle(DartRuntimePrimitives.RequireValue(pointerPosition), 10.0 * devicePixelRatio, paintLocal);
+            canvas.drawCircle(
+                DartRuntimePrimitives.RequireValue(pointerPosition),
+                10.0 * devicePixelRatio,
+                paintLocal
+            );
         }
         canvas.restore();
     }
@@ -201,7 +262,9 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_SemanticsDebuggerPainter__semantics_debugger)oldDelegate;
-        return (!Equals(owner, __oldDelegate.owner)) || (generation != __oldDelegate.generation) || (!Equals(pointerPosition, __oldDelegate.pointerPosition));
+        return (!Equals(owner, __oldDelegate.owner))
+            || (generation != __oldDelegate.generation)
+            || (!Equals(pointerPosition, __oldDelegate.pointerPosition));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -212,7 +275,11 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         var wantsTap = false;
         if (!Equals(data.flagsCollection.isChecked, CheckedState.none))
         {
-            annotations.Add(Equals(data.flagsCollection.isChecked, CheckedState.isTrue) ? "checked" : "unchecked");
+            annotations.Add(
+                Equals(data.flagsCollection.isChecked, CheckedState.isTrue)
+                    ? "checked"
+                    : "unchecked"
+            );
             wantsTap = true;
         }
         if (data.flagsCollection.isTextField)
@@ -238,8 +305,13 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         {
             annotations.Add("long-pressable");
         }
-        bool isScrollable = data.hasAction(SemanticsAction.scrollLeft) || data.hasAction(SemanticsAction.scrollRight) || data.hasAction(SemanticsAction.scrollUp) || data.hasAction(SemanticsAction.scrollDown);
-        bool isAdjustable = data.hasAction(SemanticsAction.increase) || data.hasAction(SemanticsAction.decrease);
+        bool isScrollable =
+            data.hasAction(SemanticsAction.scrollLeft)
+            || data.hasAction(SemanticsAction.scrollRight)
+            || data.hasAction(SemanticsAction.scrollUp)
+            || data.hasAction(SemanticsAction.scrollDown);
+        bool isAdjustable =
+            data.hasAction(SemanticsAction.increase) || data.hasAction(SemanticsAction.decrease);
         if (isScrollable)
         {
             annotations.Add("scrollable");
@@ -249,7 +321,9 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             annotations.Add("adjustable");
         }
         string message = default!;
-        bool shouldIgnoreDuplicatedLabel = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android) && (data.attributedLabel.@string == data.tooltip);
+        bool shouldIgnoreDuplicatedLabel =
+            Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)
+            && (data.attributedLabel.@string == data.tooltip);
         string tooltipAndLabel = string.Join("\n", new List<string>());
         if (tooltipAndLabel.Length == 0)
         {
@@ -265,7 +339,12 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             }
             else
             {
-                effectiveLabel = DartRuntimePrimitives.RequireValue(data.textDirection) switch { TextDirection.rtl => $"{Unicode.RLI}{tooltipAndLabel}{Unicode.PDI}", TextDirection.ltr => tooltipAndLabel, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                effectiveLabel = DartRuntimePrimitives.RequireValue(data.textDirection) switch
+                {
+                    TextDirection.rtl => $"{Unicode.RLI}{tooltipAndLabel}{Unicode.PDI}",
+                    TextDirection.ltr => tooltipAndLabel,
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                };
             }
             if (!Enumerable.Any(annotations))
             {
@@ -290,15 +369,19 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         Rect rectLocal = node.rect;
         canvas.save();
         canvas.clipRect(rectLocal);
-        var textPainter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter();
-    __cascade.text = new TextSpan(style: labelStyle, text: message);
-    __cascade.textDirection = TextDirection.ltr;
-    __cascade.textAlign = TextAlign.center;
-    __cascade.layout(maxWidth: rectLocal.width);
-    return __cascade;
-}))();
+        var textPainter = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = new TextPainter();
+                    __cascade.text = new TextSpan(style: labelStyle, text: message);
+                    __cascade.textDirection = TextDirection.ltr;
+                    __cascade.textAlign = TextAlign.center;
+                    __cascade.layout(maxWidth: rectLocal.width);
+                    return __cascade;
+                }
+            )
+        )();
         textPainter.paint(canvas, Alignment.center.inscribe(textPainter.size, rectLocal).topLeft);
         textPainter.dispose();
         canvas.restore();
@@ -311,17 +394,25 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             return 1L;
         }
         var childrenDepth = 0L;
-        node.visitChildren((child) =>
-        {
-            childrenDepth = Math.Max(childrenDepth, _findDepth(child));
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        node.visitChildren(
+            (child) =>
+            {
+                childrenDepth = Math.Max(childrenDepth, _findDepth(child));
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         return childrenDepth + 1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _paint(Canvas canvas, SemanticsNode node, long rank, long indexInParent, long level)
+    internal virtual void _paint(
+        Canvas canvas,
+        SemanticsNode node,
+        long rank,
+        long indexInParent,
+        long level
+    )
     {
         if (node.traversalChildIdentifier is not null)
         {
@@ -339,33 +430,45 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             Rect innerRect = rectLocal.deflate(rank * 1.0);
             if (innerRect.isEmpty)
             {
-                var fillLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = lineColor;
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))();
+                var fillLocal = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = lineColor;
+                            __cascade.style = PaintingStyle.fill;
+                            return __cascade;
+                        }
+                    )
+                )();
                 canvas.drawRect(rectLocal, fillLocal);
             }
             else
             {
-                var fillAlternate = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = new Color(4294967295L);
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))();
+                var fillAlternate = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = new Color(4294967295L);
+                            __cascade.style = PaintingStyle.fill;
+                            return __cascade;
+                        }
+                    )
+                )();
                 canvas.drawRect(rectLocal, fillAlternate);
-                var line = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.strokeWidth = rank * 2.0;
-    __cascade.color = lineColor;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))();
+                var line = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.strokeWidth = rank * 2.0;
+                            __cascade.color = lineColor;
+                            __cascade.style = PaintingStyle.stroke;
+                            return __cascade;
+                        }
+                    )
+                )();
                 canvas.drawRect(innerRect, line);
             }
             _paintMessage(canvas, node);
@@ -375,20 +478,27 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             long childRank = rank - 1L;
             long childLevel = level + 1L;
             var childIndex = 0L;
-            node.visitChildren((child) =>
-            {
-                _paint(canvas, child, childRank, childIndex, childLevel);
-                childIndex += 1L;
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            node.visitChildren(
+                (child) =>
+                {
+                    _paint(canvas, child, childRank, childIndex, childLevel);
+                    childIndex += 1L;
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
         }
         canvas.restore();
     }
 
     internal static Color _colorForNode(long index, long level)
     {
-        return new HSLColor(1.0, 360.0 * new DartRandom(_getColorSeed(index, level)).nextDouble(), 1.0, 0.7).toColor();
+        return new HSLColor(
+            1.0,
+            360.0 * new DartRandom(_getColorSeed(index, level)).nextDouble(),
+            1.0,
+            0.7
+        ).toColor();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -397,29 +507,23 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         return (level * 10000L) + index;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _IgnorePointerWithSemantics__semantics_debugger : SingleChildRenderObjectWidget
 {
-    internal _IgnorePointerWithSemantics__semantics_debugger(Widget? child = null) : base(child: child)
-    {
-    }
+    internal _IgnorePointerWithSemantics__semantics_debugger(Widget? child = null)
+        : base(child: child) { }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderIgnorePointerWithSemantics__semantics_debugger();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _RenderIgnorePointerWithSemantics__semantics_debugger : RenderProxyBox
 {
-    internal _RenderIgnorePointerWithSemantics__semantics_debugger()
-    {
-    }
+    internal _RenderIgnorePointerWithSemantics__semantics_debugger() { }
 
     public override bool hitTest(BoxHitTestResult result, Offset position) => false;
 }
-

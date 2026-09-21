@@ -14,11 +14,10 @@ public class RestorationManager : ChangeNotifier
     internal virtual bool _isReplacing { get; set; } = false;
     internal virtual bool _debugDoingUpdate { get; set; } = false;
     internal virtual bool _serializationScheduled { get; set; } = false;
-    internal virtual HashSet<RestorationBucket> _bucketsNeedingSerialization { get; private set; } = new HashSet<RestorationBucket>();
+    internal virtual HashSet<RestorationBucket> _bucketsNeedingSerialization { get; private set; } =
+        new HashSet<RestorationBucket>();
 
-    public RestorationManager()
-    {
-    }
+    public RestorationManager() { }
 
     public virtual void initChannels()
     {
@@ -42,9 +41,12 @@ public class RestorationManager : ChangeNotifier
         }
     }
     public virtual bool isReplacing => _isReplacing;
-    internal async virtual Future _getRootBucketFromEngine()
+
+    internal virtual async Future _getRootBucketFromEngine()
     {
-        DartMap<object?, object?>? config = await SystemChannels.restoration.invokeMethod<DartMap<object?, object?>>("get");
+        DartMap<object?, object?>? config = await SystemChannels.restoration.invokeMethod<
+            DartMap<object?, object?>
+        >("get");
         if (_pendingRootBucket is null)
         {
             return;
@@ -53,9 +55,14 @@ public class RestorationManager : ChangeNotifier
         _parseAndHandleRestorationUpdateFromEngine(config);
     }
 
-    internal virtual void _parseAndHandleRestorationUpdateFromEngine(DartMap<object?, object?>? update)
+    internal virtual void _parseAndHandleRestorationUpdateFromEngine(
+        DartMap<object?, object?>? update
+    )
     {
-        handleRestorationUpdateFromEngine(enabled: (update is not null) && ((bool)update.GetValueOrDefault("enabled")!), data: (update is null) ? null : ((Uint8List?)update.GetValueOrDefault("data"))!);
+        handleRestorationUpdateFromEngine(
+            enabled: (update is not null) && ((bool)update.GetValueOrDefault("enabled")!),
+            data: (update is null) ? null : ((Uint8List?)update.GetValueOrDefault("data"))!
+        );
     }
 
     public virtual void handleRestorationUpdateFromEngine(bool enabled, Uint8List? data)
@@ -64,15 +71,22 @@ public class RestorationManager : ChangeNotifier
         _isReplacing = _rootBucketIsValid && enabled;
         if (_isReplacing)
         {
-            SchedulerBinding.instance.addPostFrameCallback((_) =>
-            {
-                _isReplacing = false;
-            }, debugLabel: "RestorationManager.resetIsReplacing");
+            SchedulerBinding.instance.addPostFrameCallback(
+                (_) =>
+                {
+                    _isReplacing = false;
+                },
+                debugLabel: "RestorationManager.resetIsReplacing"
+            );
         }
         RestorationBucket? oldRoot = _rootBucket;
-        _rootBucket = enabled ? RestorationBucket.CreateRoot(manager: this, rawData: _decodeRestorationData(data)) : null;
+        _rootBucket = enabled
+            ? RestorationBucket.CreateRoot(manager: this, rawData: _decodeRestorationData(data))
+            : null;
         _rootBucketIsValid = true;
-        DartRuntimePrimitives.Assert(() => (_pendingRootBucket is null) || !_pendingRootBucket!.isCompleted);
+        DartRuntimePrimitives.Assert(() =>
+            (_pendingRootBucket is null) || !_pendingRootBucket!.isCompleted
+        );
         _pendingRootBucket?.complete(_rootBucket);
         _pendingRootBucket = null;
         if (!Equals(_rootBucket, oldRoot))
@@ -88,21 +102,28 @@ public class RestorationManager : ChangeNotifier
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future _methodHandler(MethodCall call)
+    internal virtual async Future _methodHandler(MethodCall call)
     {
         switch (call.method)
         {
             case var __case15057 when Equals(__case15057, "push"):
+            {
+                if (call.arguments is not System.Collections.IDictionary update)
                 {
-                    if (call.arguments is not System.Collections.IDictionary update)
-                        throw new FormatException("Restoration updates require a map.");
-                    _parseAndHandleRestorationUpdateFromEngine(DartRuntimePrimitives.ConvertMap<object?, object?>(update));
-                    break;
+                    throw new FormatException("Restoration updates require a map.");
                 }
+
+                _parseAndHandleRestorationUpdateFromEngine(
+                    DartRuntimePrimitives.ConvertMap<object?, object?>(update)
+                );
+                break;
+            }
             default:
-                {
-                    throw new NotImplementedException($"{call.method} was invoked but isn't implemented by {GetType()}");
-                }
+            {
+                throw new NotImplementedException(
+                    $"{call.method} was invoked but isn't implemented by {GetType()}"
+                );
+            }
         }
     }
 
@@ -114,9 +135,16 @@ public class RestorationManager : ChangeNotifier
         }
         ByteData encoded = data.buffer.asByteData(data.offsetInBytes, data.lengthInBytes);
         var decoded = new StandardMessageCodec().decodeMessage(encoded);
-        if (decoded is null) return null;
+        if (decoded is null)
+        {
+            return null;
+        }
+
         if (decoded is not System.Collections.IDictionary entries)
+        {
             throw new FormatException("Restoration data must decode to a map.");
+        }
+
         return DartRuntimePrimitives.ConvertMap<object?, object?>(entries);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -136,7 +164,10 @@ public class RestorationManager : ChangeNotifier
         if (!_serializationScheduled)
         {
             _serializationScheduled = true;
-            SchedulerBinding.instance.addPostFrameCallback((_) => _doSerialization(), debugLabel: "RestorationManager.doSerialization");
+            SchedulerBinding.instance.addPostFrameCallback(
+                (_) => _doSerialization(),
+                debugLabel: "RestorationManager.doSerialization"
+            );
         }
     }
 
@@ -154,10 +185,10 @@ public class RestorationManager : ChangeNotifier
             return;
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugDoingUpdate = true;
-                return true;
-            });
+        {
+            _debugDoingUpdate = true;
+            return true;
+        });
         _serializationScheduled = false;
         foreach (RestorationBucket bucket in _bucketsNeedingSerialization)
         {
@@ -166,10 +197,10 @@ public class RestorationManager : ChangeNotifier
         _bucketsNeedingSerialization.Clear();
         _ = sendToEngine(_encodeRestorationData(_rootBucket!._rawData));
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugDoingUpdate = false;
-                return true;
-            });
+        {
+            _debugDoingUpdate = false;
+            return true;
+        });
     }
 
     public virtual void flushData()
@@ -188,7 +219,6 @@ public class RestorationManager : ChangeNotifier
         _rootBucket?.dispose();
         base.dispose();
     }
-
 }
 
 public class RestorationBucket
@@ -200,8 +230,10 @@ public class RestorationBucket
     internal virtual RestorationManager? _manager { get; set; } = default;
     internal virtual RestorationBucket? _parent { get; set; } = default;
     internal virtual string _restorationId { get; set; } = default!;
-    internal virtual DartMap<string, RestorationBucket> _claimedChildren { get; private set; } = new DartMap<string, RestorationBucket>();
-    internal virtual DartMap<string, List<RestorationBucket>> _childrenToAdd { get; private set; } = new DartMap<string, List<RestorationBucket>>();
+    internal virtual DartMap<string, RestorationBucket> _claimedChildren { get; private set; } =
+        new DartMap<string, RestorationBucket>();
+    internal virtual DartMap<string, List<RestorationBucket>> _childrenToAdd { get; private set; } =
+        new DartMap<string, List<RestorationBucket>>();
     internal virtual bool _needsSerialization { get; set; } = false;
     internal virtual bool _debugDisposed { get; set; } = false;
 
@@ -211,7 +243,10 @@ public class RestorationBucket
         _rawData = new DartMap<string, object?>().cast<object?, object?>();
     }
 
-    public static RestorationBucket CreateRoot(RestorationManager manager, DartMap<object?, object?>? rawData)
+    public static RestorationBucket CreateRoot(
+        RestorationManager manager,
+        DartMap<object?, object?>? rawData
+    )
     {
         var __instance = new RestorationBucket(default!, default!);
         __instance._manager = manager;
@@ -220,12 +255,18 @@ public class RestorationBucket
         return __instance;
     }
 
-    public static RestorationBucket CreateChild(string restorationId, RestorationBucket parent, object? debugOwner)
+    public static RestorationBucket CreateChild(
+        string restorationId,
+        RestorationBucket parent,
+        object? debugOwner
+    )
     {
         var __instance = new RestorationBucket(restorationId, debugOwner);
         __instance._manager = parent._manager;
         __instance._parent = parent;
-        __instance._rawData = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)parent._rawChildren.GetValueOrDefault(restorationId)!);
+        __instance._rawData = DartRuntimePrimitives.ConvertMap<object?, object?>(
+            (System.Collections.IDictionary)parent._rawChildren.GetValueOrDefault(restorationId)!
+        );
         __instance._restorationId = restorationId;
         return __instance;
     }
@@ -247,8 +288,17 @@ public class RestorationBucket
             return _restorationId;
         }
     }
-    internal virtual DartMap<object?, object?> _rawChildren => DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)_rawData.putIfAbsent(_childrenMapKey, () => new DartMap<object?, object?>())!);
-    internal virtual DartMap<object?, object?> _rawValues => DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)_rawData.putIfAbsent(_valuesMapKey, () => new DartMap<object?, object?>())!);
+    internal virtual DartMap<object?, object?> _rawChildren =>
+        DartRuntimePrimitives.ConvertMap<object?, object?>(
+            (System.Collections.IDictionary)
+                _rawData.putIfAbsent(_childrenMapKey, () => new DartMap<object?, object?>())!
+        );
+    internal virtual DartMap<object?, object?> _rawValues =>
+        DartRuntimePrimitives.ConvertMap<object?, object?>(
+            (System.Collections.IDictionary)
+                _rawData.putIfAbsent(_valuesMapKey, () => new DartMap<object?, object?>())!
+        );
+
     public virtual P? read<P>(string restorationId)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
@@ -259,8 +309,13 @@ public class RestorationBucket
     public virtual void write<P>(string restorationId, P value)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(value));
-        if ((!Equals(_rawValues.GetValueOrDefault(restorationId), value)) || !_rawValues.ContainsKey(restorationId))
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(value)
+        );
+        if (
+            (!Equals(_rawValues.GetValueOrDefault(restorationId), value))
+            || !_rawValues.ContainsKey(restorationId)
+        )
         {
             _rawValues[restorationId] = value;
             _markNeedsSerialization();
@@ -296,11 +351,16 @@ public class RestorationBucket
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         if (_claimedChildren.ContainsKey(restorationId) || !_rawChildren.ContainsKey(restorationId))
         {
-            var childLocal = new RestorationBucket(debugOwner: debugOwner, restorationId: restorationId);
+            var childLocal = new RestorationBucket(
+                debugOwner: debugOwner,
+                restorationId: restorationId
+            );
             adoptChild(childLocal);
             return childLocal;
         }
-        DartRuntimePrimitives.Assert(() => _rawChildren.GetValueOrDefault(restorationId) is not null);
+        DartRuntimePrimitives.Assert(() =>
+            _rawChildren.GetValueOrDefault(restorationId) is not null
+        );
         var child = CreateChild(restorationId: restorationId, parent: this, debugOwner: debugOwner);
         _claimedChildren[restorationId] = child;
         return child;
@@ -380,22 +440,38 @@ public class RestorationBucket
     internal virtual bool _debugAssertIntegrity()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_childrenToAdd.Count == 0)
             {
-                if (_childrenToAdd.Count == 0)
-                {
-                    return true;
-                }
-                var error = new List<DiagnosticsNode> { new ErrorSummary("Multiple owners claimed child RestorationBuckets with the same IDs."), new ErrorDescription($"The following IDs were claimed multiple times from the parent {this}:") };
-                foreach (MapEntry<string, List<RestorationBucket>> child in _childrenToAdd.entries)
-                {
-                    string id = child.key;
-                    List<RestorationBucket> buckets = child.value;
-                    DartRuntimePrimitives.Assert(() => buckets.Count != 0);
-                    DartRuntimePrimitives.Assert(() => _claimedChildren.ContainsKey(id));
-                    error.AddRange(new List<DiagnosticsNode> { new ErrorDescription($" * \"{id}\" was claimed by:"), new ErrorDescription($"   * {_claimedChildren.GetValueOrDefault(id)!.debugOwner} (current owner)") });
-                }
-                throw new FlutterError(error);
-            });
+                return true;
+            }
+            var error = new List<DiagnosticsNode>
+            {
+                new ErrorSummary(
+                    "Multiple owners claimed child RestorationBuckets with the same IDs."
+                ),
+                new ErrorDescription(
+                    $"The following IDs were claimed multiple times from the parent {this}:"
+                ),
+            };
+            foreach (MapEntry<string, List<RestorationBucket>> child in _childrenToAdd.entries)
+            {
+                string id = child.key;
+                List<RestorationBucket> buckets = child.value;
+                DartRuntimePrimitives.Assert(() => buckets.Count != 0);
+                DartRuntimePrimitives.Assert(() => _claimedChildren.ContainsKey(id));
+                error.AddRange(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorDescription($" * \"{id}\" was claimed by:"),
+                        new ErrorDescription(
+                            $"   * {_claimedChildren.GetValueOrDefault(id)!.debugOwner} (current owner)"
+                        ),
+                    }
+                );
+            }
+            throw new FlutterError(error);
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -406,7 +482,9 @@ public class RestorationBucket
         if (Equals(_claimedChildren.remove(child.restorationId), child))
         {
             _rawChildren.remove(child.restorationId);
-            List<RestorationBucket>? pendingChildren = _childrenToAdd.GetValueOrDefault(child.restorationId);
+            List<RestorationBucket>? pendingChildren = _childrenToAdd.GetValueOrDefault(
+                child.restorationId
+            );
             if (pendingChildren is not null)
             {
                 RestorationBucket toAdd = pendingChildren.removeLast();
@@ -435,7 +513,9 @@ public class RestorationBucket
         DartRuntimePrimitives.Assert(() => Equals(child._parent, this));
         if (_claimedChildren.ContainsKey(child.restorationId))
         {
-            _childrenToAdd.putIfAbsent(child.restorationId, () => new List<RestorationBucket>()).Add(child);
+            _childrenToAdd
+                .putIfAbsent(child.restorationId, () => new List<RestorationBucket>())
+                .Add(child);
             _markNeedsSerialization();
             return;
         }
@@ -445,15 +525,24 @@ public class RestorationBucket
 
     internal virtual void _finalizeAddChildData(RestorationBucket child)
     {
-        DartRuntimePrimitives.Assert(() => _claimedChildren.GetValueOrDefault(child.restorationId) is null);
-        DartRuntimePrimitives.Assert(() => _rawChildren.GetValueOrDefault(child.restorationId) is null);
+        DartRuntimePrimitives.Assert(() =>
+            _claimedChildren.GetValueOrDefault(child.restorationId) is null
+        );
+        DartRuntimePrimitives.Assert(() =>
+            _rawChildren.GetValueOrDefault(child.restorationId) is null
+        );
         _claimedChildren[child.restorationId] = child;
         _rawChildren[child.restorationId] = child._rawData;
     }
 
-    internal virtual void _visitChildren(Action<RestorationBucket> visitor, bool concurrentModification = false)
+    internal virtual void _visitChildren(
+        Action<RestorationBucket> visitor,
+        bool concurrentModification = false
+    )
     {
-        IEnumerable<RestorationBucket> children = _claimedChildren.Values.followedBy(_childrenToAdd.Values.expand((buckets) => buckets));
+        IEnumerable<RestorationBucket> children = _claimedChildren.Values.followedBy(
+            _childrenToAdd.Values.expand((buckets) => buckets)
+        );
         if (concurrentModification)
         {
             children = children.ToList();
@@ -476,7 +565,9 @@ public class RestorationBucket
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _visitChildren(_dropChild, concurrentModification: true);
         _claimedChildren.Clear();
         _childrenToAdd.Clear();
@@ -486,21 +577,25 @@ public class RestorationBucket
         _debugDisposed = true;
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RestorationBucket")}(restorationId: {restorationId}, owner: {debugOwner})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RestorationBucket")}(restorationId: {restorationId}, owner: {debugOwner})";
+
     internal virtual bool _debugAssertNotDisposed()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_debugDisposed)
             {
-                if (_debugDisposed)
-                {
-                    throw new FlutterError($"A {GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {GetType()}, it can no longer be used.");
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    $"A {GetType()} was used after being disposed.\n"
+                        + $"Once you have called dispose() on a {GetType()}, it can no longer be used."
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class RestorationLibrary
@@ -509,18 +604,18 @@ public static partial class RestorationLibrary
     {
         var result = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            try
             {
-                try
-                {
-                    new StandardMessageCodec().encodeMessage(@object);
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    result = false;
-                }
-                return true;
-            });
+                new StandardMessageCodec().encodeMessage(@object);
+                result = true;
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return true;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

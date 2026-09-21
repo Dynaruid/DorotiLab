@@ -15,29 +15,55 @@ public unsafe partial class IDXGIFactory2
         return hr;
     }
 
-    public IDXGISwapChain1 CreateSwapChainForHwnd(ComObject device, nint window, SwapChainDescription1 description, DX.SwapChainFullscreenDesc? fullscreen, IDXGIOutput? output)
+    public IDXGISwapChain1 CreateSwapChainForHwnd(
+        ComObject device,
+        nint window,
+        SwapChainDescription1 description,
+        DX.SwapChainFullscreenDesc? fullscreen,
+        IDXGIOutput? output
+    )
     {
         using var lifetime = new ComScope(this, device, output);
         var desc = description.Native;
         var full = fullscreen.GetValueOrDefault();
         DX.IDXGISwapChain1* pointer = null;
-        var hr = Native->CreateSwapChainForHwnd((IUnknown*)device.NativePointer, window, &desc, fullscreen.HasValue ? &full : null, (DX.IDXGIOutput*)(output?.NativePointer ?? 0), &pointer);
+        var hr = Native->CreateSwapChainForHwnd(
+            (IUnknown*)device.NativePointer,
+            window,
+            &desc,
+            fullscreen.HasValue ? &full : null,
+            (DX.IDXGIOutput*)(output?.NativePointer ?? 0),
+            &pointer
+        );
         return Adopt<IDXGISwapChain1>(hr, pointer);
     }
 
-    public IDXGISwapChain1 CreateSwapChainForComposition(ComObject device, SwapChainDescription1 description, IDXGIOutput? output)
+    public IDXGISwapChain1 CreateSwapChainForComposition(
+        ComObject device,
+        SwapChainDescription1 description,
+        IDXGIOutput? output
+    )
     {
         using var lifetime = new ComScope(this, device, output);
         var desc = description.Native;
         DX.IDXGISwapChain1* pointer = null;
-        var hr = Native->CreateSwapChainForComposition((IUnknown*)device.NativePointer, &desc, (DX.IDXGIOutput*)(output?.NativePointer ?? 0), &pointer);
+        var hr = Native->CreateSwapChainForComposition(
+            (IUnknown*)device.NativePointer,
+            &desc,
+            (DX.IDXGIOutput*)(output?.NativePointer ?? 0),
+            &pointer
+        );
         return Adopt<IDXGISwapChain1>(hr, pointer);
     }
 }
 
 public unsafe partial class IDXGIFactory6
 {
-    public HResult EnumAdapterByGpuPreference(uint index, DX.GpuPreference preference, out IDXGIAdapter1? adapter)
+    public HResult EnumAdapterByGpuPreference(
+        uint index,
+        DX.GpuPreference preference,
+        out IDXGIAdapter1? adapter
+    )
     {
         using var lifetime = new ComScope(this);
         var iid = IDXGIAdapter1.InterfaceId;
@@ -69,6 +95,7 @@ public unsafe partial class IDXGIFactory6
 }
 
 public readonly record struct AdapterDescription(string Description, uint Flags, Luid Luid);
+
 public unsafe partial class IDXGIAdapter1
 {
     public AdapterDescription Description1
@@ -78,7 +105,7 @@ public unsafe partial class IDXGIAdapter1
             using var lifetime = new ComScope(this);
             DX.AdapterDesc1 desc;
             new HResult(Native->GetDesc1(&desc)).CheckError();
-            return new(new string (desc.Description), desc.Flags, desc.AdapterLuid);
+            return new(new string(desc.Description), desc.Flags, desc.AdapterLuid);
         }
     }
 
@@ -108,7 +135,13 @@ public unsafe partial class IDXGIOutput
 
 public unsafe partial class IDXGISwapChain1
 {
-    public HResult ResizeBuffers(uint count, uint width, uint height, DX.Format format, DX.SwapChainFlag flags)
+    public HResult ResizeBuffers(
+        uint count,
+        uint width,
+        uint height,
+        DX.Format format,
+        DX.SwapChainFlag flags
+    )
     {
         using var lifetime = new ComScope(this);
         return Native->ResizeBuffers(count, width, height, format, (uint)flags);
@@ -156,7 +189,14 @@ public unsafe partial class IDXGISwapChain2
         set
         {
             using var lifetime = new ComScope(this);
-            var matrix = new DX.Matrix3X2F(value.M11, value.M12, value.M21, value.M22, value.M31, value.M32);
+            var matrix = new DX.Matrix3X2F(
+                value.M11,
+                value.M12,
+                value.M21,
+                value.M22,
+                value.M31,
+                value.M32
+            );
             new HResult(Native->SetMatrixTransform(&matrix)).CheckError();
         }
     }
@@ -180,22 +220,34 @@ public unsafe partial class IDXGISwapChain3
     }
 }
 
-public readonly struct SwapChainDescription1(uint width, uint height, DX.Format format, bool stereo, uint usage, uint bufferCount, DX.Scaling scaling, DX.SwapEffect swapEffect, DX.AlphaMode alphaMode, DX.SwapChainFlag flags)
+public readonly struct SwapChainDescription1(
+    uint width,
+    uint height,
+    DX.Format format,
+    bool stereo,
+    uint usage,
+    uint bufferCount,
+    DX.Scaling scaling,
+    DX.SwapEffect swapEffect,
+    DX.AlphaMode alphaMode,
+    DX.SwapChainFlag flags
+)
 {
-    internal DX.SwapChainDesc1 Native => new()
-    {
-        Width = width,
-        Height = height,
-        Format = format,
-        Stereo = stereo,
-        SampleDesc = new(1, 0),
-        BufferUsage = usage,
-        BufferCount = bufferCount,
-        Scaling = scaling,
-        SwapEffect = swapEffect,
-        AlphaMode = alphaMode,
-        Flags = (uint)flags,
-    };
+    internal DX.SwapChainDesc1 Native =>
+        new()
+        {
+            Width = width,
+            Height = height,
+            Format = format,
+            Stereo = stereo,
+            SampleDesc = new(1, 0),
+            BufferUsage = usage,
+            BufferCount = bufferCount,
+            Scaling = scaling,
+            SwapEffect = swapEffect,
+            AlphaMode = alphaMode,
+            Flags = (uint)flags,
+        };
 }
 
 public static class Usage
@@ -225,7 +277,7 @@ public sealed unsafe class ISwapChainPanelNative(nint pointer) : ComObject(point
     {
         using var lifetime = new ComScope(this, swapChain);
         var pointer = NativePointer;
-        var call = (delegate* unmanaged[Stdcall]<nint, nint, int> )(*(void***)pointer)[3];
+        var call = (delegate* unmanaged[Stdcall]<nint, nint, int>)(*(void***)pointer)[3];
         return call(pointer, swapChain.NativePointer);
     }
 }

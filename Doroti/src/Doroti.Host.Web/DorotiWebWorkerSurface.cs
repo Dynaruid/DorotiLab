@@ -30,7 +30,13 @@ public static partial class DorotiWebWorkerSurface
     public static void Initialize(IDorotiBrowserTarget target, ulong viewId)
     {
         ArgumentNullException.ThrowIfNull(target);
-        if (_initialized) throw new InvalidOperationException("The Doroti worker surface is already initialized.");
+        if (_initialized)
+        {
+            throw new InvalidOperationException(
+                "The Doroti worker surface is already initialized."
+            );
+        }
+
         InterceptBrowserObjects();
         _target = target;
         _viewId = viewId;
@@ -40,18 +46,22 @@ public static partial class DorotiWebWorkerSurface
     }
 
     [JSExport]
-    public static string CaptureDiagnostics() => System.Text.Json.JsonSerializer.Serialize(new {
-        clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
-        frame = _target?.CaptureFrameDiagnostics(_viewId),
-        work = FrameworkWorkCounters.Snapshot(),
-        profile = FrameworkWorkProfile.Snapshot(),
-        components = FrameworkComponentProfile.Snapshot(),
-        backend = _graphiteContext is null ? "Ganesh/WebGL" : "Graphite/Dawn",
-        nativeSkia = SkiaSharpVersion.Native.ToString(),
-        managedSkia = typeof(SKSurface).Assembly.GetName().Version?.ToString(),
-        graphiteImageProviderCalls = _graphiteImageRequests,
-        graphiteBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes ?? 0,
-    });
+    public static string CaptureDiagnostics() =>
+        System.Text.Json.JsonSerializer.Serialize(
+            new
+            {
+                clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
+                frame = _target?.CaptureFrameDiagnostics(_viewId),
+                work = FrameworkWorkCounters.Snapshot(),
+                profile = FrameworkWorkProfile.Snapshot(),
+                components = FrameworkComponentProfile.Snapshot(),
+                backend = _graphiteContext is null ? "Ganesh/WebGL" : "Graphite/Dawn",
+                nativeSkia = SkiaSharpVersion.Native.ToString(),
+                managedSkia = typeof(SKSurface).Assembly.GetName().Version?.ToString(),
+                graphiteImageProviderCalls = _graphiteImageRequests,
+                graphiteBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes ?? 0,
+            }
+        );
 
     [JSExport]
     public static string RenderFrame(
@@ -69,20 +79,49 @@ public static partial class DorotiWebWorkerSurface
         int stencilBits,
         int sampleCount,
         [JSMarshalAs<JSType.Number>] long contextGeneration,
-        bool glStateDirty)
+        bool glStateDirty
+    )
     {
-        if (!_initialized || _target is null) return "superseded";
-        var target = new DorotiResizeEpoch(
-            generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
-            devicePixelRatio, timestampMicroseconds);
-        if (_target.CaptureSnapshot(_viewId).ResizeEpoch.Generation != generation)
+        if (!_initialized || _target is null)
+        {
             return "superseded";
+        }
+
+        var target = new DorotiResizeEpoch(
+            generation,
+            logicalWidth,
+            logicalHeight,
+            physicalWidth,
+            physicalHeight,
+            devicePixelRatio,
+            timestampMicroseconds
+        );
+        if (_target.CaptureSnapshot(_viewId).ResizeEpoch.Generation != generation)
+        {
+            return "superseded";
+        }
+
         if (backingWidth < physicalWidth || backingHeight < physicalHeight)
+        {
             throw new InvalidDataException(
-                $"Worker backing {backingWidth}x{backingHeight} is smaller than exact frame " +
-                $"{physicalWidth}x{physicalHeight}.");
-        EnsureSurface(backingWidth, backingHeight, framebuffer, stencilBits, sampleCount, contextGeneration);
-        if (glStateDirty) _context!.ResetContext(GRGlBackendState.All);
+                $"Worker backing {backingWidth}x{backingHeight} is smaller than exact frame "
+                    + $"{physicalWidth}x{physicalHeight}."
+            );
+        }
+
+        EnsureSurface(
+            backingWidth,
+            backingHeight,
+            framebuffer,
+            stencilBits,
+            sampleCount,
+            contextGeneration
+        );
+        if (glStateDirty)
+        {
+            _context!.ResetContext(GRGlBackendState.All);
+        }
+
         string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
         {
@@ -92,9 +131,16 @@ public static partial class DorotiWebWorkerSurface
             _surface.Canvas.ClipRect(
                 new SKRect(0, 0, physicalWidth, physicalHeight),
                 SKClipOperation.Intersect,
-                antialias: false);
+                antialias: false
+            );
             result = _target.PaintSkiaSurface(
-                _viewId, _surface, physicalWidth, physicalHeight, target, requestId);
+                _viewId,
+                _surface,
+                physicalWidth,
+                physicalHeight,
+                target,
+                requestId
+            );
         }
         // SkiaSceneRenderer flushes the canvas at the end of browser paints.
         // Submit that work once through the owning GPU context; JavaScript then
@@ -108,7 +154,8 @@ public static partial class DorotiWebWorkerSurface
         [JSMarshalAs<JSType.Number>] long requestId,
         [JSMarshalAs<JSType.Number>] long generation,
         string terminal,
-        string reason)
+        string reason
+    )
     {
         _ = generation;
         _target?.CompleteSkiaSurfacePaint(_viewId, requestId, generation, terminal, reason);
@@ -117,11 +164,11 @@ public static partial class DorotiWebWorkerSurface
     [JSExport]
     public static void ContextLost(
         [JSMarshalAs<JSType.Number>] long requestId,
-        [JSMarshalAs<JSType.Number>] long generation)
+        [JSMarshalAs<JSType.Number>] long generation
+    )
     {
         _ = generation;
-        _target?.InvalidateSkiaGpuContext(
-            _viewId, requestId, "worker WebGL context lost");
+        _target?.InvalidateSkiaGpuContext(_viewId, requestId, "worker WebGL context lost");
         ReleaseGpu();
     }
 
@@ -142,7 +189,11 @@ public static partial class DorotiWebWorkerSurface
 
     private static void RequestPresent()
     {
-        if (!_initialized || _target is null) return;
+        if (!_initialized || _target is null)
+        {
+            return;
+        }
+
         var target = _target.CaptureSnapshot(_viewId).ResizeEpoch;
         BrowserInterop.RequestPresent(
             canvasId: "doroti-surface",
@@ -152,42 +203,81 @@ public static partial class DorotiWebWorkerSurface
             physicalWidth: target.PhysicalWidth,
             physicalHeight: target.PhysicalHeight,
             devicePixelRatio: target.DevicePixelRatio,
-            timestampMicroseconds: target.TimestampMicroseconds);
+            timestampMicroseconds: target.TimestampMicroseconds
+        );
     }
 
     private static void EnsureSurface(
-        int width, int height, int framebuffer, int stencilBits, int sampleCount, long contextGeneration)
+        int width,
+        int height,
+        int framebuffer,
+        int stencilBits,
+        int sampleCount,
+        long contextGeneration
+    )
     {
-        if (_context is not null && _contextGeneration != contextGeneration) ReleaseGpu();
+        if (_context is not null && _contextGeneration != contextGeneration)
+        {
+            ReleaseGpu();
+        }
+
         if (_context is null)
         {
             _glInterface = GRGlInterface.Create();
-            _context = GRContext.CreateGl(_glInterface)
-                ?? throw new InvalidOperationException("Doroti could not create the worker WebGL Skia context.");
+            _context =
+                GRContext.CreateGl(_glInterface)
+                ?? throw new InvalidOperationException(
+                    "Doroti could not create the worker WebGL Skia context."
+                );
             _context.SetResourceCacheLimit(ResourceCacheBytes);
             _contextGeneration = contextGeneration;
         }
         var size = new SKSizeI(width, height);
         sampleCount = Math.Max(0, sampleCount);
         stencilBits = Math.Max(0, stencilBits);
-        if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer ||
-            _sampleCount != sampleCount || _stencilBits != stencilBits || !_renderTarget.IsValid)
+        if (
+            _renderTarget is null
+            || _surfaceSize != size
+            || _framebuffer != framebuffer
+            || _sampleCount != sampleCount
+            || _stencilBits != stencilBits
+            || !_renderTarget.IsValid
+        )
         {
-            if (_renderTarget is not null) _target?.InvalidateSkiaWindowSurface(_viewId);
+            if (_renderTarget is not null)
+            {
+                _target?.InvalidateSkiaWindowSurface(_viewId);
+            }
+
             _surface?.Dispose();
             _surface = null;
             _renderTarget?.Dispose();
-            var glInfo = new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat());
+            var glInfo = new GRGlFramebufferInfo(
+                (uint)framebuffer,
+                SKColorType.Rgba8888.ToGlSizedFormat()
+            );
             _renderTarget = new GRBackendRenderTarget(
-                width, height, sampleCount, stencilBits, glInfo);
+                width,
+                height,
+                sampleCount,
+                stencilBits,
+                glInfo
+            );
             _surfaceSize = size;
             _framebuffer = framebuffer;
             _sampleCount = sampleCount;
             _stencilBits = stencilBits;
         }
-        _surface ??= SKSurface.Create(
-            _context, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
-            ?? throw new InvalidOperationException("Doroti could not wrap the worker WebGL framebuffer.");
+        _surface ??=
+            SKSurface.Create(
+                _context,
+                _renderTarget,
+                GRSurfaceOrigin.BottomLeft,
+                SKColorType.Rgba8888
+            )
+            ?? throw new InvalidOperationException(
+                "Doroti could not wrap the worker WebGL framebuffer."
+            );
     }
 
     private static void ReleaseGpu()

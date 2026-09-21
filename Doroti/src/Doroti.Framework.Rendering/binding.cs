@@ -105,7 +105,10 @@ public static partial class BindingLibrary
         {
             return "No render tree root was added to the binding.";
         }
-        var explanation = "For performance reasons, the framework only generates semantics when asked to do so by the platform.\n" + "Usually, platforms only ask for semantics when assistive technologies (like screen readers) are running.\n" + "To generate semantics, try turning on an assistive technology (like VoiceOver or TalkBack) on your device.";
+        var explanation =
+            "For performance reasons, the framework only generates semantics when asked to do so by the platform.\n"
+            + "Usually, platforms only ask for semantics when assistive technologies (like screen readers) are running.\n"
+            + "To generate semantics, try turning on an assistive technology (like VoiceOver or TalkBack) on your device.";
         var trees = new List<string>();
         var printedExplanation = false;
         foreach (RenderView renderView in RendererBinding.instance.renderViews)
@@ -133,7 +136,9 @@ public static partial class BindingLibrary
 
 public static partial class BindingLibrary
 {
-    public static void debugDumpSemanticsTree(DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
+    public static void debugDumpSemanticsTree(
+        DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder
+    )
     {
         PrintLibrary.debugPrint(_debugCollectSemanticsTrees(childOrder));
     }
@@ -147,7 +152,11 @@ public static partial class BindingLibrary
     }
 }
 
-public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, PaintingBinding, RendererBinding
+public class RenderingFlutterBinding
+    : GestureBinding,
+        SemanticsBinding,
+        PaintingBinding,
+        RendererBinding
 {
     private bool __late__semanticsEnabled_initialized;
     private ValueNotifier<bool> __late__semanticsEnabled = default!;
@@ -157,18 +166,23 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         {
             if (!__late__semanticsEnabled_initialized)
             {
-                __late__semanticsEnabled = new ValueNotifier<bool>(platformDispatcher.semanticsEnabled);
+                __late__semanticsEnabled = new ValueNotifier<bool>(
+                    platformDispatcher.semanticsEnabled
+                );
                 __late__semanticsEnabled_initialized = true;
             }
             return __late__semanticsEnabled;
         }
     }
-    public virtual ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; set; } = new ObserverList<Action<SemanticsActionEvent>>();
+    public virtual ObserverList<
+        Action<SemanticsActionEvent>
+    > _semanticsActionListeners { get; set; } = new ObserverList<Action<SemanticsActionEvent>>();
     public virtual long _outstandingHandles { get; set; } = 0L;
     public virtual SemanticsHandle? _semanticsHandle { get; set; } = default;
     public virtual AccessibilityFeatures _accessibilityFeatures { get; set; } = default!;
     public virtual ImageCache _imageCache { get; set; } = default!;
-    public virtual _SystemFontsNotifier__binding _systemFonts { get; set; } = new _SystemFontsNotifier__binding();
+    public virtual _SystemFontsNotifier__binding _systemFonts { get; set; } =
+        new _SystemFontsNotifier__binding();
     private bool __late__manifold_initialized;
     private PipelineManifold __late__manifold = default!;
     public virtual PipelineManifold _manifold
@@ -192,16 +206,20 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         {
             if (!__late_pipelineOwner_initialized)
             {
-                __late_pipelineOwner = new PipelineOwner(onSemanticsOwnerCreated: () =>
-                {
-                    ((RenderView?)(object?)pipelineOwner.rootNode)!?.scheduleInitialSemantics();
-                }, onSemanticsUpdate: (update) =>
-                {
-                    ((RenderView?)(object?)pipelineOwner.rootNode)!?.updateSemantics(update);
-                }, onSemanticsOwnerDisposed: () =>
-                {
-                    ((RenderView?)(object?)pipelineOwner.rootNode)!?.clearSemantics();
-                });
+                __late_pipelineOwner = new PipelineOwner(
+                    onSemanticsOwnerCreated: () =>
+                    {
+                        ((RenderView?)(object?)pipelineOwner.rootNode)!?.scheduleInitialSemantics();
+                    },
+                    onSemanticsUpdate: (update) =>
+                    {
+                        ((RenderView?)(object?)pipelineOwner.rootNode)!?.updateSemantics(update);
+                    },
+                    onSemanticsOwnerDisposed: () =>
+                    {
+                        ((RenderView?)(object?)pipelineOwner.rootNode)!?.clearSemantics();
+                    }
+                );
                 __late_pipelineOwner_initialized = true;
             }
             return __late_pipelineOwner;
@@ -215,14 +233,17 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         {
             if (!__late_renderView_initialized)
             {
-                __late_renderView = new _ReusableRenderView__binding(view: platformDispatcher.implicitView!);
+                __late_renderView = new _ReusableRenderView__binding(
+                    view: platformDispatcher.implicitView!
+                );
                 __late_renderView_initialized = true;
             }
             return __late_renderView;
         }
     }
     public virtual PipelineOwner _rootPipelineOwner { get; set; } = default!;
-    public virtual DartMap<object, RenderView> _viewIdToRenderView { get; set; } = new DartMap<object, RenderView>();
+    public virtual DartMap<object, RenderView> _viewIdToRenderView { get; set; } =
+        new DartMap<object, RenderView>();
     public virtual bool _debugMouseTrackerUpdateScheduled { get; set; } = false;
     public virtual long _firstFrameDeferredCount { get; set; } = 0L;
     public virtual bool _firstFrameSent { get; set; } = false;
@@ -242,27 +263,39 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         base.initInstances();
         SemanticsBinding._instance = this;
         _accessibilityFeatures = platformDispatcher.accessibilityFeatures;
-        ((Func<PlatformDispatcher>)(() =>
-{
-    var __cascade = platformDispatcher;
-    __cascade.onSemanticsEnabledChanged = _handleSemanticsEnabledChanged;
-    __cascade.onSemanticsActionEvent = _handleSemanticsActionEvent;
-    __cascade.onAccessibilityFeaturesChanged = () =>
-    {
-        if (Equals(SchedulerBinding.instance.schedulerPhase, SchedulerPhase.persistentCallbacks))
-        {
-            SchedulerBinding.instance.addPostFrameCallback((duration) =>
-            {
-                handleAccessibilityFeaturesChanged();
-            }, debugLabel: "SemanticsBinding.handleAccessibilityFeaturesChanged");
-        }
-        else
-        {
-            handleAccessibilityFeaturesChanged();
-        }
-    };
-    return __cascade;
-}))();
+        (
+            (Func<PlatformDispatcher>)(
+                () =>
+                {
+                    var __cascade = platformDispatcher;
+                    __cascade.onSemanticsEnabledChanged = _handleSemanticsEnabledChanged;
+                    __cascade.onSemanticsActionEvent = _handleSemanticsActionEvent;
+                    __cascade.onAccessibilityFeaturesChanged = () =>
+                    {
+                        if (
+                            Equals(
+                                SchedulerBinding.instance.schedulerPhase,
+                                SchedulerPhase.persistentCallbacks
+                            )
+                        )
+                        {
+                            SchedulerBinding.instance.addPostFrameCallback(
+                                (duration) =>
+                                {
+                                    handleAccessibilityFeaturesChanged();
+                                },
+                                debugLabel: "SemanticsBinding.handleAccessibilityFeaturesChanged"
+                            );
+                        }
+                        else
+                        {
+                            handleAccessibilityFeaturesChanged();
+                        }
+                    };
+                    return __cascade;
+                }
+            )
+        )();
         _handleSemanticsEnabledChanged();
         addSemanticsEnabledListener(_handleFrameworkSemanticsEnabledChanged);
         if (semanticsEnabled)
@@ -275,10 +308,13 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => _semanticsEnabled.value == _outstandingHandles > 0L);
+            DartRuntimePrimitives.Assert(() =>
+                _semanticsEnabled.value == (_outstandingHandles > 0L)
+            );
             return _semanticsEnabled.value;
         }
     }
+
     public virtual void addSemanticsEnabledListener(Action listener)
     {
         _semanticsEnabled.addListener(listener);
@@ -300,7 +336,9 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     }
 
     public virtual Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId) => null;
+
     public virtual long debugOutstandingSemanticsHandles => _outstandingHandles;
+
     public virtual SemanticsHandle ensureSemantics()
     {
         DartRuntimePrimitives.Assert(() => _outstandingHandles >= 0L);
@@ -335,7 +373,12 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     public virtual void _handleSemanticsActionEvent(SemanticsActionEvent action)
     {
         object? argumentsLocal = action.arguments;
-        SemanticsActionEvent decodedAction = (argumentsLocal is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)) : action;
+        SemanticsActionEvent decodedAction =
+            (argumentsLocal is ByteData)
+                ? action.copyWith(
+                    arguments: new StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)
+                )
+                : action;
         List<Action<SemanticsActionEvent>> localListeners = _semanticsActionListeners.ToList();
         foreach (var listener in localListeners)
         {
@@ -353,6 +396,7 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     }
 
     public virtual AccessibilityFeatures accessibilityFeatures => _accessibilityFeatures;
+
     public virtual void handleAccessibilityFeaturesChanged()
     {
         _accessibilityFeatures = platformDispatcher.accessibilityFeatures;
@@ -370,27 +414,44 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         {
             bool value = _accessibilityFeatures.disableAnimations;
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null)
                 {
-                    if (Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null)
-                    {
-                        value = DartRuntimePrimitives.RequireValue(Semantics.DebugLibrary.debugSemanticsDisableAnimations);
-                    }
-                    return true;
-                });
+                    value = DartRuntimePrimitives.RequireValue(
+                        Semantics.DebugLibrary.debugSemanticsDisableAnimations
+                    );
+                }
+                return true;
+            });
             return value;
         }
     }
     public virtual ImageCache imageCache => _imageCache;
+
     public virtual ImageCache createImageCache() => new ImageCache();
-    public virtual Future<Codec> instantiateImageCodecFromBuffer(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool allowUpscaling = false)
+
+    public virtual Future<Codec> instantiateImageCodecFromBuffer(
+        ImmutableBuffer buffer,
+        long? cacheWidth = null,
+        long? cacheHeight = null,
+        bool allowUpscaling = false
+    )
     {
         DartRuntimePrimitives.Assert(() => (cacheWidth is null) || (cacheWidth > 0L));
         DartRuntimePrimitives.Assert(() => (cacheHeight is null) || (cacheHeight > 0L));
-        return Dart_uiLibrary.instantiateImageCodecFromBuffer(buffer, targetWidth: cacheWidth, targetHeight: cacheHeight, allowUpscaling: allowUpscaling);
+        return Dart_uiLibrary.instantiateImageCodecFromBuffer(
+            buffer,
+            targetWidth: cacheWidth,
+            targetHeight: cacheHeight,
+            allowUpscaling: allowUpscaling
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<Codec> instantiateImageCodecWithSize(ImmutableBuffer buffer, Func<long, long, TargetImageSize>? getTargetSize = null)
+    public virtual Future<Codec> instantiateImageCodecWithSize(
+        ImmutableBuffer buffer,
+        Func<long, long, TargetImageSize>? getTargetSize = null
+    )
     {
         return Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -410,18 +471,21 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     }
 
     public virtual Listenable systemFonts => _systemFonts;
-    public async override Future handleSystemMessage(object systemMessage)
+
+    public override async Future handleSystemMessage(object systemMessage)
     {
         await base.handleSystemMessage(systemMessage);
-        var message = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
+        var message = DartRuntimePrimitives.ConvertMap<string, object>(
+            (System.Collections.IDictionary)systemMessage
+        );
         var @type = ((string?)message.GetValueOrDefault("type"))!;
         switch (@type)
         {
             case "fontsChange":
-                {
-                    _systemFonts.notifyListeners();
-                    break;
-                }
+            {
+                _systemFonts.notifyListeners();
+                break;
+            }
         }
         return;
     }
@@ -430,107 +494,190 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     {
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
-            {
-                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: async () => Painting.DebugLibrary.debugInvertOversizedImages, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    if (Painting.DebugLibrary.debugInvertOversizedImages != value)
+        {
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.invertOversizedImages.ToString(),
+                getter: async () => Painting.DebugLibrary.debugInvertOversizedImages,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
                     {
-                        Painting.DebugLibrary.debugInvertOversizedImages = value;
+                        if (Painting.DebugLibrary.debugInvertOversizedImages != value)
+                        {
+                            Painting.DebugLibrary.debugInvertOversizedImages = value;
+                            DartAsyncRuntime.unawaited(_forceRepaint());
+                        }
+                    }
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.debugPaint.ToString(),
+                getter: async () => DebugLibrary.debugPaintSizeEnabled,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
+                    {
+                        if (DebugLibrary.debugPaintSizeEnabled == value)
+                        {
+                            return;
+                        }
+                        DebugLibrary.debugPaintSizeEnabled = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                     }
-                }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: async () => DebugLibrary.debugPaintSizeEnabled, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    if (DebugLibrary.debugPaintSizeEnabled == value)
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(),
+                getter: async () => DebugLibrary.debugPaintBaselinesEnabled,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
                     {
-                        return;
-                    }
-                    DebugLibrary.debugPaintSizeEnabled = value;
-                    DartAsyncRuntime.unawaited(_forceRepaint());
-                }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: async () => DebugLibrary.debugPaintBaselinesEnabled, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    if (DebugLibrary.debugPaintBaselinesEnabled == value)
-                    {
-                        return;
-                    }
-                    DebugLibrary.debugPaintBaselinesEnabled = value;
-                    DartAsyncRuntime.unawaited(_forceRepaint());
-                }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: async () => DebugLibrary.debugRepaintRainbowEnabled, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    bool repaint = DebugLibrary.debugRepaintRainbowEnabled && !value;
-                    DebugLibrary.debugRepaintRainbowEnabled = value;
-                    if (repaint)
-                    {
+                        if (DebugLibrary.debugPaintBaselinesEnabled == value)
+                        {
+                            return;
+                        }
+                        DebugLibrary.debugPaintBaselinesEnabled = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                     }
-                }));
-                registerServiceExtension(name: RenderingServiceExtensions.debugDumpLayerTree.ToString(), callback: async (parameters) =>
-                {
-                    return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectLayerTrees() };
-                });
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: async () => DebugLibrary.debugDisableClipLayers, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    if (DebugLibrary.debugDisableClipLayers == value)
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.repaintRainbow.ToString(),
+                getter: async () => DebugLibrary.debugRepaintRainbowEnabled,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
                     {
-                        return;
+                        bool repaint = DebugLibrary.debugRepaintRainbowEnabled && !value;
+                        DebugLibrary.debugRepaintRainbowEnabled = value;
+                        if (repaint)
+                        {
+                            DartAsyncRuntime.unawaited(_forceRepaint());
+                        }
                     }
-                    DebugLibrary.debugDisableClipLayers = value;
-                    DartAsyncRuntime.unawaited(_forceRepaint());
-                }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: async () => DebugLibrary.debugDisablePhysicalShapeLayers, setter: (Func<bool, Future>)(async (value) =>
+                )
+            );
+            registerServiceExtension(
+                name: RenderingServiceExtensions.debugDumpLayerTree.ToString(),
+                callback: async (parameters) =>
                 {
-                    if (DebugLibrary.debugDisablePhysicalShapeLayers == value)
+                    return new DartMap<string, object>
                     {
-                        return;
-                    }
-                    DebugLibrary.debugDisablePhysicalShapeLayers = value;
-                    DartAsyncRuntime.unawaited(_forceRepaint());
-                }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: async () => DebugLibrary.debugDisableOpacityLayers, setter: (Func<bool, Future>)(async (value) =>
-                {
-                    if (DebugLibrary.debugDisableOpacityLayers == value)
+                        ["data"] = BindingLibrary._debugCollectLayerTrees(),
+                    };
+                }
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.debugDisableClipLayers.ToString(),
+                getter: async () => DebugLibrary.debugDisableClipLayers,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
                     {
-                        return;
+                        if (DebugLibrary.debugDisableClipLayers == value)
+                        {
+                            return;
+                        }
+                        DebugLibrary.debugDisableClipLayers = value;
+                        DartAsyncRuntime.unawaited(_forceRepaint());
                     }
-                    DebugLibrary.debugDisableOpacityLayers = value;
-                    DartAsyncRuntime.unawaited(_forceRepaint());
-                }));
-                return true;
-            });
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(),
+                getter: async () => DebugLibrary.debugDisablePhysicalShapeLayers,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
+                    {
+                        if (DebugLibrary.debugDisablePhysicalShapeLayers == value)
+                        {
+                            return;
+                        }
+                        DebugLibrary.debugDisablePhysicalShapeLayers = value;
+                        DartAsyncRuntime.unawaited(_forceRepaint());
+                    }
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(),
+                getter: async () => DebugLibrary.debugDisableOpacityLayers,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
+                    {
+                        if (DebugLibrary.debugDisableOpacityLayers == value)
+                        {
+                            return;
+                        }
+                        DebugLibrary.debugDisableOpacityLayers = value;
+                        DartAsyncRuntime.unawaited(_forceRepaint());
+                    }
+                )
+            );
+            return true;
+        });
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: async (parameters) =>
-            {
-                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectRenderTrees() };
-            });
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: async (parameters) =>
-            {
-                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(DebugSemanticsDumpOrder.traversalOrder) };
-            });
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: async (parameters) =>
-            {
-                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(DebugSemanticsDumpOrder.inverseHitTest) };
-            });
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: async () => DebugLibrary.debugProfilePaintsEnabled, setter: (Func<bool, Future>)(async (value) =>
-            {
-                if (DebugLibrary.debugProfilePaintsEnabled != value)
+            registerServiceExtension(
+                name: RenderingServiceExtensions.debugDumpRenderTree.ToString(),
+                callback: async (parameters) =>
                 {
-                    DebugLibrary.debugProfilePaintsEnabled = value;
+                    return new DartMap<string, object>
+                    {
+                        ["data"] = BindingLibrary._debugCollectRenderTrees(),
+                    };
                 }
-            }));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: async () => DebugLibrary.debugProfileLayoutsEnabled, setter: (Func<bool, Future>)(async (value) =>
-            {
-                if (DebugLibrary.debugProfileLayoutsEnabled != value)
+            );
+            registerServiceExtension(
+                name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(),
+                callback: async (parameters) =>
                 {
-                    DebugLibrary.debugProfileLayoutsEnabled = value;
+                    return new DartMap<string, object>
+                    {
+                        ["data"] = BindingLibrary._debugCollectSemanticsTrees(
+                            DebugSemanticsDumpOrder.traversalOrder
+                        ),
+                    };
                 }
-            }));
+            );
+            registerServiceExtension(
+                name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(),
+                callback: async (parameters) =>
+                {
+                    return new DartMap<string, object>
+                    {
+                        ["data"] = BindingLibrary._debugCollectSemanticsTrees(
+                            DebugSemanticsDumpOrder.inverseHitTest
+                        ),
+                    };
+                }
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(),
+                getter: async () => DebugLibrary.debugProfilePaintsEnabled,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
+                    {
+                        if (DebugLibrary.debugProfilePaintsEnabled != value)
+                        {
+                            DebugLibrary.debugProfilePaintsEnabled = value;
+                        }
+                    }
+                )
+            );
+            registerBoolServiceExtension(
+                name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(),
+                getter: async () => DebugLibrary.debugProfileLayoutsEnabled,
+                setter: (Func<bool, Future>)(
+                    async (value) =>
+                    {
+                        if (DebugLibrary.debugProfileLayoutsEnabled != value)
+                        {
+                            DebugLibrary.debugProfileLayoutsEnabled = value;
+                        }
+                    }
+                )
+            );
         }
     }
 
     public virtual MouseTracker mouseTracker => _mouseTracker!;
+
     public virtual PipelineOwner createRootPipelineOwner()
     {
         return new _DefaultRootPipelineOwner__binding();
@@ -539,6 +686,7 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
 
     public virtual PipelineOwner rootPipelineOwner => _rootPipelineOwner;
     public virtual IEnumerable<RenderView> renderViews => _viewIdToRenderView.Values;
+
     public virtual void addRenderView(RenderView view)
     {
         object viewIdLocal = checked((long)view.flutterView.viewId);
@@ -551,7 +699,9 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     public virtual void removeRenderView(RenderView view)
     {
         object viewIdLocal = checked((long)view.flutterView.viewId);
-        DartRuntimePrimitives.Assert(() => Equals(_viewIdToRenderView.GetValueOrDefault(viewIdLocal), view));
+        DartRuntimePrimitives.Assert(() =>
+            Equals(_viewIdToRenderView.GetValueOrDefault(viewIdLocal), view)
+        );
         _viewIdToRenderView.remove(viewIdLocal);
     }
 
@@ -562,8 +712,11 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     }
 
     public virtual SceneBuilder createSceneBuilder() => new SceneBuilder();
+
     public virtual PictureRecorder createPictureRecorder() => new PictureRecorder();
+
     public virtual Canvas createCanvas(PictureRecorder recorder) => new Canvas(recorder);
+
     public virtual void handleMetricsChanged()
     {
         var forceFrame = false;
@@ -578,46 +731,61 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         }
     }
 
-    public virtual void handleTextScaleFactorChanged()
-    {
-    }
+    public virtual void handleTextScaleFactorChanged() { }
 
-    public virtual void handlePlatformBrightnessChanged()
-    {
-    }
+    public virtual void handlePlatformBrightnessChanged() { }
 
     public virtual void initMouseTracker(MouseTracker? tracker = null)
     {
         _mouseTracker?.dispose();
-        _mouseTracker = tracker ?? new MouseTracker((position, viewId) =>
-        {
-            var result = new HitTestResult();
-            hitTestInView(result, position, viewId);
-            return result;
-        });
+        _mouseTracker =
+            tracker
+            ?? new MouseTracker(
+                (position, viewId) =>
+                {
+                    var result = new HitTestResult();
+                    hitTestInView(result, position, viewId);
+                    return result;
+                }
+            );
     }
 
     public override void dispatchEvent(PointerEvent @event, HitTestResult? hitTestResult)
     {
-        _mouseTracker!.updateWithEvent(@event, (@event is Gestures.PointerMoveEvent) ? null : hitTestResult);
+        _mouseTracker!.updateWithEvent(
+            @event,
+            (@event is Gestures.PointerMoveEvent) ? null : hitTestResult
+        );
         base.dispatchEvent(@event, hitTestResult);
     }
 
     public virtual void performSemanticsAction(SemanticsActionEvent action)
     {
-        _viewIdToRenderView.GetValueOrDefault(action.viewId)?.owner?.semanticsOwner?.performAction(action.nodeId, action.type, action.arguments);
+        _viewIdToRenderView
+            .GetValueOrDefault(action.viewId)
+            ?.owner?.semanticsOwner?.performAction(action.nodeId, action.type, action.arguments);
     }
 
     public virtual void _handleWebFirstFrame(Duration __unused0)
     {
         DartRuntimePrimitives.Assert(() => Foundation.ConstantsLibrary.kIsWeb);
         var methodChannel = new MethodChannel("flutter/service_worker");
-        _ = methodChannel.invokeMethod<object?>("first-frame").then((_) =>
-        {
-        }, onError: (error, stack) =>
-        {
-            FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stack, library: "rendering library", context: new ErrorDescription("while sending the first-frame event")));
-        });
+        _ = methodChannel
+            .invokeMethod<object?>("first-frame")
+            .then(
+                (_) => { },
+                onError: (error, stack) =>
+                {
+                    FlutterError.reportError(
+                        new FlutterErrorDetails(
+                            exception: error,
+                            stack: stack,
+                            library: "rendering library",
+                            context: new ErrorDescription("while sending the first-frame event")
+                        )
+                    );
+                }
+            );
     }
 
     public virtual void _handlePersistentFrameCallback(Duration timeStamp)
@@ -630,23 +798,27 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
     {
         DartRuntimePrimitives.Assert(() => !_debugMouseTrackerUpdateScheduled);
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugMouseTrackerUpdateScheduled = true;
-                return true;
-            });
-        SchedulerBinding.instance.addPostFrameCallback((duration) =>
         {
-            DartRuntimePrimitives.Assert(() => _debugMouseTrackerUpdateScheduled);
-            DartRuntimePrimitives.Assert(() =>
+            _debugMouseTrackerUpdateScheduled = true;
+            return true;
+        });
+        SchedulerBinding.instance.addPostFrameCallback(
+            (duration) =>
+            {
+                DartRuntimePrimitives.Assert(() => _debugMouseTrackerUpdateScheduled);
+                DartRuntimePrimitives.Assert(() =>
                 {
                     _debugMouseTrackerUpdateScheduled = false;
                     return true;
                 });
-            _mouseTracker!.updateAllDevices();
-        }, debugLabel: "RendererBinding.mouseTrackerUpdate");
+                _mouseTracker!.updateAllDevices();
+            },
+            debugLabel: "RendererBinding.mouseTrackerUpdate"
+        );
     }
 
     public virtual bool sendFramesToEngine => _firstFrameSent || (_firstFrameDeferredCount == 0L);
+
     public virtual void deferFirstFrame()
     {
         DartRuntimePrimitives.Assert(() => _firstFrameDeferredCount >= 0L);
@@ -684,7 +856,7 @@ public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, Paintin
         }
     }
 
-    protected async override Task performReassemble()
+    protected override async Task performReassemble()
     {
         await base.performReassemble();
         if (!Foundation.ConstantsLibrary.kReleaseMode)
@@ -750,19 +922,18 @@ internal class _BindingPipelineManifold__binding : ChangeNotifier, PipelineManif
     }
 
     public virtual bool semanticsEnabled => _binding.semanticsEnabled;
+
     public override void dispose()
     {
         _binding.removeSemanticsEnabledListener(notifyListeners);
         base.dispose();
     }
-
 }
 
 internal class _DefaultRootPipelineOwner__binding : PipelineOwner
 {
-    internal _DefaultRootPipelineOwner__binding() : base(onSemanticsUpdate: _onSemanticsUpdate)
-    {
-    }
+    internal _DefaultRootPipelineOwner__binding()
+        : base(onSemanticsUpdate: _onSemanticsUpdate) { }
 
     public override RenderObject? rootNode
     {
@@ -770,25 +941,45 @@ internal class _DefaultRootPipelineOwner__binding : PipelineOwner
         {
             var _ = value;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Cannot set a rootNode on the default root pipeline owner."), new ErrorDescription("By default, the RendererBinding.rootPipelineOwner is not configured " + "to manage a root node because this pipeline owner does not define a " + "proper onSemanticsUpdate callback to handle semantics for that node."), new ErrorHint("Typically, the root pipeline owner does not manage a root node. " + "Instead, properly configured child pipeline owners (which do manage " + "root nodes) are added to it. Alternatively, if you do want to set a " + "root node for the root pipeline owner, override " + "RendererBinding.createRootPipelineOwner to create a " + "pipeline owner that is configured to properly handle semantics for " + "the provided root node.") });
-                });
+            {
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            "Cannot set a rootNode on the default root pipeline owner."
+                        ),
+                        new ErrorDescription(
+                            "By default, the RendererBinding.rootPipelineOwner is not configured "
+                                + "to manage a root node because this pipeline owner does not define a "
+                                + "proper onSemanticsUpdate callback to handle semantics for that node."
+                        ),
+                        new ErrorHint(
+                            "Typically, the root pipeline owner does not manage a root node. "
+                                + "Instead, properly configured child pipeline owners (which do manage "
+                                + "root nodes) are added to it. Alternatively, if you do want to set a "
+                                + "root node for the root pipeline owner, override "
+                                + "RendererBinding.createRootPipelineOwner to create a "
+                                + "pipeline owner that is configured to properly handle semantics for "
+                                + "the provided root node."
+                        ),
+                    }
+                );
+            });
         }
     }
+
     internal static void _onSemanticsUpdate(SemanticsUpdate __unused0)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
-
 }
 
 internal class _ReusableRenderView__binding : RenderView
 {
     internal virtual bool _initialFramePrepared { get; set; } = false;
 
-    internal _ReusableRenderView__binding(DorotiView view) : base(view: view)
-    {
-    }
+    internal _ReusableRenderView__binding(DorotiView view)
+        : base(view: view) { }
 
     public override void prepareInitialFrame()
     {
@@ -810,6 +1001,4 @@ internal class _ReusableRenderView__binding : RenderView
     {
         child = null;
     }
-
 }
-

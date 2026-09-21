@@ -3,4 +3,3 @@
 namespace Doroti.Framework.Widgets;
 
 public delegate bool SelectableDayPredicate(DateTime day);
-

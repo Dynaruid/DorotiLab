@@ -5,13 +5,31 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate Widget ExitWidgetSelectionButtonBuilder(BuildContext context, GlobalKey<IState> key, Action onPressed, string semanticsLabel);
+public delegate Widget ExitWidgetSelectionButtonBuilder(
+    BuildContext context,
+    GlobalKey<IState> key,
+    Action onPressed,
+    string semanticsLabel
+);
 
-public delegate Widget MoveExitWidgetSelectionButtonBuilder(BuildContext context, Action onPressed, string semanticsLabel, bool usesDefaultAlignment = default!);
+public delegate Widget MoveExitWidgetSelectionButtonBuilder(
+    BuildContext context,
+    Action onPressed,
+    string semanticsLabel,
+    bool usesDefaultAlignment = default!
+);
 
-public delegate Widget TapBehaviorButtonBuilder(BuildContext context, Action onPressed, bool selectionOnTapEnabled, string semanticsLabel);
+public delegate Widget TapBehaviorButtonBuilder(
+    BuildContext context,
+    Action onPressed,
+    bool selectionOnTapEnabled,
+    string semanticsLabel
+);
 
-public delegate void RegisterServiceExtensionCallback(Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback, string name);
+public delegate void RegisterServiceExtensionCallback(
+    Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback,
+    string name
+);
 
 internal class _ProxyLayer__widget_inspector : Layer
 {
@@ -27,12 +45,15 @@ internal class _ProxyLayer__widget_inspector : Layer
         _layer.addToScene(builder);
     }
 
-    public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
+    public override bool findAnnotations<S>(
+        AnnotationResult<S> result,
+        Offset localPosition,
+        bool onlyFirst
+    )
     {
         return _layer.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MulticastCanvas__widget_inspector : Canvas
@@ -64,13 +85,27 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         _screenshot.clipRect(rect, clipOp: clipOp, doAntiAlias: doAntiAlias);
     }
 
-    public new virtual void drawArc(Rect rect, double startAngle, double sweepAngle, bool useCenter, Paint paint)
+    public new virtual void drawArc(
+        Rect rect,
+        double startAngle,
+        double sweepAngle,
+        bool useCenter,
+        Paint paint
+    )
     {
         _main.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
         _screenshot.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
     }
 
-    public virtual void drawAtlas(Ui.Image atlas, List<RSTransform> transforms, List<Rect> rects, List<Color>? colors, BlendMode? blendMode, Rect? cullRect, Paint paint)
+    public virtual void drawAtlas(
+        Ui.Image atlas,
+        List<RSTransform> transforms,
+        List<Rect> rects,
+        List<Color>? colors,
+        BlendMode? blendMode,
+        Rect? cullRect,
+        Paint paint
+    )
     {
         _main.drawAtlas(atlas, transforms, rects, colors, blendMode, cullRect, paint);
         _screenshot.drawAtlas(atlas, transforms, rects, colors, blendMode, cullRect, paint);
@@ -84,8 +119,14 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void drawColor(Color color, BlendMode blendMode)
     {
-        _main.drawColor(color, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)));
-        _screenshot.drawColor(color, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)));
+        _main.drawColor(
+            color,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode))
+        );
+        _screenshot.drawColor(
+            color,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode))
+        );
     }
 
     public new virtual void drawDRRect(RRect outer, RRect inner, Paint paint)
@@ -160,7 +201,15 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         _screenshot.drawRRect(rrect, paint);
     }
 
-    public new virtual void drawRawAtlas(Ui.Image atlas, Float32List rstTransforms, Float32List rects, Int32List? colors, BlendMode? blendMode, Rect? cullRect, Paint paint)
+    public new virtual void drawRawAtlas(
+        Ui.Image atlas,
+        Float32List rstTransforms,
+        Float32List rects,
+        Int32List? colors,
+        BlendMode? blendMode,
+        Rect? cullRect,
+        Paint paint
+    )
     {
         _main.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
         _screenshot.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
@@ -178,7 +227,12 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         _screenshot.drawRect(rect, paint);
     }
 
-    public new virtual void drawShadow(Path path, Color color, double elevation, bool transparentOccluder)
+    public new virtual void drawShadow(
+        Path path,
+        Color color,
+        double elevation,
+        bool transparentOccluder
+    )
     {
         _main.drawShadow(path, color, elevation, transparentOccluder);
         _screenshot.drawShadow(path, color, elevation, transparentOccluder);
@@ -186,8 +240,16 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint)
     {
-        _main.drawVertices(vertices, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)), paint);
-        _screenshot.drawVertices(vertices, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)), paint);
+        _main.drawVertices(
+            vertices,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)),
+            paint
+        );
+        _screenshot.drawVertices(
+            vertices,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)),
+            paint
+        );
     }
 
     public new virtual long getSaveCount()
@@ -229,7 +291,10 @@ internal class _MulticastCanvas__widget_inspector : Canvas
     public new virtual void skew(double sx, double sy)
     {
         _main.skew(sx, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy)));
-        _screenshot.skew(sx, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy)));
+        _screenshot.skew(
+            sx,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy))
+        );
     }
 
     public virtual void transform(Float64List matrix4)
@@ -249,7 +314,6 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         base.noSuchMethod(invocation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
@@ -257,23 +321,30 @@ public static partial class Widget_inspectorLibrary
     internal static Rect _calculateSubtreeBoundsHelper(RenderObject @object, Matrix4 transform)
     {
         Rect bounds = MatrixUtils.transformRect(transform, @object.semanticBounds);
-        @object.visitChildren((child) =>
-        {
-            Matrix4 childTransform = transform.clone();
-            @object.applyPaintTransform(child, childTransform);
-            Rect childBounds = _calculateSubtreeBoundsHelper(child, childTransform);
-            Rect? paintClip = @object.describeApproximatePaintClip(child);
-            if (paintClip is not null)
+        @object.visitChildren(
+            (child) =>
             {
-                Rect paintClip__9652__value9716 = DartRuntimePrimitives.RequireValue(paintClip);
-                Rect transformedPaintClip = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(paintClip__9652__value9716)));
-                childBounds = childBounds.intersect(transformedPaintClip);
+                Matrix4 childTransform = transform.clone();
+                @object.applyPaintTransform(child, childTransform);
+                Rect childBounds = _calculateSubtreeBoundsHelper(child, childTransform);
+                Rect? paintClip = @object.describeApproximatePaintClip(child);
+                if (paintClip is not null)
+                {
+                    Rect paintClip__9652__value9716 = DartRuntimePrimitives.RequireValue(paintClip);
+                    Rect transformedPaintClip = MatrixUtils.transformRect(
+                        transform,
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(paintClip__9652__value9716)
+                        )
+                    );
+                    childBounds = childBounds.intersect(transformedPaintClip);
+                }
+                if (childBounds.isFinite && !childBounds.isEmpty)
+                {
+                    bounds = bounds.isEmpty ? childBounds : bounds.expandToInclude(childBounds);
+                }
             }
-            if (childBounds.isFinite && !childBounds.isEmpty)
-            {
-                bounds = bounds.isEmpty ? childBounds : bounds.expandToInclude(childBounds);
-            }
-        });
+        );
         return bounds;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -294,7 +365,6 @@ internal class _ScreenshotContainerLayer__widget_inspector : OffsetLayer
     {
         addChildrenToScene(builder);
     }
-
 }
 
 public class _ScreenshotData__widget_inspector
@@ -324,12 +394,14 @@ public class _ScreenshotData__widget_inspector
             containerLayer.offset = offset;
         }
     }
+
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         containerLayer.dispose();
     }
-
 }
 
 internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
@@ -340,7 +412,12 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
     internal virtual Canvas? _screenshotCanvas { get; set; } = default;
     internal virtual _MulticastCanvas__widget_inspector? _multicastCanvas { get; set; } = default;
 
-    internal _ScreenshotPaintingContext__widget_inspector(ContainerLayer containerLayer, Rect estimatedBounds, _ScreenshotData__widget_inspector screenshotData) : base(containerLayer, estimatedBounds)
+    internal _ScreenshotPaintingContext__widget_inspector(
+        ContainerLayer containerLayer,
+        Rect estimatedBounds,
+        _ScreenshotData__widget_inspector screenshotData
+    )
+        : base(containerLayer, estimatedBounds)
     {
         _data = screenshotData;
     }
@@ -371,25 +448,26 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
         {
             var hasScreenshotCanvas = _screenshotCanvas is not null;
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (hasScreenshotCanvas)
                 {
-                    if (hasScreenshotCanvas)
-                    {
-                        DartRuntimePrimitives.Assert(() => _screenshotCurrentLayer is not null);
-                        DartRuntimePrimitives.Assert(() => _screenshotRecorder is not null);
-                        DartRuntimePrimitives.Assert(() => _screenshotCanvas is not null);
-                    }
-                    else
-                    {
-                        DartRuntimePrimitives.Assert(() => _screenshotCurrentLayer is null);
-                        DartRuntimePrimitives.Assert(() => _screenshotRecorder is null);
-                        DartRuntimePrimitives.Assert(() => _screenshotCanvas is null);
-                    }
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+                    DartRuntimePrimitives.Assert(() => _screenshotCurrentLayer is not null);
+                    DartRuntimePrimitives.Assert(() => _screenshotRecorder is not null);
+                    DartRuntimePrimitives.Assert(() => _screenshotCanvas is not null);
+                }
+                else
+                {
+                    DartRuntimePrimitives.Assert(() => _screenshotCurrentLayer is null);
+                    DartRuntimePrimitives.Assert(() => _screenshotRecorder is null);
+                    DartRuntimePrimitives.Assert(() => _screenshotCanvas is null);
+                }
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
             return hasScreenshotCanvas;
         }
     }
+
     internal virtual void _startRecordingScreenshot()
     {
         DartRuntimePrimitives.Assert(() => _data.includeInScreenshot);
@@ -400,7 +478,10 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
         _data.containerLayer.append(_screenshotCurrentLayer!);
         if (_data.includeInRegularContext)
         {
-            _multicastCanvas = new _MulticastCanvas__widget_inspector(main: base.canvas, screenshot: _screenshotCanvas!);
+            _multicastCanvas = new _MulticastCanvas__widget_inspector(
+                main: base.canvas,
+                screenshot: _screenshotCanvas!
+            );
         }
         else
         {
@@ -456,7 +537,11 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
         }
         else
         {
-            return new _ScreenshotPaintingContext__widget_inspector(containerLayer: childLayer, estimatedBounds: bounds, screenshotData: _data);
+            return new _ScreenshotPaintingContext__widget_inspector(
+                containerLayer: childLayer,
+                estimatedBounds: bounds,
+                screenshotData: _data
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -480,7 +565,12 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
         }
     }
 
-    public static async Future<Ui.Image> toImage(RenderObject renderObject, Rect renderBounds, double pixelRatio = 1.0, bool debugPaint = false)
+    public static async Future<Ui.Image> toImage(
+        RenderObject renderObject,
+        Rect renderBounds,
+        double pixelRatio = 1.0,
+        bool debugPaint = false
+    )
     {
         var repaintBoundary = renderObject;
         while (!repaintBoundary.isRepaintBoundary)
@@ -488,10 +578,16 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
             repaintBoundary = repaintBoundary.parent!;
         }
         var data = new _ScreenshotData__widget_inspector(target: renderObject);
-        var context = new _ScreenshotPaintingContext__widget_inspector(containerLayer: repaintBoundary.debugLayer!, estimatedBounds: repaintBoundary.paintBounds, screenshotData: data);
+        var context = new _ScreenshotPaintingContext__widget_inspector(
+            containerLayer: repaintBoundary.debugLayer!,
+            estimatedBounds: repaintBoundary.paintBounds,
+            screenshotData: data
+        );
         if (DartRuntimePrimitives.Identical(renderObject, repaintBoundary))
         {
-            data.containerLayer.append(new _ProxyLayer__widget_inspector(repaintBoundary.debugLayer!));
+            data.containerLayer.append(
+                new _ProxyLayer__widget_inspector(repaintBoundary.debugLayer!)
+            );
             data.foundTarget = true;
             var offsetLayer = ((OffsetLayer?)repaintBoundary.debugLayer!)!;
             data.screenshotOffset = offsetLayer.offset;
@@ -530,7 +626,6 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
         return image;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _DiagnosticsPathNode__widget_inspector
@@ -539,18 +634,23 @@ public class _DiagnosticsPathNode__widget_inspector
     public virtual List<DiagnosticsNode> children { get; private set; } = default!;
     public virtual long? childIndex { get; private set; }
 
-    internal _DiagnosticsPathNode__widget_inspector(DiagnosticsNode node, List<DiagnosticsNode> children, long? childIndex = null)
+    internal _DiagnosticsPathNode__widget_inspector(
+        DiagnosticsNode node,
+        List<DiagnosticsNode> children,
+        long? childIndex = null
+    )
     {
         this.node = node;
         this.children = children;
         this.childIndex = childIndex;
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static List<_DiagnosticsPathNode__widget_inspector>? _followDiagnosticableChain(List<Diagnosticable> chain)
+    internal static List<_DiagnosticsPathNode__widget_inspector>? _followDiagnosticableChain(
+        List<Diagnosticable> chain
+    )
     {
         var path = new List<_DiagnosticsPathNode__widget_inspector>();
         if (!Enumerable.Any(chain))
@@ -569,14 +669,25 @@ public static partial class Widget_inspectorLibrary
                 if (Equals(child.value, target))
                 {
                     foundMatch = true;
-                    path.Add(new _DiagnosticsPathNode__widget_inspector(node: diagnostic, children: childrenLocal, childIndex: j));
+                    path.Add(
+                        new _DiagnosticsPathNode__widget_inspector(
+                            node: diagnostic,
+                            children: childrenLocal,
+                            childIndex: j
+                        )
+                    );
                     diagnostic = child;
                     break;
                 }
             }
             DartRuntimePrimitives.Assert(() => foundMatch);
         }
-        path.Add(new _DiagnosticsPathNode__widget_inspector(node: diagnostic, children: diagnostic.getChildren().ToList()));
+        path.Add(
+            new _DiagnosticsPathNode__widget_inspector(
+                node: diagnostic,
+                children: diagnostic.getChildren().ToList()
+            )
+        );
         return path;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -596,9 +707,13 @@ public class InspectorReferenceData
         this.id = id;
         // Boxed value types have no stable reference identity in the CLR.
         if (@object is string || @object.GetType().IsValueType)
+        {
             _value = @object;
+        }
         else
+        {
             _ref = new WeakReference<object>(@object);
+        }
     }
 
     public virtual object? value => DartCoreExtensions.weakTarget(_ref) ?? _value;
@@ -606,28 +721,33 @@ public class InspectorReferenceData
 
 internal class _WidgetInspectorService__widget_inspector : WidgetInspectorService
 {
-    public virtual List<string?> _serializeRing { get; set; } = new List<string?>(Enumerable.Repeat<string?>(null, checked((int)20L)));
+    public virtual List<string?> _serializeRing { get; set; } =
+        new List<string?>(Enumerable.Repeat<string?>(null, checked((int)20L)));
     public virtual long _serializeRingIndex { get; set; } = 0L;
     public virtual InspectorSelection selection { get; set; } = new InspectorSelection();
     public virtual Action? selectionChangedCallback { get; set; } = default;
-    public virtual DartMap<string, HashSet<InspectorReferenceData>> _groups { get; set; } = new DartMap<string, HashSet<InspectorReferenceData>>();
-    public virtual DartMap<string, InspectorReferenceData> _idToReferenceData { get; set; } = new DartMap<string, InspectorReferenceData>();
-    public virtual WeakMap<object, string> _objectToId { get; set; } = new WeakMap<object, string>();
+    public virtual DartMap<string, HashSet<InspectorReferenceData>> _groups { get; set; } =
+        new DartMap<string, HashSet<InspectorReferenceData>>();
+    public virtual DartMap<string, InspectorReferenceData> _idToReferenceData { get; set; } =
+        new DartMap<string, InspectorReferenceData>();
+    public virtual WeakMap<object, string> _objectToId { get; set; } =
+        new WeakMap<object, string>();
     public virtual long _nextId { get; set; } = 0L;
     public virtual List<string>? _pubRootDirectories { get; set; } = default;
-    public virtual DartMap<string, bool> _isLocalCreationCache { get; set; } = new DartMap<string, bool>();
+    public virtual DartMap<string, bool> _isLocalCreationCache { get; set; } =
+        new DartMap<string, bool>();
     public virtual bool _trackRebuildDirtyWidgets { get; set; } = false;
     public virtual bool _trackRepaintWidgets { get; set; } = false;
     public virtual long _errorsSinceReload { get; set; } = 0L;
     public virtual bool? _widgetCreationTracked { get; set; } = default;
     public virtual Duration _frameStart { get; set; } = default!;
     public virtual long _frameNumber { get; set; } = default!;
-    public virtual _ElementLocationStatsTracker__widget_inspector _rebuildStats { get; set; } = new _ElementLocationStatsTracker__widget_inspector();
-    public virtual _ElementLocationStatsTracker__widget_inspector _repaintStats { get; set; } = new _ElementLocationStatsTracker__widget_inspector();
+    public virtual _ElementLocationStatsTracker__widget_inspector _rebuildStats { get; set; } =
+        new _ElementLocationStatsTracker__widget_inspector();
+    public virtual _ElementLocationStatsTracker__widget_inspector _repaintStats { get; set; } =
+        new _ElementLocationStatsTracker__widget_inspector();
 
-    internal _WidgetInspectorService__widget_inspector()
-    {
-    }
+    internal _WidgetInspectorService__widget_inspector() { }
 
     public virtual bool isSelectMode
     {
@@ -637,69 +757,153 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             _changeWidgetSelectionMode(enabled);
         }
     }
-    public virtual void registerServiceExtension(string name, Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback, RegisterServiceExtensionCallback registerExtension)
+
+    public virtual void registerServiceExtension(
+        string name,
+        Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback,
+        RegisterServiceExtensionCallback registerExtension
+    )
     {
         registerExtension(name: $"inspector.{name}", callback: callback);
     }
 
-    public virtual void _registerSignalServiceExtension<TResult>(string name, Func<TResult> callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerSignalServiceExtension<TResult>(
+        string name,
+        Func<TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    )
     {
-        registerServiceExtension(name: name, callback: async (parameters) =>
-        {
-            return new DartMap<string, object?> { ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback()) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-    }
-
-    public virtual void _registerObjectGroupServiceExtension<TResult>(string name, Func<string, TResult> callback, RegisterServiceExtensionCallback registerExtension)
-    {
-        registerServiceExtension(name: name, callback: async (parameters) =>
-        {
-            return new DartMap<string, object?> { ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback(parameters.GetValueOrDefault("objectGroup")!)) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-    }
-
-    public virtual void _registerBoolServiceExtension(string name, Func<Future<bool>> getter, Func<bool, Future> setter, RegisterServiceExtensionCallback registerExtension)
-    {
-        registerServiceExtension(name: name, callback: async (parameters) =>
-        {
-            if (parameters.ContainsKey("enabled"))
+        registerServiceExtension(
+            name: name,
+            callback: async (parameters) =>
             {
-                var value = parameters.GetValueOrDefault("enabled") == "true";
-                await setter(DartRuntimePrimitives.RequireValue(value));
-                _postExtensionStateChangedEvent(name, DartRuntimePrimitives.RequireValue(value));
-            }
-            return new DartMap<string, object?> { ["enabled"] = await getter() ? "true" : "false" };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
+                return new DartMap<string, object?>
+                {
+                    ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback()),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+    }
+
+    public virtual void _registerObjectGroupServiceExtension<TResult>(
+        string name,
+        Func<string, TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    )
+    {
+        registerServiceExtension(
+            name: name,
+            callback: async (parameters) =>
+            {
+                return new DartMap<string, object?>
+                {
+                    ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(
+                        callback(parameters.GetValueOrDefault("objectGroup")!)
+                    ),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+    }
+
+    public virtual void _registerBoolServiceExtension(
+        string name,
+        Func<Future<bool>> getter,
+        Func<bool, Future> setter,
+        RegisterServiceExtensionCallback registerExtension
+    )
+    {
+        registerServiceExtension(
+            name: name,
+            callback: async (parameters) =>
+            {
+                if (parameters.ContainsKey("enabled"))
+                {
+                    var value = parameters.GetValueOrDefault("enabled") == "true";
+                    await setter(DartRuntimePrimitives.RequireValue(value));
+                    _postExtensionStateChangedEvent(
+                        name,
+                        DartRuntimePrimitives.RequireValue(value)
+                    );
+                }
+                return new DartMap<string, object?>
+                {
+                    ["enabled"] = await getter() ? "true" : "false",
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
     }
 
     public virtual void _postExtensionStateChangedEvent(string name, object? value)
     {
-        postEvent("Flutter.ServiceExtensionStateChanged", new DartMap<string, object?> { ["extension"] = $"ext.flutter.inspector.{name}", ["value"] = value }.cast<object, object>());
+        postEvent(
+            "Flutter.ServiceExtensionStateChanged",
+            new DartMap<string, object?>
+            {
+                ["extension"] = $"ext.flutter.inspector.{name}",
+                ["value"] = value,
+            }.cast<object, object>()
+        );
     }
 
-    public virtual void _registerServiceExtensionWithArg<TResult>(string name, Func<string?, string, TResult> callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerServiceExtensionWithArg<TResult>(
+        string name,
+        Func<string?, string, TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    )
     {
-        registerServiceExtension(name: name, callback: async (parameters) =>
-        {
-            DartRuntimePrimitives.Assert(() => parameters.ContainsKey("objectGroup"));
-            return new DartMap<string, object?> { ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback(parameters.GetValueOrDefault("arg"), parameters.GetValueOrDefault("objectGroup")!)) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
+        registerServiceExtension(
+            name: name,
+            callback: async (parameters) =>
+            {
+                DartRuntimePrimitives.Assert(() => parameters.ContainsKey("objectGroup"));
+                return new DartMap<string, object?>
+                {
+                    ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(
+                        callback(
+                            parameters.GetValueOrDefault("arg"),
+                            parameters.GetValueOrDefault("objectGroup")!
+                        )
+                    ),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
     }
 
-    public virtual void _registerServiceExtensionVarArgs(string name, Func<List<string>, object?> callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerServiceExtensionVarArgs(
+        string name,
+        Func<List<string>, object?> callback,
+        RegisterServiceExtensionCallback registerExtension
+    )
     {
-        registerServiceExtension(name: name, callback: async (parameters) =>
-        {
-            long index = default!;
-            var args = new List<string>();
-            DartRuntimePrimitives.Assert(() => (index == checked(parameters.Count)) || (index == (checked(parameters.Count) - 1L)) && parameters.ContainsKey("isolateId"));
-            return new DartMap<string, object?> { ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback(args)) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
+        registerServiceExtension(
+            name: name,
+            callback: async (parameters) =>
+            {
+                long index = default!;
+                var args = new List<string>();
+                DartRuntimePrimitives.Assert(() =>
+                    (index == checked(parameters.Count))
+                    || (
+                        (index == (checked(parameters.Count) - 1L))
+                        && parameters.ContainsKey("isolateId")
+                    )
+                );
+                return new DartMap<string, object?>
+                {
+                    ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback(args)),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
     }
 
     public virtual Future forceRebuild()
@@ -716,11 +920,28 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual void _reportStructuredError(FlutterErrorDetails details)
     {
-        DartMap<string, object?> errorJson = _nodeToJson(((Diagnosticable)details).toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: WidgetInspectorService._consoleObjectGroup, subtreeDepth: 5L, includeProperties: true, maxDescendantsTruncatableNode: 5L, service: this))!.cast<string, object?>();
+        DartMap<string, object?> errorJson = _nodeToJson(
+                ((Diagnosticable)details).toDiagnosticsNode(),
+                new InspectorSerializationDelegate(
+                    groupName: WidgetInspectorService._consoleObjectGroup,
+                    subtreeDepth: 5L,
+                    includeProperties: true,
+                    maxDescendantsTruncatableNode: 5L,
+                    service: this
+                )
+            )!
+            .cast<string, object?>();
         errorJson["errorsSinceReload"] = _errorsSinceReload;
         if (_errorsSinceReload == 0L)
         {
-            errorJson["renderedErrorText"] = new TextTreeRenderer(wrapWidthProperties: FlutterError.wrapWidth, maxDescendentsTruncatableNode: 5L).render(((Diagnosticable)details).toDiagnosticsNode(style: DiagnosticsTreeStyle.error)).trimRight();
+            errorJson["renderedErrorText"] = new TextTreeRenderer(
+                wrapWidthProperties: FlutterError.wrapWidth,
+                maxDescendentsTruncatableNode: 5L
+            )
+                .render(
+                    ((Diagnosticable)details).toDiagnosticsNode(style: DiagnosticsTreeStyle.error)
+                )
+                .trimRight();
         }
         else
         {
@@ -739,11 +960,11 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         var enabled = false;
         DartRuntimePrimitives.Assert(() =>
-            {
-                enabled = false;
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            enabled = false;
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return enabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -755,161 +976,360 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             FlutterError.presentError = _reportStructuredError;
         }
-        DartRuntimePrimitives.Assert(() => !WidgetInspectorService._debugServiceExtensionsRegistered);
         DartRuntimePrimitives.Assert(() =>
-            {
-                WidgetInspectorService._debugServiceExtensionsRegistered = true;
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            !WidgetInspectorService._debugServiceExtensionsRegistered
+        );
+        DartRuntimePrimitives.Assert(() =>
+        {
+            WidgetInspectorService._debugServiceExtensionsRegistered = true;
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         Scheduler.SchedulerBinding.instance.addPersistentFrameCallback(_onFrameStart);
-        _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.structuredErrors.ToString(), getter: async () => Equals(FlutterError.presentError, (FlutterExceptionHandler)_reportStructuredError), setter: (value) =>
-        {
-            FlutterError.presentError = value ? _reportStructuredError : defaultExceptionHandler;
-            return Future.value();
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.show.ToString(), getter: async () => WidgetsBinding.instance.debugShowWidgetInspectorOverride, setter: (value) =>
-        {
-            if (WidgetsBinding.instance.debugShowWidgetInspectorOverride != value)
+        _registerBoolServiceExtension(
+            name: WidgetInspectorServiceExtensions.structuredErrors.ToString(),
+            getter: async () =>
+                Equals(FlutterError.presentError, (FlutterExceptionHandler)_reportStructuredError),
+            setter: (value) =>
             {
-                _changeWidgetSelectionMode(DartRuntimePrimitives.RequireValue(value), notifyStateChange: false);
-            }
-            return Future.value();
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
+                FlutterError.presentError = value
+                    ? _reportStructuredError
+                    : defaultExceptionHandler;
+                return Future.value();
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        _registerBoolServiceExtension(
+            name: WidgetInspectorServiceExtensions.show.ToString(),
+            getter: async () => WidgetsBinding.instance.debugShowWidgetInspectorOverride,
+            setter: (value) =>
+            {
+                if (WidgetsBinding.instance.debugShowWidgetInspectorOverride != value)
+                {
+                    _changeWidgetSelectionMode(
+                        DartRuntimePrimitives.RequireValue(value),
+                        notifyStateChange: false
+                    );
+                }
+                return Future.value();
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
         if (isWidgetCreationTracked())
         {
-            _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.trackRebuildDirtyWidgets.ToString(), getter: async () => _trackRebuildDirtyWidgets, setter: async (value) =>
-            {
-                if (value == _trackRebuildDirtyWidgets)
+            _registerBoolServiceExtension(
+                name: WidgetInspectorServiceExtensions.trackRebuildDirtyWidgets.ToString(),
+                getter: async () => _trackRebuildDirtyWidgets,
+                setter: async (value) =>
                 {
-                    return;
-                }
-                _rebuildStats.resetCounts();
-                _trackRebuildDirtyWidgets = value;
-                if (value)
-                {
-                    DartRuntimePrimitives.Assert(() => DebugLibrary.debugOnRebuildDirtyWidget is null);
-                    DebugLibrary.debugOnRebuildDirtyWidget = _onRebuildWidget;
-                    await forceRebuild();
-                    return;
-                }
-                else
-                {
-                    DebugLibrary.debugOnRebuildDirtyWidget = null;
-                    return;
-                }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, registerExtension: registerExtension);
-            _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.widgetLocationIdMap.ToString(), callback: (Func<object?>)(() =>
-            {
-                return Widget_inspectorLibrary._locationIdMapToJson();
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }), registerExtension: registerExtension);
-            _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.trackRepaintWidgets.ToString(), getter: async () => _trackRepaintWidgets, setter: async (value) =>
-            {
-                if (value == _trackRepaintWidgets)
-                {
-                    return;
-                }
-                _repaintStats.resetCounts();
-                _trackRepaintWidgets = value;
-                if (value)
-                {
-                    DartRuntimePrimitives.Assert(() => Rendering.DebugLibrary.debugOnProfilePaint is null);
-                    Rendering.DebugLibrary.debugOnProfilePaint = _onPaint;
-                    void markTreeNeedsPaint(RenderObject renderObject)
+                    if (value == _trackRebuildDirtyWidgets)
                     {
-                        renderObject.markNeedsPaint();
-                        renderObject.visitChildren(markTreeNeedsPaint);
+                        return;
                     }
-                    RendererBinding.instance.renderViews.forEach((__arg0) => ((Action<RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
-                }
-                else
+                    _rebuildStats.resetCounts();
+                    _trackRebuildDirtyWidgets = value;
+                    if (value)
+                    {
+                        DartRuntimePrimitives.Assert(() =>
+                            DebugLibrary.debugOnRebuildDirtyWidget is null
+                        );
+                        DebugLibrary.debugOnRebuildDirtyWidget = _onRebuildWidget;
+                        await forceRebuild();
+                        return;
+                    }
+                    else
+                    {
+                        DebugLibrary.debugOnRebuildDirtyWidget = null;
+                        return;
+                    }
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                registerExtension: registerExtension
+            );
+            _registerSignalServiceExtension(
+                name: WidgetInspectorServiceExtensions.widgetLocationIdMap.ToString(),
+                callback: (Func<object?>)(
+                    () =>
+                    {
+                        return Widget_inspectorLibrary._locationIdMapToJson();
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                ),
+                registerExtension: registerExtension
+            );
+            _registerBoolServiceExtension(
+                name: WidgetInspectorServiceExtensions.trackRepaintWidgets.ToString(),
+                getter: async () => _trackRepaintWidgets,
+                setter: async (value) =>
                 {
-                    Rendering.DebugLibrary.debugOnProfilePaint = null;
-                }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, registerExtension: registerExtension);
+                    if (value == _trackRepaintWidgets)
+                    {
+                        return;
+                    }
+                    _repaintStats.resetCounts();
+                    _trackRepaintWidgets = value;
+                    if (value)
+                    {
+                        DartRuntimePrimitives.Assert(() =>
+                            Rendering.DebugLibrary.debugOnProfilePaint is null
+                        );
+                        Rendering.DebugLibrary.debugOnProfilePaint = _onPaint;
+                        void markTreeNeedsPaint(RenderObject renderObject)
+                        {
+                            renderObject.markNeedsPaint();
+                            renderObject.visitChildren(markTreeNeedsPaint);
+                        }
+                        RendererBinding.instance.renderViews.forEach(
+                            (__arg0) =>
+                                ((Action<RenderObject>)markTreeNeedsPaint)(
+                                    DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)
+                                )
+                        );
+                    }
+                    else
+                    {
+                        Rendering.DebugLibrary.debugOnProfilePaint = null;
+                    }
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                registerExtension: registerExtension
+            );
         }
-        _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.disposeAllGroups.ToString(), callback: (Func<object?>)(() =>
-        {
-            disposeAllGroups();
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }), registerExtension: registerExtension);
-        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.disposeGroup.ToString(), callback: (Func<string, object?>)((name) =>
-        {
-            disposeGroup(name);
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }), registerExtension: registerExtension);
-        _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.isWidgetTreeReady.ToString(), callback: () => isWidgetTreeReady(null), registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.disposeId.ToString(), callback: (Func<string?, string, object?>)((objectId, objectGroup) =>
-        {
-            disposeId(objectId, objectGroup);
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }), registerExtension: registerExtension);
-        _registerServiceExtensionVarArgs(name: WidgetInspectorServiceExtensions.setPubRootDirectories.ToString(), callback: (args) =>
-        {
-            setPubRootDirectories(args);
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        _registerServiceExtensionVarArgs(name: WidgetInspectorServiceExtensions.addPubRootDirectories.ToString(), callback: (args) =>
-        {
-            addPubRootDirectories(args);
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        _registerServiceExtensionVarArgs(name: WidgetInspectorServiceExtensions.removePubRootDirectories.ToString(), callback: (args) =>
-        {
-            removePubRootDirectories(args);
-            return null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.getPubRootDirectories.ToString(), callback: pubRootDirectories, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.setSelectionById.ToString(), callback: setSelectionById, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getParentChain.ToString(), callback: _getParentChain, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getProperties.ToString(), callback: _getProperties, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildren.ToString(), callback: _getChildren, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenSummaryTree.ToString(), callback: _getChildrenSummaryTree, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenDetailsSubtree.ToString(), callback: _getChildrenDetailsSubtree, registerExtension: registerExtension);
-        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidget.ToString(), callback: _getRootWidget, registerExtension: registerExtension);
-        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(), callback: (string group) => _getRootWidgetSummaryTree(group, null), registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTreeWithPreviews.ToString(), callback: _getRootWidgetSummaryTreeWithPreviews, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetTree.ToString(), callback: _getRootWidgetTree, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.getDetailsSubtree.ToString(), callback: async (parameters) =>
-        {
-            DartRuntimePrimitives.Assert(() => parameters.ContainsKey("objectGroup"));
-            string? subtreeDepth = parameters.GetValueOrDefault("subtreeDepth");
-            return new DartMap<string, object?> { ["result"] = _getDetailsSubtree(parameters.GetValueOrDefault("arg"), parameters.GetValueOrDefault("objectGroup"), (subtreeDepth is not null) ? long.Parse(subtreeDepth, System.Globalization.CultureInfo.InvariantCulture) : 2L) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getSelectedWidget.ToString(), callback: _getSelectedWidget, registerExtension: registerExtension);
-        _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getSelectedSummaryWidget.ToString(), callback: _getSelectedSummaryWidget, registerExtension: registerExtension);
-        _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.isWidgetCreationTracked.ToString(), callback: isWidgetCreationTracked, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.screenshot.ToString(), callback: async (parameters) =>
-        {
-            DartRuntimePrimitives.Assert(() => parameters.ContainsKey("id"));
-            DartRuntimePrimitives.Assert(() => parameters.ContainsKey("width"));
-            DartRuntimePrimitives.Assert(() => parameters.ContainsKey("height"));
-            Ui.Image? image = await screenshot(toObject(parameters.GetValueOrDefault("id")), width: double.Parse(parameters.GetValueOrDefault("width")!, System.Globalization.CultureInfo.InvariantCulture), height: double.Parse(parameters.GetValueOrDefault("height")!, System.Globalization.CultureInfo.InvariantCulture), margin: parameters.ContainsKey("margin") ? double.Parse(parameters.GetValueOrDefault("margin")!, System.Globalization.CultureInfo.InvariantCulture) : 0.0, maxPixelRatio: parameters.ContainsKey("maxPixelRatio") ? double.Parse(parameters.GetValueOrDefault("maxPixelRatio")!, System.Globalization.CultureInfo.InvariantCulture) : 1.0, debugPaint: parameters.GetValueOrDefault("debugPaint") == "true");
-            if (image is null)
+        _registerSignalServiceExtension(
+            name: WidgetInspectorServiceExtensions.disposeAllGroups.ToString(),
+            callback: (Func<object?>)(
+                () =>
+                {
+                    disposeAllGroups();
+                    return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            ),
+            registerExtension: registerExtension
+        );
+        _registerObjectGroupServiceExtension(
+            name: WidgetInspectorServiceExtensions.disposeGroup.ToString(),
+            callback: (Func<string, object?>)(
+                (name) =>
+                {
+                    disposeGroup(name);
+                    return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            ),
+            registerExtension: registerExtension
+        );
+        _registerSignalServiceExtension(
+            name: WidgetInspectorServiceExtensions.isWidgetTreeReady.ToString(),
+            callback: () => isWidgetTreeReady(null),
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.disposeId.ToString(),
+            callback: (Func<string?, string, object?>)(
+                (objectId, objectGroup) =>
+                {
+                    disposeId(objectId, objectGroup);
+                    return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            ),
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionVarArgs(
+            name: WidgetInspectorServiceExtensions.setPubRootDirectories.ToString(),
+            callback: (args) =>
             {
-                return new DartMap<string, object?> { ["result"] = null };
-            }
-            ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-            image.dispose();
-            return new DartMap<string, object?> { ["result"] = Dart_convertLibrary.base64.encoder.convert(new Uint8List(byteData!.buffer)) };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.getLayoutExplorerNode.ToString(), callback: _getLayoutExplorerNode, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.setFlexFit.ToString(), callback: _setFlexFit, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.setFlexFactor.ToString(), callback: _setFlexFactor, registerExtension: registerExtension);
-        registerServiceExtension(name: WidgetInspectorServiceExtensions.setFlexProperties.ToString(), callback: _setFlexProperties, registerExtension: registerExtension);
+                setPubRootDirectories(args);
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionVarArgs(
+            name: WidgetInspectorServiceExtensions.addPubRootDirectories.ToString(),
+            callback: (args) =>
+            {
+                addPubRootDirectories(args);
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionVarArgs(
+            name: WidgetInspectorServiceExtensions.removePubRootDirectories.ToString(),
+            callback: (args) =>
+            {
+                removePubRootDirectories(args);
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.getPubRootDirectories.ToString(),
+            callback: pubRootDirectories,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.setSelectionById.ToString(),
+            callback: setSelectionById,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getParentChain.ToString(),
+            callback: _getParentChain,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getProperties.ToString(),
+            callback: _getProperties,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getChildren.ToString(),
+            callback: _getChildren,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getChildrenSummaryTree.ToString(),
+            callback: _getChildrenSummaryTree,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getChildrenDetailsSubtree.ToString(),
+            callback: _getChildrenDetailsSubtree,
+            registerExtension: registerExtension
+        );
+        _registerObjectGroupServiceExtension(
+            name: WidgetInspectorServiceExtensions.getRootWidget.ToString(),
+            callback: _getRootWidget,
+            registerExtension: registerExtension
+        );
+        _registerObjectGroupServiceExtension(
+            name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(),
+            callback: (string group) => _getRootWidgetSummaryTree(group, null),
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTreeWithPreviews.ToString(),
+            callback: _getRootWidgetSummaryTreeWithPreviews,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.getRootWidgetTree.ToString(),
+            callback: _getRootWidgetTree,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.getDetailsSubtree.ToString(),
+            callback: async (parameters) =>
+            {
+                DartRuntimePrimitives.Assert(() => parameters.ContainsKey("objectGroup"));
+                string? subtreeDepth = parameters.GetValueOrDefault("subtreeDepth");
+                return new DartMap<string, object?>
+                {
+                    ["result"] = _getDetailsSubtree(
+                        parameters.GetValueOrDefault("arg"),
+                        parameters.GetValueOrDefault("objectGroup"),
+                        (subtreeDepth is not null)
+                            ? long.Parse(
+                                subtreeDepth,
+                                System.Globalization.CultureInfo.InvariantCulture
+                            )
+                            : 2L
+                    ),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getSelectedWidget.ToString(),
+            callback: _getSelectedWidget,
+            registerExtension: registerExtension
+        );
+        _registerServiceExtensionWithArg(
+            name: WidgetInspectorServiceExtensions.getSelectedSummaryWidget.ToString(),
+            callback: _getSelectedSummaryWidget,
+            registerExtension: registerExtension
+        );
+        _registerSignalServiceExtension(
+            name: WidgetInspectorServiceExtensions.isWidgetCreationTracked.ToString(),
+            callback: isWidgetCreationTracked,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.screenshot.ToString(),
+            callback: async (parameters) =>
+            {
+                DartRuntimePrimitives.Assert(() => parameters.ContainsKey("id"));
+                DartRuntimePrimitives.Assert(() => parameters.ContainsKey("width"));
+                DartRuntimePrimitives.Assert(() => parameters.ContainsKey("height"));
+                Ui.Image? image = await screenshot(
+                    toObject(parameters.GetValueOrDefault("id")),
+                    width: double.Parse(
+                        parameters.GetValueOrDefault("width")!,
+                        System.Globalization.CultureInfo.InvariantCulture
+                    ),
+                    height: double.Parse(
+                        parameters.GetValueOrDefault("height")!,
+                        System.Globalization.CultureInfo.InvariantCulture
+                    ),
+                    margin: parameters.ContainsKey("margin")
+                        ? double.Parse(
+                            parameters.GetValueOrDefault("margin")!,
+                            System.Globalization.CultureInfo.InvariantCulture
+                        )
+                        : 0.0,
+                    maxPixelRatio: parameters.ContainsKey("maxPixelRatio")
+                        ? double.Parse(
+                            parameters.GetValueOrDefault("maxPixelRatio")!,
+                            System.Globalization.CultureInfo.InvariantCulture
+                        )
+                        : 1.0,
+                    debugPaint: parameters.GetValueOrDefault("debugPaint") == "true"
+                );
+                if (image is null)
+                {
+                    return new DartMap<string, object?> { ["result"] = null };
+                }
+                ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+                image.dispose();
+                return new DartMap<string, object?>
+                {
+                    ["result"] = Dart_convertLibrary.base64.encoder.convert(
+                        new Uint8List(byteData!.buffer)
+                    ),
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.getLayoutExplorerNode.ToString(),
+            callback: _getLayoutExplorerNode,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.setFlexFit.ToString(),
+            callback: _setFlexFit,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.setFlexFactor.ToString(),
+            callback: _setFlexFactor,
+            registerExtension: registerExtension
+        );
+        registerServiceExtension(
+            name: WidgetInspectorServiceExtensions.setFlexProperties.ToString(),
+            callback: _setFlexProperties,
+            registerExtension: registerExtension
+        );
     }
 
     public virtual void _clearStats()
@@ -940,7 +1360,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return;
         }
-        references.forEach((__arg0) => ((Action<InspectorReferenceData>)_decrementReferenceCount)(__arg0));
+        references.forEach(
+            (__arg0) => ((Action<InspectorReferenceData>)_decrementReferenceCount)(__arg0)
+        );
     }
 
     public virtual void _decrementReferenceCount(InspectorReferenceData reference)
@@ -964,7 +1386,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return null;
         }
-        HashSet<InspectorReferenceData> @group = _groups.putIfAbsent(groupName, () => new HashSet<InspectorReferenceData>());
+        HashSet<InspectorReferenceData> @group = _groups.putIfAbsent(
+            groupName,
+            () => new HashSet<InspectorReferenceData>()
+        );
         string? id = _objectToId[@object];
         InspectorReferenceData referenceData = default!;
         if (id is null)
@@ -1003,7 +1428,11 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         InspectorReferenceData? data = _idToReferenceData.GetValueOrDefault(id);
         if (data is null)
         {
-            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Id does not exist.") }));
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode> { new ErrorSummary("Id does not exist.") }
+                )
+            );
         }
         return data.value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1030,11 +1459,19 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         InspectorReferenceData? referenceData = _idToReferenceData.GetValueOrDefault(id);
         if (referenceData is null)
         {
-            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Id does not exist") }));
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode> { new ErrorSummary("Id does not exist") }
+                )
+            );
         }
         if (_groups.GetValueOrDefault(groupName)?.Remove(referenceData) != true)
         {
-            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Id is not in group") }));
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode> { new ErrorSummary("Id is not in group") }
+                )
+            );
         }
         _decrementReferenceCount(referenceData);
     }
@@ -1052,7 +1489,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual void addPubRootDirectories(List<string> pubRootDirectories)
     {
-        pubRootDirectories = pubRootDirectories.map((directory) => DartUri.parse(directory).path).ToList();
+        pubRootDirectories = pubRootDirectories
+            .map((directory) => DartUri.parse(directory).path)
+            .ToList();
         var directorySet = new HashSet<string>(pubRootDirectories);
         if (_pubRootDirectories is not null)
         {
@@ -1068,16 +1507,22 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return;
         }
-        pubRootDirectories = pubRootDirectories.map((directory) => DartUri.parse(directory).path).ToList();
+        pubRootDirectories = pubRootDirectories
+            .map((directory) => DartUri.parse(directory).path)
+            .ToList();
         var directorySet = new HashSet<string>(_pubRootDirectories!);
         directorySet.removeAll(pubRootDirectories);
         _pubRootDirectories = directorySet.ToList();
         _isLocalCreationCache.clear();
     }
 
-    public virtual Future<DartMap<string, object?>> pubRootDirectories(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> pubRootDirectories(
+        DartMap<string, string> parameters
+    )
     {
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = _pubRootDirectories ?? new List<string>() });
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = _pubRootDirectories ?? new List<string>() }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1092,32 +1537,47 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         switch (@object)
         {
             case Element __object55868 when !Equals(@object, selection.currentElement):
-                {
-                    selection.clearCandidates();
-                    selection.currentElement = (Element)@object;
-                    _notifyToolsOfSelection(selection.currentElement);
-                    return true;
-                }
+            {
+                selection.clearCandidates();
+                selection.currentElement = (Element)@object;
+                _notifyToolsOfSelection(selection.currentElement);
+                return true;
+            }
             case RenderObject __object56090 when !Equals(@object, selection.current):
-                {
-                    selection.clearCandidates();
-                    selection.current = (RenderObject)@object;
-                    _notifyToolsOfSelection(selection.current);
-                    return true;
-                }
+            {
+                selection.clearCandidates();
+                selection.current = (RenderObject)@object;
+                _notifyToolsOfSelection(selection.current);
+                return true;
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _notifyToolsOfSelection(object? @object, bool restrictToProjectFiles = false)
+    public virtual void _notifyToolsOfSelection(
+        object? @object,
+        bool restrictToProjectFiles = false
+    )
     {
         inspect(@object);
-        CreationLocation? location = _getSelectedWidgetLocation(restrictToSummaryTree: restrictToProjectFiles);
+        CreationLocation? location = _getSelectedWidgetLocation(
+            restrictToSummaryTree: restrictToProjectFiles
+        );
         if (location is not null)
         {
-            postEvent("navigate", new DartMap<string, object?> { ["fileUri"] = location.file, ["line"] = location.line, ["column"] = location.column, ["source"] = "flutter.inspector" }.cast<object, object>(), stream: "ToolEvent");
+            postEvent(
+                "navigate",
+                new DartMap<string, object?>
+                {
+                    ["fileUri"] = location.file,
+                    ["line"] = location.line,
+                    ["column"] = location.column,
+                    ["source"] = "flutter.inspector",
+                }.cast<object, object>(),
+                stream: "ToolEvent"
+            );
         }
     }
 
@@ -1126,7 +1586,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         WidgetsBinding.instance.debugShowWidgetInspectorOverride = enabled;
         if (notifyStateChange)
         {
-            _postExtensionStateChangedEvent(WidgetInspectorServiceExtensions.show.ToString(), enabled);
+            _postExtensionStateChangedEvent(
+                WidgetInspectorServiceExtensions.show.ToString(),
+                enabled
+            );
         }
         if (!enabled)
         {
@@ -1136,7 +1599,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual string? _devToolsInspectorUriForElement(Element element)
     {
-        if ((Foundation.DebugLibrary.activeDevToolsServerAddress is not null) && (Foundation.DebugLibrary.connectedVmServiceUri is not null))
+        if (
+            (Foundation.DebugLibrary.activeDevToolsServerAddress is not null)
+            && (Foundation.DebugLibrary.connectedVmServiceUri is not null)
+        )
         {
             string? inspectorRef = toId(element, WidgetInspectorService._consoleObjectGroup);
             if (inspectorRef is not null)
@@ -1150,13 +1616,29 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual string devToolsInspectorUri(string inspectorRef)
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.activeDevToolsServerAddress is not null);
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.connectedVmServiceUri is not null);
-        DartUri uri = DartUri.parse(Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString()).replace(queryParameters: new DartMap<string, string> { ["uri"] = DartRuntimePrimitives.RequireReference(Foundation.DebugLibrary.connectedVmServiceUri).ToString(), ["inspectorRef"] = inspectorRef });
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.activeDevToolsServerAddress is not null
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.connectedVmServiceUri is not null
+        );
+        DartUri uri = DartUri
+            .parse(Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString())
+            .replace(
+                queryParameters: new DartMap<string, string>
+                {
+                    ["uri"] = DartRuntimePrimitives
+                        .RequireReference(Foundation.DebugLibrary.connectedVmServiceUri)
+                        .ToString(),
+                    ["inspectorRef"] = inspectorRef,
+                }
+            );
         var devToolsInspectorUriLocal = uri.ToString();
         long startQueryParamIndex = devToolsInspectorUriLocal.IndexOf("?");
         DartRuntimePrimitives.Assert(() => startQueryParamIndex != -1L);
-        return $"{devToolsInspectorUriLocal.substring(0L, startQueryParamIndex)}" + "/#/inspector" + $"{devToolsInspectorUriLocal.substring(startQueryParamIndex)}";
+        return $"{devToolsInspectorUriLocal.substring(0L, startQueryParamIndex)}"
+            + "/#/inspector"
+            + $"{devToolsInspectorUriLocal.substring(startQueryParamIndex)}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1169,22 +1651,47 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     public virtual List<object?> _getParentChain(string? id, string groupName)
     {
         object? value = toObject(id);
-        List<_DiagnosticsPathNode__widget_inspector> path = (value switch { RenderObject __object60383 => _getRenderObjectParentChain(__object60383, groupName)!, Element __object60455 => _getElementParentChain(__object60455, groupName), _ => throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Cannot get parent chain for node of type {DartRuntimePrimitives.RuntimeType(value)}") })) }).ToList();
+        List<_DiagnosticsPathNode__widget_inspector> path = (
+            value switch
+            {
+                RenderObject __object60383 => _getRenderObjectParentChain(
+                    __object60383,
+                    groupName
+                )!,
+                Element __object60455 => _getElementParentChain(__object60455, groupName),
+                _ => throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"Cannot get parent chain for node of type {DartRuntimePrimitives.RuntimeType(value)}"
+                            ),
+                        }
+                    )
+                ),
+            }
+        ).ToList();
         InspectorSerializationDelegate createDelegate()
         {
             return new InspectorSerializationDelegate(groupName: groupName, service: this);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         return path.Select(pathNode =>
-        {
-            var serializationDelegate = createDelegate();
-            return (object?)new DartMap<string, object?>
             {
-                ["node"] = _nodeToJson(pathNode.node, serializationDelegate),
-                ["children"] = _nodesToJson(pathNode.children, serializationDelegate, parent: pathNode.node),
-                ["childIndex"] = pathNode.childIndex,
-            };
-        }).ToList();
+                var serializationDelegate = createDelegate();
+                return (object?)
+                    new DartMap<string, object?>
+                    {
+                        ["node"] = _nodeToJson(pathNode.node, serializationDelegate),
+                        ["children"] = _nodesToJson(
+                            pathNode.children,
+                            serializationDelegate,
+                            parent: pathNode.node
+                        ),
+                        ["childIndex"] = pathNode.childIndex,
+                    };
+            })
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1210,13 +1717,24 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(Element element, string groupName, long? numLocalParents = null)
+    public virtual List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(
+        Element element,
+        string groupName,
+        long? numLocalParents = null
+    )
     {
-        return Widget_inspectorLibrary._followDiagnosticableChain(_getRawElementParentChain(element, numLocalParents: numLocalParents).Cast<Diagnosticable>().ToList()) ?? new List<_DiagnosticsPathNode__widget_inspector>();
+        return Widget_inspectorLibrary._followDiagnosticableChain(
+                _getRawElementParentChain(element, numLocalParents: numLocalParents)
+                    .Cast<Diagnosticable>()
+                    .ToList()
+            ) ?? new List<_DiagnosticsPathNode__widget_inspector>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(RenderObject? renderObject, string groupName)
+    public virtual List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(
+        RenderObject? renderObject,
+        string groupName
+    )
     {
         var chain = new List<RenderObject>();
         while (renderObject is not null)
@@ -1224,11 +1742,17 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             chain.Add(renderObject);
             renderObject = renderObject.parent;
         }
-        return Widget_inspectorLibrary._followDiagnosticableChain(Enumerable.Reverse(chain).ToList().Cast<Diagnosticable>().ToList());
+        return Widget_inspectorLibrary._followDiagnosticableChain(
+            Enumerable.Reverse(chain).ToList().Cast<Diagnosticable>().ToList()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _nodeToJson(DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true)
+    public virtual DartMap<string, object?>? _nodeToJson(
+        DiagnosticsNode? node,
+        InspectorSerializationDelegate @delegate,
+        bool fullDetails = true
+    )
     {
         if (fullDetails)
         {
@@ -1272,11 +1796,16 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual bool _isLocalCreationLocation(string locationUri)
     {
-        bool? cachedValue = DartCollectionRuntime.NullableMapValue<bool>(_isLocalCreationCache, locationUri);
+        bool? cachedValue = DartCollectionRuntime.NullableMapValue<bool>(
+            _isLocalCreationCache,
+            locationUri
+        );
         if (cachedValue is not null)
         {
             bool cachedValue__63933__value63991 = DartRuntimePrimitives.RequireValue(cachedValue);
-            return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cachedValue__63933__value63991));
+            return DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(cachedValue__63933__value63991)
+            );
         }
         bool result = _isLocalCreationLocationImpl(locationUri);
         _isLocalCreationCache[locationUri] = result;
@@ -1293,11 +1822,17 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> _truncateNodes(IEnumerable<DiagnosticsNode> nodes, long maxDescendentsTruncatableNode)
+    public virtual List<DiagnosticsNode> _truncateNodes(
+        IEnumerable<DiagnosticsNode> nodes,
+        long maxDescendentsTruncatableNode
+    )
     {
         if (nodes.All((node) => node.value is Element) && isWidgetCreationTracked())
         {
-            List<DiagnosticsNode> localNodes = nodes.where((node) => _isValueCreatedByLocalProject(node.value)).ToList().ToList();
+            List<DiagnosticsNode> localNodes = nodes
+                .where((node) => _isValueCreatedByLocalProject(node.value))
+                .ToList()
+                .ToList();
             if (Enumerable.Any(localNodes))
             {
                 return localNodes;
@@ -1307,7 +1842,11 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DartMap<string, object?>> _nodesToJson(List<DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, DiagnosticsNode? parent)
+    public virtual List<DartMap<string, object?>> _nodesToJson(
+        List<DiagnosticsNode> nodes,
+        InspectorSerializationDelegate @delegate,
+        DiagnosticsNode? parent
+    )
     {
         return DiagnosticsNode.toJsonList(nodes, parent, @delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1326,7 +1865,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return new List<object>();
         }
-        return _nodesToJson(node.getProperties().ToList(), new InspectorSerializationDelegate(groupName: groupName, service: this), parent: node).Cast<object>().ToList();
+        return _nodesToJson(
+                node.getProperties().ToList(),
+                new InspectorSerializationDelegate(groupName: groupName, service: this),
+                parent: node
+            )
+            .Cast<object>()
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1340,7 +1885,15 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         var node = ((DiagnosticsNode?)toObject(diagnosticsNodeId))!;
         var @delegate = new InspectorSerializationDelegate(groupName: groupName, service: this);
-        return _nodesToJson((node is null) ? new List<DiagnosticsNode>() : _getChildrenFiltered(node, @delegate), @delegate, parent: node).Cast<object>().ToList();
+        return _nodesToJson(
+                (node is null)
+                    ? new List<DiagnosticsNode>()
+                    : _getChildrenFiltered(node, @delegate),
+                @delegate,
+                parent: node
+            )
+            .Cast<object>()
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1364,8 +1917,14 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return new List<object>();
         }
-        var @delegate = new InspectorSerializationDelegate(groupName: groupName, summaryTree: true, service: this);
-        return _nodesToJson(_getChildrenFiltered(node, @delegate), @delegate, parent: node).Cast<object>().ToList();
+        var @delegate = new InspectorSerializationDelegate(
+            groupName: groupName,
+            summaryTree: true,
+            service: this
+        );
+        return _nodesToJson(_getChildrenFiltered(node, @delegate), @delegate, parent: node)
+            .Cast<object>()
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1375,11 +1934,26 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<object> _getChildrenDetailsSubtree(string? diagnosticableId, string groupName)
+    public virtual List<object> _getChildrenDetailsSubtree(
+        string? diagnosticableId,
+        string groupName
+    )
     {
         DiagnosticsNode? node = _idToDiagnosticsNode(diagnosticableId);
-        var @delegate = new InspectorSerializationDelegate(groupName: groupName, includeProperties: true, service: this);
-        return _nodesToJson((node is null) ? new List<DiagnosticsNode>() : _getChildrenFiltered(node, @delegate), @delegate, parent: node).Cast<object>().ToList();
+        var @delegate = new InspectorSerializationDelegate(
+            groupName: groupName,
+            includeProperties: true,
+            service: this
+        );
+        return _nodesToJson(
+                (node is null)
+                    ? new List<DiagnosticsNode>()
+                    : _getChildrenFiltered(node, @delegate),
+                @delegate,
+                parent: node
+            )
+            .Cast<object>()
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1402,20 +1976,32 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> _getChildrenFiltered(DiagnosticsNode node, InspectorSerializationDelegate @delegate)
+    public virtual List<DiagnosticsNode> _getChildrenFiltered(
+        DiagnosticsNode node,
+        InspectorSerializationDelegate @delegate
+    )
     {
         return _filterChildren(node.getChildren().ToList(), @delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> _filterChildren(List<DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate)
+    public virtual List<DiagnosticsNode> _filterChildren(
+        List<DiagnosticsNode> nodes,
+        InspectorSerializationDelegate @delegate
+    )
     {
         var children = new List<DiagnosticsNode>();
         foreach (var child in nodes)
         {
-            InspectorSerializationDelegate? updatedDelegate = _updateDelegateForWidgetInspectorEnabledState(@delegate: @delegate, node: child);
-            bool inDisableWidgetInspectorScopeLocal = (updatedDelegate?.inDisableWidgetInspectorScope ?? false) || @delegate.inDisableWidgetInspectorScope;
-            if (!inDisableWidgetInspectorScopeLocal && (!@delegate.summaryTree || _shouldShowInSummaryTree(child)))
+            InspectorSerializationDelegate? updatedDelegate =
+                _updateDelegateForWidgetInspectorEnabledState(@delegate: @delegate, node: child);
+            bool inDisableWidgetInspectorScopeLocal =
+                (updatedDelegate?.inDisableWidgetInspectorScope ?? false)
+                || @delegate.inDisableWidgetInspectorScope;
+            if (
+                !inDisableWidgetInspectorScopeLocal
+                && (!@delegate.summaryTree || _shouldShowInSummaryTree(child))
+            )
             {
                 children.Add(child);
             }
@@ -1428,20 +2014,33 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, DiagnosticsNode node)
+    public virtual InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(
+        InspectorSerializationDelegate @delegate,
+        DiagnosticsNode node
+    )
     {
         object? valueLocal = node.value;
-        if (!@delegate.inDisableWidgetInspectorScope && (valueLocal is _DisableWidgetInspectorScopeProxyElement__widget_inspector))
+        if (
+            !@delegate.inDisableWidgetInspectorScope
+            && (valueLocal is _DisableWidgetInspectorScopeProxyElement__widget_inspector)
+        )
         {
-            _DisableWidgetInspectorScopeProxyElement__widget_inspector value__72458__as72537 = (_DisableWidgetInspectorScopeProxyElement__widget_inspector)valueLocal;
-            return (InspectorSerializationDelegate?)@delegate.copyWith(inDisableWidgetInspectorScope: true);
+            _DisableWidgetInspectorScopeProxyElement__widget_inspector value__72458__as72537 =
+                (_DisableWidgetInspectorScopeProxyElement__widget_inspector)valueLocal;
+            return (InspectorSerializationDelegate?)
+                @delegate.copyWith(inDisableWidgetInspectorScope: true);
         }
         else
         {
-            if (@delegate.inDisableWidgetInspectorScope && (valueLocal is _EnableWidgetInspectorScopeProxyElement__widget_inspector))
+            if (
+                @delegate.inDisableWidgetInspectorScope
+                && (valueLocal is _EnableWidgetInspectorScopeProxyElement__widget_inspector)
+            )
             {
-                _EnableWidgetInspectorScopeProxyElement__widget_inspector value__72458__as72724 = (_EnableWidgetInspectorScopeProxyElement__widget_inspector)valueLocal;
-                return (InspectorSerializationDelegate?)@delegate.copyWith(inDisableWidgetInspectorScope: false);
+                _EnableWidgetInspectorScopeProxyElement__widget_inspector value__72458__as72724 =
+                    (_EnableWidgetInspectorScopeProxyElement__widget_inspector)valueLocal;
+                return (InspectorSerializationDelegate?)
+                    @delegate.copyWith(inDisableWidgetInspectorScope: false);
             }
         }
         return null;
@@ -1456,7 +2055,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual DartMap<string, object?>? _getRootWidget(string groupName)
     {
-        return _nodeToJson(WidgetsBinding.instance.rootElement?.toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: groupName, service: this));
+        return _nodeToJson(
+            WidgetsBinding.instance.rootElement?.toDiagnosticsNode(),
+            new InspectorSerializationDelegate(groupName: groupName, service: this)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1466,37 +2068,82 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _getRootWidgetSummaryTree(string groupName, Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback = null)
+    public virtual DartMap<string, object?>? _getRootWidgetSummaryTree(
+        string groupName,
+        Func<
+            DiagnosticsNode,
+            InspectorSerializationDelegate,
+            DartMap<string, object?>?
+        >? addAdditionalPropertiesCallback = null
+    )
     {
-        return _getRootWidgetTreeImpl(groupName: groupName, isSummaryTree: true, withPreviews: false, addAdditionalPropertiesCallback: addAdditionalPropertiesCallback);
+        return _getRootWidgetTreeImpl(
+            groupName: groupName,
+            isSummaryTree: true,
+            withPreviews: false,
+            addAdditionalPropertiesCallback: addAdditionalPropertiesCallback
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(
+        DartMap<string, string> parameters
+    )
     {
         string groupNameLocal = parameters.GetValueOrDefault("groupName")!;
-        DartMap<string, object?>? result = _getRootWidgetTreeImpl(groupName: groupNameLocal, isSummaryTree: true, withPreviews: true);
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = result });
+        DartMap<string, object?>? result = _getRootWidgetTreeImpl(
+            groupName: groupNameLocal,
+            isSummaryTree: true,
+            withPreviews: true
+        );
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = result }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<DartMap<string, object?>> _getRootWidgetTree(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> _getRootWidgetTree(
+        DartMap<string, string> parameters
+    )
     {
         string groupNameLocal = parameters.GetValueOrDefault("groupName")!;
         var isSummaryTreeLocal = parameters.GetValueOrDefault("isSummaryTree") == "true";
         var withPreviewsLocal = parameters.GetValueOrDefault("withPreviews") == "true";
         var fullDetailsLocal = parameters.GetValueOrDefault("fullDetails") != "false";
-        DartMap<string, object?>? result = _getRootWidgetTreeImpl(groupName: groupNameLocal, isSummaryTree: isSummaryTreeLocal, withPreviews: withPreviewsLocal, fullDetails: fullDetailsLocal);
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = result });
+        DartMap<string, object?>? result = _getRootWidgetTreeImpl(
+            groupName: groupNameLocal,
+            isSummaryTree: isSummaryTreeLocal,
+            withPreviews: withPreviewsLocal,
+            fullDetails: fullDetailsLocal
+        );
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = result }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback = null)
+    public virtual DartMap<string, object?>? _getRootWidgetTreeImpl(
+        string groupName,
+        bool isSummaryTree,
+        bool withPreviews,
+        bool fullDetails = true,
+        Func<
+            DiagnosticsNode,
+            InspectorSerializationDelegate,
+            DartMap<string, object?>?
+        >? addAdditionalPropertiesCallback = null
+    )
     {
-        bool shouldAddAdditionalProperties = (addAdditionalPropertiesCallback is not null) || withPreviews;
-        DartMap<string, object?>? combinedAddAdditionalPropertiesCallback(DiagnosticsNode node, InspectorSerializationDelegate @delegate)
+        bool shouldAddAdditionalProperties =
+            (addAdditionalPropertiesCallback is not null) || withPreviews;
+        DartMap<string, object?>? combinedAddAdditionalPropertiesCallback(
+            DiagnosticsNode node,
+            InspectorSerializationDelegate @delegate
+        )
         {
-            DartMap<string, object?> additionalPropertiesJson = addAdditionalPropertiesCallback?.Invoke(node, @delegate) ?? new DartMap<string, object?>();
+            DartMap<string, object?> additionalPropertiesJson =
+                addAdditionalPropertiesCallback?.Invoke(node, @delegate)
+                ?? new DartMap<string, object?>();
             if (!withPreviews)
             {
                 return additionalPropertiesJson;
@@ -1509,30 +2156,59 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 if (renderObject is RenderParagraph)
                 {
                     RenderParagraph renderObject__76101__as76156 = (RenderParagraph)renderObject;
-                    additionalPropertiesJson["textPreview"] = renderObject__76101__as76156.text.toPlainText();
+                    additionalPropertiesJson["textPreview"] =
+                        renderObject__76101__as76156.text.toPlainText();
                 }
             }
             return additionalPropertiesJson;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        return _nodeToJson(WidgetsBinding.instance.rootElement?.toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: groupName, subtreeDepth: 1000000L, summaryTree: isSummaryTree, service: this, addAdditionalPropertiesCallback: shouldAddAdditionalProperties ? combinedAddAdditionalPropertiesCallback : null), fullDetails: fullDetails);
+        return _nodeToJson(
+            WidgetsBinding.instance.rootElement?.toDiagnosticsNode(),
+            new InspectorSerializationDelegate(
+                groupName: groupName,
+                subtreeDepth: 1000000L,
+                summaryTree: isSummaryTree,
+                service: this,
+                addAdditionalPropertiesCallback: shouldAddAdditionalProperties
+                    ? combinedAddAdditionalPropertiesCallback
+                    : null
+            ),
+            fullDetails: fullDetails
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string getDetailsSubtree(string diagnosticableId, string groupName, long subtreeDepth = 2)
+    public virtual string getDetailsSubtree(
+        string diagnosticableId,
+        string groupName,
+        long subtreeDepth = 2
+    )
     {
         return _safeJsonEncode(_getDetailsSubtree(diagnosticableId, groupName, subtreeDepth));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _getDetailsSubtree(string? diagnosticableId, string? groupName, long subtreeDepth)
+    public virtual DartMap<string, object?>? _getDetailsSubtree(
+        string? diagnosticableId,
+        string? groupName,
+        long subtreeDepth
+    )
     {
         DiagnosticsNode? root = _idToDiagnosticsNode(diagnosticableId);
         if (root is null)
         {
             return null;
         }
-        return _nodeToJson(root, new InspectorSerializationDelegate(groupName: groupName, subtreeDepth: subtreeDepth, includeProperties: true, service: this));
+        return _nodeToJson(
+            root,
+            new InspectorSerializationDelegate(
+                groupName: groupName,
+                subtreeDepth: subtreeDepth,
+                includeProperties: true,
+                service: this
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1546,35 +2222,55 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<Ui.Image?> screenshot(object? @object, double width, double height, double margin = 0.0, double maxPixelRatio = 1.0, bool debugPaint = false)
+    public virtual async Future<Ui.Image?> screenshot(
+        object? @object,
+        double width,
+        double height,
+        double margin = 0.0,
+        double maxPixelRatio = 1.0,
+        bool debugPaint = false
+    )
     {
         if ((@object is not Element) && (@object is not RenderObject))
         {
             return null;
         }
-        RenderObject? renderObject = (@object is Element) ? _renderObjectOrNull((Element)@object) : ((RenderObject?)@object)!;
+        RenderObject? renderObject =
+            (@object is Element)
+                ? _renderObjectOrNull((Element)@object)
+                : ((RenderObject?)@object)!;
         if ((renderObject is null) || !renderObject.attached)
         {
             return null;
         }
         if (renderObject.debugNeedsLayout)
         {
-            PipelineOwner ownerLocal = DartRuntimePrimitives.ConvertValue<PipelineOwner>(renderObject.owner!);
+            PipelineOwner ownerLocal = DartRuntimePrimitives.ConvertValue<PipelineOwner>(
+                renderObject.owner!
+            );
             DartRuntimePrimitives.Assert(() => !ownerLocal.debugDoingLayout);
-            DartRuntimePrimitives.Ignore(((Func<PipelineOwner>)(() =>
-{
-    var __cascade = ownerLocal;
-    __cascade.flushLayout();
-    __cascade.flushCompositingBits();
-    __cascade.flushPaint();
-    return __cascade;
-}))());
+            DartRuntimePrimitives.Ignore(
+                (
+                    (Func<PipelineOwner>)(
+                        () =>
+                        {
+                            var __cascade = ownerLocal;
+                            __cascade.flushLayout();
+                            __cascade.flushCompositingBits();
+                            __cascade.flushPaint();
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
             if (renderObject.debugNeedsLayout)
             {
                 return null;
             }
         }
-        Rect renderBounds = DartRuntimePrimitives.ConvertValue<Rect>(Widget_inspectorLibrary._calculateSubtreeBounds(renderObject));
+        Rect renderBounds = DartRuntimePrimitives.ConvertValue<Rect>(
+            Widget_inspectorLibrary._calculateSubtreeBounds(renderObject)
+        );
         if (margin != 0.0)
         {
             renderBounds = renderBounds.inflate(margin);
@@ -1583,99 +2279,179 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return null;
         }
-        double pixelRatioLocal = Math.Min(maxPixelRatio, Math.Min(width / renderBounds.width, height / renderBounds.height));
-        return await _ScreenshotPaintingContext__widget_inspector.toImage(renderObject, renderBounds, pixelRatio: pixelRatioLocal, debugPaint: debugPaint);
+        double pixelRatioLocal = Math.Min(
+            maxPixelRatio,
+            Math.Min(width / renderBounds.width, height / renderBounds.height)
+        );
+        return await _ScreenshotPaintingContext__widget_inspector.toImage(
+            renderObject,
+            renderBounds,
+            pixelRatio: pixelRatioLocal,
+            debugPaint: debugPaint
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<DartMap<string, object?>> _getLayoutExplorerNode(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> _getLayoutExplorerNode(
+        DartMap<string, string> parameters
+    )
     {
         string? diagnosticableId = parameters.GetValueOrDefault("id");
-        long subtreeDepthLocal = long.Parse(parameters.GetValueOrDefault("subtreeDepth")!, System.Globalization.CultureInfo.InvariantCulture);
+        long subtreeDepthLocal = long.Parse(
+            parameters.GetValueOrDefault("subtreeDepth")!,
+            System.Globalization.CultureInfo.InvariantCulture
+        );
         string? groupNameLocal = parameters.GetValueOrDefault("groupName");
         DartMap<string, object?>? result = new DartMap<string, object?>();
         DiagnosticsNode? root = _idToDiagnosticsNode(diagnosticableId);
         if (root is null)
         {
-            return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = result });
+            return Future<DartMap<string, object?>>.value(
+                new DartMap<string, object?> { ["result"] = result }
+            );
         }
-        result = _nodeToJson(root, new InspectorSerializationDelegate(groupName: groupNameLocal, summaryTree: true, subtreeDepth: subtreeDepthLocal, service: this, addAdditionalPropertiesCallback: (node, @delegate) =>
-        {
-            object? valueLocal = node.value;
-            RenderObject? renderObject = (valueLocal is Element) ? _renderObjectOrNull((Element)valueLocal) : null;
-            if (renderObject is null)
-            {
-                return new DartMap<string, object?>();
-            }
-            DiagnosticsSerializationDelegate renderObjectSerializationDelegate = @delegate.copyWith(subtreeDepth: 0L, includeProperties: true, expandPropertyValues: false);
-            var additionalJson = new DartMap<string, object?>();
-            RenderObject? renderParent = renderObject.parent;
-            if ((renderParent is not null) && (@delegate.subtreeDepth > 0L) && @delegate.expandPropertyValues)
-            {
-                object? parentCreator = renderParent.debugCreator;
-                if (parentCreator is DebugCreator)
+        result = _nodeToJson(
+            root,
+            new InspectorSerializationDelegate(
+                groupName: groupNameLocal,
+                summaryTree: true,
+                subtreeDepth: subtreeDepthLocal,
+                service: this,
+                addAdditionalPropertiesCallback: (node, @delegate) =>
                 {
-                    DebugCreator parentCreator__82646__as82705 = (DebugCreator)parentCreator;
-                    additionalJson["parentRenderElement"] = ((Diagnosticable)parentCreator__82646__as82705.element).toDiagnosticsNode().toJsonMap(@delegate.copyWith(subtreeDepth: 0L, includeProperties: true));
-                }
-            }
-            try
-            {
-                if (!renderObject.debugNeedsLayout)
-                {
-                    Constraints constraintsLocal = DartRuntimePrimitives.ConvertValue<Constraints>(renderObject.constraints);
-                    var constraintsProperty = new DartMap<string, object?> { ["type"] = DartRuntimePrimitives.RuntimeTypeName(constraintsLocal), ["description"] = constraintsLocal.ToString() };
-                    if (constraintsLocal is BoxConstraints)
+                    object? valueLocal = node.value;
+                    RenderObject? renderObject =
+                        (valueLocal is Element) ? _renderObjectOrNull((Element)valueLocal) : null;
+                    if (renderObject is null)
                     {
-                        BoxConstraints constraints__83404__as83654 = (BoxConstraints)constraintsLocal;
-                        constraintsProperty.AddRange(new DartMap<string, object?> { ["minWidth"] = constraints__83404__as83654.minWidth.ToString(), ["minHeight"] = constraints__83404__as83654.minHeight.ToString(), ["maxWidth"] = constraints__83404__as83654.maxWidth.ToString(), ["maxHeight"] = constraints__83404__as83654.maxHeight.ToString() });
+                        return new DartMap<string, object?>();
                     }
-                    additionalJson["constraints"] = constraintsProperty;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            try
-            {
-                if (renderObject is RenderBox)
-                {
-                    RenderBox renderObject__81532__as84297 = (RenderBox)renderObject;
-                    additionalJson["isBox"] = true;
-                    additionalJson["size"] = new DartMap<string, object?> { ["width"] = renderObject__81532__as84297.size.width.ToString(), ["height"] = renderObject__81532__as84297.size.height.ToString() };
-                    ParentData? parentDataLocal = DartRuntimePrimitives.ConvertValue<ParentData>(renderObject__81532__as84297.parentData);
-                    if (parentDataLocal is FlexParentData)
+                    DiagnosticsSerializationDelegate renderObjectSerializationDelegate =
+                        @delegate.copyWith(
+                            subtreeDepth: 0L,
+                            includeProperties: true,
+                            expandPropertyValues: false
+                        );
+                    var additionalJson = new DartMap<string, object?>();
+                    RenderObject? renderParent = renderObject.parent;
+                    if (
+                        (renderParent is not null)
+                        && (@delegate.subtreeDepth > 0L)
+                        && @delegate.expandPropertyValues
+                    )
                     {
-                        FlexParentData parentData__84603__as84659 = (FlexParentData)parentDataLocal;
-                        additionalJson["flexFactor"] = parentData__84603__as84659.flex ?? 0L;
-                        additionalJson["flexFit"] = (parentData__84603__as84659.fit ?? FlexFit.tight).ToString();
-                    }
-                    else
-                    {
-                        if (parentDataLocal is BoxParentData)
+                        object? parentCreator = renderParent.debugCreator;
+                        if (parentCreator is DebugCreator)
                         {
-                            BoxParentData parentData__84603__as84869 = (BoxParentData)parentDataLocal;
-                            Offset offsetLocal = parentData__84603__as84869.offset;
-                            additionalJson["parentData"] = new DartMap<string, object?> { ["offsetX"] = offsetLocal.dx.ToString(), ["offsetY"] = offsetLocal.dy.ToString() };
+                            DebugCreator parentCreator__82646__as82705 =
+                                (DebugCreator)parentCreator;
+                            additionalJson["parentRenderElement"] = (
+                                (Diagnosticable)parentCreator__82646__as82705.element
+                            )
+                                .toDiagnosticsNode()
+                                .toJsonMap(
+                                    @delegate.copyWith(subtreeDepth: 0L, includeProperties: true)
+                                );
                         }
                     }
-                }
-                else
-                {
-                    if (renderObject is RenderView)
+                    try
                     {
-                        RenderView renderObject__81532__as85182 = (RenderView)renderObject;
-                        additionalJson["size"] = new DartMap<string, object?> { ["width"] = renderObject__81532__as85182.size.width.ToString(), ["height"] = renderObject__81532__as85182.size.height.ToString() };
+                        if (!renderObject.debugNeedsLayout)
+                        {
+                            Constraints constraintsLocal =
+                                DartRuntimePrimitives.ConvertValue<Constraints>(
+                                    renderObject.constraints
+                                );
+                            var constraintsProperty = new DartMap<string, object?>
+                            {
+                                ["type"] = DartRuntimePrimitives.RuntimeTypeName(constraintsLocal),
+                                ["description"] = constraintsLocal.ToString(),
+                            };
+                            if (constraintsLocal is BoxConstraints)
+                            {
+                                BoxConstraints constraints__83404__as83654 =
+                                    (BoxConstraints)constraintsLocal;
+                                constraintsProperty.AddRange(
+                                    new DartMap<string, object?>
+                                    {
+                                        ["minWidth"] =
+                                            constraints__83404__as83654.minWidth.ToString(),
+                                        ["minHeight"] =
+                                            constraints__83404__as83654.minHeight.ToString(),
+                                        ["maxWidth"] =
+                                            constraints__83404__as83654.maxWidth.ToString(),
+                                        ["maxHeight"] =
+                                            constraints__83404__as83654.maxHeight.ToString(),
+                                    }
+                                );
+                            }
+                            additionalJson["constraints"] = constraintsProperty;
+                        }
                     }
+                    catch (Exception) { }
+                    try
+                    {
+                        if (renderObject is RenderBox)
+                        {
+                            RenderBox renderObject__81532__as84297 = (RenderBox)renderObject;
+                            additionalJson["isBox"] = true;
+                            additionalJson["size"] = new DartMap<string, object?>
+                            {
+                                ["width"] = renderObject__81532__as84297.size.width.ToString(),
+                                ["height"] = renderObject__81532__as84297.size.height.ToString(),
+                            };
+                            ParentData? parentDataLocal =
+                                DartRuntimePrimitives.ConvertValue<ParentData>(
+                                    renderObject__81532__as84297.parentData
+                                );
+                            if (parentDataLocal is FlexParentData)
+                            {
+                                FlexParentData parentData__84603__as84659 =
+                                    (FlexParentData)parentDataLocal;
+                                additionalJson["flexFactor"] =
+                                    parentData__84603__as84659.flex ?? 0L;
+                                additionalJson["flexFit"] = (
+                                    parentData__84603__as84659.fit ?? FlexFit.tight
+                                ).ToString();
+                            }
+                            else
+                            {
+                                if (parentDataLocal is BoxParentData)
+                                {
+                                    BoxParentData parentData__84603__as84869 =
+                                        (BoxParentData)parentDataLocal;
+                                    Offset offsetLocal = parentData__84603__as84869.offset;
+                                    additionalJson["parentData"] = new DartMap<string, object?>
+                                    {
+                                        ["offsetX"] = offsetLocal.dx.ToString(),
+                                        ["offsetY"] = offsetLocal.dy.ToString(),
+                                    };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (renderObject is RenderView)
+                            {
+                                RenderView renderObject__81532__as85182 = (RenderView)renderObject;
+                                additionalJson["size"] = new DartMap<string, object?>
+                                {
+                                    ["width"] = renderObject__81532__as85182.size.width.ToString(),
+                                    ["height"] =
+                                        renderObject__81532__as85182.size.height.ToString(),
+                                };
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+                    return additionalJson;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-            }
-            catch (Exception)
-            {
-            }
-            return additionalJson;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = result });
+            )
+        );
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = result }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1699,15 +2475,22 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 succeed = true;
             }
         }
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = succeed });
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = succeed }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<DartMap<string, object?>> _setFlexFactor(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> _setFlexFactor(
+        DartMap<string, string> parameters
+    )
     {
         string? id = parameters.GetValueOrDefault("id");
         string flexFactor = parameters.GetValueOrDefault("flexFactor")!;
-        long? factor = (flexFactor == "null") ? null : long.Parse(flexFactor, System.Globalization.CultureInfo.InvariantCulture);
+        long? factor =
+            (flexFactor == "null")
+                ? null
+                : long.Parse(flexFactor, System.Globalization.CultureInfo.InvariantCulture);
         object? @object = toObject(id);
         var succeed = false;
         if ((@object is not null) && (@object is Element))
@@ -1723,15 +2506,25 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 succeed = true;
             }
         }
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = succeed });
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = succeed }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<DartMap<string, object?>> _setFlexProperties(DartMap<string, string> parameters)
+    public virtual Future<DartMap<string, object?>> _setFlexProperties(
+        DartMap<string, string> parameters
+    )
     {
         string? id = parameters.GetValueOrDefault("id");
-        MainAxisAlignment mainAxisAlignmentLocal = _toEnumEntry(Enum.GetValues<MainAxisAlignment>().ToList(), parameters.GetValueOrDefault("mainAxisAlignment")!);
-        CrossAxisAlignment crossAxisAlignmentLocal = _toEnumEntry(Enum.GetValues<CrossAxisAlignment>().ToList(), parameters.GetValueOrDefault("crossAxisAlignment")!);
+        MainAxisAlignment mainAxisAlignmentLocal = _toEnumEntry(
+            Enum.GetValues<MainAxisAlignment>().ToList(),
+            parameters.GetValueOrDefault("mainAxisAlignment")!
+        );
+        CrossAxisAlignment crossAxisAlignmentLocal = _toEnumEntry(
+            Enum.GetValues<CrossAxisAlignment>().ToList(),
+            parameters.GetValueOrDefault("crossAxisAlignment")!
+        );
         object? @object = toObject(id);
         var succeed = false;
         if ((@object is not null) && (@object is Element))
@@ -1748,7 +2541,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 succeed = true;
             }
         }
-        return Future<DartMap<string, object?>>.value(new DartMap<string, object?> { ["result"] = succeed });
+        return Future<DartMap<string, object?>>.value(
+            new DartMap<string, object?> { ["result"] = succeed }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1765,9 +2560,15 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _getSelectedWidget(string? previousSelectionId, string groupName)
+    public virtual DartMap<string, object?>? _getSelectedWidget(
+        string? previousSelectionId,
+        string groupName
+    )
     {
-        return _nodeToJson(_getSelectedWidgetDiagnosticsNode(previousSelectionId), new InspectorSerializationDelegate(groupName: groupName, service: this));
+        return _nodeToJson(
+            _getSelectedWidgetDiagnosticsNode(previousSelectionId),
+            new InspectorSerializationDelegate(groupName: groupName, service: this)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1775,7 +2576,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         var previousSelection = ((DiagnosticsNode?)toObject(previousSelectionId))!;
         Element? current = selection.currentElement;
-        return Equals(current, previousSelection?.value) ? previousSelection : current?.toDiagnosticsNode();
+        return Equals(current, previousSelection?.value)
+            ? previousSelection
+            : current?.toDiagnosticsNode();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1791,7 +2594,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
 
     public virtual CreationLocation? _getSelectedWidgetLocation(bool restrictToSummaryTree = false)
     {
-        DiagnosticsNode? selectedNode = restrictToSummaryTree ? _getSelectedSummaryDiagnosticsNode(null) : _getSelectedWidgetDiagnosticsNode(null);
+        DiagnosticsNode? selectedNode = restrictToSummaryTree
+            ? _getSelectedSummaryDiagnosticsNode(null)
+            : _getSelectedWidgetDiagnosticsNode(null);
         return Widget_inspectorLibrary._getCreationLocation(selectedNode?.value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1817,19 +2622,29 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
             current = firstLocal;
         }
-        return Equals(current, previousSelection?.value) ? previousSelection : current?.toDiagnosticsNode();
+        return Equals(current, previousSelection?.value)
+            ? previousSelection
+            : current?.toDiagnosticsNode();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object?>? _getSelectedSummaryWidget(string? previousSelectionId, string groupName)
+    public virtual DartMap<string, object?>? _getSelectedSummaryWidget(
+        string? previousSelectionId,
+        string groupName
+    )
     {
-        return _nodeToJson(_getSelectedSummaryDiagnosticsNode(previousSelectionId), new InspectorSerializationDelegate(groupName: groupName, service: this));
+        return _nodeToJson(
+            _getSelectedSummaryDiagnosticsNode(previousSelectionId),
+            new InspectorSerializationDelegate(groupName: groupName, service: this)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool isWidgetCreationTracked()
     {
-        _widgetCreationTracked ??= (CreationLocation.of(new _WidgetForTypeTests__widget_inspector()) is not null);
+        _widgetCreationTracked ??= (
+            CreationLocation.of(new _WidgetForTypeTests__widget_inspector()) is not null
+        );
         return DartRuntimePrimitives.RequireValue(_widgetCreationTracked);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1838,7 +2653,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         _frameStart = timeStamp;
         _frameNumber = PlatformDispatcher.instance.frameData.frameNumber;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration>)_onFrameEnd)(__arg0), debugLabel: "WidgetInspector.onFrameStart");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (__arg0) => ((Action<Duration>)_onFrameEnd)(__arg0),
+            debugLabel: "WidgetInspector.onFrameStart"
+        );
     }
 
     public virtual void _onFrameEnd(Duration timeStamp)
@@ -1853,12 +2671,22 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         }
     }
 
-    public virtual void _postStatsEvent(string eventName, _ElementLocationStatsTracker__widget_inspector stats)
+    public virtual void _postStatsEvent(
+        string eventName,
+        _ElementLocationStatsTracker__widget_inspector stats
+    )
     {
-        postEvent(eventName, stats.exportToJson(_frameStart, frameNumber: _frameNumber).cast<object, object>());
+        postEvent(
+            eventName,
+            stats.exportToJson(_frameStart, frameNumber: _frameNumber).cast<object, object>()
+        );
     }
 
-    public virtual void postEvent(string eventKind, DartMap<object, object> eventData, string stream = "Extension")
+    public virtual void postEvent(
+        string eventKind,
+        DartMap<object, object> eventData,
+        string stream = "Extension"
+    )
     {
         Dart_developerLibrary.postEvent(eventKind, eventData, stream: stream);
     }
@@ -1877,27 +2705,38 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         try
         {
-            Element? elementLocal = DartRuntimePrimitives.ConvertValue<Element>(((DebugCreator?)renderObject.debugCreator)!?.element);
+            Element? elementLocal = DartRuntimePrimitives.ConvertValue<Element>(
+                ((DebugCreator?)renderObject.debugCreator)!?.element
+            );
             if (elementLocal is not RenderObjectElement)
             {
                 return;
             }
             _repaintStats.add((RenderObjectElement)elementLocal);
-            ((RenderObjectElement)elementLocal).visitAncestorElements((ancestor) =>
-            {
-                if (ancestor is RenderObjectElement)
+            ((RenderObjectElement)elementLocal).visitAncestorElements(
+                (ancestor) =>
                 {
-                    return false;
+                    if (ancestor is RenderObjectElement)
+                    {
+                        return false;
+                    }
+                    _repaintStats.add(ancestor);
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                _repaintStats.add(ancestor);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget inspector library", context: new ErrorDescription("while tracking widget repaints")));
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "widget inspector library",
+                    context: new ErrorDescription("while tracking widget repaints")
+                )
+            );
         }
     }
 
@@ -1907,14 +2746,16 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         _resetErrorCount();
     }
 
-    public virtual RenderObject? _renderObjectOrNull(Element element) => element.mounted ? element.renderObject : null;
+    public virtual RenderObject? _renderObjectOrNull(Element element) =>
+        element.mounted ? element.renderObject : null;
 }
 
 public interface WidgetInspectorService
 {
     List<string?> _serializeRing { get; }
     long _serializeRingIndex { get; set; }
-    public static WidgetInspectorService _instance = new _WidgetInspectorService__widget_inspector();
+    public static WidgetInspectorService _instance =
+        new _WidgetInspectorService__widget_inspector();
     internal static bool _debugServiceExtensionsRegistered = false;
     InspectorSelection selection { get; }
     Action? selectionChangedCallback { get; set; }
@@ -1940,13 +2781,38 @@ public interface WidgetInspectorService
         set => _instance = value;
     }
     public bool isSelectMode { set; }
-    public void registerServiceExtension(string name, Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerSignalServiceExtension<TResult>(string name, Func<TResult> callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerObjectGroupServiceExtension<TResult>(string name, Func<string, TResult> callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerBoolServiceExtension(string name, Func<Future<bool>> getter, Func<bool, Future> setter, RegisterServiceExtensionCallback registerExtension);
+    public void registerServiceExtension(
+        string name,
+        Func<DartMap<string, string>, Future<DartMap<string, object?>>> callback,
+        RegisterServiceExtensionCallback registerExtension
+    );
+    public void _registerSignalServiceExtension<TResult>(
+        string name,
+        Func<TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    );
+    public void _registerObjectGroupServiceExtension<TResult>(
+        string name,
+        Func<string, TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    );
+    public void _registerBoolServiceExtension(
+        string name,
+        Func<Future<bool>> getter,
+        Func<bool, Future> setter,
+        RegisterServiceExtensionCallback registerExtension
+    );
     public void _postExtensionStateChangedEvent(string name, object? value);
-    public void _registerServiceExtensionWithArg<TResult>(string name, Func<string?, string, TResult> callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerServiceExtensionVarArgs(string name, Func<List<string>, object?> callback, RegisterServiceExtensionCallback registerExtension);
+    public void _registerServiceExtensionWithArg<TResult>(
+        string name,
+        Func<string?, string, TResult> callback,
+        RegisterServiceExtensionCallback registerExtension
+    );
+    public void _registerServiceExtensionVarArgs(
+        string name,
+        Func<List<string>, object?> callback,
+        RegisterServiceExtensionCallback registerExtension
+    );
     public Future forceRebuild();
     public void _reportStructuredError(FlutterErrorDetails details);
     public void _resetErrorCount();
@@ -1975,15 +2841,33 @@ public interface WidgetInspectorService
     public string getParentChain(string id, string groupName);
     public List<object?> _getParentChain(string? id, string groupName);
     public List<Element> _getRawElementParentChain(Element element, long? numLocalParents);
-    public List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(Element element, string groupName, long? numLocalParents = null);
-    public List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(RenderObject? renderObject, string groupName);
-    public DartMap<string, object?>? _nodeToJson(DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true);
+    public List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(
+        Element element,
+        string groupName,
+        long? numLocalParents = null
+    );
+    public List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(
+        RenderObject? renderObject,
+        string groupName
+    );
+    public DartMap<string, object?>? _nodeToJson(
+        DiagnosticsNode? node,
+        InspectorSerializationDelegate @delegate,
+        bool fullDetails = true
+    );
     public bool _isValueCreatedByLocalProject(object? value);
     public bool _isLocalCreationLocationImpl(string locationUri);
     public bool _isLocalCreationLocation(string locationUri);
     public string _safeJsonEncode(object? @object);
-    public List<DiagnosticsNode> _truncateNodes(IEnumerable<DiagnosticsNode> nodes, long maxDescendentsTruncatableNode);
-    public List<DartMap<string, object?>> _nodesToJson(List<DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, DiagnosticsNode? parent);
+    public List<DiagnosticsNode> _truncateNodes(
+        IEnumerable<DiagnosticsNode> nodes,
+        long maxDescendentsTruncatableNode
+    );
+    public List<DartMap<string, object?>> _nodesToJson(
+        List<DiagnosticsNode> nodes,
+        InspectorSerializationDelegate @delegate,
+        DiagnosticsNode? parent
+    );
     public string getProperties(string diagnosticsNodeId, string groupName);
     public List<object> _getProperties(string? diagnosticableId, string groupName);
     public string getChildren(string diagnosticsNodeId, string groupName);
@@ -2003,36 +2887,94 @@ public interface WidgetInspectorService
     public string getChildrenDetailsSubtree(string diagnosticableId, string groupName);
     public List<object> _getChildrenDetailsSubtree(string? diagnosticableId, string groupName);
     public bool _shouldShowInSummaryTree(DiagnosticsNode node);
-    public List<DiagnosticsNode> _getChildrenFiltered(DiagnosticsNode node, InspectorSerializationDelegate @delegate);
-    public List<DiagnosticsNode> _filterChildren(List<DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate);
-    public InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, DiagnosticsNode node);
+    public List<DiagnosticsNode> _getChildrenFiltered(
+        DiagnosticsNode node,
+        InspectorSerializationDelegate @delegate
+    );
+    public List<DiagnosticsNode> _filterChildren(
+        List<DiagnosticsNode> nodes,
+        InspectorSerializationDelegate @delegate
+    );
+    public InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(
+        InspectorSerializationDelegate @delegate,
+        DiagnosticsNode node
+    );
     public string getRootWidget(string groupName);
     public DartMap<string, object?>? _getRootWidget(string groupName);
     public string getRootWidgetSummaryTree(string groupName);
-    public DartMap<string, object?>? _getRootWidgetSummaryTree(string groupName, Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback = null);
-    public Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(DartMap<string, string> parameters);
+    public DartMap<string, object?>? _getRootWidgetSummaryTree(
+        string groupName,
+        Func<
+            DiagnosticsNode,
+            InspectorSerializationDelegate,
+            DartMap<string, object?>?
+        >? addAdditionalPropertiesCallback = null
+    );
+    public Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(
+        DartMap<string, string> parameters
+    );
     public Future<DartMap<string, object?>> _getRootWidgetTree(DartMap<string, string> parameters);
-    public DartMap<string, object?>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback = null);
-    public string getDetailsSubtree(string diagnosticableId, string groupName, long subtreeDepth = 2);
-    public DartMap<string, object?>? _getDetailsSubtree(string? diagnosticableId, string? groupName, long subtreeDepth);
+    public DartMap<string, object?>? _getRootWidgetTreeImpl(
+        string groupName,
+        bool isSummaryTree,
+        bool withPreviews,
+        bool fullDetails = true,
+        Func<
+            DiagnosticsNode,
+            InspectorSerializationDelegate,
+            DartMap<string, object?>?
+        >? addAdditionalPropertiesCallback = null
+    );
+    public string getDetailsSubtree(
+        string diagnosticableId,
+        string groupName,
+        long subtreeDepth = 2
+    );
+    public DartMap<string, object?>? _getDetailsSubtree(
+        string? diagnosticableId,
+        string? groupName,
+        long subtreeDepth
+    );
     public string getSelectedWidget(string? previousSelectionId, string groupName);
-    public Future<Ui.Image?> screenshot(object? @object, double width, double height, double margin = 0.0, double maxPixelRatio = 1.0, bool debugPaint = false);
-    public Future<DartMap<string, object?>> _getLayoutExplorerNode(DartMap<string, string> parameters);
+    public Future<Ui.Image?> screenshot(
+        object? @object,
+        double width,
+        double height,
+        double margin = 0.0,
+        double maxPixelRatio = 1.0,
+        bool debugPaint = false
+    );
+    public Future<DartMap<string, object?>> _getLayoutExplorerNode(
+        DartMap<string, string> parameters
+    );
     public Future<DartMap<string, object?>> _setFlexFit(DartMap<string, string> parameters);
     public Future<DartMap<string, object?>> _setFlexFactor(DartMap<string, string> parameters);
     public Future<DartMap<string, object?>> _setFlexProperties(DartMap<string, string> parameters);
     public T _toEnumEntry<T>(List<T> enumEntries, string name);
-    public DartMap<string, object?>? _getSelectedWidget(string? previousSelectionId, string groupName);
+    public DartMap<string, object?>? _getSelectedWidget(
+        string? previousSelectionId,
+        string groupName
+    );
     public DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId);
     public string getSelectedSummaryWidget(string? previousSelectionId, string groupName);
     public CreationLocation? _getSelectedWidgetLocation(bool restrictToSummaryTree = false);
     public DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId);
-    public DartMap<string, object?>? _getSelectedSummaryWidget(string? previousSelectionId, string groupName);
+    public DartMap<string, object?>? _getSelectedSummaryWidget(
+        string? previousSelectionId,
+        string groupName
+    );
     public bool isWidgetCreationTracked();
     public void _onFrameStart(Duration timeStamp);
     public void _onFrameEnd(Duration timeStamp);
-    public void _postStatsEvent(string eventName, _ElementLocationStatsTracker__widget_inspector stats);
-    public void postEvent(string eventKind, DartMap<object, object> eventData, string stream = "Extension");
+    public void _postStatsEvent(
+        string eventName,
+        _ElementLocationStatsTracker__widget_inspector stats
+    );
+    public void postEvent(
+        string eventKind,
+        DartMap<object, object> eventData,
+        string stream = "Extension"
+    );
     public void inspect(object? @object);
     public void _onRebuildWidget(Element element, bool builtOnce);
     public void _onPaint(RenderObject renderObject);
@@ -2054,6 +2996,7 @@ public class _LocationCount__widget_inspector
     }
 
     public virtual long count => _count;
+
     public virtual void reset()
     {
         _count = 0L;
@@ -2063,14 +3006,16 @@ public class _LocationCount__widget_inspector
     {
         _count++;
     }
-
 }
 
 public class _ElementLocationStatsTracker__widget_inspector
 {
-    internal virtual List<_LocationCount__widget_inspector?> _stats { get; private set; } = new List<_LocationCount__widget_inspector?>();
-    public virtual List<_LocationCount__widget_inspector> active { get; private set; } = new List<_LocationCount__widget_inspector>();
-    public virtual List<_LocationCount__widget_inspector> newLocations { get; private set; } = new List<_LocationCount__widget_inspector>();
+    internal virtual List<_LocationCount__widget_inspector?> _stats { get; private set; } =
+        new List<_LocationCount__widget_inspector?>();
+    public virtual List<_LocationCount__widget_inspector> active { get; private set; } =
+        new List<_LocationCount__widget_inspector>();
+    public virtual List<_LocationCount__widget_inspector> newLocations { get; private set; } =
+        new List<_LocationCount__widget_inspector>();
 
     public virtual void add(Element element)
     {
@@ -2088,7 +3033,11 @@ public class _ElementLocationStatsTracker__widget_inspector
             {
                 _stats.Add(null);
             }
-            entry = new _LocationCount__widget_inspector(location: locationLocal, id: idLocal, local: WidgetInspectorService.instance._isLocalCreationLocation(locationLocal.file));
+            entry = new _LocationCount__widget_inspector(
+                location: locationLocal,
+                id: idLocal,
+                local: WidgetInspectorService.instance._isLocalCreationLocation(locationLocal.file)
+            );
             if (entry.local)
             {
                 newLocations.Add(entry);
@@ -2120,29 +3069,44 @@ public class _ElementLocationStatsTracker__widget_inspector
 
     public virtual DartMap<string, object?> exportToJson(Duration startTime, long frameNumber)
     {
-        var events = new List<long>(Enumerable.Repeat(0L, checked((int)(checked(active.Count) * 2L))));
+        var events = new List<long>(
+            Enumerable.Repeat(0L, checked((int)(checked(active.Count) * 2L)))
+        );
         var j = 0L;
         foreach (_LocationCount__widget_inspector stat in active)
         {
             events[(int)j++] = stat.id;
             events[(int)j++] = stat.count;
         }
-        var json = new DartMap<string, object?> { ["startTime"] = startTime.inMicroseconds, ["frameNumber"] = frameNumber, ["events"] = events };
+        var json = new DartMap<string, object?>
+        {
+            ["startTime"] = startTime.inMicroseconds,
+            ["frameNumber"] = frameNumber,
+            ["events"] = events,
+        };
         if (Enumerable.Any(newLocations))
         {
             var locationsJson = new DartMap<string, List<long>>();
             foreach (_LocationCount__widget_inspector entry in newLocations)
             {
                 CreationLocation locationLocal = (CreationLocation)entry.location;
-                List<long> jsonForFile = locationsJson.putIfAbsent(locationLocal.file, () => new List<long>()).ToList();
-                DartRuntimePrimitives.Ignore(((Func<List<long>>)(() =>
-{
-    var __cascade = jsonForFile;
-    __cascade.Add(entry.id);
-    __cascade.Add((long)(object)locationLocal.line);
-    __cascade.Add((long)(object)locationLocal.column);
-    return __cascade;
-}))());
+                List<long> jsonForFile = locationsJson
+                    .putIfAbsent(locationLocal.file, () => new List<long>())
+                    .ToList();
+                DartRuntimePrimitives.Ignore(
+                    (
+                        (Func<List<long>>)(
+                            () =>
+                            {
+                                var __cascade = jsonForFile;
+                                __cascade.Add(entry.id);
+                                __cascade.Add((long)(object)locationLocal.line);
+                                __cascade.Add((long)(object)locationLocal.column);
+                                return __cascade;
+                            }
+                        )
+                    )()
+                );
             }
             json["newLocations"] = locationsJson;
         }
@@ -2152,7 +3116,19 @@ public class _ElementLocationStatsTracker__widget_inspector
             foreach (_LocationCount__widget_inspector entryLocal in newLocations)
             {
                 CreationLocation locationAlternate = (CreationLocation)entryLocal.location;
-                DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(locationAlternate.file, () => new DartMap<string, List<object>> { ["ids"] = new List<long>().Cast<object>().ToList(), ["lines"] = new List<long>().Cast<object>().ToList(), ["columns"] = new List<long>().Cast<object>().ToList(), ["names"] = new List<string?>().Cast<object>().ToList() }).cast<string, List<object?>>();
+                DartMap<string, List<object?>> locations = fileLocationsMap
+                    .putIfAbsent(
+                        locationAlternate.file,
+                        () =>
+                            new DartMap<string, List<object>>
+                            {
+                                ["ids"] = new List<long>().Cast<object>().ToList(),
+                                ["lines"] = new List<long>().Cast<object>().ToList(),
+                                ["columns"] = new List<long>().Cast<object>().ToList(),
+                                ["names"] = new List<string?>().Cast<object>().ToList(),
+                            }
+                    )
+                    .cast<string, List<object?>>();
                 locations.GetValueOrDefault("ids")!.Add(entryLocal.id);
                 locations.GetValueOrDefault("lines")!.Add(locationAlternate.line);
                 locations.GetValueOrDefault("columns")!.Add(locationAlternate.column);
@@ -2165,14 +3141,11 @@ public class _ElementLocationStatsTracker__widget_inspector
         return json;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _WidgetForTypeTests__widget_inspector : Widget
 {
-    internal _WidgetForTypeTests__widget_inspector()
-    {
-    }
+    internal _WidgetForTypeTests__widget_inspector() { }
 
     public override Element createElement() => throw new NotImplementedException();
 }
@@ -2180,11 +3153,26 @@ internal class _WidgetForTypeTests__widget_inspector : Widget
 public class WidgetInspector : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder { get; private set; }
-    public virtual MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder { get; private set; }
+    public virtual ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder
+    {
+        get;
+        private set;
+    }
+    public virtual MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder
+    {
+        get;
+        private set;
+    }
     public virtual TapBehaviorButtonBuilder? tapBehaviorButtonBuilder { get; private set; }
 
-    public WidgetInspector(Key? key = null, Widget child = default!, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = default!, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = default!, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = default!) : base(key: key)
+    public WidgetInspector(
+        Key? key = null,
+        Widget child = default!,
+        TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = default!,
+        ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = default!,
+        MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = default!
+    )
+        : base(key: key)
     {
         this.child = child;
         this.tapBehaviorButtonBuilder = tapBehaviorButtonBuilder;
@@ -2192,28 +3180,35 @@ public class WidgetInspector : StatefulWidget
         this.moveExitWidgetSelectionButtonBuilder = moveExitWidgetSelectionButtonBuilder;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _WidgetInspectorState__widget_inspector());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _WidgetInspectorState__widget_inspector());
 }
 
-internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>, WidgetsBindingObserver
+internal class _WidgetInspectorState__widget_inspector
+    : State<WidgetInspector>,
+        WidgetsBindingObserver
 {
     internal virtual Offset? _lastPointerLocation { get; set; } = default;
     public virtual InspectorSelection selection { get; set; } = default!;
     public virtual bool isSelectMode { get; set; } = default!;
-    internal virtual GlobalKey<IState> _ignorePointerKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _ignorePointerKey { get; private set; } =
+        GlobalKey<IState>.Create();
     internal const double _edgeHitMargin = 2.0;
 
-    internal _WidgetInspectorState__widget_inspector()
-    {
-    }
+    internal _WidgetInspectorState__widget_inspector() { }
 
-    internal virtual ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
-    internal virtual bool _isSelectModeWithSelectionOnTapEnabled => DartRuntimePrimitives.ConvertValue<bool>(isSelectMode && _selectionOnTapEnabled.value);
+    internal virtual ValueNotifier<bool> _selectionOnTapEnabled =>
+        WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
+    internal virtual bool _isSelectModeWithSelectionOnTapEnabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(isSelectMode && _selectionOnTapEnabled.value);
+
     public override void initState()
     {
         base.initState();
         WidgetInspectorService.instance.selection.addListener(_selectionInformationChanged);
-        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(_selectionInformationChanged);
+        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(
+            _selectionInformationChanged
+        );
         _selectionOnTapEnabled.addListener(_selectionInformationChanged);
         selection = WidgetInspectorService.instance.selection;
         isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
@@ -2222,17 +3217,27 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
     public override void dispose()
     {
         WidgetInspectorService.instance.selection.removeListener(_selectionInformationChanged);
-        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.removeListener(_selectionInformationChanged);
+        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.removeListener(
+            _selectionInformationChanged
+        );
         _selectionOnTapEnabled.removeListener(_selectionInformationChanged);
         base.dispose();
     }
 
-    internal virtual void _selectionInformationChanged() => setState(() =>
-    {
-        selection = WidgetInspectorService.instance.selection;
-        isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
-    });
-    internal virtual bool _hitTestHelper(List<RenderObject> hits, List<RenderObject> edgeHits, Offset position, RenderObject @object, Matrix4 transform)
+    internal virtual void _selectionInformationChanged() =>
+        setState(() =>
+        {
+            selection = WidgetInspectorService.instance.selection;
+            isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
+        });
+
+    internal virtual bool _hitTestHelper(
+        List<RenderObject> hits,
+        List<RenderObject> edgeHits,
+        Offset position,
+        RenderObject @object,
+        Matrix4 transform
+    )
     {
         var hit = false;
         Matrix4? inverse = Matrix4.tryInvert(transform);
@@ -2245,13 +3250,19 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
         for (long i = checked(children.Count) - 1L; i >= 0L; i -= 1L)
         {
             DiagnosticsNode diagnostics = children[(int)i];
-            if (Equals(diagnostics.style, DiagnosticsTreeStyle.offstage) || (diagnostics.value is not RenderObject))
+            if (
+                Equals(diagnostics.style, DiagnosticsTreeStyle.offstage)
+                || (diagnostics.value is not RenderObject)
+            )
             {
                 continue;
             }
             var child = ((RenderObject?)diagnostics.value!)!;
             Rect? paintClip = @object.describeApproximatePaintClip(child);
-            if ((paintClip is not null) && !DartRuntimePrimitives.RequireValue(paintClip).contains(localPosition))
+            if (
+                (paintClip is not null)
+                && !DartRuntimePrimitives.RequireValue(paintClip).contains(localPosition)
+            )
             {
                 Rect paintClip__106714__value106780 = DartRuntimePrimitives.RequireValue(paintClip);
                 continue;
@@ -2303,10 +3314,13 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
         {
             return;
         }
-        var ignorePointer = ((RenderIgnorePointer?)_ignorePointerKey.currentContext!.findRenderObject()!)!;
+        var ignorePointer = (
+            (RenderIgnorePointer?)_ignorePointerKey.currentContext!.findRenderObject()!
+        )!;
         RenderObject userRender = ignorePointer.child!;
         List<RenderObject> selected = hitTest(position, userRender);
-        selection.candidates = Widget_inspectorLibrary._filterInspectorHitCandidatesToModalRouteScope(selected);
+        selection.candidates =
+            Widget_inspectorLibrary._filterInspectorHitCandidatesToModalRouteScope(selected);
     }
 
     internal virtual void _handlePanDown(DragDownDetails @event)
@@ -2324,14 +3338,19 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
     internal virtual void _handlePanEnd(DragEndDetails details)
     {
         DorotiView view = View.of(context);
-        Rect bounds = (Offset.zero & view.physicalSize / view.devicePixelRatio).deflate(Widget_inspectorLibrary._kOffScreenMargin);
+        Rect bounds = (Offset.zero & (view.physicalSize / view.devicePixelRatio)).deflate(
+            Widget_inspectorLibrary._kOffScreenMargin
+        );
         if (!bounds.contains(DartRuntimePrimitives.RequireValue(_lastPointerLocation)))
         {
             selection.clear();
         }
         else
         {
-            WidgetInspectorService.instance._notifyToolsOfSelection(selection.current, restrictToProjectFiles: true);
+            WidgetInspectorService.instance._notifyToolsOfSelection(
+                selection.current,
+                restrictToProjectFiles: true
+            );
         }
     }
 
@@ -2344,65 +3363,83 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
         if (_lastPointerLocation is not null)
         {
             _inspectAt(DartRuntimePrimitives.RequireValue(_lastPointerLocation));
-            WidgetInspectorService.instance._notifyToolsOfSelection(selection.current, restrictToProjectFiles: true);
+            WidgetInspectorService.instance._notifyToolsOfSelection(
+                selection.current,
+                restrictToProjectFiles: true
+            );
         }
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Stack(children: new List<Widget> { new GestureDetector(onTap: () => _handleTap(), onPanDown: _handlePanDown, onPanEnd: _handlePanEnd, onPanUpdate: _handlePanUpdate, behavior: HitTestBehavior.opaque, excludeFromSemantics: true, child: new IgnorePointer(ignoring: _isSelectModeWithSelectionOnTapEnabled, key: _ignorePointerKey, child: widget.child)), Positioned.CreateFill(child: new _InspectorOverlay__widget_inspector(selection: selection)) });
+        return new Stack(
+            children: new List<Widget>
+            {
+                new GestureDetector(
+                    onTap: () => _handleTap(),
+                    onPanDown: _handlePanDown,
+                    onPanEnd: _handlePanEnd,
+                    onPanUpdate: _handlePanUpdate,
+                    behavior: HitTestBehavior.opaque,
+                    excludeFromSemantics: true,
+                    child: new IgnorePointer(
+                        ignoring: _isSelectModeWithSelectionOnTapEnabled,
+                        key: _ignorePointerKey,
+                        child: widget.child
+                    )
+                ),
+                Positioned.CreateFill(
+                    child: new _InspectorOverlay__widget_inspector(selection: selection)
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class EnableWidgetInspectorScope : ProxyWidget
 {
-    public EnableWidgetInspectorScope(Key? key = null, Widget child = default!) : base(key: key, child: child)
-    {
-    }
+    public EnableWidgetInspectorScope(Key? key = null, Widget child = default!)
+        : base(key: key, child: child) { }
 
-    public override Element createElement() => DartRuntimePrimitives.ConvertValue<Element>(new _EnableWidgetInspectorScopeProxyElement__widget_inspector(this));
+    public override Element createElement() =>
+        DartRuntimePrimitives.ConvertValue<Element>(
+            new _EnableWidgetInspectorScopeProxyElement__widget_inspector(this)
+        );
 }
 
 internal class _EnableWidgetInspectorScopeProxyElement__widget_inspector : ProxyElement
 {
-    internal _EnableWidgetInspectorScopeProxyElement__widget_inspector(ProxyWidget widget) : base(widget)
-    {
-    }
+    internal _EnableWidgetInspectorScopeProxyElement__widget_inspector(ProxyWidget widget)
+        : base(widget) { }
 
-    public override void notifyClients(ProxyWidget oldWidget)
-    {
-    }
-
+    public override void notifyClients(ProxyWidget oldWidget) { }
 }
 
 public class DisableWidgetInspectorScope : ProxyWidget
 {
-    public DisableWidgetInspectorScope(Key? key = null, Widget child = default!) : base(key: key, child: child)
-    {
-    }
+    public DisableWidgetInspectorScope(Key? key = null, Widget child = default!)
+        : base(key: key, child: child) { }
 
-    public override Element createElement() => DartRuntimePrimitives.ConvertValue<Element>(new _DisableWidgetInspectorScopeProxyElement__widget_inspector(this));
+    public override Element createElement() =>
+        DartRuntimePrimitives.ConvertValue<Element>(
+            new _DisableWidgetInspectorScopeProxyElement__widget_inspector(this)
+        );
 }
 
 internal class _DisableWidgetInspectorScopeProxyElement__widget_inspector : ProxyElement
 {
-    internal _DisableWidgetInspectorScopeProxyElement__widget_inspector(ProxyWidget widget) : base(widget)
-    {
-    }
+    internal _DisableWidgetInspectorScopeProxyElement__widget_inspector(ProxyWidget widget)
+        : base(widget) { }
 
-    public override void notifyClients(ProxyWidget oldWidget)
-    {
-    }
-
+    public override void notifyClients(ProxyWidget oldWidget) { }
 }
 
 public enum InspectorButtonVariant
 {
     filled,
     toggle,
-    iconOnly
+    iconOnly,
 }
 
 public abstract class InspectorButton : StatelessWidget
@@ -2416,7 +3453,16 @@ public abstract class InspectorButton : StatelessWidget
     public const double buttonSize = 32.0;
     public const double buttonIconSize = 18.0;
 
-    protected InspectorButton(Key? key = null, Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null, InspectorButtonVariant variant = default!, bool? toggledOn = null) : base(key: key)
+    protected InspectorButton(
+        Key? key = null,
+        Action onPressed = default!,
+        string semanticsLabel = default!,
+        IconData icon = default!,
+        GlobalKey<IState>? buttonKey = null,
+        InspectorButtonVariant variant = default!,
+        bool? toggledOn = null
+    )
+        : base(key: key)
     {
         this.onPressed = onPressed;
         this.semanticsLabel = semanticsLabel;
@@ -2426,22 +3472,50 @@ public abstract class InspectorButton : StatelessWidget
         this.toggledOn = toggledOn;
     }
 
-    protected InspectorButton(Action onPressed, string semanticsLabel, IconData icon, GlobalKey<IState>? buttonKey = null)
+    protected InspectorButton(
+        Action onPressed,
+        string semanticsLabel,
+        IconData icon,
+        GlobalKey<IState>? buttonKey = null
+    )
         : this(null, onPressed, semanticsLabel, icon, buttonKey) { }
 
-    protected static InspectorButton CreateFilled(Key? key = null, Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null)
+    protected static InspectorButton CreateFilled(
+        Key? key = null,
+        Action onPressed = default!,
+        string semanticsLabel = default!,
+        IconData icon = default!,
+        GlobalKey<IState>? buttonKey = null
+    )
     {
-        throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
+        throw new InvalidOperationException(
+            "Dart abstract constructors cannot be invoked directly."
+        );
     }
 
-    protected static InspectorButton CreateToggle(Key? key = null, Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, bool toggledOn = true)
+    protected static InspectorButton CreateToggle(
+        Key? key = null,
+        Action onPressed = default!,
+        string semanticsLabel = default!,
+        IconData icon = default!,
+        bool toggledOn = true
+    )
     {
-        throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
+        throw new InvalidOperationException(
+            "Dart abstract constructors cannot be invoked directly."
+        );
     }
 
-    protected static InspectorButton CreateIconOnly(Key? key = null, Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!)
+    protected static InspectorButton CreateIconOnly(
+        Key? key = null,
+        Action onPressed = default!,
+        string semanticsLabel = default!,
+        IconData icon = default!
+    )
     {
-        throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
+        throw new InvalidOperationException(
+            "Dart abstract constructors cannot be invoked directly."
+        );
     }
 
     public virtual double iconSizeForVariant
@@ -2451,14 +3525,14 @@ public abstract class InspectorButton : StatelessWidget
             switch (variant)
             {
                 case InspectorButtonVariant.iconOnly:
-                    {
-                        return buttonSize;
-                    }
+                {
+                    return buttonSize;
+                }
                 case InspectorButtonVariant.filled:
                 case InspectorButtonVariant.toggle:
-                    {
-                        return buttonIconSize;
-                    }
+                {
+                    return buttonIconSize;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
@@ -2476,9 +3550,7 @@ public class InspectorSelection : ChangeNotifier
     internal virtual RenderObject? _current { get; set; } = default;
     internal virtual Element? _currentElement { get; set; } = default;
 
-    public InspectorSelection()
-    {
-    }
+    public InspectorSelection() { }
 
     public virtual List<RenderObject> candidates
     {
@@ -2501,6 +3573,7 @@ public class InspectorSelection : ChangeNotifier
             _computeCurrent();
         }
     }
+
     public virtual void clear()
     {
         _candidates = new List<RenderObject>();
@@ -2534,10 +3607,7 @@ public class InspectorSelection : ChangeNotifier
     }
     public virtual Element? currentElement
     {
-        get
-        {
-            return (_currentElement?.debugIsDefunct ?? true) ? null : _currentElement;
-        }
+        get { return (_currentElement?.debugIsDefunct ?? true) ? null : _currentElement; }
         set
         {
             var element = value;
@@ -2556,6 +3626,7 @@ public class InspectorSelection : ChangeNotifier
             }
         }
     }
+
     internal virtual void _computeCurrent()
     {
         if (_index < checked(candidates.Count))
@@ -2572,7 +3643,8 @@ public class InspectorSelection : ChangeNotifier
         }
     }
 
-    public virtual bool active => DartRuntimePrimitives.ConvertValue<bool>((_current is not null) && _current!.attached);
+    public virtual bool active =>
+        DartRuntimePrimitives.ConvertValue<bool>((_current is not null) && _current!.attached);
 }
 
 internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
@@ -2595,7 +3667,6 @@ internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
         var __renderObject = (_RenderInspectorOverlay__widget_inspector)renderObject;
         __renderObject.selection = selection;
     }
-
 }
 
 public class _RenderInspectorOverlay__widget_inspector : RenderBox
@@ -2622,6 +3693,7 @@ public class _RenderInspectorOverlay__widget_inspector : RenderBox
     }
     public override bool sizedByParent => true;
     public override bool alwaysNeedsCompositing => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.constrain(Size.infinite);
@@ -2631,9 +3703,14 @@ public class _RenderInspectorOverlay__widget_inspector : RenderBox
     public override void paint(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() => needsCompositing);
-        context.addLayer(new _InspectorOverlayLayer__widget_inspector(overlayRect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), selection: selection, rootRenderObject: true ? parent! : null));
+        context.addLayer(
+            new _InspectorOverlayLayer__widget_inspector(
+                overlayRect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height),
+                selection: selection,
+                rootRenderObject: true ? parent! : null
+            )
+        );
     }
-
 }
 
 public class _TransformedRect__widget_inspector
@@ -2650,26 +3727,40 @@ public class _TransformedRect__widget_inspector
     public override bool Equals(object? other)
     {
         var __other = other as _TransformedRect__widget_inspector;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is _TransformedRect__widget_inspector) && Equals(__other.rect, rect) && Equals(__other.transform, transform);
+        return (__other is _TransformedRect__widget_inspector)
+            && Equals(__other.rect, rect)
+            && Equals(__other.transform, transform);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(rect, transform));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(rect, transform));
 }
 
 internal class _InspectorOverlayRenderState__widget_inspector
 {
     public virtual Rect overlayRect { get; private set; } = default!;
     public virtual _TransformedRect__widget_inspector selected { get; private set; } = default!;
-    public virtual List<_TransformedRect__widget_inspector> candidates { get; private set; } = default!;
+    public virtual List<_TransformedRect__widget_inspector> candidates { get; private set; } =
+        default!;
     public virtual string tooltip { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
 
-    internal _InspectorOverlayRenderState__widget_inspector(Rect overlayRect, _TransformedRect__widget_inspector selected, List<_TransformedRect__widget_inspector> candidates, string tooltip, TextDirection textDirection)
+    internal _InspectorOverlayRenderState__widget_inspector(
+        Rect overlayRect,
+        _TransformedRect__widget_inspector selected,
+        List<_TransformedRect__widget_inspector> candidates,
+        string tooltip,
+        TextDirection textDirection
+    )
     {
         this.overlayRect = overlayRect;
         this.selected = selected;
@@ -2681,15 +3772,31 @@ internal class _InspectorOverlayRenderState__widget_inspector
     public override bool Equals(object? other)
     {
         var __other = other as _InspectorOverlayRenderState__widget_inspector;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is _InspectorOverlayRenderState__widget_inspector) && Equals(__other.overlayRect, overlayRect) && Equals(__other.selected, selected) && CollectionsLibrary.listEquals(__other.candidates, candidates) && (__other.tooltip == tooltip);
+        return (__other is _InspectorOverlayRenderState__widget_inspector)
+            && Equals(__other.overlayRect, overlayRect)
+            && Equals(__other.selected, selected)
+            && CollectionsLibrary.listEquals(__other.candidates, candidates)
+            && (__other.tooltip == tooltip);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(overlayRect, selected, FoundationRuntimePorts.ObjectHashAll(candidates), tooltip));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(
+                overlayRect,
+                selected,
+                FoundationRuntimePorts.ObjectHashAll(candidates),
+                tooltip
+            )
+        );
 }
 
 public static partial class Widget_inspectorLibrary
@@ -2704,12 +3811,22 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static Color _kHighlightedRenderObjectFillColor = Color.fromARGB(128L, 128L, 128L, 255L);
+    internal static Color _kHighlightedRenderObjectFillColor = Color.fromARGB(
+        128L,
+        128L,
+        128L,
+        255L
+    );
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static Color _kHighlightedRenderObjectBorderColor = Color.fromARGB(128L, 64L, 64L, 128L);
+    internal static Color _kHighlightedRenderObjectBorderColor = Color.fromARGB(
+        128L,
+        64L,
+        64L,
+        128L
+    );
 }
 
 public static partial class Widget_inspectorLibrary
@@ -2790,24 +3907,36 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static List<RenderObject> _filterInspectorHitCandidatesToModalRouteScope(List<RenderObject> hits)
+    internal static List<RenderObject> _filterInspectorHitCandidatesToModalRouteScope(
+        List<RenderObject> hits
+    )
     {
         if (!Enumerable.Any(hits))
         {
             return hits;
         }
-        List<RenderObject> onstageHits = hits.where((hit) =>
-        {
-            IModalRoute? route = _modalRouteForRenderObject(hit);
-            return (route is null) || !route.offstage;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList().ToList();
+        List<RenderObject> onstageHits = hits.where(
+                (hit) =>
+                {
+                    IModalRoute? route = _modalRouteForRenderObject(hit);
+                    return (route is null) || !route.offstage;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList()
+            .ToList();
         if (!Enumerable.Any(onstageHits))
         {
             return onstageHits;
         }
         IModalRoute? scopeRoute = _inspectorScopeRouteForHits(onstageHits);
-        List<RenderObject> scopedHits = onstageHits.where((hit) => DartRuntimePrimitives.Identical(_modalRouteForRenderObject(hit), scopeRoute)).ToList().ToList();
+        List<RenderObject> scopedHits = onstageHits
+            .where(
+                (hit) =>
+                    DartRuntimePrimitives.Identical(_modalRouteForRenderObject(hit), scopeRoute)
+            )
+            .ToList()
+            .ToList();
         scopedHits.sort((a, b) => _inspectorHitArea(a).CompareTo(_inspectorHitArea(b)));
         return scopedHits;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2819,12 +3948,17 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
     public virtual InspectorSelection selection { get; set; } = default!;
     public virtual Rect overlayRect { get; private set; } = default!;
     public virtual RenderObject? rootRenderObject { get; private set; }
-    internal virtual _InspectorOverlayRenderState__widget_inspector? _lastState { get; set; } = default;
+    internal virtual _InspectorOverlayRenderState__widget_inspector? _lastState { get; set; } =
+        default;
     internal virtual Picture? _picture { get; set; } = default;
     internal virtual TextPainter? _textPainter { get; set; } = default;
     internal virtual double? _textPainterMaxWidth { get; set; } = default;
 
-    internal _InspectorOverlayLayer__widget_inspector(Rect overlayRect, InspectorSelection selection, RenderObject? rootRenderObject)
+    internal _InspectorOverlayLayer__widget_inspector(
+        Rect overlayRect,
+        InspectorSelection selection,
+        RenderObject? rootRenderObject
+    )
     {
         this.overlayRect = overlayRect;
         this.selection = selection;
@@ -2853,17 +3987,33 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
         var candidatesLocal = new List<_TransformedRect__widget_inspector>();
         foreach (RenderObject candidate in selection.candidates)
         {
-            if (Equals(candidate, selectedLocal) || !candidate.attached || !_isInInspectorRenderObjectTree(candidate) || !DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(candidate), Widget_inspectorLibrary._modalRouteForRenderObject(selectedLocal)))
+            if (
+                Equals(candidate, selectedLocal)
+                || !candidate.attached
+                || !_isInInspectorRenderObjectTree(candidate)
+                || !DartRuntimePrimitives.Identical(
+                    Widget_inspectorLibrary._modalRouteForRenderObject(candidate),
+                    Widget_inspectorLibrary._modalRouteForRenderObject(selectedLocal)
+                )
+            )
             {
                 continue;
             }
-            candidatesLocal.Add(new _TransformedRect__widget_inspector(candidate, rootRenderObject));
+            candidatesLocal.Add(
+                new _TransformedRect__widget_inspector(candidate, rootRenderObject)
+            );
         }
         var selectedRect = new _TransformedRect__widget_inspector(selectedLocal, rootRenderObject);
         string widgetName = ((Diagnosticable)selection.currentElement!).toStringShort();
         string widthLocal = selectedRect.rect.width.toStringAsFixed(1L);
         string heightLocal = selectedRect.rect.height.toStringAsFixed(1L);
-        var state = new _InspectorOverlayRenderState__widget_inspector(overlayRect: overlayRect, selected: selectedRect, tooltip: $"{widgetName} ({widthLocal} x {heightLocal})", textDirection: TextDirection.ltr, candidates: candidatesLocal);
+        var state = new _InspectorOverlayRenderState__widget_inspector(
+            overlayRect: overlayRect,
+            selected: selectedRect,
+            tooltip: $"{widgetName} ({widthLocal} x {heightLocal})",
+            textDirection: TextDirection.ltr,
+            candidates: candidatesLocal
+        );
         if (!Equals(state, _lastState))
         {
             _lastState = state;
@@ -2879,43 +4029,63 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
         var canvas = new Canvas(recorder, state.overlayRect);
         Size sizeLocal = state.overlayRect.size;
         canvas.translate(state.overlayRect.left, state.overlayRect.top);
-        var fillPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = Widget_inspectorLibrary._kHighlightedRenderObjectFillColor;
-    return __cascade;
-}))();
-        var borderPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 1.0;
-    __cascade.color = Widget_inspectorLibrary._kHighlightedRenderObjectBorderColor;
-    return __cascade;
-}))();
+        var fillPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.fill;
+                    __cascade.color = Widget_inspectorLibrary._kHighlightedRenderObjectFillColor;
+                    return __cascade;
+                }
+            )
+        )();
+        var borderPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.stroke;
+                    __cascade.strokeWidth = 1.0;
+                    __cascade.color = Widget_inspectorLibrary._kHighlightedRenderObjectBorderColor;
+                    return __cascade;
+                }
+            )
+        )();
         Rect selectedPaintRect = state.selected.rect.deflate(0.5);
-        DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{
-    var __cascade = canvas;
-    __cascade.save();
-    __cascade.transform(state.selected.transform.storage);
-    __cascade.drawRect(selectedPaintRect, fillPaint);
-    __cascade.drawRect(selectedPaintRect, borderPaint);
-    __cascade.restore();
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<Canvas>)(
+                    () =>
+                    {
+                        var __cascade = canvas;
+                        __cascade.save();
+                        __cascade.transform(state.selected.transform.storage);
+                        __cascade.drawRect(selectedPaintRect, fillPaint);
+                        __cascade.drawRect(selectedPaintRect, borderPaint);
+                        __cascade.restore();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         foreach (_TransformedRect__widget_inspector transformedRect in state.candidates)
         {
-            DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{
-    var __cascade = canvas;
-    __cascade.save();
-    __cascade.transform(transformedRect.transform.storage);
-    __cascade.drawRect(transformedRect.rect.deflate(0.5), borderPaint);
-    __cascade.restore();
-    return __cascade;
-}))());
+            DartRuntimePrimitives.Ignore(
+                (
+                    (Func<Canvas>)(
+                        () =>
+                        {
+                            var __cascade = canvas;
+                            __cascade.save();
+                            __cascade.transform(transformedRect.transform.storage);
+                            __cascade.drawRect(transformedRect.rect.deflate(0.5), borderPaint);
+                            __cascade.restore();
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
         Rect targetRect = MatrixUtils.transformRect(state.selected.transform, state.selected.rect);
         if (!targetRect.hasNaN)
@@ -2923,42 +4093,97 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
             var target = new Offset(targetRect.left, targetRect.center.dy);
             var offsetFromWidget = 9.0;
             double verticalOffset = (targetRect.height / 2L) + offsetFromWidget;
-            _paintDescription(canvas, state.tooltip, state.textDirection, target, verticalOffset, sizeLocal, targetRect);
+            _paintDescription(
+                canvas,
+                state.tooltip,
+                state.textDirection,
+                target,
+                verticalOffset,
+                sizeLocal,
+                targetRect
+            );
         }
         return recorder.endRecording();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _paintDescription(Canvas canvas, string message, TextDirection textDirection, Offset target, double verticalOffset, Size size, Rect targetRect)
+    internal virtual void _paintDescription(
+        Canvas canvas,
+        string message,
+        TextDirection textDirection,
+        Offset target,
+        double verticalOffset,
+        Size size,
+        Rect targetRect
+    )
     {
         canvas.save();
-        double maxWidthLocal = Math.Max(size.width - (2L * (Widget_inspectorLibrary._kScreenEdgeMargin + Widget_inspectorLibrary._kTooltipPadding)), 0);
+        double maxWidthLocal = Math.Max(
+            size.width
+                - (
+                    2L
+                    * (
+                        Widget_inspectorLibrary._kScreenEdgeMargin
+                        + Widget_inspectorLibrary._kTooltipPadding
+                    )
+                ),
+            0
+        );
         var textSpan = ((TextSpan?)_textPainter?.text)!;
-        if ((_textPainter is null) || (textSpan!.text != message) || (_textPainterMaxWidth != maxWidthLocal))
+        if (
+            (_textPainter is null)
+            || (textSpan!.text != message)
+            || (_textPainterMaxWidth != maxWidthLocal)
+        )
         {
             _textPainterMaxWidth = maxWidthLocal;
             _textPainter?.dispose();
-            _textPainter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter();
-    __cascade.maxLines = Widget_inspectorLibrary._kMaxTooltipLines;
-    __cascade.ellipsis = "...";
-    __cascade.text = new TextSpan(style: Widget_inspectorLibrary._messageStyle, text: message);
-    __cascade.textDirection = textDirection;
-    __cascade.layout(maxWidth: maxWidthLocal);
-    return __cascade;
-}))();
+            _textPainter = (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = new TextPainter();
+                        __cascade.maxLines = Widget_inspectorLibrary._kMaxTooltipLines;
+                        __cascade.ellipsis = "...";
+                        __cascade.text = new TextSpan(
+                            style: Widget_inspectorLibrary._messageStyle,
+                            text: message
+                        );
+                        __cascade.textDirection = textDirection;
+                        __cascade.layout(maxWidth: maxWidthLocal);
+                        return __cascade;
+                    }
+                )
+            )();
         }
-        Size tooltipSize = _textPainter!.size + new Offset(Widget_inspectorLibrary._kTooltipPadding * 2L, Widget_inspectorLibrary._kTooltipPadding * 2L);
-        Offset tipOffset = GeometryLibrary.positionDependentBox(size: size, childSize: tooltipSize, target: target, verticalOffset: verticalOffset, preferBelow: false);
-        var tooltipBackground = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = Widget_inspectorLibrary._kTooltipBackgroundColor;
-    return __cascade;
-}))();
-        canvas.drawRect(Rect.fromPoints(tipOffset, tipOffset.translate(tooltipSize.width, tooltipSize.height)), tooltipBackground);
+        Size tooltipSize =
+            _textPainter!.size
+            + new Offset(
+                Widget_inspectorLibrary._kTooltipPadding * 2L,
+                Widget_inspectorLibrary._kTooltipPadding * 2L
+            );
+        Offset tipOffset = GeometryLibrary.positionDependentBox(
+            size: size,
+            childSize: tooltipSize,
+            target: target,
+            verticalOffset: verticalOffset,
+            preferBelow: false
+        );
+        var tooltipBackground = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.fill;
+                    __cascade.color = Widget_inspectorLibrary._kTooltipBackgroundColor;
+                    return __cascade;
+                }
+            )
+        )();
+        canvas.drawRect(
+            Rect.fromPoints(tipOffset, tipOffset.translate(tooltipSize.width, tooltipSize.height)),
+            tooltipBackground
+        );
         double wedgeY = tipOffset.dy;
         bool tooltipBelow = tipOffset.dy > target.dy;
         if (!tooltipBelow)
@@ -2968,18 +4193,41 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
         double wedgeSize = Widget_inspectorLibrary._kTooltipPadding * 2L;
         double wedgeX = Math.Max(tipOffset.dx, target.dx) + (wedgeSize * 2L);
         wedgeX = Math.Min(wedgeX, tipOffset.dx + tooltipSize.width - (wedgeSize * 2L));
-        var wedge = new List<Offset> { new Offset(wedgeX - wedgeSize, wedgeY), new Offset(wedgeX + wedgeSize, wedgeY), new Offset(wedgeX, wedgeY + (tooltipBelow ? -wedgeSize : wedgeSize)) };
-        canvas.drawPath(((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addPolygon(wedge, true);
-    return __cascade;
-}))(), tooltipBackground);
-        _textPainter!.paint(canvas, tipOffset + new Offset(Widget_inspectorLibrary._kTooltipPadding, Widget_inspectorLibrary._kTooltipPadding));
+        var wedge = new List<Offset>
+        {
+            new Offset(wedgeX - wedgeSize, wedgeY),
+            new Offset(wedgeX + wedgeSize, wedgeY),
+            new Offset(wedgeX, wedgeY + (tooltipBelow ? -wedgeSize : wedgeSize)),
+        };
+        canvas.drawPath(
+            (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addPolygon(wedge, true);
+                        return __cascade;
+                    }
+                )
+            )(),
+            tooltipBackground
+        );
+        _textPainter!.paint(
+            canvas,
+            tipOffset
+                + new Offset(
+                    Widget_inspectorLibrary._kTooltipPadding,
+                    Widget_inspectorLibrary._kTooltipPadding
+                )
+        );
         canvas.restore();
     }
 
-    public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst = default!)
+    public override bool findAnnotations<S>(
+        AnnotationResult<S> result,
+        Offset localPosition,
+        bool onlyFirst = default!
+    )
     {
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2990,7 +4238,12 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
         RenderObject? current = child.parent;
         while (current is not null)
         {
-            if ((current is RenderStack) && ((RenderStack)current).getChildrenAsList().any((child) => child is _RenderInspectorOverlay__widget_inspector))
+            if (
+                (current is RenderStack)
+                && ((RenderStack)current)
+                    .getChildrenAsList()
+                    .any((child) => child is _RenderInspectorOverlay__widget_inspector)
+            )
             {
                 RenderStack current__134258__as134376 = (RenderStack)current;
                 return Equals(rootRenderObject, current__134258__as134376);
@@ -3000,7 +4253,6 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
@@ -3020,53 +4272,87 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static TextStyle _messageStyle = new TextStyle(color: new Color(4294967295L), fontSize: 10.0, height: 1.2);
+    internal static TextStyle _messageStyle = new TextStyle(
+        color: new Color(4294967295L),
+        fontSize: 10.0,
+        height: 1.2
+    );
 }
 
 internal class _WidgetInspectorButtonGroup__widget_inspector : StatefulWidget
 {
-    public virtual ExitWidgetSelectionButtonBuilder exitWidgetSelectionButtonBuilder { get; private set; } = default!;
-    public virtual MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder { get; private set; }
+    public virtual ExitWidgetSelectionButtonBuilder exitWidgetSelectionButtonBuilder
+    {
+        get;
+        private set;
+    } = default!;
+    public virtual MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder
+    {
+        get;
+        private set;
+    }
     public virtual TapBehaviorButtonBuilder? tapBehaviorButtonBuilder { get; private set; }
 
-    internal _WidgetInspectorButtonGroup__widget_inspector(ExitWidgetSelectionButtonBuilder exitWidgetSelectionButtonBuilder, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder)
+    internal _WidgetInspectorButtonGroup__widget_inspector(
+        ExitWidgetSelectionButtonBuilder exitWidgetSelectionButtonBuilder,
+        MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder,
+        TapBehaviorButtonBuilder? tapBehaviorButtonBuilder
+    )
     {
         this.exitWidgetSelectionButtonBuilder = exitWidgetSelectionButtonBuilder;
         this.moveExitWidgetSelectionButtonBuilder = moveExitWidgetSelectionButtonBuilder;
         this.tapBehaviorButtonBuilder = tapBehaviorButtonBuilder;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _WidgetInspectorButtonGroupState__widget_inspector());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _WidgetInspectorButtonGroupState__widget_inspector()
+        );
 }
 
-internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_WidgetInspectorButtonGroup__widget_inspector>
+internal class _WidgetInspectorButtonGroupState__widget_inspector
+    : State<_WidgetInspectorButtonGroup__widget_inspector>
 {
     internal const double _kExitWidgetSelectionButtonMargin = 10.0;
     internal const bool _defaultSelectionOnTapEnabled = true;
-    internal virtual GlobalKey<IState> _exitWidgetSelectionButtonKey { get; private set; } = GlobalKey<IState>.Create(debugLabel: "Exit Widget Selection button");
+    internal virtual GlobalKey<IState> _exitWidgetSelectionButtonKey { get; private set; } =
+        GlobalKey<IState>.Create(debugLabel: "Exit Widget Selection button");
     internal virtual string? _tooltipMessage { get; set; } = default;
     internal virtual bool _usesDefaultAlignment { get; set; } = true;
 
-    internal virtual ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
+    internal virtual ValueNotifier<bool> _selectionOnTapEnabled =>
+        WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
     internal virtual Widget? _moveExitWidgetSelectionButton
     {
         get
         {
-            MoveExitWidgetSelectionButtonBuilder? buttonBuilder = widget.moveExitWidgetSelectionButtonBuilder;
+            MoveExitWidgetSelectionButtonBuilder? buttonBuilder =
+                widget.moveExitWidgetSelectionButtonBuilder;
             if (buttonBuilder is null)
             {
                 return null;
             }
             TextDirection textDirection = Directionality.of(context);
-            var buttonLabel = $"Move to the {((_usesDefaultAlignment == Equals(textDirection, TextDirection.ltr)) ? "right" : "left")}";
-            return (Widget?)new _WidgetInspectorButton__widget_inspector(button: buttonBuilder(context, onPressed: () =>
-            {
-                _changeButtonGroupAlignment();
-                _onTooltipHidden();
-            }, semanticsLabel: buttonLabel, usesDefaultAlignment: _usesDefaultAlignment), onTooltipVisible: () =>
-            {
-                _changeTooltipMessage(buttonLabel);
-            }, onTooltipHidden: () => _onTooltipHidden());
+            var buttonLabel =
+                $"Move to the {((_usesDefaultAlignment == Equals(textDirection, TextDirection.ltr)) ? "right" : "left")}";
+            return (Widget?)
+                new _WidgetInspectorButton__widget_inspector(
+                    button: buttonBuilder(
+                        context,
+                        onPressed: () =>
+                        {
+                            _changeButtonGroupAlignment();
+                            _onTooltipHidden();
+                        },
+                        semanticsLabel: buttonLabel,
+                        usesDefaultAlignment: _usesDefaultAlignment
+                    ),
+                    onTooltipVisible: () =>
+                    {
+                        _changeTooltipMessage(buttonLabel);
+                    },
+                    onTooltipHidden: () => _onTooltipHidden()
+                );
         }
     }
     internal virtual Widget _exitWidgetSelectionButton
@@ -3074,10 +4360,19 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
         get
         {
             var buttonLabel = "Exit Select Widget mode";
-            return new _WidgetInspectorButton__widget_inspector(button: widget.exitWidgetSelectionButtonBuilder(context, onPressed: _exitWidgetSelectionMode, semanticsLabel: buttonLabel, key: _exitWidgetSelectionButtonKey), onTooltipVisible: () =>
-            {
-                _changeTooltipMessage(buttonLabel);
-            }, onTooltipHidden: () => _onTooltipHidden());
+            return new _WidgetInspectorButton__widget_inspector(
+                button: widget.exitWidgetSelectionButtonBuilder(
+                    context,
+                    onPressed: _exitWidgetSelectionMode,
+                    semanticsLabel: buttonLabel,
+                    key: _exitWidgetSelectionButtonKey
+                ),
+                onTooltipVisible: () =>
+                {
+                    _changeTooltipMessage(buttonLabel);
+                },
+                onTooltipHidden: () => _onTooltipHidden()
+            );
         }
     }
     internal virtual Widget? _tapBehaviorButton
@@ -3089,16 +4384,56 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
             {
                 return null;
             }
-            return (Widget?)new _WidgetInspectorButton__widget_inspector(button: buttonBuilder(context, onPressed: () => _changeSelectionOnTapMode(default), semanticsLabel: "Change widget selection mode for taps", selectionOnTapEnabled: _selectionOnTapEnabled.value), onTooltipVisible: () => _changeSelectionOnTapTooltip(), onTooltipHidden: () => _onTooltipHidden());
+            return (Widget?)
+                new _WidgetInspectorButton__widget_inspector(
+                    button: buttonBuilder(
+                        context,
+                        onPressed: () => _changeSelectionOnTapMode(default),
+                        semanticsLabel: "Change widget selection mode for taps",
+                        selectionOnTapEnabled: _selectionOnTapEnabled.value
+                    ),
+                    onTooltipVisible: () => _changeSelectionOnTapTooltip(),
+                    onTooltipHidden: () => _onTooltipHidden()
+                );
         }
     }
-    internal virtual bool _tooltipVisible => DartRuntimePrimitives.ConvertValue<bool>(_tooltipMessage is not null);
+    internal virtual bool _tooltipVisible =>
+        DartRuntimePrimitives.ConvertValue<bool>(_tooltipMessage is not null);
+
     public override Widget build(BuildContext context)
     {
-        double bottomPadding = Math.Max(_kExitWidgetSelectionButtonMargin, MediaQuery.viewPaddingOf(context).bottom);
-        Widget selectionModeButtons = new Column(children: new List<Widget> { _exitWidgetSelectionButton });
-        Widget buttonGroup = new Stack(alignment: AlignmentDirectional.topCenter, children: new List<Widget> { new CustomPaint(painter: new _ExitWidgetSelectionTooltipPainter__widget_inspector(tooltipMessage: _tooltipMessage, buttonKey: _exitWidgetSelectionButtonKey, usesDefaultAlignment: _usesDefaultAlignment)), new Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: new List<Widget>()) });
-        return Positioned.CreateDirectional(textDirection: Directionality.of(context), start: _usesDefaultAlignment ? _kExitWidgetSelectionButtonMargin : null, end: _usesDefaultAlignment ? null : _kExitWidgetSelectionButtonMargin, bottom: bottomPadding, child: buttonGroup);
+        double bottomPadding = Math.Max(
+            _kExitWidgetSelectionButtonMargin,
+            MediaQuery.viewPaddingOf(context).bottom
+        );
+        Widget selectionModeButtons = new Column(
+            children: new List<Widget> { _exitWidgetSelectionButton }
+        );
+        Widget buttonGroup = new Stack(
+            alignment: AlignmentDirectional.topCenter,
+            children: new List<Widget>
+            {
+                new CustomPaint(
+                    painter: new _ExitWidgetSelectionTooltipPainter__widget_inspector(
+                        tooltipMessage: _tooltipMessage,
+                        buttonKey: _exitWidgetSelectionButtonKey,
+                        usesDefaultAlignment: _usesDefaultAlignment
+                    )
+                ),
+                new Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: new List<Widget>()
+                ),
+            }
+        );
+        return Positioned.CreateDirectional(
+            textDirection: Directionality.of(context),
+            start: _usesDefaultAlignment ? _kExitWidgetSelectionButtonMargin : null,
+            end: _usesDefaultAlignment ? null : _kExitWidgetSelectionButtonMargin,
+            bottom: bottomPadding,
+            child: buttonGroup
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3121,7 +4456,11 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
 
     internal virtual void _changeSelectionOnTapTooltip()
     {
-        _changeTooltipMessage(_selectionOnTapEnabled.value ? "Disable widget selection for taps" : "Enable widget selection for taps");
+        _changeTooltipMessage(
+            _selectionOnTapEnabled.value
+                ? "Disable widget selection for taps"
+                : "Enable widget selection for taps"
+        );
     }
 
     internal virtual void _changeButtonGroupAlignment()
@@ -3150,7 +4489,6 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
             });
         }
     }
-
 }
 
 internal class _WidgetInspectorButton__widget_inspector : StatefulWidget
@@ -3158,20 +4496,30 @@ internal class _WidgetInspectorButton__widget_inspector : StatefulWidget
     public virtual Widget button { get; private set; } = default!;
     public virtual Action onTooltipVisible { get; private set; } = default!;
     public virtual Action onTooltipHidden { get; private set; } = default!;
-    internal static Duration _tooltipShownOnLongPressDuration = Duration.Create(milliseconds: 1500L);
+    internal static Duration _tooltipShownOnLongPressDuration = Duration.Create(
+        milliseconds: 1500L
+    );
     internal static Duration _tooltipDelayDuration = Duration.Create(milliseconds: 100L);
 
-    internal _WidgetInspectorButton__widget_inspector(Widget button, Action onTooltipVisible, Action onTooltipHidden)
+    internal _WidgetInspectorButton__widget_inspector(
+        Widget button,
+        Action onTooltipVisible,
+        Action onTooltipHidden
+    )
     {
         this.button = button;
         this.onTooltipVisible = onTooltipVisible;
         this.onTooltipHidden = onTooltipHidden;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _WidgetInspectorButtonState__widget_inspector());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _WidgetInspectorButtonState__widget_inspector()
+        );
 }
 
-internal class _WidgetInspectorButtonState__widget_inspector : State<_WidgetInspectorButton__widget_inspector>
+internal class _WidgetInspectorButtonState__widget_inspector
+    : State<_WidgetInspectorButton__widget_inspector>
 {
     internal virtual Timer? _tooltipVisibleTimer { get; set; } = default;
     internal virtual Timer? _tooltipHiddenTimer { get; set; } = default;
@@ -3187,14 +4535,39 @@ internal class _WidgetInspectorButtonState__widget_inspector : State<_WidgetInsp
 
     public override Widget build(BuildContext context)
     {
-        return new Stack(alignment: AlignmentDirectional.topCenter, children: new List<Widget> { new GestureDetector(onLongPress: () => {
-_tooltipVisibleAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
-_tooltipHiddenAfter(_WidgetInspectorButton__widget_inspector._tooltipShownOnLongPressDuration + _WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
-}, child: new MouseRegion(onEnter: (_) => {
-_tooltipVisibleAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
-}, onExit: (_) => {
-_tooltipHiddenAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
-}, child: widget.button)) });
+        return new Stack(
+            alignment: AlignmentDirectional.topCenter,
+            children: new List<Widget>
+            {
+                new GestureDetector(
+                    onLongPress: () =>
+                    {
+                        _tooltipVisibleAfter(
+                            _WidgetInspectorButton__widget_inspector._tooltipDelayDuration
+                        );
+                        _tooltipHiddenAfter(
+                            _WidgetInspectorButton__widget_inspector._tooltipShownOnLongPressDuration
+                                + _WidgetInspectorButton__widget_inspector._tooltipDelayDuration
+                        );
+                    },
+                    child: new MouseRegion(
+                        onEnter: (_) =>
+                        {
+                            _tooltipVisibleAfter(
+                                _WidgetInspectorButton__widget_inspector._tooltipDelayDuration
+                            );
+                        },
+                        onExit: (_) =>
+                        {
+                            _tooltipHiddenAfter(
+                                _WidgetInspectorButton__widget_inspector._tooltipDelayDuration
+                            );
+                        },
+                        child: widget.button
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3217,20 +4590,25 @@ _tooltipHiddenAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDurati
         }
         if (isVisible)
         {
-            _tooltipVisibleTimer = new Timer(duration, () =>
-            {
-                widget.onTooltipVisible();
-            });
+            _tooltipVisibleTimer = new Timer(
+                duration,
+                () =>
+                {
+                    widget.onTooltipVisible();
+                }
+            );
         }
         else
         {
-            _tooltipHiddenTimer = new Timer(duration, () =>
-            {
-                widget.onTooltipHidden();
-            });
+            _tooltipHiddenTimer = new Timer(
+                duration,
+                () =>
+                {
+                    widget.onTooltipHidden();
+                }
+            );
         }
     }
-
 }
 
 internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : CustomPainter
@@ -3239,7 +4617,11 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : CustomPain
     public virtual GlobalKey<IState> buttonKey { get; private set; } = default!;
     public virtual bool usesDefaultAlignment { get; private set; } = default!;
 
-    internal _ExitWidgetSelectionTooltipPainter__widget_inspector(string? tooltipMessage, GlobalKey<IState> buttonKey, bool usesDefaultAlignment)
+    internal _ExitWidgetSelectionTooltipPainter__widget_inspector(
+        string? tooltipMessage,
+        GlobalKey<IState> buttonKey,
+        bool usesDefaultAlignment
+    )
     {
         this.tooltipMessage = tooltipMessage;
         this.buttonKey = buttonKey;
@@ -3260,33 +4642,52 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : CustomPain
         }
         var tooltipPadding = 4.0;
         var tooltipSpacing = 6.0;
-        var tooltipTextPainter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter();
-    __cascade.maxLines = 1L;
-    __cascade.ellipsis = "...";
-    __cascade.text = new TextSpan(text: tooltipMessage, style: Widget_inspectorLibrary._messageStyle);
-    __cascade.textDirection = TextDirection.ltr;
-    __cascade.layout();
-    return __cascade;
-}))();
-        var tooltipPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = Widget_inspectorLibrary._kTooltipBackgroundColor;
-    return __cascade;
-}))();
+        var tooltipTextPainter = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = new TextPainter();
+                    __cascade.maxLines = 1L;
+                    __cascade.ellipsis = "...";
+                    __cascade.text = new TextSpan(
+                        text: tooltipMessage,
+                        style: Widget_inspectorLibrary._messageStyle
+                    );
+                    __cascade.textDirection = TextDirection.ltr;
+                    __cascade.layout();
+                    return __cascade;
+                }
+            )
+        )();
+        var tooltipPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.fill;
+                    __cascade.color = Widget_inspectorLibrary._kTooltipBackgroundColor;
+                    return __cascade;
+                }
+            )
+        )();
         double buttonWidth = buttonRenderObject.paintBounds.width;
         Size textSize = tooltipTextPainter.size;
         double textWidth = textSize.width;
         double textHeight = textSize.height;
-        double tooltipWidth = textWidth + tooltipPadding * 2L;
-        double tooltipHeight = textHeight + tooltipPadding * 2L;
-        double tooltipXOffset = usesDefaultAlignment ? (0L - buttonWidth) : (0L - (tooltipWidth - buttonWidth));
+        double tooltipWidth = textWidth + (tooltipPadding * 2L);
+        double tooltipHeight = textHeight + (tooltipPadding * 2L);
+        double tooltipXOffset = usesDefaultAlignment
+            ? (0L - buttonWidth)
+            : (0L - (tooltipWidth - buttonWidth));
         double tooltipYOffset = 0L - tooltipHeight - tooltipSpacing;
-        canvas.drawRect(Rect.fromLTWH(tooltipXOffset, tooltipYOffset, tooltipWidth, tooltipHeight), tooltipPaint);
-        tooltipTextPainter.paint(canvas, new Offset(tooltipXOffset + tooltipPadding, tooltipYOffset + tooltipPadding));
+        canvas.drawRect(
+            Rect.fromLTWH(tooltipXOffset, tooltipYOffset, tooltipWidth, tooltipHeight),
+            tooltipPaint
+        );
+        tooltipTextPainter.paint(
+            canvas,
+            new Offset(tooltipXOffset + tooltipPadding, tooltipYOffset + tooltipPadding)
+        );
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
@@ -3295,7 +4696,6 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : CustomPain
         return tooltipMessage != __oldDelegate.tooltipMessage;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
@@ -3305,7 +4705,9 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    public static IEnumerable<DiagnosticsNode> debugTransformDebugCreator(IEnumerable<DiagnosticsNode> properties)
+    public static IEnumerable<DiagnosticsNode> debugTransformDebugCreator(
+        IEnumerable<DiagnosticsNode> properties
+    )
     {
         if (!Foundation.ConstantsLibrary.kDebugMode)
         {
@@ -3333,7 +4735,9 @@ public static partial class Widget_inspectorLibrary
             }
             if (_isDebugCreator(nodeLocal))
             {
-                result.AddRange(_parseDiagnosticsNode(nodeLocal, errorSummary).Cast<DiagnosticsNode>());
+                result.AddRange(
+                    _parseDiagnosticsNode(nodeLocal, errorSummary).Cast<DiagnosticsNode>()
+                );
             }
             else
             {
@@ -3355,7 +4759,10 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static IEnumerable<DiagnosticsNode> _parseDiagnosticsNode(DiagnosticsNode node, ErrorSummary? errorSummary)
+    internal static IEnumerable<DiagnosticsNode> _parseDiagnosticsNode(
+        DiagnosticsNode node,
+        ErrorSummary? errorSummary
+    )
     {
         DartRuntimePrimitives.Assert(() => _isDebugCreator(node));
         try
@@ -3369,7 +4776,20 @@ public static partial class Widget_inspectorLibrary
             var stackLocal = new System.Diagnostics.StackTrace();
             DartAsyncRuntime.scheduleMicrotask(() =>
             {
-                FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stackLocal, library: "widget inspector", informationCollector: () => new List<DiagnosticsNode> { DiagnosticsNode.CreateMessage("This exception was caught while trying to describe the user-relevant code of another error.") }));
+                FlutterError.reportError(
+                    new FlutterErrorDetails(
+                        exception: error,
+                        stack: stackLocal,
+                        library: "widget inspector",
+                        informationCollector: () =>
+                            new List<DiagnosticsNode>
+                            {
+                                DiagnosticsNode.CreateMessage(
+                                    "This exception was caught while trying to describe the user-relevant code of another error."
+                                ),
+                            }
+                    )
+                );
             });
             return new List<DiagnosticsNode>();
         }
@@ -3379,18 +4799,32 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static IEnumerable<DiagnosticsNode> _describeRelevantUserCode(Element element, ErrorSummary? errorSummary)
+    internal static IEnumerable<DiagnosticsNode> _describeRelevantUserCode(
+        Element element,
+        ErrorSummary? errorSummary
+    )
     {
         if (!WidgetInspectorService.instance.isWidgetCreationTracked())
         {
-            return new List<DiagnosticsNode> { new ErrorDescription("Widget creation tracking is currently disabled. Enabling " + "it enables improved error messages. It can be enabled by passing " + "`--track-widget-creation` to `flutter run` or `flutter test`."), new ErrorSpacer() };
+            return new List<DiagnosticsNode>
+            {
+                new ErrorDescription(
+                    "Widget creation tracking is currently disabled. Enabling "
+                        + "it enables improved error messages. It can be enabled by passing "
+                        + "`--track-widget-creation` to `flutter run` or `flutter test`."
+                ),
+                new ErrorSpacer(),
+            };
         }
         bool isOverflowError()
         {
             if ((errorSummary is not null) && !string.IsNullOrEmpty(errorSummary.value?.ToString()))
             {
                 object summary = errorSummary.value;
-                if ((summary is string) && ((string)summary).startsWith("A RenderFlex overflowed by"))
+                if (
+                    (summary is string)
+                    && ((string)summary).startsWith("A RenderFlex overflowed by")
+                )
                 {
                     string summary__148033__as148079 = (string)summary;
                     return true;
@@ -3407,13 +4841,33 @@ public static partial class Widget_inspectorLibrary
                 DiagnosticsNode? devToolsDiagnostic = default!;
                 if (isOverflowError())
                 {
-                    string? devToolsInspectorUri = WidgetInspectorService.instance._devToolsInspectorUriForElement(target);
+                    string? devToolsInspectorUri =
+                        WidgetInspectorService.instance._devToolsInspectorUriForElement(target);
                     if (devToolsInspectorUri is not null)
                     {
-                        devToolsDiagnostic = DartRuntimePrimitives.ConvertValue<DiagnosticsNode>(new DevToolsDeepLinkProperty($"To inspect this widget in Flutter DevTools, visit: {devToolsInspectorUri}", devToolsInspectorUri));
+                        devToolsDiagnostic = DartRuntimePrimitives.ConvertValue<DiagnosticsNode>(
+                            new DevToolsDeepLinkProperty(
+                                $"To inspect this widget in Flutter DevTools, visit: {devToolsInspectorUri}",
+                                devToolsInspectorUri
+                            )
+                        );
                     }
                 }
-                nodes.AddRange(new List<DiagnosticsNode> { new DiagnosticsBlock(name: "The relevant error-causing widget was", children: new List<DiagnosticsNode> { new ErrorDescription($"{((Diagnosticable)target.widget).toStringShort()} {_describeCreationLocation(target)}") }), new ErrorSpacer() }.Cast<DiagnosticsNode>());
+                nodes.AddRange(
+                    new List<DiagnosticsNode>
+                    {
+                        new DiagnosticsBlock(
+                            name: "The relevant error-causing widget was",
+                            children: new List<DiagnosticsNode>
+                            {
+                                new ErrorDescription(
+                                    $"{((Diagnosticable)target.widget).toStringShort()} {_describeCreationLocation(target)}"
+                                ),
+                            }
+                        ),
+                        new ErrorSpacer(),
+                    }.Cast<DiagnosticsNode>()
+                );
                 return false;
             }
             return true;
@@ -3430,10 +4884,8 @@ public static partial class Widget_inspectorLibrary
 
 public class DevToolsDeepLinkProperty : DiagnosticsProperty<string>
 {
-    public DevToolsDeepLinkProperty(string description, string url) : base("", url, description: description, level: DiagnosticLevel.info)
-    {
-    }
-
+    public DevToolsDeepLinkProperty(string description, string url)
+        : base("", url, description: description, level: DiagnosticLevel.info) { }
 }
 
 public static partial class Widget_inspectorLibrary
@@ -3442,15 +4894,15 @@ public static partial class Widget_inspectorLibrary
     {
         var isLocal = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            CreationLocation? location = _getCreationLocation(@object);
+            if (location is not null)
             {
-                CreationLocation? location = _getCreationLocation(@object);
-                if (location is not null)
-                {
-                    isLocal = WidgetInspectorService.instance._isLocalCreationLocation(location.file);
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                isLocal = WidgetInspectorService.instance._isLocalCreationLocation(location.file);
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return isLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3461,7 +4913,8 @@ public static partial class Widget_inspectorLibrary
     public static bool debugIsWidgetLocalCreation(Widget widget)
     {
         CreationLocation? location = CreationLocation.of(widget);
-        return (location is not null) && WidgetInspectorService.instance._isLocalCreationLocation(location.file);
+        return (location is not null)
+            && WidgetInspectorService.instance._isLocalCreationLocation(location.file);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -3480,7 +4933,10 @@ public static partial class Widget_inspectorLibrary
 {
     internal static CreationLocation? _getCreationLocation(object? @object)
     {
-        object? candidate = ((@object is Element) && !((Element)@object).debugIsDefunct) ? ((Element)@object).widget : @object;
+        object? candidate =
+            ((@object is Element) && !((Element)@object).debugIsDefunct)
+                ? ((Element)@object).widget
+                : @object;
         return (candidate is null) ? null : CreationLocation.of(candidate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3504,11 +4960,15 @@ public static partial class Widget_inspectorLibrary
         if (id is not null)
         {
             long id__152830__value152866 = DartRuntimePrimitives.RequireValue(id);
-            return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(id__152830__value152866));
+            return DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(id__152830__value152866)
+            );
         }
         id = checked(_locations.Count);
         _locations.Add(location);
-        _locationToId[location] = DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(id));
+        _locationToId[location] = DartRuntimePrimitives.RequireValue(
+            DartRuntimePrimitives.RequireValue(id)
+        );
         return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(id));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3526,7 +4986,19 @@ public static partial class Widget_inspectorLibrary
         foreach (var entry in _locationToId.entries)
         {
             CreationLocation location = entry.key;
-            DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(location.file, () => new DartMap<string, List<object>> { [idsKey] = new List<long>().Cast<object>().ToList(), [linesKey] = new List<long>().Cast<object>().ToList(), [columnsKey] = new List<long>().Cast<object>().ToList(), [namesKey] = new List<string?>().Cast<object>().ToList() }).cast<string, List<object?>>();
+            DartMap<string, List<object?>> locations = fileLocationsMap
+                .putIfAbsent(
+                    location.file,
+                    () =>
+                        new DartMap<string, List<object>>
+                        {
+                            [idsKey] = new List<long>().Cast<object>().ToList(),
+                            [linesKey] = new List<long>().Cast<object>().ToList(),
+                            [columnsKey] = new List<long>().Cast<object>().ToList(),
+                            [namesKey] = new List<string?>().Cast<object>().ToList(),
+                        }
+                )
+                .cast<string, List<object?>>();
             locations.GetValueOrDefault(idsKey)!.Add(entry.value);
             locations.GetValueOrDefault(linesKey)!.Add(location.line);
             locations.GetValueOrDefault(columnsKey)!.Add(location.column);
@@ -3547,10 +5019,29 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
     public new virtual long subtreeDepth { get; private set; } = default!;
     public virtual bool expandPropertyValues { get; private set; } = default!;
     public virtual bool inDisableWidgetInspectorScope { get; private set; } = default!;
-    public virtual Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback { get; private set; }
-    internal virtual List<DiagnosticsNode> _nodesCreatedByLocalProject { get; private set; } = new List<DiagnosticsNode>();
+    public virtual Func<
+        DiagnosticsNode,
+        InspectorSerializationDelegate,
+        DartMap<string, object?>?
+    >? addAdditionalPropertiesCallback { get; private set; }
+    internal virtual List<DiagnosticsNode> _nodesCreatedByLocalProject { get; private set; } =
+        new List<DiagnosticsNode>();
 
-    public InspectorSerializationDelegate(string? groupName = null, bool summaryTree = false, long maxDescendantsTruncatableNode = -1, bool expandPropertyValues = true, long subtreeDepth = 1, bool includeProperties = false, WidgetInspectorService service = default!, Func<DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object?>?>? addAdditionalPropertiesCallback = null, bool inDisableWidgetInspectorScope = false)
+    public InspectorSerializationDelegate(
+        string? groupName = null,
+        bool summaryTree = false,
+        long maxDescendantsTruncatableNode = -1,
+        bool expandPropertyValues = true,
+        long subtreeDepth = 1,
+        bool includeProperties = false,
+        WidgetInspectorService service = default!,
+        Func<
+            DiagnosticsNode,
+            InspectorSerializationDelegate,
+            DartMap<string, object?>?
+        >? addAdditionalPropertiesCallback = null,
+        bool inDisableWidgetInspectorScope = false
+    )
     {
         this.groupName = groupName;
         this.summaryTree = summaryTree;
@@ -3563,8 +5054,13 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
         this.inDisableWidgetInspectorScope = inDisableWidgetInspectorScope;
     }
 
-    internal virtual bool _interactive => DartRuntimePrimitives.ConvertValue<bool>(groupName is not null);
-    public virtual DartMap<string, object?> additionalNodeProperties(DiagnosticsNode node, bool fullDetails = true)
+    internal virtual bool _interactive =>
+        DartRuntimePrimitives.ConvertValue<bool>(groupName is not null);
+
+    public virtual DartMap<string, object?> additionalNodeProperties(
+        DiagnosticsNode node,
+        bool fullDetails = true
+    )
     {
         var result = new DartMap<string, object?>();
         object? valueLocal = node.value;
@@ -3576,7 +5072,9 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
         {
             result["valueId"] = service.toId(valueLocal, groupName!);
         }
-        CreationLocation? creationLocation = Widget_inspectorLibrary._getCreationLocation(valueLocal);
+        CreationLocation? creationLocation = Widget_inspectorLibrary._getCreationLocation(
+            valueLocal
+        );
         if (creationLocation is not null)
         {
             if (fullDetails)
@@ -3592,7 +5090,9 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
         }
         if (addAdditionalPropertiesCallback is not null)
         {
-            result.AddRange(addAdditionalPropertiesCallback!(node, this) ?? new DartMap<string, object?>());
+            result.AddRange(
+                addAdditionalPropertiesCallback!(node, this) ?? new DartMap<string, object?>()
+            );
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3600,43 +5100,82 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
 
     public override DiagnosticsSerializationDelegate delegateForNode(DiagnosticsNode node)
     {
-        return (summaryTree || (subtreeDepth > 1L) || service._shouldShowInSummaryTree(node)) ? copyWith(subtreeDepth: subtreeDepth - 1L) : this;
+        return (summaryTree || (subtreeDepth > 1L) || service._shouldShowInSummaryTree(node))
+            ? copyWith(subtreeDepth: subtreeDepth - 1L)
+            : this;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> filterChildren(List<DiagnosticsNode> nodes, DiagnosticsNode owner)
+    public virtual List<DiagnosticsNode> filterChildren(
+        List<DiagnosticsNode> nodes,
+        DiagnosticsNode owner
+    )
     {
         return service._filterChildren(nodes, this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> filterProperties(List<DiagnosticsNode> nodes, DiagnosticsNode owner)
+    public virtual List<DiagnosticsNode> filterProperties(
+        List<DiagnosticsNode> nodes,
+        DiagnosticsNode owner
+    )
     {
         bool createdByLocalProject = _nodesCreatedByLocalProject.Contains(owner);
-        return nodes.where((node) =>
-        {
-            return !node.isFiltered(createdByLocalProject ? DiagnosticLevel.fine : DiagnosticLevel.info);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList();
+        return nodes
+            .where(
+                (node) =>
+                {
+                    return !node.isFiltered(
+                        createdByLocalProject ? DiagnosticLevel.fine : DiagnosticLevel.info
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override List<DiagnosticsNode> truncateNodesList(List<DiagnosticsNode> nodes, DiagnosticsNode? owner)
+    public override List<DiagnosticsNode> truncateNodesList(
+        List<DiagnosticsNode> nodes,
+        DiagnosticsNode? owner
+    )
     {
-        if ((maxDescendantsTruncatableNode >= 0L) && owner!.allowTruncate && (checked(nodes.Count) > maxDescendantsTruncatableNode))
+        if (
+            (maxDescendantsTruncatableNode >= 0L)
+            && owner!.allowTruncate
+            && (checked(nodes.Count) > maxDescendantsTruncatableNode)
+        )
         {
-            nodes = service._truncateNodes(nodes.Cast<DiagnosticsNode>(), maxDescendantsTruncatableNode);
+            nodes = service._truncateNodes(
+                nodes.Cast<DiagnosticsNode>(),
+                maxDescendantsTruncatableNode
+            );
         }
         return nodes;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsSerializationDelegate copyWith(long? subtreeDepth = null, bool? includeProperties = null, bool? expandPropertyValues = null, bool? inDisableWidgetInspectorScope = null)
+    public virtual DiagnosticsSerializationDelegate copyWith(
+        long? subtreeDepth = null,
+        bool? includeProperties = null,
+        bool? expandPropertyValues = null,
+        bool? inDisableWidgetInspectorScope = null
+    )
     {
-        return new InspectorSerializationDelegate(groupName: groupName, summaryTree: summaryTree, maxDescendantsTruncatableNode: maxDescendantsTruncatableNode, expandPropertyValues: expandPropertyValues ?? this.expandPropertyValues, subtreeDepth: subtreeDepth ?? this.subtreeDepth, includeProperties: includeProperties ?? this.includeProperties, service: service, addAdditionalPropertiesCallback: addAdditionalPropertiesCallback, inDisableWidgetInspectorScope: inDisableWidgetInspectorScope ?? this.inDisableWidgetInspectorScope);
+        return new InspectorSerializationDelegate(
+            groupName: groupName,
+            summaryTree: summaryTree,
+            maxDescendantsTruncatableNode: maxDescendantsTruncatableNode,
+            expandPropertyValues: expandPropertyValues ?? this.expandPropertyValues,
+            subtreeDepth: subtreeDepth ?? this.subtreeDepth,
+            includeProperties: includeProperties ?? this.includeProperties,
+            service: service,
+            addAdditionalPropertiesCallback: addAdditionalPropertiesCallback,
+            inDisableWidgetInspectorScope: inDisableWidgetInspectorScope
+                ?? this.inDisableWidgetInspectorScope
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
@@ -3644,7 +5183,8 @@ public static partial class Widget_inspectorLibrary
     public static object widgetFactory = new object();
 }
 
-public class WeakMap<K, V> where K : notnull
+public class WeakMap<K, V>
+    where K : notnull
 {
     internal virtual Expando<object> _objects { get; set; } = new Expando<object>();
     internal virtual DartMap<K, V?> _primitives { get; private set; } = new DartMap<K, V?>();
@@ -3701,7 +5241,6 @@ public class WeakMap<K, V> where K : notnull
         _objects = new Expando<object>();
         _primitives.Clear();
     }
-
 }
 
 public static partial class Widget_inspectorLibrary
@@ -3710,7 +5249,8 @@ public static partial class Widget_inspectorLibrary
     {
         public static class CreationLocation
         {
-            public static Runtime.CreationLocation? of(object? value) => Runtime.CreationLocation.of(value);
+            public static Runtime.CreationLocation? of(object? value) =>
+                Runtime.CreationLocation.of(value);
         }
     }
 }

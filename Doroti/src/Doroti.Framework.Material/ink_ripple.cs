@@ -38,7 +38,11 @@ public static partial class Ink_rippleLibrary
 
 public static partial class Ink_rippleLibrary
 {
-    internal static Func<Rect>? _getClipCallback(RenderBox referenceBox, bool containedInkWell, Func<Rect>? rectCallback)
+    internal static Func<Rect>? _getClipCallback(
+        RenderBox referenceBox,
+        bool containedInkWell,
+        Func<Rect>? rectCallback
+    )
     {
         if (rectCallback is not null)
         {
@@ -56,7 +60,12 @@ public static partial class Ink_rippleLibrary
 
 public static partial class Ink_rippleLibrary
 {
-    internal static double _getTargetRadius(RenderBox referenceBox, bool containedInkWell, Func<Rect>? rectCallback, Offset position)
+    internal static double _getTargetRadius(
+        RenderBox referenceBox,
+        bool containedInkWell,
+        Func<Rect>? rectCallback,
+        Offset position
+    )
     {
         Size sizeLocal = (rectCallback is not null) ? rectCallback().size : referenceBox.size;
         double d1 = sizeLocal.bottomRight(Offset.zero).distance;
@@ -68,16 +77,37 @@ public static partial class Ink_rippleLibrary
 
 internal class _InkRippleFactory__ink_ripple : InteractiveInkFeatureFactory
 {
-    internal _InkRippleFactory__ink_ripple()
-    {
-    }
+    internal _InkRippleFactory__ink_ripple() { }
 
-    public virtual InteractiveInkFeature create(MaterialInkController controller, RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, Func<Rect>? rectCallback = null, BorderRadius? borderRadius = null, ShapeBorder? customBorder = null, double? radius = null, Action? onRemoved = null)
+    public virtual InteractiveInkFeature create(
+        MaterialInkController controller,
+        RenderBox referenceBox,
+        Offset position,
+        Color color,
+        TextDirection textDirection,
+        bool containedInkWell = false,
+        Func<Rect>? rectCallback = null,
+        BorderRadius? borderRadius = null,
+        ShapeBorder? customBorder = null,
+        double? radius = null,
+        Action? onRemoved = null
+    )
     {
-        return new InkRipple(controller: controller, referenceBox: referenceBox, position: position, color: color, containedInkWell: containedInkWell, rectCallback: rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: onRemoved, textDirection: textDirection);
+        return new InkRipple(
+            controller: controller,
+            referenceBox: referenceBox,
+            position: position,
+            color: color,
+            containedInkWell: containedInkWell,
+            rectCallback: rectCallback,
+            borderRadius: borderRadius,
+            customBorder: customBorder,
+            radius: radius,
+            onRemoved: onRemoved,
+            textDirection: textDirection
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class InkRipple : InteractiveInkFeature
@@ -95,51 +125,116 @@ public class InkRipple : InteractiveInkFeature
     internal virtual AnimationController _fadeOutController { get; set; } = default!;
     public static InteractiveInkFeatureFactory splashFactory = new _InkRippleFactory__ink_ripple();
     internal static Animatable<double> _easeCurveTween = new CurveTween(curve: Curves.ease);
-    internal static Animatable<double> _fadeOutIntervalTween = new CurveTween(curve: new Interval(Ink_rippleLibrary._kFadeOutIntervalStart, 1.0));
+    internal static Animatable<double> _fadeOutIntervalTween = new CurveTween(
+        curve: new Interval(Ink_rippleLibrary._kFadeOutIntervalStart, 1.0)
+    );
 
-    public InkRipple(MaterialInkController controller, RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, Func<Rect>? rectCallback = null, BorderRadius? borderRadius = null, ShapeBorder? customBorder = null, double? radius = null, Action? onRemoved = null) : base(referenceBox: referenceBox, customBorder: customBorder, onRemoved: onRemoved, controller: controller, color: color)
+    public InkRipple(
+        MaterialInkController controller,
+        RenderBox referenceBox,
+        Offset position,
+        Color color,
+        TextDirection textDirection,
+        bool containedInkWell = false,
+        Func<Rect>? rectCallback = null,
+        BorderRadius? borderRadius = null,
+        ShapeBorder? customBorder = null,
+        double? radius = null,
+        Action? onRemoved = null
+    )
+        : base(
+            referenceBox: referenceBox,
+            customBorder: customBorder,
+            onRemoved: onRemoved,
+            controller: controller,
+            color: color
+        )
     {
         _position = position;
         _borderRadius = borderRadius ?? BorderRadius.zero;
         _textDirection = textDirection;
-        _targetRadius = radius ?? Ink_rippleLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, position);
-        _clipCallback = Ink_rippleLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
-        _fadeInController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: Ink_rippleLibrary._kFadeInDuration, vsync: controller.vsync);
-    __cascade.addListener(controller.markNeedsPaint);
-    __cascade.forward();
-    return __cascade;
-}))();
+        _targetRadius =
+            radius
+            ?? Ink_rippleLibrary._getTargetRadius(
+                referenceBox,
+                containedInkWell,
+                rectCallback,
+                position
+            );
+        _clipCallback = Ink_rippleLibrary._getClipCallback(
+            referenceBox,
+            containedInkWell,
+            rectCallback
+        );
+        _fadeInController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: Ink_rippleLibrary._kFadeInDuration,
+                        vsync: controller.vsync
+                    );
+                    __cascade.addListener(controller.markNeedsPaint);
+                    __cascade.forward();
+                    return __cascade;
+                }
+            )
+        )();
         _fadeIn = _fadeInController.drive(new IntTween(begin: 0L, end: color.alpha));
-        _radiusController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: Ink_rippleLibrary._kUnconfirmedRippleDuration, vsync: controller.vsync);
-    __cascade.addListener(controller.markNeedsPaint);
-    __cascade.forward();
-    return __cascade;
-}))();
-        _radius = _radiusController.drive(new Tween<double>(begin: _targetRadius * 0.3, end: _targetRadius + 5.0).chain(_easeCurveTween));
-        _fadeOutController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: Ink_rippleLibrary._kFadeOutDuration, vsync: controller.vsync);
-    __cascade.addListener(controller.markNeedsPaint);
-    __cascade.addStatusListener(_handleAlphaStatusChanged);
-    return __cascade;
-}))();
-        _fadeOut = _fadeOutController.drive(new IntTween(begin: color.alpha, end: 0L).chain(_fadeOutIntervalTween));
+        _radiusController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: Ink_rippleLibrary._kUnconfirmedRippleDuration,
+                        vsync: controller.vsync
+                    );
+                    __cascade.addListener(controller.markNeedsPaint);
+                    __cascade.forward();
+                    return __cascade;
+                }
+            )
+        )();
+        _radius = _radiusController.drive(
+            new Tween<double>(begin: _targetRadius * 0.3, end: _targetRadius + 5.0).chain(
+                _easeCurveTween
+            )
+        );
+        _fadeOutController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: Ink_rippleLibrary._kFadeOutDuration,
+                        vsync: controller.vsync
+                    );
+                    __cascade.addListener(controller.markNeedsPaint);
+                    __cascade.addStatusListener(_handleAlphaStatusChanged);
+                    return __cascade;
+                }
+            )
+        )();
+        _fadeOut = _fadeOutController.drive(
+            new IntTween(begin: color.alpha, end: 0L).chain(_fadeOutIntervalTween)
+        );
         controller.addInkFeature(this);
     }
 
     public override void confirm()
     {
-        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _radiusController;
-    __cascade.duration = Ink_rippleLibrary._kRadiusDuration;
-    __cascade.forward();
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = _radiusController;
+                        __cascade.duration = Ink_rippleLibrary._kRadiusDuration;
+                        __cascade.forward();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         _fadeInController.forward();
         _fadeOutController.animateTo(1.0, duration: Ink_rippleLibrary._kFadeOutDuration);
     }
@@ -174,15 +269,36 @@ public class InkRipple : InteractiveInkFeature
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
         long alpha = _fadeInController.isAnimating ? _fadeIn.value : _fadeOut.value;
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color.withAlpha(alpha);
-    return __cascade;
-}))();
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = color.withAlpha(alpha);
+                    return __cascade;
+                }
+            )
+        )();
         Rect? rect = _clipCallback?.Invoke();
-        Offset centerLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(_position, (rect is not null) ? DartRuntimePrimitives.RequireValue(rect).center : referenceBox.size.center(Offset.zero), Curves.ease.transform(_radiusController.value)));
-        paintInkCircle(canvas: canvas, transform: transform, paint: paintLocal, center: centerLocal, textDirection: _textDirection, radius: _radius.value, customBorder: customBorder, borderRadius: _borderRadius, clipCallback: _clipCallback);
+        Offset centerLocal = DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.Offset.lerp(
+                _position,
+                (rect is not null)
+                    ? DartRuntimePrimitives.RequireValue(rect).center
+                    : referenceBox.size.center(Offset.zero),
+                Curves.ease.transform(_radiusController.value)
+            )
+        );
+        paintInkCircle(
+            canvas: canvas,
+            transform: transform,
+            paint: paintLocal,
+            center: centerLocal,
+            textDirection: _textDirection,
+            radius: _radius.value,
+            customBorder: customBorder,
+            borderRadius: _borderRadius,
+            clipCallback: _clipCallback
+        );
     }
-
 }

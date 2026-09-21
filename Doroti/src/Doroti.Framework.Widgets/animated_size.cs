@@ -15,7 +15,17 @@ public class AnimatedSize : StatefulWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual Action? onEnd { get; private set; }
 
-    public AnimatedSize(Key? key = null, Widget? child = null, AlignmentGeometry alignment = default!, Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(key: key)
+    public AnimatedSize(
+        Key? key = null,
+        Widget? child = null,
+        AlignmentGeometry alignment = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Duration? reverseDuration = null,
+        Clip clipBehavior = Clip.hardEdge,
+        Action? onEnd = null
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         Curve __curve = curve ?? Curves.linear;
@@ -28,32 +38,66 @@ public class AnimatedSize : StatefulWidget
         this.onEnd = onEnd;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedSizeState__animated_size());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedSizeState__animated_size());
 }
 
-internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTickerProviderStateMixin<AnimatedSize>
+internal class _AnimatedSizeState__animated_size
+    : State<AnimatedSize>,
+        SingleTickerProviderStateMixin<AnimatedSize>
 {
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override Widget build(BuildContext context)
     {
-        return new _AnimatedSize__animated_size(alignment: widget.alignment, curve: widget.curve, duration: widget.duration, reverseDuration: widget.reverseDuration, vsync: this, clipBehavior: widget.clipBehavior, onEnd: widget.onEnd, child: widget.child);
+        return new _AnimatedSize__animated_size(
+            alignment: widget.alignment,
+            curve: widget.curve,
+            duration: widget.duration,
+            reverseDuration: widget.reverseDuration,
+            vsync: this,
+            clipBehavior: widget.clipBehavior,
+            onEnd: widget.onEnd,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -63,14 +107,32 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -108,10 +170,24 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
@@ -124,7 +200,17 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual Action? onEnd { get; private set; }
 
-    internal _AnimatedSize__animated_size(Widget? child = null, AlignmentGeometry alignment = default!, Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, Scheduler.TickerProvider vsync = default!, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(child: child)
+    internal _AnimatedSize__animated_size(
+        Widget? child = null,
+        AlignmentGeometry alignment = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Duration? reverseDuration = null,
+        Scheduler.TickerProvider vsync = default!,
+        Clip clipBehavior = Clip.hardEdge,
+        Action? onEnd = null
+    )
+        : base(child: child)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         Curve __curve = curve ?? Curves.linear;
@@ -139,35 +225,61 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new RenderAnimatedSize(alignment: alignment, duration: duration, reverseDuration: reverseDuration, curve: curve, vsync: vsync, textDirection: Directionality.maybeOf(context), clipBehavior: clipBehavior, onEnd: onEnd);
+        return new RenderAnimatedSize(
+            alignment: alignment,
+            duration: duration,
+            reverseDuration: reverseDuration,
+            curve: curve,
+            vsync: vsync,
+            textDirection: Directionality.maybeOf(context),
+            clipBehavior: clipBehavior,
+            onEnd: onEnd
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderAnimatedSize)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderAnimatedSize>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.alignment = alignment;
-    __cascade.duration = duration;
-    __cascade.reverseDuration = reverseDuration;
-    __cascade.curve = curve;
-    __cascade.vsync = vsync;
-    __cascade.textDirection = Directionality.maybeOf(context);
-    __cascade.clipBehavior = clipBehavior;
-    __cascade.onEnd = onEnd;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderAnimatedSize>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.alignment = alignment;
+                        __cascade.duration = duration;
+                        __cascade.reverseDuration = reverseDuration;
+                        __cascade.curve = curve;
+                        __cascade.vsync = vsync;
+                        __cascade.textDirection = Directionality.maybeOf(context);
+                        __cascade.clipBehavior = clipBehavior;
+                        __cascade.onEnd = onEnd;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: Alignment.topCenter));
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>(
+                "alignment",
+                alignment,
+                defaultValue: Alignment.topCenter
+            )
+        );
         properties.add(new IntProperty("duration", duration.inMilliseconds, unit: "ms"));
-        properties.add(new IntProperty("reverseDuration", reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(
+            new IntProperty(
+                "reverseDuration",
+                reverseDuration?.inMilliseconds,
+                unit: "ms",
+                defaultValue: null
+            )
+        );
     }
-
 }
-

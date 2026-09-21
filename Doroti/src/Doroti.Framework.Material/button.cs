@@ -35,11 +35,41 @@ public class RawMaterialButton : StatefulWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual bool enableFeedback { get; private set; } = default!;
 
-    public RawMaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, TextStyle? textStyle = null, Color? fillColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, double elevation = 2.0, double focusElevation = 4.0, double hoverElevation = 4.0, double highlightElevation = 8.0, double disabledElevation = 0.0, EdgeInsetsGeometry padding = default!, VisualDensity visualDensity = default!, BoxConstraints constraints = default!, ShapeBorder shape = default!, Duration? animationDuration = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Widget? child = null, bool enableFeedback = true) : base(key: key)
+    public RawMaterialButton(
+        Key? key = null,
+        Action? onPressed = default!,
+        Action? onLongPress = null,
+        Action<bool>? onHighlightChanged = null,
+        MouseCursor? mouseCursor = null,
+        TextStyle? textStyle = null,
+        Color? fillColor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? splashColor = null,
+        double elevation = 2.0,
+        double focusElevation = 4.0,
+        double hoverElevation = 4.0,
+        double highlightElevation = 8.0,
+        double disabledElevation = 0.0,
+        EdgeInsetsGeometry padding = default!,
+        VisualDensity visualDensity = default!,
+        BoxConstraints constraints = default!,
+        ShapeBorder shape = default!,
+        Duration? animationDuration = null,
+        Clip clipBehavior = Clip.none,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Widget? child = null,
+        bool enableFeedback = true
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
         VisualDensity __visualDensity = visualDensity ?? VisualDensity.standard;
-        BoxConstraints __constraints = constraints ?? new BoxConstraints(minWidth: 88.0, minHeight: 36.0);
+        BoxConstraints __constraints =
+            constraints ?? new BoxConstraints(minWidth: 88.0, minHeight: 36.0);
         ShapeBorder __shape = shape ?? new RoundedRectangleBorder();
         Duration __animationDuration = animationDuration ?? ConstantsLibrary.kThemeChangeDuration;
         this.onPressed = onPressed;
@@ -75,11 +105,18 @@ public class RawMaterialButton : StatefulWidget
         System.Diagnostics.Debug.Assert(disabledElevation >= 0.0);
     }
 
-    public virtual bool enabled => DartRuntimePrimitives.ConvertValue<bool>((onPressed is not null) || (onLongPress is not null));
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMaterialButtonState__button());
+    public virtual bool enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (onPressed is not null) || (onLongPress is not null)
+        );
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RawMaterialButtonState__button());
 }
 
-internal class _RawMaterialButtonState__button : State<RawMaterialButton>, MaterialStateMixin<RawMaterialButton>
+internal class _RawMaterialButtonState__button
+    : State<RawMaterialButton>,
+        MaterialStateMixin<RawMaterialButton>
 {
     public virtual HashSet<WidgetState> materialStates { get; set; } = new HashSet<WidgetState>();
 
@@ -122,32 +159,104 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
             return widget.elevation;
         }
     }
+
     public override Widget build(BuildContext context)
     {
-        Color? effectiveTextColor = WidgetStateProperty.resolveAs(widget.textStyle?.color, materialStates);
-        ShapeBorder? effectiveShape = WidgetStateProperty.resolveAs<ShapeBorder?>(widget.shape, materialStates);
+        Color? effectiveTextColor = WidgetStateProperty.resolveAs(
+            widget.textStyle?.color,
+            materialStates
+        );
+        ShapeBorder? effectiveShape = WidgetStateProperty.resolveAs<ShapeBorder?>(
+            widget.shape,
+            materialStates
+        );
         Offset densityAdjustment = widget.visualDensity.baseSizeAdjustment;
-        BoxConstraints effectiveConstraintsLocal = widget.visualDensity.effectiveConstraints(widget.constraints);
-        MouseCursor? effectiveMouseCursor = WidgetStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable, materialStates);
-        EdgeInsetsGeometry paddingLocal = widget.padding.add(EdgeInsets.CreateOnly(left: densityAdjustment.dx, top: densityAdjustment.dy, right: densityAdjustment.dx, bottom: densityAdjustment.dy)).clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity);
-        Widget result = new ConstrainedBox(constraints: effectiveConstraintsLocal, child: new Material(elevation: _effectiveElevation, textStyle: widget.textStyle?.copyWith(color: effectiveTextColor), shape: effectiveShape, color: widget.fillColor, shadowColor: Theme.of(context).shadowColor, type: (widget.fillColor is null) ? MaterialType.transparency : MaterialType.button, animationDuration: widget.animationDuration, clipBehavior: widget.clipBehavior, child: new InkWell(focusNode: widget.focusNode, canRequestFocus: widget.enabled, onFocusChange: updateMaterialState(WidgetState.focused), autofocus: widget.autofocus, onHighlightChanged: updateMaterialState(WidgetState.pressed, onChanged: widget.onHighlightChanged), splashColor: widget.splashColor, highlightColor: widget.highlightColor, focusColor: widget.focusColor, hoverColor: widget.hoverColor, onHover: updateMaterialState(WidgetState.hovered), onTap: widget.onPressed, onLongPress: widget.onLongPress, enableFeedback: widget.enableFeedback, customBorder: effectiveShape, mouseCursor: effectiveMouseCursor, child: IconTheme.merge(data: new IconThemeData(color: effectiveTextColor), child: new Padding(padding: paddingLocal, child: new Center(widthFactor: 1.0, heightFactor: 1.0, child: widget.child))))));
+        BoxConstraints effectiveConstraintsLocal = widget.visualDensity.effectiveConstraints(
+            widget.constraints
+        );
+        MouseCursor? effectiveMouseCursor = WidgetStateProperty.resolveAs<MouseCursor?>(
+            widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable,
+            materialStates
+        );
+        EdgeInsetsGeometry paddingLocal = widget
+            .padding.add(
+                EdgeInsets.CreateOnly(
+                    left: densityAdjustment.dx,
+                    top: densityAdjustment.dy,
+                    right: densityAdjustment.dx,
+                    bottom: densityAdjustment.dy
+                )
+            )
+            .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity);
+        Widget result = new ConstrainedBox(
+            constraints: effectiveConstraintsLocal,
+            child: new Material(
+                elevation: _effectiveElevation,
+                textStyle: widget.textStyle?.copyWith(color: effectiveTextColor),
+                shape: effectiveShape,
+                color: widget.fillColor,
+                shadowColor: Theme.of(context).shadowColor,
+                type: (widget.fillColor is null) ? MaterialType.transparency : MaterialType.button,
+                animationDuration: widget.animationDuration,
+                clipBehavior: widget.clipBehavior,
+                child: new InkWell(
+                    focusNode: widget.focusNode,
+                    canRequestFocus: widget.enabled,
+                    onFocusChange: updateMaterialState(WidgetState.focused),
+                    autofocus: widget.autofocus,
+                    onHighlightChanged: updateMaterialState(
+                        WidgetState.pressed,
+                        onChanged: widget.onHighlightChanged
+                    ),
+                    splashColor: widget.splashColor,
+                    highlightColor: widget.highlightColor,
+                    focusColor: widget.focusColor,
+                    hoverColor: widget.hoverColor,
+                    onHover: updateMaterialState(WidgetState.hovered),
+                    onTap: widget.onPressed,
+                    onLongPress: widget.onLongPress,
+                    enableFeedback: widget.enableFeedback,
+                    customBorder: effectiveShape,
+                    mouseCursor: effectiveMouseCursor,
+                    child: IconTheme.merge(
+                        data: new IconThemeData(color: effectiveTextColor),
+                        child: new Padding(
+                            padding: paddingLocal,
+                            child: new Center(
+                                widthFactor: 1.0,
+                                heightFactor: 1.0,
+                                child: widget.child
+                            )
+                        )
+                    )
+                )
+            )
+        );
         Size minSizeLocal = default!;
         switch (widget.materialTapTargetSize)
         {
             case var __constant15001 when Equals(__constant15001, MaterialTapTargetSize.padded):
-                {
-                    minSizeLocal = new Size(ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx, ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy);
-                    DartRuntimePrimitives.Assert(() => minSizeLocal.width >= 0.0);
-                    DartRuntimePrimitives.Assert(() => minSizeLocal.height >= 0.0);
-                    break;
-                }
+            {
+                minSizeLocal = new Size(
+                    ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx,
+                    ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy
+                );
+                DartRuntimePrimitives.Assert(() => minSizeLocal.width >= 0.0);
+                DartRuntimePrimitives.Assert(() => minSizeLocal.height >= 0.0);
+                break;
+            }
             case var __constant15272 when Equals(__constant15272, MaterialTapTargetSize.shrinkWrap):
-                {
-                    minSizeLocal = Size.zero;
-                    break;
-                }
+            {
+                minSizeLocal = Size.zero;
+                break;
+            }
         }
-        return new Widgets.Semantics(container: true, button: true, enabled: widget.enabled, child: new _InputPadding__button(minSize: minSizeLocal, child: result));
+        return new Widgets.Semantics(
+            container: true,
+            button: true,
+            enabled: widget.enabled,
+            child: new _InputPadding__button(minSize: minSizeLocal, child: result)
+        );
     }
 
     public virtual Action<bool> updateMaterialState(WidgetState key, Action<bool>? onChanged = null)
@@ -166,7 +275,14 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
 
     public virtual void setMaterialState(WidgetState state, bool isSet)
     {
-        if (isSet) { addMaterialState(state); } else { removeMaterialState(state); }
+        if (isSet)
+        {
+            addMaterialState(state);
+        }
+        else
+        {
+            removeMaterialState(state);
+        }
         return;
     }
 
@@ -174,9 +290,7 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
     {
         if (materialStates.Add(state))
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
     }
 
@@ -184,9 +298,7 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
     {
         if (materialStates.Remove(state))
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
     }
 
@@ -198,19 +310,26 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
     public virtual bool isPressed => materialStates.Contains(WidgetState.pressed);
     public virtual bool isScrolledUnder => materialStates.Contains(WidgetState.scrolledUnder);
     public virtual bool isSelected => materialStates.Contains(WidgetState.selected);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<WidgetState>>("materialStates", materialStates, defaultValue: new HashSet<WidgetState>()));
+        properties.add(
+            new DiagnosticsProperty<HashSet<WidgetState>>(
+                "materialStates",
+                materialStates,
+                defaultValue: new HashSet<WidgetState>()
+            )
+        );
     }
-
 }
 
 internal class _InputPadding__button : SingleChildRenderObjectWidget
 {
     public virtual Size minSize { get; private set; } = default!;
 
-    internal _InputPadding__button(Widget? child = null, Size minSize = default!) : base(child: child)
+    internal _InputPadding__button(Widget? child = null, Size minSize = default!)
+        : base(child: child)
     {
         this.minSize = minSize;
     }
@@ -226,14 +345,14 @@ internal class _InputPadding__button : SingleChildRenderObjectWidget
         var __renderObject = (_RenderInputPadding__button)renderObject;
         __renderObject.minSize = minSize;
     }
-
 }
 
 public class _RenderInputPadding__button : RenderShiftedBox
 {
     internal virtual Size _minSize { get; set; } = default!;
 
-    internal _RenderInputPadding__button(Size _minSize, RenderBox? child = null) : base(child)
+    internal _RenderInputPadding__button(Size _minSize, RenderBox? child = null)
+        : base(child)
     {
         this._minSize = _minSize;
     }
@@ -252,6 +371,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (child is not null)
@@ -292,7 +412,10 @@ public class _RenderInputPadding__button : RenderShiftedBox
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
+    internal virtual Size _computeSize(
+        BoxConstraints constraints,
+        Func<RenderBox, BoxConstraints, Size> layoutChild
+    )
     {
         if (child is not null)
         {
@@ -307,7 +430,10 @@ public class _RenderInputPadding__button : RenderShiftedBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
+        return _computeSize(
+            constraints: constraints,
+            layoutChild: ChildLayoutHelper.dryLayoutChild
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -324,7 +450,8 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return null;
         }
         Size childSize = childLocal.getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -345,13 +472,16 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return true;
         }
         Offset centerLocal = child!.size.center(Offset.zero);
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(centerLocal), position: centerLocal, hitTest: (result, position) =>
-        {
-            DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));
-            return child!.hitTest(result, position: centerLocal);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return result.addWithRawTransform(
+            transform: MatrixUtils.forceToPoint(centerLocal),
+            position: centerLocal,
+            hitTest: (result, position) =>
+            {
+                DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));
+                return child!.hitTest(result, position: centerLocal);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

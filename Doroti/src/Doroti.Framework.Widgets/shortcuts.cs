@@ -6,25 +6,35 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<LogicalKeyboardKey> _controlSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.control });
+    internal static HashSet<LogicalKeyboardKey> _controlSynonyms =
+        LogicalKeyboardKey.expandSynonyms(
+            new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.control }
+        );
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<LogicalKeyboardKey> _shiftSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.shift });
+    internal static HashSet<LogicalKeyboardKey> _shiftSynonyms = LogicalKeyboardKey.expandSynonyms(
+        new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.shift }
+    );
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<LogicalKeyboardKey> _altSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.alt });
+    internal static HashSet<LogicalKeyboardKey> _altSynonyms = LogicalKeyboardKey.expandSynonyms(
+        new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.alt }
+    );
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.meta });
+    internal static HashSet<LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(
+        new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.meta }
+    );
 }
 
-public class KeySet<T> where T : KeyboardKey
+public class KeySet<T>
+    where T : KeyboardKey
 {
     internal virtual HashSet<T> _keys { get; private set; } = default!;
     private bool __late_hashCode_initialized;
@@ -46,15 +56,31 @@ public class KeySet<T> where T : KeyboardKey
 
     public KeySet(T key1, T? key2 = default, T? key3 = default, T? key4 = default)
     {
-        _keys = ((Func<HashSet<T>>)(() =>
-{
-    var __cascade = new HashSet<T>();
-    __cascade.Add(key1);
-    if (key2 is not null) __cascade.Add(key2);
-    if (key3 is not null) __cascade.Add(key3);
-    if (key4 is not null) __cascade.Add(key4);
-    return __cascade;
-}))();
+        _keys = (
+            (Func<HashSet<T>>)(
+                () =>
+                {
+                    var __cascade = new HashSet<T>();
+                    __cascade.Add(key1);
+                    if (key2 is not null)
+                    {
+                        __cascade.Add(key2);
+                    }
+
+                    if (key3 is not null)
+                    {
+                        __cascade.Add(key3);
+                    }
+
+                    if (key4 is not null)
+                    {
+                        __cascade.Add(key4);
+                    }
+
+                    return __cascade;
+                }
+            )
+        )();
     }
 
     protected KeySet(HashSet<T> keys)
@@ -70,10 +96,15 @@ public class KeySet<T> where T : KeyboardKey
     }
 
     public virtual HashSet<T> keys => _keys.toSet();
+
     public override bool Equals(object? other)
     {
         var __other = other as KeySet<T>;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
@@ -83,7 +114,8 @@ public class KeySet<T> where T : KeyboardKey
 
     public override int GetHashCode() => hashCode.GetHashCode();
 
-    internal static long _computeHashCode<TKey>(HashSet<TKey> keys) where TKey : notnull
+    internal static long _computeHashCode<TKey>(HashSet<TKey> keys)
+        where TKey : notnull
     {
         long length = checked(keys.Count);
         IEnumerator<TKey> iterator = keys.GetEnumerator();
@@ -97,7 +129,9 @@ public class KeySet<T> where T : KeyboardKey
         var h2 = iterator.Current.GetHashCode();
         if (length == 2L)
         {
-            return (h1 < h2) ? FoundationRuntimePorts.ObjectHash(h1, h2) : FoundationRuntimePorts.ObjectHash(h2, h1);
+            return (h1 < h2)
+                ? FoundationRuntimePorts.ObjectHash(h1, h2)
+                : FoundationRuntimePorts.ObjectHash(h2, h1);
         }
         List<long> sortedHashes = ((length == 3L) ? _tempHashStore3 : _tempHashStore4).ToList();
         sortedHashes[(int)0L] = h1;
@@ -113,24 +147,23 @@ public class KeySet<T> where T : KeyboardKey
         return FoundationRuntimePorts.ObjectHashAll(sortedHashes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum LockState
 {
     ignored,
     locked,
-    unlocked
+    unlocked,
 }
 
 public abstract class ShortcutActivator
 {
-    protected ShortcutActivator()
-    {
-    }
+    protected ShortcutActivator() { }
 
-    public virtual IEnumerable<LogicalKeyboardKey>? triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(null);
+    public virtual IEnumerable<LogicalKeyboardKey>? triggers =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(null);
     public abstract bool accepts(KeyEvent @event, HardwareKeyboard state);
+
     public static bool isActivatedBy(ShortcutActivator activator, KeyEvent @event)
     {
         return activator.accepts(@event, HardwareKeyboard.instance);
@@ -150,34 +183,74 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
         {
             if (!__late__triggers_initialized)
             {
-                __late__triggers = keys.expand((key) => _unmapSynonyms.GetValueOrDefault(key) ?? new List<LogicalKeyboardKey> { key }).toSet();
+                __late__triggers = keys.expand(
+                        (key) =>
+                            _unmapSynonyms.GetValueOrDefault(key)
+                            ?? new List<LogicalKeyboardKey> { key }
+                    )
+                    .toSet();
                 __late__triggers_initialized = true;
             }
             return __late__triggers;
         }
     }
-    internal static HashSet<LogicalKeyboardKey> _modifiers = new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.alt, LogicalKeyboardKey.control, LogicalKeyboardKey.meta, LogicalKeyboardKey.shift };
-    internal static DartMap<LogicalKeyboardKey, List<LogicalKeyboardKey>> _unmapSynonyms = new DartMap<LogicalKeyboardKey, List<LogicalKeyboardKey>> { [LogicalKeyboardKey.control] = new List<LogicalKeyboardKey> { LogicalKeyboardKey.controlLeft, LogicalKeyboardKey.controlRight }, [LogicalKeyboardKey.shift] = new List<LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight }, [LogicalKeyboardKey.alt] = new List<LogicalKeyboardKey> { LogicalKeyboardKey.altLeft, LogicalKeyboardKey.altRight }, [LogicalKeyboardKey.meta] = new List<LogicalKeyboardKey> { LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.metaRight } };
-
-    public LogicalKeySet(LogicalKeyboardKey key1, LogicalKeyboardKey? key2 = null, LogicalKeyboardKey? key3 = null, LogicalKeyboardKey? key4 = null) : base(key1, key2, key3, key4)
+    internal static HashSet<LogicalKeyboardKey> _modifiers = new HashSet<LogicalKeyboardKey>
     {
-    }
+        LogicalKeyboardKey.alt,
+        LogicalKeyboardKey.control,
+        LogicalKeyboardKey.meta,
+        LogicalKeyboardKey.shift,
+    };
+    internal static DartMap<LogicalKeyboardKey, List<LogicalKeyboardKey>> _unmapSynonyms =
+        new DartMap<LogicalKeyboardKey, List<LogicalKeyboardKey>>
+        {
+            [LogicalKeyboardKey.control] = new List<LogicalKeyboardKey>
+            {
+                LogicalKeyboardKey.controlLeft,
+                LogicalKeyboardKey.controlRight,
+            },
+            [LogicalKeyboardKey.shift] = new List<LogicalKeyboardKey>
+            {
+                LogicalKeyboardKey.shiftLeft,
+                LogicalKeyboardKey.shiftRight,
+            },
+            [LogicalKeyboardKey.alt] = new List<LogicalKeyboardKey>
+            {
+                LogicalKeyboardKey.altLeft,
+                LogicalKeyboardKey.altRight,
+            },
+            [LogicalKeyboardKey.meta] = new List<LogicalKeyboardKey>
+            {
+                LogicalKeyboardKey.metaLeft,
+                LogicalKeyboardKey.metaRight,
+            },
+        };
 
-    public new static LogicalKeySet CreateFromSet(HashSet<LogicalKeyboardKey> keys)
+    public LogicalKeySet(
+        LogicalKeyboardKey key1,
+        LogicalKeyboardKey? key2 = null,
+        LogicalKeyboardKey? key3 = null,
+        LogicalKeyboardKey? key4 = null
+    )
+        : base(key1, key2, key3, key4) { }
+
+    public static new LogicalKeySet CreateFromSet(HashSet<LogicalKeyboardKey> keys)
     {
         return new LogicalKeySet(keys);
     }
 
-    private LogicalKeySet(HashSet<LogicalKeyboardKey> keys) : base(keys)
-    {
-    }
+    private LogicalKeySet(HashSet<LogicalKeyboardKey> keys)
+        : base(keys) { }
 
-    public virtual IEnumerable<LogicalKeyboardKey> triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(_triggers);
+    public virtual IEnumerable<LogicalKeyboardKey> triggers =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(_triggers);
+
     internal virtual bool _checkKeyRequirements(HashSet<LogicalKeyboardKey> pressed)
     {
         HashSet<LogicalKeyboardKey> collapsedRequired = LogicalKeyboardKey.collapseSynonyms(keys);
         HashSet<LogicalKeyboardKey> collapsedPressed = LogicalKeyboardKey.collapseSynonyms(pressed);
-        return (checked(collapsedRequired.Count) == checked((long)collapsedPressed.Count)) && !Enumerable.Any(collapsedRequired.difference(collapsedPressed));
+        return (checked(collapsedRequired.Count) == checked((long)collapsedPressed.Count))
+            && !Enumerable.Any(collapsedRequired.difference(collapsedPressed));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -187,81 +260,115 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
         {
             return false;
         }
-        return triggers.contains(@event.logicalKey) && _checkKeyRequirements(state.logicalKeysPressed);
+        return triggers.contains(@event.logicalKey)
+            && _checkKeyRequirements(state.logicalKeysPressed);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string debugDescribeKeys()
     {
-        List<LogicalKeyboardKey> sortedKeys = ((Func<List<LogicalKeyboardKey>>)(() =>
-{
-    var __cascade = keys.ToList();
-    __cascade.sort((a, b) =>
-    {
-        bool aIsModifier = Enumerable.Any(a.synonyms) || _modifiers.Contains(a);
-        bool bIsModifier = Enumerable.Any(b.synonyms) || _modifiers.Contains(b);
-        if (aIsModifier && !bIsModifier)
-        {
-            return -1L;
-        }
-        else
-        {
-            if (bIsModifier && !aIsModifier)
-            {
-                return 1L;
-            }
-        }
-        return a.debugName!.CompareTo(b.debugName!);
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-    return __cascade;
-}))().ToList();
+        List<LogicalKeyboardKey> sortedKeys = (
+            (Func<List<LogicalKeyboardKey>>)(
+                () =>
+                {
+                    var __cascade = keys.ToList();
+                    __cascade.sort(
+                        (a, b) =>
+                        {
+                            bool aIsModifier = Enumerable.Any(a.synonyms) || _modifiers.Contains(a);
+                            bool bIsModifier = Enumerable.Any(b.synonyms) || _modifiers.Contains(b);
+                            if (aIsModifier && !bIsModifier)
+                            {
+                                return -1L;
+                            }
+                            else
+                            {
+                                if (bIsModifier && !aIsModifier)
+                                {
+                                    return 1L;
+                                }
+                            }
+                            return a.debugName!.CompareTo(b.debugName!);
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    );
+                    return __cascade;
+                }
+            )
+        )().ToList();
         return string.Join(" + ", sortedKeys.map((key) => $"{key.debugName}"));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new DiagnosticsProperty<HashSet<LogicalKeyboardKey>>("keys", _keys, description: debugDescribeKeys()));
+        properties.add(
+            new DiagnosticsProperty<HashSet<LogicalKeyboardKey>>(
+                "keys",
+                _keys,
+                description: debugDescribeKeys()
+            )
+        );
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ShortcutMapProperty : DiagnosticsProperty<DartMap<ShortcutActivator, Intent>>
 {
-    public ShortcutMapProperty(string name, DartMap<ShortcutActivator, Intent> value, bool showName = true, object defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info, string? description = null) : base(name, value, showName: showName, defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue, level: level, description: description)
-    {
-    }
+    public ShortcutMapProperty(
+        string name,
+        DartMap<ShortcutActivator, Intent> value,
+        bool showName = true,
+        object defaultValue = default!,
+        DiagnosticLevel level = DiagnosticLevel.info,
+        string? description = null
+    )
+        : base(
+            name,
+            value,
+            showName: showName,
+            defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue,
+            level: level,
+            description: description
+        ) { }
 
-    public new virtual DartMap<ShortcutActivator, Intent> value => DartRuntimePrimitives.RequireReference(base.value);
+    public new virtual DartMap<ShortcutActivator, Intent> value =>
+        DartRuntimePrimitives.RequireReference(base.value);
+
     public virtual string valueToString(TextTreeConfiguration? parentConfiguration = null)
     {
         return $"{{{string.Join(", ", value.Keys.map((keySet) => $"{{{keySet.debugDescribeKeys()}}}: {value.GetValueOrDefault(keySet)}"))}}}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializableShortcut
@@ -274,7 +381,15 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
     public virtual LockState numLock { get; private set; } = default!;
     public virtual bool includeRepeats { get; private set; } = default!;
 
-    public SingleActivator(LogicalKeyboardKey trigger, bool control = false, bool shift = false, bool alt = false, bool meta = false, LockState numLock = LockState.ignored, bool includeRepeats = true)
+    public SingleActivator(
+        LogicalKeyboardKey trigger,
+        bool control = false,
+        bool shift = false,
+        bool alt = false,
+        bool meta = false,
+        LockState numLock = LockState.ignored,
+        bool includeRepeats = true
+    )
     {
         this.trigger = trigger;
         this.control = control;
@@ -283,31 +398,66 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
         this.meta = meta;
         this.numLock = numLock;
         this.includeRepeats = includeRepeats;
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.control) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlLeft) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlRight) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shift) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftLeft) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftRight) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.alt) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altLeft) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altRight) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.meta) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaLeft) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaRight));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.control)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlLeft)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlRight)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shift)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftLeft)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftRight)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.alt)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altLeft)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altRight)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.meta)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaLeft)
+                && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaRight)
+        );
     }
 
-    public override IEnumerable<LogicalKeyboardKey> triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(new List<LogicalKeyboardKey> { trigger });
+    public override IEnumerable<LogicalKeyboardKey> triggers =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<LogicalKeyboardKey>>(
+            new List<LogicalKeyboardKey> { trigger }
+        );
+
     internal virtual bool _shouldAcceptModifiers(HashSet<LogicalKeyboardKey> pressed)
     {
-        return (control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (shift == Enumerable.Any(pressed.intersection(ShortcutsLibrary._shiftSynonyms))) && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms))) && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
+        return (control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms)))
+            && (shift == Enumerable.Any(pressed.intersection(ShortcutsLibrary._shiftSynonyms)))
+            && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))
+            && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldAcceptNumLock(HardwareKeyboard state)
     {
-        return numLock switch { LockState.ignored => true, LockState.locked => state.lockModesEnabled.Contains(KeyboardLockMode.numLock), LockState.unlocked => !state.lockModesEnabled.Contains(KeyboardLockMode.numLock), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return numLock switch
+        {
+            LockState.ignored => true,
+            LockState.locked => state.lockModesEnabled.Contains(KeyboardLockMode.numLock),
+            LockState.unlocked => !state.lockModesEnabled.Contains(KeyboardLockMode.numLock),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool accepts(KeyEvent @event, HardwareKeyboard state)
     {
-        return ((@event is KeyDownEvent) || includeRepeats && (@event is KeyRepeatEvent)) && triggers.contains(@event.logicalKey) && _shouldAcceptModifiers(state.logicalKeysPressed) && _shouldAcceptNumLock(state);
+        return ((@event is KeyDownEvent) || (includeRepeats && (@event is KeyRepeatEvent)))
+            && triggers.contains(@event.logicalKey)
+            && _shouldAcceptModifiers(state.logicalKeysPressed)
+            && _shouldAcceptNumLock(state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ShortcutSerialization serializeForMenu()
     {
-        return ShortcutSerialization.CreateModifier(trigger, shift: shift, alt: alt, meta: meta, control: control);
+        return ShortcutSerialization.CreateModifier(
+            trigger,
+            shift: shift,
+            alt: alt,
+            meta: meta,
+            control: control
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -315,12 +465,15 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
     {
         var result = "";
         DartRuntimePrimitives.Assert(() =>
+        {
+            var keys = new List<string>
             {
-                var keys = new List<string> { trigger.debugName ?? ((Diagnosticable)trigger).toStringShort() };
-                result = string.Join(" + ", keys);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                trigger.debugName ?? ((Diagnosticable)trigger).toStringShort(),
+            };
+            result = string.Join(" + ", keys);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -328,31 +481,38 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         properties.add(new MessageProperty("keys", debugDescribeKeys()));
-        properties.add(new FlagProperty("includeRepeats", value: includeRepeats, ifFalse: "excluding repeats"));
+        properties.add(
+            new FlagProperty("includeRepeats", value: includeRepeats, ifFalse: "excluding repeats")
+        );
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSerializableShortcut
@@ -363,7 +523,13 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
     public virtual bool includeRepeats { get; private set; } = default!;
     public virtual string character { get; private set; } = default!;
 
-    public CharacterActivator(string character, bool alt = false, bool control = false, bool meta = false, bool includeRepeats = true)
+    public CharacterActivator(
+        string character,
+        bool alt = false,
+        bool control = false,
+        bool meta = false,
+        bool includeRepeats = true
+    )
     {
         this.character = character;
         this.alt = alt;
@@ -373,15 +539,20 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
     }
 
     public override IEnumerable<LogicalKeyboardKey>? triggers => null;
+
     internal virtual bool _shouldAcceptModifiers(HashSet<LogicalKeyboardKey> pressed)
     {
-        return (control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms))) && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
+        return (control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms)))
+            && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))
+            && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool accepts(KeyEvent @event, HardwareKeyboard state)
     {
-        return (@event.character == character) && ((@event is KeyDownEvent) || includeRepeats && (@event is KeyRepeatEvent)) && _shouldAcceptModifiers(state.logicalKeysPressed);
+        return (@event.character == character)
+            && ((@event is KeyDownEvent) || (includeRepeats && (@event is KeyRepeatEvent)))
+            && _shouldAcceptModifiers(state.logicalKeysPressed);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -389,12 +560,12 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
     {
         var result = "";
         DartRuntimePrimitives.Assert(() =>
-            {
-                var keys = new List<string> { $"'{character}'" };
-                result = string.Join(" + ", keys);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            var keys = new List<string> { $"'{character}'" };
+            result = string.Join(" + ", keys);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -408,31 +579,38 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         properties.add(new MessageProperty("character", debugDescribeKeys()));
-        properties.add(new FlagProperty("includeRepeats", value: includeRepeats, ifFalse: "excluding repeats"));
+        properties.add(
+            new FlagProperty("includeRepeats", value: includeRepeats, ifFalse: "excluding repeats")
+        );
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ActivatorIntentPair__shortcuts : Diagnosticable
@@ -453,38 +631,51 @@ internal class _ActivatorIntentPair__shortcuts : Diagnosticable
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ShortcutManager : ChangeNotifier, Diagnosticable
 {
     public virtual bool modal { get; private set; } = default!;
-    internal virtual DartMap<ShortcutActivator, Intent> _shortcuts { get; set; } = new DartMap<ShortcutActivator, Intent>();
-    internal virtual DartMap<LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>>? _indexedShortcutsCache { get; set; } = default;
+    internal virtual DartMap<ShortcutActivator, Intent> _shortcuts { get; set; } =
+        new DartMap<ShortcutActivator, Intent>();
+    internal virtual DartMap<
+        LogicalKeyboardKey?,
+        List<_ActivatorIntentPair__shortcuts>
+    >? _indexedShortcutsCache { get; set; } = default;
 
-    public ShortcutManager(DartMap<ShortcutActivator, Intent> shortcuts = default!, bool modal = false)
+    public ShortcutManager(
+        DartMap<ShortcutActivator, Intent> shortcuts = default!,
+        bool modal = false
+    )
     {
-        DartMap<ShortcutActivator, Intent> __shortcuts = shortcuts ?? new DartMap<ShortcutActivator, Intent>();
+        DartMap<ShortcutActivator, Intent> __shortcuts =
+            shortcuts ?? new DartMap<ShortcutActivator, Intent>();
         this.modal = modal;
         _shortcuts = __shortcuts;
     }
@@ -503,41 +694,69 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
             }
         }
     }
-    internal static DartMap<LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>> _indexShortcuts(DartMap<ShortcutActivator, Intent> source)
+
+    internal static DartMap<
+        LogicalKeyboardKey?,
+        List<_ActivatorIntentPair__shortcuts>
+    > _indexShortcuts(DartMap<ShortcutActivator, Intent> source)
     {
         var result = new DartMap<LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>>();
-        source.forEach((activator, intent) =>
-        {
-            IEnumerable<LogicalKeyboardKey?>? nullableTriggers = (IEnumerable<LogicalKeyboardKey?>?)activator.triggers;
-            foreach (LogicalKeyboardKey? trigger in nullableTriggers ?? new List<LogicalKeyboardKey?> { null })
+        source.forEach(
+            (activator, intent) =>
             {
-                result.putIfAbsent(trigger, () => new List<_ActivatorIntentPair__shortcuts>()).Add(new _ActivatorIntentPair__shortcuts(activator, intent));
+                IEnumerable<LogicalKeyboardKey?>? nullableTriggers =
+                    (IEnumerable<LogicalKeyboardKey?>?)activator.triggers;
+                foreach (
+                    LogicalKeyboardKey? trigger in nullableTriggers
+                        ?? new List<LogicalKeyboardKey?> { null }
+                )
+                {
+                    result
+                        .putIfAbsent(trigger, () => new List<_ActivatorIntentPair__shortcuts>())
+                        .Add(new _ActivatorIntentPair__shortcuts(activator, intent));
+                }
             }
-        });
+        );
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual DartMap<LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>> _indexedShortcuts
+    internal virtual DartMap<
+        LogicalKeyboardKey?,
+        List<_ActivatorIntentPair__shortcuts>
+    > _indexedShortcuts
     {
-        get
-        {
-            return _indexedShortcutsCache ??= _indexShortcuts(shortcuts);
-        }
+        get { return _indexedShortcutsCache ??= _indexShortcuts(shortcuts); }
     }
-    internal virtual IEnumerable<_ActivatorIntentPair__shortcuts> _getCandidates(LogicalKeyboardKey key)
+
+    internal virtual IEnumerable<_ActivatorIntentPair__shortcuts> _getCandidates(
+        LogicalKeyboardKey key
+    )
     {
         // Match the trigger-specific entries first, then activators that accept
         // any trigger. Preserve registration order within each group.
         if (_indexedShortcuts.TryGetValue(key, out var indexed))
-            foreach (var candidate in indexed) yield return candidate;
+        {
+            foreach (var candidate in indexed)
+            {
+                yield return candidate;
+            }
+        }
+
         if (_indexedShortcuts.TryGetValue(null, out var unindexed))
-            foreach (var candidate in unindexed) yield return candidate;
+        {
+            foreach (var candidate in unindexed)
+            {
+                yield return candidate;
+            }
+        }
     }
 
     internal virtual Intent? _find(KeyEvent @event, HardwareKeyboard state)
     {
-        foreach (_ActivatorIntentPair__shortcuts activatorIntent in _getCandidates(@event.logicalKey))
+        foreach (
+            _ActivatorIntentPair__shortcuts activatorIntent in _getCandidates(@event.logicalKey)
+        )
         {
             if (activatorIntent.activator.accepts(@event, state))
             {
@@ -556,11 +775,20 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
         {
             // IntentAction<SpecificIntent> is not IntentAction<Intent> in C#. Use the
             // type-erased bridge while retaining scoped dispatch and overrides.
-            var action = Actions._maybeFindWithoutDependingOn(contextLocal, intentLocal, declareDependency: true);
+            var action = Actions._maybeFindWithoutDependingOn(
+                contextLocal,
+                intentLocal,
+                declareDependency: true
+            );
             if (action is not null)
             {
-                var (enabled, invokeResult) = Actions.of(contextLocal).invokeActionIfEnabled(action, intentLocal, contextLocal);
-                if (enabled) return action.ToKeyEventResultForIntent(intentLocal, invokeResult);
+                var (enabled, invokeResult) = Actions
+                    .of(contextLocal)
+                    .invokeActionIfEnabled(action, intentLocal, contextLocal);
+                if (enabled)
+                {
+                    return action.ToKeyEventResultForIntent(intentLocal, invokeResult);
+                }
             }
         }
         return modal ? KeyEventResult.skipRemainingHandlers : KeyEventResult.ignored;
@@ -569,32 +797,41 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new DiagnosticsProperty<DartMap<ShortcutActivator, Intent>>("shortcuts", shortcuts));
-        properties.add(new FlagProperty("modal", value: modal, ifTrue: "modal", defaultValue: false));
+        properties.add(
+            new DiagnosticsProperty<DartMap<ShortcutActivator, Intent>>("shortcuts", shortcuts)
+        );
+        properties.add(
+            new FlagProperty("modal", value: modal, ifTrue: "modal", defaultValue: false)
+        );
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class Shortcuts : StatefulWidget
@@ -605,7 +842,14 @@ public class Shortcuts : StatefulWidget
     public virtual string? debugLabel { get; private set; }
     public virtual bool includeSemantics { get; private set; } = default!;
 
-    public Shortcuts(Key? key = null, DartMap<ShortcutActivator, Intent> shortcuts = default!, Widget child = default!, string? debugLabel = null, bool includeSemantics = true) : base(key: key)
+    public Shortcuts(
+        Key? key = null,
+        DartMap<ShortcutActivator, Intent> shortcuts = default!,
+        Widget child = default!,
+        string? debugLabel = null,
+        bool includeSemantics = true
+    )
+        : base(key: key)
     {
         this.child = child;
         this.debugLabel = debugLabel;
@@ -614,7 +858,13 @@ public class Shortcuts : StatefulWidget
         manager = null;
     }
 
-    public static Shortcuts CreateManager(Key? key = null, ShortcutManager manager = default!, Widget child = default!, string? debugLabel = null, bool includeSemantics = true)
+    public static Shortcuts CreateManager(
+        Key? key = null,
+        ShortcutManager manager = default!,
+        Widget child = default!,
+        string? debugLabel = null,
+        bool includeSemantics = true
+    )
     {
         var __instance = new Shortcuts(key, default!, child, debugLabel, includeSemantics);
         __instance.manager = manager;
@@ -627,26 +877,37 @@ public class Shortcuts : StatefulWidget
 
     public virtual DartMap<ShortcutActivator, Intent> shortcuts
     {
-        get
-        {
-            return (manager is null) ? _shortcuts : manager!.shortcuts;
-        }
+        get { return (manager is null) ? _shortcuts : manager!.shortcuts; }
     }
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ShortcutsState__shortcuts());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ShortcutsState__shortcuts());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<ShortcutManager>("manager", manager, defaultValue: null));
-        properties.add(new ShortcutMapProperty("shortcuts", shortcuts, description: ((debugLabel is null ? (bool?)null : debugLabel.Length != 0) ?? false) ? debugLabel : null));
+        properties.add(
+            new DiagnosticsProperty<ShortcutManager>("manager", manager, defaultValue: null)
+        );
+        properties.add(
+            new ShortcutMapProperty(
+                "shortcuts",
+                shortcuts,
+                description: ((debugLabel is null ? (bool?)null : debugLabel.Length != 0) ?? false)
+                    ? debugLabel
+                    : null
+            )
+        );
     }
-
 }
 
 internal class _ShortcutsState__shortcuts : State<Shortcuts>
 {
     internal virtual ShortcutManager? _internalManager { get; set; } = default;
 
-    public virtual ShortcutManager manager => DartRuntimePrimitives.ConvertValue<ShortcutManager>(widget.manager ?? _internalManager!);
+    public virtual ShortcutManager manager =>
+        DartRuntimePrimitives.ConvertValue<ShortcutManager>(widget.manager ?? _internalManager!);
+
     public override void dispose()
     {
         _internalManager?.dispose();
@@ -693,10 +954,17 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
 
     public override Widget build(BuildContext context)
     {
-        return new Focus(debugLabel: (widget.debugLabel is not null) ? $"{typeof(Shortcuts)}: {widget.debugLabel}" : $"{typeof(Shortcuts)}", canRequestFocus: false, onKeyEvent: _handleOnKeyEvent, includeSemantics: widget.includeSemantics, child: widget.child);
+        return new Focus(
+            debugLabel: (widget.debugLabel is not null)
+                ? $"{typeof(Shortcuts)}: {widget.debugLabel}"
+                : $"{typeof(Shortcuts)}",
+            canRequestFocus: false,
+            onKeyEvent: _handleOnKeyEvent,
+            includeSemantics: widget.includeSemantics,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CallbackShortcuts : StatelessWidget
@@ -704,7 +972,12 @@ public class CallbackShortcuts : StatelessWidget
     public virtual DartMap<ShortcutActivator, Action> bindings { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public CallbackShortcuts(Key? key = null, DartMap<ShortcutActivator, Action> bindings = default!, Widget child = default!) : base(key: key)
+    public CallbackShortcuts(
+        Key? key = null,
+        DartMap<ShortcutActivator, Action> bindings = default!,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.bindings = bindings;
         this.child = child;
@@ -723,19 +996,25 @@ public class CallbackShortcuts : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new Focus(canRequestFocus: false, skipTraversal: true, onKeyEvent: (node, @event) =>
-        {
-            KeyEventResult result = KeyEventResult.ignored;
-            foreach (ShortcutActivator activator in bindings.Keys)
+        return new Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (node, @event) =>
             {
-                result = _applyKeyEventBinding(activator, @event) ? KeyEventResult.handled : result;
-            }
-            return result;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: child);
+                KeyEventResult result = KeyEventResult.ignored;
+                foreach (ShortcutActivator activator in bindings.Keys)
+                {
+                    result = _applyKeyEventBinding(activator, @event)
+                        ? KeyEventResult.handled
+                        : result;
+                }
+                return result;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ShortcutRegistryEntry
@@ -756,18 +1035,19 @@ public class ShortcutRegistryEntry
     {
         registry._disposeEntry(this);
     }
-
 }
 
 public class ShortcutRegistry : ChangeNotifier
 {
     internal virtual bool _notificationScheduled { get; set; } = false;
     internal virtual bool _disposed { get; set; } = false;
-    internal virtual DartMap<ShortcutRegistryEntry, DartMap<ShortcutActivator, Intent>> _registeredShortcuts { get; private set; } = new DartMap<ShortcutRegistryEntry, DartMap<ShortcutActivator, Intent>>();
+    internal virtual DartMap<
+        ShortcutRegistryEntry,
+        DartMap<ShortcutActivator, Intent>
+    > _registeredShortcuts { get; private set; } =
+        new DartMap<ShortcutRegistryEntry, DartMap<ShortcutActivator, Intent>>();
 
-    public ShortcutRegistry()
-    {
-    }
+    public ShortcutRegistry() { }
 
     public override void dispose()
     {
@@ -783,10 +1063,14 @@ public class ShortcutRegistry : ChangeNotifier
             return new DartMap<ShortcutActivator, Intent>();
         }
     }
+
     public virtual ShortcutRegistryEntry addAll(DartMap<ShortcutActivator, Intent> value)
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(value), () => (object?)"Cannot register an empty map of shortcuts");
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(value),
+            () => (object?)"Cannot register an empty map of shortcuts"
+        );
         var entry = new ShortcutRegistryEntry(this);
         _registeredShortcuts[entry] = value;
         DartRuntimePrimitives.Assert(() => _debugCheckForDuplicates());
@@ -799,42 +1083,60 @@ public class ShortcutRegistry : ChangeNotifier
     {
         if (!_notificationScheduled)
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
-            {
-                _notificationScheduled = false;
-                if (!_disposed)
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (_) =>
                 {
-                    notifyListeners();
-                }
-            }, debugLabel: "ShortcutRegistry.notifyListeners");
+                    _notificationScheduled = false;
+                    if (!_disposed)
+                    {
+                        notifyListeners();
+                    }
+                },
+                debugLabel: "ShortcutRegistry.notifyListeners"
+            );
             _notificationScheduled = true;
         }
     }
 
     public static ShortcutRegistry of(BuildContext context)
     {
-        _ShortcutRegistrarScope__shortcuts? inherited = context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>();
+        _ShortcutRegistrarScope__shortcuts? inherited =
+            context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (inherited is null)
             {
-                if (inherited is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Unable to find a {typeof(ShortcutRegistrar)} widget in the context.\n" + $"{typeof(ShortcutRegistrar)}.of() was called with a context that does not contain a " + $"{typeof(ShortcutRegistrar)} widget.\n" + $"No {typeof(ShortcutRegistrar)} ancestor could be found starting from the context that was " + $"passed to {typeof(ShortcutRegistrar)}.of().\n" + "The context used was:\n" + $"  {context}"));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"Unable to find a {typeof(ShortcutRegistrar)} widget in the context.\n"
+                            + $"{typeof(ShortcutRegistrar)}.of() was called with a context that does not contain a "
+                            + $"{typeof(ShortcutRegistrar)} widget.\n"
+                            + $"No {typeof(ShortcutRegistrar)} ancestor could be found starting from the context that was "
+                            + $"passed to {typeof(ShortcutRegistrar)}.of().\n"
+                            + "The context used was:\n"
+                            + $"  {context}"
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return inherited!.registry;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ShortcutRegistry? maybeOf(BuildContext context)
     {
-        _ShortcutRegistrarScope__shortcuts? inherited = context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>();
+        _ShortcutRegistrarScope__shortcuts? inherited =
+            context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>();
         return inherited?.registry;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _replaceAll(ShortcutRegistryEntry entry, DartMap<ShortcutActivator, Intent> value)
+    internal virtual void _replaceAll(
+        ShortcutRegistryEntry entry,
+        DartMap<ShortcutActivator, Intent> value
+    )
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         DartRuntimePrimitives.Assert(() => _debugCheckEntryIsValid(entry));
@@ -858,11 +1160,24 @@ public class ShortcutRegistry : ChangeNotifier
         {
             if (Equals(entry.registry, this))
             {
-                throw DartRuntimePrimitives.AsException(FlutterError.Create($"entry {DiagnosticsLibrary.describeIdentity(entry)} is invalid.\n" + "The entry has already been disposed of. Tokens are not valid after " + "dispose is called on them, and should no longer be used."));
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"entry {DiagnosticsLibrary.describeIdentity(entry)} is invalid.\n"
+                            + "The entry has already been disposed of. Tokens are not valid after "
+                            + "dispose is called on them, and should no longer be used."
+                    )
+                );
             }
             else
             {
-                throw DartRuntimePrimitives.AsException(FlutterError.Create($"Foreign entry {DiagnosticsLibrary.describeIdentity(entry)} used.\n" + "This entry was not created by this registry, it was created by " + $"{DiagnosticsLibrary.describeIdentity(entry.registry)}, and should be used with that " + "registry instead."));
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"Foreign entry {DiagnosticsLibrary.describeIdentity(entry)} used.\n"
+                            + "This entry was not created by this registry, it was created by "
+                            + $"{DiagnosticsLibrary.describeIdentity(entry.registry)}, and should be used with that "
+                            + "registry instead."
+                    )
+                );
             }
         }
         return true;
@@ -872,13 +1187,23 @@ public class ShortcutRegistry : ChangeNotifier
     internal virtual bool _debugCheckForDuplicates()
     {
         var previous = new DartMap<ShortcutActivator, ShortcutRegistryEntry?>();
-        foreach (MapEntry<ShortcutRegistryEntry, DartMap<ShortcutActivator, Intent>> tokenEntry in _registeredShortcuts.entries)
+        foreach (
+            MapEntry<
+                ShortcutRegistryEntry,
+                DartMap<ShortcutActivator, Intent>
+            > tokenEntry in _registeredShortcuts.entries
+        )
         {
             foreach (ShortcutActivator shortcut in tokenEntry.value.Keys)
             {
                 if (previous.ContainsKey(shortcut))
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{typeof(ShortcutRegistry)}: Received a duplicate registration for the " + $"shortcut {shortcut} in {DiagnosticsLibrary.describeIdentity(tokenEntry.key)} and {previous.GetValueOrDefault(shortcut)}."));
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            $"{typeof(ShortcutRegistry)}: Received a duplicate registration for the "
+                                + $"shortcut {shortcut} in {DiagnosticsLibrary.describeIdentity(tokenEntry.key)} and {previous.GetValueOrDefault(shortcut)}."
+                        )
+                    );
                 }
                 previous[shortcut] = tokenEntry.key;
             }
@@ -886,19 +1211,20 @@ public class ShortcutRegistry : ChangeNotifier
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ShortcutRegistrar : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public ShortcutRegistrar(Key? key = null, Widget child = default!) : base(key: key)
+    public ShortcutRegistrar(Key? key = null, Widget child = default!)
+        : base(key: key)
     {
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ShortcutRegistrarState__shortcuts());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ShortcutRegistrarState__shortcuts());
 }
 
 internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
@@ -927,17 +1253,24 @@ internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
 
     public override Widget build(BuildContext context)
     {
-        return new _ShortcutRegistrarScope__shortcuts(registry: registry, child: Shortcuts.CreateManager(manager: manager, debugLabel: "<Shortcut Registrar>", child: widget.child));
+        return new _ShortcutRegistrarScope__shortcuts(
+            registry: registry,
+            child: Shortcuts.CreateManager(
+                manager: manager,
+                debugLabel: "<Shortcut Registrar>",
+                child: widget.child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ShortcutRegistrarScope__shortcuts : InheritedWidget
 {
     public virtual ShortcutRegistry registry { get; private set; } = default!;
 
-    internal _ShortcutRegistrarScope__shortcuts(ShortcutRegistry registry, Widget child) : base(child: child)
+    internal _ShortcutRegistrarScope__shortcuts(ShortcutRegistry registry, Widget child)
+        : base(child: child)
     {
         this.registry = registry;
     }
@@ -948,5 +1281,4 @@ internal class _ShortcutRegistrarScope__shortcuts : InheritedWidget
         return !Equals(registry, __oldWidget.registry);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

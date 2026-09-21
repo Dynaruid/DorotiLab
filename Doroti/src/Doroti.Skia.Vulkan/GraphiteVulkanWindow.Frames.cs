@@ -38,14 +38,25 @@ public sealed unsafe partial class GraphiteVulkanWindow
         {
             var slot = new WindowFrameSlot();
             _windowFrames.Add(slot); // Retain partial construction for cleanup.
-            var allocation = new CommandBufferAllocateInfo { SType = StructureType.CommandBufferAllocateInfo,
-                CommandPool = _pool, Level = CommandBufferLevel.Primary, CommandBufferCount = 1 };
-            Check(_vk.AllocateCommandBuffers(_device, &allocation, out slot.Command), "frame command buffer");
+            var allocation = new CommandBufferAllocateInfo
+            {
+                SType = StructureType.CommandBufferAllocateInfo,
+                CommandPool = _pool,
+                Level = CommandBufferLevel.Primary,
+                CommandBufferCount = 1,
+            };
+            Check(
+                _vk.AllocateCommandBuffers(_device, &allocation, out slot.Command),
+                "frame command buffer"
+            );
             _stockObserver?.Journal.Allocate(slot.Command.Handle, _pool.Handle);
             var fence = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
             Check(_vk.CreateFence(_device, &fence, null, out slot.Fence), "frame fence");
             var semaphore = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
-            Check(_vk.CreateSemaphore(_device, &semaphore, null, out slot.Acquired), "acquire semaphore");
+            Check(
+                _vk.CreateSemaphore(_device, &semaphore, null, out slot.Acquired),
+                "acquire semaphore"
+            );
         }
     }
 
@@ -53,16 +64,27 @@ public sealed unsafe partial class GraphiteVulkanWindow
     public bool PollGpuWork()
     {
         CheckOwner();
-        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface admission is closed.");
+        if (_terminalShutdown)
+        {
+            throw new InvalidOperationException("Vulkan surface admission is closed.");
+        }
+
         var complete = true;
         foreach (var slot in _windowFrames)
         {
-            if (slot.Frame is null) continue;
+            if (slot.Frame is null)
+            {
+                continue;
+            }
+
             var result = _vk.GetFenceStatus(_device, slot.Fence);
             if (result == Result.NotReady)
             {
                 if (Stopwatch.GetElapsedTime(slot.SubmittedAt) >= TimeSpan.FromSeconds(5))
+                {
                     throw new TimeoutException("Vulkan frame completion exceeded five seconds.");
+                }
+
                 complete = false;
                 continue;
             }
@@ -74,23 +96,41 @@ public sealed unsafe partial class GraphiteVulkanWindow
 
     private void CompleteWindowFrame(WindowFrameSlot slot)
     {
-        if (slot.Frame is null) return;
+        if (slot.Frame is null)
+        {
+            return;
+        }
+
         slot.Frame.CompleteGpuWork();
         slot.Frame = null;
         if (_session?.IsDeviceLost != true)
+        {
             slot.Target!.SetStateAfterGpuCompletion((int)slot.RestoredLayout, _family);
+        }
+
         CompletedWindowFrames++;
     }
 
     private void DrainWindowFrames()
     {
         var idle = _vk.DeviceWaitIdle(_device);
-        if (idle == Result.ErrorDeviceLost) _session?.NotifyVulkanDeviceLost();
-        else Check(idle, "window frame drain");
+        if (idle == Result.ErrorDeviceLost)
+        {
+            _session?.NotifyVulkanDeviceLost();
+        }
+        else
+        {
+            Check(idle, "window frame drain");
+        }
+
         foreach (var slot in _windowFrames)
         {
             CompleteWindowFrame(slot);
-            if (!slot.AcquireWaitPending) continue;
+            if (!slot.AcquireWaitPending)
+            {
+                continue;
+            }
+
             if (idle != Result.ErrorDeviceLost)
             {
                 // A cancelled/failed paint may have acquired an image without
@@ -98,11 +138,25 @@ public sealed unsafe partial class GraphiteVulkanWindow
                 // or reusing the semaphore, including an asynchronous acquire.
                 var acquired = slot.Acquired;
                 var stage = PipelineStageFlags.AllCommandsBit;
-                var submit = new SubmitInfo { SType = StructureType.SubmitInfo,
-                    WaitSemaphoreCount = 1, PWaitSemaphores = &acquired, PWaitDstStageMask = &stage };
-                CheckDevice(_vk.ResetFences(_device, 1, in slot.Fence), "reset abandoned acquire fence");
-                CheckDevice(_vk.QueueSubmit(_queue, 1, &submit, slot.Fence), "consume abandoned acquire");
-                CheckDevice(_vk.WaitForFences(_device, 1, in slot.Fence, true, Timeout), "abandoned acquire fence");
+                var submit = new SubmitInfo
+                {
+                    SType = StructureType.SubmitInfo,
+                    WaitSemaphoreCount = 1,
+                    PWaitSemaphores = &acquired,
+                    PWaitDstStageMask = &stage,
+                };
+                CheckDevice(
+                    _vk.ResetFences(_device, 1, in slot.Fence),
+                    "reset abandoned acquire fence"
+                );
+                CheckDevice(
+                    _vk.QueueSubmit(_queue, 1, &submit, slot.Fence),
+                    "consume abandoned acquire"
+                );
+                CheckDevice(
+                    _vk.WaitForFences(_device, 1, in slot.Fence, true, Timeout),
+                    "abandoned acquire fence"
+                );
             }
             slot.AcquireWaitPending = false;
         }
@@ -110,7 +164,11 @@ public sealed unsafe partial class GraphiteVulkanWindow
 
     private void CheckDevice(Result result, string operation)
     {
-        if (result == Result.ErrorDeviceLost) _session?.NotifyVulkanDeviceLost();
+        if (result == Result.ErrorDeviceLost)
+        {
+            _session?.NotifyVulkanDeviceLost();
+        }
+
         Check(result, operation);
     }
 }

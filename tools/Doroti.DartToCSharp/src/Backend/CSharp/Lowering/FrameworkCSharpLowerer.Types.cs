@@ -19,7 +19,8 @@ internal sealed partial class FrameworkCSharpLowerer
         var parameterOwner = _session.ActiveDonorDeclaration ?? _session.ActiveDeclaration;
         if (parameterOwner?.Name == "TreeSliver" && parameter.Name == "treeRowExtentBuilder")
         {
-            mappedType = "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
+            mappedType =
+                "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
         }
         else if (parameterOwner?.Name == "ScrollAwareImageProvider" && parameter.Name == "context")
         {
@@ -35,7 +36,9 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             return $"{mappedType} {name} = default!";
         }
-        var suffix = isOptional ? $" = {MapDefault(parameter.DefaultValue, parameter.Type)}" : string.Empty;
+        var suffix = isOptional
+            ? $" = {MapDefault(parameter.DefaultValue, parameter.Type)}"
+            : string.Empty;
         return $"{mappedType} {name}{suffix}";
     }
 
@@ -45,31 +48,56 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return true;
         }
-        if (double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+        if (
+            double.TryParse(
+                value,
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out _
+            )
+        )
         {
             return true;
         }
-        if (long.TryParse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
+        if (
+            long.TryParse(
+                value,
+                System.Globalization.NumberStyles.Integer,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out _
+            )
+        )
         {
             return true;
         }
-        if (value.StartsWith(".", StringComparison.Ordinal) ||
-            value.StartsWith("double.", StringComparison.Ordinal))
+        if (
+            value.StartsWith(".", StringComparison.Ordinal)
+            || value.StartsWith("double.", StringComparison.Ordinal)
+        )
         {
             return true;
         }
-        if (value.EndsWith(".zero", StringComparison.Ordinal) &&
-            IsValueType(MapType(dartType).TrimEnd('?')))
+        if (
+            value.EndsWith(".zero", StringComparison.Ordinal)
+            && IsValueType(MapType(dartType).TrimEnd('?'))
+        )
         {
             return true;
         }
-        if (Regex.IsMatch(value, @"^(?:ui\.)?[A-Za-z_]\w*\.[A-Za-z_]\w*$", RegexOptions.CultureInvariant) &&
-            IsEnumType(MapType(dartType).TrimEnd('?')))
+        if (
+            Regex.IsMatch(
+                value,
+                @"^(?:ui\.)?[A-Za-z_]\w*\.[A-Za-z_]\w*$",
+                RegexOptions.CultureInvariant
+            ) && IsEnumType(MapType(dartType).TrimEnd('?'))
+        )
         {
             return true;
         }
-        if (value.Length >= 2 &&
-            ((value[0] == '\'' && value[^1] == '\'') || (value[0] == '"' && value[^1] == '"')))
+        if (
+            value.Length >= 2
+            && ((value[0] == '\'' && value[^1] == '\'') || (value[0] == '"' && value[^1] == '"'))
+        )
         {
             return true;
         }
@@ -78,48 +106,73 @@ internal sealed partial class FrameworkCSharpLowerer
     }
 
     private bool IsNonConstReferenceDefault(string? value, string dartType) =>
-        !IsCompileTimeConstantDefault(value, dartType) &&
-        !IsValueType(MapType(dartType).TrimEnd('?')) &&
-        MapType(dartType).TrimEnd('?') is not "string" and not "object" &&
-        !string.IsNullOrEmpty(value);
+        !IsCompileTimeConstantDefault(value, dartType)
+        && !IsValueType(MapType(dartType).TrimEnd('?'))
+        && MapType(dartType).TrimEnd('?') is not "string" and not "object"
+        && !string.IsNullOrEmpty(value);
 
     private bool NeedsNonConstValueDefault(CoreResolvedParameter parameter) =>
-        parameter.Kind is "optional-named" or "optional-positional" &&
-        !IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type) &&
-        !string.IsNullOrEmpty(parameter.DefaultValue) &&
-        IsValueType(MapType(parameter.Type));
+        parameter.Kind is "optional-named" or "optional-positional"
+        && !IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type)
+        && !string.IsNullOrEmpty(parameter.DefaultValue)
+        && IsValueType(MapType(parameter.Type));
 
     private bool NeedsRuntimeDefaultRestore(CoreResolvedParameter parameter) =>
-        parameter.Kind is "optional-named" or "optional-positional" &&
-        !IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type) &&
-        !string.IsNullOrEmpty(parameter.DefaultValue);
+        parameter.Kind is "optional-named" or "optional-positional"
+        && !IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type)
+        && !string.IsNullOrEmpty(parameter.DefaultValue);
 
     private string MapNonConstDefaultExpression(string value, string? library = null)
     {
         var expression = value.StartsWith("const ", StringComparison.Ordinal)
             ? value["const ".Length..].Trim()
             : value.Trim();
-        expression = expression.Replace("double.infinity", "double.PositiveInfinity", StringComparison.Ordinal)
-            .Replace("double.negativeInfinity", "double.NegativeInfinity", StringComparison.Ordinal);
-        if (Regex.Match(expression, @"^<(?<type>.+)>\[\]$", RegexOptions.CultureInvariant) is { Success: true } list)
+        expression = expression
+            .Replace("double.infinity", "double.PositiveInfinity", StringComparison.Ordinal)
+            .Replace(
+                "double.negativeInfinity",
+                "double.NegativeInfinity",
+                StringComparison.Ordinal
+            );
+        if (
+            Regex.Match(expression, @"^<(?<type>.+)>\[\]$", RegexOptions.CultureInvariant) is
+            { Success: true } list
+        )
         {
             return $"new List<{MapType(list.Groups["type"].Value)}>()";
         }
-        if (Regex.Match(expression, @"^<(?<types>.+)>\{\}$", RegexOptions.CultureInvariant) is { Success: true } map)
+        if (
+            Regex.Match(expression, @"^<(?<types>.+)>\{\}$", RegexOptions.CultureInvariant) is
+            { Success: true } map
+        )
         {
             var types = SplitGenericArguments(map.Groups["types"].Value);
             return types.Length == 2
                 ? $"new DartMap<{MapType(types[0])}, {MapType(types[1])}>()"
                 : "new DartMap<object, object>()";
         }
-        if (Regex.Match(expression, @"^<(?<type>.+)>\[(?<items>.*)\]$", RegexOptions.CultureInvariant) is { Success: true } populatedList)
+        if (
+            Regex.Match(
+                expression,
+                @"^<(?<type>.+)>\[(?<items>.*)\]$",
+                RegexOptions.CultureInvariant
+            ) is
+            { Success: true } populatedList
+        )
         {
             var itemExpressions = SplitGenericArguments(populatedList.Groups["items"].Value)
                 .Where(item => !string.IsNullOrWhiteSpace(item))
                 .Select(item => MapNonConstDefaultExpression(item, library));
             return $"new List<{MapType(populatedList.Groups["type"].Value)}> {{ {string.Join(", ", itemExpressions)} }}";
         }
-        if (Regex.Match(expression, @"^(?<type>[A-Za-z_]\w*(?:<.*>)?)\((?<arguments>.*)\)$", RegexOptions.CultureInvariant) is { Success: true } constructor)
+        if (
+            Regex.Match(
+                expression,
+                @"^(?<type>[A-Za-z_]\w*(?:<.*>)?)\((?<arguments>.*)\)$",
+                RegexOptions.CultureInvariant
+            ) is
+            { Success: true } constructor
+        )
         {
             var type = MapType(constructor.Groups["type"].Value);
             var arguments = constructor.Groups["arguments"].Value.Replace('\'', '"');
@@ -127,26 +180,42 @@ internal sealed partial class FrameworkCSharpLowerer
                 arguments,
                 @"(?<!new\s)(?<![\w.])Color\(",
                 "new global::Doroti.Ui.Color(",
-                RegexOptions.CultureInvariant);
+                RegexOptions.CultureInvariant
+            );
             arguments = Regex.Replace(
                 arguments,
                 @"\bkTouchSlop\b",
                 "global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop",
-                RegexOptions.CultureInvariant);
-            if (type is "Color" or "global::Doroti.Ui.Color" &&
-                arguments.Trim() == "_kColorDefault")
+                RegexOptions.CultureInvariant
+            );
+            if (
+                type is "Color" or "global::Doroti.Ui.Color"
+                && arguments.Trim() == "_kColorDefault"
+            )
             {
                 return $"new {type}(0xFF000000L)";
             }
-            var factory = type is "Duration" or "global::Doroti.Runtime.Duration" ? ".Create" : string.Empty;
+            var factory = type is "Duration" or "global::Doroti.Runtime.Duration"
+                ? ".Create"
+                : string.Empty;
             return factory.Length > 0
                 ? $"{type}{factory}({arguments})"
                 : $"new {type}({arguments})";
         }
-        if (Regex.Match(expression, @"^(?<type>[A-Za-z_]\w*)\.(?<name>[A-Za-z_]\w*)\((?<arguments>.*)\)$", RegexOptions.CultureInvariant) is { Success: true } named)
+        if (
+            Regex.Match(
+                expression,
+                @"^(?<type>[A-Za-z_]\w*)\.(?<name>[A-Za-z_]\w*)\((?<arguments>.*)\)$",
+                RegexOptions.CultureInvariant
+            ) is
+            { Success: true } named
+        )
         {
             var type = MapType(named.Groups["type"].Value);
-            if (type.EndsWith("EdgeInsets", StringComparison.Ordinal) && named.Groups["name"].Value == "fromLTRB")
+            if (
+                type.EndsWith("EdgeInsets", StringComparison.Ordinal)
+                && named.Groups["name"].Value == "fromLTRB"
+            )
             {
                 return $"new {type}({named.Groups["arguments"].Value})";
             }
@@ -157,7 +226,14 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return "Dart_uiLibrary." + expression[3..];
         }
-        if (Regex.Match(expression, @"^(?:[A-Za-z_]\w*\.)?(?<type>[A-Za-z_]\w*)\.(?<name>[A-Za-z_]\w*)$", RegexOptions.CultureInvariant) is { Success: true } member)
+        if (
+            Regex.Match(
+                expression,
+                @"^(?:[A-Za-z_]\w*\.)?(?<type>[A-Za-z_]\w*)\.(?<name>[A-Za-z_]\w*)$",
+                RegexOptions.CultureInvariant
+            ) is
+            { Success: true } member
+        )
         {
             return $"{MapType(member.Groups["type"].Value)}.{SafeIdentifier(member.Groups["name"].Value)}";
         }
@@ -178,24 +254,37 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return "global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform";
         }
-        if (Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant) &&
-            FindGlobalDeclaration(expression) is
-            {
-                Ast.Kind: CoreNodeKind.ClassDeclaration or
-                CoreNodeKind.MixinDeclaration or CoreNodeKind.ExtensionTypeDeclaration
-            })
+        if (
+            Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant)
+            && FindGlobalDeclaration(expression)
+                is {
+                    Ast.Kind: CoreNodeKind.ClassDeclaration
+                        or CoreNodeKind.MixinDeclaration
+                        or CoreNodeKind.ExtensionTypeDeclaration
+                }
+        )
         {
             return $"typeof({MapType(expression)})";
         }
-        if (!string.IsNullOrEmpty(library) &&
-            Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant))
+        if (
+            !string.IsNullOrEmpty(library)
+            && Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant)
+        )
         {
             var currentOwner = _currentDeclarations?.FirstOrDefault(candidate =>
-                candidate.Ast.Kind is CoreNodeKind.TopLevelVariableDeclaration or CoreNodeKind.FunctionDeclaration &&
-                candidate.Name == expression);
+                candidate.Ast.Kind
+                    is CoreNodeKind.TopLevelVariableDeclaration
+                        or CoreNodeKind.FunctionDeclaration
+                && candidate.Name == expression
+            );
             var requestedOwner = _semanticIndex.FindDeclaration(library, expression);
-            var matchingOwners = _semanticIndex.FindDeclarations(expression)
-                .Where(candidate => candidate.Ast.Kind is CoreNodeKind.TopLevelVariableDeclaration or CoreNodeKind.FunctionDeclaration)
+            var matchingOwners = _semanticIndex
+                .FindDeclarations(expression)
+                .Where(candidate =>
+                    candidate.Ast.Kind
+                        is CoreNodeKind.TopLevelVariableDeclaration
+                            or CoreNodeKind.FunctionDeclaration
+                )
                 .Take(2)
                 .ToArray();
             var uniqueOwner = matchingOwners.Length == 1 ? matchingOwners[0] : null;
@@ -209,9 +298,15 @@ internal sealed partial class FrameworkCSharpLowerer
         return expression.Replace('\'', '"');
     }
 
-    private string MapParameterRuntimeDefault(CoreResolvedParameter parameter, string? library = null)
+    private string MapParameterRuntimeDefault(
+        CoreResolvedParameter parameter,
+        string? library = null
+    )
     {
-        if (parameter.Name == "displayStringForOption" && parameter.DefaultValue == "defaultStringForOption")
+        if (
+            parameter.Name == "displayStringForOption"
+            && parameter.DefaultValue == "defaultStringForOption"
+        )
         {
             var delegateType = MapType(parameter.Type).TrimEnd('?');
             return $"new {delegateType}((__option) => defaultStringForOption(__option))";
@@ -236,8 +331,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 do
                 {
                     emittedName = $"__{baseName}{wildcardIndex++}";
-                }
-                while (!usedNames.Add(emittedName));
+                } while (!usedNames.Add(emittedName));
             }
             if (!optional && optionalSeen)
             {
@@ -256,16 +350,22 @@ internal sealed partial class FrameworkCSharpLowerer
         if (value is null)
         {
             var mappedDefaultType = MapType(dartType).TrimEnd('?');
-            if (IsUnboundTypeParameterName(mappedDefaultType) ||
-                _session.ActiveMethodTypeParameters.Contains(mappedDefaultType))
+            if (
+                IsUnboundTypeParameterName(mappedDefaultType)
+                || _session.ActiveMethodTypeParameters.Contains(mappedDefaultType)
+            )
             {
                 return "default";
             }
             return dartType.EndsWith("?", StringComparison.Ordinal) ? "null" : "default!";
         }
-        if (value == "null" &&
-            (IsUnboundTypeParameterName(MapType(dartType).TrimEnd('?')) ||
-             _session.ActiveMethodTypeParameters.Contains(MapType(dartType).TrimEnd('?'))))
+        if (
+            value == "null"
+            && (
+                IsUnboundTypeParameterName(MapType(dartType).TrimEnd('?'))
+                || _session.ActiveMethodTypeParameters.Contains(MapType(dartType).TrimEnd('?'))
+            )
+        )
         {
             return "default";
         }
@@ -285,8 +385,10 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             return "Dart_uiLibrary." + value[3..];
         }
-        if (value.EndsWith(".zero", StringComparison.Ordinal) &&
-            IsValueType(MapType(dartType).TrimEnd('?')))
+        if (
+            value.EndsWith(".zero", StringComparison.Ordinal)
+            && IsValueType(MapType(dartType).TrimEnd('?'))
+        )
         {
             return "default";
         }
@@ -294,17 +396,33 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return MapDoubleConstant(value["double.".Length..]);
         }
-        if (Regex.Match(value, @"^(?<type>[A-Za-z_]\w*)\.(?<member>[A-Za-z_]\w*)$", RegexOptions.CultureInvariant) is { Success: true } staticMember)
+        if (
+            Regex.Match(
+                value,
+                @"^(?<type>[A-Za-z_]\w*)\.(?<member>[A-Za-z_]\w*)$",
+                RegexOptions.CultureInvariant
+            ) is
+            { Success: true } staticMember
+        )
         {
             return $"{MapType(staticMember.Groups["type"].Value)}.{SafeIdentifier(staticMember.Groups["member"].Value)}";
         }
-        if (dartType.TrimEnd('?') is "MouseCursor" or "TextInputType" or "AutofillConfiguration" or "TextRange")
+        if (
+            dartType.TrimEnd('?')
+            is "MouseCursor"
+                or "TextInputType"
+                or "AutofillConfiguration"
+                or "TextRange"
+        )
         {
             return "default!";
         }
-        if (value.StartsWith("const ", StringComparison.Ordinal) ||
-            value.StartsWith("<", StringComparison.Ordinal) || value is "[]" or "{}" ||
-            value.Contains(":", StringComparison.Ordinal))
+        if (
+            value.StartsWith("const ", StringComparison.Ordinal)
+            || value.StartsWith("<", StringComparison.Ordinal)
+            || value is "[]" or "{}"
+            || value.Contains(":", StringComparison.Ordinal)
+        )
         {
             return "default!";
         }
@@ -315,15 +433,16 @@ internal sealed partial class FrameworkCSharpLowerer
         return value.Replace('\'', '"');
     }
 
-    private string MapDoubleConstant(string name) => name switch
-    {
-        "infinity" => "double.PositiveInfinity",
-        "negativeInfinity" => "double.NegativeInfinity",
-        "nan" => "double.NaN",
-        "maxFinite" => "double.MaxValue",
-        "minPositive" => "double.Epsilon",
-        _ => "double." + SafeIdentifier(name),
-    };
+    private string MapDoubleConstant(string name) =>
+        name switch
+        {
+            "infinity" => "double.PositiveInfinity",
+            "negativeInfinity" => "double.NegativeInfinity",
+            "nan" => "double.NaN",
+            "maxFinite" => "double.MaxValue",
+            "minPositive" => "double.Epsilon",
+            _ => "double." + SafeIdentifier(name),
+        };
 
     private string FormatTypeParameters(CoreResolvedTypeParameter[]? typeParameters)
     {
@@ -334,15 +453,25 @@ internal sealed partial class FrameworkCSharpLowerer
         return $"<{string.Join(", ", typeParameters.Select(item => SafeIdentifier(item.Name)))}>";
     }
 
-    private string FormatTypeParameterConstraints(CoreResolvedTypeParameter[]? typeParameters, CoreResolvedDeclaration declaration)
+    private string FormatTypeParameterConstraints(
+        CoreResolvedTypeParameter[]? typeParameters,
+        CoreResolvedDeclaration declaration
+    )
     {
-        if (declaration.Name is "ParentDataWidget" or "ParentDataElement" && typeParameters is { Length: > 0 })
+        if (
+            declaration.Name is "ParentDataWidget" or "ParentDataElement"
+            && typeParameters is { Length: > 0 }
+        )
         {
-            typeParameters = typeParameters.Select(parameter => parameter with { Bound = null }).ToArray();
+            typeParameters = typeParameters
+                .Select(parameter => parameter with { Bound = null })
+                .ToArray();
         }
         if (declaration.Name == "RestorableNumN" && typeParameters is { Length: > 0 })
         {
-            typeParameters = typeParameters.Select(parameter => parameter with { Bound = null }).ToArray();
+            typeParameters = typeParameters
+                .Select(parameter => parameter with { Bound = null })
+                .ToArray();
         }
         var relevantTypes = new List<string>();
         if (declaration.Element.Supertype is { } supertype && supertype != "Object")
@@ -363,13 +492,18 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             if (member.Element.Parameters is not null)
             {
-                relevantTypes.AddRange(member.Element.Parameters.Select(parameter => MapType(parameter.Type)));
+                relevantTypes.AddRange(
+                    member.Element.Parameters.Select(parameter => MapType(parameter.Type))
+                );
             }
         }
         return FormatTypeParameterConstraints(typeParameters, relevantTypes);
     }
 
-    private string FormatTypeParameterConstraints(CoreResolvedTypeParameter[]? typeParameters, IEnumerable<string> relevantTypes)
+    private string FormatTypeParameterConstraints(
+        CoreResolvedTypeParameter[]? typeParameters,
+        IEnumerable<string> relevantTypes
+    )
     {
         if (typeParameters is null or { Length: 0 })
         {
@@ -396,7 +530,9 @@ internal sealed partial class FrameworkCSharpLowerer
                 {
                     parts.Add("notnull");
                 }
-                return parts.Count > 0 ? $"where {SafeIdentifier(item.Name)} : {string.Join(", ", parts)}" : null;
+                return parts.Count > 0
+                    ? $"where {SafeIdentifier(item.Name)} : {string.Join(", ", parts)}"
+                    : null;
             })
             .Where(item => item is not null)
             .ToArray();
@@ -409,41 +545,116 @@ internal sealed partial class FrameworkCSharpLowerer
         return relevantTypes.Any(type => Regex.IsMatch(type, pattern));
     }
 
-    private string MakeNullable(string type) => type.EndsWith("?", StringComparison.Ordinal) ? type : type + "?";
+    private string MakeNullable(string type) =>
+        type.EndsWith("?", StringComparison.Ordinal) ? type : type + "?";
 
     private bool IsValueType(string type)
     {
         var baseType = type.TrimEnd('?');
         var simpleType = baseType[(baseType.LastIndexOf('.') + 1)..];
-        return baseType.StartsWith('(') && baseType.EndsWith(')') ||
-            baseType.StartsWith("MapEntry<", StringComparison.Ordinal) ||
-            baseType is "int" or "long" or "short" or "byte" or "uint" or "ulong" or "ushort" or "sbyte" or "bool" or "double" or "float" or "decimal" or "char" or "DateTime" or "TimeSpan" or "Guid" or "Enum" or "IntPtr" or "UIntPtr" or "Duration" or "Offset" or "Size" or "Rect" or "Radius" or "FrameTiming" ||
-            simpleType is "Brightness" or "Locale" or "TextAffinity" or "TextDirection" or "KeyEventDeviceType" or
-                "PointerDeviceKind" or "PointerChange" or "PointerSignalKind" ||
-            IsEnumType(baseType) || FindGlobalDeclaration(simpleType)?.Ast.Kind == CoreNodeKind.EnumDeclaration;
+        return (baseType.StartsWith('(') && baseType.EndsWith(')'))
+            || baseType.StartsWith("MapEntry<", StringComparison.Ordinal)
+            || baseType
+                is "int"
+                    or "long"
+                    or "short"
+                    or "byte"
+                    or "uint"
+                    or "ulong"
+                    or "ushort"
+                    or "sbyte"
+                    or "bool"
+                    or "double"
+                    or "float"
+                    or "decimal"
+                    or "char"
+                    or "DateTime"
+                    or "TimeSpan"
+                    or "Guid"
+                    or "Enum"
+                    or "IntPtr"
+                    or "UIntPtr"
+                    or "Duration"
+                    or "Offset"
+                    or "Size"
+                    or "Rect"
+                    or "Radius"
+                    or "FrameTiming"
+            || simpleType
+                is "Brightness"
+                    or "Locale"
+                    or "TextAffinity"
+                    or "TextDirection"
+                    or "KeyEventDeviceType"
+                    or "PointerDeviceKind"
+                    or "PointerChange"
+                    or "PointerSignalKind"
+            || IsEnumType(baseType)
+            || FindGlobalDeclaration(simpleType)?.Ast.Kind == CoreNodeKind.EnumDeclaration;
     }
 
     private bool IsEnumType(string type)
     {
         var baseType = type.TrimEnd('?');
         var simpleType = baseType[(baseType.LastIndexOf('.') + 1)..];
-        return simpleType is "Brightness" or "TextAffinity" or "TextDirection" or "TextAlign" or "FontWeight" or "KeyEventDeviceType" or
-                "PointerDeviceKind" or "PointerChange" or "PointerSignalKind" or "BlendMode" or
-                "BlurStyle" or "BoxHeightStyle" or "BoxWidthStyle" or "Clip" or "FilterQuality" or
-                "FontStyle" or "PlaceholderAlignment" or "TextBaseline" or "TextLeadingDistribution" or
-                "TileMode" or "PathFillType" or "PathOperation" or "TextDecorationStyle" or "PaintingStyle" or
-                "SemanticsAction" or "SemanticsFlag" or "SemanticsRole" or "SemanticsInputType" or
-                "SemanticsValidationResult" or "SemanticsHitTestBehavior" or "CheckedState" or "Tristate" or
-                "DiagnosticsTreeStyle" or "DiagnosticLevel" or "AppExitType" ||
-            FindGlobalDeclaration(simpleType)?.Ast.Kind == CoreNodeKind.EnumDeclaration;
+        return simpleType
+                is "Brightness"
+                    or "TextAffinity"
+                    or "TextDirection"
+                    or "TextAlign"
+                    or "FontWeight"
+                    or "KeyEventDeviceType"
+                    or "PointerDeviceKind"
+                    or "PointerChange"
+                    or "PointerSignalKind"
+                    or "BlendMode"
+                    or "BlurStyle"
+                    or "BoxHeightStyle"
+                    or "BoxWidthStyle"
+                    or "Clip"
+                    or "FilterQuality"
+                    or "FontStyle"
+                    or "PlaceholderAlignment"
+                    or "TextBaseline"
+                    or "TextLeadingDistribution"
+                    or "TileMode"
+                    or "PathFillType"
+                    or "PathOperation"
+                    or "TextDecorationStyle"
+                    or "PaintingStyle"
+                    or "SemanticsAction"
+                    or "SemanticsFlag"
+                    or "SemanticsRole"
+                    or "SemanticsInputType"
+                    or "SemanticsValidationResult"
+                    or "SemanticsHitTestBehavior"
+                    or "CheckedState"
+                    or "Tristate"
+                    or "DiagnosticsTreeStyle"
+                    or "DiagnosticLevel"
+                    or "AppExitType"
+            || FindGlobalDeclaration(simpleType)?.Ast.Kind == CoreNodeKind.EnumDeclaration;
     }
 
     private static bool IsExternalStaticFactoryType(string typeName)
     {
         var mapped = typeName.TrimEnd('?');
         var simple = mapped[(mapped.LastIndexOf('.') + 1)..];
-        return simple is "Size" or "Radius" or "Rect" or "RRect" or "RSuperellipse" or "Color" or "ColorFilter" or "MaskFilter" or
-            "Gradient" or "ImageShader" or "Matrix4" or "ParagraphStyle" or "TextStyle" or "StrutStyle";
+        return simple
+            is "Size"
+                or "Radius"
+                or "Rect"
+                or "RRect"
+                or "RSuperellipse"
+                or "Color"
+                or "ColorFilter"
+                or "MaskFilter"
+                or "Gradient"
+                or "ImageShader"
+                or "Matrix4"
+                or "ParagraphStyle"
+                or "TextStyle"
+                or "StrutStyle";
     }
 
     private string MethodSignatureKey(CoreResolvedMember method) =>
@@ -453,33 +664,44 @@ internal sealed partial class FrameworkCSharpLowerer
         CoreResolvedDeclaration declaration,
         CoreResolvedMember method,
         CoreResolvedParameter[] sourceParameters,
-        CoreResolvedMember? contractMember)
+        CoreResolvedMember? contractMember
+    )
     {
         var root = FindOverrideFamilyRoot(declaration, method, contractMember);
         if (root is null)
         {
             return sourceParameters;
         }
-        if (method.Name.StartsWith('_') &&
-            !string.Equals(
+        if (
+            method.Name.StartsWith('_')
+            && !string.Equals(
                 LibraryUriFromElementId(root.Value.Declaration.Element.CanonicalId),
                 LibraryUriFromElementId(declaration.Element.CanonicalId),
-                StringComparison.Ordinal))
+                StringComparison.Ordinal
+            )
+        )
         {
             // Dart private members are library-scoped. Identically named private
             // methods from a base class in another library are not an override family.
             return sourceParameters;
         }
 
-        var familyDeclarations = _semanticIndex.Descendants(root.Value.Declaration.Name)
+        var familyDeclarations = _semanticIndex
+            .Descendants(root.Value.Declaration.Name)
             .Append(root.Value.Declaration)
-            .Where(candidate => candidate.Element.CanonicalId == root.Value.Declaration.Element.CanonicalId ||
-                IsDescendantOf(candidate, root.Value.Declaration))
+            .Where(candidate =>
+                candidate.Element.CanonicalId == root.Value.Declaration.Element.CanonicalId
+                || IsDescendantOf(candidate, root.Value.Declaration)
+            )
             .OrderBy(candidate => candidate.Element.CanonicalId, StringComparer.Ordinal)
             .ToArray();
-        if (contractMember is null &&
-            declaration.Ast.Kind != CoreNodeKind.MixinDeclaration &&
-            familyDeclarations.All(candidate => candidate.Element.CanonicalId == declaration.Element.CanonicalId))
+        if (
+            contractMember is null
+            && declaration.Ast.Kind != CoreNodeKind.MixinDeclaration
+            && familyDeclarations.All(candidate =>
+                candidate.Element.CanonicalId == declaration.Element.CanonicalId
+            )
+        )
         {
             return sourceParameters;
         }
@@ -493,13 +715,18 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 if (!names.Add(candidate.Name))
                 {
-                    if (candidate.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)) positionalIndex++;
+                    if (candidate.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase))
+                    {
+                        positionalIndex++;
+                    }
+
                     continue;
                 }
                 if (candidate.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase))
                 {
                     var currentPositionals = parameters.Count(parameter =>
-                        parameter.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase));
+                        parameter.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
+                    );
                     if (positionalIndex >= currentPositionals)
                     {
                         parameters.Insert(positionalIndex, candidate);
@@ -514,15 +741,21 @@ internal sealed partial class FrameworkCSharpLowerer
         AddParameters(root.Value.Member.Element.Parameters ?? []);
         foreach (var candidate in familyDeclarations)
         {
-            AddParameters(candidate.Members
-                .Where(member => member.Kind == "method" && SameMemberShape(member, method))
-                .OrderBy(member => member.Offset)
-                .SelectMany(member => member.Element.Parameters ?? []));
-            AddParameters(AppliedMixinDeclarations(candidate)
-                .SelectMany(mixin => mixin.Members)
-                .Where(member => member.Kind == "method" && SameMemberShape(member, method))
-                .OrderBy(member => member.Offset)
-                .SelectMany(member => member.Element.Parameters ?? []));
+            AddParameters(
+                candidate
+                    .Members.Where(member =>
+                        member.Kind == "method" && SameMemberShape(member, method)
+                    )
+                    .OrderBy(member => member.Offset)
+                    .SelectMany(member => member.Element.Parameters ?? [])
+            );
+            AddParameters(
+                AppliedMixinDeclarations(candidate)
+                    .SelectMany(mixin => mixin.Members)
+                    .Where(member => member.Kind == "method" && SameMemberShape(member, method))
+                    .OrderBy(member => member.Offset)
+                    .SelectMany(member => member.Element.Parameters ?? [])
+            );
         }
 
         AddParameters(sourceParameters);
@@ -530,24 +763,42 @@ internal sealed partial class FrameworkCSharpLowerer
         foreach (var source in sourceParameters)
         {
             var index = source.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
-                ? positional++ : parameters.FindIndex(parameter => parameter.Name == source.Name);
-            if (index < 0 || index >= parameters.Count) continue;
+                ? positional++
+                : parameters.FindIndex(parameter => parameter.Name == source.Name);
+            if (index < 0 || index >= parameters.Count)
+            {
+                continue;
+            }
+
             if (source.Kind is "optional-named" or "optional-positional")
             {
                 // Named argument order is irrelevant in Dart. Defaults and
                 // optionality belong to this parameter, not its source index.
-                parameters[index] = parameters[index] with { Kind = source.Kind, DefaultValue = source.DefaultValue };
+                parameters[index] = parameters[index] with
+                {
+                    Kind = source.Kind,
+                    DefaultValue = source.DefaultValue,
+                };
             }
-            if (ContainsUnboundTypeParameter(parameters[index].Type) && !ContainsUnboundTypeParameter(source.Type))
+            if (
+                ContainsUnboundTypeParameter(parameters[index].Type)
+                && !ContainsUnboundTypeParameter(source.Type)
+            )
+            {
                 parameters[index] = parameters[index] with { Type = source.Type };
+            }
         }
         return parameters.ToArray();
     }
 
-    private (CoreResolvedDeclaration Declaration, CoreResolvedMember Member)? FindOverrideFamilyRoot(
+    private (
+        CoreResolvedDeclaration Declaration,
+        CoreResolvedMember Member
+    )? FindOverrideFamilyRoot(
         CoreResolvedDeclaration declaration,
         CoreResolvedMember method,
-        CoreResolvedMember? contractMember)
+        CoreResolvedMember? contractMember
+    )
     {
         var owner = declaration;
         var current = contractMember ?? method;
@@ -557,12 +808,18 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         else if (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration)
         {
-            var application = _semanticIndex.TypeUsers(declaration.Name)
-                .Where(candidate => AppliedMixinDeclarations(candidate).Any(mixin =>
-                    mixin.Element.CanonicalId == declaration.Element.CanonicalId))
+            var application = _semanticIndex
+                .TypeUsers(declaration.Name)
+                .Where(candidate =>
+                    AppliedMixinDeclarations(candidate)
+                        .Any(mixin => mixin.Element.CanonicalId == declaration.Element.CanonicalId)
+                )
                 .OrderBy(candidate => candidate.Element.CanonicalId, StringComparer.Ordinal)
                 .FirstOrDefault(candidate => FindBaseContractMember(candidate, method) is not null);
-            if (application is not null && FindBaseContractMember(application, method) is { } appliedContract)
+            if (
+                application is not null
+                && FindBaseContractMember(application, method) is { } appliedContract
+            )
             {
                 owner = FindDeclaringDeclaration(appliedContract) ?? application;
                 current = appliedContract;
@@ -587,32 +844,54 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private IReadOnlyDictionary<string, string> ContractTypeParameterSubstitutions(
         CoreResolvedDeclaration declaration,
-        CoreResolvedMember? contractMember)
+        CoreResolvedMember? contractMember
+    )
     {
         var owner = contractMember is null ? null : FindDeclaringDeclaration(contractMember);
         if (owner?.Element.TypeParameters is not { Length: > 0 } parameters)
         {
             return new Dictionary<string, string>(StringComparer.Ordinal);
         }
-        var pending = new Queue<(CoreResolvedDeclaration Declaration, IReadOnlyDictionary<string, string> Substitutions)>();
+        var pending =
+            new Queue<(
+                CoreResolvedDeclaration Declaration,
+                IReadOnlyDictionary<string, string> Substitutions
+            )>();
         pending.Enqueue((declaration, new Dictionary<string, string>(StringComparer.Ordinal)));
         var visited = new HashSet<string>(StringComparer.Ordinal);
         while (pending.TryDequeue(out var current))
         {
-            if (!visited.Add(current.Declaration.Element.CanonicalId)) continue;
+            if (!visited.Add(current.Declaration.Element.CanonicalId))
+            {
+                continue;
+            }
+
             foreach (var baseName in DirectBaseNames(current.Declaration))
             {
                 var application = ApplyTypeParameterSubstitutions(baseName, current.Substitutions);
                 var parent = FindGlobalDeclaration(application);
-                if (parent is null) continue;
+                if (parent is null)
+                {
+                    continue;
+                }
+
                 var genericStart = application.IndexOf('<');
-                var arguments = genericStart >= 0 && application.EndsWith('>')
-                    ? SplitGenericArguments(application[(genericStart + 1)..^1]) : [];
+                var arguments =
+                    genericStart >= 0 && application.EndsWith('>')
+                        ? SplitGenericArguments(application[(genericStart + 1)..^1])
+                        : [];
                 var substitutions = (parent.Element.TypeParameters ?? [])
                     .Take(arguments.Length)
-                    .Select((parameter, index) => new KeyValuePair<string, string>(parameter.Name, arguments[index]))
+                    .Select(
+                        (parameter, index) =>
+                            new KeyValuePair<string, string>(parameter.Name, arguments[index])
+                    )
                     .ToDictionary(item => item.Key, item => item.Value, StringComparer.Ordinal);
-                if (parent.Element.CanonicalId == owner.Element.CanonicalId) return substitutions;
+                if (parent.Element.CanonicalId == owner.Element.CanonicalId)
+                {
+                    return substitutions;
+                }
+
                 pending.Enqueue((parent, substitutions));
             }
         }
@@ -621,22 +900,40 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private static string ApplyTypeParameterSubstitutions(
         string type,
-        IReadOnlyDictionary<string, string> substitutions)
+        IReadOnlyDictionary<string, string> substitutions
+    )
     {
-        if (substitutions.Count == 0) return type;
+        if (substitutions.Count == 0)
+        {
+            return type;
+        }
         // Substitute the original tokens simultaneously: T -> U and U -> int
         // must not accidentally turn both arguments into int in this step.
-        var names = string.Join("|", substitutions.Keys.Order(StringComparer.Ordinal).Select(Regex.Escape));
-        return Regex.Replace(type, $@"(?<![A-Za-z0-9_])(?:{names})(?![A-Za-z0-9_])",
-            match => substitutions[match.Value], RegexOptions.CultureInvariant);
+        var names = string.Join(
+            "|",
+            substitutions.Keys.Order(StringComparer.Ordinal).Select(Regex.Escape)
+        );
+        return Regex.Replace(
+            type,
+            $@"(?<![A-Za-z0-9_])(?:{names})(?![A-Za-z0-9_])",
+            match => substitutions[match.Value],
+            RegexOptions.CultureInvariant
+        );
     }
 
-    private bool TryGenericTypeApplication(string type, string expectedOuter, out string[] arguments)
+    private bool TryGenericTypeApplication(
+        string type,
+        string expectedOuter,
+        out string[] arguments
+    )
     {
         var normalized = StripLibraryPrefix(type).TrimEnd('?');
         var genericStart = normalized.IndexOf('<');
-        if (genericStart <= 0 || !normalized.EndsWith('>') ||
-            !string.Equals(normalized[..genericStart], expectedOuter, StringComparison.Ordinal))
+        if (
+            genericStart <= 0
+            || !normalized.EndsWith('>')
+            || !string.Equals(normalized[..genericStart], expectedOuter, StringComparison.Ordinal)
+        )
         {
             arguments = [];
             return false;
@@ -645,7 +942,10 @@ internal sealed partial class FrameworkCSharpLowerer
         return true;
     }
 
-    private bool IsDescendantOf(CoreResolvedDeclaration declaration, CoreResolvedDeclaration ancestor)
+    private bool IsDescendantOf(
+        CoreResolvedDeclaration declaration,
+        CoreResolvedDeclaration ancestor
+    )
     {
         var pending = new Queue<string>(DirectBaseNames(declaration));
         var visited = new HashSet<string>(StringComparer.Ordinal);
@@ -675,7 +975,8 @@ internal sealed partial class FrameworkCSharpLowerer
         return type switch
         {
             "Action<Intent>" => $"{MapNamedType("Action")}<{MapNamedType("Intent")}>",
-            "GestureRecognizerFactory<GestureRecognizer>" => "GestureRecognizerFactory<GestureRecognizer>",
+            "GestureRecognizerFactory<GestureRecognizer>" =>
+                "GestureRecognizerFactory<GestureRecognizer>",
             _ => MapType(rawType),
         };
     }
@@ -706,10 +1007,12 @@ internal sealed partial class FrameworkCSharpLowerer
         var nullable = dartType.EndsWith("?", StringComparison.Ordinal);
         var type = nullable ? dartType[..^1] : dartType;
         var visitedSubstitutions = new HashSet<string>(StringComparer.Ordinal);
-        while (!_session.ActiveMethodTypeParameters.Contains(type) &&
-               _session.TypeParameterSubstitutions.TryGetValue(type, out var substitutedType) &&
-               !string.Equals(type, substitutedType, StringComparison.Ordinal) &&
-               visitedSubstitutions.Add(type))
+        while (
+            !_session.ActiveMethodTypeParameters.Contains(type)
+            && _session.TypeParameterSubstitutions.TryGetValue(type, out var substitutedType)
+            && !string.Equals(type, substitutedType, StringComparison.Ordinal)
+            && visitedSubstitutions.Add(type)
+        )
         {
             nullable |= substitutedType.EndsWith("?", StringComparison.Ordinal);
             type = substitutedType.TrimEnd('?');
@@ -756,20 +1059,31 @@ internal sealed partial class FrameworkCSharpLowerer
             return nullable ? "object?" : "object";
         }
         var sourceLibrary = _session.ActiveSourceLibrary ?? _currentLibrary;
-        if (type == "Image" && sourceLibrary is { } imageLibrary &&
-            (imageLibrary.EndsWith("/basic.dart", StringComparison.Ordinal) ||
-             imageLibrary.EndsWith("/snapshot_widget.dart", StringComparison.Ordinal) ||
-             imageLibrary.EndsWith("/widget_inspector.dart", StringComparison.Ordinal) ||
-             imageLibrary.EndsWith("/_accessibility_evaluations.dart", StringComparison.Ordinal)))
+        if (
+            type == "Image"
+            && sourceLibrary is { } imageLibrary
+            && (
+                imageLibrary.EndsWith("/basic.dart", StringComparison.Ordinal)
+                || imageLibrary.EndsWith("/snapshot_widget.dart", StringComparison.Ordinal)
+                || imageLibrary.EndsWith("/widget_inspector.dart", StringComparison.Ordinal)
+                || imageLibrary.EndsWith(
+                    "/_accessibility_evaluations.dart",
+                    StringComparison.Ordinal
+                )
+            )
+        )
         {
             const string uiImage = "global::Doroti.Ui.Image";
             return nullable ? uiImage + "?" : uiImage;
         }
         type = StripLibraryPrefix(type);
-        if (type is "TickerProviderStateMixin<StatefulWidget>" or
-            "RestorationMixin<StatefulWidget>" or
-            "ToggleableStateMixin<StatefulWidget>" or
-            "_RawMenuAnchorBaseMixin<StatefulWidget>")
+        if (
+            type
+            is "TickerProviderStateMixin<StatefulWidget>"
+                or "RestorationMixin<StatefulWidget>"
+                or "ToggleableStateMixin<StatefulWidget>"
+                or "_RawMenuAnchorBaseMixin<StatefulWidget>"
+        )
         {
             // These are Dart's covariant, erased mixin-owner views. Their CLR
             // interfaces necessarily consume and produce the generic state
@@ -785,14 +1099,18 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return nullable ? "IState?" : "IState";
         }
-        if (type == "DisposableBuildContext" &&
-            (_session.ActiveDonorDeclaration ?? _session.ActiveDeclaration)?.Name != "DisposableBuildContext")
+        if (
+            type == "DisposableBuildContext"
+            && (_session.ActiveDonorDeclaration ?? _session.ActiveDeclaration)?.Name
+                != "DisposableBuildContext"
+        )
         {
             return "dynamic";
         }
         if (type == "DiagnosticableTreeNode")
         {
-            var diagnosticNode = "global::Doroti.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Framework.Foundation.DiagnosticableTree>";
+            var diagnosticNode =
+                "global::Doroti.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Framework.Foundation.DiagnosticableTree>";
             return nullable ? diagnosticNode + "?" : diagnosticNode;
         }
         if (type == "SemanticsBinding")
@@ -804,8 +1122,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return nullable ? "HitTestEntry<HitTestTarget>?" : "HitTestEntry<HitTestTarget>";
         }
-        if (type.Contains(" Function", StringComparison.Ordinal) &&
-            TryMapNamedParameterFunctionAlias(type) is { } sourceOrderedFunctionAlias)
+        if (
+            type.Contains(" Function", StringComparison.Ordinal)
+            && TryMapNamedParameterFunctionAlias(type) is { } sourceOrderedFunctionAlias
+        )
         {
             return nullable ? MakeNullable(sourceOrderedFunctionAlias) : sourceOrderedFunctionAlias;
         }
@@ -814,13 +1134,20 @@ internal sealed partial class FrameworkCSharpLowerer
         // Action/Func makes otherwise identical assignments incompatible. Keep the
         // declaration for API inventory, but lower references to its structural
         // function type.
-        if (FindGlobalDeclaration(type) is { Ast.Kind: CoreNodeKind.GenericTypeAlias } aliasDeclaration &&
-            aliasDeclaration.Element.Type is { } aliasType &&
-            aliasType.Contains(" Function", StringComparison.Ordinal) &&
-            !string.Equals(aliasType, type, StringComparison.Ordinal))
+        if (
+            FindGlobalDeclaration(type)
+                is { Ast.Kind: CoreNodeKind.GenericTypeAlias } aliasDeclaration
+            && aliasDeclaration.Element.Type is { } aliasType
+            && aliasType.Contains(" Function", StringComparison.Ordinal)
+            && !string.Equals(aliasType, type, StringComparison.Ordinal)
+        )
         {
             var previousSubstitutions = _session.TypeParameterSubstitutions;
-            var substitutions = previousSubstitutions.ToDictionary(item => item.Key, item => item.Value, StringComparer.Ordinal);
+            var substitutions = previousSubstitutions.ToDictionary(
+                item => item.Key,
+                item => item.Value,
+                StringComparer.Ordinal
+            );
             foreach (var parameter in aliasDeclaration.Element.TypeParameters ?? [])
             {
                 substitutions.TryAdd(parameter.Name, "object");
@@ -836,8 +1163,10 @@ internal sealed partial class FrameworkCSharpLowerer
                 _session.TypeParameterSubstitutions = previousSubstitutions;
             }
         }
-        if (type.Contains("DiagnosticsNode", StringComparison.Ordinal) &&
-            type.Contains(" Function()", StringComparison.Ordinal))
+        if (
+            type.Contains("DiagnosticsNode", StringComparison.Ordinal)
+            && type.Contains(" Function()", StringComparison.Ordinal)
+        )
         {
             return nullable ? "InformationCollector?" : "InformationCollector";
         }
@@ -851,17 +1180,23 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return "global::System.Action<T, global::System.Action<object, global::System.Diagnostics.StackTrace?>>";
         }
-        if (type == "void Function(AnimationStatus)" &&
-            FindGlobalDeclaration("AnimationStatusListener") is { Ast.Kind: CoreNodeKind.GenericTypeAlias } statusListenerAlias &&
-            string.Equals(statusListenerAlias.Element.Type, type, StringComparison.Ordinal))
+        if (
+            type == "void Function(AnimationStatus)"
+            && FindGlobalDeclaration("AnimationStatusListener")
+                is { Ast.Kind: CoreNodeKind.GenericTypeAlias } statusListenerAlias
+            && string.Equals(statusListenerAlias.Element.Type, type, StringComparison.Ordinal)
+        )
         {
             var namedFunctionAlias = EmittedTypeName(
                 LibraryUriFromElementId(statusListenerAlias.Element.CanonicalId),
-                statusListenerAlias.Name);
+                statusListenerAlias.Name
+            );
             return nullable ? MakeNullable(namedFunctionAlias) : namedFunctionAlias;
         }
-        if (type.Contains("SliverLayoutDimensions", StringComparison.Ordinal) &&
-            type.Contains(" Function", StringComparison.Ordinal))
+        if (
+            type.Contains("SliverLayoutDimensions", StringComparison.Ordinal)
+            && type.Contains(" Function", StringComparison.Ordinal)
+        )
         {
             return nullable ? "ItemExtentBuilder?" : "ItemExtentBuilder";
         }
@@ -869,7 +1204,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return nullable ? "PageRouteFactory?" : "PageRouteFactory";
         }
-        if (type.Contains(" Function", StringComparison.Ordinal) && TryMapFunctionType(type) is { } mappedFunction)
+        if (
+            type.Contains(" Function", StringComparison.Ordinal)
+            && TryMapFunctionType(type) is { } mappedFunction
+        )
         {
             return nullable ? MakeNullable(mappedFunction) : mappedFunction;
         }
@@ -884,22 +1222,38 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             var outer = type[..genericStart];
             var arguments = SplitGenericArguments(type[(genericStart + 1)..^1]);
-            if (outer is "Set" or "HashSet" or "LinkedHashSet" && arguments.Length == 1 &&
-                StripLibraryPrefix(arguments[0]).TrimEnd('?').StartsWith("_WidgetTicker", StringComparison.Ordinal))
+            if (
+                outer is "Set" or "HashSet" or "LinkedHashSet"
+                && arguments.Length == 1
+                && StripLibraryPrefix(arguments[0])
+                    .TrimEnd('?')
+                    .StartsWith("_WidgetTicker", StringComparison.Ordinal)
+            )
             {
                 const string tickerSet = "HashSet<global::Doroti.Framework.Scheduler.Ticker>";
                 return nullable ? tickerSet + "?" : tickerSet;
             }
-            if (outer == "Tween" && arguments.Length == 1 &&
-                arguments[0].TrimEnd('?') is "dynamic" or "Object" or "object")
+            if (
+                outer == "Tween"
+                && arguments.Length == 1
+                && arguments[0].TrimEnd('?') is "dynamic" or "Object" or "object"
+            )
             {
                 const string dartTween = "global::Doroti.Framework.Animation.IDartTween";
                 return nullable ? dartTween + "?" : dartTween;
             }
-            if ((outer == "Action" && arguments.Length == 1 &&
-                 StripLibraryPrefix(arguments[0]).TrimEnd('?') == "Intent") ||
-                (outer == "GestureRecognizerFactory" && arguments.Length == 1 &&
-                 StripLibraryPrefix(arguments[0]).TrimEnd('?') == "GestureRecognizer"))
+            if (
+                (
+                    outer == "Action"
+                    && arguments.Length == 1
+                    && StripLibraryPrefix(arguments[0]).TrimEnd('?') == "Intent"
+                )
+                || (
+                    outer == "GestureRecognizerFactory"
+                    && arguments.Length == 1
+                    && StripLibraryPrefix(arguments[0]).TrimEnd('?') == "GestureRecognizer"
+                )
+            )
             {
                 // Dart generic classes are covariant at use sites, while these
                 // CLR classes consume T and cannot be declared variant. Preserve
@@ -907,24 +1261,54 @@ internal sealed partial class FrameworkCSharpLowerer
                 // concrete IntentAction<T>/factory declarations remain strongly typed.
                 return "dynamic";
             }
-            if (arguments.Any(argument => argument.TrimEnd('?') is "Object" or "object" or "dynamic") &&
-                outer is "Route" or "TransitionRoute" or "PageRoute" or "ModalRoute" or
-                    "_DragAvatar" or "PopEntry" or "FormFieldState" or "Router" or
-                    "RouteInformationParser" or "RouterDelegate" or "_RouterState" or
-                    "TreeSliverNode" or "LocalizationsDelegate")
+            if (
+                arguments.Any(argument =>
+                    argument.TrimEnd('?') is "Object" or "object" or "dynamic"
+                )
+                && outer
+                    is "Route"
+                        or "TransitionRoute"
+                        or "PageRoute"
+                        or "ModalRoute"
+                        or "_DragAvatar"
+                        or "PopEntry"
+                        or "FormFieldState"
+                        or "Router"
+                        or "RouteInformationParser"
+                        or "RouterDelegate"
+                        or "_RouterState"
+                        or "TreeSliverNode"
+                        or "LocalizationsDelegate"
+            )
             {
                 // These Dart declarations are covariant at their public use
                 // sites. Their CLR members consume T, so the erased Object view
                 // must preserve Dart's checked runtime dispatch.
                 return "dynamic";
             }
-            if (outer == "State" && arguments.Length == 1 &&
-                (arguments[0].TrimEnd('?') is "StatefulWidget" or "dynamic" or "Object" or "object" ||
-                 _currentLibrary.Contains("disposable_build_context.dart", StringComparison.Ordinal) ||
-                 (_session.ActiveDonorDeclaration ?? _session.ActiveDeclaration)?.Name == "DisposableBuildContext" ||
-                 (_session.ActiveDonorDeclaration ?? _session.ActiveDeclaration)?.Element.TypeParameters?
-                    .Any(parameter => parameter.Name == arguments[0].TrimEnd('?') &&
-                        parameter.Bound?.StartsWith("State", StringComparison.Ordinal) == true) == true))
+            if (
+                outer == "State"
+                && arguments.Length == 1
+                && (
+                    arguments[0].TrimEnd('?')
+                        is "StatefulWidget"
+                            or "dynamic"
+                            or "Object"
+                            or "object"
+                    || _currentLibrary.Contains(
+                        "disposable_build_context.dart",
+                        StringComparison.Ordinal
+                    )
+                    || (_session.ActiveDonorDeclaration ?? _session.ActiveDeclaration)?.Name
+                        == "DisposableBuildContext"
+                    || (
+                        _session.ActiveDonorDeclaration ?? _session.ActiveDeclaration
+                    )?.Element.TypeParameters?.Any(parameter =>
+                        parameter.Name == arguments[0].TrimEnd('?')
+                        && parameter.Bound?.StartsWith("State", StringComparison.Ordinal) == true
+                    ) == true
+                )
+            )
             {
                 return nullable ? "IState?" : "IState";
             }
@@ -933,12 +1317,19 @@ internal sealed partial class FrameworkCSharpLowerer
                 var callback = $"global::System.Action<{MapGenericArgument(arguments[0])}>";
                 return nullable ? callback + "?" : callback;
             }
-            if (FindGlobalDeclaration(outer) is { Ast.Kind: CoreNodeKind.GenericTypeAlias } genericAlias &&
-                genericAlias.Element.Type is { } genericAliasType &&
-                genericAliasType.Contains(" Function", StringComparison.Ordinal))
+            if (
+                FindGlobalDeclaration(outer)
+                    is { Ast.Kind: CoreNodeKind.GenericTypeAlias } genericAlias
+                && genericAlias.Element.Type is { } genericAliasType
+                && genericAliasType.Contains(" Function", StringComparison.Ordinal)
+            )
             {
                 var previousSubstitutions = _session.TypeParameterSubstitutions;
-                var substitutions = previousSubstitutions.ToDictionary(item => item.Key, item => item.Value, StringComparer.Ordinal);
+                var substitutions = previousSubstitutions.ToDictionary(
+                    item => item.Key,
+                    item => item.Value,
+                    StringComparer.Ordinal
+                );
                 var parameters = genericAlias.Element.TypeParameters ?? [];
                 for (var index = 0; index < Math.Min(parameters.Length, arguments.Length); index++)
                 {
@@ -955,8 +1346,11 @@ internal sealed partial class FrameworkCSharpLowerer
                     _session.TypeParameterSubstitutions = previousSubstitutions;
                 }
             }
-            if (outer == "ImageProvider" && arguments.Length == 1 &&
-                arguments[0].TrimEnd('?') is "Object" or "object" or "dynamic")
+            if (
+                outer == "ImageProvider"
+                && arguments.Length == 1
+                && arguments[0].TrimEnd('?') is "Object" or "object" or "dynamic"
+            )
             {
                 return "dynamic";
             }
@@ -1003,9 +1397,10 @@ internal sealed partial class FrameworkCSharpLowerer
                     "ValueGetter" => "global::System.Func",
                     _ => MapNamedType(outer),
                 };
-                var mappedArguments = outer == "EnumProperty"
-                    ? arguments.Select(argument => MapGenericArgument(argument).TrimEnd('?'))
-                    : arguments.Select(MapGenericArgument);
+                var mappedArguments =
+                    outer == "EnumProperty"
+                        ? arguments.Select(argument => MapGenericArgument(argument).TrimEnd('?'))
+                        : arguments.Select(MapGenericArgument);
                 mapped = $"{mappedOuter}<{string.Join(", ", mappedArguments)}>";
             }
         }
@@ -1050,9 +1445,12 @@ internal sealed partial class FrameworkCSharpLowerer
                 "Null" => "object",
                 "StackTrace" => "global::System.Diagnostics.StackTrace",
                 "VoidCallback" => "global::System.Action",
-                "GestureTapCallback" or "GestureTapCancelCallback" or
-                    "GestureLongPressCallback" or "GestureLongPressCancelCallback" or
-                    "GestureLongPressUpCallback" or "GestureDragCancelCallback" => "global::System.Action",
+                "GestureTapCallback"
+                or "GestureTapCancelCallback"
+                or "GestureLongPressCallback"
+                or "GestureLongPressCancelCallback"
+                or "GestureLongPressUpCallback"
+                or "GestureDragCancelCallback" => "global::System.Action",
                 "GestureDragUpdateCallback" =>
                     "global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>",
                 "Function" => "Delegate",
@@ -1068,14 +1466,20 @@ internal sealed partial class FrameworkCSharpLowerer
                 _ => TryMapFunctionType(type) ?? MapNamedType(type),
             };
         }
-        if (genericStart < 0 && !IsUnboundTypeParameterName(type) &&
-            FindGlobalDeclaration(type) is { } rawGenericDeclaration &&
-            rawGenericDeclaration.Element.TypeParameters is { Length: > 0 } rawTypeParameters)
+        if (
+            genericStart < 0
+            && !IsUnboundTypeParameterName(type)
+            && FindGlobalDeclaration(type) is { } rawGenericDeclaration
+            && rawGenericDeclaration.Element.TypeParameters is { Length: > 0 } rawTypeParameters
+        )
         {
             var rawArguments = rawTypeParameters.Select(parameter =>
-                _session.ActiveDeclaration?.Element.CanonicalId == rawGenericDeclaration.Element.CanonicalId
+                _session.ActiveDeclaration?.Element.CanonicalId
+                == rawGenericDeclaration.Element.CanonicalId
                     ? SafeIdentifier(parameter.Name)
-                    : string.IsNullOrWhiteSpace(parameter.Bound) ? "object" : MapType(parameter.Bound));
+                : string.IsNullOrWhiteSpace(parameter.Bound) ? "object"
+                : MapType(parameter.Bound)
+            );
             mapped += $"<{string.Join(", ", rawArguments)}>";
         }
         return nullable ? mapped + "?" : mapped;
@@ -1084,8 +1488,10 @@ internal sealed partial class FrameworkCSharpLowerer
     private string MapNamedType(string type)
     {
         var mappingLibrary = _session.ActiveSourceLibrary ?? _currentLibrary;
-        if (type == "MouseTrackerAnnotation" &&
-            mappingLibrary.Contains("/rendering/", StringComparison.Ordinal))
+        if (
+            type == "MouseTrackerAnnotation"
+            && mappingLibrary.Contains("/rendering/", StringComparison.Ordinal)
+        )
         {
             return "global::Doroti.Framework.Services.IMouseTrackerAnnotation";
         }
@@ -1093,23 +1499,45 @@ internal sealed partial class FrameworkCSharpLowerer
         // The Services assembly precedes Gestures in the reviewed CLR graph,
         // so its exported callback aliases retain the dart:ui boundary while
         // downstream framework libraries bind the concrete Gestures events.
-        if (!mappingLibrary.Contains("/services/", StringComparison.Ordinal) &&
-            type is "PointerEvent" or "PointerAddedEvent" or "PointerRemovedEvent" or
-                "PointerDownEvent" or "PointerMoveEvent" or "PointerUpEvent" or
-                "PointerHoverEvent" or "PointerCancelEvent" or "PointerEnterEvent" or "PointerExitEvent" or
-                "PointerSignalEvent" or "PointerScrollEvent" or "PointerScrollInertiaCancelEvent" or
-                "PointerScaleEvent" or "PointerPanZoomStartEvent" or "PointerPanZoomUpdateEvent" or
-                "PointerPanZoomEndEvent")
+        if (
+            !mappingLibrary.Contains("/services/", StringComparison.Ordinal)
+            && type
+                is "PointerEvent"
+                    or "PointerAddedEvent"
+                    or "PointerRemovedEvent"
+                    or "PointerDownEvent"
+                    or "PointerMoveEvent"
+                    or "PointerUpEvent"
+                    or "PointerHoverEvent"
+                    or "PointerCancelEvent"
+                    or "PointerEnterEvent"
+                    or "PointerExitEvent"
+                    or "PointerSignalEvent"
+                    or "PointerScrollEvent"
+                    or "PointerScrollInertiaCancelEvent"
+                    or "PointerScaleEvent"
+                    or "PointerPanZoomStartEvent"
+                    or "PointerPanZoomUpdateEvent"
+                    or "PointerPanZoomEndEvent"
+        )
         {
             return "global::Doroti.Framework.Gestures." + type;
         }
-        if (!_semanticIndex.DeclarationsBySimpleName.TryGetValue(type, out var matches) || matches.Length == 0)
+        if (
+            !_semanticIndex.DeclarationsBySimpleName.TryGetValue(type, out var matches)
+            || matches.Length == 0
+        )
         {
             return EmittedTypeName(mappingLibrary, type);
         }
-        var declaration = matches.FirstOrDefault(candidate =>
-            string.Equals(LibraryUriFromElementId(candidate.Element.CanonicalId), mappingLibrary, StringComparison.Ordinal))
-            ?? matches[0];
+        var declaration =
+            matches.FirstOrDefault(candidate =>
+                string.Equals(
+                    LibraryUriFromElementId(candidate.Element.CanonicalId),
+                    mappingLibrary,
+                    StringComparison.Ordinal
+                )
+            ) ?? matches[0];
         var declarationLibrary = LibraryUriFromElementId(declaration.Element.CanonicalId);
         var emitted = EmittedTypeName(declarationLibrary, declaration.Name);
         var declarationNamespace = FrameworkNamespaceForLibrary(declarationLibrary);
@@ -1124,41 +1552,61 @@ internal sealed partial class FrameworkCSharpLowerer
     private string MapStaticOwnerType(string dartType, CoreResolvedDeclaration activeDeclaration)
     {
         var mapped = MapType(dartType).TrimEnd('?');
-        if (mapped.Contains('<', StringComparison.Ordinal)) return mapped;
+        if (mapped.Contains('<', StringComparison.Ordinal))
+        {
+            return mapped;
+        }
 
         var raw = StripLibraryPrefix(dartType).TrimEnd('?');
         var generic = raw.IndexOf('<');
-        if (generic >= 0) raw = raw[..generic];
-        var owner = FindGlobalDeclaration(raw);
-        if (owner?.Element.TypeParameters is not { Length: > 0 } parameters) return mapped;
+        if (generic >= 0)
+        {
+            raw = raw[..generic];
+        }
 
-        var arguments = owner.Element.CanonicalId == activeDeclaration.Element.CanonicalId
-            ? parameters.Select(parameter => SafeIdentifier(parameter.Name))
-            : parameters.Select(parameter => string.IsNullOrWhiteSpace(parameter.Bound)
-                ? "object"
-                : MapType(parameter.Bound));
+        var owner = FindGlobalDeclaration(raw);
+        if (owner?.Element.TypeParameters is not { Length: > 0 } parameters)
+        {
+            return mapped;
+        }
+
+        var arguments =
+            owner.Element.CanonicalId == activeDeclaration.Element.CanonicalId
+                ? parameters.Select(parameter => SafeIdentifier(parameter.Name))
+                : parameters.Select(parameter =>
+                    string.IsNullOrWhiteSpace(parameter.Bound) ? "object" : MapType(parameter.Bound)
+                );
         return mapped + "<" + string.Join(", ", arguments) + ">";
     }
 
-    private string? FrameworkNamespaceForLibrary(string library) => library switch
-    {
-        var value when value.Contains("/foundation/", StringComparison.Ordinal) => "Foundation",
-        var value when value.Contains("/scheduler/", StringComparison.Ordinal) => "Scheduler",
-        var value when value.Contains("/services/", StringComparison.Ordinal) => "Services",
-        var value when value.Contains("/physics/", StringComparison.Ordinal) => "Physics",
-        var value when value.Contains("/animation/", StringComparison.Ordinal) => "Animation",
-        var value when value.Contains("/gestures/", StringComparison.Ordinal) => "Gestures",
-        var value when value.Contains("/painting/", StringComparison.Ordinal) => "Painting",
-        var value when value.Contains("/rendering/", StringComparison.Ordinal) => "Rendering",
-        var value when value.Contains("/semantics/", StringComparison.Ordinal) => "Semantics",
-        var value when value.Contains("/widgets/", StringComparison.Ordinal) => "Widgets",
-        _ => null,
-    };
+    private string? FrameworkNamespaceForLibrary(string library) =>
+        library switch
+        {
+            var value when value.Contains("/foundation/", StringComparison.Ordinal) => "Foundation",
+            var value when value.Contains("/scheduler/", StringComparison.Ordinal) => "Scheduler",
+            var value when value.Contains("/services/", StringComparison.Ordinal) => "Services",
+            var value when value.Contains("/physics/", StringComparison.Ordinal) => "Physics",
+            var value when value.Contains("/animation/", StringComparison.Ordinal) => "Animation",
+            var value when value.Contains("/gestures/", StringComparison.Ordinal) => "Gestures",
+            var value when value.Contains("/painting/", StringComparison.Ordinal) => "Painting",
+            var value when value.Contains("/rendering/", StringComparison.Ordinal) => "Rendering",
+            var value when value.Contains("/semantics/", StringComparison.Ordinal) => "Semantics",
+            var value when value.Contains("/widgets/", StringComparison.Ordinal) => "Widgets",
+            _ => null,
+        };
 
     private string MapGenericArgument(string dartType)
     {
-        if (dartType is "Future<dynamic>" or "Future<Object>" or "Future<Object?>") return "Future";
-        if (dartType is "dynamic" or "Object" or "Object?") return "object";
+        if (dartType is "Future<dynamic>" or "Future<Object>" or "Future<Object?>")
+        {
+            return "Future";
+        }
+
+        if (dartType is "dynamic" or "Object" or "Object?")
+        {
+            return "object";
+        }
+
         var mapped = MapType(dartType);
         return mapped == "void" ? "object?" : mapped;
     }
@@ -1177,10 +1625,17 @@ internal sealed partial class FrameworkCSharpLowerer
     {
         var value = field.Trim();
         var split = FindLastTopLevelTypeSpace(value);
-        if (split < 0) return MapType(value);
+        if (split < 0)
+        {
+            return MapType(value);
+        }
+
         var name = value[(split + 1)..].Trim();
-        if (name.Length == 0 || !(char.IsLetter(name[0]) || name[0] == '_') ||
-            !name.Skip(1).All(character => char.IsLetterOrDigit(character) || character == '_'))
+        if (
+            name.Length == 0
+            || !(char.IsLetter(name[0]) || name[0] == '_')
+            || !name.Skip(1).All(character => char.IsLetterOrDigit(character) || character == '_')
+        )
         {
             return MapType(value);
         }
@@ -1197,16 +1652,38 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             switch (value[index])
             {
-                case '>': angle++; break;
-                case '<': angle--; break;
-                case ')': round++; break;
-                case '(': round--; break;
-                case ']': square++; break;
-                case '[': square--; break;
-                case '}': curly++; break;
-                case '{': curly--; break;
+                case '>':
+                    angle++;
+                    break;
+                case '<':
+                    angle--;
+                    break;
+                case ')':
+                    round++;
+                    break;
+                case '(':
+                    round--;
+                    break;
+                case ']':
+                    square++;
+                    break;
+                case '[':
+                    square--;
+                    break;
+                case '}':
+                    curly++;
+                    break;
+                case '{':
+                    curly--;
+                    break;
             }
-            if (char.IsWhiteSpace(value[index]) && angle == 0 && round == 0 && square == 0 && curly == 0)
+            if (
+                char.IsWhiteSpace(value[index])
+                && angle == 0
+                && round == 0
+                && square == 0
+                && curly == 0
+            )
             {
                 return index;
             }
@@ -1231,7 +1708,9 @@ internal sealed partial class FrameworkCSharpLowerer
         var parameterString = type[(parameterStart + 1)..parameterEnd];
         var parameters = string.IsNullOrWhiteSpace(parameterString)
             ? Array.Empty<string>()
-            : SplitFunctionParameters(parameterString).Select(NormalizeFunctionParameterType).ToArray();
+            : SplitFunctionParameters(parameterString)
+                .Select(NormalizeFunctionParameterType)
+                .ToArray();
         if (returnType is "void" or "Null")
         {
             return parameters.Length == 0
@@ -1245,13 +1724,15 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private string? TryMapNamedParameterFunctionAlias(string functionType)
     {
-        var alias = _semanticIndex.AllDeclarations
-            .Where(declaration =>
-                declaration.Ast.Kind == CoreNodeKind.GenericTypeAlias &&
-                declaration.Element.TypeParameters is not { Length: > 0 } &&
-                string.Equals(declaration.Element.Type, functionType, StringComparison.Ordinal) &&
-                declaration.Element.Parameters?.Any(parameter =>
-                    parameter.Kind.Contains("named", StringComparison.Ordinal)) == true)
+        var alias = _semanticIndex
+            .AllDeclarations.Where(declaration =>
+                declaration.Ast.Kind == CoreNodeKind.GenericTypeAlias
+                && declaration.Element.TypeParameters is not { Length: > 0 }
+                && string.Equals(declaration.Element.Type, functionType, StringComparison.Ordinal)
+                && declaration.Element.Parameters?.Any(parameter =>
+                    parameter.Kind.Contains("named", StringComparison.Ordinal)
+                ) == true
+            )
             .OrderBy(declaration => declaration.Element.CanonicalId, StringComparer.Ordinal)
             .FirstOrDefault();
         return alias is null
@@ -1268,21 +1749,42 @@ internal sealed partial class FrameworkCSharpLowerer
         var result = -1;
         for (var index = 0; index <= value.Length - " Function".Length; index++)
         {
-            if (angle == 0 && round == 0 && square == 0 && curly == 0 &&
-                value.AsSpan(index).StartsWith(" Function", StringComparison.Ordinal))
+            if (
+                angle == 0
+                && round == 0
+                && square == 0
+                && curly == 0
+                && value.AsSpan(index).StartsWith(" Function", StringComparison.Ordinal)
+            )
             {
                 result = index;
             }
             switch (value[index])
             {
-                case '<': angle++; break;
-                case '>': angle--; break;
-                case '(': round++; break;
-                case ')': round--; break;
-                case '[': square++; break;
-                case ']': square--; break;
-                case '{': curly++; break;
-                case '}': curly--; break;
+                case '<':
+                    angle++;
+                    break;
+                case '>':
+                    angle--;
+                    break;
+                case '(':
+                    round++;
+                    break;
+                case ')':
+                    round--;
+                    break;
+                case '[':
+                    square++;
+                    break;
+                case ']':
+                    square--;
+                    break;
+                case '{':
+                    curly++;
+                    break;
+                case '}':
+                    curly--;
+                    break;
             }
         }
         return result;
@@ -1293,8 +1795,10 @@ internal sealed partial class FrameworkCSharpLowerer
         foreach (var parameter in SplitGenericArguments(value))
         {
             var trimmed = parameter.Trim();
-            if ((trimmed.StartsWith('{') && trimmed.EndsWith('}')) ||
-                (trimmed.StartsWith('[') && trimmed.EndsWith(']')))
+            if (
+                (trimmed.StartsWith('{') && trimmed.EndsWith('}'))
+                || (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
+            )
             {
                 foreach (var grouped in SplitGenericArguments(trimmed[1..^1]))
                 {
@@ -1327,7 +1831,12 @@ internal sealed partial class FrameworkCSharpLowerer
         var depth = 0;
         for (var index = value.Length - 1; index >= 0; index--)
         {
-            depth += value[index] switch { '>' or ')' => 1, '<' or '(' => -1, _ => 0 };
+            depth += value[index] switch
+            {
+                '>' or ')' => 1,
+                '<' or '(' => -1,
+                _ => 0,
+            };
             if (depth == 0 && char.IsWhiteSpace(value[index]))
             {
                 return value[..index].Trim();
@@ -1358,14 +1867,18 @@ internal sealed partial class FrameworkCSharpLowerer
     {
         if (typeNode.Kind == CoreNodeKind.RecordTypeAnnotation)
         {
-            var fields = typeNode.Children
-                .SelectMany(item => item.Kind switch
-                {
-                    CoreNodeKind.RecordTypeAnnotationPositionalField or CoreNodeKind.RecordTypeAnnotationNamedField => [item],
-                    CoreNodeKind.RecordTypeAnnotationNamedFields => item.Children
-                        .Where(child => child.Kind == CoreNodeKind.RecordTypeAnnotationNamedField),
-                    _ => [],
-                })
+            var fields = typeNode
+                .Children.SelectMany(item =>
+                    item.Kind switch
+                    {
+                        CoreNodeKind.RecordTypeAnnotationPositionalField
+                        or CoreNodeKind.RecordTypeAnnotationNamedField => [item],
+                        CoreNodeKind.RecordTypeAnnotationNamedFields => item.Children.Where(child =>
+                            child.Kind == CoreNodeKind.RecordTypeAnnotationNamedField
+                        ),
+                        _ => [],
+                    }
+                )
                 .Select(item =>
                 {
                     var fieldType = item.Children.FirstOrDefault(child => child.Category == "type");
@@ -1382,12 +1895,16 @@ internal sealed partial class FrameworkCSharpLowerer
         if (typeNode.Kind == CoreNodeKind.GenericFunctionType)
         {
             var returnTypeNode = typeNode.Children.FirstOrDefault(item => item.Category == "type");
-            var parameterList = typeNode.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.FormalParameterList);
-            var parameterTypes = parameterList?.Children
-                .Where(item => item.Category == "parameter")
-                .Select(item => item.Children.FirstOrDefault(child => child.Category == "type"))
-                .Select(item => item is null ? "object" : MapTypeFromAst(item))
-                .ToArray() ?? [];
+            var parameterList = typeNode.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.FormalParameterList
+            );
+            var parameterTypes =
+                parameterList
+                    ?.Children.Where(item => item.Category == "parameter")
+                    .Select(item => item.Children.FirstOrDefault(child => child.Category == "type"))
+                    .Select(item => item is null ? "object" : MapTypeFromAst(item))
+                    .ToArray()
+                ?? [];
             var returnType = returnTypeNode is null ? "void" : MapTypeFromAst(returnTypeNode);
             if (returnType == "void")
             {
@@ -1402,33 +1919,41 @@ internal sealed partial class FrameworkCSharpLowerer
         var namedType = typeNode.Kind switch
         {
             CoreNodeKind.NamedType => typeNode,
-            CoreNodeKind.ConstructorName => typeNode.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.NamedType),
-            _ => null
+            CoreNodeKind.ConstructorName => typeNode.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.NamedType
+            ),
+            _ => null,
         };
         if (namedType is null)
         {
             return MapType(typeNode.StaticType ?? "object");
         }
         var fallbackName = namedType.Text(CoreProperty.name) ?? "object";
-        var typeArguments = namedType.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList);
+        var typeArguments = namedType.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.TypeArgumentList
+        );
         if (typeArguments is not null && fallbackName is "ValueChanged" or "ValueSetter")
         {
-            var callbackArguments = typeArguments.Children
-                .Where(item => item.Category == "type")
+            var callbackArguments = typeArguments
+                .Children.Where(item => item.Category == "type")
                 .Select(MapTypeFromAst)
                 .ToArray();
             if (callbackArguments.Length == 1)
             {
                 var callback = $"global::System.Action<{callbackArguments[0]}>";
-                return namedType.Text(CoreProperty.isNullable) == "true" ? callback + "?" : callback;
+                return namedType.Text(CoreProperty.isNullable) == "true"
+                    ? callback + "?"
+                    : callback;
             }
         }
-        if (typeArguments is not null &&
-            !string.IsNullOrEmpty(namedType.ElementId) &&
-            FindGlobalDeclaration(fallbackName) is { Ast.Kind: CoreNodeKind.GenericTypeAlias })
+        if (
+            typeArguments is not null
+            && !string.IsNullOrEmpty(namedType.ElementId)
+            && FindGlobalDeclaration(fallbackName) is { Ast.Kind: CoreNodeKind.GenericTypeAlias }
+        )
         {
-            var aliasArguments = typeArguments.Children
-                .Where(item => item.Category == "type")
+            var aliasArguments = typeArguments
+                .Children.Where(item => item.Category == "type")
                 .Select(item => item.StaticType ?? item.Text(CoreProperty.name) ?? "object")
                 .ToArray();
             var aliasType = $"{fallbackName}<{string.Join(", ", aliasArguments)}>";
@@ -1441,16 +1966,22 @@ internal sealed partial class FrameworkCSharpLowerer
         var name = ResolveEmittedTypeName(namedType, fallbackName);
         if (typeArguments is null)
         {
-            if (FindGlobalDeclaration(fallbackName) is { Element.TypeParameters.Length: > 0 } genericDeclaration)
+            if (
+                FindGlobalDeclaration(fallbackName) is
+                { Element.TypeParameters.Length: > 0 } genericDeclaration
+            )
             {
-                var ownDeclaration = _session.ActiveDeclaration is { } activeDeclaration &&
-                    activeDeclaration.Element.CanonicalId == genericDeclaration.Element.CanonicalId
-                    ? activeDeclaration
-                    : null;
+                var ownDeclaration =
+                    _session.ActiveDeclaration is { } activeDeclaration
+                    && activeDeclaration.Element.CanonicalId
+                        == genericDeclaration.Element.CanonicalId
+                        ? activeDeclaration
+                        : null;
                 var rawArguments = genericDeclaration.Element.TypeParameters.Select(parameter =>
-                    ownDeclaration is not null
-                        ? SafeIdentifier(parameter.Name)
-                        : string.IsNullOrWhiteSpace(parameter.Bound) ? "object" : MapType(parameter.Bound));
+                    ownDeclaration is not null ? SafeIdentifier(parameter.Name)
+                    : string.IsNullOrWhiteSpace(parameter.Bound) ? "object"
+                    : MapType(parameter.Bound)
+                );
                 var rawType = $"{fallbackName}<{string.Join(", ", rawArguments)}>";
                 if (namedType.Text(CoreProperty.isNullable) == "true")
                 {
@@ -1463,14 +1994,18 @@ internal sealed partial class FrameworkCSharpLowerer
                 {
                     return MapType(rawType);
                 }
-                name = ResolveEmittedTypeName(namedType, fallbackName) +
-                    $"<{string.Join(", ", rawArguments)}>";
+                name =
+                    ResolveEmittedTypeName(namedType, fallbackName)
+                    + $"<{string.Join(", ", rawArguments)}>";
             }
-            var resolvedType = namedType.Text(CoreProperty.isNullable) == "true" ? name + "?" : name;
-            return name.StartsWith("global::", StringComparison.Ordinal) ? resolvedType : MapType(resolvedType);
+            var resolvedType =
+                namedType.Text(CoreProperty.isNullable) == "true" ? name + "?" : name;
+            return name.StartsWith("global::", StringComparison.Ordinal)
+                ? resolvedType
+                : MapType(resolvedType);
         }
-        var arguments = typeArguments.Children
-            .Where(item => item.Category == "type")
+        var arguments = typeArguments
+            .Children.Where(item => item.Category == "type")
             .Select(MapTypeFromAst)
             .ToArray();
         var type = $"{name}<{string.Join(", ", arguments)}>";
@@ -1481,7 +2016,10 @@ internal sealed partial class FrameworkCSharpLowerer
         return name.StartsWith("global::", StringComparison.Ordinal) ? type : MapType(type);
     }
 
-    private string MapRedirectTargetType(CoreAstNode redirectName, CoreResolvedDeclaration declaration)
+    private string MapRedirectTargetType(
+        CoreAstNode redirectName,
+        CoreResolvedDeclaration declaration
+    )
     {
         var mapped = MapTypeFromAst(redirectName);
         var typeParameters = FormatTypeParameters(declaration.Element.TypeParameters);
@@ -1505,8 +2043,9 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         var library = LibraryUriFromElementId(elementId);
         var alias = _currentDeclarations?.FirstOrDefault(item =>
-            item.Ast.Kind == CoreNodeKind.GenericTypeAlias &&
-            string.Equals(item.Element.CanonicalId, elementId, StringComparison.Ordinal));
+            item.Ast.Kind == CoreNodeKind.GenericTypeAlias
+            && string.Equals(item.Element.CanonicalId, elementId, StringComparison.Ordinal)
+        );
         if (alias?.Element.Type is { } aliasType)
         {
             return MapType(aliasType);
@@ -1548,8 +2087,14 @@ internal sealed partial class FrameworkCSharpLowerer
     private string EmittedTypeName(string libraryUri, string name)
     {
         // Keep Flutter's command abstraction distinct from System.Action delegates.
-        if (name == "Action" && libraryUri.EndsWith("/widgets/actions.dart", StringComparison.Ordinal))
+        if (
+            name == "Action"
+            && libraryUri.EndsWith("/widgets/actions.dart", StringComparison.Ordinal)
+        )
+        {
             return "IntentAction";
+        }
+
         var safe = SafeIdentifier(name);
         if (safe.StartsWith('_'))
         {
@@ -1568,14 +2113,18 @@ internal sealed partial class FrameworkCSharpLowerer
             var suffix = "__" + SafeIdentifier(stem).TrimStart('@');
             return safe.EndsWith(suffix, StringComparison.Ordinal) ? safe : safe + suffix;
         }
-        if (IsPrivateCompanionLibrary(libraryUri) &&
-            !libraryUri.EndsWith("/_background_isolate_binary_messenger_io.dart", StringComparison.Ordinal) &&
-            !safe.StartsWith('_') &&
-            _semanticIndex.HasDeclaration(libraryUri, name))
+        if (
+            IsPrivateCompanionLibrary(libraryUri)
+            && !libraryUri.EndsWith(
+                "/_background_isolate_binary_messenger_io.dart",
+                StringComparison.Ordinal
+            )
+            && !safe.StartsWith('_')
+            && _semanticIndex.HasDeclaration(libraryUri, name)
+        )
         {
             return safe + "Io";
         }
         return safe;
     }
-
 }

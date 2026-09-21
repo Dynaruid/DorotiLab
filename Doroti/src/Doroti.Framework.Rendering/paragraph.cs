@@ -7,9 +7,15 @@ namespace Doroti.Framework.Rendering;
 
 internal delegate void _TextBoundaryRecord__paragraph();
 
-internal delegate (TextPosition boundaryEnd, TextPosition boundaryStart) _TextBoundaryAtPosition__paragraph(TextPosition position);
+internal delegate (
+    TextPosition boundaryEnd,
+    TextPosition boundaryStart
+) _TextBoundaryAtPosition__paragraph(TextPosition position);
 
-internal delegate (TextPosition boundaryEnd, TextPosition boundaryStart) _TextBoundaryAtPositionInText__paragraph(TextPosition position, string text);
+internal delegate (
+    TextPosition boundaryEnd,
+    TextPosition boundaryStart
+) _TextBoundaryAtPositionInText__paragraph(TextPosition position, string text);
 
 public static partial class ParagraphLibrary
 {
@@ -20,7 +26,8 @@ public class PlaceholderSpanIndexSemanticsTag : SemanticsTag
 {
     public virtual long index { get; private set; } = default!;
 
-    public PlaceholderSpanIndexSemanticsTag(long index) : base($"PlaceholderSpanIndexSemanticsTag({index})")
+    public PlaceholderSpanIndexSemanticsTag(long index)
+        : base($"PlaceholderSpanIndexSemanticsTag({index})")
     {
         this.index = index;
     }
@@ -28,11 +35,16 @@ public class PlaceholderSpanIndexSemanticsTag : SemanticsTag
     public override bool Equals(object? other)
     {
         var __other = other as PlaceholderSpanIndexSemanticsTag;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         return (__other is PlaceholderSpanIndexSemanticsTag) && (__other.index == index);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(typeof(PlaceholderSpanIndexSemanticsTag), index);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(typeof(PlaceholderSpanIndexSemanticsTag), index);
 }
 
 public class TextParentData : ParentData, ContainerParentDataMixin<RenderBox>
@@ -43,6 +55,7 @@ public class TextParentData : ParentData, ContainerParentDataMixin<RenderBox>
     public virtual RenderBox? nextSibling { get; set; } = default;
 
     public virtual Offset? offset => _offset;
+
     public override void detach()
     {
         span = null;
@@ -52,20 +65,50 @@ public class TextParentData : ParentData, ContainerParentDataMixin<RenderBox>
         base.detach();
     }
 
-    public override string ToString() => $"widget: {span}, {((offset is null) ? "not laid out" : $"offset: {offset}")}";
+    public override string ToString() =>
+        $"widget: {span}, {((offset is null) ? "not laid out" : $"offset: {offset}")}";
 }
 
 public interface RenderInlineChildrenContainerDefaults
 {
     public void setupParentData(RenderObject child);
-    public static PlaceholderDimensions _layoutChild(RenderBox child, BoxConstraints childConstraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
+    public static PlaceholderDimensions _layoutChild(
+        RenderBox child,
+        BoxConstraints childConstraints,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline
+    )
     {
         var parentDataLocal = ((TextParentData?)child.parentData!)!;
         PlaceholderSpan? spanLocal = parentDataLocal.span;
         DartRuntimePrimitives.Assert(() => spanLocal is not null);
-        return (spanLocal is null) ? PlaceholderDimensions.empty : new PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: spanLocal.alignment, baseline: spanLocal.baseline, baselineOffset: spanLocal.alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(spanLocal.baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (spanLocal is null)
+            ? PlaceholderDimensions.empty
+            : new PlaceholderDimensions(
+                size: layoutChild(child, childConstraints),
+                alignment: spanLocal.alignment,
+                baseline: spanLocal.baseline,
+                baselineOffset: spanLocal.alignment switch
+                {
+                    Dart_uiLibrary.PlaceholderAlignment.aboveBaseline
+                    or Dart_uiLibrary.PlaceholderAlignment.belowBaseline
+                    or Dart_uiLibrary.PlaceholderAlignment.bottom
+                    or Dart_uiLibrary.PlaceholderAlignment.middle => null,
+                    Dart_uiLibrary.PlaceholderAlignment.top => null,
+                    Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(
+                        child,
+                        childConstraints,
+                        DartRuntimePrimitives.RequireValue(spanLocal.baseline)
+                    ),
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                }
+            );
     }
-    public List<PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline);
+    public List<PlaceholderDimensions> layoutInlineChildren(
+        double maxWidth,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline
+    );
     public void positionInlineChildren(List<TextBox> boxes);
     public void defaultApplyPaintTransform(RenderBox child, Matrix4 transform);
     public void paintInlineChildren(PaintingContext context, Offset offset);
@@ -74,22 +117,29 @@ public interface RenderInlineChildrenContainerDefaults
 
 internal class _UnspecifiedTextScaler__paragraph : TextScaler
 {
-    internal _UnspecifiedTextScaler__paragraph()
-    {
-    }
+    internal _UnspecifiedTextScaler__paragraph() { }
 
     public override double textScaleFactor => throw new NotImplementedException();
+
     public override double scale(double fontSize) => throw new NotImplementedException();
 }
 
-public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, TextParentData>, RenderInlineChildrenContainerDefaults, RelayoutWhenSystemFontsChangeMixin
+public class RenderParagraph
+    : RenderBox,
+        ContainerRenderObjectMixin<RenderBox, TextParentData>,
+        RenderInlineChildrenContainerDefaults,
+        RelayoutWhenSystemFontsChangeMixin
 {
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)PlaceholderSpan.placeholderCodeUnit));
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(
+        checked((int)PlaceholderSpan.placeholderCodeUnit)
+    );
     internal virtual TextPainter _textPainter { get; private set; } = default!;
     internal virtual TextPainter? _textIntrinsicsCache { get; set; } = default;
     internal virtual List<AttributedString>? _cachedAttributedLabels { get; set; } = default;
-    internal virtual List<InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
-    internal virtual List<_SelectableFragment__paragraph>? _lastSelectableFragments { get; set; } = default;
+    internal virtual List<InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } =
+        default;
+    internal virtual List<_SelectableFragment__paragraph>? _lastSelectableFragments { get; set; } =
+        default;
     internal virtual SelectionRegistrar? _registrar { get; set; } = default;
     internal virtual bool _softWrap { get; set; } = default!;
     internal virtual TextOverflow _overflow { get; set; } = default!;
@@ -105,38 +155,77 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public virtual RenderBox? _lastChild { get; set; } = default;
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
 
-    public RenderParagraph(InlineSpan text, TextAlign textAlign = TextAlign.start, TextDirection textDirection = default!, bool softWrap = true, TextOverflow overflow = TextOverflow.clip, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, Locale? locale = null, Painting.StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, List<RenderBox>? children = null, Color? selectionColor = null, SelectionRegistrar? registrar = null, double devicePixelRatio = 1.0)
+    public RenderParagraph(
+        InlineSpan text,
+        TextAlign textAlign = TextAlign.start,
+        TextDirection textDirection = default!,
+        bool softWrap = true,
+        TextOverflow overflow = TextOverflow.clip,
+        double textScaleFactor = 1.0,
+        TextScaler textScaler = default!,
+        long? maxLines = null,
+        Locale? locale = null,
+        Painting.StrutStyle? strutStyle = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        TextHeightBehavior? textHeightBehavior = null,
+        List<RenderBox>? children = null,
+        Color? selectionColor = null,
+        SelectionRegistrar? registrar = null,
+        double devicePixelRatio = 1.0
+    )
     {
         TextScaler __textScaler = textScaler ?? new _UnspecifiedTextScaler__paragraph();
         _softWrap = softWrap;
         _overflow = overflow;
         _devicePixelRatio = devicePixelRatio;
         _selectionColor = selectionColor;
-        _textPainter = new TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: Equals(textScaler, new _UnspecifiedTextScaler__paragraph()) ? TextScaler.CreateLinear(textScaleFactor) : textScaler, maxLines: maxLines, ellipsis: Equals(overflow, TextOverflow.ellipsis) ? ParagraphLibrary._kEllipsis : null, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
+        _textPainter = new TextPainter(
+            text: text,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            textScaler: Equals(textScaler, new _UnspecifiedTextScaler__paragraph())
+                ? TextScaler.CreateLinear(textScaleFactor)
+                : textScaler,
+            maxLines: maxLines,
+            ellipsis: Equals(overflow, TextOverflow.ellipsis) ? ParagraphLibrary._kEllipsis : null,
+            locale: locale,
+            strutStyle: strutStyle,
+            textWidthBasis: textWidthBasis,
+            textHeightBehavior: textHeightBehavior
+        );
         System.Diagnostics.Debug.Assert(text.debugAssertIsValid());
-        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
-        System.Diagnostics.Debug.Assert(DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__paragraph()) || (textScaleFactor == 1.0));
+        System.Diagnostics.Debug.Assert(
+            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__paragraph())
+                || (textScaleFactor == 1.0)
+        );
     }
 
     internal virtual TextPainter _textIntrinsics
     {
         get
         {
-            return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsicsCache ??= new TextPainter();
-    __cascade.text = _textPainter.text;
-    __cascade.textAlign = _textPainter.textAlign;
-    __cascade.textDirection = _textPainter.textDirection;
-    __cascade.textScaler = _textPainter.textScaler;
-    __cascade.maxLines = _textPainter.maxLines;
-    __cascade.ellipsis = _textPainter.ellipsis;
-    __cascade.locale = _textPainter.locale;
-    __cascade.strutStyle = _textPainter.strutStyle;
-    __cascade.textWidthBasis = _textPainter.textWidthBasis;
-    __cascade.textHeightBehavior = _textPainter.textHeightBehavior;
-    return __cascade;
-}))();
+            return (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = _textIntrinsicsCache ??= new TextPainter();
+                        __cascade.text = _textPainter.text;
+                        __cascade.textAlign = _textPainter.textAlign;
+                        __cascade.textDirection = _textPainter.textDirection;
+                        __cascade.textScaler = _textPainter.textScaler;
+                        __cascade.maxLines = _textPainter.maxLines;
+                        __cascade.ellipsis = _textPainter.ellipsis;
+                        __cascade.locale = _textPainter.locale;
+                        __cascade.strutStyle = _textPainter.strutStyle;
+                        __cascade.textWidthBasis = _textPainter.textWidthBasis;
+                        __cascade.textHeightBehavior = _textPainter.textHeightBehavior;
+                        return __cascade;
+                    }
+                )
+            )();
         }
     }
     public virtual InlineSpan text
@@ -148,37 +237,37 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             switch (_textPainter.text!.compareTo(__value))
             {
                 case RenderComparison.identical:
-                    {
-                        return;
-                    }
+                {
+                    return;
+                }
                 case RenderComparison.metadata:
-                    {
-                        _textPainter.text = __value;
-                        _cachedCombinedSemanticsInfos = null;
-                        markNeedsSemanticsUpdate();
-                        break;
-                    }
+                {
+                    _textPainter.text = __value;
+                    _cachedCombinedSemanticsInfos = null;
+                    markNeedsSemanticsUpdate();
+                    break;
+                }
                 case RenderComparison.paint:
-                    {
-                        _textPainter.text = __value;
-                        _cachedAttributedLabels = null;
-                        _cachedCombinedSemanticsInfos = null;
-                        markNeedsPaint();
-                        markNeedsSemanticsUpdate();
-                        break;
-                    }
+                {
+                    _textPainter.text = __value;
+                    _cachedAttributedLabels = null;
+                    _cachedCombinedSemanticsInfos = null;
+                    markNeedsPaint();
+                    markNeedsSemanticsUpdate();
+                    break;
+                }
                 case RenderComparison.layout:
-                    {
-                        _textPainter.text = __value;
-                        _overflowShader = null;
-                        _cachedAttributedLabels = null;
-                        _cachedCombinedSemanticsInfos = null;
-                        markNeedsLayout();
-                        _removeSelectionRegistrarSubscription();
-                        _disposeSelectableFragments();
-                        _updateSelectionRegistrarSubscription();
-                        break;
-                    }
+                {
+                    _textPainter.text = __value;
+                    _overflowShader = null;
+                    _cachedAttributedLabels = null;
+                    _cachedCombinedSemanticsInfos = null;
+                    markNeedsLayout();
+                    _removeSelectionRegistrarSubscription();
+                    _disposeSelectableFragments();
+                    _updateSelectionRegistrarSubscription();
+                    break;
+                }
             }
         }
     }
@@ -193,9 +282,17 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             var results = new List<TextSelection>();
             foreach (_SelectableFragment__paragraph fragment in _lastSelectableFragments!)
             {
-                if ((fragment._textSelectionStart is not null) && (fragment._textSelectionEnd is not null))
+                if (
+                    (fragment._textSelectionStart is not null)
+                    && (fragment._textSelectionEnd is not null)
+                )
                 {
-                    results.Add(new TextSelection(baseOffset: fragment._textSelectionStart!.offset, extentOffset: fragment._textSelectionEnd!.offset));
+                    results.Add(
+                        new TextSelection(
+                            baseOffset: fragment._textSelectionStart!.offset,
+                            extentOffset: fragment._textSelectionEnd!.offset
+                        )
+                    );
                 }
             }
             return results;
@@ -217,6 +314,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             _updateSelectionRegistrarSubscription();
         }
     }
+
     internal virtual void _updateSelectionRegistrarSubscription()
     {
         if (_registrar is null)
@@ -254,7 +352,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 {
                     endLocal = plainText.Length;
                 }
-                result.Add(new _SelectableFragment__paragraph(paragraph: this, range: new TextRange(start: startLocal, end: endLocal), fullText: plainText));
+                result.Add(
+                    new _SelectableFragment__paragraph(
+                        paragraph: this,
+                        range: new TextRange(start: startLocal, end: endLocal),
+                        fullText: plainText
+                    )
+                );
                 startLocal = endLocal;
             }
             startLocal += 1L;
@@ -286,7 +390,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         _lastSelectableFragments = null;
     }
 
-    public override bool alwaysNeedsCompositing => (((long?)(_lastSelectableFragments?.Count)) is { } __count19316 ? __count19316 != 0 : (bool?)null) ?? false;
+    public override bool alwaysNeedsCompositing =>
+        (
+            ((long?)(_lastSelectableFragments?.Count)) is { } __count19316
+                ? __count19316 != 0
+                : (bool?)null
+        ) ?? false;
+
     public override void markNeedsLayout()
     {
         _lastSelectableFragments?.forEach((element) => element.didChangeParagraphLayout());
@@ -355,7 +465,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 return;
             }
             _overflow = DartRuntimePrimitives.RequireValue(__value);
-            _textPainter.ellipsis = Equals(DartRuntimePrimitives.RequireValue(__value), TextOverflow.ellipsis) ? ParagraphLibrary._kEllipsis : null;
+            _textPainter.ellipsis = Equals(
+                DartRuntimePrimitives.RequireValue(__value),
+                TextOverflow.ellipsis
+            )
+                ? ParagraphLibrary._kEllipsis
+                : null;
             markNeedsLayout();
         }
     }
@@ -406,7 +521,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+            );
             if (_textPainter.maxLines == __value)
             {
                 return;
@@ -493,48 +610,79 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             }
         }
     }
+
     internal virtual Offset _getOffsetForPosition(TextPosition position)
     {
-        return getOffsetForCaret(position, Rect.zero) + new Offset(0, getFullHeightForCaret(position));
+        return getOffsetForCaret(position, Rect.zero)
+            + new Offset(0, getFullHeightForCaret(position));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, (child, constraints) => new Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0), ChildLayoutHelper.getDryBaseline);
-        return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions);
-    __cascade.layout();
-    return __cascade;
-}))().minIntrinsicWidth;
+        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(
+            double.PositiveInfinity,
+            (child, constraints) =>
+                new Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0),
+            ChildLayoutHelper.getDryBaseline
+        );
+        return (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(placeholderDimensions);
+                    __cascade.layout();
+                    return __cascade;
+                }
+            )
+        )().minIntrinsicWidth;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, (child, constraints) => new Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0), ChildLayoutHelper.getDryBaseline);
-        return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions);
-    __cascade.layout();
-    return __cascade;
-}))().maxIntrinsicWidth;
+        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(
+            double.PositiveInfinity,
+            (child, constraints) =>
+                new Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0),
+            ChildLayoutHelper.getDryBaseline
+        );
+        return (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(placeholderDimensions);
+                    __cascade.layout();
+                    return __cascade;
+                }
+            )
+        )().maxIntrinsicWidth;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double preferredLineHeight => _textPainter.preferredLineHeight;
+
     internal virtual double _computeIntrinsicHeight(double width)
     {
-        return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(layoutInlineChildren(width, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
-    __cascade.layout(minWidth: width, maxWidth: _adjustMaxWidth(width));
-    return __cascade;
-}))().height;
+        return (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(
+                        layoutInlineChildren(
+                            width,
+                            ChildLayoutHelper.dryLayoutChild,
+                            ChildLayoutHelper.getDryBaseline
+                        )
+                    );
+                    __cascade.layout(minWidth: width, maxWidth: _adjustMaxWidth(width));
+                    return __cascade;
+                }
+            )
+        )().height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -551,26 +699,33 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
 
     public override bool hitTestSelf(Offset position) => true;
+
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         GlyphInfo? glyph = _textPainter.getClosestGlyphForOffset(position);
-        InlineSpan? spanHit = ((glyph is not null) && glyph.graphemeClusterLayoutBounds.contains(position)) ? _textPainter.text!.getSpanForPosition(new TextPosition(offset: glyph.graphemeClusterCodeUnitRange.start)) : null;
+        InlineSpan? spanHit =
+            ((glyph is not null) && glyph.graphemeClusterLayoutBounds.contains(position))
+                ? _textPainter.text!.getSpanForPosition(
+                    new TextPosition(offset: glyph.graphemeClusterCodeUnitRange.start)
+                )
+                : null;
         switch (spanHit)
         {
             case HitTestTarget span:
-                {
-                    result.add(new HitTestEntry<HitTestTarget>(span));
-                    return true;
-                }
+            {
+                result.add(new HitTestEntry<HitTestTarget>(span));
+                return true;
+            }
             default:
-                {
-                    return hitTestInlineChildren(result, position);
-                }
+            {
+                return hitTestInlineChildren(result, position);
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool debugHasOverflowShader => _overflowShader is not null;
+
     public virtual void systemFontsDidChange()
     {
         markNeedsLayout();
@@ -579,30 +734,52 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual double _adjustMaxWidth(double maxWidth)
     {
-        return (softWrap || Equals(overflow, TextOverflow.ellipsis)) ? maxWidth : double.PositiveInfinity;
+        return (softWrap || Equals(overflow, TextOverflow.ellipsis))
+            ? maxWidth
+            : double.PositiveInfinity;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _layoutTextWithConstraints(BoxConstraints constraints)
     {
-        ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textPainter;
-    __cascade.setPlaceholderDimensions(_placeholderDimensions);
-    __cascade.layout(minWidth: constraints.minWidth, maxWidth: _adjustMaxWidth(constraints.maxWidth));
-    return __cascade;
-}))();
+        (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textPainter;
+                    __cascade.setPlaceholderDimensions(_placeholderDimensions);
+                    __cascade.layout(
+                        minWidth: constraints.minWidth,
+                        maxWidth: _adjustMaxWidth(constraints.maxWidth)
+                    );
+                    return __cascade;
+                }
+            )
+        )();
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        Size sizeLocal = ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(layoutInlineChildren(constraints.maxWidth, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
-    __cascade.layout(minWidth: constraints.minWidth, maxWidth: _adjustMaxWidth(constraints.maxWidth));
-    return __cascade;
-}))().size;
+        Size sizeLocal = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(
+                        layoutInlineChildren(
+                            constraints.maxWidth,
+                            ChildLayoutHelper.dryLayoutChild,
+                            ChildLayoutHelper.getDryBaseline
+                        )
+                    );
+                    __cascade.layout(
+                        minWidth: constraints.minWidth,
+                        maxWidth: _adjustMaxWidth(constraints.maxWidth)
+                    );
+                    return __cascade;
+                }
+            )
+        )().size;
         return constraints.constrain(sizeLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -619,13 +796,26 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
-        ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(layoutInlineChildren(constraints.maxWidth, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
-    __cascade.layout(minWidth: constraints.minWidth, maxWidth: _adjustMaxWidth(constraints.maxWidth));
-    return __cascade;
-}))();
+        (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(
+                        layoutInlineChildren(
+                            constraints.maxWidth,
+                            ChildLayoutHelper.dryLayoutChild,
+                            ChildLayoutHelper.getDryBaseline
+                        )
+                    );
+                    __cascade.layout(
+                        minWidth: constraints.minWidth,
+                        maxWidth: _adjustMaxWidth(constraints.maxWidth)
+                    );
+                    return __cascade;
+                }
+            )
+        )();
         return _textIntrinsics.computeDistanceToActualBaseline(TextBaseline.alphabetic);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -634,7 +824,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     {
         _lastSelectableFragments?.forEach((element) => element.didChangeParagraphLayout());
         BoxConstraints constraintsLocal = constraints;
-        _placeholderDimensions = layoutInlineChildren(constraintsLocal.maxWidth, ChildLayoutHelper.layoutChild, ChildLayoutHelper.getBaseline);
+        _placeholderDimensions = layoutInlineChildren(
+            constraintsLocal.maxWidth,
+            ChildLayoutHelper.layoutChild,
+            ChildLayoutHelper.getBaseline
+        );
         _layoutTextWithConstraints(constraintsLocal);
         positionInlineChildren(_textPainter.inlinePlaceholderBoxes!);
         Size textSize = _textPainter.size;
@@ -647,41 +841,65 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             switch (_overflow)
             {
                 case TextOverflow.visible:
-                    {
-                        _needsClipping = false;
-                        _overflowShader = null;
-                        break;
-                    }
+                {
+                    _needsClipping = false;
+                    _overflowShader = null;
+                    break;
+                }
                 case TextOverflow.clip:
                 case TextOverflow.ellipsis:
-                    {
-                        _needsClipping = true;
-                        _overflowShader = null;
-                        break;
-                    }
+                {
+                    _needsClipping = true;
+                    _overflowShader = null;
+                    break;
+                }
                 case TextOverflow.fade:
+                {
+                    _needsClipping = true;
+                    var fadeSizePainter = (
+                        (Func<TextPainter>)(
+                            () =>
+                            {
+                                var __cascade = new TextPainter(
+                                    text: new TextSpan(style: _textPainter.text!.style, text: "…"),
+                                    textDirection: textDirection,
+                                    textScaler: textScaler,
+                                    locale: locale
+                                );
+                                __cascade.layout();
+                                return __cascade;
+                            }
+                        )
+                    )();
+                    if (didOverflowWidth)
                     {
-                        _needsClipping = true;
-                        var fadeSizePainter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter(text: new TextSpan(style: _textPainter.text!.style, text: "…"), textDirection: textDirection, textScaler: textScaler, locale: locale);
-    __cascade.layout();
-    return __cascade;
-}))();
-                        if (didOverflowWidth)
+                        var (fadeStart, fadeEnd) = textDirection switch
                         {
-                            var (fadeStart, fadeEnd) = textDirection switch { TextDirection.rtl => (fadeSizePainter.width, 0.0), TextDirection.ltr => (size.width - fadeSizePainter.width, size.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                            _overflowShader = Ui.Gradient.linear(new Offset(fadeStart, 0.0), new Offset(fadeEnd, 0.0), new List<Color> { new Color(4294967295L), new Color(16777215L) });
-                        }
-                        else
-                        {
-                            double fadeEndLocal = size.height;
-                            double fadeStartLocal = fadeEndLocal - (fadeSizePainter.height / 2.0);
-                            _overflowShader = Ui.Gradient.linear(new Offset(0.0, fadeStartLocal), new Offset(0.0, fadeEndLocal), new List<Color> { new Color(4294967295L), new Color(16777215L) });
-                        }
-                        fadeSizePainter.dispose();
-                        break;
+                            TextDirection.rtl => (fadeSizePainter.width, 0.0),
+                            TextDirection.ltr => (size.width - fadeSizePainter.width, size.width),
+                            _ => throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            ),
+                        };
+                        _overflowShader = Ui.Gradient.linear(
+                            new Offset(fadeStart, 0.0),
+                            new Offset(fadeEnd, 0.0),
+                            new List<Color> { new Color(4294967295L), new Color(16777215L) }
+                        );
                     }
+                    else
+                    {
+                        double fadeEndLocal = size.height;
+                        double fadeStartLocal = fadeEndLocal - (fadeSizePainter.height / 2.0);
+                        _overflowShader = Ui.Gradient.linear(
+                            new Offset(0.0, fadeStartLocal),
+                            new Offset(0.0, fadeEndLocal),
+                            new List<Color> { new Color(4294967295L), new Color(16777215L) }
+                        );
+                    }
+                    fadeSizePainter.dispose();
+                    break;
+                }
             }
         }
         else
@@ -701,19 +919,23 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     {
         _layoutTextWithConstraints(constraints);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (DebugLibrary.debugRepaintTextRainbowEnabled)
             {
-                if (DebugLibrary.debugRepaintTextRainbowEnabled)
-                {
-                    var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = DebugLibrary.debugCurrentRepaintColor.toColor();
-    return __cascade;
-}))();
-                    context.canvas.drawRect(offset & size, paintLocal);
-                }
-                return true;
-            });
+                var paintLocal = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = DebugLibrary.debugCurrentRepaintColor.toColor();
+                            return __cascade;
+                        }
+                    )
+                )();
+                context.canvas.drawRect(offset & size, paintLocal);
+            }
+            return true;
+        });
         if (_lastSelectableFragments is not null)
         {
             if (_needsClipping)
@@ -744,10 +966,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             context.canvas.clipRect(bounds);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _textPainter.debugPaintTextLayoutBoxes = DebugLibrary.debugPaintTextLayoutBoxes;
-                return true;
-            });
+        {
+            _textPainter.debugPaintTextLayoutBoxes = DebugLibrary.debugPaintTextLayoutBoxes;
+            return true;
+        });
         _textPainter.paint(context.canvas, offset);
         paintInlineChildren(context, offset);
         if (_needsClipping)
@@ -755,13 +977,17 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             if (_overflowShader is not null)
             {
                 context.canvas.translate(offset.dx, offset.dy);
-                var paintAlternate = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.blendMode = BlendMode.modulate;
-    __cascade.shader = _overflowShader;
-    return __cascade;
-}))();
+                var paintAlternate = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.blendMode = BlendMode.modulate;
+                            __cascade.shader = _overflowShader;
+                            return __cascade;
+                        }
+                    )
+                )();
                 context.canvas.drawRect(Offset.zero & size, paintAlternate);
             }
             context.canvas.restore();
@@ -791,11 +1017,19 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<TextBox> getBoxesForSelection(TextSelection selection, BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight, BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight)
+    public virtual List<TextBox> getBoxesForSelection(
+        TextSelection selection,
+        BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight,
+        BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight
+    )
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         _layoutTextWithConstraints(constraints);
-        return _textPainter.getBoxesForSelection(selection, boxHeightStyle: boxHeightStyle, boxWidthStyle: boxWidthStyle);
+        return _textPainter.getBoxesForSelection(
+            selection,
+            boxHeightStyle: boxHeightStyle,
+            boxWidthStyle: boxWidthStyle
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -815,7 +1049,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextRange _getLineAtOffset(TextPosition position) => _textPainter.getLineBoundary(position);
+    internal virtual TextRange _getLineAtOffset(TextPosition position) =>
+        _textPainter.getLineBoundary(position);
+
     internal virtual TextPosition _getTextPositionAbove(TextPosition position)
     {
         double preferredLineHeightLocal = _textPainter.preferredLineHeight;
@@ -832,7 +1068,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextPosition _getTextPositionVertical(TextPosition position, double verticalOffset)
+    internal virtual TextPosition _getTextPositionVertical(
+        TextPosition position,
+        double verticalOffset
+    )
     {
         Offset caretOffset = _textPainter.getOffsetForCaret(position, Rect.zero);
         Offset caretOffsetTranslated = caretOffset.translate(0.0, verticalOffset);
@@ -856,6 +1095,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             return _textPainter.didExceedMaxLines;
         }
     }
+
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
@@ -869,7 +1109,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 needsAssembleSemanticsNode = true;
                 break;
             }
-            needsChildConfigurationsDelegate = needsChildConfigurationsDelegate || info.isPlaceholder;
+            needsChildConfigurationsDelegate =
+                needsChildConfigurationsDelegate || info.isPlaceholder;
         }
         if (needsAssembleSemanticsNode)
         {
@@ -895,12 +1136,22 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                         foreach (StringAttribute infoAttribute in infoLocal.stringAttributes)
                         {
                             TextRange originalRange = infoAttribute.range;
-                            attributesLocal.Add(infoAttribute.copy(range: new TextRange(start: offset + originalRange.start, end: offset + originalRange.end)));
+                            attributesLocal.Add(
+                                infoAttribute.copy(
+                                    range: new TextRange(
+                                        start: offset + originalRange.start,
+                                        end: offset + originalRange.end
+                                    )
+                                )
+                            );
                         }
                         buffer.write(label);
                         offset += label.Length;
                     }
-                    _cachedAttributedLabels = new List<AttributedString> { new AttributedString(buffer.ToString(), attributes: attributesLocal) };
+                    _cachedAttributedLabels = new List<AttributedString>
+                    {
+                        new AttributedString(buffer.ToString(), attributes: attributesLocal),
+                    };
                 }
                 config.attributedLabel = _cachedAttributedLabels![(int)0L];
                 config.textDirection = textDirection;
@@ -908,7 +1159,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
     }
 
-    internal virtual ChildSemanticsConfigurationsResult _childSemanticsConfigurationsDelegate(List<SemanticsConfiguration> childConfigs)
+    internal virtual ChildSemanticsConfigurationsResult _childSemanticsConfigurationsDelegate(
+        List<SemanticsConfiguration> childConfigs
+    )
     {
         var builder = new ChildSemanticsConfigurationsResultBuilder();
         var placeholderIndex = 0L;
@@ -919,7 +1172,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             if (info.isPlaceholder)
             {
-                while ((childConfigsIndex < checked(childConfigs.Count)) && _childConfigBelongsToPlaceholder(childConfigs[(int)childConfigsIndex], placeholderIndex))
+                while (
+                    (childConfigsIndex < checked(childConfigs.Count))
+                    && _childConfigBelongsToPlaceholder(
+                        childConfigs[(int)childConfigsIndex],
+                        placeholderIndex
+                    )
+                )
                 {
                     builder.markAsMergeUp(childConfigs[(int)childConfigsIndex]);
                     childConfigsIndex += 1L;
@@ -928,7 +1187,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             }
             else
             {
-                builder.markAsMergeUp(_createSemanticsConfigForTextInfo(info, attributedLabelCacheIndex));
+                builder.markAsMergeUp(
+                    _createSemanticsConfigForTextInfo(info, attributedLabelCacheIndex)
+                );
                 attributedLabelCacheIndex += 1L;
             }
         }
@@ -936,7 +1197,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _childConfigBelongsToPlaceholder(SemanticsConfiguration childConfig, long placeholderIndex)
+    internal static bool _childConfigBelongsToPlaceholder(
+        SemanticsConfiguration childConfig,
+        long placeholderIndex
+    )
     {
         IEnumerable<SemanticsTag>? tags = childConfig.tagsForChildren;
         if (tags is null)
@@ -947,7 +1211,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             if (tag is PlaceholderSpanIndexSemanticsTag)
             {
-                PlaceholderSpanIndexSemanticsTag tag__45698__as45723 = (PlaceholderSpanIndexSemanticsTag)tag;
+                PlaceholderSpanIndexSemanticsTag tag__45698__as45723 =
+                    (PlaceholderSpanIndexSemanticsTag)tag;
                 return tag__45698__as45723.index == placeholderIndex;
             }
         }
@@ -955,10 +1220,14 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SemanticsConfiguration _createSemanticsConfigForTextInfo(InlineSpanSemanticsInformation textInfo, long cacheIndex)
+    internal virtual SemanticsConfiguration _createSemanticsConfigForTextInfo(
+        InlineSpanSemanticsInformation textInfo,
+        long cacheIndex
+    )
     {
         DartRuntimePrimitives.Assert(() => !textInfo.requiresOwnNode);
-        List<AttributedString> cachedStrings = _cachedAttributedLabels ??= new List<AttributedString>();
+        List<AttributedString> cachedStrings = _cachedAttributedLabels ??=
+            new List<AttributedString>();
         DartRuntimePrimitives.Assert(() => cacheIndex <= checked(cachedStrings.Count));
         bool hasCache = cacheIndex < checked(cachedStrings.Count);
         AttributedString attributedLabelLocal = default!;
@@ -969,22 +1238,35 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         else
         {
             DartRuntimePrimitives.Assert(() => checked(cachedStrings.Count) == cacheIndex);
-            attributedLabelLocal = new AttributedString(textInfo.semanticsLabel ?? textInfo.text, attributes: textInfo.stringAttributes);
+            attributedLabelLocal = new AttributedString(
+                textInfo.semanticsLabel ?? textInfo.text,
+                attributes: textInfo.stringAttributes
+            );
             cachedStrings.Add(attributedLabelLocal);
         }
-        return ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = new SemanticsConfiguration();
-    __cascade.textDirection = textDirection;
-    __cascade.attributedLabel = attributedLabelLocal;
-    return __cascade;
-}))();
+        return (
+            (Func<SemanticsConfiguration>)(
+                () =>
+                {
+                    var __cascade = new SemanticsConfiguration();
+                    __cascade.textDirection = textDirection;
+                    __cascade.attributedLabel = attributedLabelLocal;
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
+    public override void assembleSemanticsNode(
+        SemanticsNode node,
+        SemanticsConfiguration config,
+        IEnumerable<SemanticsNode> children
+    )
     {
-        DartRuntimePrimitives.Assert(() => (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0));
+        DartRuntimePrimitives.Assert(() =>
+            (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0)
+        );
         var newChildren = new List<SemanticsNode>();
         TextDirection currentDirection = textDirection;
         Rect currentRect = default!;
@@ -997,11 +1279,19 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         _cachedCombinedSemanticsInfos ??= Inline_spanLibrary.combineSemanticsInfo(_semanticsInfo!);
         foreach (InlineSpanSemanticsInformation info in _cachedCombinedSemanticsInfos!)
         {
-            var selection = new TextSelection(baseOffset: start, extentOffset: start + info.text.Length);
+            var selection = new TextSelection(
+                baseOffset: start,
+                extentOffset: start + info.text.Length
+            );
             start += info.text.Length;
             if (info.isPlaceholder)
             {
-                while ((children.Count() > childIndex) && children.elementAt(childIndex).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex)))
+                while (
+                    (children.Count() > childIndex)
+                    && children
+                        .elementAt(childIndex)
+                        .isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex))
+                )
                 {
                     SemanticsNode childNode = children.elementAt(childIndex);
                     var parentDataLocal = ((TextParentData?)child!.parentData!)!;
@@ -1029,77 +1319,115 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                     rectLocal = rectLocal.expandToInclude(textBox.toRect());
                     currentDirection = textBox.direction;
                 }
-                rectLocal = Rect.fromLTWH(Math.Max(0.0, rectLocal.left), Math.Max(0.0, rectLocal.top), Math.Min(rectLocal.width, constraints.maxWidth), Math.Min(rectLocal.height, constraints.maxHeight));
-                currentRect = Rect.fromLTRB(rectLocal.left.floorToDouble() - 4.0, rectLocal.top.floorToDouble() - 4.0, rectLocal.right.ceilToDouble() + 4.0, rectLocal.bottom.ceilToDouble() + 4.0);
-                var configuration = ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = new SemanticsConfiguration();
-    __cascade.sortKey = new OrdinalSortKey(ordinal++);
-    __cascade.textDirection = initialDirection;
-    __cascade.identifier = info.semanticsIdentifier ?? "";
-    __cascade.attributedLabel = new AttributedString(info.semanticsLabel ?? info.text, attributes: info.stringAttributes);
-    return __cascade;
-}))();
+                rectLocal = Rect.fromLTWH(
+                    Math.Max(0.0, rectLocal.left),
+                    Math.Max(0.0, rectLocal.top),
+                    Math.Min(rectLocal.width, constraints.maxWidth),
+                    Math.Min(rectLocal.height, constraints.maxHeight)
+                );
+                currentRect = Rect.fromLTRB(
+                    rectLocal.left.floorToDouble() - 4.0,
+                    rectLocal.top.floorToDouble() - 4.0,
+                    rectLocal.right.ceilToDouble() + 4.0,
+                    rectLocal.bottom.ceilToDouble() + 4.0
+                );
+                var configuration = (
+                    (Func<SemanticsConfiguration>)(
+                        () =>
+                        {
+                            var __cascade = new SemanticsConfiguration();
+                            __cascade.sortKey = new OrdinalSortKey(ordinal++);
+                            __cascade.textDirection = initialDirection;
+                            __cascade.identifier = info.semanticsIdentifier ?? "";
+                            __cascade.attributedLabel = new AttributedString(
+                                info.semanticsLabel ?? info.text,
+                                attributes: info.stringAttributes
+                            );
+                            return __cascade;
+                        }
+                    )
+                )();
                 switch (info.recognizer)
                 {
                     case TapGestureRecognizer { onTap: Action handler } __object50228:
+                    {
+                        if (handler is not null)
                         {
-                            if (handler is not null)
-                            {
-                                configuration.onTap = handler;
-                                configuration.isLink = true;
-                            }
-                            break;
+                            configuration.onTap = handler;
+                            configuration.isLink = true;
                         }
-                    case DoubleTapGestureRecognizer { onDoubleTap: Action handlerLocal } __object50301:
+                        break;
+                    }
+                    case DoubleTapGestureRecognizer
+                    {
+                        onDoubleTap: Action handlerLocal
+                    } __object50301:
+                    {
+                        if (handlerLocal is not null)
                         {
-                            if (handlerLocal is not null)
-                            {
-                                configuration.onTap = handlerLocal;
-                                configuration.isLink = true;
-                            }
-                            break;
+                            configuration.onTap = handlerLocal;
+                            configuration.isLink = true;
                         }
-                    case LongPressGestureRecognizer { onLongPress: Action onLongPressLocal } __object50523:
+                        break;
+                    }
+                    case LongPressGestureRecognizer
+                    {
+                        onLongPress: Action onLongPressLocal
+                    } __object50523:
+                    {
+                        if (onLongPressLocal is not null)
                         {
-                            if (onLongPressLocal is not null)
-                            {
-                                configuration.onLongPress = onLongPressLocal;
-                            }
-                            break;
+                            configuration.onLongPress = onLongPressLocal;
                         }
+                        break;
+                    }
                     case null:
-                        {
-                            break;
-                        }
+                    {
+                        break;
+                    }
                     default:
-                        {
-                            DartRuntimePrimitives.Assert(() => false);
-                            break;
-                        }
+                    {
+                        DartRuntimePrimitives.Assert(() => false);
+                        break;
+                    }
                 }
                 if (node.parentPaintClipRect is not null)
                 {
-                    Rect paintRect = DartRuntimePrimitives.RequireValue(node.parentPaintClipRect).intersect(currentRect);
+                    Rect paintRect = DartRuntimePrimitives
+                        .RequireValue(node.parentPaintClipRect)
+                        .intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
                 }
                 SemanticsNode newChild = default!;
-                if ((((long?)(_cachedChildNodes?.Count)) is { } __count51134 ? __count51134 != 0 : (bool?)null) ?? false)
+                if (
+                    (
+                        ((long?)(_cachedChildNodes?.Count)) is { } __count51134
+                            ? __count51134 != 0
+                            : (bool?)null
+                    ) ?? false
+                )
                 {
                     newChild = _cachedChildNodes!.remove(_cachedChildNodes!.Keys.First())!;
                 }
                 else
                 {
                     var keyLocal = new UniqueKey();
-                    newChild = new SemanticsNode(key: keyLocal, showOnScreen: _createShowOnScreenFor(keyLocal));
+                    newChild = new SemanticsNode(
+                        key: keyLocal,
+                        showOnScreen: _createShowOnScreenFor(keyLocal)
+                    );
                 }
-                ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = newChild;
-    __cascade.updateWith(config: configuration);
-    __cascade.rect = currentRect;
-    return __cascade;
-}))();
+                (
+                    (Func<SemanticsNode>)(
+                        () =>
+                        {
+                            var __cascade = newChild;
+                            __cascade.updateWith(config: configuration);
+                            __cascade.rect = currentRect;
+                            return __cascade;
+                        }
+                    )
+                )();
                 newChildCache[newChild.key!] = newChild;
                 newChildren.Add(newChild);
             }
@@ -1128,7 +1456,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return new List<DiagnosticsNode> { ((Diagnosticable)text).toDiagnosticsNode(name: "text", style: DiagnosticsTreeStyle.transition) };
+        return new List<DiagnosticsNode>
+        {
+            ((Diagnosticable)text).toDiagnosticsNode(
+                name: "text",
+                style: DiagnosticsTreeStyle.transition
+            ),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1137,9 +1471,23 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<TextAlign>("textAlign", textAlign));
         properties.add(new EnumProperty<TextDirection>("textDirection", textDirection));
-        properties.add(new FlagProperty("softWrap", value: softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(
+            new FlagProperty(
+                "softWrap",
+                value: softWrap,
+                ifTrue: "wrapping at box width",
+                ifFalse: "no wrapping except at line break characters",
+                showName: true
+            )
+        );
         properties.add(new EnumProperty<TextOverflow>("overflow", overflow));
-        properties.add(new DiagnosticsProperty<TextScaler>("textScaler", textScaler, defaultValue: TextScaler.noScaling));
+        properties.add(
+            new DiagnosticsProperty<TextScaler>(
+                "textScaler",
+                textScaler,
+                defaultValue: TextScaler.noScaling
+            )
+        );
         properties.add(new DiagnosticsProperty<Locale>("locale", locale, defaultValue: null));
         properties.add(new IntProperty("maxLines", maxLines, ifNull: "unlimited"));
         properties.add(new DoubleProperty("devicePixelRatio", devicePixelRatio, defaultValue: 1.0));
@@ -1172,16 +1520,44 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
 
     public virtual long childCount => _childCount;
+
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1208,8 +1584,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             DartRuntimePrimitives.Assert(() => _firstChild is not null);
             DartRuntimePrimitives.Assert(() => _lastChild is not null);
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimatePreviousSiblingOf(after, equals: _firstChild)
+            );
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimateNextSiblingOf(after, equals: _lastChild)
+            );
             var afterParentData = ((TextParentData?)after.parentData!)!;
             if (afterParentData.nextSibling is null)
             {
@@ -1222,8 +1602,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = (
+                    (TextParentData?)childParentData.previousSibling!.parentData!
+                )!;
+                var childNextSiblingParentData = (
+                    (TextParentData?)childParentData.nextSibling!.parentData!
+                )!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
                 DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
@@ -1256,7 +1640,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((TextParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() =>
+            _debugUltimatePreviousSiblingOf(child, equals: _firstChild)
+        );
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
         DartRuntimePrimitives.Assert(() => _childCount >= 0L);
         if (childParentData.previousSibling is null)
@@ -1266,7 +1652,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         else
         {
-            var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = (
+                (TextParentData?)childParentData.previousSibling!.parentData!
+            )!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if (childParentData.nextSibling is null)
@@ -1276,7 +1664,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         else
         {
-            var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = (
+                (TextParentData?)childParentData.nextSibling!.parentData!
+            )!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -1371,6 +1761,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual RenderBox? firstChild => _firstChild;
     public virtual RenderBox? lastChild => _lastChild;
+
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
@@ -1396,7 +1787,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
     }
 
-    public virtual List<PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
+    public virtual List<PlaceholderDimensions> layoutInlineChildren(
+        double maxWidth,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline
+    )
     {
         var constraints = new BoxConstraints(maxWidth: maxWidth);
         return new List<PlaceholderDimensions>();
@@ -1411,9 +1806,30 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             if (child is null)
             {
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Invalid number of boxes provided to positionInlineChildren."), new ErrorDescription($"The number of boxes ({checked((long)boxes.Count)}) exceeds the number of child render objects ({childCount}). " + "Each box corresponds to a child, but there are not enough children to position all boxes."), new ErrorHint("This error typically occurs when a custom InlineSpan implementation returns a list of boxes " + "that is longer than the number of inline children. Ensure that the number of boxes returned " + "by `computeLineMetrics` or similar methods does not exceed the number of children."), new DiagnosticsProperty<RenderObject>("The RenderParagraph receiving the boxes", this, style: DiagnosticsTreeStyle.errorProperty) });
-                    });
+                {
+                    throw new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "Invalid number of boxes provided to positionInlineChildren."
+                            ),
+                            new ErrorDescription(
+                                $"The number of boxes ({checked((long)boxes.Count)}) exceeds the number of child render objects ({childCount}). "
+                                    + "Each box corresponds to a child, but there are not enough children to position all boxes."
+                            ),
+                            new ErrorHint(
+                                "This error typically occurs when a custom InlineSpan implementation returns a list of boxes "
+                                    + "that is longer than the number of inline children. Ensure that the number of boxes returned "
+                                    + "by `computeLineMetrics` or similar methods does not exceed the number of children."
+                            ),
+                            new DiagnosticsProperty<RenderObject>(
+                                "The RenderParagraph receiving the boxes",
+                                this,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    );
+                });
                 return;
             }
             var textParentData = ((TextParentData?)child.parentData!)!;
@@ -1438,7 +1854,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         else
         {
-            transform.translateByDouble(DartRuntimePrimitives.RequireValue(offsetLocal).dx, DartRuntimePrimitives.RequireValue(offsetLocal).dy, 0, 1);
+            transform.translateByDouble(
+                DartRuntimePrimitives.RequireValue(offsetLocal).dx,
+                DartRuntimePrimitives.RequireValue(offsetLocal).dy,
+                0,
+                1
+            );
         }
     }
 
@@ -1469,7 +1890,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 return false;
             }
-            bool isHit = result.addWithPaintOffset(offset: DartRuntimePrimitives.RequireValue(childOffset), position: position, hitTest: (result, transformed) => child!.hitTest(result, position: transformed));
+            bool isHit = result.addWithPaintOffset(
+                offset: DartRuntimePrimitives.RequireValue(childOffset),
+                position: position,
+                hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
+            );
             if (isHit)
             {
                 return true;
@@ -1487,21 +1912,26 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             return;
         }
         _hasPendingSystemFontsDidChangeCallBack = true;
-        SchedulerBinding.instance.scheduleFrameCallback((timeStamp) =>
-        {
-            DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
-            _hasPendingSystemFontsDidChangeCallBack = false;
-            DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true));
-            if (attached)
+        SchedulerBinding.instance.scheduleFrameCallback(
+            (timeStamp) =>
             {
-                systemFontsDidChange();
+                DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
+                _hasPendingSystemFontsDidChangeCallBack = false;
+                DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true));
+                if (attached)
+                {
+                    systemFontsDidChange();
+                }
             }
-        });
+        );
     }
-
 }
 
-internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diagnosticable, TextLayoutMetrics
+internal class _SelectableFragment__paragraph
+    : ChangeNotifier,
+        Selectable,
+        Diagnosticable,
+        TextLayoutMetrics
 {
     public virtual TextRange range { get; private set; } = default!;
     public virtual RenderParagraph paragraph { get; private set; } = default!;
@@ -1512,12 +1942,18 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual LayerLink? _startHandleLayerLink { get; set; } = default;
     internal virtual LayerLink? _endHandleLayerLink { get; set; } = default;
     internal virtual SelectionGeometry _selectionGeometry { get; set; } = default!;
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)PlaceholderSpan.placeholderCodeUnit));
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(
+        checked((int)PlaceholderSpan.placeholderCodeUnit)
+    );
     internal static long _placeholderLength = _placeholderCharacter.Length;
     internal virtual List<Rect>? _cachedBoundingBoxes { get; set; } = default;
     internal virtual Rect? _cachedRect { get; set; } = default;
 
-    internal _SelectableFragment__paragraph(RenderParagraph paragraph, string fullText, TextRange range)
+    internal _SelectableFragment__paragraph(
+        RenderParagraph paragraph,
+        string fullText,
+        TextRange range
+    )
     {
         this.paragraph = paragraph;
         this.fullText = fullText;
@@ -1526,6 +1962,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     }
 
     public virtual SelectionGeometry value => _selectionGeometry;
+
     internal virtual void _updateSelectionGeometry()
     {
         SelectionGeometry newValue = _getSelectionGeometry();
@@ -1546,8 +1983,13 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         long selectionStart = _textSelectionStart!.offset;
         long selectionEnd = _textSelectionEnd!.offset;
         bool isReversed = selectionStart > selectionEnd;
-        Offset startOffsetInParagraphCoordinates = paragraph._getOffsetForPosition(_textSelectionStart!);
-        Offset endOffsetInParagraphCoordinates = (selectionStart == selectionEnd) ? startOffsetInParagraphCoordinates : paragraph._getOffsetForPosition(_textSelectionEnd!);
+        Offset startOffsetInParagraphCoordinates = paragraph._getOffsetForPosition(
+            _textSelectionStart!
+        );
+        Offset endOffsetInParagraphCoordinates =
+            (selectionStart == selectionEnd)
+                ? startOffsetInParagraphCoordinates
+                : paragraph._getOffsetForPosition(_textSelectionEnd!);
         var flipHandles = isReversed != Equals(TextDirection.rtl, paragraph.textDirection);
         var selection = new TextSelection(baseOffset: selectionStart, extentOffset: selectionEnd);
         var selectionRectsLocal = new List<Rect>();
@@ -1556,8 +1998,30 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             selectionRectsLocal.Add(textBox.toRect());
         }
         var selectionCollapsed = selectionStart == selectionEnd;
-        var (startSelectionHandleType, endSelectionHandleType) = (selectionCollapsed, flipHandles) switch { (true, _) => (TextSelectionHandleType.collapsed, TextSelectionHandleType.collapsed), (false, true) => (TextSelectionHandleType.right, TextSelectionHandleType.left), (false, false) => (TextSelectionHandleType.left, TextSelectionHandleType.right) };
-        return new SelectionGeometry(startSelectionPoint: new SelectionPoint(localPosition: startOffsetInParagraphCoordinates, lineHeight: paragraph._textPainter.preferredLineHeight, handleType: startSelectionHandleType), endSelectionPoint: new SelectionPoint(localPosition: endOffsetInParagraphCoordinates, lineHeight: paragraph._textPainter.preferredLineHeight, handleType: endSelectionHandleType), selectionRects: selectionRectsLocal, status: selectionCollapsed ? SelectionStatus.collapsed : SelectionStatus.uncollapsed, hasContent: true);
+        var (startSelectionHandleType, endSelectionHandleType) = (
+            selectionCollapsed,
+            flipHandles
+        ) switch
+        {
+            (true, _) => (TextSelectionHandleType.collapsed, TextSelectionHandleType.collapsed),
+            (false, true) => (TextSelectionHandleType.right, TextSelectionHandleType.left),
+            (false, false) => (TextSelectionHandleType.left, TextSelectionHandleType.right),
+        };
+        return new SelectionGeometry(
+            startSelectionPoint: new SelectionPoint(
+                localPosition: startOffsetInParagraphCoordinates,
+                lineHeight: paragraph._textPainter.preferredLineHeight,
+                handleType: startSelectionHandleType
+            ),
+            endSelectionPoint: new SelectionPoint(
+                localPosition: endOffsetInParagraphCoordinates,
+                lineHeight: paragraph._textPainter.preferredLineHeight,
+                handleType: endSelectionHandleType
+            ),
+            selectionRects: selectionRectsLocal,
+            status: selectionCollapsed ? SelectionStatus.collapsed : SelectionStatus.uncollapsed,
+            hasContent: true
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1570,80 +2034,105 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             case SelectionEventType.startEdgeUpdate:
             case SelectionEventType.endEdgeUpdate:
+            {
+                var edgeUpdate = ((SelectionEdgeUpdateEvent?)@event)!;
+                TextGranularity granularityLocal = ((SelectionEdgeUpdateEvent)@event).granularity;
+                switch (granularityLocal)
                 {
-                    var edgeUpdate = ((SelectionEdgeUpdateEvent?)@event)!;
-                    TextGranularity granularityLocal = ((SelectionEdgeUpdateEvent)@event).granularity;
-                    switch (granularityLocal)
+                    case TextGranularity.character:
                     {
-                        case TextGranularity.character:
-                            {
-                                result = _updateSelectionEdge(edgeUpdate.globalPosition, isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate));
-                                break;
-                            }
-                        case TextGranularity.word:
-                            {
-                                result = _updateSelectionEdgeByTextBoundary(edgeUpdate.globalPosition, isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate), getTextBoundary: _getWordBoundaryAtPosition);
-                                break;
-                            }
-                        case TextGranularity.paragraph:
-                            {
-                                result = _updateSelectionEdgeByMultiSelectableTextBoundary(edgeUpdate.globalPosition, isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate), getTextBoundary: _getParagraphBoundaryAtPosition, getClampedTextBoundary: _getClampedParagraphBoundaryAtPosition);
-                                break;
-                            }
-                        case TextGranularity.document:
-                        case TextGranularity.line:
-                            {
-                                DartRuntimePrimitives.Assert(() => false);
-                                break;
-                            }
+                        result = _updateSelectionEdge(
+                            edgeUpdate.globalPosition,
+                            isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)
+                        );
+                        break;
                     }
-                    break;
+                    case TextGranularity.word:
+                    {
+                        result = _updateSelectionEdgeByTextBoundary(
+                            edgeUpdate.globalPosition,
+                            isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate),
+                            getTextBoundary: _getWordBoundaryAtPosition
+                        );
+                        break;
+                    }
+                    case TextGranularity.paragraph:
+                    {
+                        result = _updateSelectionEdgeByMultiSelectableTextBoundary(
+                            edgeUpdate.globalPosition,
+                            isEnd: Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate),
+                            getTextBoundary: _getParagraphBoundaryAtPosition,
+                            getClampedTextBoundary: _getClampedParagraphBoundaryAtPosition
+                        );
+                        break;
+                    }
+                    case TextGranularity.document:
+                    case TextGranularity.line:
+                    {
+                        DartRuntimePrimitives.Assert(() => false);
+                        break;
+                    }
                 }
+                break;
+            }
             case SelectionEventType.clear:
-                {
-                    result = _handleClearSelection();
-                    break;
-                }
+            {
+                result = _handleClearSelection();
+                break;
+            }
             case SelectionEventType.selectAll:
-                {
-                    result = _handleSelectAll();
-                    break;
-                }
+            {
+                result = _handleSelectAll();
+                break;
+            }
             case SelectionEventType.selectWord:
-                {
-                    var selectWordLocal = ((SelectWordSelectionEvent?)@event)!;
-                    result = _handleSelectWord(selectWordLocal.globalPosition);
-                    break;
-                }
+            {
+                var selectWordLocal = ((SelectWordSelectionEvent?)@event)!;
+                result = _handleSelectWord(selectWordLocal.globalPosition);
+                break;
+            }
             case SelectionEventType.selectParagraph:
+            {
+                var selectParagraphLocal = ((SelectParagraphSelectionEvent?)@event)!;
+                if (selectParagraphLocal.absorb)
                 {
-                    var selectParagraphLocal = ((SelectParagraphSelectionEvent?)@event)!;
-                    if (selectParagraphLocal.absorb)
-                    {
-                        _handleSelectAll();
-                        result = SelectionResult.next;
-                        _selectableContainsOriginTextBoundary = true;
-                    }
-                    else
-                    {
-                        result = _handleSelectParagraph(selectParagraphLocal.globalPosition);
-                    }
-                    break;
+                    _handleSelectAll();
+                    result = SelectionResult.next;
+                    _selectableContainsOriginTextBoundary = true;
                 }
+                else
+                {
+                    result = _handleSelectParagraph(selectParagraphLocal.globalPosition);
+                }
+                break;
+            }
             case SelectionEventType.granularlyExtendSelection:
-                {
-                    var granularlyExtendSelectionLocal = ((GranularlyExtendSelectionEvent?)@event)!;
-                    result = _handleGranularlyExtendSelection(granularlyExtendSelectionLocal.forward, granularlyExtendSelectionLocal.isEnd, granularlyExtendSelectionLocal.granularity);
-                    break;
-                }
+            {
+                var granularlyExtendSelectionLocal = ((GranularlyExtendSelectionEvent?)@event)!;
+                result = _handleGranularlyExtendSelection(
+                    granularlyExtendSelectionLocal.forward,
+                    granularlyExtendSelectionLocal.isEnd,
+                    granularlyExtendSelectionLocal.granularity
+                );
+                break;
+            }
             case SelectionEventType.directionallyExtendSelection:
-                {
-                    var directionallyExtendSelectionLocal = ((DirectionallyExtendSelectionEvent?)@event)!;
-                    result = _handleDirectionallyExtendSelection(directionallyExtendSelectionLocal.dx, directionallyExtendSelectionLocal.isEnd, directionallyExtendSelectionLocal.direction);
-                    break;
-                }
+            {
+                var directionallyExtendSelectionLocal = (
+                    (DirectionallyExtendSelectionEvent?)@event
+                )!;
+                result = _handleDirectionallyExtendSelection(
+                    directionallyExtendSelectionLocal.dx,
+                    directionallyExtendSelectionLocal.isEnd,
+                    directionallyExtendSelectionLocal.direction
+                );
+                break;
+            }
         }
-        if ((!Equals(existingSelectionStart, _textSelectionStart)) || (!Equals(existingSelectionEnd, _textSelectionEnd)))
+        if (
+            (!Equals(existingSelectionStart, _textSelectionStart))
+            || (!Equals(existingSelectionEnd, _textSelectionEnd))
+        )
         {
             _didChangeSelection();
         }
@@ -1669,7 +2158,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             return null;
         }
-        return new SelectedContentRange(startOffset: _textSelectionStart!.offset, endOffset: _textSelectionEnd!.offset);
+        return new SelectedContentRange(
+            startOffset: _textSelectionStart!.offset,
+            endOffset: _textSelectionEnd!.offset
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1679,43 +2171,84 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         _updateSelectionGeometry();
     }
 
-    internal virtual TextPosition _updateSelectionStartEdgeByTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual TextPosition _updateSelectionStartEdgeByTextBoundary(
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary,
+        Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         TextPosition? targetPosition = default!;
         if (textBoundary is not null)
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 = DartRuntimePrimitives.RequireValue(textBoundary);
-            DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart.offset >= range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd.offset <= range.end));
-            if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 =
+                DartRuntimePrimitives.RequireValue(textBoundary);
+            DartRuntimePrimitives.Assert(() =>
+                (
+                    DartRuntimePrimitives
+                        .RequireValue(textBoundary__value61232)
+                        .boundaryStart.offset >= range.start
+                )
+                && (
+                    DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd.offset
+                    <= range.end
+                )
+            );
+            if (
+                _selectableContainsOriginTextBoundary
+                && (existingSelectionStart is not null)
+                && (existingSelectionEnd is not null)
+            )
             {
                 var isSamePosition = position.offset == existingSelectionEnd.offset;
-                bool isSelectionInverted = existingSelectionStart.offset > existingSelectionEnd.offset;
-                bool shouldSwapEdges = !isSamePosition && isSelectionInverted != position.offset > existingSelectionEnd.offset;
+                bool isSelectionInverted =
+                    existingSelectionStart.offset > existingSelectionEnd.offset;
+                bool shouldSwapEdges =
+                    !isSamePosition
+                    && isSelectionInverted != (position.offset > existingSelectionEnd.offset);
                 if (shouldSwapEdges)
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value61232)
+                            .boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value61232)
+                            .boundaryEnd;
                     }
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary = getTextBoundary(existingSelectionEnd);
-                    DartRuntimePrimitives.Assert(() => (localTextBoundary.boundaryStart.offset >= range.start) && (localTextBoundary.boundaryEnd.offset <= range.end));
-                    _setSelectionPosition((existingSelectionEnd.offset == localTextBoundary.boundaryStart.offset) ? localTextBoundary.boundaryEnd : localTextBoundary.boundaryStart, isEnd: true);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary =
+                        getTextBoundary(existingSelectionEnd);
+                    DartRuntimePrimitives.Assert(() =>
+                        (localTextBoundary.boundaryStart.offset >= range.start)
+                        && (localTextBoundary.boundaryEnd.offset <= range.end)
+                    );
+                    _setSelectionPosition(
+                        (existingSelectionEnd.offset == localTextBoundary.boundaryStart.offset)
+                            ? localTextBoundary.boundaryEnd
+                            : localTextBoundary.boundaryStart,
+                        isEnd: true
+                    );
                 }
                 else
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value61232)
+                            .boundaryStart;
                     }
                     else
                     {
                         if (position.offset > existingSelectionEnd.offset)
                         {
-                            targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                            targetPosition = DartRuntimePrimitives
+                                .RequireValue(textBoundary__value61232)
+                                .boundaryEnd;
                         }
                         else
                         {
@@ -1730,31 +2263,56 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value61232)
+                            .boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value61232)
+                            .boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value61232)), position);
+                    targetPosition = _closestTextBoundary(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(textBoundary__value61232)
+                        ),
+                        position
+                    );
                 }
             }
         }
         else
         {
-            if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+            if (
+                _selectableContainsOriginTextBoundary
+                && (existingSelectionStart is not null)
+                && (existingSelectionEnd is not null)
+            )
             {
                 var isSamePositionLocal = position.offset == existingSelectionEnd.offset;
-                bool isSelectionInvertedLocal = existingSelectionStart.offset > existingSelectionEnd.offset;
-                bool shouldSwapEdgesLocal = !isSamePositionLocal && isSelectionInvertedLocal != position.offset > existingSelectionEnd.offset;
+                bool isSelectionInvertedLocal =
+                    existingSelectionStart.offset > existingSelectionEnd.offset;
+                bool shouldSwapEdgesLocal =
+                    !isSamePositionLocal
+                    && isSelectionInvertedLocal != (position.offset > existingSelectionEnd.offset);
                 if (shouldSwapEdgesLocal)
                 {
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal = getTextBoundary(existingSelectionEnd);
-                    DartRuntimePrimitives.Assert(() => (localTextBoundaryLocal.boundaryStart.offset >= range.start) && (localTextBoundaryLocal.boundaryEnd.offset <= range.end));
-                    _setSelectionPosition(isSelectionInvertedLocal ? localTextBoundaryLocal.boundaryEnd : localTextBoundaryLocal.boundaryStart, isEnd: true);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal =
+                        getTextBoundary(existingSelectionEnd);
+                    DartRuntimePrimitives.Assert(() =>
+                        (localTextBoundaryLocal.boundaryStart.offset >= range.start)
+                        && (localTextBoundaryLocal.boundaryEnd.offset <= range.end)
+                    );
+                    _setSelectionPosition(
+                        isSelectionInvertedLocal
+                            ? localTextBoundaryLocal.boundaryEnd
+                            : localTextBoundaryLocal.boundaryStart,
+                        isEnd: true
+                    );
                 }
             }
         }
@@ -1762,43 +2320,84 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextPosition _updateSelectionEndEdgeByTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual TextPosition _updateSelectionEndEdgeByTextBoundary(
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary,
+        Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         TextPosition? targetPosition = default!;
         if (textBoundary is not null)
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 = DartRuntimePrimitives.RequireValue(textBoundary);
-            DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart.offset >= range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd.offset <= range.end));
-            if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 =
+                DartRuntimePrimitives.RequireValue(textBoundary);
+            DartRuntimePrimitives.Assert(() =>
+                (
+                    DartRuntimePrimitives
+                        .RequireValue(textBoundary__value65725)
+                        .boundaryStart.offset >= range.start
+                )
+                && (
+                    DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd.offset
+                    <= range.end
+                )
+            );
+            if (
+                _selectableContainsOriginTextBoundary
+                && (existingSelectionStart is not null)
+                && (existingSelectionEnd is not null)
+            )
             {
                 var isSamePosition = position.offset == existingSelectionStart.offset;
-                bool isSelectionInverted = existingSelectionStart.offset > existingSelectionEnd.offset;
-                bool shouldSwapEdges = !isSamePosition && isSelectionInverted != position.offset < existingSelectionStart.offset;
+                bool isSelectionInverted =
+                    existingSelectionStart.offset > existingSelectionEnd.offset;
+                bool shouldSwapEdges =
+                    !isSamePosition
+                    && isSelectionInverted != (position.offset < existingSelectionStart.offset);
                 if (shouldSwapEdges)
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value65725)
+                            .boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value65725)
+                            .boundaryEnd;
                     }
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary = getTextBoundary(existingSelectionStart);
-                    DartRuntimePrimitives.Assert(() => (localTextBoundary.boundaryStart.offset >= range.start) && (localTextBoundary.boundaryEnd.offset <= range.end));
-                    _setSelectionPosition((existingSelectionStart.offset == localTextBoundary.boundaryStart.offset) ? localTextBoundary.boundaryEnd : localTextBoundary.boundaryStart, isEnd: false);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary =
+                        getTextBoundary(existingSelectionStart);
+                    DartRuntimePrimitives.Assert(() =>
+                        (localTextBoundary.boundaryStart.offset >= range.start)
+                        && (localTextBoundary.boundaryEnd.offset <= range.end)
+                    );
+                    _setSelectionPosition(
+                        (existingSelectionStart.offset == localTextBoundary.boundaryStart.offset)
+                            ? localTextBoundary.boundaryEnd
+                            : localTextBoundary.boundaryStart,
+                        isEnd: false
+                    );
                 }
                 else
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value65725)
+                            .boundaryStart;
                     }
                     else
                     {
                         if (position.offset > existingSelectionStart.offset)
                         {
-                            targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                            targetPosition = DartRuntimePrimitives
+                                .RequireValue(textBoundary__value65725)
+                                .boundaryEnd;
                         }
                         else
                         {
@@ -1813,31 +2412,56 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value65725)
+                            .boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives
+                            .RequireValue(textBoundary__value65725)
+                            .boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value65725)), position);
+                    targetPosition = _closestTextBoundary(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(textBoundary__value65725)
+                        ),
+                        position
+                    );
                 }
             }
         }
         else
         {
-            if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+            if (
+                _selectableContainsOriginTextBoundary
+                && (existingSelectionStart is not null)
+                && (existingSelectionEnd is not null)
+            )
             {
                 var isSamePositionLocal = position.offset == existingSelectionStart.offset;
-                bool isSelectionInvertedLocal = existingSelectionStart.offset > existingSelectionEnd.offset;
-                bool shouldSwapEdgesLocal = (isSelectionInvertedLocal != position.offset < existingSelectionStart.offset) || isSamePositionLocal;
+                bool isSelectionInvertedLocal =
+                    existingSelectionStart.offset > existingSelectionEnd.offset;
+                bool shouldSwapEdgesLocal =
+                    (isSelectionInvertedLocal != (position.offset < existingSelectionStart.offset))
+                    || isSamePositionLocal;
                 if (shouldSwapEdgesLocal)
                 {
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal = getTextBoundary(existingSelectionStart);
-                    DartRuntimePrimitives.Assert(() => (localTextBoundaryLocal.boundaryStart.offset >= range.start) && (localTextBoundaryLocal.boundaryEnd.offset <= range.end));
-                    _setSelectionPosition(isSelectionInvertedLocal ? localTextBoundaryLocal.boundaryStart : localTextBoundaryLocal.boundaryEnd, isEnd: false);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal =
+                        getTextBoundary(existingSelectionStart);
+                    DartRuntimePrimitives.Assert(() =>
+                        (localTextBoundaryLocal.boundaryStart.offset >= range.start)
+                        && (localTextBoundaryLocal.boundaryEnd.offset <= range.end)
+                    );
+                    _setSelectionPosition(
+                        isSelectionInvertedLocal
+                            ? localTextBoundaryLocal.boundaryStart
+                            : localTextBoundaryLocal.boundaryEnd,
+                        isEnd: false
+                    );
                 }
             }
         }
@@ -1845,7 +2469,11 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _updateSelectionEdgeByTextBoundary(Offset globalPosition, bool isEnd, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary)
+    internal virtual SelectionResult _updateSelectionEdgeByTextBoundary(
+        Offset globalPosition,
+        bool isEnd,
+        Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary
+    )
     {
         TextPosition? existingSelectionStart = _textSelectionStart;
         TextPosition? existingSelectionEnd = _textSelectionEnd;
@@ -1856,18 +2484,72 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (_rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-            _setSelectionPosition(Equals(result, SelectionResult.next) ? new TextPosition(offset: range.end) : new TextPosition(offset: range.start, affinity: TextAffinity.upstream), isEnd: isEnd);
+            _setSelectionPosition(
+                Equals(result, SelectionResult.next)
+                    ? new TextPosition(offset: range.end)
+                    : new TextPosition(offset: range.start, affinity: TextAffinity.upstream),
+                isEnd: isEnd
+            );
             return result;
         }
-        Offset adjustedOffset = SelectionUtils.adjustDragOffset(_rect, localPosition, direction: paragraph.textDirection);
+        Offset adjustedOffset = SelectionUtils.adjustDragOffset(
+            _rect,
+            localPosition,
+            direction: paragraph.textDirection
+        );
         TextPosition position = paragraph.getPositionForOffset(adjustedOffset);
-        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary = _rect.contains(localPosition) ? getTextBoundary(position) : null;
-        if ((textBoundary is not null) && (((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset <= range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset >= range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end))))
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary = _rect.contains(
+            localPosition
+        )
+            ? getTextBoundary(position)
+            : null;
+        if (
+            (textBoundary is not null)
+            && (
+                (
+                    (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
+                        < range.start
+                    )
+                    && (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+                        <= range.start
+                    )
+                )
+                || (
+                    (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
+                        >= range.end
+                    )
+                    && (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+                        > range.end
+                    )
+                )
+            )
+        )
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 = DartRuntimePrimitives.RequireValue(textBoundary);
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 =
+                DartRuntimePrimitives.RequireValue(textBoundary);
             textBoundary = null;
         }
-        TextPosition targetPosition = _clampTextPosition(isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary, getTextBoundary, position, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByTextBoundary(textBoundary, getTextBoundary, position, existingSelectionStart, existingSelectionEnd));
+        TextPosition targetPosition = _clampTextPosition(
+            isEnd
+                ? _updateSelectionEndEdgeByTextBoundary(
+                    textBoundary,
+                    getTextBoundary,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+                : _updateSelectionStartEdgeByTextBoundary(
+                    textBoundary,
+                    getTextBoundary,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+        );
         _setSelectionPosition(targetPosition, isEnd: isEnd);
         if (targetPosition.offset == range.end)
         {
@@ -1890,10 +2572,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (_rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-            _setSelectionPosition(Equals(result, SelectionResult.next) ? new TextPosition(offset: range.end) : new TextPosition(offset: range.start, affinity: TextAffinity.upstream), isEnd: isEnd);
+            _setSelectionPosition(
+                Equals(result, SelectionResult.next)
+                    ? new TextPosition(offset: range.end)
+                    : new TextPosition(offset: range.start, affinity: TextAffinity.upstream),
+                isEnd: isEnd
+            );
             return result;
         }
-        Offset adjustedOffset = SelectionUtils.adjustDragOffset(_rect, localPosition, direction: paragraph.textDirection);
+        Offset adjustedOffset = SelectionUtils.adjustDragOffset(
+            _rect,
+            localPosition,
+            direction: paragraph.textDirection
+        );
         TextPosition position = _clampTextPosition(paragraph.getPositionForOffset(adjustedOffset));
         _setSelectionPosition(position, isEnd: isEnd);
         if (position.offset == range.end)
@@ -1908,19 +2599,45 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult? _updateSelectionStartEdgeByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual SelectionResult? _updateSelectionStartEdgeByMultiSelectableTextBoundary(
+        Func<
+            TextPosition,
+            string,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getTextBoundary,
+        bool paragraphContainsPosition,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         var isEndLocal = false;
-        if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+        if (
+            _selectableContainsOriginTextBoundary
+            && (existingSelectionStart is not null)
+            && (existingSelectionEnd is not null)
+        )
         {
             bool forwardSelection = existingSelectionEnd.offset >= existingSelectionStart.offset;
             if (paragraphContainsPosition)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(position, fullText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(forwardSelection ? new TextPosition(offset: existingSelectionEnd.offset - 1L, affinity: existingSelectionEnd.affinity) : existingSelectionEnd, fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition =
+                    getTextBoundary(position, fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary =
+                    getTextBoundary(
+                        forwardSelection
+                            ? new TextPosition(
+                                offset: existingSelectionEnd.offset - 1L,
+                                affinity: existingSelectionEnd.affinity
+                            )
+                            : existingSelectionEnd,
+                        fullText
+                    );
                 TextPosition targetPosition = default!;
-                long pivotOffset = forwardSelection ? originTextBoundary.boundaryEnd.offset : originTextBoundary.boundaryStart.offset;
-                var shouldSwapEdges = !forwardSelection != position.offset > pivotOffset;
+                long pivotOffset = forwardSelection
+                    ? originTextBoundary.boundaryEnd.offset
+                    : originTextBoundary.boundaryStart.offset;
+                var shouldSwapEdges = !forwardSelection != (position.offset > pivotOffset);
                 if (position.offset < pivotOffset)
                 {
                     targetPosition = boundaryAtPosition.boundaryStart;
@@ -1933,41 +2650,69 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                     }
                     else
                     {
-                        targetPosition = forwardSelection ? existingSelectionStart : existingSelectionEnd;
+                        targetPosition = forwardSelection
+                            ? existingSelectionStart
+                            : existingSelectionEnd;
                     }
                 }
                 if (shouldSwapEdges)
                 {
-                    _setSelectionPosition(_clampTextPosition(forwardSelection ? originTextBoundary.boundaryStart : originTextBoundary.boundaryEnd), isEnd: true);
+                    _setSelectionPosition(
+                        _clampTextPosition(
+                            forwardSelection
+                                ? originTextBoundary.boundaryStart
+                                : originTextBoundary.boundaryEnd
+                        ),
+                        isEnd: true
+                    );
                 }
                 _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
-                bool finalSelectionIsForward = _textSelectionEnd!.offset >= _textSelectionStart!.offset;
-                if ((boundaryAtPosition.boundaryStart.offset > range.end) && (boundaryAtPosition.boundaryEnd.offset > range.end))
+                bool finalSelectionIsForward =
+                    _textSelectionEnd!.offset >= _textSelectionStart!.offset;
+                if (
+                    (boundaryAtPosition.boundaryStart.offset > range.end)
+                    && (boundaryAtPosition.boundaryEnd.offset > range.end)
+                )
                 {
                     return SelectionResult.next;
                 }
-                if ((boundaryAtPosition.boundaryStart.offset < range.start) && (boundaryAtPosition.boundaryEnd.offset < range.start))
+                if (
+                    (boundaryAtPosition.boundaryStart.offset < range.start)
+                    && (boundaryAtPosition.boundaryEnd.offset < range.start)
+                )
                 {
                     return SelectionResult.previous;
                 }
                 if (finalSelectionIsForward)
                 {
-                    if (boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        >= originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.previous;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        <= originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        > originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.next;
                     }
@@ -1976,7 +2721,16 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             else
             {
                 TextPosition clampedPosition = _clampTextPosition(position);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal = getTextBoundary(forwardSelection ? new TextPosition(offset: existingSelectionEnd.offset - 1L, affinity: existingSelectionEnd.affinity) : existingSelectionEnd, fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal =
+                    getTextBoundary(
+                        forwardSelection
+                            ? new TextPosition(
+                                offset: existingSelectionEnd.offset - 1L,
+                                affinity: existingSelectionEnd.affinity
+                            )
+                            : existingSelectionEnd,
+                        fullText
+                    );
                 if (forwardSelection && (clampedPosition.offset == range.start))
                 {
                     _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
@@ -1989,13 +2743,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
                 if (forwardSelection && (clampedPosition.offset == range.end))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryStart), isEnd: true);
+                    _setSelectionPosition(
+                        _clampTextPosition(originTextBoundaryLocal.boundaryStart),
+                        isEnd: true
+                    );
                     _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
                 if (!forwardSelection && (clampedPosition.offset == range.start))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryEnd), isEnd: true);
+                    _setSelectionPosition(
+                        _clampTextPosition(originTextBoundaryLocal.boundaryEnd),
+                        isEnd: true
+                    );
                     _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
@@ -2003,21 +2763,41 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         else
         {
-            var positionOnPlaceholder = paragraph.getWordBoundary(position).textInside(fullText) == _placeholderCharacter;
+            var positionOnPlaceholder =
+                paragraph.getWordBoundary(position).textInside(fullText) == _placeholderCharacter;
             if (!paragraphContainsPosition || positionOnPlaceholder)
             {
                 return null;
             }
             if (existingSelectionEnd is not null)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, fullText);
-                bool backwardSelection = ((existingSelectionStart is null) && (existingSelectionEnd.offset == range.start)) || (Equals(existingSelectionStart, existingSelectionEnd) && (existingSelectionEnd.offset == range.start)) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset));
-                if ((boundaryAtPositionLocal.boundaryStart.offset < range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < range.start))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal =
+                    getTextBoundary(position, fullText);
+                bool backwardSelection =
+                    (
+                        (existingSelectionStart is null)
+                        && (existingSelectionEnd.offset == range.start)
+                    )
+                    || (
+                        Equals(existingSelectionStart, existingSelectionEnd)
+                        && (existingSelectionEnd.offset == range.start)
+                    )
+                    || (
+                        (existingSelectionStart is not null)
+                        && (existingSelectionStart.offset > existingSelectionEnd.offset)
+                    );
+                if (
+                    (boundaryAtPositionLocal.boundaryStart.offset < range.start)
+                    && (boundaryAtPositionLocal.boundaryEnd.offset < range.start)
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((boundaryAtPositionLocal.boundaryStart.offset > range.end) && (boundaryAtPositionLocal.boundaryEnd.offset > range.end))
+                if (
+                    (boundaryAtPositionLocal.boundaryStart.offset > range.end)
+                    && (boundaryAtPositionLocal.boundaryEnd.offset > range.end)
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
@@ -2026,18 +2806,27 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if (boundaryAtPositionLocal.boundaryEnd.offset <= range.end)
                     {
-                        _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryEnd), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            _clampTextPosition(boundaryAtPositionLocal.boundaryEnd),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
                     if (boundaryAtPositionLocal.boundaryEnd.offset > range.end)
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryStart), isEnd: isEndLocal);
+                    _setSelectionPosition(
+                        _clampTextPosition(boundaryAtPositionLocal.boundaryStart),
+                        isEnd: isEndLocal
+                    );
                     if (boundaryAtPositionLocal.boundaryStart.offset < range.start)
                     {
                         return SelectionResult.previous;
@@ -2053,19 +2842,45 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult? _updateSelectionEndEdgeByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual SelectionResult? _updateSelectionEndEdgeByMultiSelectableTextBoundary(
+        Func<
+            TextPosition,
+            string,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getTextBoundary,
+        bool paragraphContainsPosition,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         var isEndLocal = true;
-        if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+        if (
+            _selectableContainsOriginTextBoundary
+            && (existingSelectionStart is not null)
+            && (existingSelectionEnd is not null)
+        )
         {
             bool forwardSelection = existingSelectionEnd.offset >= existingSelectionStart.offset;
             if (paragraphContainsPosition)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(position, fullText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(forwardSelection ? existingSelectionStart : new TextPosition(offset: existingSelectionStart.offset - 1L, affinity: existingSelectionStart.affinity), fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition =
+                    getTextBoundary(position, fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary =
+                    getTextBoundary(
+                        forwardSelection
+                            ? existingSelectionStart
+                            : new TextPosition(
+                                offset: existingSelectionStart.offset - 1L,
+                                affinity: existingSelectionStart.affinity
+                            ),
+                        fullText
+                    );
                 TextPosition targetPosition = default!;
-                long pivotOffset = forwardSelection ? originTextBoundary.boundaryStart.offset : originTextBoundary.boundaryEnd.offset;
-                var shouldSwapEdges = !forwardSelection != position.offset < pivotOffset;
+                long pivotOffset = forwardSelection
+                    ? originTextBoundary.boundaryStart.offset
+                    : originTextBoundary.boundaryEnd.offset;
+                var shouldSwapEdges = !forwardSelection != (position.offset < pivotOffset);
                 if (position.offset < pivotOffset)
                 {
                     targetPosition = boundaryAtPosition.boundaryStart;
@@ -2078,41 +2893,69 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                     }
                     else
                     {
-                        targetPosition = forwardSelection ? existingSelectionEnd : existingSelectionStart;
+                        targetPosition = forwardSelection
+                            ? existingSelectionEnd
+                            : existingSelectionStart;
                     }
                 }
                 if (shouldSwapEdges)
                 {
-                    _setSelectionPosition(_clampTextPosition(forwardSelection ? originTextBoundary.boundaryEnd : originTextBoundary.boundaryStart), isEnd: false);
+                    _setSelectionPosition(
+                        _clampTextPosition(
+                            forwardSelection
+                                ? originTextBoundary.boundaryEnd
+                                : originTextBoundary.boundaryStart
+                        ),
+                        isEnd: false
+                    );
                 }
                 _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
-                bool finalSelectionIsForward = _textSelectionEnd!.offset >= _textSelectionStart!.offset;
-                if ((boundaryAtPosition.boundaryStart.offset > range.end) && (boundaryAtPosition.boundaryEnd.offset > range.end))
+                bool finalSelectionIsForward =
+                    _textSelectionEnd!.offset >= _textSelectionStart!.offset;
+                if (
+                    (boundaryAtPosition.boundaryStart.offset > range.end)
+                    && (boundaryAtPosition.boundaryEnd.offset > range.end)
+                )
                 {
                     return SelectionResult.next;
                 }
-                if ((boundaryAtPosition.boundaryStart.offset < range.start) && (boundaryAtPosition.boundaryEnd.offset < range.start))
+                if (
+                    (boundaryAtPosition.boundaryStart.offset < range.start)
+                    && (boundaryAtPosition.boundaryEnd.offset < range.start)
+                )
                 {
                     return SelectionResult.previous;
                 }
                 if (finalSelectionIsForward)
                 {
-                    if (boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        <= originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        > originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        >= originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.previous;
                     }
@@ -2121,16 +2964,31 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             else
             {
                 TextPosition clampedPosition = _clampTextPosition(position);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal = getTextBoundary(forwardSelection ? existingSelectionStart : new TextPosition(offset: existingSelectionStart.offset - 1L, affinity: existingSelectionStart.affinity), fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal =
+                    getTextBoundary(
+                        forwardSelection
+                            ? existingSelectionStart
+                            : new TextPosition(
+                                offset: existingSelectionStart.offset - 1L,
+                                affinity: existingSelectionStart.affinity
+                            ),
+                        fullText
+                    );
                 if (forwardSelection && (clampedPosition.offset == range.start))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryEnd), isEnd: false);
+                    _setSelectionPosition(
+                        _clampTextPosition(originTextBoundaryLocal.boundaryEnd),
+                        isEnd: false
+                    );
                     _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
                 if (!forwardSelection && (clampedPosition.offset == range.end))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryStart), isEnd: false);
+                    _setSelectionPosition(
+                        _clampTextPosition(originTextBoundaryLocal.boundaryStart),
+                        isEnd: false
+                    );
                     _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
@@ -2148,28 +3006,48 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         else
         {
-            var positionOnPlaceholder = paragraph.getWordBoundary(position).textInside(fullText) == _placeholderCharacter;
+            var positionOnPlaceholder =
+                paragraph.getWordBoundary(position).textInside(fullText) == _placeholderCharacter;
             if (!paragraphContainsPosition || positionOnPlaceholder)
             {
                 return null;
             }
             if (existingSelectionStart is not null)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, fullText);
-                bool backwardSelection = ((existingSelectionEnd is null) && (existingSelectionStart.offset == range.end)) || (Equals(existingSelectionStart, existingSelectionEnd) && (existingSelectionStart.offset == range.end)) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset));
-                if ((boundaryAtPositionLocal.boundaryStart.offset < range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < range.start))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal =
+                    getTextBoundary(position, fullText);
+                bool backwardSelection =
+                    ((existingSelectionEnd is null) && (existingSelectionStart.offset == range.end))
+                    || (
+                        Equals(existingSelectionStart, existingSelectionEnd)
+                        && (existingSelectionStart.offset == range.end)
+                    )
+                    || (
+                        (existingSelectionEnd is not null)
+                        && (existingSelectionStart.offset > existingSelectionEnd.offset)
+                    );
+                if (
+                    (boundaryAtPositionLocal.boundaryStart.offset < range.start)
+                    && (boundaryAtPositionLocal.boundaryEnd.offset < range.start)
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((boundaryAtPositionLocal.boundaryStart.offset > range.end) && (boundaryAtPositionLocal.boundaryEnd.offset > range.end))
+                if (
+                    (boundaryAtPositionLocal.boundaryStart.offset > range.end)
+                    && (boundaryAtPositionLocal.boundaryEnd.offset > range.end)
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
                 if (backwardSelection)
                 {
-                    _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryStart), isEnd: isEndLocal);
+                    _setSelectionPosition(
+                        _clampTextPosition(boundaryAtPositionLocal.boundaryStart),
+                        isEnd: isEndLocal
+                    );
                     if (boundaryAtPositionLocal.boundaryStart.offset < range.start)
                     {
                         return SelectionResult.previous;
@@ -2183,12 +3061,18 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if (boundaryAtPositionLocal.boundaryEnd.offset <= range.end)
                     {
-                        _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryEnd), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            _clampTextPosition(boundaryAtPositionLocal.boundaryEnd),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
                     if (boundaryAtPositionLocal.boundaryEnd.offset > range.end)
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.next;
                     }
                 }
@@ -2198,31 +3082,64 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult? _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Offset globalPosition, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual SelectionResult? _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(
+        Func<
+            TextPosition,
+            string,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getTextBoundary,
+        Offset globalPosition,
+        bool paragraphContainsPosition,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         var isEndLocal = false;
-        if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+        if (
+            _selectableContainsOriginTextBoundary
+            && (existingSelectionStart is not null)
+            && (existingSelectionEnd is not null)
+        )
         {
             bool forwardSelection = existingSelectionEnd.offset >= existingSelectionStart.offset;
             RenderParagraph originParagraph = _getOriginParagraph();
             var fragmentBelongsToOriginParagraph = Equals(originParagraph, paragraph);
             if (fragmentBelongsToOriginParagraph)
             {
-                return _updateSelectionStartEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
+                return _updateSelectionStartEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraphContainsPosition,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
             }
             Matrix4 originTransform = originParagraph.getTransformTo(null);
             originTransform.invert();
-            Offset originParagraphLocalPosition = MatrixUtils.transformPoint(originTransform, globalPosition);
-            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(originParagraphLocalPosition);
-            TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(originParagraphLocalPosition);
+            Offset originParagraphLocalPosition = MatrixUtils.transformPoint(
+                originTransform,
+                globalPosition
+            );
+            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(
+                originParagraphLocalPosition
+            );
+            TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(
+                originParagraphLocalPosition
+            );
             if (positionWithinOriginParagraph)
             {
                 string originText = originParagraph.text.toPlainText(includeSemanticsLabels: false);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(positionRelativeToOriginParagraph, originText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(_getPositionInParagraph(originParagraph), originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition =
+                    getTextBoundary(positionRelativeToOriginParagraph, originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary =
+                    getTextBoundary(_getPositionInParagraph(originParagraph), originText);
                 TextPosition targetPosition = default!;
-                long pivotOffset = forwardSelection ? originTextBoundary.boundaryEnd.offset : originTextBoundary.boundaryStart.offset;
-                var shouldSwapEdges = !forwardSelection != positionRelativeToOriginParagraph.offset > pivotOffset;
+                long pivotOffset = forwardSelection
+                    ? originTextBoundary.boundaryEnd.offset
+                    : originTextBoundary.boundaryStart.offset;
+                var shouldSwapEdges =
+                    !forwardSelection != (positionRelativeToOriginParagraph.offset > pivotOffset);
                 if (positionRelativeToOriginParagraph.offset < pivotOffset)
                 {
                     targetPosition = boundaryAtPosition.boundaryStart;
@@ -2243,35 +3160,65 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
                 }
                 _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
-                bool finalSelectionIsForward = _textSelectionEnd!.offset >= _textSelectionStart!.offset;
-                TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(originParagraph);
-                var originParagraphPlaceholderRange = new TextRange(start: originParagraphPlaceholderTextPosition.offset, end: originParagraphPlaceholderTextPosition.offset + _placeholderLength);
-                if ((boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end) && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end))
+                bool finalSelectionIsForward =
+                    _textSelectionEnd!.offset >= _textSelectionStart!.offset;
+                TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(
+                    originParagraph
+                );
+                var originParagraphPlaceholderRange = new TextRange(
+                    start: originParagraphPlaceholderTextPosition.offset,
+                    end: originParagraphPlaceholderTextPosition.offset + _placeholderLength
+                );
+                if (
+                    (boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end)
+                    && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end)
+                )
                 {
                     return SelectionResult.next;
                 }
-                if ((boundaryAtPosition.boundaryStart.offset < originParagraphPlaceholderRange.start) && (boundaryAtPosition.boundaryEnd.offset < originParagraphPlaceholderRange.start))
+                if (
+                    (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originParagraphPlaceholderRange.start
+                    )
+                    && (
+                        boundaryAtPosition.boundaryEnd.offset
+                        < originParagraphPlaceholderRange.start
+                    )
+                )
                 {
                     return SelectionResult.previous;
                 }
                 if (finalSelectionIsForward)
                 {
-                    if (boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        <= originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        > originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        >= originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.previous;
                     }
@@ -2279,27 +3226,61 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                Offset adjustedOffset = SelectionUtils.adjustDragOffset(originParagraph.paintBounds, originParagraphLocalPosition, direction: paragraph.textDirection);
-                TextPosition adjustedPositionRelativeToOriginParagraph = originParagraph.getPositionForOffset(adjustedOffset);
-                TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(originParagraph);
-                var originParagraphPlaceholderRangeLocal = new TextRange(start: originParagraphPlaceholderTextPositionLocal.offset, end: originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength);
-                if (forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start))
+                Offset adjustedOffset = SelectionUtils.adjustDragOffset(
+                    originParagraph.paintBounds,
+                    originParagraphLocalPosition,
+                    direction: paragraph.textDirection
+                );
+                TextPosition adjustedPositionRelativeToOriginParagraph =
+                    originParagraph.getPositionForOffset(adjustedOffset);
+                TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(
+                    originParagraph
+                );
+                var originParagraphPlaceholderRangeLocal = new TextRange(
+                    start: originParagraphPlaceholderTextPositionLocal.offset,
+                    end: originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength
+                );
+                if (
+                    forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        <= originParagraphPlaceholderRangeLocal.start
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end))
+                if (
+                    !forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        >= originParagraphPlaceholderRangeLocal.end
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end))
+                if (
+                    forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        >= originParagraphPlaceholderRangeLocal.end
+                    )
+                )
                 {
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start))
+                if (
+                    !forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        <= originParagraphPlaceholderRangeLocal.start
+                    )
+                )
                 {
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
@@ -2311,60 +3292,140 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (paragraphContainsPosition)
             {
-                return _updateSelectionStartEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
+                return _updateSelectionStartEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraphContainsPosition,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
             }
             if (existingSelectionEnd is not null)
             {
-                (RenderParagraph paragraph, Offset localPosition)? targetDetails = _getParagraphContainingPosition(globalPosition);
+                (RenderParagraph paragraph, Offset localPosition)? targetDetails =
+                    _getParagraphContainingPosition(globalPosition);
                 if (targetDetails is null)
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph = DartRuntimePrimitives.RequireValue(targetDetails).paragraph;
-                TextPosition positionRelativeToTargetParagraph = targetParagraph.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails).localPosition);
+                RenderParagraph targetParagraph = DartRuntimePrimitives
+                    .RequireValue(targetDetails)
+                    .paragraph;
+                TextPosition positionRelativeToTargetParagraph =
+                    targetParagraph.getPositionForOffset(
+                        DartRuntimePrimitives.RequireValue(targetDetails).localPosition
+                    );
                 string targetText = targetParagraph.text.toPlainText(includeSemanticsLabels: false);
-                var positionOnPlaceholder = targetParagraph.getWordBoundary(positionRelativeToTargetParagraph).textInside(targetText) == _placeholderCharacter;
+                var positionOnPlaceholder =
+                    targetParagraph
+                        .getWordBoundary(positionRelativeToTargetParagraph)
+                        .textInside(targetText) == _placeholderCharacter;
                 if (positionOnPlaceholder)
                 {
                     return null;
                 }
-                bool backwardSelection = ((existingSelectionStart is null) && (existingSelectionEnd.offset == range.start)) || (Equals(existingSelectionStart, existingSelectionEnd) && (existingSelectionEnd.offset == range.start)) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset));
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
-                TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
-                var targetParagraphPlaceholderRange = new TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: targetParagraphPlaceholderTextPosition.offset + _placeholderLength);
-                if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset < targetParagraphPlaceholderRange.start))
+                bool backwardSelection =
+                    (
+                        (existingSelectionStart is null)
+                        && (existingSelectionEnd.offset == range.start)
+                    )
+                    || (
+                        Equals(existingSelectionStart, existingSelectionEnd)
+                        && (existingSelectionEnd.offset == range.start)
+                    )
+                    || (
+                        (existingSelectionStart is not null)
+                        && (existingSelectionStart.offset > existingSelectionEnd.offset)
+                    );
+                (
+                    TextPosition boundaryEnd,
+                    TextPosition boundaryStart
+                ) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(
+                    positionRelativeToTargetParagraph,
+                    targetText
+                );
+                TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(
+                    targetParagraph
+                );
+                var targetParagraphPlaceholderRange = new TextRange(
+                    start: targetParagraphPlaceholderTextPosition.offset,
+                    end: targetParagraphPlaceholderTextPosition.offset + _placeholderLength
+                );
+                if (
+                    (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
+                    && (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset > targetParagraphPlaceholderRange.end) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end))
+                if (
+                    (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
+                    && (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
                 if (backwardSelection)
                 {
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset <= targetParagraphPlaceholderRange.end)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        <= targetParagraphPlaceholderRange.end
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset >= targetParagraphPlaceholderRange.start)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        >= targetParagraphPlaceholderRange.start
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.start),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.start),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.previous;
                     }
                 }
@@ -2374,31 +3435,64 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Offset globalPosition, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
+    internal virtual SelectionResult? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(
+        Func<
+            TextPosition,
+            string,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getTextBoundary,
+        Offset globalPosition,
+        bool paragraphContainsPosition,
+        TextPosition position,
+        TextPosition? existingSelectionStart,
+        TextPosition? existingSelectionEnd
+    )
     {
         var isEndLocal = true;
-        if (_selectableContainsOriginTextBoundary && (existingSelectionStart is not null) && (existingSelectionEnd is not null))
+        if (
+            _selectableContainsOriginTextBoundary
+            && (existingSelectionStart is not null)
+            && (existingSelectionEnd is not null)
+        )
         {
             bool forwardSelection = existingSelectionEnd.offset >= existingSelectionStart.offset;
             RenderParagraph originParagraph = _getOriginParagraph();
             var fragmentBelongsToOriginParagraph = Equals(originParagraph, paragraph);
             if (fragmentBelongsToOriginParagraph)
             {
-                return _updateSelectionEndEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
+                return _updateSelectionEndEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraphContainsPosition,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
             }
             Matrix4 originTransform = originParagraph.getTransformTo(null);
             originTransform.invert();
-            Offset originParagraphLocalPosition = MatrixUtils.transformPoint(originTransform, globalPosition);
-            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(originParagraphLocalPosition);
-            TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(originParagraphLocalPosition);
+            Offset originParagraphLocalPosition = MatrixUtils.transformPoint(
+                originTransform,
+                globalPosition
+            );
+            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(
+                originParagraphLocalPosition
+            );
+            TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(
+                originParagraphLocalPosition
+            );
             if (positionWithinOriginParagraph)
             {
                 string originText = originParagraph.text.toPlainText(includeSemanticsLabels: false);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(positionRelativeToOriginParagraph, originText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(_getPositionInParagraph(originParagraph), originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition =
+                    getTextBoundary(positionRelativeToOriginParagraph, originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary =
+                    getTextBoundary(_getPositionInParagraph(originParagraph), originText);
                 TextPosition targetPosition = default!;
-                long pivotOffset = forwardSelection ? originTextBoundary.boundaryStart.offset : originTextBoundary.boundaryEnd.offset;
-                var shouldSwapEdges = !forwardSelection != positionRelativeToOriginParagraph.offset < pivotOffset;
+                long pivotOffset = forwardSelection
+                    ? originTextBoundary.boundaryStart.offset
+                    : originTextBoundary.boundaryEnd.offset;
+                var shouldSwapEdges =
+                    !forwardSelection != (positionRelativeToOriginParagraph.offset < pivotOffset);
                 if (positionRelativeToOriginParagraph.offset < pivotOffset)
                 {
                     targetPosition = boundaryAtPosition.boundaryStart;
@@ -2419,35 +3513,65 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
                 }
                 _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
-                bool finalSelectionIsForward = _textSelectionEnd!.offset >= _textSelectionStart!.offset;
-                TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(originParagraph);
-                var originParagraphPlaceholderRange = new TextRange(start: originParagraphPlaceholderTextPosition.offset, end: originParagraphPlaceholderTextPosition.offset + _placeholderLength);
-                if ((boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end) && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end))
+                bool finalSelectionIsForward =
+                    _textSelectionEnd!.offset >= _textSelectionStart!.offset;
+                TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(
+                    originParagraph
+                );
+                var originParagraphPlaceholderRange = new TextRange(
+                    start: originParagraphPlaceholderTextPosition.offset,
+                    end: originParagraphPlaceholderTextPosition.offset + _placeholderLength
+                );
+                if (
+                    (boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end)
+                    && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end)
+                )
                 {
                     return SelectionResult.next;
                 }
-                if ((boundaryAtPosition.boundaryStart.offset < originParagraphPlaceholderRange.start) && (boundaryAtPosition.boundaryEnd.offset < originParagraphPlaceholderRange.start))
+                if (
+                    (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originParagraphPlaceholderRange.start
+                    )
+                    && (
+                        boundaryAtPosition.boundaryEnd.offset
+                        < originParagraphPlaceholderRange.start
+                    )
+                )
                 {
                     return SelectionResult.previous;
                 }
                 if (finalSelectionIsForward)
                 {
-                    if (boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        <= originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset)
+                    if (
+                        boundaryAtPosition.boundaryEnd.offset
+                        > originTextBoundary.boundaryEnd.offset
+                    )
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        >= originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset)
+                    if (
+                        boundaryAtPosition.boundaryStart.offset
+                        < originTextBoundary.boundaryStart.offset
+                    )
                     {
                         return SelectionResult.previous;
                     }
@@ -2455,28 +3579,62 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                Offset adjustedOffset = SelectionUtils.adjustDragOffset(originParagraph.paintBounds, originParagraphLocalPosition, direction: paragraph.textDirection);
-                TextPosition adjustedPositionRelativeToOriginParagraph = originParagraph.getPositionForOffset(adjustedOffset);
-                TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(originParagraph);
-                var originParagraphPlaceholderRangeLocal = new TextRange(start: originParagraphPlaceholderTextPositionLocal.offset, end: originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength);
-                if (forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start))
+                Offset adjustedOffset = SelectionUtils.adjustDragOffset(
+                    originParagraph.paintBounds,
+                    originParagraphLocalPosition,
+                    direction: paragraph.textDirection
+                );
+                TextPosition adjustedPositionRelativeToOriginParagraph =
+                    originParagraph.getPositionForOffset(adjustedOffset);
+                TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(
+                    originParagraph
+                );
+                var originParagraphPlaceholderRangeLocal = new TextRange(
+                    start: originParagraphPlaceholderTextPositionLocal.offset,
+                    end: originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength
+                );
+                if (
+                    forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        <= originParagraphPlaceholderRangeLocal.start
+                    )
+                )
                 {
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end))
+                if (
+                    !forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        >= originParagraphPlaceholderRangeLocal.end
+                    )
+                )
                 {
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end))
+                if (
+                    forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        >= originParagraphPlaceholderRangeLocal.end
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start))
+                if (
+                    !forwardSelection
+                    && (
+                        adjustedPositionRelativeToOriginParagraph.offset
+                        <= originParagraphPlaceholderRangeLocal.start
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
@@ -2487,60 +3645,137 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (paragraphContainsPosition)
             {
-                return _updateSelectionEndEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
+                return _updateSelectionEndEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraphContainsPosition,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
             }
             if (existingSelectionStart is not null)
             {
-                (RenderParagraph paragraph, Offset localPosition)? targetDetails = _getParagraphContainingPosition(globalPosition);
+                (RenderParagraph paragraph, Offset localPosition)? targetDetails =
+                    _getParagraphContainingPosition(globalPosition);
                 if (targetDetails is null)
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph = DartRuntimePrimitives.RequireValue(targetDetails).paragraph;
-                TextPosition positionRelativeToTargetParagraph = targetParagraph.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails).localPosition);
+                RenderParagraph targetParagraph = DartRuntimePrimitives
+                    .RequireValue(targetDetails)
+                    .paragraph;
+                TextPosition positionRelativeToTargetParagraph =
+                    targetParagraph.getPositionForOffset(
+                        DartRuntimePrimitives.RequireValue(targetDetails).localPosition
+                    );
                 string targetText = targetParagraph.text.toPlainText(includeSemanticsLabels: false);
-                var positionOnPlaceholder = targetParagraph.getWordBoundary(positionRelativeToTargetParagraph).textInside(targetText) == _placeholderCharacter;
+                var positionOnPlaceholder =
+                    targetParagraph
+                        .getWordBoundary(positionRelativeToTargetParagraph)
+                        .textInside(targetText) == _placeholderCharacter;
                 if (positionOnPlaceholder)
                 {
                     return null;
                 }
-                bool backwardSelection = ((existingSelectionEnd is null) && (existingSelectionStart.offset == range.end)) || (Equals(existingSelectionStart, existingSelectionEnd) && (existingSelectionStart.offset == range.end)) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset));
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
-                TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
-                var targetParagraphPlaceholderRange = new TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: targetParagraphPlaceholderTextPosition.offset + _placeholderLength);
-                if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset < targetParagraphPlaceholderRange.start))
+                bool backwardSelection =
+                    ((existingSelectionEnd is null) && (existingSelectionStart.offset == range.end))
+                    || (
+                        Equals(existingSelectionStart, existingSelectionEnd)
+                        && (existingSelectionStart.offset == range.end)
+                    )
+                    || (
+                        (existingSelectionEnd is not null)
+                        && (existingSelectionStart.offset > existingSelectionEnd.offset)
+                    );
+                (
+                    TextPosition boundaryEnd,
+                    TextPosition boundaryStart
+                ) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(
+                    positionRelativeToTargetParagraph,
+                    targetText
+                );
+                TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(
+                    targetParagraph
+                );
+                var targetParagraphPlaceholderRange = new TextRange(
+                    start: targetParagraphPlaceholderTextPosition.offset,
+                    end: targetParagraphPlaceholderTextPosition.offset + _placeholderLength
+                );
+                if (
+                    (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
+                    && (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset > targetParagraphPlaceholderRange.end) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end))
+                if (
+                    (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
+                    && (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
+                )
                 {
                     _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
                 if (backwardSelection)
                 {
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset >= targetParagraphPlaceholderRange.start)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        >= targetParagraphPlaceholderRange.start
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.start),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset
+                        < targetParagraphPlaceholderRange.start
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.start), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.start),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.previous;
                     }
                 }
                 else
                 {
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset <= targetParagraphPlaceholderRange.end)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        <= targetParagraphPlaceholderRange.end
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.end;
                     }
-                    if (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end)
+                    if (
+                        boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset
+                        > targetParagraphPlaceholderRange.end
+                    )
                     {
-                        _setSelectionPosition(new TextPosition(offset: range.end), isEnd: isEndLocal);
+                        _setSelectionPosition(
+                            new TextPosition(offset: range.end),
+                            isEnd: isEndLocal
+                        );
                         return SelectionResult.next;
                     }
                 }
@@ -2550,7 +3785,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _updateSelectionEdgeByMultiSelectableTextBoundary(Offset globalPosition, bool isEnd, Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getClampedTextBoundary)
+    internal virtual SelectionResult _updateSelectionEdgeByMultiSelectableTextBoundary(
+        Offset globalPosition,
+        bool isEnd,
+        Func<
+            TextPosition,
+            string,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getTextBoundary,
+        Func<
+            TextPosition,
+            (TextPosition boundaryEnd, TextPosition boundaryStart)
+        > getClampedTextBoundary
+    )
     {
         TextPosition? existingSelectionStart = _textSelectionStart;
         TextPosition? existingSelectionEnd = _textSelectionEnd;
@@ -2561,34 +3808,125 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (_rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-            _setSelectionPosition(Equals(result, SelectionResult.next) ? new TextPosition(offset: range.end) : new TextPosition(offset: range.start, affinity: TextAffinity.upstream), isEnd: isEnd);
+            _setSelectionPosition(
+                Equals(result, SelectionResult.next)
+                    ? new TextPosition(offset: range.end)
+                    : new TextPosition(offset: range.start, affinity: TextAffinity.upstream),
+                isEnd: isEnd
+            );
             return result;
         }
-        Offset adjustedOffset = SelectionUtils.adjustDragOffset(_rect, localPosition, direction: paragraph.textDirection);
-        Offset adjustedOffsetRelativeToParagraph = SelectionUtils.adjustDragOffset(paragraph.paintBounds, localPosition, direction: paragraph.textDirection);
+        Offset adjustedOffset = SelectionUtils.adjustDragOffset(
+            _rect,
+            localPosition,
+            direction: paragraph.textDirection
+        );
+        Offset adjustedOffsetRelativeToParagraph = SelectionUtils.adjustDragOffset(
+            paragraph.paintBounds,
+            localPosition,
+            direction: paragraph.textDirection
+        );
         TextPosition position = paragraph.getPositionForOffset(adjustedOffset);
-        TextPosition positionInFullText = paragraph.getPositionForOffset(adjustedOffsetRelativeToParagraph);
+        TextPosition positionInFullText = paragraph.getPositionForOffset(
+            adjustedOffsetRelativeToParagraph
+        );
         SelectionResult? resultLocal = default!;
         if (_isPlaceholder())
         {
-            resultLocal = isEnd ? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(getTextBoundary, globalPosition, paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(getTextBoundary, globalPosition, paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd);
+            resultLocal = isEnd
+                ? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    globalPosition,
+                    paragraph.paintBounds.contains(localPosition),
+                    positionInFullText,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+                : _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    globalPosition,
+                    paragraph.paintBounds.contains(localPosition),
+                    positionInFullText,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
         }
         else
         {
-            resultLocal = isEnd ? _updateSelectionEndEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByMultiSelectableTextBoundary(getTextBoundary, paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd);
+            resultLocal = isEnd
+                ? _updateSelectionEndEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraph.paintBounds.contains(localPosition),
+                    positionInFullText,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+                : _updateSelectionStartEdgeByMultiSelectableTextBoundary(
+                    getTextBoundary,
+                    paragraph.paintBounds.contains(localPosition),
+                    positionInFullText,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                );
         }
         if (resultLocal is not null)
         {
-            SelectionResult result__118831__value120148 = DartRuntimePrimitives.RequireValue(resultLocal);
+            SelectionResult result__118831__value120148 = DartRuntimePrimitives.RequireValue(
+                resultLocal
+            );
             return DartRuntimePrimitives.RequireValue(result__118831__value120148);
         }
-        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary = _boundingBoxesContains(localPosition) ? getClampedTextBoundary(position) : null;
-        if ((textBoundary is not null) && (((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset <= range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset >= range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end))))
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary =
+            _boundingBoxesContains(localPosition) ? getClampedTextBoundary(position) : null;
+        if (
+            (textBoundary is not null)
+            && (
+                (
+                    (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
+                        < range.start
+                    )
+                    && (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+                        <= range.start
+                    )
+                )
+                || (
+                    (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
+                        >= range.end
+                    )
+                    && (
+                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+                        > range.end
+                    )
+                )
+            )
+        )
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__120500__value120620 = DartRuntimePrimitives.RequireValue(textBoundary);
+            (
+                TextPosition boundaryEnd,
+                TextPosition boundaryStart
+            ) textBoundary__120500__value120620 = DartRuntimePrimitives.RequireValue(textBoundary);
             textBoundary = null;
         }
-        TextPosition targetPosition = _clampTextPosition(isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary, getClampedTextBoundary, position, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByTextBoundary(textBoundary, getClampedTextBoundary, position, existingSelectionStart, existingSelectionEnd));
+        TextPosition targetPosition = _clampTextPosition(
+            isEnd
+                ? _updateSelectionEndEdgeByTextBoundary(
+                    textBoundary,
+                    getClampedTextBoundary,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+                : _updateSelectionStartEdgeByTextBoundary(
+                    textBoundary,
+                    getClampedTextBoundary,
+                    position,
+                    existingSelectionStart,
+                    existingSelectionEnd
+                )
+        );
         _setSelectionPosition(targetPosition, isEnd: isEnd);
         if (targetPosition.offset == range.end)
         {
@@ -2602,11 +3940,20 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextPosition _closestTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary, TextPosition position)
+    internal virtual TextPosition _closestTextBoundary(
+        (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary,
+        TextPosition position
+    )
     {
-        long differenceA = (position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset).abs();
-        long differenceB = (position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset).abs();
-        return (differenceA < differenceB) ? DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart : DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd;
+        long differenceA = (
+            position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
+        ).abs();
+        long differenceB = (
+            position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+        ).abs();
+        return (differenceA < differenceB)
+            ? DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart
+            : DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2639,7 +3986,9 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 if (current__123508__as123614._lastSelectableFragments is not null)
                 {
                     var paragraphContainsOriginTextBoundary = false;
-                    foreach (_SelectableFragment__paragraph fragment in current__123508__as123614._lastSelectableFragments!)
+                    foreach (
+                        _SelectableFragment__paragraph fragment in current__123508__as123614._lastSelectableFragments!
+                    )
                     {
                         if (fragment._selectableContainsOriginTextBoundary)
                         {
@@ -2660,7 +4009,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (RenderParagraph paragraph, Offset localPosition)? _getParagraphContainingPosition(Offset globalPosition)
+    internal virtual (
+        RenderParagraph paragraph,
+        Offset localPosition
+    )? _getParagraphContainingPosition(Offset globalPosition)
     {
         RenderObject? current = paragraph;
         while (current is not null)
@@ -2670,11 +4022,18 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 RenderParagraph current__124717__as124778 = (RenderParagraph)current;
                 Matrix4 currentTransform = current__124717__as124778.getTransformTo(null);
                 currentTransform.invert();
-                Offset currentParagraphLocalPosition = MatrixUtils.transformPoint(currentTransform, globalPosition);
-                bool positionWithinCurrentParagraph = current__124717__as124778.paintBounds.contains(currentParagraphLocalPosition);
+                Offset currentParagraphLocalPosition = MatrixUtils.transformPoint(
+                    currentTransform,
+                    globalPosition
+                );
+                bool positionWithinCurrentParagraph =
+                    current__124717__as124778.paintBounds.contains(currentParagraphLocalPosition);
                 if (positionWithinCurrentParagraph)
                 {
-                    return (paragraph: current__124717__as124778, localPosition: currentParagraphLocalPosition);
+                    return (
+                        paragraph: current__124717__as124778,
+                        localPosition: currentParagraphLocalPosition
+                    );
                 }
             }
             current = current.parent;
@@ -2687,7 +4046,11 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     {
         foreach (Rect rect in boundingBoxes)
         {
-            if (rect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))))
+            if (
+                rect.contains(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                )
+            )
             {
                 return true;
             }
@@ -2698,7 +4061,12 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual TextPosition _clampTextPosition(TextPosition position)
     {
-        if ((position.offset > range.end) || (position.offset == range.end) && Equals(position.affinity, TextAffinity.downstream))
+        if (
+            (position.offset > range.end)
+            || (
+                (position.offset == range.end) && Equals(position.affinity, TextAffinity.downstream)
+            )
+        )
         {
             return new TextPosition(offset: range.end, affinity: TextAffinity.upstream);
         }
@@ -2739,20 +4107,31 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _handleSelectTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary)
+    internal virtual SelectionResult _handleSelectTextBoundary(
+        (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary
+    )
     {
-        if ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start) && (textBoundary.boundaryEnd.offset <= range.start))
+        if (
+            (DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start)
+            && (textBoundary.boundaryEnd.offset <= range.start)
+        )
         {
             return SelectionResult.previous;
         }
         else
         {
-            if ((textBoundary.boundaryStart.offset >= range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end))
+            if (
+                (textBoundary.boundaryStart.offset >= range.end)
+                && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end)
+            )
             {
                 return SelectionResult.next;
             }
         }
-        DartRuntimePrimitives.Assert(() => (textBoundary.boundaryStart.offset >= range.start) && (textBoundary.boundaryEnd.offset <= range.end));
+        DartRuntimePrimitives.Assert(() =>
+            (textBoundary.boundaryStart.offset >= range.start)
+            && (textBoundary.boundaryEnd.offset <= range.end)
+        );
         _textSelectionStart = DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart;
         _textSelectionEnd = DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd;
         _selectableContainsOriginTextBoundary = true;
@@ -2774,20 +4153,31 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _handleSelectMultiFragmentTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary)
+    internal virtual SelectionResult _handleSelectMultiFragmentTextBoundary(
+        (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary
+    )
     {
-        if ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start) && (textBoundary.boundaryEnd.offset <= range.start))
+        if (
+            (DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start)
+            && (textBoundary.boundaryEnd.offset <= range.start)
+        )
         {
             return SelectionResult.previous;
         }
         else
         {
-            if ((textBoundary.boundaryStart.offset >= range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end))
+            if (
+                (textBoundary.boundaryStart.offset >= range.end)
+                && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end)
+            )
             {
                 return SelectionResult.next;
             }
         }
-        var boundaryAsRange = new TextRange(start: DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset, end: DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset);
+        var boundaryAsRange = new TextRange(
+            start: DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset,
+            end: DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+        );
         TextRange? intersectRange = _intersect(range, boundaryAsRange);
         if (intersectRange is not null)
         {
@@ -2804,7 +4194,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _adjustTextBoundaryAtPosition(TextRange textBoundary, TextPosition position)
+    internal virtual (
+        TextPosition boundaryEnd,
+        TextPosition boundaryStart
+    ) _adjustTextBoundaryAtPosition(TextRange textBoundary, TextPosition position)
     {
         TextPosition startLocal = default!;
         TextPosition endLocal = default!;
@@ -2823,17 +4216,26 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual SelectionResult _handleSelectWord(Offset globalPosition)
     {
-        TextPosition position = paragraph.getPositionForOffset(paragraph.globalToLocal(globalPosition));
-        if (_positionIsWithinCurrentSelection(position) && (!Equals(_textSelectionStart, _textSelectionEnd)))
+        TextPosition position = paragraph.getPositionForOffset(
+            paragraph.globalToLocal(globalPosition)
+        );
+        if (
+            _positionIsWithinCurrentSelection(position)
+            && (!Equals(_textSelectionStart, _textSelectionEnd))
+        )
         {
             return SelectionResult.end;
         }
-        (TextPosition boundaryEnd, TextPosition boundaryStart) wordBoundary = _getWordBoundaryAtPosition(position);
+        (TextPosition boundaryEnd, TextPosition boundaryStart) wordBoundary =
+            _getWordBoundaryAtPosition(position);
         return _handleSelectTextBoundary(wordBoundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getWordBoundaryAtPosition(TextPosition position)
+    internal virtual (
+        TextPosition boundaryEnd,
+        TextPosition boundaryStart
+    ) _getWordBoundaryAtPosition(TextPosition position)
     {
         TextRange word = paragraph.getWordBoundary(position);
         DartRuntimePrimitives.Assert(() => word.isNormalized);
@@ -2845,7 +4247,8 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     {
         Offset localPosition = paragraph.globalToLocal(globalPosition);
         TextPosition position = paragraph.getPositionForOffset(localPosition);
-        (TextPosition boundaryEnd, TextPosition boundaryStart) paragraphBoundary = _getParagraphBoundaryAtPosition(position, fullText);
+        (TextPosition boundaryEnd, TextPosition boundaryStart) paragraphBoundary =
+            _getParagraphBoundaryAtPosition(position, fullText);
         return _handleSelectMultiFragmentTextBoundary(paragraphBoundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2860,31 +4263,65 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getParagraphBoundaryAtPosition(TextPosition position, string text)
+    internal virtual (
+        TextPosition boundaryEnd,
+        TextPosition boundaryStart
+    ) _getParagraphBoundaryAtPosition(TextPosition position, string text)
     {
         var paragraphBoundary = new ParagraphBoundary(text);
-        long paragraphStart = paragraphBoundary.getLeadingTextBoundaryAt(((position.offset == text.Length) || Equals(position.affinity, TextAffinity.upstream)) ? (position.offset - 1L) : position.offset) ?? 0L;
-        long paragraphEnd = paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? text.Length;
+        long paragraphStart =
+            paragraphBoundary.getLeadingTextBoundaryAt(
+                (
+                    (position.offset == text.Length)
+                    || Equals(position.affinity, TextAffinity.upstream)
+                )
+                    ? (position.offset - 1L)
+                    : position.offset
+            ) ?? 0L;
+        long paragraphEnd =
+            paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? text.Length;
         var paragraphRange = new TextRange(start: paragraphStart, end: paragraphEnd);
         DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
         return _adjustTextBoundaryAtPosition(paragraphRange, position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getClampedParagraphBoundaryAtPosition(TextPosition position)
+    internal virtual (
+        TextPosition boundaryEnd,
+        TextPosition boundaryStart
+    ) _getClampedParagraphBoundaryAtPosition(TextPosition position)
     {
         var paragraphBoundary = new ParagraphBoundary(fullText);
-        long paragraphStart = paragraphBoundary.getLeadingTextBoundaryAt(((position.offset == fullText.Length) || Equals(position.affinity, TextAffinity.upstream)) ? (position.offset - 1L) : position.offset) ?? 0L;
-        long paragraphEnd = paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? fullText.Length;
-        paragraphStart = (paragraphStart < range.start) ? range.start : ((paragraphStart > range.end) ? range.end : paragraphStart);
-        paragraphEnd = (paragraphEnd > range.end) ? range.end : ((paragraphEnd < range.start) ? range.start : paragraphEnd);
+        long paragraphStart =
+            paragraphBoundary.getLeadingTextBoundaryAt(
+                (
+                    (position.offset == fullText.Length)
+                    || Equals(position.affinity, TextAffinity.upstream)
+                )
+                    ? (position.offset - 1L)
+                    : position.offset
+            ) ?? 0L;
+        long paragraphEnd =
+            paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? fullText.Length;
+        paragraphStart =
+            (paragraphStart < range.start)
+                ? range.start
+                : ((paragraphStart > range.end) ? range.end : paragraphStart);
+        paragraphEnd =
+            (paragraphEnd > range.end)
+                ? range.end
+                : ((paragraphEnd < range.start) ? range.start : paragraphEnd);
         var paragraphRange = new TextRange(start: paragraphStart, end: paragraphEnd);
         DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
         return _adjustTextBoundaryAtPosition(paragraphRange, position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _handleDirectionallyExtendSelection(double horizontalBaseline, bool isExtent, SelectionExtendDirection movement)
+    internal virtual SelectionResult _handleDirectionallyExtendSelection(
+        double horizontalBaseline,
+        bool isExtent,
+        SelectionExtendDirection movement
+    )
     {
         Matrix4 transform = paragraph.getTransformTo(null);
         if (transform.invert() == 0.0)
@@ -2893,17 +4330,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             {
                 case SelectionExtendDirection.previousLine:
                 case SelectionExtendDirection.backward:
-                    {
-                        return SelectionResult.previous;
-                    }
+                {
+                    return SelectionResult.previous;
+                }
                 case SelectionExtendDirection.nextLine:
                 case SelectionExtendDirection.forward:
-                    {
-                        return SelectionResult.next;
-                    }
+                {
+                    return SelectionResult.next;
+                }
             }
         }
-        double baselineInParagraphCoordinates = MatrixUtils.transformPoint(transform, new Offset(horizontalBaseline, 0)).dx;
+        double baselineInParagraphCoordinates = MatrixUtils
+            .transformPoint(transform, new Offset(horizontalBaseline, 0))
+            .dx;
         DartRuntimePrimitives.Assert(() => !double.IsNaN(baselineInParagraphCoordinates));
         TextPosition newPosition = default!;
         SelectionResult result = default!;
@@ -2911,26 +4350,44 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             case SelectionExtendDirection.previousLine:
             case SelectionExtendDirection.nextLine:
-                {
-                    DartRuntimePrimitives.Assert(() => (_textSelectionEnd is not null) && (_textSelectionStart is not null));
-                    TextPosition targetedEdge = isExtent ? _textSelectionEnd! : _textSelectionStart!;
-                    MapEntry<TextPosition, SelectionResult> moveResult = _handleVerticalMovement(targetedEdge, horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates, below: Equals(movement, SelectionExtendDirection.nextLine));
-                    newPosition = moveResult.key;
-                    result = moveResult.value;
-                    break;
-                }
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    (_textSelectionEnd is not null) && (_textSelectionStart is not null)
+                );
+                TextPosition targetedEdge = isExtent ? _textSelectionEnd! : _textSelectionStart!;
+                MapEntry<TextPosition, SelectionResult> moveResult = _handleVerticalMovement(
+                    targetedEdge,
+                    horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates,
+                    below: Equals(movement, SelectionExtendDirection.nextLine)
+                );
+                newPosition = moveResult.key;
+                result = moveResult.value;
+                break;
+            }
             case SelectionExtendDirection.forward:
             case SelectionExtendDirection.backward:
-                {
-                    _textSelectionEnd ??= (Equals(movement, SelectionExtendDirection.forward) ? new TextPosition(offset: range.start) : new TextPosition(offset: range.end, affinity: TextAffinity.upstream));
-                    _textSelectionStart ??= _textSelectionEnd;
-                    TextPosition targetedEdgeLocal = isExtent ? _textSelectionEnd! : _textSelectionStart!;
-                    Offset edgeOffsetInParagraphCoordinates = paragraph._getOffsetForPosition(targetedEdgeLocal);
-                    var baselineOffsetInParagraphCoordinates = new Offset(baselineInParagraphCoordinates, edgeOffsetInParagraphCoordinates.dy - (paragraph._textPainter.preferredLineHeight / 2L));
-                    newPosition = paragraph.getPositionForOffset(baselineOffsetInParagraphCoordinates);
-                    result = SelectionResult.end;
-                    break;
-                }
+            {
+                _textSelectionEnd ??= (
+                    Equals(movement, SelectionExtendDirection.forward)
+                        ? new TextPosition(offset: range.start)
+                        : new TextPosition(offset: range.end, affinity: TextAffinity.upstream)
+                );
+                _textSelectionStart ??= _textSelectionEnd;
+                TextPosition targetedEdgeLocal = isExtent
+                    ? _textSelectionEnd!
+                    : _textSelectionStart!;
+                Offset edgeOffsetInParagraphCoordinates = paragraph._getOffsetForPosition(
+                    targetedEdgeLocal
+                );
+                var baselineOffsetInParagraphCoordinates = new Offset(
+                    baselineInParagraphCoordinates,
+                    edgeOffsetInParagraphCoordinates.dy
+                        - (paragraph._textPainter.preferredLineHeight / 2L)
+                );
+                newPosition = paragraph.getPositionForOffset(baselineOffsetInParagraphCoordinates);
+                result = SelectionResult.end;
+                break;
+            }
         }
         if (isExtent)
         {
@@ -2944,9 +4401,17 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual SelectionResult _handleGranularlyExtendSelection(bool forward, bool isExtent, TextGranularity granularity)
+    internal virtual SelectionResult _handleGranularlyExtendSelection(
+        bool forward,
+        bool isExtent,
+        TextGranularity granularity
+    )
     {
-        _textSelectionEnd ??= (forward ? new TextPosition(offset: range.start) : new TextPosition(offset: range.end, affinity: TextAffinity.upstream));
+        _textSelectionEnd ??= (
+            forward
+                ? new TextPosition(offset: range.start)
+                : new TextPosition(offset: range.end, affinity: TextAffinity.upstream)
+        );
         _textSelectionStart ??= _textSelectionEnd;
         TextPosition targetedEdge = isExtent ? _textSelectionEnd! : _textSelectionStart!;
         if (forward && targetedEdge.offset == range.end)
@@ -2962,53 +4427,76 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         switch (granularity)
         {
             case TextGranularity.character:
-                {
-                    string text = range.textInside(fullText);
-                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new CharacterBoundary(text));
-                    result = SelectionResult.end;
-                    break;
-                }
+            {
+                string text = range.textInside(fullText);
+                newPosition = _moveBeyondTextBoundaryAtDirection(
+                    targetedEdge,
+                    forward,
+                    new CharacterBoundary(text)
+                );
+                result = SelectionResult.end;
+                break;
+            }
             case TextGranularity.word:
-                {
-                    TextBoundary textBoundary = paragraph._textPainter.wordBoundaries.moveByWordBoundary;
-                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, textBoundary);
-                    result = SelectionResult.end;
-                    break;
-                }
+            {
+                TextBoundary textBoundary = paragraph
+                    ._textPainter
+                    .wordBoundaries
+                    .moveByWordBoundary;
+                newPosition = _moveBeyondTextBoundaryAtDirection(
+                    targetedEdge,
+                    forward,
+                    textBoundary
+                );
+                result = SelectionResult.end;
+                break;
+            }
             case TextGranularity.paragraph:
-                {
-                    string textLocal = range.textInside(fullText);
-                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new ParagraphBoundary(textLocal));
-                    result = SelectionResult.end;
-                    break;
-                }
+            {
+                string textLocal = range.textInside(fullText);
+                newPosition = _moveBeyondTextBoundaryAtDirection(
+                    targetedEdge,
+                    forward,
+                    new ParagraphBoundary(textLocal)
+                );
+                result = SelectionResult.end;
+                break;
+            }
             case TextGranularity.line:
-                {
-                    newPosition = _moveToTextBoundaryAtDirection(targetedEdge, forward, new LineBoundary(this));
-                    result = SelectionResult.end;
-                    break;
-                }
+            {
+                newPosition = _moveToTextBoundaryAtDirection(
+                    targetedEdge,
+                    forward,
+                    new LineBoundary(this)
+                );
+                result = SelectionResult.end;
+                break;
+            }
             case TextGranularity.document:
+            {
+                string textAlternate = range.textInside(fullText);
+                newPosition = _moveBeyondTextBoundaryAtDirection(
+                    targetedEdge,
+                    forward,
+                    new DocumentBoundary(textAlternate)
+                );
+                if (forward && (newPosition.offset == range.end))
                 {
-                    string textAlternate = range.textInside(fullText);
-                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new DocumentBoundary(textAlternate));
-                    if (forward && (newPosition.offset == range.end))
+                    result = SelectionResult.next;
+                }
+                else
+                {
+                    if (!forward && (newPosition.offset == range.start))
                     {
-                        result = SelectionResult.next;
+                        result = SelectionResult.previous;
                     }
                     else
                     {
-                        if (!forward && (newPosition.offset == range.start))
-                        {
-                            result = SelectionResult.previous;
-                        }
-                        else
-                        {
-                            result = SelectionResult.end;
-                        }
+                        result = SelectionResult.end;
                     }
-                    break;
                 }
+                break;
+            }
         }
         if (isExtent)
         {
@@ -3022,42 +4510,63 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextPosition _moveBeyondTextBoundaryAtDirection(TextPosition end, bool forward, TextBoundary textBoundary)
+    internal virtual TextPosition _moveBeyondTextBoundaryAtDirection(
+        TextPosition end,
+        bool forward,
+        TextBoundary textBoundary
+    )
     {
-        long newOffset = forward ? (textBoundary.getTrailingTextBoundaryAt(end.offset) ?? range.end) : (textBoundary.getLeadingTextBoundaryAt(end.offset - 1L) ?? range.start);
+        long newOffset = forward
+            ? (textBoundary.getTrailingTextBoundaryAt(end.offset) ?? range.end)
+            : (textBoundary.getLeadingTextBoundaryAt(end.offset - 1L) ?? range.start);
         return new TextPosition(offset: newOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextPosition _moveToTextBoundaryAtDirection(TextPosition end, bool forward, TextBoundary textBoundary)
+    internal virtual TextPosition _moveToTextBoundaryAtDirection(
+        TextPosition end,
+        bool forward,
+        TextBoundary textBoundary
+    )
     {
         DartRuntimePrimitives.Assert(() => end.offset >= 0L);
         long caretOffset = default!;
         switch (end.affinity)
         {
             case TextAffinity.upstream:
+            {
+                if ((end.offset < 1L) && !forward)
                 {
-                    if ((end.offset < 1L) && !forward)
-                    {
-                        DartRuntimePrimitives.Assert(() => end.offset == 0L);
-                        return new TextPosition(offset: 0L);
-                    }
-                    var characterBoundary = new CharacterBoundary(fullText);
-                    caretOffset = Math.Max(0L, characterBoundary.getLeadingTextBoundaryAt(range.start + end.offset) ?? range.start) - 1L;
-                    break;
+                    DartRuntimePrimitives.Assert(() => end.offset == 0L);
+                    return new TextPosition(offset: 0L);
                 }
+                var characterBoundary = new CharacterBoundary(fullText);
+                caretOffset =
+                    Math.Max(
+                        0L,
+                        characterBoundary.getLeadingTextBoundaryAt(range.start + end.offset)
+                            ?? range.start
+                    ) - 1L;
+                break;
+            }
             case TextAffinity.downstream:
-                {
-                    caretOffset = end.offset;
-                    break;
-                }
+            {
+                caretOffset = end.offset;
+                break;
+            }
         }
-        long offsetLocal = forward ? (textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? range.end) : (textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? range.start);
+        long offsetLocal = forward
+            ? (textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? range.end)
+            : (textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? range.start);
         return new TextPosition(offset: offsetLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual MapEntry<TextPosition, SelectionResult> _handleVerticalMovement(TextPosition position, double horizontalBaselineInParagraphCoordinates, bool below)
+    internal virtual MapEntry<TextPosition, SelectionResult> _handleVerticalMovement(
+        TextPosition position,
+        double horizontalBaselineInParagraphCoordinates,
+        bool below
+    )
     {
         List<LineMetrics> lines = paragraph._textPainter.computeLineMetrics();
         Offset offsetLocal = paragraph.getOffsetForCaret(position, Rect.zero);
@@ -3084,7 +4593,14 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             else
             {
                 long newLine = below ? (currentLine + 1L) : (currentLine - 1L);
-                newPosition = _clampTextPosition(paragraph.getPositionForOffset(new Offset(horizontalBaselineInParagraphCoordinates, lines[(int)newLine].baseline)));
+                newPosition = _clampTextPosition(
+                    paragraph.getPositionForOffset(
+                        new Offset(
+                            horizontalBaselineInParagraphCoordinates,
+                            lines[(int)newLine].baseline
+                        )
+                    )
+                );
             }
         }
         SelectionResult result = default!;
@@ -3127,7 +4643,8 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             currentStart = _textSelectionEnd!;
             currentEnd = _textSelectionStart!;
         }
-        return (_compareTextPositions(currentStart, position) >= 0L) && (_compareTextPositions(currentEnd, position) <= 0L);
+        return (_compareTextPositions(currentStart, position) >= 0L)
+            && (_compareTextPositions(currentEnd, position) <= 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3189,7 +4706,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (_cachedBoundingBoxes is null)
             {
-                List<TextBox> boxes = paragraph.getBoxesForSelection(new TextSelection(baseOffset: range.start, extentOffset: range.end), boxHeightStyle: BoxHeightStyle.max);
+                List<TextBox> boxes = paragraph.getBoxesForSelection(
+                    new TextSelection(baseOffset: range.start, extentOffset: range.end),
+                    boxHeightStyle: BoxHeightStyle.max
+                );
                 if (checked((long)boxes.Count) != 0)
                 {
                     _cachedBoundingBoxes = new List<Rect>();
@@ -3200,8 +4720,13 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
                 else
                 {
-                    Offset offsetLocal = paragraph._getOffsetForPosition(new TextPosition(offset: range.start));
-                    var rect = Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -paragraph._textPainter.preferredLineHeight));
+                    Offset offsetLocal = paragraph._getOffsetForPosition(
+                        new TextPosition(offset: range.start)
+                    );
+                    var rect = Rect.fromPoints(
+                        offsetLocal,
+                        offsetLocal.translate(0, -paragraph._textPainter.preferredLineHeight)
+                    );
                     _cachedBoundingBoxes = new List<Rect> { rect };
                 }
             }
@@ -3214,7 +4739,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (_cachedRect is null)
             {
-                List<TextBox> boxes = paragraph.getBoxesForSelection(new TextSelection(baseOffset: range.start, extentOffset: range.end), boxHeightStyle: BoxHeightStyle.max);
+                List<TextBox> boxes = paragraph.getBoxesForSelection(
+                    new TextSelection(baseOffset: range.start, extentOffset: range.end),
+                    boxHeightStyle: BoxHeightStyle.max
+                );
                 if (checked((long)boxes.Count) != 0)
                 {
                     Rect result = boxes.First().toRect();
@@ -3226,13 +4754,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
                 else
                 {
-                    Offset offsetLocal = paragraph._getOffsetForPosition(new TextPosition(offset: range.start));
-                    _cachedRect = Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -paragraph._textPainter.preferredLineHeight));
+                    Offset offsetLocal = paragraph._getOffsetForPosition(
+                        new TextPosition(offset: range.start)
+                    );
+                    _cachedRect = Rect.fromPoints(
+                        offsetLocal,
+                        offsetLocal.translate(0, -paragraph._textPainter.preferredLineHeight)
+                    );
                 }
             }
             return DartRuntimePrimitives.RequireValue(_cachedRect);
         }
     }
+
     public virtual void didChangeParagraphLayout()
     {
         _cachedRect = null;
@@ -3242,11 +4776,9 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     public virtual long contentLength => range.end - range.start;
     public virtual Size size
     {
-        get
-        {
-            return _rect.size;
-        }
+        get { return _rect.size; }
     }
+
     public virtual void paintSelection(PaintingContext context, Offset offset)
     {
         if ((_textSelectionStart is null) || (_textSelectionEnd is null))
@@ -3255,14 +4787,21 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         if (paragraph.selectionColor is not null)
         {
-            var selection = new TextSelection(baseOffset: _textSelectionStart!.offset, extentOffset: _textSelectionEnd!.offset);
-            var selectionPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = paragraph.selectionColor!;
-    return __cascade;
-}))();
+            var selection = new TextSelection(
+                baseOffset: _textSelectionStart!.offset,
+                extentOffset: _textSelectionEnd!.offset
+            );
+            var selectionPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.style = PaintingStyle.fill;
+                        __cascade.color = paragraph.selectionColor!;
+                        return __cascade;
+                    }
+                )
+            )();
             foreach (TextBox textBox in paragraph.getBoxesForSelection(selection))
             {
                 context.canvas.drawRect(textBox.toRect().shift(offset), selectionPaint);
@@ -3278,15 +4817,25 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         if ((_startHandleLayerLink is not null) && (value.startSelectionPoint is not null))
         {
-            context.pushLayer(new LeaderLayer(link: _startHandleLayerLink!, offset: offset + value.startSelectionPoint!.localPosition), (context, offset) =>
-            {
-            }, Offset.zero);
+            context.pushLayer(
+                new LeaderLayer(
+                    link: _startHandleLayerLink!,
+                    offset: offset + value.startSelectionPoint!.localPosition
+                ),
+                (context, offset) => { },
+                Offset.zero
+            );
         }
         if ((_endHandleLayerLink is not null) && (value.endSelectionPoint is not null))
         {
-            context.pushLayer(new LeaderLayer(link: _endHandleLayerLink!, offset: offset + value.endSelectionPoint!.localPosition), (context, offset) =>
-            {
-            }, Offset.zero);
+            context.pushLayer(
+                new LeaderLayer(
+                    link: _endHandleLayerLink!,
+                    offset: offset + value.endSelectionPoint!.localPosition
+                ),
+                (context, offset) => { },
+                Offset.zero
+            );
         }
     }
 
@@ -3311,14 +4860,16 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TextRange getWordBoundary(TextPosition position) => paragraph.getWordBoundary(position);
+    public virtual TextRange getWordBoundary(TextPosition position) =>
+        paragraph.getWordBoundary(position);
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<string>("textInsideRange", range.textInside(fullText)));
+        properties.add(
+            new DiagnosticsProperty<string>("textInsideRange", range.textInside(fullText))
+        );
         properties.add(new DiagnosticsProperty<TextRange>("range", range));
         properties.add(new DiagnosticsProperty<string>("fullText", fullText));
     }
-
 }
-

@@ -10,7 +10,21 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     internal virtual ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
     internal virtual ScrollDragController? _currentDrag { get; set; } = default;
 
-    public ScrollPositionWithSingleContext(ScrollPhysics physics, ScrollContext context, double? initialPixels = 0.0, bool keepScrollOffset = true, ScrollPosition? oldPosition = null, string? debugLabel = null) : base(physics: physics, context: context, keepScrollOffset: keepScrollOffset, oldPosition: oldPosition, debugLabel: debugLabel)
+    public ScrollPositionWithSingleContext(
+        ScrollPhysics physics,
+        ScrollContext context,
+        double? initialPixels = 0.0,
+        bool keepScrollOffset = true,
+        ScrollPosition? oldPosition = null,
+        string? debugLabel = null
+    )
+        : base(
+            physics: physics,
+            context: context,
+            keepScrollOffset: keepScrollOffset,
+            oldPosition: oldPosition,
+            debugLabel: debugLabel
+        )
     {
         if (!hasPixels && initialPixels is not null)
         {
@@ -23,6 +37,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     }
 
     public override AxisDirection axisDirection => context.axisDirection;
+
     public override double setPixels(double newPixels)
     {
         DartRuntimePrimitives.Assert(() => activity!.isScrolling);
@@ -74,7 +89,9 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public virtual void applyUserOffset(double delta)
     {
-        updateUserScrollDirection((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+        updateUserScrollDirection(
+            (delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse
+        );
         setPixels(pixels - physics.applyPhysicsToUserOffset(this, delta));
     }
 
@@ -89,7 +106,9 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         Physics.Simulation? simulation = physics.createBallisticSimulation(this, velocity);
         if (simulation is not null)
         {
-            beginActivity(new BallisticScrollActivity(this, simulation, context.vsync, shouldIgnorePointer));
+            beginActivity(
+                new BallisticScrollActivity(this, simulation, context.vsync, shouldIgnorePointer)
+            );
         }
         else
         {
@@ -98,6 +117,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     }
 
     public override ScrollDirection userScrollDirection => _userScrollDirection;
+
     public virtual void updateUserScrollDirection(ScrollDirection value)
     {
         if (Equals(userScrollDirection, value))
@@ -115,7 +135,14 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
             jumpTo(to);
             return Future.value();
         }
-        var activity = new DrivenScrollActivity(this, from: pixels, to: to, duration: duration, curve: curve, vsync: context.vsync);
+        var activity = new DrivenScrollActivity(
+            this,
+            from: pixels,
+            to: to,
+            duration: duration,
+            curve: curve,
+            vsync: context.vsync
+        );
         beginActivity(activity);
         return activity.done;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -146,7 +173,9 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         if (targetPixels != pixels)
         {
             goIdle();
-            updateUserScrollDirection((-delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+            updateUserScrollDirection(
+                (-delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse
+            );
             double oldPixels = pixels;
             isScrollingNotifier.value = true;
             forcePixels(targetPixels);
@@ -173,7 +202,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override ScrollHoldController hold(Action holdCancelCallback)
     {
         double previousVelocity = activity!.velocity;
-        var holdActivity = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
+        var holdActivity = new HoldScrollActivity(
+            @delegate: this,
+            onHoldCanceled: () => holdCancelCallback()
+        );
         beginActivity(holdActivity);
         _heldPreviousVelocity = previousVelocity;
         return holdActivity;
@@ -182,7 +214,13 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public override Drag drag(DragStartDetails details, Action dragCancelCallback)
     {
-        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: physics.carriedMomentum(_heldPreviousVelocity), motionStartDistanceThreshold: physics.dragStartDistanceMotionThreshold);
+        var dragLocal = new ScrollDragController(
+            @delegate: this,
+            details: details,
+            onDragCanceled: () => dragCancelCallback(),
+            carriedVelocity: physics.carriedMomentum(_heldPreviousVelocity),
+            motionStartDistanceThreshold: physics.dragStartDistanceMotionThreshold
+        );
         beginActivity(new DragScrollActivity(this, dragLocal));
         DartRuntimePrimitives.Assert(() => _currentDrag is null);
         _currentDrag = dragLocal;
@@ -205,5 +243,4 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         description.Add($"{activity}");
         description.Add($"{userScrollDirection}");
     }
-
 }

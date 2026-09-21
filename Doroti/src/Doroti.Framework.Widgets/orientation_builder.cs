@@ -8,14 +8,21 @@ public class OrientationBuilder : StatelessWidget
 {
     public virtual Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public OrientationBuilder(Key? key = null, Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public OrientationBuilder(
+        Key? key = null,
+        Func<BuildContext, Orientation, Widget> builder = default!
+    )
+        : base(key: key)
     {
         this.builder = builder;
     }
 
     internal virtual Widget _buildWithConstraints(BuildContext context, BoxConstraints constraints)
     {
-        Orientation orientation = (constraints.maxWidth > constraints.maxHeight) ? Orientation.landscape : Orientation.portrait;
+        Orientation orientation =
+            (constraints.maxWidth > constraints.maxHeight)
+                ? Orientation.landscape
+                : Orientation.portrait;
         return builder(context, orientation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -25,14 +32,17 @@ public class OrientationBuilder : StatelessWidget
         return new LayoutBuilder(builder: _buildWithConstraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class DeviceOrientationBuilder : StatelessWidget
 {
     public virtual Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public DeviceOrientationBuilder(Key? key = null, Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public DeviceOrientationBuilder(
+        Key? key = null,
+        Func<BuildContext, Orientation, Widget> builder = default!
+    )
+        : base(key: key)
     {
         this.builder = builder;
     }
@@ -43,6 +53,4 @@ public class DeviceOrientationBuilder : StatelessWidget
         return builder(context, orientation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

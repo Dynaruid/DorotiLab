@@ -9,7 +9,8 @@ public sealed record MigrationIr(
     PackageGraph PackageGraph,
     MigrationIrInput[] Inputs,
     CompatibilityRule[] CompatibilityRules,
-    ConverterOutput[] Outputs);
+    ConverterOutput[] Outputs
+);
 
 public sealed record MigrationIrInput(
     string Path,
@@ -18,7 +19,8 @@ public sealed record MigrationIrInput(
     string[] Directives,
     string[] SelectedSymbols,
     MigrationIrDeclaration[] Declarations,
-    MigrationIrLibraryGraph? LibraryGraph = null);
+    MigrationIrLibraryGraph? LibraryGraph = null
+);
 
 public sealed record MigrationIrDeclaration(
     string Kind,
@@ -27,7 +29,8 @@ public sealed record MigrationIrDeclaration(
     int Length,
     AnalyzerElement? Element,
     MigrationIrMember[] Members,
-    MigrationIrNode? Ast = null);
+    MigrationIrNode? Ast = null
+);
 
 public sealed record MigrationIrMember(
     string Kind,
@@ -45,17 +48,28 @@ public sealed record MigrationIrMember(
     bool IsGetter = false,
     bool IsSetter = false,
     bool IsOperator = false,
-    bool IsFactory = false);
+    bool IsFactory = false
+);
 
 public sealed record MigrationIrStatement(string Kind, int Offset, int Length, string Source);
+
 public sealed record MigrationIrLibraryGraph(
     string Library,
     MigrationIrLibraryFragment[] Fragments,
     string[] Imports,
     MigrationIrLibraryImport[]? ImportDetails = null,
-    string[]? AccessibleExtensions = null);
-public sealed record MigrationIrLibraryFragment(string Uri, string[] Declarations, bool IsDefining = true, string? OwnerLibrary = null);
+    string[]? AccessibleExtensions = null
+);
+
+public sealed record MigrationIrLibraryFragment(
+    string Uri,
+    string[] Declarations,
+    bool IsDefining = true,
+    string? OwnerLibrary = null
+);
+
 public sealed record MigrationIrLibraryImport(string Uri, string? Prefix, bool IsSynthetic = false);
+
 public sealed record MigrationIrNode(
     string Kind,
     string AnalyzerKind,
@@ -65,8 +79,16 @@ public sealed record MigrationIrNode(
     string? StaticType,
     string? ElementId,
     Dictionary<string, string?> Properties,
-    MigrationIrNode[] Children);
-public sealed record CompatibilityRule(string Id, string SourceType, string TargetType, string SemanticScope, string BehaviorFixture);
+    MigrationIrNode[] Children
+);
+
+public sealed record CompatibilityRule(
+    string Id,
+    string SourceType,
+    string TargetType,
+    string SemanticScope,
+    string BehaviorFixture
+);
 
 public sealed record CompilerIdentity(
     string ConverterVersion,
@@ -78,7 +100,18 @@ public sealed record CompilerIdentity(
     string LoweringRuleSetVersion,
     string EmitterVersion,
     string RuntimeBindingVersion,
-    string WorkspaceId);
+    string WorkspaceId
+);
 
-public sealed record PackageGraph(string SchemaVersion, string RootPackage, PackageGraphNode[] Packages);
-public sealed record PackageGraphNode(string Name, string Version, string Source, string[] Dependencies);
+public sealed record PackageGraph(
+    string SchemaVersion,
+    string RootPackage,
+    PackageGraphNode[] Packages
+);
+
+public sealed record PackageGraphNode(
+    string Name,
+    string Version,
+    string Source,
+    string[] Dependencies
+);

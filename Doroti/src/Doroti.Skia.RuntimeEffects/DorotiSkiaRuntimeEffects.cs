@@ -11,7 +11,8 @@ public sealed record DorotiShaderCapabilityDiagnostic(
     string Code,
     string Backend,
     string ShaderName,
-    string Message);
+    string Message
+);
 
 public static partial class DorotiSkiaRuntimeEffects
 {
@@ -28,28 +29,33 @@ public static partial class DorotiSkiaRuntimeEffects
     public const string NativeGraphiteVulkanBackend = "skiasharp-graphite-vulkan-gpu";
     public const string QtGpuBackend = "skiasharp-qt-opengl-gpu";
 
-    private static readonly IReadOnlySet<string> SupportedBackends =
-        new HashSet<string>(StringComparer.Ordinal)
-        {
-            ValidationBackend,
-            MauiGpuBackend,
-            WindowsAngleEglBackend,
-            WindowsVulkanBackend,
-            WindowsCompositionD3D12Backend,
-            WindowsHwndD3D12Backend,
-            AppKitMetalBackend,
-            WebGpuBackend,
-            WebGraphiteBackend,
-            NativeGraphiteMetalBackend,
-            NativeGraphiteVulkanBackend,
-            QtGpuBackend,
-        };
-    private static readonly ConcurrentDictionary<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>> EffectCache = [];
+    private static readonly IReadOnlySet<string> SupportedBackends = new HashSet<string>(
+        StringComparer.Ordinal
+    )
+    {
+        ValidationBackend,
+        MauiGpuBackend,
+        WindowsAngleEglBackend,
+        WindowsVulkanBackend,
+        WindowsCompositionD3D12Backend,
+        WindowsHwndD3D12Backend,
+        AppKitMetalBackend,
+        WebGpuBackend,
+        WebGraphiteBackend,
+        NativeGraphiteMetalBackend,
+        NativeGraphiteVulkanBackend,
+        QtGpuBackend,
+    };
+    private static readonly ConcurrentDictionary<
+        RuntimeEffectCacheKey,
+        Lazy<CompiledRuntimeEffect>
+    > EffectCache = [];
     private static long _compiledEffectCount;
 
     public static event Action<DorotiShaderCapabilityDiagnostic>? CapabilityDiagnostic;
 
-    internal static long CompiledEffectCountForValidation => Interlocked.Read(ref _compiledEffectCount);
+    internal static long CompiledEffectCountForValidation =>
+        Interlocked.Read(ref _compiledEffectCount);
 
     internal static int CompiledCacheEntryCountForValidation => EffectCache.Count;
 
@@ -57,7 +63,9 @@ public static partial class DorotiSkiaRuntimeEffects
         FragmentShaderSnapshot snapshot,
         Func<Image, SKShader> imageShaderFactory,
         string backend = ValidationBackend,
-        long contextGeneration = 0, object? contextOwner = null)
+        long contextGeneration = 0,
+        object? contextOwner = null
+    )
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
@@ -74,22 +82,35 @@ public static partial class DorotiSkiaRuntimeEffects
             for (var index = 0; index < effect.Children.Count; index++)
             {
                 if (!state.Samplers.TryGetValue(index, out var image))
+                {
                     throw new InvalidDataException(
-                        $"Doroti fragment program '{state.DebugName}' requires image sampler {index} ('{effect.Children[index]}').");
+                        $"Doroti fragment program '{state.DebugName}' requires image sampler {index} ('{effect.Children[index]}')."
+                    );
+                }
+
                 ObjectDisposedException.ThrowIf(image.debugDisposed, image);
                 var shader = imageShaderFactory(image);
                 childShaders.Add(shader);
                 children[effect.Children[index]] = shader;
             }
             if (state.Samplers.Keys.Any(index => index < 0 || index >= effect.Children.Count))
+            {
                 throw new InvalidDataException(
-                    $"Doroti fragment program '{state.DebugName}' received an image sampler outside its declared child range.");
+                    $"Doroti fragment program '{state.DebugName}' received an image sampler outside its declared child range."
+                );
+            }
+
             return effect.ToShader(uniforms, children)
-                ?? throw new InvalidOperationException($"Doroti fragment program '{state.DebugName}' did not create a Skia shader.");
+                ?? throw new InvalidOperationException(
+                    $"Doroti fragment program '{state.DebugName}' did not create a Skia shader."
+                );
         }
         finally
         {
-            foreach (var shader in childShaders) shader.Dispose();
+            foreach (var shader in childShaders)
+            {
+                shader.Dispose();
+            }
         }
     }
 
@@ -99,7 +120,9 @@ public static partial class DorotiSkiaRuntimeEffects
         SKSamplingOptions inputSampling,
         Func<Image, SKShader> imageShaderFactory,
         string backend = ValidationBackend,
-        long contextGeneration = 0, object? contextOwner = null)
+        long contextGeneration = 0,
+        object? contextOwner = null
+    )
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(input);
@@ -109,14 +132,23 @@ public static partial class DorotiSkiaRuntimeEffects
         var compiled = GetCompiledEffect(state, backend, contextGeneration, contextOwner);
         var effect = compiled.Effect;
         if (effect.Children.Count == 0)
+        {
             throw new InvalidDataException(
-                $"Doroti image-filter program '{state.DebugName}' requires a shader sampler for the filtered child.");
+                $"Doroti image-filter program '{state.DebugName}' requires a shader sampler for the filtered child."
+            );
+        }
 
-        if (effect.Uniforms.Count == 0 ||
-            !compiled.UniformDeclarations.TryGetValue(effect.Uniforms[0], out var firstUniform) ||
-            firstUniform.FloatCount != 2 || firstUniform.ArrayLength != 1)
+        if (
+            effect.Uniforms.Count == 0
+            || !compiled.UniformDeclarations.TryGetValue(effect.Uniforms[0], out var firstUniform)
+            || firstUniform.FloatCount != 2
+            || firstUniform.ArrayLength != 1
+        )
+        {
             throw new InvalidDataException(
-                $"Doroti image-filter program '{state.DebugName}' requires its first float uniform to be float2.");
+                $"Doroti image-filter program '{state.DebugName}' requires its first float uniform to be float2."
+            );
+        }
 
         using var uniforms = new SKRuntimeEffectUniforms(effect);
         BindFloats(compiled, uniforms, state, input.Width, input.Height);
@@ -127,38 +159,54 @@ public static partial class DorotiSkiaRuntimeEffects
             var inputShader = input.ToShader(
                 SKShaderTileMode.Decal,
                 SKShaderTileMode.Decal,
-                inputSampling);
+                inputSampling
+            );
             childShaders.Add(inputShader);
             children[effect.Children[0]] = inputShader;
 
             for (var index = 1; index < effect.Children.Count; index++)
             {
                 if (!state.Samplers.TryGetValue(index, out var image))
+                {
                     throw new InvalidDataException(
-                        $"Doroti image-filter program '{state.DebugName}' requires image sampler {index} ('{effect.Children[index]}').");
+                        $"Doroti image-filter program '{state.DebugName}' requires image sampler {index} ('{effect.Children[index]}')."
+                    );
+                }
+
                 ObjectDisposedException.ThrowIf(image.debugDisposed, image);
                 var shader = imageShaderFactory(image);
                 childShaders.Add(shader);
                 children[effect.Children[index]] = shader;
             }
             if (state.Samplers.Keys.Any(index => index < 0 || index >= effect.Children.Count))
+            {
                 throw new InvalidDataException(
-                    $"Doroti image-filter program '{state.DebugName}' received an image sampler outside its declared child range.");
+                    $"Doroti image-filter program '{state.DebugName}' received an image sampler outside its declared child range."
+                );
+            }
+
             return effect.ToShader(uniforms, children)
                 ?? throw new InvalidOperationException(
-                    $"Doroti image-filter program '{state.DebugName}' did not create a Skia shader.");
+                    $"Doroti image-filter program '{state.DebugName}' did not create a Skia shader."
+                );
         }
         finally
         {
-            foreach (var shader in childShaders) shader.Dispose();
+            foreach (var shader in childShaders)
+            {
+                shader.Dispose();
+            }
         }
     }
 
     public static void Validate(string source, string debugName = "validation")
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(source);
-        using var effect = SKRuntimeEffect.CreateShader(source, out var errors)
-            ?? throw new InvalidDataException($"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}");
+        using var effect =
+            SKRuntimeEffect.CreateShader(source, out var errors)
+            ?? throw new InvalidDataException(
+                $"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}"
+            );
     }
 
     /// <summary>
@@ -168,27 +216,49 @@ public static partial class DorotiSkiaRuntimeEffects
     public static void InvalidateContext(string backend, long currentContextGeneration) =>
         InvalidateContext(backend, currentContextGeneration, null);
 
-    internal static void InvalidateContext(string backend, long currentContextGeneration, object? contextOwner)
+    internal static void InvalidateContext(
+        string backend,
+        long currentContextGeneration,
+        object? contextOwner
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(backend);
         foreach (var pair in EffectCache.ToArray())
         {
-            if (!ReferenceEquals(pair.Key.ContextOwner, contextOwner) ||
-                !string.Equals(pair.Key.Backend, backend, StringComparison.Ordinal) ||
-                pair.Key.ContextGeneration == currentContextGeneration ||
-                !EffectCache.TryRemove(pair.Key, out var removed) ||
-                !removed.IsValueCreated)
+            if (
+                !ReferenceEquals(pair.Key.ContextOwner, contextOwner)
+                || !string.Equals(pair.Key.Backend, backend, StringComparison.Ordinal)
+                || pair.Key.ContextGeneration == currentContextGeneration
+                || !EffectCache.TryRemove(pair.Key, out var removed)
+                || !removed.IsValueCreated
+            )
+            {
                 continue;
+            }
+
             removed.Value.Dispose();
         }
     }
 
-    internal static void ReleaseContext(string backend, long contextGeneration, object? contextOwner = null)
+    internal static void ReleaseContext(
+        string backend,
+        long contextGeneration,
+        object? contextOwner = null
+    )
     {
         foreach (var pair in EffectCache.ToArray())
-            if (ReferenceEquals(pair.Key.ContextOwner, contextOwner) && pair.Key.Backend == backend &&
-                pair.Key.ContextGeneration == contextGeneration && EffectCache.TryRemove(pair.Key, out var removed) &&
-                removed.IsValueCreated) removed.Value.Dispose();
+        {
+            if (
+                ReferenceEquals(pair.Key.ContextOwner, contextOwner)
+                && pair.Key.Backend == backend
+                && pair.Key.ContextGeneration == contextGeneration
+                && EffectCache.TryRemove(pair.Key, out var removed)
+                && removed.IsValueCreated
+            )
+            {
+                removed.Value.Dispose();
+            }
+        }
     }
 
     private static void BindFloats(
@@ -196,7 +266,8 @@ public static partial class DorotiSkiaRuntimeEffects
         SKRuntimeEffectUniforms uniforms,
         FragmentShaderState state,
         int? inputWidth = null,
-        int? inputHeight = null)
+        int? inputHeight = null
+    )
     {
         var effect = compiled.Effect;
         var declarations = compiled.UniformDeclarations;
@@ -204,86 +275,125 @@ public static partial class DorotiSkiaRuntimeEffects
         foreach (var name in effect.Uniforms)
         {
             if (!declarations.TryGetValue(name, out var declaration))
+            {
                 throw new InvalidDataException(
-                    $"Doroti fragment program '{state.DebugName}' has unsupported uniform declaration '{name}'.");
+                    $"Doroti fragment program '{state.DebugName}' has unsupported uniform declaration '{name}'."
+                );
+            }
+
             var count = checked(declaration.FloatCount * declaration.ArrayLength);
             var values = new float[count];
             for (var index = 0; index < count && offset + index < state.Floats.Count; index++)
+            {
                 values[index] = checked((float)state.Floats[offset + index]);
+            }
+
             if (offset == 0 && inputWidth.HasValue && inputHeight.HasValue)
             {
                 values[0] = inputWidth.Value;
                 values[1] = inputHeight.Value;
             }
             if (count == 1 && declaration.ArrayLength == 1)
+            {
                 uniforms[name] = values[0];
+            }
             else
+            {
                 uniforms[name] = values;
+            }
+
             offset += count;
         }
         if (state.Floats.Count > offset)
+        {
             throw new InvalidDataException(
-                $"Doroti fragment program '{state.DebugName}' received {state.Floats.Count} floats but declares {offset}.");
+                $"Doroti fragment program '{state.DebugName}' received {state.Floats.Count} floats but declares {offset}."
+            );
+        }
     }
 
-    private static IReadOnlyDictionary<string, UniformDeclaration> ReadUniformDeclarations(string source) =>
-        UniformDeclarationRegex().Matches(source)
+    private static IReadOnlyDictionary<string, UniformDeclaration> ReadUniformDeclarations(
+        string source
+    ) =>
+        UniformDeclarationRegex()
+            .Matches(source)
             .Select(match => new UniformDeclaration(
                 match.Groups["name"].Value,
                 FloatCount(match.Groups["type"].Value),
-                match.Groups["array"].Success ? int.Parse(match.Groups["array"].Value) : 1))
+                match.Groups["array"].Success ? int.Parse(match.Groups["array"].Value) : 1
+            ))
             .ToDictionary(item => item.Name, StringComparer.Ordinal);
 
     private static CompiledRuntimeEffect GetCompiledEffect(
         FragmentShaderState state,
         string backend,
-        long contextGeneration, object? contextOwner)
+        long contextGeneration,
+        object? contextOwner
+    )
     {
-        var sourceHash = Convert.ToHexString(
-            SHA256.HashData(Encoding.UTF8.GetBytes(state.Source))).ToLowerInvariant();
+        var sourceHash = Convert
+            .ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(state.Source)))
+            .ToLowerInvariant();
         var key = new RuntimeEffectCacheKey(sourceHash, backend, contextGeneration, contextOwner);
-        var lazy = EffectCache.GetOrAdd(key, _ =>
-            new Lazy<CompiledRuntimeEffect>(
+        var lazy = EffectCache.GetOrAdd(
+            key,
+            _ => new Lazy<CompiledRuntimeEffect>(
                 () => CompileEffect(state.Source, state.DebugName),
-                LazyThreadSafetyMode.ExecutionAndPublication));
+                LazyThreadSafetyMode.ExecutionAndPublication
+            )
+        );
         try
         {
             return lazy.Value;
         }
         catch
         {
-            ((ICollection<KeyValuePair<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>>>)EffectCache)
-                .Remove(new(key, lazy));
+            (
+                (ICollection<KeyValuePair<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>>>)
+                    EffectCache
+            ).Remove(new(key, lazy));
             throw;
         }
     }
 
     private static void EnsureBackendSupported(string backend, string shaderName)
     {
-        if (SupportedBackends.Contains(backend) ||
-            backend.StartsWith(MauiGpuBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WindowsAngleEglBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WindowsVulkanBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WindowsCompositionD3D12Backend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WindowsHwndD3D12Backend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(AppKitMetalBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(WebGraphiteBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(NativeGraphiteMetalBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(NativeGraphiteVulkanBackend + "/", StringComparison.Ordinal) ||
-            backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal))
+        if (
+            SupportedBackends.Contains(backend)
+            || backend.StartsWith(MauiGpuBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WindowsAngleEglBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WindowsVulkanBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WindowsCompositionD3D12Backend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WindowsHwndD3D12Backend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(AppKitMetalBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(WebGraphiteBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(NativeGraphiteMetalBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(NativeGraphiteVulkanBackend + "/", StringComparison.Ordinal)
+            || backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal)
+        )
+        {
             return;
+        }
+
         var message =
-            $"Runtime effect '{shaderName}' is unsupported on backend '{backend}'. " +
-            "The shader was not replaced with a transparent or arbitrary fallback.";
-        PublishDiagnostic(new DorotiShaderCapabilityDiagnostic(
-            "DOROTI_SHADER_BACKEND_UNSUPPORTED", backend, shaderName, message));
+            $"Runtime effect '{shaderName}' is unsupported on backend '{backend}'. "
+            + "The shader was not replaced with a transparent or arbitrary fallback.";
+        PublishDiagnostic(
+            new DorotiShaderCapabilityDiagnostic(
+                "DOROTI_SHADER_BACKEND_UNSUPPORTED",
+                backend,
+                shaderName,
+                message
+            )
+        );
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.GraphicsScene,
             null,
             DartUiInvocation.Managed($"runtime-effect:{shaderName}"),
             message,
-            backend);
+            backend
+        );
     }
 
     private static void PublishDiagnostic(DorotiShaderCapabilityDiagnostic diagnostic)
@@ -300,9 +410,11 @@ public static partial class DorotiSkiaRuntimeEffects
 
     private static CompiledRuntimeEffect CompileEffect(string source, string debugName)
     {
-        var effect = SKRuntimeEffect.CreateShader(source, out var errors)
+        var effect =
+            SKRuntimeEffect.CreateShader(source, out var errors)
             ?? throw new InvalidDataException(
-                $"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}");
+                $"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}"
+            );
         Interlocked.Increment(ref _compiledEffectCount);
         return new(effect, ReadUniformDeclarations(source));
     }
@@ -319,7 +431,9 @@ public static partial class DorotiSkiaRuntimeEffects
             "float2x2" => 4,
             "float3x3" => 9,
             "float4x4" => 16,
-            _ => throw new NotSupportedException($"Doroti runtime effects do not support uniform type '{type}'."),
+            _ => throw new NotSupportedException(
+                $"Doroti runtime effects do not support uniform type '{type}'."
+            ),
         };
     }
 
@@ -327,7 +441,8 @@ public static partial class DorotiSkiaRuntimeEffects
 
     private sealed record CompiledRuntimeEffect(
         SKRuntimeEffect Effect,
-        IReadOnlyDictionary<string, UniformDeclaration> UniformDeclarations) : IDisposable
+        IReadOnlyDictionary<string, UniformDeclaration> UniformDeclarations
+    ) : IDisposable
     {
         public void Dispose() => Effect.Dispose();
     }
@@ -335,8 +450,12 @@ public static partial class DorotiSkiaRuntimeEffects
     private sealed record RuntimeEffectCacheKey(
         string SourceSha256,
         string Backend,
-        long ContextGeneration, object? ContextOwner);
+        long ContextGeneration,
+        object? ContextOwner
+    );
 
-    [GeneratedRegex(@"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+(?<name>[A-Za-z_]\w*)\s*(?:\[\s*(?<array>\d+)\s*\])?\s*;")]
+    [GeneratedRegex(
+        @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+(?<name>[A-Za-z_]\w*)\s*(?:\[\s*(?<array>\d+)\s*\])?\s*;"
+    )]
     private static partial Regex UniformDeclarationRegex();
 }

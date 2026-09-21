@@ -36,16 +36,28 @@ public static class DebugLibrary
         return action();
     }
 
-    public static bool debugAssertAllFoundationVarsUnset(string reason, bool debugPrintOverride = false)
+    public static bool debugAssertAllFoundationVarsUnset(
+        string reason,
+        bool debugPrintOverride = false
+    )
     {
-        if (debugInstrumentationEnabled || debugDoublePrecision is not null || debugBrightnessOverride is not null || debugPrintOverride)
+        if (
+            debugInstrumentationEnabled
+            || debugDoublePrecision is not null
+            || debugBrightnessOverride is not null
+            || debugPrintOverride
+        )
         {
             throw new FlutterError(reason);
         }
         return true;
     }
 
-    public static bool debugMaybeDispatchCreated(string libraryName, string className, object instance)
+    public static bool debugMaybeDispatchCreated(
+        string libraryName,
+        string className,
+        object instance
+    )
     {
         MemoryAllocations.instance.dispatchObjectCreated(libraryName, className, instance);
         return true;

@@ -15,7 +15,7 @@ public enum ContextMenuButtonType
     searchWeb,
     share,
     liveTextInput,
-    custom
+    custom,
 }
 
 public class ContextMenuButtonItem
@@ -24,31 +24,53 @@ public class ContextMenuButtonItem
     public virtual ContextMenuButtonType type { get; private set; } = default!;
     public virtual string? label { get; private set; }
 
-    public ContextMenuButtonItem(Action? onPressed, ContextMenuButtonType type = ContextMenuButtonType.custom, string? label = null)
+    public ContextMenuButtonItem(
+        Action? onPressed,
+        ContextMenuButtonType type = ContextMenuButtonType.custom,
+        string? label = null
+    )
     {
         this.onPressed = onPressed;
         this.type = type;
         this.label = label;
     }
 
-    public virtual ContextMenuButtonItem copyWith(Action? onPressed = null, ContextMenuButtonType? type = null, string? label = null)
+    public virtual ContextMenuButtonItem copyWith(
+        Action? onPressed = null,
+        ContextMenuButtonType? type = null,
+        string? label = null
+    )
     {
-        return new ContextMenuButtonItem(onPressed: onPressed ?? this.onPressed, type: type ?? this.type, label: label ?? this.label);
+        return new ContextMenuButtonItem(
+            onPressed: onPressed ?? this.onPressed,
+            type: type ?? this.type,
+            label: label ?? this.label
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as ContextMenuButtonItem;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is ContextMenuButtonItem) && (__other.label == label) && Equals(__other.onPressed, onPressed) && Equals(__other.type, type);
+        return (__other is ContextMenuButtonItem)
+            && (__other.label == label)
+            && Equals(__other.onPressed, onPressed)
+            && Equals(__other.type, type);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(label, onPressed, type));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(label, onPressed, type)
+        );
+
     public override string ToString() => $"ContextMenuButtonItem {type}, {label}";
 }
-

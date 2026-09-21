@@ -16,9 +16,14 @@ internal sealed record DartResolvedElement(
     DartType? ResolvedReturnType,
     DartResolvedParameter[]? Parameters,
     bool IsAbstract,
-    bool IsPrivate);
+    bool IsPrivate
+);
 
-internal sealed record DartResolvedTypeParameter(string Name, string? Bound, DartType? ResolvedBound);
+internal sealed record DartResolvedTypeParameter(
+    string Name,
+    string? Bound,
+    DartType? ResolvedBound
+);
 
 internal sealed record DartResolvedParameter(
     string Name,
@@ -27,4 +32,5 @@ internal sealed record DartResolvedParameter(
     string Kind,
     string? DefaultValue,
     bool IsInitializingFormal,
-    bool IsSuperFormal);
+    bool IsSuperFormal
+);

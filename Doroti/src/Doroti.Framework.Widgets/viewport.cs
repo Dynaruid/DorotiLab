@@ -18,7 +18,21 @@ public class Viewport : MultiChildRenderObjectWidget
     public virtual SliverPaintOrder paintOrder { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public Viewport(Key? key = null, AxisDirection axisDirection = AxisDirection.down, AxisDirection? crossAxisDirection = null, double anchor = 0.0, ViewportOffset offset = default!, Key? center = null, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, List<Widget> slivers = default!) : base(key: key, children: slivers)
+    public Viewport(
+        Key? key = null,
+        AxisDirection axisDirection = AxisDirection.down,
+        AxisDirection? crossAxisDirection = null,
+        double anchor = 0.0,
+        ViewportOffset offset = default!,
+        Key? center = null,
+        double? cacheExtent = null,
+        CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop,
+        Clip clipBehavior = Clip.hardEdge,
+        List<Widget> slivers = default!
+    )
+        : base(key: key, children: slivers)
     {
         List<Widget> __slivers = slivers ?? new List<Widget>();
         this.axisDirection = axisDirection;
@@ -31,8 +45,13 @@ public class Viewport : MultiChildRenderObjectWidget
         this.scrollCacheExtent = scrollCacheExtent;
         this.paintOrder = paintOrder;
         this.clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((center is null) || (__slivers.where((child) => Equals(child.key, center)).Count() == 1L));
-        System.Diagnostics.Debug.Assert((!Equals(cacheExtentStyle, CacheExtentStyle.viewport)) || (cacheExtent is not null));
+        System.Diagnostics.Debug.Assert(
+            (center is null)
+                || (__slivers.where((child) => Equals(child.key, center)).Count() == 1L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (!Equals(cacheExtentStyle, CacheExtentStyle.viewport)) || (cacheExtent is not null)
+        );
     }
 
     internal virtual ScrollCacheExtent? _effectiveScrollCacheExtent
@@ -49,13 +68,17 @@ public class Viewport : MultiChildRenderObjectWidget
                 switch (cacheExtentStyle)
                 {
                     case CacheExtentStyle.pixel:
-                        {
-                            return ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent));
-                        }
+                    {
+                        return ScrollCacheExtent.CreatePixels(
+                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                        );
+                    }
                     case CacheExtentStyle.viewport:
-                        {
-                            return ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(cacheExtent));
-                        }
+                    {
+                        return ScrollCacheExtent.CreateViewport(
+                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                        );
+                    }
                     default:
                         throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
@@ -63,28 +86,44 @@ public class Viewport : MultiChildRenderObjectWidget
             return null;
         }
     }
-    public static AxisDirection getDefaultCrossAxisDirection(BuildContext context, AxisDirection axisDirection)
+
+    public static AxisDirection getDefaultCrossAxisDirection(
+        BuildContext context,
+        AxisDirection axisDirection
+    )
     {
         switch (axisDirection)
         {
             case AxisDirection.up:
-                {
-                    DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to determine the cross-axis direction when the viewport has an 'up' axisDirection", alternative: "Alternatively, consider specifying the 'crossAxisDirection' argument on the Viewport."));
-                    return Basic_typesLibrary.textDirectionToAxisDirection(Directionality.of(context));
-                }
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    DebugLibrary.debugCheckHasDirectionality(
+                        context,
+                        why: "to determine the cross-axis direction when the viewport has an 'up' axisDirection",
+                        alternative: "Alternatively, consider specifying the 'crossAxisDirection' argument on the Viewport."
+                    )
+                );
+                return Basic_typesLibrary.textDirectionToAxisDirection(Directionality.of(context));
+            }
             case AxisDirection.right:
-                {
-                    return AxisDirection.down;
-                }
+            {
+                return AxisDirection.down;
+            }
             case AxisDirection.down:
-                {
-                    DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to determine the cross-axis direction when the viewport has a 'down' axisDirection", alternative: "Alternatively, consider specifying the 'crossAxisDirection' argument on the Viewport."));
-                    return Basic_typesLibrary.textDirectionToAxisDirection(Directionality.of(context));
-                }
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    DebugLibrary.debugCheckHasDirectionality(
+                        context,
+                        why: "to determine the cross-axis direction when the viewport has a 'down' axisDirection",
+                        alternative: "Alternatively, consider specifying the 'crossAxisDirection' argument on the Viewport."
+                    )
+                );
+                return Basic_typesLibrary.textDirectionToAxisDirection(Directionality.of(context));
+            }
             case AxisDirection.left:
-                {
-                    return AxisDirection.down;
-                }
+            {
+                return AxisDirection.down;
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -93,33 +132,60 @@ public class Viewport : MultiChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new RenderViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection), anchor: anchor, offset: offset, scrollCacheExtent: _effectiveScrollCacheExtent, paintOrder: paintOrder, clipBehavior: clipBehavior);
+        return new RenderViewport(
+            axisDirection: axisDirection,
+            crossAxisDirection: crossAxisDirection
+                ?? getDefaultCrossAxisDirection(context, axisDirection),
+            anchor: anchor,
+            offset: offset,
+            scrollCacheExtent: _effectiveScrollCacheExtent,
+            paintOrder: paintOrder,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderViewport>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.axisDirection = axisDirection;
-    __cascade.crossAxisDirection = crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection);
-    __cascade.anchor = anchor;
-    __cascade.offset = offset;
-    __cascade.scrollCacheExtent = _effectiveScrollCacheExtent;
-    __cascade.paintOrder = paintOrder;
-    __cascade.clipBehavior = clipBehavior;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderViewport>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.axisDirection = axisDirection;
+                        __cascade.crossAxisDirection =
+                            crossAxisDirection
+                            ?? getDefaultCrossAxisDirection(context, axisDirection);
+                        __cascade.anchor = anchor;
+                        __cascade.offset = offset;
+                        __cascade.scrollCacheExtent = _effectiveScrollCacheExtent;
+                        __cascade.paintOrder = paintOrder;
+                        __cascade.clipBehavior = clipBehavior;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
-    public override MultiChildRenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<MultiChildRenderObjectElement>(new _ViewportElement__viewport(this));
+    public override MultiChildRenderObjectElement createElement() =>
+        DartRuntimePrimitives.ConvertValue<MultiChildRenderObjectElement>(
+            new _ViewportElement__viewport(this)
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
-        properties.add(new EnumProperty<AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<AxisDirection>(
+                "crossAxisDirection",
+                crossAxisDirection,
+                defaultValue: null
+            )
+        );
         properties.add(new DoubleProperty("anchor", anchor));
         properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
         if (center is not null)
@@ -130,24 +196,34 @@ public class Viewport : MultiChildRenderObjectWidget
         {
             if (Enumerable.Any(children) && (children.First().key is not null))
             {
-                properties.add(new DiagnosticsProperty<Key>("center", children.First().key, tooltip: "implicit"));
+                properties.add(
+                    new DiagnosticsProperty<Key>(
+                        "center",
+                        children.First().key,
+                        tooltip: "implicit"
+                    )
+                );
             }
         }
-        properties.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent));
+        properties.add(
+            new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent)
+        );
     }
-
 }
 
-internal class _ViewportElement__viewport : MultiChildRenderObjectElement, NotifiableElementMixin, ViewportElementMixin
+internal class _ViewportElement__viewport
+    : MultiChildRenderObjectElement,
+        NotifiableElementMixin,
+        ViewportElementMixin
 {
     internal virtual bool _doingMountOrUpdate { get; set; } = false;
     internal virtual long? _centerSlotIndex { get; set; } = default;
 
-    internal _ViewportElement__viewport(Viewport widget) : base(widget)
-    {
-    }
+    internal _ViewportElement__viewport(Viewport widget)
+        : base(widget) { }
 
     public override RenderViewport renderObject => (RenderViewport)base.renderObject;
+
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !_doingMountOrUpdate);
@@ -206,7 +282,18 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
     {
         var __slot = (IndexedSlot<Element?>?)slot;
         base.insertRenderObjectChild(child, __slot);
-        if (!_doingMountOrUpdate && (( __slot ?? throw new ArgumentException("A viewport child requires an indexed slot.", nameof(slot))).index == _centerSlotIndex))
+        if (
+            !_doingMountOrUpdate
+            && (
+                (
+                    __slot
+                    ?? throw new ArgumentException(
+                        "A viewport child requires an indexed slot.",
+                        nameof(slot)
+                    )
+                ).index == _centerSlotIndex
+            )
+        )
         {
             renderObject.center = ((RenderSliver?)child)!;
         }
@@ -231,12 +318,16 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
 
     public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
-        children.where((e) =>
-        {
-            var renderSliver = ((RenderSliver?)e.renderObject!)!;
-            return renderSliver.geometry!.visible;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).forEach((__arg0) => visitor(__arg0));
+        children
+            .where(
+                (e) =>
+                {
+                    var renderSliver = ((RenderSliver?)e.renderObject!)!;
+                    return renderSliver.geometry!.visible;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .forEach((__arg0) => visitor(__arg0));
     }
 
     public override void attachNotificationTree()
@@ -253,7 +344,6 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
@@ -267,7 +357,19 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
     public virtual CacheExtentStyle cacheExtentStyle { get; private set; } = default!;
     public virtual ScrollCacheExtent? scrollCacheExtent { get; private set; }
 
-    public ShrinkWrappingViewport(Key? key = null, AxisDirection axisDirection = AxisDirection.down, AxisDirection? crossAxisDirection = null, ViewportOffset offset = default!, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> slivers = default!) : base(key: key, children: slivers)
+    public ShrinkWrappingViewport(
+        Key? key = null,
+        AxisDirection axisDirection = AxisDirection.down,
+        AxisDirection? crossAxisDirection = null,
+        ViewportOffset offset = default!,
+        SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop,
+        Clip clipBehavior = Clip.hardEdge,
+        double? cacheExtent = null,
+        CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        List<Widget> slivers = default!
+    )
+        : base(key: key, children: slivers)
     {
         List<Widget> __slivers = slivers ?? new List<Widget>();
         this.axisDirection = axisDirection;
@@ -294,13 +396,17 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
                 switch (cacheExtentStyle)
                 {
                     case CacheExtentStyle.pixel:
-                        {
-                            return ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent));
-                        }
+                    {
+                        return ScrollCacheExtent.CreatePixels(
+                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                        );
+                    }
                     case CacheExtentStyle.viewport:
-                        {
-                            return ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(cacheExtent));
-                        }
+                    {
+                        return ScrollCacheExtent.CreateViewport(
+                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                        );
+                    }
                     default:
                         throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
@@ -308,36 +414,63 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
             return null;
         }
     }
+
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new RenderShrinkWrappingViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection), offset: offset, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: _effectiveScrollCacheExtent);
+        return new RenderShrinkWrappingViewport(
+            axisDirection: axisDirection,
+            crossAxisDirection: crossAxisDirection
+                ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection),
+            offset: offset,
+            paintOrder: paintOrder,
+            clipBehavior: clipBehavior,
+            scrollCacheExtent: _effectiveScrollCacheExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderShrinkWrappingViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderShrinkWrappingViewport>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.axisDirection = axisDirection;
-    __cascade.crossAxisDirection = crossAxisDirection ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection);
-    __cascade.offset = offset;
-    __cascade.paintOrder = paintOrder;
-    __cascade.clipBehavior = clipBehavior;
-    __cascade.scrollCacheExtent = _effectiveScrollCacheExtent;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderShrinkWrappingViewport>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.axisDirection = axisDirection;
+                        __cascade.crossAxisDirection =
+                            crossAxisDirection
+                            ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection);
+                        __cascade.offset = offset;
+                        __cascade.paintOrder = paintOrder;
+                        __cascade.clipBehavior = clipBehavior;
+                        __cascade.scrollCacheExtent = _effectiveScrollCacheExtent;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
-        properties.add(new EnumProperty<AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<AxisDirection>(
+                "crossAxisDirection",
+                crossAxisDirection,
+                defaultValue: null
+            )
+        );
         properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
-        properties.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<ScrollCacheExtent>(
+                "scrollCacheExtent",
+                scrollCacheExtent,
+                defaultValue: null
+            )
+        );
     }
-
 }
-

@@ -8,7 +8,7 @@ namespace Doroti.Framework.Widgets;
 public enum FloatingHeaderSnapMode
 {
     overlay,
-    scroll
+    scroll,
 }
 
 public class SliverFloatingHeader : StatefulWidget
@@ -17,17 +17,28 @@ public class SliverFloatingHeader : StatefulWidget
     public virtual FloatingHeaderSnapMode? snapMode { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public SliverFloatingHeader(Key? key = null, AnimationStyle? animationStyle = null, FloatingHeaderSnapMode? snapMode = null, Widget child = default!) : base(key: key)
+    public SliverFloatingHeader(
+        Key? key = null,
+        AnimationStyle? animationStyle = null,
+        FloatingHeaderSnapMode? snapMode = null,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.animationStyle = animationStyle;
         this.snapMode = snapMode;
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SliverFloatingHeaderState__sliver_floating_header());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SliverFloatingHeaderState__sliver_floating_header()
+        );
 }
 
-internal class _SliverFloatingHeaderState__sliver_floating_header : State<SliverFloatingHeader>, SingleTickerProviderStateMixin<SliverFloatingHeader>
+internal class _SliverFloatingHeaderState__sliver_floating_header
+    : State<SliverFloatingHeader>,
+        SingleTickerProviderStateMixin<SliverFloatingHeader>
 {
     public virtual ScrollPosition? position { get; set; } = default;
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
@@ -35,22 +46,49 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
 
     public override Widget build(BuildContext context)
     {
-        return new _SliverFloatingHeader__sliver_floating_header(vsync: this, animationStyle: widget.animationStyle, snapMode: widget.snapMode, child: new _SnapTrigger__sliver_floating_header(widget.child));
+        return new _SliverFloatingHeader__sliver_floating_header(
+            vsync: this,
+            animationStyle: widget.animationStyle,
+            snapMode: widget.snapMode,
+            child: new _SnapTrigger__sliver_floating_header(widget.child)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -60,14 +98,32 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -105,10 +161,24 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _SnapTrigger__sliver_floating_header : StatefulWidget
@@ -120,10 +190,12 @@ internal class _SnapTrigger__sliver_floating_header : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SnapTriggerState__sliver_floating_header());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SnapTriggerState__sliver_floating_header());
 }
 
-internal class _SnapTriggerState__sliver_floating_header : State<_SnapTrigger__sliver_floating_header>
+internal class _SnapTriggerState__sliver_floating_header
+    : State<_SnapTrigger__sliver_floating_header>
 {
     public virtual ScrollPosition? position { get; set; } = default;
 
@@ -153,7 +225,8 @@ internal class _SnapTriggerState__sliver_floating_header : State<_SnapTrigger__s
     public virtual void isScrollingListener()
     {
         DartRuntimePrimitives.Assert(() => position is not null);
-        _RenderSliverFloatingHeader__sliver_floating_header? renderer = context.findAncestorRenderObjectOfType<_RenderSliverFloatingHeader__sliver_floating_header>();
+        _RenderSliverFloatingHeader__sliver_floating_header? renderer =
+            context.findAncestorRenderObjectOfType<_RenderSliverFloatingHeader__sliver_floating_header>();
         renderer?.isScrollingUpdate(position!);
     }
 
@@ -166,7 +239,13 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
     public virtual AnimationStyle? animationStyle { get; private set; }
     public virtual FloatingHeaderSnapMode? snapMode { get; private set; }
 
-    internal _SliverFloatingHeader__sliver_floating_header(Scheduler.TickerProvider? vsync = null, AnimationStyle? animationStyle = null, FloatingHeaderSnapMode? snapMode = null, Widget? child = null) : base(child: child)
+    internal _SliverFloatingHeader__sliver_floating_header(
+        Scheduler.TickerProvider? vsync = null,
+        AnimationStyle? animationStyle = null,
+        FloatingHeaderSnapMode? snapMode = null,
+        Widget? child = null
+    )
+        : base(child: child)
     {
         this.vsync = vsync;
         this.animationStyle = animationStyle;
@@ -175,23 +254,32 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSliverFloatingHeader__sliver_floating_header(vsync: vsync, animationStyle: animationStyle, snapMode: snapMode);
+        return new _RenderSliverFloatingHeader__sliver_floating_header(
+            vsync: vsync,
+            animationStyle: animationStyle,
+            snapMode: snapMode
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverFloatingHeader__sliver_floating_header)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSliverFloatingHeader__sliver_floating_header>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.vsync = vsync;
-    __cascade.animationStyle = animationStyle;
-    __cascade.snapMode = snapMode;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSliverFloatingHeader__sliver_floating_header>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.vsync = vsync;
+                        __cascade.animationStyle = animationStyle;
+                        __cascade.snapMode = snapMode;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverSingleBoxAdapter
@@ -204,7 +292,11 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
     public virtual AnimationStyle? animationStyle { get; set; } = default;
     public virtual FloatingHeaderSnapMode? snapMode { get; set; } = default;
 
-    internal _RenderSliverFloatingHeader__sliver_floating_header(Scheduler.TickerProvider? vsync = null, AnimationStyle? animationStyle = null, FloatingHeaderSnapMode? snapMode = null)
+    internal _RenderSliverFloatingHeader__sliver_floating_header(
+        Scheduler.TickerProvider? vsync = null,
+        AnimationStyle? animationStyle = null,
+        FloatingHeaderSnapMode? snapMode = null
+    )
     {
         this.animationStyle = animationStyle;
         this.snapMode = snapMode;
@@ -233,6 +325,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
             }
         }
     }
+
     public virtual void isScrollingUpdate(ScrollPosition position)
     {
         if (position.isScrollingNotifier.value)
@@ -242,24 +335,56 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
         else
         {
             ScrollDirection direction = position.userScrollDirection;
-            bool headerIsPartiallyVisible = direction switch { ScrollDirection.forward when effectiveScrollOffset <= 0L => false, ScrollDirection.reverse when effectiveScrollOffset >= childExtent => false, _ => true };
+            bool headerIsPartiallyVisible = direction switch
+            {
+                ScrollDirection.forward when effectiveScrollOffset <= 0L => false,
+                ScrollDirection.reverse when effectiveScrollOffset >= childExtent => false,
+                _ => true,
+            };
             if (headerIsPartiallyVisible)
             {
-                snapController ??= ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(vsync: vsync!);
-    __cascade.addListener(() =>
-    {
-        if (effectiveScrollOffset != snapAnimation.value)
-        {
-            effectiveScrollOffset = snapAnimation.value;
-            markNeedsLayout();
-        }
-    });
-    return __cascade;
-}))();
-                snapController!.duration = direction switch { ScrollDirection.forward => animationStyle?.duration ?? Duration.Create(milliseconds: 300L), _ => animationStyle?.reverseDuration ?? Duration.Create(milliseconds: 300L) };
-                snapAnimation = snapController!.drive(new Tween<double>(begin: effectiveScrollOffset, end: direction switch { ScrollDirection.forward => 0, _ => childExtent }).chain(new CurveTween(curve: direction switch { ScrollDirection.forward => animationStyle?.curve ?? Curves.easeInOut, _ => animationStyle?.reverseCurve ?? Curves.easeInOut })));
+                snapController ??= (
+                    (Func<AnimationController>)(
+                        () =>
+                        {
+                            var __cascade = new AnimationController(vsync: vsync!);
+                            __cascade.addListener(() =>
+                            {
+                                if (effectiveScrollOffset != snapAnimation.value)
+                                {
+                                    effectiveScrollOffset = snapAnimation.value;
+                                    markNeedsLayout();
+                                }
+                            });
+                            return __cascade;
+                        }
+                    )
+                )();
+                snapController!.duration = direction switch
+                {
+                    ScrollDirection.forward => animationStyle?.duration
+                        ?? Duration.Create(milliseconds: 300L),
+                    _ => animationStyle?.reverseDuration ?? Duration.Create(milliseconds: 300L),
+                };
+                snapAnimation = snapController!.drive(
+                    new Tween<double>(
+                        begin: effectiveScrollOffset,
+                        end: direction switch
+                        {
+                            ScrollDirection.forward => 0,
+                            _ => childExtent,
+                        }
+                    ).chain(
+                        new CurveTween(
+                            curve: direction switch
+                            {
+                                ScrollDirection.forward => animationStyle?.curve
+                                    ?? Curves.easeInOut,
+                                _ => animationStyle?.reverseCurve ?? Curves.easeInOut,
+                            }
+                        )
+                    )
+                );
                 snapController!.forward(from: 0.0);
             }
         }
@@ -274,9 +399,15 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
                 return 0.0;
             }
             DartRuntimePrimitives.Assert(() => child!.hasSize);
-            return constraints.axis switch { Axis.vertical => child!.size.height, Axis.horizontal => child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return constraints.axis switch
+            {
+                Axis.vertical => child!.size.height,
+                Axis.horizontal => child!.size.width,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     public override void detach()
     {
         snapController?.dispose();
@@ -288,9 +419,16 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
     {
         get
         {
-            return (lastScrollOffset is not null) && ((constraints.scrollOffset < DartRuntimePrimitives.RequireValue(lastScrollOffset)) || (effectiveScrollOffset < childExtent));
+            return (lastScrollOffset is not null)
+                && (
+                    (
+                        constraints.scrollOffset
+                        < DartRuntimePrimitives.RequireValue(lastScrollOffset)
+                    ) || (effectiveScrollOffset < childExtent)
+                );
         }
     }
+
     public override void performLayout()
     {
         if (!floatingHeaderNeedsToBeUpdated)
@@ -299,7 +437,8 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
         }
         else
         {
-            double delta = DartRuntimePrimitives.RequireValue(lastScrollOffset) - constraints.scrollOffset;
+            double delta =
+                DartRuntimePrimitives.RequireValue(lastScrollOffset) - constraints.scrollOffset;
             if (Equals(constraints.userScrollDirection, ScrollDirection.forward))
             {
                 if (effectiveScrollOffset > childExtent)
@@ -311,12 +450,36 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
             {
                 delta = Dart_uiLibrary.clampDouble(delta, -double.PositiveInfinity, 0);
             }
-            effectiveScrollOffset = Dart_uiLibrary.clampDouble(effectiveScrollOffset - delta, 0.0, constraints.scrollOffset);
+            effectiveScrollOffset = Dart_uiLibrary.clampDouble(
+                effectiveScrollOffset - delta,
+                0.0,
+                constraints.scrollOffset
+            );
         }
         child?.layout(constraints.asBoxConstraints(), parentUsesSize: true);
         double paintExtentLocal = childExtent - effectiveScrollOffset;
-        double layoutExtentLocal = (snapMode ?? FloatingHeaderSnapMode.overlay) switch { FloatingHeaderSnapMode.overlay => childExtent - constraints.scrollOffset, FloatingHeaderSnapMode.scroll => paintExtentLocal, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        geometry = new SliverGeometry(paintOrigin: Math.Min(constraints.overlap, 0.0), scrollExtent: childExtent, paintExtent: Dart_uiLibrary.clampDouble(paintExtentLocal, 0.0, constraints.remainingPaintExtent), layoutExtent: Dart_uiLibrary.clampDouble(layoutExtentLocal, 0.0, constraints.remainingPaintExtent), maxPaintExtent: childExtent, hasVisualOverflow: true);
+        double layoutExtentLocal = (snapMode ?? FloatingHeaderSnapMode.overlay) switch
+        {
+            FloatingHeaderSnapMode.overlay => childExtent - constraints.scrollOffset,
+            FloatingHeaderSnapMode.scroll => paintExtentLocal,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        geometry = new SliverGeometry(
+            paintOrigin: Math.Min(constraints.overlap, 0.0),
+            scrollExtent: childExtent,
+            paintExtent: Dart_uiLibrary.clampDouble(
+                paintExtentLocal,
+                0.0,
+                constraints.remainingPaintExtent
+            ),
+            layoutExtent: Dart_uiLibrary.clampDouble(
+                layoutExtentLocal,
+                0.0,
+                constraints.remainingPaintExtent
+            ),
+            maxPaintExtent: childExtent,
+            hasVisualOverflow: true
+        );
         lastScrollOffset = constraints.scrollOffset;
     }
 
@@ -336,10 +499,24 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
     {
         if ((child is not null) && geometry!.visible)
         {
-            offset += SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new Offset(0.0, geometry!.paintExtent - childMainAxisPosition(child!) - childExtent), AxisDirection.left => new Offset(geometry!.paintExtent - childMainAxisPosition(child!) - childExtent, 0.0), AxisDirection.right => new Offset(childMainAxisPosition(child!), 0.0), AxisDirection.down => new Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            offset += SliverLibrary.applyGrowthDirectionToAxisDirection(
+                constraints.axisDirection,
+                constraints.growthDirection
+            ) switch
+            {
+                AxisDirection.up => new Offset(
+                    0.0,
+                    geometry!.paintExtent - childMainAxisPosition(child!) - childExtent
+                ),
+                AxisDirection.left => new Offset(
+                    geometry!.paintExtent - childMainAxisPosition(child!) - childExtent,
+                    0.0
+                ),
+                AxisDirection.right => new Offset(childMainAxisPosition(child!), 0.0),
+                AxisDirection.down => new Offset(0.0, childMainAxisPosition(child!)),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             context.paintChild(child!, offset);
         }
     }
-
 }
-

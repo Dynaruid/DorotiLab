@@ -7,12 +7,14 @@ public sealed record ConverterReport(
     CompilerIdentity Identity,
     bool Success,
     ConverterOutput[] Outputs,
-    ConverterDiagnostic[] Diagnostics)
+    ConverterDiagnostic[] Diagnostics
+)
 {
     public string ConverterVersion => Identity.ConverterVersion;
 }
 
 public sealed record GeneratedFile(string Code, SourceMapEntry[] Mappings);
+
 public sealed record SourceMapDocument(string SchemaVersion, SourceMapEntry[] Mappings);
 
 public sealed record SourceMapEntry(
@@ -23,7 +25,8 @@ public sealed record SourceMapEntry(
     string GeneratedFile,
     int GeneratedLineStart,
     int GeneratedLineEnd,
-    string? GeneratedDeclarationShape = null);
+    string? GeneratedDeclarationShape = null
+);
 
 public sealed record CompilerWorkspace(string Path, ConverterReport Report);
 
@@ -40,8 +43,17 @@ public sealed record PackageReleaseDocument(
     ConverterDiagnostic[] Diagnostics,
     bool Success,
     string RuntimeDependencyMode,
-    string DartCompilerRequirement);
+    string DartCompilerRequirement
+);
 
-public sealed record PackageReleaseSource(string Package, string Version, string License, string LicenseSha256, string Source);
+public sealed record PackageReleaseSource(
+    string Package,
+    string Version,
+    string License,
+    string LicenseSha256,
+    string Source
+);
+
 public sealed record PackageReleaseInput(string Uri, string Sha256, string[] Symbols);
+
 public sealed record PackageReleaseArtifact(string Path, string Sha256);

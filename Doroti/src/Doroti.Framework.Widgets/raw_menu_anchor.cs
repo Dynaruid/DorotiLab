@@ -12,7 +12,26 @@ public static partial class Raw_menu_anchorLibrary
 
 public static partial class Raw_menu_anchorLibrary
 {
-    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(TraversalDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(TraversalDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(TraversalDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(TraversalDirection.right) };
+    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = new ActivateIntent(),
+        [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(
+            TraversalDirection.down
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(
+            TraversalDirection.up
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(
+            TraversalDirection.left
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(
+            TraversalDirection.right
+        ),
+    };
 }
 
 public class RawMenuOverlayInfo
@@ -22,7 +41,12 @@ public class RawMenuOverlayInfo
     public virtual Offset? position { get; private set; }
     public virtual object tapRegionGroupId { get; private set; } = default!;
 
-    public RawMenuOverlayInfo(Rect anchorRect, Size overlaySize, object tapRegionGroupId, Offset? position = null)
+    public RawMenuOverlayInfo(
+        Rect anchorRect,
+        Size overlaySize,
+        object tapRegionGroupId,
+        Offset? position = null
+    )
     {
         this.anchorRect = anchorRect;
         this.overlaySize = overlaySize;
@@ -33,7 +57,11 @@ public class RawMenuOverlayInfo
     public override bool Equals(object? other)
     {
         var __other = other as RawMenuOverlayInfo;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -42,18 +70,31 @@ public class RawMenuOverlayInfo
         {
             return false;
         }
-        return (__other is RawMenuOverlayInfo) && Equals(__other.anchorRect, anchorRect) && Equals(__other.overlaySize, overlaySize) && Equals(__other.position, position) && Equals(__other.tapRegionGroupId, tapRegionGroupId);
+        return (__other is RawMenuOverlayInfo)
+            && Equals(__other.anchorRect, anchorRect)
+            && Equals(__other.overlaySize, overlaySize)
+            && Equals(__other.position, position)
+            && Equals(__other.tapRegionGroupId, tapRegionGroupId);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(anchorRect, overlaySize, position, tapRegionGroupId);
+        return FoundationRuntimePorts.ObjectHash(
+            anchorRect,
+            overlaySize,
+            position,
+            tapRegionGroupId
+        );
     }
 }
 
 public delegate Widget RawMenuAnchorOverlayBuilder(BuildContext context, RawMenuOverlayInfo info);
 
-public delegate Widget RawMenuAnchorChildBuilder(BuildContext context, MenuController controller, Widget? child);
+public delegate Widget RawMenuAnchorChildBuilder(
+    BuildContext context,
+    MenuController controller,
+    Widget? child
+);
 
 public delegate void RawMenuAnchorOpenRequestedCallback(Offset? position, Action showOverlay);
 
@@ -64,7 +105,12 @@ internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
     public virtual bool isOpen { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    internal _MenuControllerScope__raw_menu_anchor(bool isOpen, MenuController controller, Widget child) : base(child: child)
+    internal _MenuControllerScope__raw_menu_anchor(
+        bool isOpen,
+        MenuController controller,
+        Widget child
+    )
+        : base(child: child)
     {
         this.isOpen = isOpen;
         this.controller = controller;
@@ -76,7 +122,6 @@ internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
         return isOpen != __oldWidget.isOpen;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RawMenuAnchor : StatefulWidget
@@ -85,15 +130,37 @@ public class RawMenuAnchor : StatefulWidget
     public virtual Action? onClose { get; private set; }
     public virtual Action<Offset?, Action> onOpenRequested { get; private set; } = default!;
     public virtual Action<Action> onCloseRequested { get; private set; } = default!;
-    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
+    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder
+    {
+        get;
+        private set;
+    }
     public virtual Widget? child { get; private set; }
-    public virtual Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder
+    {
+        get;
+        private set;
+    } = default!;
     public virtual bool useRootOverlay { get; private set; } = default!;
     public virtual FocusNode? childFocusNode { get; private set; }
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchor(Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, Action? onOpen = null, Action? onClose = null, Action<Offset?, Action> onOpenRequested = default!, Action<Action> onCloseRequested = default!, bool useRootOverlay = false, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
+    public RawMenuAnchor(
+        Key? key = null,
+        FocusNode? childFocusNode = null,
+        bool consumeOutsideTaps = false,
+        Action? onOpen = null,
+        Action? onClose = null,
+        Action<Offset?, Action> onOpenRequested = default!,
+        Action<Action> onCloseRequested = default!,
+        bool useRootOverlay = false,
+        Func<BuildContext, MenuController, Widget?, Widget>? builder = null,
+        MenuController controller = default!,
+        Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         Action<Offset?, Action> __onOpenRequested = onOpenRequested ?? _defaultOnOpenRequested;
         Action<Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
@@ -120,14 +187,22 @@ public class RawMenuAnchor : StatefulWidget
         hideOverlay();
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorState__raw_menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorState__raw_menu_anchor());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(ObjectFlagProperty<FocusNode>.CreateHas("focusNode", childFocusNode));
-        properties.add(new FlagProperty("useRootOverlay", value: useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
+        properties.add(
+            new FlagProperty(
+                "useRootOverlay",
+                value: useRootOverlay,
+                ifFalse: "use nearest overlay",
+                ifTrue: "use root overlay"
+            )
+        );
     }
-
 }
 
 internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
@@ -160,22 +235,41 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
     public string ToString(DiagnosticLevel minLevel = default!);
 }
 
-internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _RawMenuAnchorBaseMixin__raw_menu_anchor
+internal class _RawMenuAnchorState__raw_menu_anchor
+    : State<RawMenuAnchor>,
+        _RawMenuAnchorBaseMixin__raw_menu_anchor
 {
-    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor");
-    internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller");
+    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey
+    {
+        get;
+        private set;
+    } =
+        GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(
+            debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"
+        );
+    internal virtual OverlayPortalController _overlayController { get; private set; } =
+        new OverlayPortalController(
+            debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"
+        );
     internal virtual Offset? _menuPosition { get; set; } = default;
-    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
+    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } =
+        new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
     public virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; } = default!;
     public virtual ScrollPosition? _scrollPosition { get; set; } = default;
     public virtual Size? _viewSize { get; set; } = default;
 
-    internal virtual bool _isRootOverlayAnchor => _parent is not _RawMenuAnchorState__raw_menu_anchor;
+    internal virtual bool _isRootOverlayAnchor =>
+        _parent is not _RawMenuAnchorState__raw_menu_anchor;
     public virtual bool useRootOverlay
     {
         get
         {
-            if (_parent is _RawMenuAnchorState__raw_menu_anchor { useRootOverlay: bool useRoot } __object26335)
+            if (
+                _parent is _RawMenuAnchorState__raw_menu_anchor
+                {
+                    useRootOverlay: bool useRoot
+                } __object26335
+            )
             {
                 return useRoot;
             }
@@ -185,6 +279,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     }
     public virtual bool isOpen => _overlayController.isShowing;
     public virtual MenuController menuController => widget.controller;
+
     public override void didUpdateWidget(RawMenuAnchor oldWidget)
     {
         base.didUpdateWidget(oldWidget);
@@ -205,7 +300,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         {
             close();
         }
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Opening {this} at {position ?? Offset.zero}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Opening {this} at {position ?? Offset.zero}")
+        );
         _parent?.requestChildrenClose();
         DartRuntimePrimitives.Assert(() => !_overlayController.isShowing);
         _menuPosition = position;
@@ -216,20 +313,25 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             widget.childFocusNode?.requestFocus();
         }
         widget.onOpen?.Invoke();
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     public virtual void close(bool inDispose = false)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Closing {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Closing {this}")
+        );
         if (!isOpen)
         {
             return;
         }
         closeChildren(inDispose: inDispose);
-        if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+        if (
+            !Equals(
+                Scheduler.SchedulerBinding.instance.schedulerPhase,
+                Scheduler.SchedulerPhase.persistentCallbacks
+            )
+        )
         {
             _overlayController.hide();
         }
@@ -237,48 +339,68 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         {
             if (!inDispose)
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
-                {
-                    _overlayController.hide();
-                }, debugLabel: "MenuAnchor.hide");
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                    (_) =>
+                    {
+                        _overlayController.hide();
+                    },
+                    debugLabel: "MenuAnchor.hide"
+                );
             }
         }
         if (!inDispose)
         {
             _parent?._childChangedOpenState();
             widget.onClose?.Invoke();
-            if (mounted && (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
+            if (
+                mounted
+                && (
+                    !Equals(
+                        Scheduler.SchedulerBinding.instance.schedulerPhase,
+                        Scheduler.SchedulerPhase.persistentCallbacks
+                    )
+                )
+            )
             {
-                setState(() =>
-                {
-                });
+                setState(() => { });
             }
         }
     }
 
     public virtual void handleOpenRequest(Offset? position = null)
     {
-        widget.onOpenRequested(position, () =>
-        {
-            open(position: position);
-        });
+        widget.onOpenRequested(
+            position,
+            () =>
+            {
+                open(position: position);
+            }
+        );
     }
 
     public virtual void handleCloseRequest()
     {
-        if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+        if (
+            !Equals(
+                Scheduler.SchedulerBinding.instance.schedulerPhase,
+                Scheduler.SchedulerPhase.persistentCallbacks
+            )
+        )
         {
             widget.onCloseRequested(() => close(default));
         }
         else
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
-            {
-                if (mounted)
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (_) =>
                 {
-                    widget.onCloseRequested(() => close(default));
-                }
-            }, debugLabel: "RawMenuAnchor.handleCloseRequest");
+                    if (mounted)
+                    {
+                        widget.onCloseRequested(() => close(default));
+                    }
+                },
+                debugLabel: "RawMenuAnchor.handleCloseRequest"
+            );
         }
         requestChildrenClose();
     }
@@ -288,19 +410,49 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         Matrix4 transform = layoutInfo.childPaintTransform;
         Size anchorSize = layoutInfo.childSize;
         Rect anchorRectLocal = MatrixUtils.transformRect(transform, Offset.zero & anchorSize);
-        var info = new RawMenuOverlayInfo(anchorRect: anchorRectLocal, overlaySize: layoutInfo.overlaySize, position: _menuPosition, tapRegionGroupId: root.menuController);
+        var info = new RawMenuOverlayInfo(
+            anchorRect: anchorRectLocal,
+            overlaySize: layoutInfo.overlaySize,
+            position: _menuPosition,
+            tapRegionGroupId: root.menuController
+        );
         return widget.overlayBuilder(context, info);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        Widget childLocal = new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: root.menuController, consumeOutsideTaps: root.isOpen && widget.consumeOutsideTaps, onTapOutside: handleOutsideTap, child: new Builder(key: _anchorKey, builder: (context) =>
-        {
-            return (widget.builder is null ? widget.child : widget.builder.Invoke(context, menuController, widget.child)) ?? new SizedBox();
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
-        return OverlayPortal.CreateOverlayChildLayoutBuilder(controller: _overlayController, overlayChildBuilder: _buildOverlay, overlayLocation: useRootOverlay ? OverlayChildLocation.rootOverlay : OverlayChildLocation.nearestOverlay, child: childLocal);
+        Widget childLocal = new Shortcuts(
+            includeSemantics: false,
+            shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts,
+            child: new TapRegion(
+                groupId: root.menuController,
+                consumeOutsideTaps: root.isOpen && widget.consumeOutsideTaps,
+                onTapOutside: handleOutsideTap,
+                child: new Builder(
+                    key: _anchorKey,
+                    builder: (context) =>
+                    {
+                        return (
+                                widget.builder is null
+                                    ? widget.child
+                                    : widget.builder.Invoke(context, menuController, widget.child)
+                            ) ?? new SizedBox();
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )
+        );
+        return OverlayPortal.CreateOverlayChildLayoutBuilder(
+            controller: _overlayController,
+            overlayChildBuilder: _buildOverlay,
+            overlayLocation: useRootOverlay
+                ? OverlayChildLocation.rootOverlay
+                : OverlayChildLocation.nearestOverlay,
+            child: childLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -323,6 +475,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             return anchor;
         }
     }
+
     public override void initState()
     {
         base.initState();
@@ -332,10 +485,15 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = MenuController.maybeOf(context)?._anchor;
+        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = MenuController
+            .maybeOf(context)
+            ?._anchor;
         if (!Equals(newParent, _parent))
         {
-            DartRuntimePrimitives.Assert(() => !Equals(newParent, this), () => (object?)"A MenuController should only be attached to one anchor at a time.");
+            DartRuntimePrimitives.Assert(
+                () => !Equals(newParent, this),
+                () => (object?)"A MenuController should only be attached to one anchor at a time."
+            );
             _parent?._removeChild(this);
             _parent = newParent;
             _parent?._addChild(this);
@@ -356,7 +514,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Disposing of {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Disposing of {this}")
+        );
         if (isOpen)
         {
             close(inDispose: true);
@@ -375,20 +535,32 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
-        DartRuntimePrimitives.Assert(() => isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}"));
+        DartRuntimePrimitives.Assert(() =>
+            isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}")
+        );
         DartRuntimePrimitives.Assert(() => !_anchorChildren.Contains(child));
         _anchorChildren.Add(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{child.widget.toStringDeep()}"));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{child.widget.toStringDeep()}")
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}")
+        );
     }
 
     public virtual void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
-        DartRuntimePrimitives.Assert(() => isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}"));
+        DartRuntimePrimitives.Assert(() =>
+            isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}")
+        );
         DartRuntimePrimitives.Assert(() => _anchorChildren.Contains(child));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{child.widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{child.widget.toStringDeep()}")
+        );
         _anchorChildren.Remove(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}")
+        );
     }
 
     public virtual void _handleScroll()
@@ -402,27 +574,38 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     public virtual void _childChangedOpenState()
     {
         _parent?._childChangedOpenState();
-        if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+        if (
+            !Equals(
+                Scheduler.SchedulerBinding.instance.schedulerPhase,
+                Scheduler.SchedulerPhase.persistentCallbacks
+            )
+        )
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
         else
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-            {
-                setState(() =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (timestamp) =>
                 {
-                });
-            });
+                    setState(() => { });
+                }
+            );
         }
     }
 
     public virtual void closeChildren(bool inDispose = false)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Closing children of {this}{(inDispose ? " (dispose)" : "")}"));
-        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(_anchorChildren));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo(
+                $"Closing children of {this}{(inDispose ? " (dispose)" : "")}"
+            )
+        );
+        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+            DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+                _anchorChildren
+            )
+        );
         foreach (var child in children)
         {
             child.close(inDispose: inDispose);
@@ -431,8 +614,16 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual void requestChildrenClose()
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Calling handleCloseRequest for children of {this}"));
-        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(_anchorChildren));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo(
+                $"Calling handleCloseRequest for children of {this}"
+            )
+        );
+        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+            DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+                _anchorChildren
+            )
+        );
         foreach (var child in children)
         {
             child.handleCloseRequest();
@@ -441,7 +632,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual void handleOutsideTap(Gestures.PointerDownEvent pointerDownEvent)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}")
+        );
         if (isOpen)
         {
             requestChildrenClose();
@@ -450,10 +643,21 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public override Widget build(BuildContext context)
     {
-        return new _MenuControllerScope__raw_menu_anchor(isOpen: isOpen, controller: menuController, child: new Actions(actions: isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: buildAnchor)));
+        return new _MenuControllerScope__raw_menu_anchor(
+            isOpen: isOpen,
+            controller: menuController,
+            child: new Actions(
+                actions: isOpen
+                    ? new DartMap<Type, dynamic>
+                    {
+                        [typeof(DismissIntent)] = new DismissMenuAction(menuController),
+                    }
+                    : new DartMap<Type, dynamic>(),
+                child: new Builder(builder: buildAnchor)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RawMenuAnchorGroup : StatefulWidget
@@ -461,7 +665,12 @@ public class RawMenuAnchorGroup : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchorGroup(Key? key = null, Widget child = default!, MenuController controller = default!) : base(key: key)
+    public RawMenuAnchorGroup(
+        Key? key = null,
+        Widget child = default!,
+        MenuController controller = default!
+    )
+        : base(key: key)
     {
         this.child = child;
         this.controller = controller;
@@ -473,18 +682,23 @@ public class RawMenuAnchorGroup : StatefulWidget
         properties.add(ObjectFlagProperty<MenuController>.CreateHas("controller", controller));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorGroupState__raw_menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorGroupState__raw_menu_anchor());
 }
 
-internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGroup>, _RawMenuAnchorBaseMixin__raw_menu_anchor
+internal class _RawMenuAnchorGroupState__raw_menu_anchor
+    : State<RawMenuAnchorGroup>,
+        _RawMenuAnchorBaseMixin__raw_menu_anchor
 {
-    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
+    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } =
+        new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
     public virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; } = default!;
     public virtual ScrollPosition? _scrollPosition { get; set; } = default;
     public virtual Size? _viewSize { get; set; } = default;
 
     public virtual bool isOpen => _anchorChildren.any((child) => child.isOpen);
     public virtual MenuController menuController => widget.controller;
+
     public override void didUpdateWidget(RawMenuAnchorGroup oldWidget)
     {
         base.didUpdateWidget(oldWidget);
@@ -504,23 +718,26 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         closeChildren(inDispose: inDispose);
         if (!inDispose)
         {
-            if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+            if (
+                !Equals(
+                    Scheduler.SchedulerBinding.instance.schedulerPhase,
+                    Scheduler.SchedulerPhase.persistentCallbacks
+                )
+            )
             {
-                setState(() =>
-                {
-                });
+                setState(() => { });
             }
             else
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-                {
-                    if (mounted)
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                    (timestamp) =>
                     {
-                        setState(() =>
+                        if (mounted)
                         {
-                        });
+                            setState(() => { });
+                        }
                     }
-                });
+                );
             }
         }
     }
@@ -533,19 +750,27 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void handleCloseRequest()
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Requesting close {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Requesting close {this}")
+        );
         requestChildrenClose();
     }
 
     public virtual void handleOpenRequest(Offset? position = null)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Requesting open {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Requesting open {this}")
+        );
         open(position: position);
     }
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        return new TapRegion(groupId: root.menuController, onTapOutside: handleOutsideTap, child: widget.child);
+        return new TapRegion(
+            groupId: root.menuController,
+            onTapOutside: handleOutsideTap,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -562,6 +787,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
             return anchor;
         }
     }
+
     public override void initState()
     {
         base.initState();
@@ -571,10 +797,15 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = MenuController.maybeOf(context)?._anchor;
+        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = MenuController
+            .maybeOf(context)
+            ?._anchor;
         if (!Equals(newParent, _parent))
         {
-            DartRuntimePrimitives.Assert(() => !Equals(newParent, this), () => (object?)"A MenuController should only be attached to one anchor at a time.");
+            DartRuntimePrimitives.Assert(
+                () => !Equals(newParent, this),
+                () => (object?)"A MenuController should only be attached to one anchor at a time."
+            );
             _parent?._removeChild(this);
             _parent = newParent;
             _parent?._addChild(this);
@@ -595,7 +826,9 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Disposing of {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Disposing of {this}")
+        );
         if (isOpen)
         {
             close(inDispose: true);
@@ -614,20 +847,32 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
-        DartRuntimePrimitives.Assert(() => isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}"));
+        DartRuntimePrimitives.Assert(() =>
+            isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}")
+        );
         DartRuntimePrimitives.Assert(() => !_anchorChildren.Contains(child));
         _anchorChildren.Add(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{child.widget.toStringDeep()}"));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{child.widget.toStringDeep()}")
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}")
+        );
     }
 
     public virtual void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
-        DartRuntimePrimitives.Assert(() => isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}"));
+        DartRuntimePrimitives.Assert(() =>
+            isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}")
+        );
         DartRuntimePrimitives.Assert(() => _anchorChildren.Contains(child));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{child.widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{child.widget.toStringDeep()}")
+        );
         _anchorChildren.Remove(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{widget.toStringDeep()}")
+        );
     }
 
     public virtual void _handleScroll()
@@ -641,27 +886,38 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     public virtual void _childChangedOpenState()
     {
         _parent?._childChangedOpenState();
-        if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+        if (
+            !Equals(
+                Scheduler.SchedulerBinding.instance.schedulerPhase,
+                Scheduler.SchedulerPhase.persistentCallbacks
+            )
+        )
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
         else
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-            {
-                setState(() =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (timestamp) =>
                 {
-                });
-            });
+                    setState(() => { });
+                }
+            );
         }
     }
 
     public virtual void closeChildren(bool inDispose = false)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Closing children of {this}{(inDispose ? " (dispose)" : "")}"));
-        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(_anchorChildren));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo(
+                $"Closing children of {this}{(inDispose ? " (dispose)" : "")}"
+            )
+        );
+        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+            DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+                _anchorChildren
+            )
+        );
         foreach (var child in children)
         {
             child.close(inDispose: inDispose);
@@ -670,8 +926,16 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void requestChildrenClose()
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Calling handleCloseRequest for children of {this}"));
-        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(_anchorChildren));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo(
+                $"Calling handleCloseRequest for children of {this}"
+            )
+        );
+        var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+            DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(
+                _anchorChildren
+            )
+        );
         foreach (var child in children)
         {
             child.handleCloseRequest();
@@ -680,7 +944,9 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void handleOutsideTap(Gestures.PointerDownEvent pointerDownEvent)
     {
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}"));
+        DartRuntimePrimitives.Assert(() =>
+            Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}")
+        );
         if (isOpen)
         {
             requestChildrenClose();
@@ -689,18 +955,33 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public override Widget build(BuildContext context)
     {
-        return new _MenuControllerScope__raw_menu_anchor(isOpen: isOpen, controller: menuController, child: new Actions(actions: isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: buildAnchor)));
+        return new _MenuControllerScope__raw_menu_anchor(
+            isOpen: isOpen,
+            controller: menuController,
+            child: new Actions(
+                actions: isOpen
+                    ? new DartMap<Type, dynamic>
+                    {
+                        [typeof(DismissIntent)] = new DismissMenuAction(menuController),
+                    }
+                    : new DartMap<Type, dynamic>(),
+                child: new Builder(builder: buildAnchor)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString(DiagnosticLevel minLevel = default!) => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString(DiagnosticLevel minLevel = default!) =>
+        DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class MenuController
 {
     internal virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _anchor { get; set; } = default!;
 
-    public virtual bool isOpen => DartRuntimePrimitives.ConvertValue<bool>((_anchor?.isOpen) ?? false);
+    public virtual bool isOpen =>
+        DartRuntimePrimitives.ConvertValue<bool>((_anchor?.isOpen) ?? false);
+
     public virtual void open(Offset? position = null)
     {
         DartRuntimePrimitives.Assert(() => _anchor is not null);
@@ -733,13 +1014,17 @@ public class MenuController
 
     public static MenuController? maybeOf(BuildContext context)
     {
-        return context.getInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()?.controller;
+        return context
+            .getInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()
+            ?.controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsOpenOf(BuildContext context)
     {
-        return context.dependOnInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()?.isOpen;
+        return context
+            .dependOnInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()
+            ?.isOpen;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -766,7 +1051,6 @@ public class DismissMenuAction : DismissAction
         return controller._anchor is not null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Raw_menu_anchorLibrary
@@ -774,21 +1058,21 @@ public static partial class Raw_menu_anchorLibrary
     internal static bool _debugMenuInfo(string message, IEnumerable<string>? details = null)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_kDebugMenus)
             {
-                if (_kDebugMenus)
+                PrintLibrary.debugPrint($"MENU: {message}");
+                if ((details is not null) && Enumerable.Any(details))
                 {
-                    PrintLibrary.debugPrint($"MENU: {message}");
-                    if ((details is not null) && Enumerable.Any(details))
+                    foreach (string detail in details)
                     {
-                        foreach (string detail in details)
-                        {
-                            PrintLibrary.debugPrint($"    {detail}");
-                        }
+                        PrintLibrary.debugPrint($"    {detail}");
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

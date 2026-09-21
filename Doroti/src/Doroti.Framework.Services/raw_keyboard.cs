@@ -10,7 +10,7 @@ public enum KeyboardSide
     any,
     left,
     right,
-    all
+    all,
 }
 
 public enum ModifierKey
@@ -23,14 +23,12 @@ public enum ModifierKey
     numLockModifier,
     scrollLockModifier,
     functionModifier,
-    symbolModifier
+    symbolModifier,
 }
 
 public abstract class RawKeyEventData : Diagnosticable
 {
-    protected RawKeyEventData()
-    {
-    }
+    protected RawKeyEventData() { }
 
     public abstract bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any);
     public abstract KeyboardSide? getModifierSide(ModifierKey key);
@@ -53,17 +51,24 @@ public abstract class RawKeyEventData : Diagnosticable
                         result[key] = DartRuntimePrimitives.RequireValue(side);
                     }
                     DartRuntimePrimitives.Assert(() =>
+                    {
+                        if (side is null)
                         {
-                            if (side is null)
+                            PrintLibrary.debugPrint(
+                                "Raw key data is returning inconsistent information for "
+                                    + $"pressed modifiers. isModifierPressed returns true for {key} "
+                                    + "being pressed, but when getModifierSide is called, it says "
+                                    + "that no modifiers are pressed."
+                            );
+                            if (this is RawKeyEventDataAndroid)
                             {
-                                PrintLibrary.debugPrint("Raw key data is returning inconsistent information for " + $"pressed modifiers. isModifierPressed returns true for {key} " + "being pressed, but when getModifierSide is called, it says " + "that no modifiers are pressed.");
-                                if (this is RawKeyEventDataAndroid)
-                                {
-                                    PrintLibrary.debugPrint($"Android raw key metaState: {((RawKeyEventDataAndroid?)this)!.metaState}");
-                                }
+                                PrintLibrary.debugPrint(
+                                    $"Android raw key metaState: {((RawKeyEventDataAndroid?)this)!.metaState}"
+                                );
                             }
-                            return true;
-                        });
+                        }
+                        return true;
+                    });
                 }
             }
             return result;
@@ -72,12 +77,12 @@ public abstract class RawKeyEventData : Diagnosticable
     public abstract PhysicalKeyboardKey physicalKey { get; }
     public abstract LogicalKeyboardKey logicalKey { get; }
     public abstract string keyLabel { get; }
+
     public virtual bool shouldDispatchEvent()
     {
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class RawKeyEvent : Diagnosticable
@@ -103,7 +108,13 @@ public abstract class RawKeyEvent : Diagnosticable
             {
                 character = key;
             }
-            return new RawKeyEventDataWeb(code: ((string?)message.GetValueOrDefault("code"))! ?? "", key: key ?? "", location: ((long?)message.GetValueOrDefault("location")) ?? 0L, metaState: ((long?)message.GetValueOrDefault("metaState")) ?? 0L, keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L);
+            return new RawKeyEventDataWeb(
+                code: ((string?)message.GetValueOrDefault("code"))! ?? "",
+                key: key ?? "",
+                location: ((long?)message.GetValueOrDefault("location")) ?? 0L,
+                metaState: ((long?)message.GetValueOrDefault("metaState")) ?? 0L,
+                keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         RawKeyEventData data = default!;
@@ -117,107 +128,175 @@ public abstract class RawKeyEvent : Diagnosticable
             switch (keymap)
             {
                 case var __case15605 when Equals(__case15605, "android"):
+                {
+                    data = new RawKeyEventDataAndroid(
+                        flags: ((long?)message.GetValueOrDefault("flags")) ?? 0L,
+                        codePoint: ((long?)message.GetValueOrDefault("codePoint")) ?? 0L,
+                        keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L,
+                        plainCodePoint: ((long?)message.GetValueOrDefault("plainCodePoint")) ?? 0L,
+                        scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L,
+                        metaState: ((long?)message.GetValueOrDefault("metaState")) ?? 0L,
+                        eventSource: ((long?)message.GetValueOrDefault("source")) ?? 0L,
+                        vendorId: ((long?)message.GetValueOrDefault("vendorId")) ?? 0L,
+                        productId: ((long?)message.GetValueOrDefault("productId")) ?? 0L,
+                        deviceId: ((long?)message.GetValueOrDefault("deviceId")) ?? 0L,
+                        repeatCount: ((long?)message.GetValueOrDefault("repeatCount")) ?? 0L
+                    );
+                    if (message.ContainsKey("character"))
                     {
-                        data = new RawKeyEventDataAndroid(flags: ((long?)message.GetValueOrDefault("flags")) ?? 0L, codePoint: ((long?)message.GetValueOrDefault("codePoint")) ?? 0L, keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L, plainCodePoint: ((long?)message.GetValueOrDefault("plainCodePoint")) ?? 0L, scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L, metaState: ((long?)message.GetValueOrDefault("metaState")) ?? 0L, eventSource: ((long?)message.GetValueOrDefault("source")) ?? 0L, vendorId: ((long?)message.GetValueOrDefault("vendorId")) ?? 0L, productId: ((long?)message.GetValueOrDefault("productId")) ?? 0L, deviceId: ((long?)message.GetValueOrDefault("deviceId")) ?? 0L, repeatCount: ((long?)message.GetValueOrDefault("repeatCount")) ?? 0L);
-                        if (message.ContainsKey("character"))
-                        {
-                            character = ((string?)message.GetValueOrDefault("character"))!;
-                        }
-                        break;
+                        character = ((string?)message.GetValueOrDefault("character"))!;
                     }
+                    break;
+                }
                 case var __case16435 when Equals(__case16435, "fuchsia"):
+                {
+                    long codePointLocal =
+                        ((long?)message.GetValueOrDefault("codePoint__16466")) ?? 0L;
+                    data = new RawKeyEventDataFuchsia(
+                        hidUsage: ((long?)message.GetValueOrDefault("hidUsage")) ?? 0L,
+                        codePoint: codePointLocal,
+                        modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L
+                    );
+                    if (codePointLocal != 0L)
                     {
-                        long codePointLocal = ((long?)message.GetValueOrDefault("codePoint__16466")) ?? 0L;
-                        data = new RawKeyEventDataFuchsia(hidUsage: ((long?)message.GetValueOrDefault("hidUsage")) ?? 0L, codePoint: codePointLocal, modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L);
-                        if (codePointLocal != 0L)
-                        {
-                            character = char.ConvertFromUtf32(checked((int)codePointLocal));
-                        }
-                        break;
+                        character = char.ConvertFromUtf32(checked((int)codePointLocal));
                     }
+                    break;
+                }
                 case var __case16828 when Equals(__case16828, "macos"):
-                    {
-                        data = new RawKeyEventDataMacOs(characters: ((string?)message.GetValueOrDefault("characters"))! ?? "", charactersIgnoringModifiers: ((string?)message.GetValueOrDefault("charactersIgnoringModifiers"))! ?? "", keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L, modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L, specifiedLogicalKey: (long?)message.GetValueOrDefault("specifiedLogicalKey"));
-                        character = ((string?)message.GetValueOrDefault("characters"))!;
-                        break;
-                    }
+                {
+                    data = new RawKeyEventDataMacOs(
+                        characters: ((string?)message.GetValueOrDefault("characters"))! ?? "",
+                        charactersIgnoringModifiers: (
+                            (string?)message.GetValueOrDefault("charactersIgnoringModifiers")
+                        )!
+                            ?? "",
+                        keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L,
+                        modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L,
+                        specifiedLogicalKey: (long?)message.GetValueOrDefault("specifiedLogicalKey")
+                    );
+                    character = ((string?)message.GetValueOrDefault("characters"))!;
+                    break;
+                }
                 case var __case17305 when Equals(__case17305, "ios"):
+                {
+                    data = new RawKeyEventDataIos(
+                        characters: ((string?)message.GetValueOrDefault("characters__17660"))!
+                            ?? "",
+                        charactersIgnoringModifiers: (
+                            (string?)message.GetValueOrDefault("charactersIgnoringModifiers")
+                        )!
+                            ?? "",
+                        keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L,
+                        modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L
+                    );
+                    object? charactersLocal = message.GetValueOrDefault("characters__17660");
+                    if ((charactersLocal is string) && (((string)charactersLocal).Length != 0))
                     {
-                        data = new RawKeyEventDataIos(characters: ((string?)message.GetValueOrDefault("characters__17660"))! ?? "", charactersIgnoringModifiers: ((string?)message.GetValueOrDefault("charactersIgnoringModifiers"))! ?? "", keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L, modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L);
-                        object? charactersLocal = message.GetValueOrDefault("characters__17660");
-                        if ((charactersLocal is string) && (((string)charactersLocal).Length != 0))
-                        {
-                            character = (string)charactersLocal;
-                        }
-                        break;
+                        character = (string)charactersLocal;
                     }
+                    break;
+                }
                 case var __case17820 when Equals(__case17820, "linux"):
+                {
+                    long unicodeScalarValuesLocal =
+                        ((long?)message.GetValueOrDefault("unicodeScalarValues__17849")) ?? 0L;
+                    data = new RawKeyEventDataLinux(
+                        keyHelper: KeyHelper.Create(
+                            ((string?)message.GetValueOrDefault("toolkit"))! ?? ""
+                        ),
+                        unicodeScalarValues: unicodeScalarValuesLocal,
+                        keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L,
+                        scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L,
+                        modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L,
+                        isDown: Equals(message.GetValueOrDefault("type"), "keydown"),
+                        specifiedLogicalKey: (long?)message.GetValueOrDefault("specifiedLogicalKey")
+                    );
+                    if (unicodeScalarValuesLocal != 0L)
                     {
-                        long unicodeScalarValuesLocal = ((long?)message.GetValueOrDefault("unicodeScalarValues__17849")) ?? 0L;
-                        data = new RawKeyEventDataLinux(keyHelper: KeyHelper.Create(((string?)message.GetValueOrDefault("toolkit"))! ?? ""), unicodeScalarValues: unicodeScalarValuesLocal, keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L, scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L, modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L, isDown: Equals(message.GetValueOrDefault("type"), "keydown"), specifiedLogicalKey: (long?)message.GetValueOrDefault("specifiedLogicalKey"));
-                        if (unicodeScalarValuesLocal != 0L)
-                        {
-                            character = char.ConvertFromUtf32(checked((int)unicodeScalarValuesLocal));
-                        }
-                        break;
+                        character = char.ConvertFromUtf32(checked((int)unicodeScalarValuesLocal));
                     }
+                    break;
+                }
                 case var __case18517 when Equals(__case18517, "windows"):
+                {
+                    long characterCodePointLocal =
+                        ((long?)message.GetValueOrDefault("characterCodePoint__18548")) ?? 0L;
+                    data = new RawKeyEventDataWindows(
+                        keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L,
+                        scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L,
+                        characterCodePoint: characterCodePointLocal,
+                        modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L
+                    );
+                    if (characterCodePointLocal != 0L)
                     {
-                        long characterCodePointLocal = ((long?)message.GetValueOrDefault("characterCodePoint__18548")) ?? 0L;
-                        data = new RawKeyEventDataWindows(keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L, scanCode: ((long?)message.GetValueOrDefault("scanCode")) ?? 0L, characterCodePoint: characterCodePointLocal, modifiers: ((long?)message.GetValueOrDefault("modifiers")) ?? 0L);
-                        if (characterCodePointLocal != 0L)
-                        {
-                            character = char.ConvertFromUtf32(checked((int)characterCodePointLocal));
-                        }
-                        break;
+                        character = char.ConvertFromUtf32(checked((int)characterCodePointLocal));
                     }
+                    break;
+                }
                 case var __case19018 when Equals(__case19018, "web"):
-                    {
-                        data = dataFromWeb();
-                        break;
-                    }
+                {
+                    data = dataFromWeb();
+                    break;
+                }
                 default:
-                    {
-                        throw new FlutterError($"Unknown keymap__15529 for key events: {keymap}");
-                    }
+                {
+                    throw new FlutterError($"Unknown keymap__15529 for key events: {keymap}");
+                }
             }
         }
         bool repeat = RawKeyboard.instance.physicalKeysPressed.Contains(data.physicalKey);
         var type = ((string?)message.GetValueOrDefault("type")!)!;
-        return type switch { var __case19589 when Equals(__case19589, "keydown") => new RawKeyDownEvent(data: data, character: character, repeat: repeat), var __case19675 when Equals(__case19675, "keyup") => new RawKeyUpEvent(data: data), _ => throw new FlutterError($"Unknown key event type: {type}") };
+        return type switch
+        {
+            var __case19589 when Equals(__case19589, "keydown") => new RawKeyDownEvent(
+                data: data,
+                character: character,
+                repeat: repeat
+            ),
+            var __case19675 when Equals(__case19675, "keyup") => new RawKeyUpEvent(data: data),
+            _ => throw new FlutterError($"Unknown key event type: {type}"),
+        };
     }
 
-    public virtual bool isKeyPressed(LogicalKeyboardKey key) => RawKeyboard.instance.keysPressed.Contains(key);
+    public virtual bool isKeyPressed(LogicalKeyboardKey key) =>
+        RawKeyboard.instance.keysPressed.Contains(key);
+
     public virtual bool isControlPressed
     {
         get
         {
-            return isKeyPressed(LogicalKeyboardKey.controlLeft) || isKeyPressed(LogicalKeyboardKey.controlRight);
+            return isKeyPressed(LogicalKeyboardKey.controlLeft)
+                || isKeyPressed(LogicalKeyboardKey.controlRight);
         }
     }
     public virtual bool isShiftPressed
     {
         get
         {
-            return isKeyPressed(LogicalKeyboardKey.shiftLeft) || isKeyPressed(LogicalKeyboardKey.shiftRight);
+            return isKeyPressed(LogicalKeyboardKey.shiftLeft)
+                || isKeyPressed(LogicalKeyboardKey.shiftRight);
         }
     }
     public virtual bool isAltPressed
     {
         get
         {
-            return isKeyPressed(LogicalKeyboardKey.altLeft) || isKeyPressed(LogicalKeyboardKey.altRight);
+            return isKeyPressed(LogicalKeyboardKey.altLeft)
+                || isKeyPressed(LogicalKeyboardKey.altRight);
         }
     }
     public virtual bool isMetaPressed
     {
         get
         {
-            return isKeyPressed(LogicalKeyboardKey.metaLeft) || isKeyPressed(LogicalKeyboardKey.metaRight);
+            return isKeyPressed(LogicalKeyboardKey.metaLeft)
+                || isKeyPressed(LogicalKeyboardKey.metaRight);
         }
     }
     public virtual PhysicalKeyboardKey physicalKey => data.physicalKey;
     public virtual LogicalKeyboardKey logicalKey => data.logicalKey;
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -228,23 +307,18 @@ public abstract class RawKeyEvent : Diagnosticable
             properties.Add(new DiagnosticsProperty<bool>("repeat", repeat));
         }
     }
-
 }
 
 public class RawKeyDownEvent : RawKeyEvent
 {
-    public RawKeyDownEvent(RawKeyEventData data, string? character = null, bool repeat = false) : base(data: data, character: character, repeat: repeat)
-    {
-    }
-
+    public RawKeyDownEvent(RawKeyEventData data, string? character = null, bool repeat = false)
+        : base(data: data, character: character, repeat: repeat) { }
 }
 
 public class RawKeyUpEvent : RawKeyEvent
 {
-    public RawKeyUpEvent(RawKeyEventData data, string? character = null) : base(data, character, repeat: false)
-    {
-    }
-
+    public RawKeyUpEvent(RawKeyEventData data, string? character = null)
+        : base(data, character, repeat: false) { }
 }
 
 public delegate bool RawKeyEventHandler(RawKeyEvent @event);
@@ -252,17 +326,99 @@ public delegate bool RawKeyEventHandler(RawKeyEvent @event);
 public class RawKeyboard
 {
     public static RawKeyboard instance = new RawKeyboard();
-    internal virtual List<Action<RawKeyEvent>> _listeners { get; private set; } = new List<Action<RawKeyEvent>>();
+    internal virtual List<Action<RawKeyEvent>> _listeners { get; private set; } =
+        new List<Action<RawKeyEvent>>();
     internal virtual Func<RawKeyEvent, bool>? _cachedKeyEventHandler { get; set; } = default;
     internal virtual Func<KeyMessage, bool>? _cachedKeyMessageHandler { get; set; } = default;
-    internal static DartMap<_ModifierSidePair, HashSet<PhysicalKeyboardKey>> _modifierKeyMap = new DartMap<_ModifierSidePair, HashSet<PhysicalKeyboardKey>> { [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.left)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altLeft }, [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.right)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altRight }, [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altLeft, PhysicalKeyboardKey.altRight }, [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.any)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altLeft }, [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.left)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftLeft }, [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.right)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftRight }, [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftLeft, PhysicalKeyboardKey.shiftRight }, [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.any)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftLeft }, [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.left)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlLeft }, [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.right)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlRight }, [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlLeft, PhysicalKeyboardKey.controlRight }, [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.any)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlLeft }, [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.left)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaLeft }, [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.right)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaRight }, [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaLeft, PhysicalKeyboardKey.metaRight }, [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.any)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaLeft }, [new _ModifierSidePair(ModifierKey.capsLockModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.capsLock }, [new _ModifierSidePair(ModifierKey.numLockModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.numLock }, [new _ModifierSidePair(ModifierKey.scrollLockModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.scrollLock }, [new _ModifierSidePair(ModifierKey.functionModifier, KeyboardSide.all)] = new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.fn } };
-    internal static DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _allModifiersExceptFn = new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> { [PhysicalKeyboardKey.altLeft] = LogicalKeyboardKey.altLeft, [PhysicalKeyboardKey.altRight] = LogicalKeyboardKey.altRight, [PhysicalKeyboardKey.shiftLeft] = LogicalKeyboardKey.shiftLeft, [PhysicalKeyboardKey.shiftRight] = LogicalKeyboardKey.shiftRight, [PhysicalKeyboardKey.controlLeft] = LogicalKeyboardKey.controlLeft, [PhysicalKeyboardKey.controlRight] = LogicalKeyboardKey.controlRight, [PhysicalKeyboardKey.metaLeft] = LogicalKeyboardKey.metaLeft, [PhysicalKeyboardKey.metaRight] = LogicalKeyboardKey.metaRight, [PhysicalKeyboardKey.capsLock] = LogicalKeyboardKey.capsLock, [PhysicalKeyboardKey.numLock] = LogicalKeyboardKey.numLock, [PhysicalKeyboardKey.scrollLock] = LogicalKeyboardKey.scrollLock };
-    internal static DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _allModifiers = new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> { [PhysicalKeyboardKey.fn] = LogicalKeyboardKey.fn };
-    internal virtual DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _keysPressed { get; private set; } = new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey>();
-
-    public RawKeyboard()
+    internal static DartMap<_ModifierSidePair, HashSet<PhysicalKeyboardKey>> _modifierKeyMap =
+        new DartMap<_ModifierSidePair, HashSet<PhysicalKeyboardKey>>
+        {
+            [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.left)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altLeft },
+            [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.right)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altRight },
+            [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey>
+                {
+                    PhysicalKeyboardKey.altLeft,
+                    PhysicalKeyboardKey.altRight,
+                },
+            [new _ModifierSidePair(ModifierKey.altModifier, KeyboardSide.any)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.altLeft },
+            [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.left)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftLeft },
+            [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.right)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftRight },
+            [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey>
+                {
+                    PhysicalKeyboardKey.shiftLeft,
+                    PhysicalKeyboardKey.shiftRight,
+                },
+            [new _ModifierSidePair(ModifierKey.shiftModifier, KeyboardSide.any)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.shiftLeft },
+            [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.left)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlLeft },
+            [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.right)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlRight },
+            [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey>
+                {
+                    PhysicalKeyboardKey.controlLeft,
+                    PhysicalKeyboardKey.controlRight,
+                },
+            [new _ModifierSidePair(ModifierKey.controlModifier, KeyboardSide.any)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.controlLeft },
+            [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.left)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaLeft },
+            [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.right)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaRight },
+            [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey>
+                {
+                    PhysicalKeyboardKey.metaLeft,
+                    PhysicalKeyboardKey.metaRight,
+                },
+            [new _ModifierSidePair(ModifierKey.metaModifier, KeyboardSide.any)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.metaLeft },
+            [new _ModifierSidePair(ModifierKey.capsLockModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.capsLock },
+            [new _ModifierSidePair(ModifierKey.numLockModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.numLock },
+            [new _ModifierSidePair(ModifierKey.scrollLockModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.scrollLock },
+            [new _ModifierSidePair(ModifierKey.functionModifier, KeyboardSide.all)] =
+                new HashSet<PhysicalKeyboardKey> { PhysicalKeyboardKey.fn },
+        };
+    internal static DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _allModifiersExceptFn =
+        new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey>
+        {
+            [PhysicalKeyboardKey.altLeft] = LogicalKeyboardKey.altLeft,
+            [PhysicalKeyboardKey.altRight] = LogicalKeyboardKey.altRight,
+            [PhysicalKeyboardKey.shiftLeft] = LogicalKeyboardKey.shiftLeft,
+            [PhysicalKeyboardKey.shiftRight] = LogicalKeyboardKey.shiftRight,
+            [PhysicalKeyboardKey.controlLeft] = LogicalKeyboardKey.controlLeft,
+            [PhysicalKeyboardKey.controlRight] = LogicalKeyboardKey.controlRight,
+            [PhysicalKeyboardKey.metaLeft] = LogicalKeyboardKey.metaLeft,
+            [PhysicalKeyboardKey.metaRight] = LogicalKeyboardKey.metaRight,
+            [PhysicalKeyboardKey.capsLock] = LogicalKeyboardKey.capsLock,
+            [PhysicalKeyboardKey.numLock] = LogicalKeyboardKey.numLock,
+            [PhysicalKeyboardKey.scrollLock] = LogicalKeyboardKey.scrollLock,
+        };
+    internal static DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _allModifiers = new DartMap<
+        PhysicalKeyboardKey,
+        LogicalKeyboardKey
+    >
     {
-    }
+        [PhysicalKeyboardKey.fn] = LogicalKeyboardKey.fn,
+    };
+    internal virtual DartMap<PhysicalKeyboardKey, LogicalKeyboardKey> _keysPressed
+    {
+        get;
+        private set;
+    } = new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey>();
+
+    public RawKeyboard() { }
 
     public virtual void addListener(Action<RawKeyEvent> listener)
     {
@@ -278,14 +434,27 @@ public class RawKeyboard
     {
         get
         {
-            if (!Equals(ServicesBinding.instance.keyEventManager.keyMessageHandler, _cachedKeyMessageHandler))
+            if (
+                !Equals(
+                    ServicesBinding.instance.keyEventManager.keyMessageHandler,
+                    _cachedKeyMessageHandler
+                )
+            )
             {
-                _cachedKeyMessageHandler = ServicesBinding.instance.keyEventManager.keyMessageHandler;
-                _cachedKeyEventHandler = (_cachedKeyMessageHandler is null) ? null : ((@event) =>
-                {
-                    DartRuntimePrimitives.Assert(() => false);
-                    return true;
-                });
+                _cachedKeyMessageHandler = ServicesBinding
+                    .instance
+                    .keyEventManager
+                    .keyMessageHandler;
+                _cachedKeyEventHandler =
+                    (_cachedKeyMessageHandler is null)
+                        ? null
+                        : (
+                            (@event) =>
+                            {
+                                DartRuntimePrimitives.Assert(() => false);
+                                return true;
+                            }
+                        );
             }
             return _cachedKeyEventHandler;
         }
@@ -293,17 +462,23 @@ public class RawKeyboard
         {
             var handler = value;
             _cachedKeyEventHandler = handler;
-            _cachedKeyMessageHandler = (handler is null) ? null : ((message) =>
-            {
-                if (message.rawEvent is not null)
-                {
-                    return handler(message.rawEvent!);
-                }
-                return false;
-            });
+            _cachedKeyMessageHandler =
+                (handler is null)
+                    ? null
+                    : (
+                        (message) =>
+                        {
+                            if (message.rawEvent is not null)
+                            {
+                                return handler(message.rawEvent!);
+                            }
+                            return false;
+                        }
+                    );
             ServicesBinding.instance.keyEventManager.keyMessageHandler = _cachedKeyMessageHandler;
         }
     }
+
     public virtual bool handleRawKeyEvent(RawKeyEvent @event)
     {
         if (@event is RawKeyDownEvent @event__as34058)
@@ -318,7 +493,9 @@ public class RawKeyboard
             }
         }
         _synchronizeModifiers(@event);
-        DartRuntimePrimitives.Assert(() => (@event is not RawKeyDownEvent) || (_keysPressed.Count != 0));
+        DartRuntimePrimitives.Assert(() =>
+            (@event is not RawKeyDownEvent) || (_keysPressed.Count != 0)
+        );
         foreach (var listener in new List<Action<RawKeyEvent>>(_listeners))
         {
             try
@@ -333,11 +510,23 @@ public class RawKeyboard
                 var stack = new System.Diagnostics.StackTrace();
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<RawKeyEvent>("Event", @event) };
-                        return true;
-                    });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("while processing a raw key listener"), informationCollector: collector));
+                {
+                    collector = () =>
+                        new List<DiagnosticsNode>
+                        {
+                            new DiagnosticsProperty<RawKeyEvent>("Event", @event),
+                        };
+                    return true;
+                });
+                FlutterError.reportError(
+                    new FlutterErrorDetails(
+                        exception: exception,
+                        stack: stack,
+                        library: "services library",
+                        context: new ErrorDescription("while processing a raw key listener"),
+                        informationCollector: collector
+                    )
+                );
             }
         }
         return false;
@@ -346,14 +535,19 @@ public class RawKeyboard
 
     internal virtual void _synchronizeModifiers(RawKeyEvent @event)
     {
-        DartMap<ModifierKey, KeyboardSide?> modifiersPressed = @event.data.modifiersPressed.cast<ModifierKey, KeyboardSide?>();
+        DartMap<ModifierKey, KeyboardSide?> modifiersPressed = @event.data.modifiersPressed.cast<
+            ModifierKey,
+            KeyboardSide?
+        >();
         var modifierKeys = new DartMap<PhysicalKeyboardKey, LogicalKeyboardKey>();
         var anySideKeys = new HashSet<PhysicalKeyboardKey>();
         var keysPressedAfterEvent = new HashSet<PhysicalKeyboardKey>();
         ModifierKey? thisKeyModifier = default!;
         foreach (ModifierKey key in Enum.GetValues<ModifierKey>().ToList())
         {
-            HashSet<PhysicalKeyboardKey>? thisModifierKeys = _modifierKeyMap.GetValueOrDefault(new _ModifierSidePair(key, KeyboardSide.all));
+            HashSet<PhysicalKeyboardKey>? thisModifierKeys = _modifierKeyMap.GetValueOrDefault(
+                new _ModifierSidePair(key, KeyboardSide.all)
+            );
             if (thisModifierKeys is null)
             {
                 continue;
@@ -370,19 +564,30 @@ public class RawKeyboard
                     continue;
                 }
             }
-            HashSet<PhysicalKeyboardKey>? mappedKeys = (modifiersPressed.GetValueOrDefault(key) is null) ? new HashSet<PhysicalKeyboardKey>() : _modifierKeyMap.GetValueOrDefault(new _ModifierSidePair(key, modifiersPressed.GetValueOrDefault(key)));
+            HashSet<PhysicalKeyboardKey>? mappedKeys =
+                (modifiersPressed.GetValueOrDefault(key) is null)
+                    ? new HashSet<PhysicalKeyboardKey>()
+                    : _modifierKeyMap.GetValueOrDefault(
+                        new _ModifierSidePair(key, modifiersPressed.GetValueOrDefault(key))
+                    );
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (mappedKeys is null)
                 {
-                    if (mappedKeys is null)
+                    PrintLibrary.debugPrint(
+                        $"Platform key support for {Platform.operatingSystem} is "
+                            + "producing unsupported modifier combinations for "
+                            + $"modifier {key} on side {modifiersPressed.GetValueOrDefault(key)}."
+                    );
+                    if (@event.data is RawKeyEventDataAndroid)
                     {
-                        PrintLibrary.debugPrint($"Platform key support for {Platform.operatingSystem} is " + "producing unsupported modifier combinations for " + $"modifier {key} on side {modifiersPressed.GetValueOrDefault(key)}.");
-                        if (@event.data is RawKeyEventDataAndroid)
-                        {
-                            PrintLibrary.debugPrint($"Android raw key metaState: {((RawKeyEventDataAndroid?)@event.data)!.metaState}");
-                        }
+                        PrintLibrary.debugPrint(
+                            $"Android raw key metaState: {((RawKeyEventDataAndroid?)@event.data)!.metaState}"
+                        );
                     }
-                    return true;
-                });
+                }
+                return true;
+            });
             if (mappedKeys is null)
             {
                 continue;
@@ -392,31 +597,58 @@ public class RawKeyboard
                 modifierKeys[physicalModifier] = _allModifiers.GetValueOrDefault(physicalModifier)!;
             }
         }
-        bool nonModifierCapsLock = ((@event.data is RawKeyEventDataLinux) || (@event.data is RawKeyEventDataWeb)) && (_keysPressed.GetValueOrDefault(PhysicalKeyboardKey.capsLock) is not null) && (!Equals(_keysPressed.GetValueOrDefault(PhysicalKeyboardKey.capsLock), LogicalKeyboardKey.capsLock));
+        bool nonModifierCapsLock =
+            ((@event.data is RawKeyEventDataLinux) || (@event.data is RawKeyEventDataWeb))
+            && (_keysPressed.GetValueOrDefault(PhysicalKeyboardKey.capsLock) is not null)
+            && (
+                !Equals(
+                    _keysPressed.GetValueOrDefault(PhysicalKeyboardKey.capsLock),
+                    LogicalKeyboardKey.capsLock
+                )
+            );
         foreach (PhysicalKeyboardKey physicalKey in _allModifiersExceptFn.Keys)
         {
-            bool skipReleasingKey = nonModifierCapsLock && Equals(physicalKey, PhysicalKeyboardKey.capsLock);
+            bool skipReleasingKey =
+                nonModifierCapsLock && Equals(physicalKey, PhysicalKeyboardKey.capsLock);
             if (!anySideKeys.Contains(physicalKey) && !skipReleasingKey)
             {
                 _keysPressed.remove(physicalKey);
             }
         }
-        if ((@event.data is not RawKeyEventDataFuchsia) && (@event.data is not RawKeyEventDataMacOs))
+        if (
+            (@event.data is not RawKeyEventDataFuchsia) && (@event.data is not RawKeyEventDataMacOs)
+        )
         {
             _keysPressed.remove(PhysicalKeyboardKey.fn);
         }
         _keysPressed.AddRange(modifierKeys);
-        if ((@event is RawKeyDownEvent) && (thisKeyModifier is not null) && !_keysPressed.ContainsKey(@event.physicalKey))
+        if (
+            (@event is RawKeyDownEvent)
+            && (thisKeyModifier is not null)
+            && !_keysPressed.ContainsKey(@event.physicalKey)
+        )
         {
-            if ((@event.data is RawKeyEventDataLinux) && Equals(@event.physicalKey, PhysicalKeyboardKey.altRight) || (@event.data is RawKeyEventDataIos) || (@event.data is RawKeyEventDataAndroid))
+            if (
+                (
+                    (@event.data is RawKeyEventDataLinux)
+                    && Equals(@event.physicalKey, PhysicalKeyboardKey.altRight)
+                )
+                || (@event.data is RawKeyEventDataIos)
+                || (@event.data is RawKeyEventDataAndroid)
+            )
             {
-                LogicalKeyboardKey? logicalKeyLocal = _allModifiersExceptFn.GetValueOrDefault(@event.physicalKey);
+                LogicalKeyboardKey? logicalKeyLocal = _allModifiersExceptFn.GetValueOrDefault(
+                    @event.physicalKey
+                );
                 if (logicalKeyLocal is not null)
                 {
                     _keysPressed[@event.physicalKey] = logicalKeyLocal;
                 }
             }
-            if ((@event.data is RawKeyEventDataWeb) && Equals(@event.physicalKey, PhysicalKeyboardKey.altRight))
+            if (
+                (@event.data is RawKeyEventDataWeb)
+                && Equals(@event.physicalKey, PhysicalKeyboardKey.altRight)
+            )
             {
                 _keysPressed[@event.physicalKey] = @event.logicalKey;
             }
@@ -425,7 +657,10 @@ public class RawKeyboard
 
     public virtual HashSet<LogicalKeyboardKey> keysPressed => _keysPressed.Values.toSet();
     public virtual HashSet<PhysicalKeyboardKey> physicalKeysPressed => _keysPressed.Keys.toSet();
-    public virtual LogicalKeyboardKey? lookUpLayout(PhysicalKeyboardKey physicalKey) => _keysPressed.GetValueOrDefault(physicalKey);
+
+    public virtual LogicalKeyboardKey? lookUpLayout(PhysicalKeyboardKey physicalKey) =>
+        _keysPressed.GetValueOrDefault(physicalKey);
+
     public virtual void clearKeysPressed() => _keysPressed.Clear();
 }
 
@@ -443,14 +678,19 @@ internal class _ModifierSidePair
     public override bool Equals(object? other)
     {
         var __other = other as _ModifierSidePair;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return (__other is _ModifierSidePair) && Equals(__other.modifier, modifier) && Equals(__other.side, side);
+        return (__other is _ModifierSidePair)
+            && Equals(__other.modifier, modifier)
+            && Equals(__other.side, side);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(modifier, side);
 }
-

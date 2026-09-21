@@ -7,11 +7,14 @@ namespace Doroti.Host.Maui;
 /// <summary>Mirrors retained semantics into native accessibility views without creating a second touch tree.</summary>
 internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemanticsBridge, IDisposable
 {
-    private static readonly TimeSpan MinimumApplyInterval = TimeSpan.FromMilliseconds(1000.0 / 15.0);
+    private static readonly TimeSpan MinimumApplyInterval = TimeSpan.FromMilliseconds(
+        1000.0 / 15.0
+    );
     private readonly AbsoluteLayout _layer = layer;
     private readonly object _gate = new();
     private readonly Dictionary<int, NativeElementState> _elements = [];
-    private readonly Dictionary<NativeElementKind, Stack<NativeElementState>> _recycledElements = [];
+    private readonly Dictionary<NativeElementKind, Stack<NativeElementState>> _recycledElements =
+    [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _appliedNodes = [];
     private readonly CancellationTokenSource _lifetime = new();
     private PendingUpdate? _pending;
@@ -38,14 +41,23 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private DorotiFrameTrace? _frameTrace;
     private ulong _viewId;
 
-    public MauiSemanticsDiagnostics Diagnostics => new(
-        Interlocked.Read(ref _updatesReceived), Interlocked.Read(ref _updatesApplied),
-        Interlocked.Read(ref _updatesCoalesced), Interlocked.Read(ref _elementsCreated),
-        Interlocked.Read(ref _activeElements), Interlocked.Read(ref _retainedNodes),
-        Interlocked.Read(ref _nativePropertyWrites), Interlocked.Read(ref _immediateFlushes),
-        Interlocked.Read(ref _staleCallbacksSuppressed), Interlocked.Read(ref _updatesSuppressed),
-        Interlocked.Read(ref _elementsReused), Interlocked.Read(ref _topologyUpdatesApplied),
-        Interlocked.Read(ref _applyWorkMicroseconds), Interlocked.Read(ref _maxApplyWorkMicroseconds));
+    public MauiSemanticsDiagnostics Diagnostics =>
+        new(
+            Interlocked.Read(ref _updatesReceived),
+            Interlocked.Read(ref _updatesApplied),
+            Interlocked.Read(ref _updatesCoalesced),
+            Interlocked.Read(ref _elementsCreated),
+            Interlocked.Read(ref _activeElements),
+            Interlocked.Read(ref _retainedNodes),
+            Interlocked.Read(ref _nativePropertyWrites),
+            Interlocked.Read(ref _immediateFlushes),
+            Interlocked.Read(ref _staleCallbacksSuppressed),
+            Interlocked.Read(ref _updatesSuppressed),
+            Interlocked.Read(ref _elementsReused),
+            Interlocked.Read(ref _topologyUpdatesApplied),
+            Interlocked.Read(ref _applyWorkMicroseconds),
+            Interlocked.Read(ref _maxApplyWorkMicroseconds)
+        );
 
     public void AttachFrameTrace(DorotiFrameTrace trace, ulong viewId)
     {
@@ -56,7 +68,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     public void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
-        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 16) : default;
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 16)
+            : default;
         ArgumentNullException.ThrowIfNull(update);
         ArgumentNullException.ThrowIfNull(performAction);
         Interlocked.Increment(ref _updatesReceived);
@@ -80,12 +94,18 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             }
 
             _pending = new(update with { nodes = visibleNodes }, performAction);
-            var immediate = update.urgency is SemanticsUpdateUrgency.immediate or SemanticsUpdateUrgency.scrollEnd ||
-                            delta.RequiresImmediateFlush;
+            var immediate =
+                update.urgency
+                    is SemanticsUpdateUrgency.immediate
+                        or SemanticsUpdateUrgency.scrollEnd
+                || delta.RequiresImmediateFlush;
             if (_applyScheduled)
             {
                 Interlocked.Increment(ref _updatesCoalesced);
-                if (!immediate) return;
+                if (!immediate)
+                {
+                    return;
+                }
                 // A critical update invalidates a previously scheduled scroll callback.
                 _scheduleGeneration++;
             }
@@ -94,19 +114,30 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 _applyScheduled = true;
                 _scheduleGeneration++;
             }
-            if (immediate) Interlocked.Increment(ref _immediateFlushes);
+            if (immediate)
+            {
+                Interlocked.Increment(ref _immediateFlushes);
+            }
+
             scheduleId = _scheduleGeneration;
             delay = immediate ? TimeSpan.Zero : RemainingApplyDelay();
             schedule = true;
         }
-        if (schedule) ScheduleApply(scheduleId, delay);
+        if (schedule)
+        {
+            ScheduleApply(scheduleId, delay);
+        }
     }
 
     public void Dispose()
     {
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _disposed = true;
             _pending = null;
             _applyScheduled = false;
@@ -120,7 +151,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     {
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _pending = null;
             _applyScheduled = false;
             _scheduleGeneration++;
@@ -134,14 +169,21 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         Interlocked.Exchange(ref _retainedNodes, 0);
     }
 
-    private static IReadOnlyList<SemanticsNodeUpdate> VisibleNodes(IReadOnlyList<SemanticsNodeUpdate> nodes)
+    private static IReadOnlyList<SemanticsNodeUpdate> VisibleNodes(
+        IReadOnlyList<SemanticsNodeUpdate> nodes
+    )
     {
         var nodesById = nodes.ToDictionary(node => node.id);
-        var hidden = nodes.Where(node => node.flags?.isHidden == true).Select(node => node.id).ToHashSet();
+        var hidden = nodes
+            .Where(node => node.flags?.isHidden == true)
+            .Select(node => node.id)
+            .ToHashSet();
 #if MACOS
         // AppKit exposes the real NSControl subtree. A transparent MAUI placeholder would
         // duplicate it in accessibility and can steal native hit tests / keyboard navigation.
-        hidden.UnionWith(nodes.Where(node => node.platformViewId is not null).Select(node => node.id));
+        hidden.UnionWith(
+            nodes.Where(node => node.platformViewId is not null).Select(node => node.id)
+        );
 #endif
         var changed = true;
         while (changed)
@@ -149,13 +191,26 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             changed = false;
             foreach (var hiddenId in hidden.ToArray())
             {
-                if (!nodesById.TryGetValue(hiddenId, out var node)) continue;
-                foreach (var childId in node.children) changed |= hidden.Add(childId);
+                if (!nodesById.TryGetValue(hiddenId, out var node))
+                {
+                    continue;
+                }
+
+                foreach (var childId in node.children)
+                {
+                    changed |= hidden.Add(childId);
+                }
             }
         }
         var visible = nodesById.Keys.Where(id => !hidden.Contains(id)).ToHashSet();
-        return nodes.Where(node => visible.Contains(node.id))
-            .Select(node => node with { children = node.children.Where(visible.Contains).ToArray() })
+        return nodes
+            .Where(node => visible.Contains(node.id))
+            .Select(node =>
+                node with
+                {
+                    children = node.children.Where(visible.Contains).ToArray(),
+                }
+            )
             .OrderBy(node => node.id)
             .ToArray();
     }
@@ -174,10 +229,18 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             _pending = null;
             _applyScheduled = false;
         }
-        if (pending is null) return;
+        if (pending is null)
+        {
+            return;
+        }
+
         var started = DorotiFrameClock.Now;
-        _frameTrace?.Record(DorotiFramePhase.semanticsApply, _viewId, started,
-            reason: $"generation {pending.Update.generation}");
+        _frameTrace?.Record(
+            DorotiFramePhase.semanticsApply,
+            _viewId,
+            started,
+            reason: $"generation {pending.Update.generation}"
+        );
         try
         {
             Apply(pending.Update, pending.PerformAction);
@@ -189,8 +252,12 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             var elapsedMicroseconds = Math.Max(0, (finished - started).Ticks / 10);
             Interlocked.Add(ref _applyWorkMicroseconds, elapsedMicroseconds);
             UpdateMaximum(ref _maxApplyWorkMicroseconds, elapsedMicroseconds);
-            _frameTrace?.Record(DorotiFramePhase.semanticsApplyEnd, _viewId, finished,
-                reason: $"generation {pending.Update.generation}");
+            _frameTrace?.Record(
+                DorotiFramePhase.semanticsApplyEnd,
+                _viewId,
+                finished,
+                reason: $"generation {pending.Update.generation}"
+            );
             Interlocked.Exchange(ref _lastApplyTimestamp, Stopwatch.GetTimestamp());
         }
     }
@@ -198,7 +265,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private TimeSpan RemainingApplyDelay()
     {
         var timestamp = Interlocked.Read(ref _lastApplyTimestamp);
-        if (timestamp == 0) return TimeSpan.Zero;
+        if (timestamp == 0)
+        {
+            return TimeSpan.Zero;
+        }
+
         var elapsed = Stopwatch.GetElapsedTime(timestamp);
         return elapsed >= MinimumApplyInterval ? TimeSpan.Zero : MinimumApplyInterval - elapsed;
     }
@@ -213,13 +284,19 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         _ = DelayAndApplyLatest(scheduleId, delay, _lifetime.Token);
     }
 
-    private async Task DelayAndApplyLatest(long scheduleId, TimeSpan delay, CancellationToken cancellationToken)
+    private async Task DelayAndApplyLatest(
+        long scheduleId,
+        TimeSpan delay,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
             await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
             if (!cancellationToken.IsCancellationRequested)
+            {
                 _layer.Dispatcher.Dispatch(() => ApplyLatest(scheduleId));
+            }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -229,11 +306,17 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private void Apply(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
-        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 17) : default;
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 17)
+            : default;
         var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, update.nodes);
         var changedById = delta.changedNodes.ToDictionary(node => node.id);
         var rebuildOrder = delta.HasTopologyChange;
-        if (rebuildOrder) Interlocked.Increment(ref _topologyUpdatesApplied);
+        if (rebuildOrder)
+        {
+            Interlocked.Increment(ref _topologyUpdatesApplied);
+        }
+
         _layer.BatchBegin();
         _projectionDepth++;
         try
@@ -280,8 +363,14 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         }
         finally
         {
-            try { _layer.BatchCommit(); }
-            finally { _projectionDepth--; }
+            try
+            {
+                _layer.BatchCommit();
+            }
+            finally
+            {
+                _projectionDepth--;
+            }
         }
     }
 
@@ -311,18 +400,29 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private void SynchronizeChildOrder(IReadOnlyList<SemanticsNodeUpdate> nodes)
     {
         var index = 0;
-        foreach (var node in nodes.OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id))
+        foreach (
+            var node in nodes
+                .OrderBy(node => node.indexInParent ?? int.MaxValue)
+                .ThenBy(node => node.id)
+        )
         {
             var element = _elements[node.id].Element;
             var currentIndex = _layer.Children.IndexOf(element);
             if (currentIndex != index)
             {
-                if (currentIndex >= 0) _layer.Children.RemoveAt(currentIndex);
+                if (currentIndex >= 0)
+                {
+                    _layer.Children.RemoveAt(currentIndex);
+                }
+
                 _layer.Children.Insert(index, element);
             }
             index++;
         }
-        while (_layer.Children.Count > index) _layer.Children.RemoveAt(_layer.Children.Count - 1);
+        while (_layer.Children.Count > index)
+        {
+            _layer.Children.RemoveAt(_layer.Children.Count - 1);
+        }
     }
 
     private NativeElementState CreateState(NativeElementKind kind)
@@ -334,7 +434,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             // These are projections of framework-owned groups. MAUI otherwise
             // groups every RadioButton in this flat layer together and unchecks
             // siblings during an update, emitting spurious actions for them.
-            NativeElementKind.Radio => new RadioButton { Opacity = 0, GroupName = Guid.NewGuid().ToString("N") },
+            NativeElementKind.Radio => new RadioButton
+            {
+                Opacity = 0,
+                GroupName = Guid.NewGuid().ToString("N"),
+            },
             NativeElementKind.Toggle => new Microsoft.Maui.Controls.Switch { Opacity = 0 },
             NativeElementKind.Slider => new Slider { Opacity = 0 },
             NativeElementKind.Button => new Button { Opacity = 0 },
@@ -347,21 +451,37 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             {
                 var node = state.Node;
                 var text = args.NewTextValue ?? string.Empty;
-                if (node is not null && text == (entry.Text ?? string.Empty) && ObserveValueChange(state, text))
+                if (
+                    node is not null
+                    && text == (entry.Text ?? string.Empty)
+                    && ObserveValueChange(state, text)
+                )
+                {
                     PerformAction(state, SemanticsAction.setText, text);
+                }
             };
             entry.PropertyChanged += (_, args) =>
             {
                 var node = state.Node;
-                if (node is not null && args.PropertyName is nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))
+                if (
+                    node is not null
+                    && args.PropertyName
+                        is nameof(InputView.CursorPosition)
+                            or nameof(InputView.SelectionLength)
+                )
                 {
                     var expected = state.ObservedSelection;
                     var start = entry.CursorPosition;
                     var end = start + entry.SelectionLength;
                     state.ObservedSelection = (start, end);
                     if (start != expected.Start || end != expected.End)
-                        PerformAction(state, SemanticsAction.setSelection, new Dictionary<string, long>
-                        { ["base"] = start, ["extent"] = end });
+                    {
+                        PerformAction(
+                            state,
+                            SemanticsAction.setSelection,
+                            new Dictionary<string, long> { ["base"] = start, ["extent"] = end }
+                        );
+                    }
                 }
             };
         }
@@ -373,9 +493,14 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         {
             checkbox.CheckedChanged += (_, args) =>
             {
-                if (state.Node is { } node && args.Value == checkbox.IsChecked &&
-                    ObserveValueChange(state, args.Value))
+                if (
+                    state.Node is { } node
+                    && args.Value == checkbox.IsChecked
+                    && ObserveValueChange(state, args.Value)
+                )
+                {
                     PerformAction(state, SemanticsAction.tap);
+                }
             };
         }
         else if (element is RadioButton radio)
@@ -384,34 +509,62 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             // of another selection and must never re-activate the old option.
             radio.CheckedChanged += (_, args) =>
             {
-                if (args.Value == radio.IsChecked && ObserveValueChange(state, args.Value) && args.Value)
+                if (
+                    args.Value == radio.IsChecked
+                    && ObserveValueChange(state, args.Value)
+                    && args.Value
+                )
+                {
                     PerformAction(state, SemanticsAction.tap);
+                }
             };
         }
         else if (element is Microsoft.Maui.Controls.Switch toggle)
         {
             toggle.Toggled += (_, args) =>
             {
-                if (state.Node is { } node && args.Value == toggle.IsToggled &&
-                    ObserveValueChange(state, args.Value))
+                if (
+                    state.Node is { } node
+                    && args.Value == toggle.IsToggled
+                    && ObserveValueChange(state, args.Value)
+                )
+                {
                     PerformAction(state, SemanticsAction.tap);
+                }
             };
         }
         else if (element is Slider slider)
         {
             slider.ValueChanged += (_, args) =>
             {
-                if (state.Node is not { } node || args.NewValue != slider.Value || !double.IsFinite(args.NewValue)) return;
+                if (
+                    state.Node is not { } node
+                    || args.NewValue != slider.Value
+                    || !double.IsFinite(args.NewValue)
+                )
+                {
+                    return;
+                }
+
                 var current = state.ObservedValue is double value ? value : args.OldValue;
-                if (!ObserveValueChange(state, args.NewValue)) return;
-                PerformAction(state, args.NewValue > current ? SemanticsAction.increase : SemanticsAction.decrease);
+                if (!ObserveValueChange(state, args.NewValue))
+                {
+                    return;
+                }
+
+                PerformAction(
+                    state,
+                    args.NewValue > current ? SemanticsAction.increase : SemanticsAction.decrease
+                );
             };
         }
         element.Focused += (_, _) =>
         {
             var node = state.Node;
             if (element.IsFocused && node?.flags?.isFocused != Tristate.isTrue)
+            {
                 PerformAction(state, SemanticsAction.focus);
+            }
         };
         return state;
     }
@@ -420,13 +573,39 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     // All controls share this boundary: publishing an entire tree (including
     // reparenting/focus changes) must never feed actions back into the framework.
     // The value comparisons above also reject delayed/no-op projection echoes.
-    private void PerformAction(NativeElementState state, SemanticsAction action, object? arguments = null)
+    private void PerformAction(
+        NativeElementState state,
+        SemanticsAction action,
+        object? arguments = null
+    )
     {
-        if (_disposed || _projectionDepth != 0 || state.Updating || state.Node is not { } node ||
-            !_elements.TryGetValue(node.id, out var current) || !ReferenceEquals(current, state) ||
-            !node.actions.HasFlag(action) || node.flags?.isEnabled == Tristate.isFalse) return;
-        if (node.flags?.isReadOnly == true && action is SemanticsAction.setText or SemanticsAction.cut or
-            SemanticsAction.paste or SemanticsAction.increase or SemanticsAction.decrease) return;
+        if (
+            _disposed
+            || _projectionDepth != 0
+            || state.Updating
+            || state.Node is not { } node
+            || !_elements.TryGetValue(node.id, out var current)
+            || !ReferenceEquals(current, state)
+            || !node.actions.HasFlag(action)
+            || node.flags?.isEnabled == Tristate.isFalse
+        )
+        {
+            return;
+        }
+
+        if (
+            node.flags?.isReadOnly == true
+            && action
+                is SemanticsAction.setText
+                    or SemanticsAction.cut
+                    or SemanticsAction.paste
+                    or SemanticsAction.increase
+                    or SemanticsAction.decrease
+        )
+        {
+            return;
+        }
+
         state.PerformAction?.Invoke(node.id, action, arguments);
     }
 
@@ -441,17 +620,24 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private static bool RadioChecked(SemanticsNodeUpdate node) =>
         node.flags?.isChecked is { } checkedState && checkedState != CheckedState.none
-            ? checkedState == CheckedState.isTrue : node.flags?.isSelected == Tristate.isTrue;
+            ? checkedState == CheckedState.isTrue
+            : node.flags?.isSelected == Tristate.isTrue;
 
     private static (int Start, int End) ProjectedSelection(SemanticsNodeUpdate node)
     {
         var length = (node.value ?? string.Empty).Length;
-        return ((int)Math.Clamp(Math.Min(node.textSelectionBase, node.textSelectionExtent), 0, length),
-            (int)Math.Clamp(Math.Max(node.textSelectionBase, node.textSelectionExtent), 0, length));
+        return (
+            (int)Math.Clamp(Math.Min(node.textSelectionBase, node.textSelectionExtent), 0, length),
+            (int)Math.Clamp(Math.Max(node.textSelectionBase, node.textSelectionExtent), 0, length)
+        );
     }
 
-    private void UpdateState(NativeElementState state, SemanticsNodeUpdate node,
-        Action<int, SemanticsAction, object?> performAction, SemanticsNodeProperty properties)
+    private void UpdateState(
+        NativeElementState state,
+        SemanticsNodeUpdate node,
+        Action<int, SemanticsAction, object?> performAction,
+        SemanticsNodeProperty properties
+    )
     {
         state.Updating = true;
         try
@@ -469,45 +655,105 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 state.Element.IsEnabled = enabled;
                 Interlocked.Increment(ref _nativePropertyWrites);
             }
-            if ((properties & (SemanticsNodeProperty.value | SemanticsNodeProperty.flags)) != 0 && state.Element is Entry entry)
+            if (
+                (properties & (SemanticsNodeProperty.value | SemanticsNodeProperty.flags)) != 0
+                && state.Element is Entry entry
+            )
             {
                 var text = node.value ?? string.Empty;
-                if (!string.Equals(entry.Text, text, StringComparison.Ordinal)) { entry.Text = text; Interlocked.Increment(ref _nativePropertyWrites); }
+                if (!string.Equals(entry.Text, text, StringComparison.Ordinal))
+                {
+                    entry.Text = text;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
                 var readOnly = node.flags?.isReadOnly == true;
-                if (entry.IsReadOnly != readOnly) { entry.IsReadOnly = readOnly; Interlocked.Increment(ref _nativePropertyWrites); }
+                if (entry.IsReadOnly != readOnly)
+                {
+                    entry.IsReadOnly = readOnly;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
             }
-            if ((properties & (SemanticsNodeProperty.selection | SemanticsNodeProperty.value)) != 0 &&
-                state.Element is Entry selectionEntry && node.textSelectionBase >= 0 && node.textSelectionExtent >= 0)
+            if (
+                (properties & (SemanticsNodeProperty.selection | SemanticsNodeProperty.value)) != 0
+                && state.Element is Entry selectionEntry
+                && node.textSelectionBase >= 0
+                && node.textSelectionExtent >= 0
+            )
             {
                 var selection = ProjectedSelection(node);
                 if (selectionEntry.CursorPosition != selection.Start)
-                { selectionEntry.CursorPosition = selection.Start; Interlocked.Increment(ref _nativePropertyWrites); }
+                {
+                    selectionEntry.CursorPosition = selection.Start;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
                 if (selectionEntry.SelectionLength != selection.End - selection.Start)
-                { selectionEntry.SelectionLength = selection.End - selection.Start; Interlocked.Increment(ref _nativePropertyWrites); }
+                {
+                    selectionEntry.SelectionLength = selection.End - selection.Start;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
             }
-            if ((properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value | SemanticsNodeProperty.flags)) != 0 && state.Element is Button button)
+            if (
+                (
+                    properties
+                    & (
+                        SemanticsNodeProperty.label
+                        | SemanticsNodeProperty.value
+                        | SemanticsNodeProperty.flags
+                    )
+                ) != 0
+                && state.Element is Button button
+            )
             {
                 var text = node.label ?? node.value ?? string.Empty;
-                if (!string.Equals(button.Text, text, StringComparison.Ordinal)) { button.Text = text; Interlocked.Increment(ref _nativePropertyWrites); }
+                if (!string.Equals(button.Text, text, StringComparison.Ordinal))
+                {
+                    button.Text = text;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
             }
-            if ((properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value)) != 0 && state.Element is Label label)
+            if (
+                (properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value)) != 0
+                && state.Element is Label label
+            )
             {
                 var text = node.label ?? node.value ?? string.Empty;
-                if (!string.Equals(label.Text, text, StringComparison.Ordinal)) { label.Text = text; Interlocked.Increment(ref _nativePropertyWrites); }
+                if (!string.Equals(label.Text, text, StringComparison.Ordinal))
+                {
+                    label.Text = text;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
             }
-            if ((properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value | SemanticsNodeProperty.flags |
-                               SemanticsNodeProperty.role | SemanticsNodeProperty.metadata)) != 0)
+            if (
+                (
+                    properties
+                    & (
+                        SemanticsNodeProperty.label
+                        | SemanticsNodeProperty.value
+                        | SemanticsNodeProperty.flags
+                        | SemanticsNodeProperty.role
+                        | SemanticsNodeProperty.metadata
+                    )
+                ) != 0
+            )
             {
-                var description = string.Join(" ", new[] { node.label, node.flags?.isTextField == true ? null : node.value }
-                    .Where(value => !string.IsNullOrWhiteSpace(value)));
+                var description = string.Join(
+                    " ",
+                    new[] { node.label, node.flags?.isTextField == true ? null : node.value }.Where(
+                        value => !string.IsNullOrWhiteSpace(value)
+                    )
+                );
                 if (!string.Equals(state.Description, description, StringComparison.Ordinal))
                 {
                     SemanticProperties.SetDescription(state.Element, description);
                     state.Description = description;
                     Interlocked.Increment(ref _nativePropertyWrites);
                 }
-                var hint = string.Join(" ", new[] { node.hint, node.tooltip }
-                    .Where(value => !string.IsNullOrWhiteSpace(value)));
+                var hint = string.Join(
+                    " ",
+                    new[] { node.hint, node.tooltip }.Where(value =>
+                        !string.IsNullOrWhiteSpace(value)
+                    )
+                );
                 if (!string.Equals(state.Hint, hint, StringComparison.Ordinal))
                 {
                     SemanticProperties.SetHint(state.Element, hint);
@@ -522,48 +768,95 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                     Interlocked.Increment(ref _nativePropertyWrites);
                 }
             }
-            if ((properties & (SemanticsNodeProperty.flags | SemanticsNodeProperty.value |
-                               SemanticsNodeProperty.metadata)) != 0)
+            if (
+                (
+                    properties
+                    & (
+                        SemanticsNodeProperty.flags
+                        | SemanticsNodeProperty.value
+                        | SemanticsNodeProperty.metadata
+                    )
+                ) != 0
+            )
             {
                 if (state.Element is CheckBox checkbox)
                 {
-                    var isChecked = node.flags?.isChecked is CheckedState.isTrue or CheckedState.mixed;
-                    if (checkbox.IsChecked != isChecked) { checkbox.IsChecked = isChecked; Interlocked.Increment(ref _nativePropertyWrites); }
+                    var isChecked =
+                        node.flags?.isChecked is CheckedState.isTrue or CheckedState.mixed;
+                    if (checkbox.IsChecked != isChecked)
+                    {
+                        checkbox.IsChecked = isChecked;
+                        Interlocked.Increment(ref _nativePropertyWrites);
+                    }
                 }
                 else if (state.Element is RadioButton radio)
                 {
                     var isChecked = RadioChecked(node);
-                    if (radio.IsChecked != isChecked) { radio.IsChecked = isChecked; Interlocked.Increment(ref _nativePropertyWrites); }
+                    if (radio.IsChecked != isChecked)
+                    {
+                        radio.IsChecked = isChecked;
+                        Interlocked.Increment(ref _nativePropertyWrites);
+                    }
                 }
                 else if (state.Element is Microsoft.Maui.Controls.Switch toggle)
                 {
                     var isToggled = node.flags?.isToggled == Tristate.isTrue;
-                    if (toggle.IsToggled != isToggled) { toggle.IsToggled = isToggled; Interlocked.Increment(ref _nativePropertyWrites); }
+                    if (toggle.IsToggled != isToggled)
+                    {
+                        toggle.IsToggled = isToggled;
+                        Interlocked.Increment(ref _nativePropertyWrites);
+                    }
                 }
                 else if (state.Element is Slider slider)
                 {
-                    var minimum = TryParseDouble(node.minValue, out var parsedMinimum) ? parsedMinimum : slider.Minimum;
-                    var maximum = TryParseDouble(node.maxValue, out var parsedMaximum) ? parsedMaximum : slider.Maximum;
+                    var minimum = TryParseDouble(node.minValue, out var parsedMinimum)
+                        ? parsedMinimum
+                        : slider.Minimum;
+                    var maximum = TryParseDouble(node.maxValue, out var parsedMaximum)
+                        ? parsedMaximum
+                        : slider.Maximum;
                     if (minimum <= maximum)
                     {
                         if (minimum > slider.Maximum && slider.Maximum != maximum)
-                        { slider.Maximum = maximum; Interlocked.Increment(ref _nativePropertyWrites); }
+                        {
+                            slider.Maximum = maximum;
+                            Interlocked.Increment(ref _nativePropertyWrites);
+                        }
                         if (maximum < slider.Minimum && slider.Minimum != minimum)
-                        { slider.Minimum = minimum; Interlocked.Increment(ref _nativePropertyWrites); }
-                        if (slider.Minimum != minimum) { slider.Minimum = minimum; Interlocked.Increment(ref _nativePropertyWrites); }
-                        if (slider.Maximum != maximum) { slider.Maximum = maximum; Interlocked.Increment(ref _nativePropertyWrites); }
+                        {
+                            slider.Minimum = minimum;
+                            Interlocked.Increment(ref _nativePropertyWrites);
+                        }
+                        if (slider.Minimum != minimum)
+                        {
+                            slider.Minimum = minimum;
+                            Interlocked.Increment(ref _nativePropertyWrites);
+                        }
+                        if (slider.Maximum != maximum)
+                        {
+                            slider.Maximum = maximum;
+                            Interlocked.Increment(ref _nativePropertyWrites);
+                        }
                     }
                     if (TryParseDouble(node.value, out var value))
                     {
                         value = Math.Clamp(value, slider.Minimum, slider.Maximum);
-                        if (slider.Value != value) { slider.Value = value; Interlocked.Increment(ref _nativePropertyWrites); }
+                        if (slider.Value != value)
+                        {
+                            slider.Value = value;
+                            Interlocked.Increment(ref _nativePropertyWrites);
+                        }
                     }
                 }
             }
             if ((properties & SemanticsNodeProperty.bounds) != 0)
             {
-                var bounds = new Microsoft.Maui.Graphics.Rect(node.rect.left, node.rect.top,
-                    Math.Max(0, node.rect.right - node.rect.left), Math.Max(0, node.rect.bottom - node.rect.top));
+                var bounds = new Microsoft.Maui.Graphics.Rect(
+                    node.rect.left,
+                    node.rect.top,
+                    Math.Max(0, node.rect.right - node.rect.left),
+                    Math.Max(0, node.rect.bottom - node.rect.top)
+                );
                 if (state.LayoutBounds != bounds)
                 {
                     AbsoluteLayout.SetLayoutBounds(state.Element, bounds);
@@ -572,7 +865,10 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 }
                 if (!state.LayoutFlagsInitialized)
                 {
-                    AbsoluteLayout.SetLayoutFlags(state.Element, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
+                    AbsoluteLayout.SetLayoutFlags(
+                        state.Element,
+                        Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None
+                    );
                     state.LayoutFlagsInitialized = true;
                 }
             }
@@ -589,44 +885,63 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 _ => null,
             };
             if (state.Element is Entry entrySelection)
-                state.ObservedSelection = (entrySelection.CursorPosition, entrySelection.CursorPosition + entrySelection.SelectionLength);
+            {
+                state.ObservedSelection = (
+                    entrySelection.CursorPosition,
+                    entrySelection.CursorPosition + entrySelection.SelectionLength
+                );
+            }
+
             state.Updating = false;
         }
     }
 
     private static NativeElementKind ElementKindFor(SemanticsNodeUpdate node) =>
-        node.flags?.isTextField == true ? NativeElementKind.TextField :
-        node.flags?.isSlider == true ? NativeElementKind.Slider :
-        node.flags?.isToggled != Tristate.none ? NativeElementKind.Toggle :
-        node.flags?.isInMutuallyExclusiveGroup == true &&
-            (node.flags.isChecked != CheckedState.none || node.flags.isSelected != Tristate.none) ? NativeElementKind.Radio :
-        node.flags?.isChecked != CheckedState.none ? NativeElementKind.Checkbox :
-        node.actions.HasFlag(SemanticsAction.tap) ? NativeElementKind.Button : NativeElementKind.Label;
+        node.flags?.isTextField == true ? NativeElementKind.TextField
+        : node.flags?.isSlider == true ? NativeElementKind.Slider
+        : node.flags?.isToggled != Tristate.none ? NativeElementKind.Toggle
+        : node.flags?.isInMutuallyExclusiveGroup == true
+        && (node.flags.isChecked != CheckedState.none || node.flags.isSelected != Tristate.none)
+            ? NativeElementKind.Radio
+        : node.flags?.isChecked != CheckedState.none ? NativeElementKind.Checkbox
+        : node.actions.HasFlag(SemanticsAction.tap) ? NativeElementKind.Button
+        : NativeElementKind.Label;
 
     private static bool TryParseDouble(string? value, out double result) =>
-        double.TryParse(value, System.Globalization.NumberStyles.Float,
-            System.Globalization.CultureInfo.InvariantCulture, out result) && double.IsFinite(result);
+        double.TryParse(
+            value,
+            System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out result
+        ) && double.IsFinite(result);
 
-    private static SemanticHeadingLevel HeadingLevelFor(SemanticsNodeUpdate node) => node.headingLevel switch
-    {
-        1 => SemanticHeadingLevel.Level1,
-        2 => SemanticHeadingLevel.Level2,
-        3 => SemanticHeadingLevel.Level3,
-        4 => SemanticHeadingLevel.Level4,
-        5 => SemanticHeadingLevel.Level5,
-        6 => SemanticHeadingLevel.Level6,
-        7 => SemanticHeadingLevel.Level7,
-        8 => SemanticHeadingLevel.Level8,
-        9 => SemanticHeadingLevel.Level9,
-        _ when node.flags?.isHeader == true => SemanticHeadingLevel.Level1,
-        _ => SemanticHeadingLevel.None,
-    };
+    private static SemanticHeadingLevel HeadingLevelFor(SemanticsNodeUpdate node) =>
+        node.headingLevel switch
+        {
+            1 => SemanticHeadingLevel.Level1,
+            2 => SemanticHeadingLevel.Level2,
+            3 => SemanticHeadingLevel.Level3,
+            4 => SemanticHeadingLevel.Level4,
+            5 => SemanticHeadingLevel.Level5,
+            6 => SemanticHeadingLevel.Level6,
+            7 => SemanticHeadingLevel.Level7,
+            8 => SemanticHeadingLevel.Level8,
+            9 => SemanticHeadingLevel.Level9,
+            _ when node.flags?.isHeader == true => SemanticHeadingLevel.Level1,
+            _ => SemanticHeadingLevel.None,
+        };
 
     private const SemanticsNodeProperty AllProperties =
-        SemanticsNodeProperty.bounds | SemanticsNodeProperty.label | SemanticsNodeProperty.value |
-        SemanticsNodeProperty.actions | SemanticsNodeProperty.flags | SemanticsNodeProperty.role |
-        SemanticsNodeProperty.children | SemanticsNodeProperty.traversal | SemanticsNodeProperty.selection |
-        SemanticsNodeProperty.metadata;
+        SemanticsNodeProperty.bounds
+        | SemanticsNodeProperty.label
+        | SemanticsNodeProperty.value
+        | SemanticsNodeProperty.actions
+        | SemanticsNodeProperty.flags
+        | SemanticsNodeProperty.role
+        | SemanticsNodeProperty.children
+        | SemanticsNodeProperty.traversal
+        | SemanticsNodeProperty.selection
+        | SemanticsNodeProperty.metadata;
 
     private static void UpdateMaximum(ref long target, long candidate)
     {
@@ -634,13 +949,31 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         while (candidate > current)
         {
             var observed = Interlocked.CompareExchange(ref target, candidate, current);
-            if (observed == current) return;
+            if (observed == current)
+            {
+                return;
+            }
+
             current = observed;
         }
     }
 
-    private sealed record PendingUpdate(SemanticsUpdate Update, Action<int, SemanticsAction, object?> PerformAction);
-    private enum NativeElementKind { Label, Button, TextField, Checkbox, Radio, Toggle, Slider }
+    private sealed record PendingUpdate(
+        SemanticsUpdate Update,
+        Action<int, SemanticsAction, object?> PerformAction
+    );
+
+    private enum NativeElementKind
+    {
+        Label,
+        Button,
+        TextField,
+        Checkbox,
+        Radio,
+        Toggle,
+        Slider,
+    }
+
     private sealed class NativeElementState(NativeElementKind kind, View element)
     {
         internal NativeElementKind Kind { get; } = kind;

@@ -35,16 +35,25 @@ internal static class AnalyzerRuntimeClosure
             .Concat(EnumerateTree(analyzerRoot, "lib"))
             .Concat(EnumerateTree(analyzerRoot, "stubs"))
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(path => ArtifactFiles.NormalizePath(Path.GetRelativePath(analyzerRoot, path)), StringComparer.Ordinal)
+            .OrderBy(
+                path => ArtifactFiles.NormalizePath(Path.GetRelativePath(analyzerRoot, path)),
+                StringComparer.Ordinal
+            )
             .ToArray();
-        if (!files.Any(path => string.Equals(
-                ArtifactFiles.NormalizePath(Path.GetRelativePath(analyzerRoot, path)),
-                "entrypoints/extract.dart",
-                StringComparison.Ordinal)))
+        if (
+            !files.Any(path =>
+                string.Equals(
+                    ArtifactFiles.NormalizePath(Path.GetRelativePath(analyzerRoot, path)),
+                    "entrypoints/extract.dart",
+                    StringComparison.Ordinal
+                )
+            )
+        )
         {
             throw new FileNotFoundException(
                 "Analyzer runtime closure is missing entrypoints/extract.dart.",
-                Path.Combine(analyzerRoot, "entrypoints", "extract.dart"));
+                Path.Combine(analyzerRoot, "entrypoints", "extract.dart")
+            );
         }
 
         return files;
@@ -54,10 +63,14 @@ internal static class AnalyzerRuntimeClosure
     {
         var root = Path.Combine(analyzerRoot, relativeRoot);
         return Directory.Exists(root)
-            ? Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
-                .Where(path => !ArtifactFiles.NormalizePath(Path.GetRelativePath(root, path))
-                    .Split('/', StringSplitOptions.RemoveEmptyEntries)
-                    .Any(part => part == ".dart_tool"))
+            ? Directory
+                .EnumerateFiles(root, "*", SearchOption.AllDirectories)
+                .Where(path =>
+                    !ArtifactFiles
+                        .NormalizePath(Path.GetRelativePath(root, path))
+                        .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                        .Any(part => part == ".dart_tool")
+                )
             : [];
     }
 }

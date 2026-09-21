@@ -6,27 +6,24 @@ namespace Doroti.Framework.Widgets;
 
 public class SizeChangedLayoutNotification : LayoutChangedNotification
 {
-    public SizeChangedLayoutNotification()
-    {
-    }
-
+    public SizeChangedLayoutNotification() { }
 }
 
 public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 {
-    public SizeChangedLayoutNotifier(Key? key = null, Widget? child = null) : base(key: key, child: child)
-    {
-    }
+    public SizeChangedLayoutNotifier(Key? key = null, Widget? child = null)
+        : base(key: key, child: child) { }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: () =>
-        {
-            new SizeChangedLayoutNotification().dispatch(context);
-        });
+        return new _RenderSizeChangedWithCallback__size_changed_layout_notifier(
+            onLayoutChangedCallback: () =>
+            {
+                new SizeChangedLayoutNotification().dispatch(context);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : RenderProxyBox
@@ -34,7 +31,11 @@ internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : Re
     public virtual Action onLayoutChangedCallback { get; private set; } = default!;
     internal virtual Size? _oldSize { get; set; } = default;
 
-    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(RenderBox? child = null, Action onLayoutChangedCallback = default!) : base(child)
+    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(
+        RenderBox? child = null,
+        Action onLayoutChangedCallback = default!
+    )
+        : base(child)
     {
         this.onLayoutChangedCallback = onLayoutChangedCallback;
     }
@@ -48,6 +49,4 @@ internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : Re
         }
         _oldSize = size;
     }
-
 }
-

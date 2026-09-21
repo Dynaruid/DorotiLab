@@ -33,10 +33,12 @@ internal sealed class CSharpWriter
         return this;
     }
 
-    public CSharpWriter Append(object? value) => Append(
-        value is IFormattable formattable
-            ? formattable.ToString(null, CultureInfo.InvariantCulture)
-            : value?.ToString());
+    public CSharpWriter Append(object? value) =>
+        Append(
+            value is IFormattable formattable
+                ? formattable.ToString(null, CultureInfo.InvariantCulture)
+                : value?.ToString()
+        );
 
     public CSharpWriter AppendLine()
     {

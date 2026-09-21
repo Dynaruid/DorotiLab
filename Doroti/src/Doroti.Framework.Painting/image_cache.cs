@@ -16,9 +16,15 @@ public static partial class Image_cacheLibrary
 
 public class ImageCache
 {
-    internal virtual DartMap<object, _PendingImage__image_cache> _pendingImages { get; private set; } = new DartMap<object, _PendingImage__image_cache>();
-    internal virtual DartMap<object, _CachedImage__image_cache> _cache { get; private set; } = new DartMap<object, _CachedImage__image_cache>();
-    internal virtual DartMap<object, _LiveImage__image_cache> _liveImages { get; private set; } = new DartMap<object, _LiveImage__image_cache>();
+    internal virtual DartMap<object, _PendingImage__image_cache> _pendingImages
+    {
+        get;
+        private set;
+    } = new DartMap<object, _PendingImage__image_cache>();
+    internal virtual DartMap<object, _CachedImage__image_cache> _cache { get; private set; } =
+        new DartMap<object, _CachedImage__image_cache>();
+    internal virtual DartMap<object, _LiveImage__image_cache> _liveImages { get; private set; } =
+        new DartMap<object, _LiveImage__image_cache>();
     internal virtual long _maximumSize { get; set; } = Image_cacheLibrary._kDefaultSize;
     internal virtual long _maximumSizeBytes { get; set; } = Image_cacheLibrary._kDefaultSizeBytes;
     internal virtual long _currentSizeBytes { get; set; } = 0L;
@@ -37,12 +43,19 @@ public class ImageCache
             TimelineTask? debugTimelineTask = default!;
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask = ((Func<TimelineTask>)(() =>
-{
-    var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.setMaximumSize", arguments: new DartMap<string, object?> { ["value"] = __value });
-    return __cascade;
-}))();
+                debugTimelineTask = (
+                    (Func<TimelineTask>)(
+                        () =>
+                        {
+                            var __cascade = new TimelineTask();
+                            __cascade.start(
+                                "ImageCache.setMaximumSize",
+                                arguments: new DartMap<string, object?> { ["value"] = __value }
+                            );
+                            return __cascade;
+                        }
+                    )
+                )();
             }
             _maximumSize = __value;
             if (maximumSize == 0L)
@@ -74,12 +87,19 @@ public class ImageCache
             TimelineTask? debugTimelineTask = default!;
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask = ((Func<TimelineTask>)(() =>
-{
-    var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.setMaximumSizeBytes", arguments: new DartMap<string, object?> { ["value"] = __value });
-    return __cascade;
-}))();
+                debugTimelineTask = (
+                    (Func<TimelineTask>)(
+                        () =>
+                        {
+                            var __cascade = new TimelineTask();
+                            __cascade.start(
+                                "ImageCache.setMaximumSizeBytes",
+                                arguments: new DartMap<string, object?> { ["value"] = __value }
+                            );
+                            return __cascade;
+                        }
+                    )
+                )();
             }
             _maximumSizeBytes = __value;
             if (_maximumSizeBytes == 0L)
@@ -97,11 +117,21 @@ public class ImageCache
         }
     }
     public virtual long currentSizeBytes => _currentSizeBytes;
+
     public virtual void clear()
     {
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            Timeline.instantSync("ImageCache.clear", arguments: new DartMap<string, object?> { ["pendingImages"] = checked((long)_pendingImages.Count), ["keepAliveImages"] = checked((long)_cache.Count), ["liveImages"] = checked((long)_liveImages.Count), ["currentSizeInBytes"] = _currentSizeBytes });
+            Timeline.instantSync(
+                "ImageCache.clear",
+                arguments: new DartMap<string, object?>
+                {
+                    ["pendingImages"] = checked((long)_pendingImages.Count),
+                    ["keepAliveImages"] = checked((long)_cache.Count),
+                    ["liveImages"] = checked((long)_liveImages.Count),
+                    ["currentSizeInBytes"] = _currentSizeBytes,
+                }
+            );
         }
         foreach (_CachedImage__image_cache image in _cache.Values)
         {
@@ -128,7 +158,10 @@ public class ImageCache
         {
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "pending" });
+                Timeline.instantSync(
+                    "ImageCache.evict",
+                    arguments: new DartMap<string, object?> { ["type"] = "pending" }
+                );
             }
             pendingImage.removeListener();
             return true;
@@ -138,7 +171,14 @@ public class ImageCache
         {
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "keepAlive", ["sizeInBytes"] = imageLocal.sizeBytes });
+                Timeline.instantSync(
+                    "ImageCache.evict",
+                    arguments: new DartMap<string, object?>
+                    {
+                        ["type"] = "keepAlive",
+                        ["sizeInBytes"] = imageLocal.sizeBytes,
+                    }
+                );
             }
             _currentSizeBytes -= DartRuntimePrimitives.RequireValue(imageLocal.sizeBytes);
             imageLocal.dispose();
@@ -146,15 +186,26 @@ public class ImageCache
         }
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "miss" });
+            Timeline.instantSync(
+                "ImageCache.evict",
+                arguments: new DartMap<string, object?> { ["type"] = "miss" }
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _touch(object key, _CachedImage__image_cache image, TimelineTask? timelineTask)
+    internal virtual void _touch(
+        object key,
+        _CachedImage__image_cache image,
+        TimelineTask? timelineTask
+    )
     {
-        if ((image.sizeBytes is not null) && (DartRuntimePrimitives.RequireValue(image.sizeBytes) <= maximumSizeBytes) && (maximumSize > 0L))
+        if (
+            (image.sizeBytes is not null)
+            && (DartRuntimePrimitives.RequireValue(image.sizeBytes) <= maximumSizeBytes)
+            && (maximumSize > 0L)
+        )
         {
             _currentSizeBytes += DartRuntimePrimitives.RequireValue(image.sizeBytes);
             _cache[key] = image;
@@ -166,35 +217,60 @@ public class ImageCache
         }
     }
 
-    internal virtual void _trackLiveImage(object key, ImageStreamCompleter completer, long? sizeBytes)
+    internal virtual void _trackLiveImage(
+        object key,
+        ImageStreamCompleter completer,
+        long? sizeBytes
+    )
     {
-        _liveImages.putIfAbsent(key, () =>
-        {
-            return new _LiveImage__image_cache(completer, () =>
-            {
-                _liveImages.remove(key);
-            });
-        }).sizeBytes ??= sizeBytes;
+        _liveImages
+            .putIfAbsent(
+                key,
+                () =>
+                {
+                    return new _LiveImage__image_cache(
+                        completer,
+                        () =>
+                        {
+                            _liveImages.remove(key);
+                        }
+                    );
+                }
+            )
+            .sizeBytes ??= sizeBytes;
     }
 
-    public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, System.Diagnostics.StackTrace?>? onError = null)
+    public virtual ImageStreamCompleter? putIfAbsent(
+        object key,
+        Func<ImageStreamCompleter> loader,
+        Action<object, System.Diagnostics.StackTrace?>? onError = null
+    )
     {
         TimelineTask? debugTimelineTask = default!;
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            debugTimelineTask = ((Func<TimelineTask>)(() =>
-{
-    var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.putIfAbsent", arguments: new DartMap<string, object?> { ["key"] = key.ToString() });
-    return __cascade;
-}))();
+            debugTimelineTask = (
+                (Func<TimelineTask>)(
+                    () =>
+                    {
+                        var __cascade = new TimelineTask();
+                        __cascade.start(
+                            "ImageCache.putIfAbsent",
+                            arguments: new DartMap<string, object?> { ["key"] = key.ToString() }
+                        );
+                        return __cascade;
+                    }
+                )
+            )();
         }
         ImageStreamCompleter? result = _pendingImages.GetValueOrDefault(key)?.completer;
         if (result is not null)
         {
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "pending" });
+                debugTimelineTask!.finish(
+                    arguments: new DartMap<string, object?> { ["result"] = "pending" }
+                );
             }
             return result;
         }
@@ -203,7 +279,9 @@ public class ImageCache
         {
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(
+                    arguments: new DartMap<string, object?> { ["result"] = "keepAlive" }
+                );
             }
             _trackLiveImage(key, imageLocal.completer, imageLocal.sizeBytes);
             _cache[key] = imageLocal;
@@ -212,10 +290,16 @@ public class ImageCache
         _LiveImage__image_cache? liveImage = _liveImages.GetValueOrDefault(key);
         if (liveImage is not null)
         {
-            _touch(key, new _CachedImage__image_cache(liveImage.completer, sizeBytes: liveImage.sizeBytes), debugTimelineTask);
+            _touch(
+                key,
+                new _CachedImage__image_cache(liveImage.completer, sizeBytes: liveImage.sizeBytes),
+                debugTimelineTask
+            );
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(
+                    arguments: new DartMap<string, object?> { ["result"] = "keepAlive" }
+                );
             }
             return liveImage.completer;
         }
@@ -229,7 +313,14 @@ public class ImageCache
             var stackTrace = new System.Diagnostics.StackTrace();
             if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "error", ["error"] = error.ToString(), ["stackTrace"] = stackTrace.ToString() });
+                debugTimelineTask!.finish(
+                    arguments: new DartMap<string, object?>
+                    {
+                        ["result"] = "error",
+                        ["error"] = error.ToString(),
+                        ["stackTrace"] = stackTrace.ToString(),
+                    }
+                );
             }
             if (onError is not null)
             {
@@ -273,17 +364,35 @@ public class ImageCache
             }
             if (!Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce)
             {
-                ((Func<TimelineTask>)(() =>
-{
-    var __cascade = debugTimelineTask!;
-    __cascade.finish(arguments: new DartMap<string, object?> { ["syncCall"] = syncCall, ["sizeInBytes"] = sizeBytesLocal });
-    __cascade.finish(arguments: new DartMap<string, object?> { ["currentSizeBytes"] = currentSizeBytes, ["currentSize"] = currentSize });
-    return __cascade;
-}))();
+                (
+                    (Func<TimelineTask>)(
+                        () =>
+                        {
+                            var __cascade = debugTimelineTask!;
+                            __cascade.finish(
+                                arguments: new DartMap<string, object?>
+                                {
+                                    ["syncCall"] = syncCall,
+                                    ["sizeInBytes"] = sizeBytesLocal,
+                                }
+                            );
+                            __cascade.finish(
+                                arguments: new DartMap<string, object?>
+                                {
+                                    ["currentSizeBytes"] = currentSizeBytes,
+                                    ["currentSize"] = currentSize,
+                                }
+                            );
+                            return __cascade;
+                        }
+                    )
+                )();
             }
             listenedOnce = true;
         }
-        var streamListener = new ImageStreamListener((image, synchronousCall) => listener(image, synchronousCall));
+        var streamListener = new ImageStreamListener(
+            (image, synchronousCall) => listener(image, synchronousCall)
+        );
         pendingImage = new _PendingImage__image_cache(result, streamListener);
         if (trackPendingImage)
         {
@@ -296,7 +405,11 @@ public class ImageCache
 
     public virtual ImageCacheStatus statusForKey(object key)
     {
-        return new ImageCacheStatus(pending: _pendingImages.ContainsKey(key), keepAlive: _cache.ContainsKey(key), live: _liveImages.ContainsKey(key));
+        return new ImageCacheStatus(
+            pending: _pendingImages.ContainsKey(key),
+            keepAlive: _cache.ContainsKey(key),
+            live: _liveImages.ContainsKey(key)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -308,6 +421,7 @@ public class ImageCache
 
     public virtual long liveImageCount => checked(_liveImages.Count);
     public virtual long pendingImageCount => checked(_pendingImages.Count);
+
     public virtual void clearLiveImages()
     {
         foreach (_LiveImage__image_cache image in _liveImages.Values)
@@ -349,7 +463,6 @@ public class ImageCache
         DartRuntimePrimitives.Assert(() => checked(_cache.Count) <= maximumSize);
         DartRuntimePrimitives.Assert(() => _currentSizeBytes <= maximumSizeBytes);
     }
-
 }
 
 public class ImageCacheStatus
@@ -368,19 +481,30 @@ public class ImageCacheStatus
 
     public virtual bool tracked => pending || keepAlive || live;
     public virtual bool untracked => !pending && !keepAlive && !live;
+
     public override bool Equals(object? other)
     {
         var __other = other as ImageCacheStatus;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is ImageCacheStatus) && (__other.pending == pending) && (__other.keepAlive == keepAlive) && (__other.live == live);
+        return (__other is ImageCacheStatus)
+            && (__other.pending == pending)
+            && (__other.keepAlive == keepAlive)
+            && (__other.live == live);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(pending, keepAlive, live);
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus")}(pending: {pending}, live: {live}, keepAlive: {keepAlive})";
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(pending, keepAlive, live);
+
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus")}(pending: {pending}, live: {live}, keepAlive: {keepAlive})";
 }
 
 internal abstract class _CachedImageBase__image_cache
@@ -399,32 +523,33 @@ internal abstract class _CachedImageBase__image_cache
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => handle is not null);
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-        {
-            DartRuntimePrimitives.Assert(() => handle is not null);
-            handle?.dispose();
-            handle = null;
-        }, debugLabel: "CachedImage.disposeHandle");
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
+        SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) =>
+            {
+                DartRuntimePrimitives.Assert(() => handle is not null);
+                handle?.dispose();
+                handle = null;
+            },
+            debugLabel: "CachedImage.disposeHandle"
+        );
     }
-
 }
 
 internal class _CachedImage__image_cache : _CachedImageBase__image_cache
 {
-    internal _CachedImage__image_cache(ImageStreamCompleter completer, long? sizeBytes = null) : base(completer, sizeBytes: DartRuntimePrimitives.RequireValue(sizeBytes))
-    {
-    }
-
+    internal _CachedImage__image_cache(ImageStreamCompleter completer, long? sizeBytes = null)
+        : base(completer, sizeBytes: DartRuntimePrimitives.RequireValue(sizeBytes)) { }
 }
 
 internal class _LiveImage__image_cache : _CachedImageBase__image_cache
 {
     internal virtual Action _handleRemove { get; set; } = default!;
 
-    internal _LiveImage__image_cache(ImageStreamCompleter completer, Action handleRemove) : base(completer)
-    {
-    }
+    internal _LiveImage__image_cache(ImageStreamCompleter completer, Action handleRemove)
+        : base(completer) { }
 
     public override void dispose()
     {
@@ -440,7 +565,10 @@ internal class _PendingImage__image_cache
     public virtual ImageStreamCompleter completer { get; private set; } = default!;
     public virtual ImageStreamListener listener { get; private set; } = default!;
 
-    internal _PendingImage__image_cache(ImageStreamCompleter completer, ImageStreamListener listener)
+    internal _PendingImage__image_cache(
+        ImageStreamCompleter completer,
+        ImageStreamListener listener
+    )
     {
         this.completer = completer;
         this.listener = listener;
@@ -450,6 +578,4 @@ internal class _PendingImage__image_cache
     {
         completer.removeListener(listener);
     }
-
 }
-

@@ -10,22 +10,38 @@ public class ImageFiltered : SingleChildRenderObjectWidget
     public virtual ImageFilter imageFilter { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public ImageFiltered(Key? key = null, ImageFilter imageFilter = default!, Widget? child = null, bool enabled = true) : base(key: key, child: child)
+    public ImageFiltered(
+        Key? key = null,
+        ImageFilter imageFilter = default!,
+        Widget? child = null,
+        bool enabled = true
+    )
+        : base(key: key, child: child)
     {
         this.imageFilter = imageFilter;
         this.enabled = enabled;
     }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new _ImageFilterRenderObject__image_filter(imageFilter, enabled));
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(
+            new _ImageFilterRenderObject__image_filter(imageFilter, enabled)
+        );
+
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        DartRuntimePrimitives.Ignore(((Func<_ImageFilterRenderObject__image_filter>)(() =>
-{
-    var __cascade = ((_ImageFilterRenderObject__image_filter?)renderObject)!;
-    __cascade.enabled = enabled;
-    __cascade.imageFilter = imageFilter;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_ImageFilterRenderObject__image_filter>)(
+                    () =>
+                    {
+                        var __cascade = ((_ImageFilterRenderObject__image_filter?)renderObject)!;
+                        __cascade.enabled = enabled;
+                        __cascade.imageFilter = imageFilter;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -33,7 +49,6 @@ public class ImageFiltered : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<ImageFilter>("imageFilter", imageFilter));
     }
-
 }
 
 internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
@@ -77,12 +92,17 @@ internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
                 _imageFilter = __value;
                 // A disabled filter cannot affect its child's pixels. Enabling
                 // it already invalidates compositing and paint in the setter above.
-                if (_enabled) markNeedsCompositedLayerUpdate();
+                if (_enabled)
+                {
+                    markNeedsCompositedLayerUpdate();
+                }
             }
         }
     }
-    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((child is not null) && enabled);
+    public override bool alwaysNeedsCompositing =>
+        DartRuntimePrimitives.ConvertValue<bool>((child is not null) && enabled);
     public override bool isRepaintBoundary => alwaysNeedsCompositing;
+
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (ImageFilterLayer)oldLayer;
@@ -92,5 +112,4 @@ internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
         return layer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

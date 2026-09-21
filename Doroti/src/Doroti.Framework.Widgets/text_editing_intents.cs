@@ -6,10 +6,7 @@ namespace Doroti.Framework.Widgets;
 
 public class DoNothingAndStopPropagationTextIntent : Intent
 {
-    public DoNothingAndStopPropagationTextIntent()
-    {
-    }
-
+    public DoNothingAndStopPropagationTextIntent() { }
 }
 
 public abstract class DirectionalTextEditingIntent : Intent
@@ -20,31 +17,24 @@ public abstract class DirectionalTextEditingIntent : Intent
     {
         this.forward = forward;
     }
-
 }
 
 public class DeleteCharacterIntent : DirectionalTextEditingIntent
 {
-    public DeleteCharacterIntent(bool forward) : base(forward)
-    {
-    }
-
+    public DeleteCharacterIntent(bool forward)
+        : base(forward) { }
 }
 
 public class DeleteToNextWordBoundaryIntent : DirectionalTextEditingIntent
 {
-    public DeleteToNextWordBoundaryIntent(bool forward) : base(forward)
-    {
-    }
-
+    public DeleteToNextWordBoundaryIntent(bool forward)
+        : base(forward) { }
 }
 
 public class DeleteToLineBreakIntent : DirectionalTextEditingIntent
 {
-    public DeleteToLineBreakIntent(bool forward) : base(forward)
-    {
-    }
-
+    public DeleteToLineBreakIntent(bool forward)
+        : base(forward) { }
 }
 
 public abstract class DirectionalCaretMovementIntent : DirectionalTextEditingIntent
@@ -53,111 +43,100 @@ public abstract class DirectionalCaretMovementIntent : DirectionalTextEditingInt
     public virtual bool collapseAtReversal { get; private set; } = default!;
     public virtual bool continuesAtWrap { get; private set; } = default!;
 
-    protected DirectionalCaretMovementIntent(bool forward, bool collapseSelection, bool collapseAtReversal = false, bool continuesAtWrap = false) : base(forward)
+    protected DirectionalCaretMovementIntent(
+        bool forward,
+        bool collapseSelection,
+        bool collapseAtReversal = false,
+        bool continuesAtWrap = false
+    )
+        : base(forward)
     {
         this.collapseSelection = collapseSelection;
         this.collapseAtReversal = collapseAtReversal;
         this.continuesAtWrap = continuesAtWrap;
         System.Diagnostics.Debug.Assert(!collapseSelection || !collapseAtReversal);
     }
-
 }
 
 public class ExtendSelectionByCharacterIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionByCharacterIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionByCharacterIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
 public class ExtendSelectionToNextWordBoundaryIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToNextWordBoundaryIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionToNextWordBoundaryIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
 public class ExtendSelectionToNextWordBoundaryOrCaretLocationIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(bool forward) : base(forward, false, true)
-    {
-    }
-
+    public ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(bool forward)
+        : base(forward, false, true) { }
 }
 
 public class ExpandSelectionToDocumentBoundaryIntent : DirectionalCaretMovementIntent
 {
-    public ExpandSelectionToDocumentBoundaryIntent(bool forward) : base(forward, false)
-    {
-    }
-
+    public ExpandSelectionToDocumentBoundaryIntent(bool forward)
+        : base(forward, false) { }
 }
 
 public class ExpandSelectionToLineBreakIntent : DirectionalCaretMovementIntent
 {
-    public ExpandSelectionToLineBreakIntent(bool forward) : base(forward, false)
-    {
-    }
-
+    public ExpandSelectionToLineBreakIntent(bool forward)
+        : base(forward, false) { }
 }
 
 public class ExtendSelectionToLineBreakIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToLineBreakIntent(bool forward, bool collapseSelection, bool collapseAtReversal = false, bool continuesAtWrap = false) : base(forward, collapseSelection, collapseAtReversal, continuesAtWrap)
+    public ExtendSelectionToLineBreakIntent(
+        bool forward,
+        bool collapseSelection,
+        bool collapseAtReversal = false,
+        bool continuesAtWrap = false
+    )
+        : base(forward, collapseSelection, collapseAtReversal, continuesAtWrap)
     {
         System.Diagnostics.Debug.Assert(!collapseSelection || !collapseAtReversal);
     }
-
 }
 
 public class ExtendSelectionVerticallyToAdjacentLineIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionVerticallyToAdjacentLineIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionVerticallyToAdjacentLineIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
 public class ExtendSelectionVerticallyToAdjacentPageIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionVerticallyToAdjacentPageIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionVerticallyToAdjacentPageIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
 public class ExtendSelectionToNextParagraphBoundaryIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToNextParagraphBoundaryIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionToNextParagraphBoundaryIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
-public class ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent : DirectionalCaretMovementIntent
+public class ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent
+    : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(bool forward) : base(forward, false, true)
-    {
-    }
-
+    public ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(bool forward)
+        : base(forward, false, true) { }
 }
 
 public class ExtendSelectionToDocumentBoundaryIntent : DirectionalCaretMovementIntent
 {
-    public ExtendSelectionToDocumentBoundaryIntent(bool forward, bool collapseSelection) : base(forward, collapseSelection)
-    {
-    }
-
+    public ExtendSelectionToDocumentBoundaryIntent(bool forward, bool collapseSelection)
+        : base(forward, collapseSelection) { }
 }
 
 public class ScrollToDocumentBoundaryIntent : DirectionalTextEditingIntent
 {
-    public ScrollToDocumentBoundaryIntent(bool forward) : base(forward)
-    {
-    }
-
+    public ScrollToDocumentBoundaryIntent(bool forward)
+        : base(forward) { }
 }
 
 public class SelectAllTextIntent : Intent
@@ -168,12 +147,14 @@ public class SelectAllTextIntent : Intent
     {
         this.cause = cause;
     }
-
 }
 
 public class CopySelectionTextIntent : Intent
 {
-    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(SelectionChangedCause.keyboard, false);
+    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(
+        SelectionChangedCause.keyboard,
+        false
+    );
     public virtual SelectionChangedCause cause { get; private set; } = default!;
     public virtual bool collapseSelection { get; private set; } = default!;
 
@@ -187,7 +168,6 @@ public class CopySelectionTextIntent : Intent
     {
         return new CopySelectionTextIntent(cause, true);
     }
-
 }
 
 public class PasteTextIntent : Intent
@@ -198,7 +178,6 @@ public class PasteTextIntent : Intent
     {
         this.cause = cause;
     }
-
 }
 
 public class RedoTextIntent : Intent
@@ -209,7 +188,6 @@ public class RedoTextIntent : Intent
     {
         this.cause = cause;
     }
-
 }
 
 public class ReplaceTextIntent : Intent
@@ -219,14 +197,18 @@ public class ReplaceTextIntent : Intent
     public virtual TextRange replacementRange { get; private set; } = default!;
     public virtual SelectionChangedCause cause { get; private set; } = default!;
 
-    public ReplaceTextIntent(TextEditingValue currentTextEditingValue, string replacementText, TextRange replacementRange, SelectionChangedCause cause)
+    public ReplaceTextIntent(
+        TextEditingValue currentTextEditingValue,
+        string replacementText,
+        TextRange replacementRange,
+        SelectionChangedCause cause
+    )
     {
         this.currentTextEditingValue = currentTextEditingValue;
         this.replacementText = replacementText;
         this.replacementRange = replacementRange;
         this.cause = cause;
     }
-
 }
 
 public class UndoTextIntent : Intent
@@ -237,7 +219,6 @@ public class UndoTextIntent : Intent
     {
         this.cause = cause;
     }
-
 }
 
 public class UpdateSelectionIntent : Intent
@@ -246,21 +227,21 @@ public class UpdateSelectionIntent : Intent
     public virtual TextSelection newSelection { get; private set; } = default!;
     public virtual SelectionChangedCause cause { get; private set; } = default!;
 
-    public UpdateSelectionIntent(TextEditingValue currentTextEditingValue, TextSelection newSelection, SelectionChangedCause cause)
+    public UpdateSelectionIntent(
+        TextEditingValue currentTextEditingValue,
+        TextSelection newSelection,
+        SelectionChangedCause cause
+    )
     {
         this.currentTextEditingValue = currentTextEditingValue;
         this.newSelection = newSelection;
         this.cause = cause;
     }
-
 }
 
 public class TransposeCharactersIntent : Intent
 {
-    public TransposeCharactersIntent()
-    {
-    }
-
+    public TransposeCharactersIntent() { }
 }
 
 public class EditableTextTapOutsideIntent : Intent
@@ -268,12 +249,14 @@ public class EditableTextTapOutsideIntent : Intent
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual Gestures.PointerDownEvent pointerDownEvent { get; private set; } = default!;
 
-    public EditableTextTapOutsideIntent(FocusNode focusNode, Gestures.PointerDownEvent pointerDownEvent)
+    public EditableTextTapOutsideIntent(
+        FocusNode focusNode,
+        Gestures.PointerDownEvent pointerDownEvent
+    )
     {
         this.focusNode = focusNode;
         this.pointerDownEvent = pointerDownEvent;
     }
-
 }
 
 public class EditableTextTapUpOutsideIntent : Intent
@@ -281,11 +264,12 @@ public class EditableTextTapUpOutsideIntent : Intent
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual Gestures.PointerUpEvent pointerUpEvent { get; private set; } = default!;
 
-    public EditableTextTapUpOutsideIntent(FocusNode focusNode, Gestures.PointerUpEvent pointerUpEvent)
+    public EditableTextTapUpOutsideIntent(
+        FocusNode focusNode,
+        Gestures.PointerUpEvent pointerUpEvent
+    )
     {
         this.focusNode = focusNode;
         this.pointerUpEvent = pointerUpEvent;
     }
-
 }
-

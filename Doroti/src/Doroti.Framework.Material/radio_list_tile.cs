@@ -9,7 +9,7 @@ namespace Doroti.Framework.Material;
 internal enum _RadioType__radio_list_tile
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public class RadioListTile<T> : StatefulWidget
@@ -56,7 +56,49 @@ public class RadioListTile<T> : StatefulWidget
     public virtual BorderSide? radioSide { get; private set; }
     public virtual WidgetStateProperty<double?>? radioInnerRadius { get; private set; }
 
-    public RadioListTile(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool? enabled = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null) : base(key: key)
+    public RadioListTile(
+        Key? key = null,
+        T value = default!,
+        T? groupValue = default,
+        Action<T?>? onChanged = null,
+        MouseCursor? mouseCursor = null,
+        bool toggleable = false,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        bool autofocus = false,
+        EdgeInsetsGeometry? contentPadding = null,
+        ShapeBorder? shape = null,
+        Color? tileColor = null,
+        Color? selectedTileColor = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        Action<bool>? onFocusChange = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        double radioScaleFactor = 1.0,
+        ListTileTitleAlignment? titleAlignment = null,
+        bool? enabled = null,
+        bool internalAddSemanticForOnTap = false,
+        WidgetStateProperty<Color?>? radioBackgroundColor = null,
+        BorderSide? radioSide = null,
+        WidgetStateProperty<double?>? radioInnerRadius = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -102,9 +144,92 @@ public class RadioListTile<T> : StatefulWidget
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static RadioListTile<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, bool? enabled = null, bool useCupertinoCheckmarkStyle = false, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null)
+    public static RadioListTile<T> CreateAdaptive(
+        Key? key = null,
+        T value = default!,
+        T? groupValue = default,
+        Action<T?>? onChanged = null,
+        MouseCursor? mouseCursor = null,
+        bool toggleable = false,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        bool autofocus = false,
+        EdgeInsetsGeometry? contentPadding = null,
+        ShapeBorder? shape = null,
+        Color? tileColor = null,
+        Color? selectedTileColor = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        Action<bool>? onFocusChange = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        double radioScaleFactor = 1.0,
+        bool? enabled = null,
+        bool useCupertinoCheckmarkStyle = false,
+        ListTileTitleAlignment? titleAlignment = null,
+        bool internalAddSemanticForOnTap = false,
+        WidgetStateProperty<Color?>? radioBackgroundColor = null,
+        BorderSide? radioSide = null,
+        WidgetStateProperty<double?>? radioInnerRadius = null
+    )
     {
-        var __instance = new RadioListTile<T>(key: key, value: value, groupValue: groupValue, onChanged: onChanged, mouseCursor: mouseCursor, toggleable: toggleable, activeColor: activeColor, fillColor: fillColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, secondary: secondary, selected: selected, controlAffinity: controlAffinity, autofocus: autofocus, contentPadding: contentPadding, shape: shape, tileColor: tileColor, selectedTileColor: selectedTileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, radioScaleFactor: radioScaleFactor, titleAlignment: titleAlignment, enabled: enabled, internalAddSemanticForOnTap: internalAddSemanticForOnTap, radioBackgroundColor: radioBackgroundColor, radioSide: radioSide, radioInnerRadius: radioInnerRadius);
+        var __instance = new RadioListTile<T>(
+            key: key,
+            value: value,
+            groupValue: groupValue,
+            onChanged: onChanged,
+            mouseCursor: mouseCursor,
+            toggleable: toggleable,
+            activeColor: activeColor,
+            fillColor: fillColor,
+            hoverColor: hoverColor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            materialTapTargetSize: materialTapTargetSize,
+            title: title,
+            subtitle: subtitle,
+            isThreeLine: isThreeLine,
+            dense: dense,
+            secondary: secondary,
+            selected: selected,
+            controlAffinity: controlAffinity,
+            autofocus: autofocus,
+            contentPadding: contentPadding,
+            shape: shape,
+            tileColor: tileColor,
+            selectedTileColor: selectedTileColor,
+            visualDensity: visualDensity,
+            focusNode: focusNode,
+            statesController: statesController,
+            onFocusChange: onFocusChange,
+            enableFeedback: enableFeedback,
+            horizontalTitleGap: horizontalTitleGap,
+            minVerticalPadding: minVerticalPadding,
+            minLeadingWidth: minLeadingWidth,
+            minTileHeight: minTileHeight,
+            radioScaleFactor: radioScaleFactor,
+            titleAlignment: titleAlignment,
+            enabled: enabled,
+            internalAddSemanticForOnTap: internalAddSemanticForOnTap,
+            radioBackgroundColor: radioBackgroundColor,
+            radioSide: radioSide,
+            radioInnerRadius: radioInnerRadius
+        );
         __instance.value = value;
         __instance.groupValue = groupValue;
         __instance.onChanged = onChanged;
@@ -149,8 +274,13 @@ public class RadioListTile<T> : StatefulWidget
         return __instance;
     }
 
-    public virtual bool @checked => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(value, groupValue));
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioListTileState__radio_list_tile<T>());
+    public virtual bool @checked =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            EqualityComparer<T>.Default.Equals(value, groupValue)
+        );
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RadioListTileState__radio_list_tile<T>());
 }
 
 internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>, RadioClient<T>
@@ -172,13 +302,27 @@ internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>
     }
     public virtual RadioGroupRegistry<T>? _registry { get; set; } = default;
 
-    public virtual FocusNode focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new FocusNode()));
+    public virtual FocusNode focusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(
+            widget.focusNode ?? (_internalFocusNode ??= new FocusNode())
+        );
     public virtual T radioValue => widget.value;
     public virtual bool tristate => widget.toggleable;
     public virtual bool enabled => _enabled;
-    public virtual bool @checked => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(radioValue, effectiveGroupValue));
-    public virtual T? effectiveGroupValue => DartRuntimePrimitives.ConvertValue<T>(DartRuntimePrimitives.NullAware(registry, __target => __target.groupValue) ?? widget.groupValue);
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>(widget.enabled ?? (widget.onChanged is not null) || (registry is not null));
+    public virtual bool @checked =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            EqualityComparer<T>.Default.Equals(radioValue, effectiveGroupValue)
+        );
+    public virtual T? effectiveGroupValue =>
+        DartRuntimePrimitives.ConvertValue<T>(
+            DartRuntimePrimitives.NullAware(registry, __target => __target.groupValue)
+                ?? widget.groupValue
+        );
+    internal virtual bool _enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            widget.enabled ?? ((widget.onChanged is not null) || (registry is not null))
+        );
+
     internal virtual void _handleListTileTap()
     {
         if (!widget.toggleable && @checked)
@@ -224,35 +368,153 @@ internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => !(widget.enabled ?? false) || (widget.onChanged is not null) || (RadioGroup.maybeOf<T>(context) is not null), () => (object?)"Radio is enabled but has no RadioListTile.onChange or registry above");
+        DartRuntimePrimitives.Assert(
+            () =>
+                !(widget.enabled ?? false)
+                || (widget.onChanged is not null)
+                || (RadioGroup.maybeOf<T>(context) is not null),
+            () => (object?)"Radio is enabled but has no RadioListTile.onChange or registry above"
+        );
         Widget control = default!;
         switch (widget._radioType)
         {
             case _RadioType__radio_list_tile.material:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: new Radio<T>(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: new Radio<T>(
+                            value: radioValue,
+                            groupValue: _radioRegistry.groupValue,
+                            toggleable: widget.toggleable,
+                            activeColor: widget.activeColor,
+                            materialTapTargetSize: widget.materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            autofocus: widget.autofocus,
+                            fillColor: widget.fillColor,
+                            mouseCursor: widget.mouseCursor,
+                            hoverColor: widget.hoverColor,
+                            overlayColor: widget.overlayColor,
+                            splashRadius: widget.splashRadius,
+                            enabled: _enabled,
+                            groupRegistry: _radioRegistry,
+                            backgroundColor: widget.radioBackgroundColor,
+                            side: widget.radioSide,
+                            innerRadius: widget.radioInnerRadius
+                        )
+                    )
+                );
+                break;
+            }
             case _RadioType__radio_list_tile.adaptive:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: Radio<T>.CreateAdaptive(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, useCupertinoCheckmarkStyle: widget.useCupertinoCheckmarkStyle, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: Radio<T>.CreateAdaptive(
+                            value: radioValue,
+                            groupValue: _radioRegistry.groupValue,
+                            toggleable: widget.toggleable,
+                            activeColor: widget.activeColor,
+                            materialTapTargetSize: widget.materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            autofocus: widget.autofocus,
+                            fillColor: widget.fillColor,
+                            mouseCursor: widget.mouseCursor,
+                            hoverColor: widget.hoverColor,
+                            overlayColor: widget.overlayColor,
+                            splashRadius: widget.splashRadius,
+                            useCupertinoCheckmarkStyle: widget.useCupertinoCheckmarkStyle,
+                            enabled: _enabled,
+                            groupRegistry: _radioRegistry,
+                            backgroundColor: widget.radioBackgroundColor,
+                            side: widget.radioSide,
+                            innerRadius: widget.radioInnerRadius
+                        )
+                    )
+                );
+                break;
+            }
         }
         if (widget.radioScaleFactor != 1.0)
         {
-            control = DartRuntimePrimitives.ConvertValue<Widget>(Transform.CreateScale(scale: widget.radioScaleFactor, child: control));
+            control = DartRuntimePrimitives.ConvertValue<Widget>(
+                Transform.CreateScale(scale: widget.radioScaleFactor, child: control)
+            );
         }
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
-        ListTileControlAffinity effectiveControlAffinity = (widget.controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
+        ListTileControlAffinity effectiveControlAffinity =
+            (widget.controlAffinity ?? listTileTheme.controlAffinity)
+            ?? ListTileControlAffinity.platform;
         Widget? leadingLocal = default!;
         Widget? trailingLocal = default!;
-        DartRuntimePrimitives.Ignore((leadingLocal, trailingLocal) = effectiveControlAffinity switch { var __constant24953 when Equals(__constant24953, ListTileControlAffinity.leading) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, widget.secondary)), var __constant24994 when Equals(__constant24994, ListTileControlAffinity.platform) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, widget.secondary)), var __constant25065 when Equals(__constant25065, ListTileControlAffinity.trailing) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((widget.secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Ignore(
+            (leadingLocal, trailingLocal) = effectiveControlAffinity switch
+            {
+                var __constant24953 when Equals(__constant24953, ListTileControlAffinity.leading) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>(
+                        (control, widget.secondary)
+                    ),
+                var __constant24994
+                    when Equals(__constant24994, ListTileControlAffinity.platform) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>(
+                        (control, widget.secondary)
+                    ),
+                var __constant25065
+                    when Equals(__constant25065, ListTileControlAffinity.trailing) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>(
+                        (widget.secondary, control)
+                    ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         ThemeData theme = Theme.of(context);
         RadioThemeData radioThemeData = RadioTheme.of(context);
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection25269 = new HashSet<WidgetState>(); if (widget.selected) { __collection25269.Add(WidgetState.selected); } return __collection25269; }))();
-        Color effectiveActiveColor = (widget.activeColor ?? (radioThemeData.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
-        return new MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: widget.title, subtitle: widget.subtitle, trailing: trailingLocal, isThreeLine: widget.isThreeLine, dense: widget.dense, enabled: _enabled, shape: widget.shape, tileColor: widget.tileColor, selectedTileColor: widget.selectedTileColor, onTap: _enabled ? _handleListTileTap : null, selected: widget.selected, autofocus: widget.autofocus, contentPadding: widget.contentPadding, visualDensity: widget.visualDensity, focusNode: focusNode, statesController: widget.statesController, onFocusChange: widget.onFocusChange, enableFeedback: widget.enableFeedback, horizontalTitleGap: widget.horizontalTitleGap, minVerticalPadding: widget.minVerticalPadding, minLeadingWidth: widget.minLeadingWidth, minTileHeight: widget.minTileHeight, titleAlignment: widget.titleAlignment, internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap));
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection25269 = new HashSet<WidgetState>();
+                    if (widget.selected)
+                    {
+                        __collection25269.Add(WidgetState.selected);
+                    }
+                    return __collection25269;
+                }
+            )
+        )();
+        Color effectiveActiveColor =
+            (widget.activeColor ?? (radioThemeData.fillColor?.resolve(states)))
+            ?? theme.colorScheme.secondary;
+        return new MergeSemantics(
+            child: new ListTile(
+                selectedColor: effectiveActiveColor,
+                leading: leadingLocal,
+                title: widget.title,
+                subtitle: widget.subtitle,
+                trailing: trailingLocal,
+                isThreeLine: widget.isThreeLine,
+                dense: widget.dense,
+                enabled: _enabled,
+                shape: widget.shape,
+                tileColor: widget.tileColor,
+                selectedTileColor: widget.selectedTileColor,
+                onTap: _enabled ? _handleListTileTap : null,
+                selected: widget.selected,
+                autofocus: widget.autofocus,
+                contentPadding: widget.contentPadding,
+                visualDensity: widget.visualDensity,
+                focusNode: focusNode,
+                statesController: widget.statesController,
+                onFocusChange: widget.onFocusChange,
+                enableFeedback: widget.enableFeedback,
+                horizontalTitleGap: widget.horizontalTitleGap,
+                minVerticalPadding: widget.minVerticalPadding,
+                minLeadingWidth: widget.minLeadingWidth,
+                minTileHeight: widget.minTileHeight,
+                titleAlignment: widget.titleAlignment,
+                internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -283,12 +545,8 @@ internal class _RadioRegistry__radio_list_tile<T> : RadioGroupRegistry<T>
 
     public virtual T? groupValue => state.effectiveGroupValue;
     public virtual Action<T?> onChanged => state.handleChange;
-    public virtual void registerClient(RadioClient<T> radio)
-    {
-    }
 
-    public virtual void unregisterClient(RadioClient<T> radio)
-    {
-    }
+    public virtual void registerClient(RadioClient<T> radio) { }
 
+    public virtual void unregisterClient(RadioClient<T> radio) { }
 }

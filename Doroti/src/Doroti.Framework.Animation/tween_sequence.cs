@@ -6,8 +6,10 @@ namespace Doroti.Framework.Animation;
 
 public class TweenSequence<T> : Animatable<T>
 {
-    internal virtual List<TweenSequenceItem<T>> _items { get; private set; } = new List<TweenSequenceItem<T>>();
-    internal virtual List<_Interval__tween_sequence> _intervals { get; private set; } = new List<_Interval__tween_sequence>();
+    internal virtual List<TweenSequenceItem<T>> _items { get; private set; } =
+        new List<TweenSequenceItem<T>>();
+    internal virtual List<_Interval__tween_sequence> _intervals { get; private set; } =
+        new List<_Interval__tween_sequence>();
 
     public TweenSequence(List<TweenSequenceItem<T>> items)
     {
@@ -18,7 +20,8 @@ public class TweenSequence<T> : Animatable<T>
         var start = 0.0;
         for (var index = 0; index < _items.Count; index++)
         {
-            var end = index == _items.Count - 1 ? 1.0 : start + (_items[index].weight / totalWeight);
+            var end =
+                index == _items.Count - 1 ? 1.0 : start + (_items[index].weight / totalWeight);
             _intervals.Add(new _Interval__tween_sequence(start, end));
             start = end;
         }
@@ -46,7 +49,9 @@ public class TweenSequence<T> : Animatable<T>
                 return _evaluateAt(t, index);
             }
         }
-        throw new InvalidOperationException($"TweenSequence.evaluate() could not find an interval for {t}");
+        throw new InvalidOperationException(
+            $"TweenSequence.evaluate() could not find an interval for {t}"
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,9 +60,8 @@ public class TweenSequence<T> : Animatable<T>
 
 public class FlippedTweenSequence : TweenSequence<double>
 {
-    public FlippedTweenSequence(List<TweenSequenceItem<double>> items) : base(items)
-    {
-    }
+    public FlippedTweenSequence(List<TweenSequenceItem<double>> items)
+        : base(items) { }
 
     public override double transform(double t) => 1L - base.transform(1L - t);
 }
@@ -73,7 +77,6 @@ public class TweenSequenceItem<T>
         this.weight = weight;
         System.Diagnostics.Debug.Assert(weight > 0.0);
     }
-
 }
 
 internal class _Interval__tween_sequence
@@ -89,6 +92,8 @@ internal class _Interval__tween_sequence
     }
 
     public virtual bool contains(double t) => (t >= start) && (t < end);
+
     public virtual double value(double t) => (t - start) / (end - start);
+
     public override string ToString() => $"<{start}, {end}>";
 }

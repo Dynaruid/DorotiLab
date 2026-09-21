@@ -7,14 +7,27 @@ namespace Doroti.Skia.RuntimeEffects;
 public static class SkiaGpuSurfaces
 {
     private sealed record Owner(SKGraphiteRecorder Recorder, int Thread);
+
     private static readonly ConditionalWeakTable<SKSurface, Owner> Owners = new();
-    public sealed class Recording { public bool IsDiscarded { get; internal set; } }
-    private sealed class RecorderCache { public Recording Current = new(); }
-    private static readonly ConditionalWeakTable<SKGraphiteRecorder, RecorderCache> RecorderCaches = new();
+
+    public sealed class Recording
+    {
+        public bool IsDiscarded { get; internal set; }
+    }
+
+    private sealed class RecorderCache
+    {
+        public Recording Current = new();
+    }
+
+    private static readonly ConditionalWeakTable<SKGraphiteRecorder, RecorderCache> RecorderCaches =
+        new();
 
     /// <summary>Retain with a cached snapshot to detect whether its GPU draws were discarded.</summary>
-    public static Recording? RecordingFor(SKCanvas canvas) => RecorderFor(canvas) is { } recorder
-        ? RecorderCaches.GetOrCreateValue(recorder).Current : null;
+    public static Recording? RecordingFor(SKCanvas canvas) =>
+        RecorderFor(canvas) is { } recorder
+            ? RecorderCaches.GetOrCreateValue(recorder).Current
+            : null;
 
     public static void CompleteRecording(SKGraphiteRecorder recorder, bool discarded)
     {
@@ -33,21 +46,52 @@ public static class SkiaGpuSurfaces
 
     public static SKGraphiteRecorder? RecorderFor(SKCanvas canvas)
     {
-        if (canvas.Surface is not { } surface || !Owners.TryGetValue(surface, out var owner)) return null;
-        if (owner.Thread != Environment.CurrentManagedThreadId || owner.Recorder.Handle == IntPtr.Zero)
-            throw new InvalidOperationException("Graphite surface accessed outside its live recorder owner.");
+        if (canvas.Surface is not { } surface || !Owners.TryGetValue(surface, out var owner))
+        {
+            return null;
+        }
+
+        if (
+            owner.Thread != Environment.CurrentManagedThreadId
+            || owner.Recorder.Handle == IntPtr.Zero
+        )
+        {
+            throw new InvalidOperationException(
+                "Graphite surface accessed outside its live recorder owner."
+            );
+        }
+
         return owner.Recorder;
     }
 
-    public static bool IsGpu(SKCanvas canvas) => canvas.Context is not null || RecorderFor(canvas) is not null;
+    public static bool IsGpu(SKCanvas canvas) =>
+        canvas.Context is not null || RecorderFor(canvas) is not null;
 
-    public static SKSurface CreateCompatible(SKCanvas canvas, SKImageInfo info, SKSurfaceProperties? properties)
+    public static SKSurface CreateCompatible(
+        SKCanvas canvas,
+        SKImageInfo info,
+        SKSurfaceProperties? properties
+    )
     {
         if (RecorderFor(canvas) is { } recorder)
-            return Register(SKSurface.Create(recorder, info, properties)
-                ?? throw new InvalidOperationException("Graphite GPU surface allocation failed."), recorder);
-        return SKSurface.Create(canvas.Context
-            ?? throw new InvalidOperationException("A GPU capture requires an owned GPU canvas."), true, info, properties)
-            ?? throw new InvalidOperationException("Ganesh GPU surface allocation failed.");
+        {
+            return Register(
+                SKSurface.Create(recorder, info, properties)
+                    ?? throw new InvalidOperationException(
+                        "Graphite GPU surface allocation failed."
+                    ),
+                recorder
+            );
+        }
+
+        return SKSurface.Create(
+                canvas.Context
+                    ?? throw new InvalidOperationException(
+                        "A GPU capture requires an owned GPU canvas."
+                    ),
+                true,
+                info,
+                properties
+            ) ?? throw new InvalidOperationException("Ganesh GPU surface allocation failed.");
     }
 }

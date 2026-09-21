@@ -19,7 +19,16 @@ public class DrawerHeader : StatelessWidget
     public virtual Curve curve { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public DrawerHeader(Key? key = null, Decoration? decoration = null, EdgeInsetsGeometry? margin = default!, EdgeInsetsGeometry padding = default!, Duration? duration = null, Curve curve = default!, Widget? child = default!) : base(key: key)
+    public DrawerHeader(
+        Key? key = null,
+        Decoration? decoration = null,
+        EdgeInsetsGeometry? margin = default!,
+        EdgeInsetsGeometry padding = default!,
+        Duration? duration = null,
+        Curve curve = default!,
+        Widget? child = default!
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry? __margin = margin ?? EdgeInsets.CreateOnly(bottom: 8.0);
         EdgeInsetsGeometry __padding = padding ?? new EdgeInsets(16.0, 16.0, 16.0, 8.0);
@@ -39,8 +48,29 @@ public class DrawerHeader : StatelessWidget
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         ThemeData theme = Theme.of(context);
         double statusBarHeight = MediaQuery.paddingOf(context).top;
-        return new Container(height: statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight, margin: margin, decoration: new BoxDecoration(border: new Border(bottom: Divider.createBorderSide(context))), child: new AnimatedContainer(padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: decoration, duration: DartRuntimePrimitives.RequireValue(duration), curve: curve, child: (child is null) ? null : new DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: child!))));
+        return new Container(
+            height: statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight,
+            margin: margin,
+            decoration: new BoxDecoration(
+                border: new Border(bottom: Divider.createBorderSide(context))
+            ),
+            child: new AnimatedContainer(
+                padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)),
+                decoration: decoration,
+                duration: DartRuntimePrimitives.RequireValue(duration),
+                curve: curve,
+                child: (child is null)
+                    ? null
+                    : new DefaultTextStyle(
+                        style: theme.textTheme.bodyLarge!,
+                        child: MediaQuery.CreateRemovePadding(
+                            context: context,
+                            removeTop: true,
+                            child: child!
+                        )
+                    )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

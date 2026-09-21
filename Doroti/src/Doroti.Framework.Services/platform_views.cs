@@ -16,9 +16,7 @@ public class PlatformViewsRegistry
 {
     internal virtual long _nextPlatformViewId { get; set; } = 0L;
 
-    public PlatformViewsRegistry()
-    {
-    }
+    public PlatformViewsRegistry() { }
 
     public virtual long getNextPlatformViewId()
     {
@@ -27,20 +25,25 @@ public class PlatformViewsRegistry
         return _nextPlatformViewId++;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public delegate void PlatformViewCreatedCallback(long id);
 
 public class PlatformViewsService
 {
-    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<DorotiView, PlatformViewsService> _owners = new();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<
+        DorotiView,
+        PlatformViewsService
+    > _owners = new();
     private static readonly AsyncLocal<DorotiView?> _activeOwner = new();
     internal static PlatformViewsService _instance
     {
         get
         {
-            var service = _owners.GetValue(RequireOwner(), owner => new PlatformViewsService(owner));
+            var service = _owners.GetValue(
+                RequireOwner(),
+                owner => new PlatformViewsService(owner)
+            );
             service.EnsureHandlers();
             return service;
         }
@@ -48,18 +51,29 @@ public class PlatformViewsService
     internal readonly MethodChannel Channel;
     internal readonly MethodChannel Channel2;
     private bool _handlersInstalled;
-    internal virtual DartMap<long, Action> _focusCallbacks { get; private set; } = new DartMap<long, Action>();
+    internal virtual DartMap<long, Action> _focusCallbacks { get; private set; } =
+        new DartMap<long, Action>();
 
-    public PlatformViewsService() : this(RequireOwner()) { }
+    public PlatformViewsService()
+        : this(RequireOwner()) { }
+
     private PlatformViewsService(DorotiView owner)
     {
         var messenger = new OwnerPlatformViewMessenger(owner);
         Channel = new MethodChannel("flutter/platform_views", binaryMessenger: messenger);
         Channel2 = new MethodChannel("flutter/platform_views_2", binaryMessenger: messenger);
     }
-    private static DorotiView RequireOwner() => _activeOwner.Value ?? PlatformDispatcher.instance.implicitView ??
-        throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformViews, null,
-            DartUiInvocation.Managed("PlatformViewsService"), "multiple views require an explicit EnterOwner scope");
+
+    private static DorotiView RequireOwner() =>
+        _activeOwner.Value
+        ?? PlatformDispatcher.instance.implicitView
+        ?? throw new DorotiCapabilityException(
+            DorotiCapabilityIds.PlatformViews,
+            null,
+            DartUiInvocation.Managed("PlatformViewsService"),
+            "multiple views require an explicit EnterOwner scope"
+        );
+
     public static IDisposable EnterOwner(DorotiView owner)
     {
         ArgumentNullException.ThrowIfNull(owner);
@@ -67,24 +81,48 @@ public class PlatformViewsService
         _activeOwner.Value = owner;
         return new OwnerScope(previous);
     }
+
     private sealed class OwnerScope(DorotiView? previous) : IDisposable
     {
         private bool _disposed;
-        public void Dispose() { if (_disposed) return; _disposed = true; _activeOwner.Value = previous; }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+            _disposed = true;
+            _activeOwner.Value = previous;
+        }
     }
+
     private void EnsureHandlers()
     {
-        if (_handlersInstalled) return;
+        if (_handlersInstalled)
+        {
+            return;
+        }
+
         Channel.setMethodCallHandler(_onMethodCall);
         Channel2.setMethodCallHandler(_onMethodCall);
         _handlersInstalled = true;
     }
+
     internal void RemoveFocus(long id)
     {
         _focusCallbacks.remove(id);
-        if (_focusCallbacks.Count != 0 || !_handlersInstalled) return;
+        if (_focusCallbacks.Count != 0 || !_handlersInstalled)
+        {
+            return;
+        }
+
         _handlersInstalled = false;
-        try { Channel.setMethodCallHandler(null!); Channel2.setMethodCallHandler(null!); }
+        try
+        {
+            Channel.setMethodCallHandler(null!);
+            Channel2.setMethodCallHandler(null!);
+        }
         catch (ObjectDisposedException) { }
     }
 
@@ -93,71 +131,152 @@ public class PlatformViewsService
         switch (call.method)
         {
             case var __case2931 when Equals(__case2931, "viewFocused"):
+            {
+                var id = call.arguments is long viewId
+                    ? viewId
+                    : throw new FormatException("View focus requires an integer view ID.");
+                if (_focusCallbacks.ContainsKey(id))
                 {
-                    var id = call.arguments is long viewId
-                        ? viewId : throw new FormatException("View focus requires an integer view ID.");
-                    if (_focusCallbacks.ContainsKey(id))
-                    {
-                        _focusCallbacks.GetValueOrDefault(id)!();
-                    }
-                    break;
+                    _focusCallbacks.GetValueOrDefault(id)!();
                 }
+                break;
+            }
             default:
-                {
-                    throw new NotImplementedException($"{call.method} was invoked but isn't implemented by PlatformViewsService");
-                }
+            {
+                throw new NotImplementedException(
+                    $"{call.method} was invoked but isn't implemented by PlatformViewsService"
+                );
+            }
         }
         return Future.value();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static AndroidViewController initAndroidView(long id, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static AndroidViewController initAndroidView(
+        long id,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (creationParams is null) || (creationParamsCodec is not null));
-        var controller = new TextureAndroidViewController(viewId: id, viewType: viewType, layoutDirection: layoutDirection, creationParams: creationParams, creationParamsCodec: creationParamsCodec);
-        _instance._focusCallbacks[id] = onFocus ?? (() =>
-        {
-        });
+        DartRuntimePrimitives.Assert(() =>
+            (creationParams is null) || (creationParamsCodec is not null)
+        );
+        var controller = new TextureAndroidViewController(
+            viewId: id,
+            viewType: viewType,
+            layoutDirection: layoutDirection,
+            creationParams: creationParams,
+            creationParamsCodec: creationParamsCodec
+        );
+        _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static SurfaceAndroidViewController initSurfaceAndroidView(long id, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static SurfaceAndroidViewController initSurfaceAndroidView(
+        long id,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (creationParams is null) || (creationParamsCodec is not null));
-        var controller = new SurfaceAndroidViewController(viewId: id, viewType: viewType, layoutDirection: layoutDirection, creationParams: creationParams, creationParamsCodec: creationParamsCodec);
-        _instance._focusCallbacks[id] = onFocus ?? (() =>
-        {
-        });
+        DartRuntimePrimitives.Assert(() =>
+            (creationParams is null) || (creationParamsCodec is not null)
+        );
+        var controller = new SurfaceAndroidViewController(
+            viewId: id,
+            viewType: viewType,
+            layoutDirection: layoutDirection,
+            creationParams: creationParams,
+            creationParamsCodec: creationParamsCodec
+        );
+        _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static ExpensiveAndroidViewController initExpensiveAndroidView(long id, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static ExpensiveAndroidViewController initExpensiveAndroidView(
+        long id,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        var controller = new ExpensiveAndroidViewController(viewId: id, viewType: viewType, layoutDirection: layoutDirection, creationParams: creationParams, creationParamsCodec: creationParamsCodec);
-        _instance._focusCallbacks[id] = onFocus ?? (() =>
-        {
-        });
+        var controller = new ExpensiveAndroidViewController(
+            viewId: id,
+            viewType: viewType,
+            layoutDirection: layoutDirection,
+            creationParams: creationParams,
+            creationParamsCodec: creationParamsCodec
+        );
+        _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static HybridAndroidViewController initHybridAndroidView(long id, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static HybridAndroidViewController initHybridAndroidView(
+        long id,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        var controller = new HybridAndroidViewController(viewId: id, viewType: viewType, layoutDirection: layoutDirection, creationParams: creationParams, creationParamsCodec: creationParamsCodec);
-        _instance._focusCallbacks[id] = onFocus ?? (() =>
-        {
-        });
+        var controller = new HybridAndroidViewController(
+            viewId: id,
+            viewType: viewType,
+            layoutDirection: layoutDirection,
+            creationParams: creationParams,
+            creationParamsCodec: creationParamsCodec
+        );
+        _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static async Future<UiKitViewController> initUiKitView(long id, string viewType, UiKitViewGestureBlockingPolicy gestureBlockingPolicy = UiKitViewGestureBlockingPolicy.fallbackToPluginDefault, TextDirection layoutDirection = default!, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static async Future<UiKitViewController> initUiKitView(
+        long id,
+        string viewType,
+        UiKitViewGestureBlockingPolicy gestureBlockingPolicy =
+            UiKitViewGestureBlockingPolicy.fallbackToPluginDefault,
+        TextDirection layoutDirection = default!,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (creationParams is null) || (creationParamsCodec is not null));
-        string gestureBlockingPolicyValue = gestureBlockingPolicy switch { var __case10434 when Equals(__case10434, UiKitViewGestureBlockingPolicy.eager) => "eager", var __case10489 when Equals(__case10489, UiKitViewGestureBlockingPolicy.waitUntilTouchesEnded) => "waitUntilTouchesEnded", var __case10576 when Equals(__case10576, UiKitViewGestureBlockingPolicy.fallbackToPluginDefault) => "fallbackToPluginDefault", var __case10667 when Equals(__case10667, UiKitViewGestureBlockingPolicy.doNotBlockGesture) => "doNotBlockGesture", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        var args = new DartMap<string, object> { ["id"] = id, ["viewType"] = viewType, ["gestureBlockingPolicy"] = gestureBlockingPolicyValue };
+        DartRuntimePrimitives.Assert(() =>
+            (creationParams is null) || (creationParamsCodec is not null)
+        );
+        string gestureBlockingPolicyValue = gestureBlockingPolicy switch
+        {
+            var __case10434 when Equals(__case10434, UiKitViewGestureBlockingPolicy.eager) =>
+                "eager",
+            var __case10489
+                when Equals(__case10489, UiKitViewGestureBlockingPolicy.waitUntilTouchesEnded) =>
+                "waitUntilTouchesEnded",
+            var __case10576
+                when Equals(__case10576, UiKitViewGestureBlockingPolicy.fallbackToPluginDefault) =>
+                "fallbackToPluginDefault",
+            var __case10667
+                when Equals(__case10667, UiKitViewGestureBlockingPolicy.doNotBlockGesture) =>
+                "doNotBlockGesture",
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        var args = new DartMap<string, object>
+        {
+            ["id"] = id,
+            ["viewType"] = viewType,
+            ["gestureBlockingPolicy"] = gestureBlockingPolicyValue,
+        };
         if (creationParams is not null)
         {
             ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
@@ -172,9 +291,18 @@ public class PlatformViewsService
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static async Future<AppKitViewController> initAppKitView(long id, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null, Action? onFocus = null)
+    public static async Future<AppKitViewController> initAppKitView(
+        long id,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null,
+        Action? onFocus = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (creationParams is null) || (creationParamsCodec is not null));
+        DartRuntimePrimitives.Assert(() =>
+            (creationParams is null) || (creationParamsCodec is not null)
+        );
         var args = new DartMap<string, object> { ["id"] = id, ["viewType"] = viewType };
         if (creationParams is not null)
         {
@@ -189,7 +317,6 @@ public class PlatformViewsService
         return new AppKitViewController(id, layoutDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AndroidPointerProperties
@@ -209,12 +336,12 @@ public class AndroidPointerProperties
     }
 
     internal virtual List<long> _asList() => new List<long> { id, toolType };
+
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerProperties")}(id: {id}, toolType: {toolType})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AndroidPointerCoords
@@ -229,7 +356,17 @@ public class AndroidPointerCoords
     public virtual double x { get; private set; } = default!;
     public virtual double y { get; private set; } = default!;
 
-    public AndroidPointerCoords(double orientation, double pressure, double size, double toolMajor, double toolMinor, double touchMajor, double touchMinor, double x, double y)
+    public AndroidPointerCoords(
+        double orientation,
+        double pressure,
+        double size,
+        double toolMajor,
+        double toolMinor,
+        double touchMajor,
+        double touchMinor,
+        double x,
+        double y
+    )
     {
         this.orientation = orientation;
         this.pressure = pressure;
@@ -244,7 +381,18 @@ public class AndroidPointerCoords
 
     internal virtual List<double> _asList()
     {
-        return new List<double> { orientation, pressure, size, toolMajor, toolMinor, touchMajor, touchMinor, x, y };
+        return new List<double>
+        {
+            orientation,
+            pressure,
+            size,
+            toolMajor,
+            toolMinor,
+            touchMajor,
+            touchMinor,
+            x,
+            y,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -253,7 +401,6 @@ public class AndroidPointerCoords
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerCoords")}(orientation: {orientation}, pressure: {pressure}, size: {size}, toolMajor: {toolMajor}, toolMinor: {toolMinor}, touchMajor: {touchMajor}, touchMinor: {touchMinor}, x: {x}, y: {y})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AndroidMotionEvent
@@ -262,7 +409,8 @@ public class AndroidMotionEvent
     public virtual long eventTime { get; private set; } = default!;
     public virtual long action { get; private set; } = default!;
     public virtual long pointerCount { get; private set; } = default!;
-    public virtual List<AndroidPointerProperties> pointerProperties { get; private set; } = default!;
+    public virtual List<AndroidPointerProperties> pointerProperties { get; private set; } =
+        default!;
     public virtual List<AndroidPointerCoords> pointerCoords { get; private set; } = default!;
     public virtual long metaState { get; private set; } = default!;
     public virtual long buttonState { get; private set; } = default!;
@@ -274,7 +422,23 @@ public class AndroidMotionEvent
     public virtual long flags { get; private set; } = default!;
     public virtual long motionEventId { get; private set; } = default!;
 
-    public AndroidMotionEvent(long downTime, long eventTime, long action, long pointerCount, List<AndroidPointerProperties> pointerProperties, List<AndroidPointerCoords> pointerCoords, long metaState, long buttonState, double xPrecision, double yPrecision, long deviceId, long edgeFlags, long source, long flags, long motionEventId)
+    public AndroidMotionEvent(
+        long downTime,
+        long eventTime,
+        long action,
+        long pointerCount,
+        List<AndroidPointerProperties> pointerProperties,
+        List<AndroidPointerCoords> pointerCoords,
+        long metaState,
+        long buttonState,
+        double xPrecision,
+        double yPrecision,
+        long deviceId,
+        long edgeFlags,
+        long source,
+        long flags,
+        long motionEventId
+    )
     {
         this.downTime = downTime;
         this.eventTime = eventTime;
@@ -297,7 +461,25 @@ public class AndroidMotionEvent
 
     internal virtual List<object> _asList(long viewId)
     {
-        return new List<object> { viewId, downTime, eventTime, action, pointerCount, pointerProperties.map((p) => p._asList()).ToList(), pointerCoords.map((p) => p._asList()).ToList(), metaState, buttonState, xPrecision, yPrecision, deviceId, edgeFlags, source, flags, motionEventId };
+        return new List<object>
+        {
+            viewId,
+            downTime,
+            eventTime,
+            action,
+            pointerCount,
+            pointerProperties.map((p) => p._asList()).ToList(),
+            pointerCoords.map((p) => p._asList()).ToList(),
+            metaState,
+            buttonState,
+            xPrecision,
+            yPrecision,
+            deviceId,
+            edgeFlags,
+            source,
+            flags,
+            motionEventId,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -306,7 +488,6 @@ public class AndroidMotionEvent
         return $"AndroidPointerEvent(downTime: {downTime}, eventTime: {eventTime}, action: {action}, pointerCount: {pointerCount}, pointerProperties: {pointerProperties}, pointerCoords: {pointerCoords}, metaState: {metaState}, buttonState: {buttonState}, xPrecision: {xPrecision}, yPrecision: {yPrecision}, deviceId: {deviceId}, edgeFlags: {edgeFlags}, source: {source}, flags: {flags}, motionEventId: {motionEventId})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal enum _AndroidViewState
@@ -314,20 +495,20 @@ internal enum _AndroidViewState
     waitingForSize,
     creating,
     created,
-    disposed
+    disposed,
 }
 
 internal class _AndroidMotionEventConverter
 {
-    public virtual DartMap<long, AndroidPointerCoords> pointerPositions { get; private set; } = new DartMap<long, AndroidPointerCoords>();
-    public virtual DartMap<long, AndroidPointerProperties> pointerProperties { get; private set; } = new DartMap<long, AndroidPointerProperties>();
+    public virtual DartMap<long, AndroidPointerCoords> pointerPositions { get; private set; } =
+        new DartMap<long, AndroidPointerCoords>();
+    public virtual DartMap<long, AndroidPointerProperties> pointerProperties { get; private set; } =
+        new DartMap<long, AndroidPointerProperties>();
     public virtual HashSet<long> usedAndroidPointerIds { get; private set; } = new HashSet<long>();
     public virtual Func<Offset, Offset> pointTransformer { get; set; } = default!;
     public virtual long? downTimeMillis { get; set; } = default;
 
-    internal _AndroidMotionEventConverter()
-    {
-    }
+    internal _AndroidMotionEventConverter() { }
 
     public virtual void handlePointerDownEvent(PointerDownEvent @event)
     {
@@ -347,7 +528,17 @@ internal class _AndroidMotionEventConverter
     public virtual void updatePointerPositions(PointerEvent @event)
     {
         Offset position = pointTransformer(@event.position);
-        pointerPositions[@event.pointer] = new AndroidPointerCoords(orientation: @event.orientation, pressure: @event.pressure, size: @event.size, toolMajor: @event.radiusMajor, toolMinor: @event.radiusMinor, touchMajor: @event.radiusMajor, touchMinor: @event.radiusMinor, x: position.dx, y: position.dy);
+        pointerPositions[@event.pointer] = new AndroidPointerCoords(
+            orientation: @event.orientation,
+            pressure: @event.pressure,
+            size: @event.size,
+            toolMajor: @event.radiusMajor,
+            toolMinor: @event.radiusMinor,
+            touchMajor: @event.radiusMajor,
+            touchMinor: @event.radiusMinor,
+            x: position.dx,
+            y: position.dy
+        );
     }
 
     internal virtual void _remove(long pointer)
@@ -387,33 +578,99 @@ internal class _AndroidMotionEventConverter
         }
         if (platformDataFlag == kPointerDataFlagMultiple)
         {
-            long originalPointerCount = @event.platformData >> (int)kPointerDataMultiplePointerCountShift;
+            long originalPointerCount =
+                @event.platformData >> (int)kPointerDataMultiplePointerCountShift;
             if (pointerIdx != (originalPointerCount - 1L))
             {
                 return null;
             }
         }
-        long? action = @event switch { PointerDownEvent _ when numPointers == 1L => AndroidViewController.kActionDown, PointerUpEvent _ when numPointers == 1L => AndroidViewController.kActionUp, PointerDownEvent _ => AndroidViewController.pointerAction(pointerIdx, AndroidViewController.kActionPointerDown), PointerUpEvent _ => AndroidViewController.pointerAction(pointerIdx, AndroidViewController.kActionPointerUp), PointerMoveEvent _ => AndroidViewController.kActionMove, PointerCancelEvent _ => AndroidViewController.kActionCancel, _ => null };
+        long? action = @event switch
+        {
+            PointerDownEvent _ when numPointers == 1L => AndroidViewController.kActionDown,
+            PointerUpEvent _ when numPointers == 1L => AndroidViewController.kActionUp,
+            PointerDownEvent _ => AndroidViewController.pointerAction(
+                pointerIdx,
+                AndroidViewController.kActionPointerDown
+            ),
+            PointerUpEvent _ => AndroidViewController.pointerAction(
+                pointerIdx,
+                AndroidViewController.kActionPointerUp
+            ),
+            PointerMoveEvent _ => AndroidViewController.kActionMove,
+            PointerCancelEvent _ => AndroidViewController.kActionCancel,
+            _ => null,
+        };
         if (action is null)
         {
             return null;
         }
-        return new AndroidMotionEvent(downTime: DartRuntimePrimitives.RequireValue(downTimeMillis), eventTime: @event.timeStamp.inMilliseconds, action: DartRuntimePrimitives.RequireValue(action), pointerCount: pointerPositions.Count, pointerProperties: pointers.map((i) => pointerProperties.GetValueOrDefault(i)!).ToList(), pointerCoords: pointers.map((i) => pointerPositions.GetValueOrDefault(i)!).ToList(), metaState: 0L, buttonState: 0L, xPrecision: 1.0, yPrecision: 1.0, deviceId: 0L, edgeFlags: 0L, source: sourceFor(@event), flags: 0L, motionEventId: @event.embedderId);
+        return new AndroidMotionEvent(
+            downTime: DartRuntimePrimitives.RequireValue(downTimeMillis),
+            eventTime: @event.timeStamp.inMilliseconds,
+            action: DartRuntimePrimitives.RequireValue(action),
+            pointerCount: pointerPositions.Count,
+            pointerProperties: pointers
+                .map((i) => pointerProperties.GetValueOrDefault(i)!)
+                .ToList(),
+            pointerCoords: pointers.map((i) => pointerPositions.GetValueOrDefault(i)!).ToList(),
+            metaState: 0L,
+            buttonState: 0L,
+            xPrecision: 1.0,
+            yPrecision: 1.0,
+            deviceId: 0L,
+            edgeFlags: 0L,
+            source: sourceFor(@event),
+            flags: 0L,
+            motionEventId: @event.embedderId
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static long sourceFor(PointerEvent @event)
     {
-        return @event.kind switch { var __case28143 when Equals(__case28143, PointerDeviceKind.touch) => AndroidViewController.kInputDeviceSourceTouchScreen, var __case28229 when Equals(__case28229, PointerDeviceKind.trackpad) => AndroidViewController.kInputDeviceSourceTouchPad, var __case28315 when Equals(__case28315, PointerDeviceKind.mouse) => AndroidViewController.kInputDeviceSourceMouse, var __case28395 when Equals(__case28395, PointerDeviceKind.stylus) => AndroidViewController.kInputDeviceSourceStylus, var __case28477 when Equals(__case28477, PointerDeviceKind.invertedStylus) => AndroidViewController.kInputDeviceSourceStylus, var __case28567 when Equals(__case28567, PointerDeviceKind.unknown) => AndroidViewController.kInputDeviceSourceUnknown, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return @event.kind switch
+        {
+            var __case28143 when Equals(__case28143, PointerDeviceKind.touch) =>
+                AndroidViewController.kInputDeviceSourceTouchScreen,
+            var __case28229 when Equals(__case28229, PointerDeviceKind.trackpad) =>
+                AndroidViewController.kInputDeviceSourceTouchPad,
+            var __case28315 when Equals(__case28315, PointerDeviceKind.mouse) =>
+                AndroidViewController.kInputDeviceSourceMouse,
+            var __case28395 when Equals(__case28395, PointerDeviceKind.stylus) =>
+                AndroidViewController.kInputDeviceSourceStylus,
+            var __case28477 when Equals(__case28477, PointerDeviceKind.invertedStylus) =>
+                AndroidViewController.kInputDeviceSourceStylus,
+            var __case28567 when Equals(__case28567, PointerDeviceKind.unknown) =>
+                AndroidViewController.kInputDeviceSourceUnknown,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AndroidPointerProperties propertiesFor(PointerEvent @event, long pointerId)
     {
-        return new AndroidPointerProperties(id: pointerId, toolType: @event.kind switch { var __case28839 when Equals(__case28839, PointerDeviceKind.touch) => AndroidPointerProperties.kToolTypeFinger, var __case28916 when Equals(__case28916, PointerDeviceKind.trackpad) => AndroidPointerProperties.kToolTypeFinger, var __case28996 when Equals(__case28996, PointerDeviceKind.mouse) => AndroidPointerProperties.kToolTypeMouse, var __case29072 when Equals(__case29072, PointerDeviceKind.stylus) => AndroidPointerProperties.kToolTypeStylus, var __case29150 when Equals(__case29150, PointerDeviceKind.invertedStylus) => AndroidPointerProperties.kToolTypeEraser, var __case29236 when Equals(__case29236, PointerDeviceKind.unknown) => AndroidPointerProperties.kToolTypeUnknown, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return new AndroidPointerProperties(
+            id: pointerId,
+            toolType: @event.kind switch
+            {
+                var __case28839 when Equals(__case28839, PointerDeviceKind.touch) =>
+                    AndroidPointerProperties.kToolTypeFinger,
+                var __case28916 when Equals(__case28916, PointerDeviceKind.trackpad) =>
+                    AndroidPointerProperties.kToolTypeFinger,
+                var __case28996 when Equals(__case28996, PointerDeviceKind.mouse) =>
+                    AndroidPointerProperties.kToolTypeMouse,
+                var __case29072 when Equals(__case29072, PointerDeviceKind.stylus) =>
+                    AndroidPointerProperties.kToolTypeStylus,
+                var __case29150 when Equals(__case29150, PointerDeviceKind.invertedStylus) =>
+                    AndroidPointerProperties.kToolTypeEraser,
+                var __case29236 when Equals(__case29236, PointerDeviceKind.unknown) =>
+                    AndroidPointerProperties.kToolTypeUnknown,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CreationParams
@@ -426,7 +683,6 @@ internal class _CreationParams
         this.data = data;
         this.codec = codec;
     }
-
 }
 
 public abstract class AndroidViewController : PlatformViewController
@@ -447,30 +703,50 @@ public abstract class AndroidViewController : PlatformViewController
     public const long kInputDeviceSourceTouchPad = 1048584L;
     public override long viewId { get; } = default!;
     internal virtual string _viewType { get; private set; } = default!;
-    internal virtual _AndroidMotionEventConverter _motionEventConverter { get; private set; } = new _AndroidMotionEventConverter();
+    internal virtual _AndroidMotionEventConverter _motionEventConverter { get; private set; } =
+        new _AndroidMotionEventConverter();
     internal virtual TextDirection _layoutDirection { get; set; } = default!;
     internal virtual _AndroidViewState _state { get; set; } = _AndroidViewState.waitingForSize;
     internal virtual _CreationParams? _creationParams { get; private set; }
-    internal virtual List<Action<long>> _platformViewCreatedCallbacks { get; private set; } = new List<Action<long>>();
+    internal virtual List<Action<long>> _platformViewCreatedCallbacks { get; private set; } =
+        new List<Action<long>>();
 
-    protected AndroidViewController(long viewId, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null)
+    protected AndroidViewController(
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null
+    )
     {
         this.viewId = viewId;
         _viewType = viewType;
         _layoutDirection = layoutDirection;
-        _creationParams = (creationParams is null) ? null : new _CreationParams(creationParams, creationParamsCodec!);
-        System.Diagnostics.Debug.Assert((creationParams is null) || (creationParamsCodec is not null));
+        _creationParams =
+            (creationParams is null)
+                ? null
+                : new _CreationParams(creationParams, creationParamsCodec!);
+        System.Diagnostics.Debug.Assert(
+            (creationParams is null) || (creationParamsCodec is not null)
+        );
     }
 
     internal static long _getAndroidDirection(TextDirection direction)
     {
-        return direction switch { var __case33618 when Equals(__case33618, TextDirection.ltr) => kAndroidLayoutDirectionLtr, var __case33673 when Equals(__case33673, TextDirection.rtl) => kAndroidLayoutDirectionRtl, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return direction switch
+        {
+            var __case33618 when Equals(__case33618, TextDirection.ltr) =>
+                kAndroidLayoutDirectionLtr,
+            var __case33673 when Equals(__case33673, TextDirection.rtl) =>
+                kAndroidLayoutDirectionRtl,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static long pointerAction(long pointerId, long action)
     {
-        return pointerId << (int)8L & 65280L | action & 255L;
+        return ((pointerId << (int)8L) & 65280L) | (action & 255L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -479,7 +755,8 @@ public abstract class AndroidViewController : PlatformViewController
     internal abstract Future _sendCreateMessage(Size? size, Offset? position = null);
     internal abstract Future<Size> _sendResizeMessage(Size size);
     public override bool awaitingCreation => Equals(_state, _AndroidViewState.waitingForSize);
-    public async override Future create(Size? size = null, Offset? position = null)
+
+    public override async Future create(Size? size = null, Offset? position = null)
     {
         DartRuntimePrimitives.Assert(() => !Equals(_state, _AndroidViewState.disposed));
         DartRuntimePrimitives.Assert(() => Equals(_state, _AndroidViewState.waitingForSize));
@@ -488,14 +765,21 @@ public abstract class AndroidViewController : PlatformViewController
             return;
         }
         _state = _AndroidViewState.creating;
-        try { await _sendCreateMessage(size: size, position: position); }
+        try
+        {
+            await _sendCreateMessage(size: size, position: position);
+        }
         catch
         {
             _state = _AndroidViewState.disposed;
             _service.RemoveFocus(viewId);
             throw;
         }
-        if (_state == _AndroidViewState.disposed) return;
+        if (_state == _AndroidViewState.disposed)
+        {
+            return;
+        }
+
         _state = _AndroidViewState.created;
         foreach (Action<long> callback in _platformViewCreatedCallbacks)
         {
@@ -503,7 +787,7 @@ public abstract class AndroidViewController : PlatformViewController
         }
     }
 
-    public async virtual Future<Size> setSize(Size size)
+    public virtual async Future<Size> setSize(Size size)
     {
         DartRuntimePrimitives.Assert(() => !Equals(_state, _AndroidViewState.disposed));
         if (Equals(_state, _AndroidViewState.waitingForSize))
@@ -521,7 +805,8 @@ public abstract class AndroidViewController : PlatformViewController
     public abstract Future setOffset(Offset off);
     public abstract long? textureId { get; }
     public virtual bool requiresViewComposition => false;
-    public async virtual Future sendMotionEvent(AndroidMotionEvent @event)
+
+    public virtual async Future sendMotionEvent(AndroidMotionEvent @event)
     {
         await _service.Channel.invokeMethod<object>("touch", @event._asList(viewId));
     }
@@ -536,6 +821,7 @@ public abstract class AndroidViewController : PlatformViewController
         }
     }
     public virtual bool isCreated => Equals(_state, _AndroidViewState.created);
+
     public virtual void addOnPlatformViewCreatedListener(Action<long> listener)
     {
         DartRuntimePrimitives.Assert(() => !Equals(_state, _AndroidViewState.disposed));
@@ -549,7 +835,8 @@ public abstract class AndroidViewController : PlatformViewController
     }
 
     public virtual List<Action<long>> createdCallbacks => _platformViewCreatedCallbacks;
-    public async virtual Future setLayoutDirection(TextDirection layoutDirection)
+
+    public virtual async Future setLayoutDirection(TextDirection layoutDirection)
     {
         DartRuntimePrimitives.Assert(() => !Equals(_state, _AndroidViewState.disposed));
         if (Equals(layoutDirection, _layoutDirection))
@@ -561,10 +848,17 @@ public abstract class AndroidViewController : PlatformViewController
         {
             return;
         }
-        await _service.Channel.invokeMethod<object?>("setDirection", new DartMap<string, object> { ["id"] = viewId, ["direction"] = _getAndroidDirection(layoutDirection) });
+        await _service.Channel.invokeMethod<object?>(
+            "setDirection",
+            new DartMap<string, object>
+            {
+                ["id"] = viewId,
+                ["direction"] = _getAndroidDirection(layoutDirection),
+            }
+        );
     }
 
-    public async override Future dispatchPointerEvent(PointerEvent @event)
+    public override async Future dispatchPointerEvent(PointerEvent @event)
     {
         if (@event is PointerHoverEvent @event__as41207)
         {
@@ -603,7 +897,7 @@ public abstract class AndroidViewController : PlatformViewController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async override Future dispose()
+    public override async Future dispose()
     {
         _AndroidViewState state = _state;
         _state = _AndroidViewState.disposed;
@@ -614,23 +908,39 @@ public abstract class AndroidViewController : PlatformViewController
             await _sendDisposeMessage();
         }
     }
-
 }
 
 public class SurfaceAndroidViewController : AndroidViewController
 {
-    internal virtual _AndroidViewControllerInternals _internals { get; set; } = new _TextureAndroidViewControllerInternals();
+    internal virtual _AndroidViewControllerInternals _internals { get; set; } =
+        new _TextureAndroidViewControllerInternals();
 
-    public SurfaceAndroidViewController(long viewId, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null) : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec)
-    {
-    }
+    public SurfaceAndroidViewController(
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null
+    )
+        : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec) { }
 
     internal override bool _createRequiresSize => true;
-    internal async override Future<bool> _sendCreateMessage(Size? size, Offset? position = null)
+
+    internal override async Future<bool> _sendCreateMessage(Size? size, Offset? position = null)
     {
         var __size = DartRuntimePrimitives.RequireValue(size);
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
-        object? response = await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: false, hybridFallback: true, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
+        object? response = await _AndroidViewControllerInternals.sendCreateMessage(
+            service: _service,
+            viewId: viewId,
+            viewType: _viewType,
+            hybrid: false,
+            hybridFallback: true,
+            layoutDirection: _layoutDirection,
+            creationParams: _creationParams,
+            size: __size,
+            position: position
+        );
         if (response is long response__as43898)
         {
             ((_TextureAndroidViewControllerInternals?)_internals)!.textureId = response__as43898;
@@ -645,18 +955,13 @@ public class SurfaceAndroidViewController : AndroidViewController
 
     public override long? textureId
     {
-        get
-        {
-            return _internals.textureId;
-        }
+        get { return _internals.textureId; }
     }
     public override bool requiresViewComposition
     {
-        get
-        {
-            return _internals.requiresViewComposition;
-        }
+        get { return _internals.requiresViewComposition; }
     }
+
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
@@ -674,37 +979,46 @@ public class SurfaceAndroidViewController : AndroidViewController
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ExpensiveAndroidViewController : AndroidViewController
 {
-    internal virtual _AndroidViewControllerInternals _internals { get; private set; } = new _HybridAndroidViewControllerInternals();
+    internal virtual _AndroidViewControllerInternals _internals { get; private set; } =
+        new _HybridAndroidViewControllerInternals();
 
-    public ExpensiveAndroidViewController(long viewId, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null) : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec)
-    {
-    }
+    public ExpensiveAndroidViewController(
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null
+    )
+        : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec) { }
 
     internal override bool _createRequiresSize => false;
-    internal async override Future _sendCreateMessage(Size? size, Offset? position = null)
+
+    internal override async Future _sendCreateMessage(Size? size, Offset? position = null)
     {
-        await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position);
+        await _AndroidViewControllerInternals.sendCreateMessage(
+            service: _service,
+            viewId: viewId,
+            viewType: _viewType,
+            hybrid: true,
+            layoutDirection: _layoutDirection,
+            creationParams: _creationParams,
+            position: position
+        );
     }
 
     public override long? textureId
     {
-        get
-        {
-            return _internals.textureId;
-        }
+        get { return _internals.textureId; }
     }
     public override bool requiresViewComposition
     {
-        get
-        {
-            return _internals.requiresViewComposition;
-        }
+        get { return _internals.requiresViewComposition; }
     }
+
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
@@ -722,38 +1036,50 @@ public class ExpensiveAndroidViewController : AndroidViewController
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class HybridAndroidViewController : AndroidViewController
 {
-    internal virtual _AndroidViewControllerInternals _internals { get; private set; } = new _Hybrid2AndroidViewControllerInternals();
+    internal virtual _AndroidViewControllerInternals _internals { get; private set; } =
+        new _Hybrid2AndroidViewControllerInternals();
 
-    public HybridAndroidViewController(long viewId, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null) : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec)
-    {
-    }
+    public HybridAndroidViewController(
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null
+    )
+        : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec) { }
 
-    public static Future<bool> checkIfSupported() => _Hybrid2AndroidViewControllerInternals.checkIfSurfaceControlEnabled();
+    public static Future<bool> checkIfSupported() =>
+        _Hybrid2AndroidViewControllerInternals.checkIfSurfaceControlEnabled();
+
     internal override bool _createRequiresSize => false;
-    internal async override Future _sendCreateMessage(Size? size, Offset? position = null)
+
+    internal override async Future _sendCreateMessage(Size? size, Offset? position = null)
     {
-        await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position, useNewController: true);
+        await _AndroidViewControllerInternals.sendCreateMessage(
+            service: _service,
+            viewId: viewId,
+            viewType: _viewType,
+            hybrid: true,
+            layoutDirection: _layoutDirection,
+            creationParams: _creationParams,
+            position: position,
+            useNewController: true
+        );
     }
 
     public override long? textureId
     {
-        get
-        {
-            return _internals.textureId;
-        }
+        get { return _internals.textureId; }
     }
     public override bool requiresViewComposition
     {
-        get
-        {
-            return _internals.requiresViewComposition;
-        }
+        get { return _internals.requiresViewComposition; }
     }
+
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
@@ -772,27 +1098,42 @@ public class HybridAndroidViewController : AndroidViewController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async override Future sendMotionEvent(AndroidMotionEvent @event)
+    public override async Future sendMotionEvent(AndroidMotionEvent @event)
     {
         await _service.Channel2.invokeMethod<object>("touch", @event._asList(viewId));
     }
-
 }
 
 public class TextureAndroidViewController : AndroidViewController
 {
-    internal virtual _AndroidViewControllerInternals _internals { get; set; } = new _TextureAndroidViewControllerInternals();
+    internal virtual _AndroidViewControllerInternals _internals { get; set; } =
+        new _TextureAndroidViewControllerInternals();
 
-    public TextureAndroidViewController(long viewId, string viewType, TextDirection layoutDirection, object? creationParams = null, MessageCodec<object>? creationParamsCodec = null) : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec)
-    {
-    }
+    public TextureAndroidViewController(
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        object? creationParams = null,
+        MessageCodec<object>? creationParamsCodec = null
+    )
+        : base(viewId, viewType, layoutDirection, creationParams, creationParamsCodec) { }
 
     internal override bool _createRequiresSize => true;
-    internal async override Future _sendCreateMessage(Size? size, Offset? position = null)
+
+    internal override async Future _sendCreateMessage(Size? size, Offset? position = null)
     {
         var __size = DartRuntimePrimitives.RequireValue(size);
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
-        object? response = await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: false, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
+        object? response = await _AndroidViewControllerInternals.sendCreateMessage(
+            service: _service,
+            viewId: viewId,
+            viewType: _viewType,
+            hybrid: false,
+            layoutDirection: _layoutDirection,
+            creationParams: _creationParams,
+            size: __size,
+            position: position
+        );
         if (response is long response__as49495)
         {
             ((_TextureAndroidViewControllerInternals?)_internals)!.textureId = response__as49495;
@@ -816,11 +1157,9 @@ public class TextureAndroidViewController : AndroidViewController
     }
     public override bool requiresViewComposition
     {
-        get
-        {
-            return _internals.requiresViewComposition;
-        }
+        get { return _internals.requiresViewComposition; }
     }
+
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
@@ -846,14 +1185,33 @@ public class TextureAndroidViewController : AndroidViewController
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal interface _AndroidViewControllerInternals
 {
-    public static Future<object?> sendCreateMessage(PlatformViewsService service, long viewId, string viewType, TextDirection layoutDirection, bool hybrid, bool hybridFallback = false, bool useNewController = false, _CreationParams? creationParams = null, Size? size = null, Offset? position = null)
+    public static Future<object?> sendCreateMessage(
+        PlatformViewsService service,
+        long viewId,
+        string viewType,
+        TextDirection layoutDirection,
+        bool hybrid,
+        bool hybridFallback = false,
+        bool useNewController = false,
+        _CreationParams? creationParams = null,
+        Size? size = null,
+        Offset? position = null
+    )
     {
-        var args = new DartMap<string, object?> { ["id"] = viewId, ["viewType"] = viewType, ["direction"] = AndroidViewController._getAndroidDirection(layoutDirection), ["width"] = size?.width, ["height"] = size?.height, ["left"] = position?.dx, ["top"] = position?.dy };
+        var args = new DartMap<string, object?>
+        {
+            ["id"] = viewId,
+            ["viewType"] = viewType,
+            ["direction"] = AndroidViewController._getAndroidDirection(layoutDirection),
+            ["width"] = size?.width,
+            ["height"] = size?.height,
+            ["left"] = position?.dx,
+            ["top"] = position?.dy,
+        };
         if (creationParams is not null)
         {
             ByteData paramsByteData = creationParams.codec.encodeMessage(creationParams.data)!;
@@ -878,24 +1236,34 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
     internal virtual Offset _offset { get; set; } = Offset.zero;
     public virtual long? textureId { get; set; } = default;
 
-    internal _TextureAndroidViewControllerInternals()
-    {
-    }
+    internal _TextureAndroidViewControllerInternals() { }
 
     public virtual bool requiresViewComposition => false;
-    public async virtual Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
+
+    public virtual async Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
     {
         DartRuntimePrimitives.Assert(() => !Equals(viewState, _AndroidViewState.waitingForSize));
         DartRuntimePrimitives.Assert(() => !size.isEmpty);
-        DartMap<object?, object?>? meta = await _service.Channel.invokeMapMethod<object?, object?>("resize", new DartMap<string, object> { ["id"] = viewId, ["width"] = size.width, ["height"] = size.height });
+        DartMap<object?, object?>? meta = await _service.Channel.invokeMapMethod<object?, object?>(
+            "resize",
+            new DartMap<string, object>
+            {
+                ["id"] = viewId,
+                ["width"] = size.width,
+                ["height"] = size.height,
+            }
+        );
         DartRuntimePrimitives.Assert(() => meta is not null);
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("width"));
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("height"));
-        return new Size((double)meta!.GetValueOrDefault("width")!, (double)meta.GetValueOrDefault("height")!);
+        return new Size(
+            (double)meta!.GetValueOrDefault("width")!,
+            (double)meta.GetValueOrDefault("height")!
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future setOffset(Offset offset, long viewId, _AndroidViewState viewState)
+    public virtual async Future setOffset(Offset offset, long viewId, _AndroidViewState viewState)
     {
         if (Equals(offset, _offset))
         {
@@ -906,15 +1274,25 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
             return;
         }
         _offset = offset;
-        await _service.Channel.invokeMethod<object?>("offset", new DartMap<string, object> { ["id"] = viewId, ["top"] = offset.dy, ["left"] = offset.dx });
+        await _service.Channel.invokeMethod<object?>(
+            "offset",
+            new DartMap<string, object>
+            {
+                ["id"] = viewId,
+                ["top"] = offset.dy,
+                ["left"] = offset.dx,
+            }
+        );
     }
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return _service.Channel.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = false });
+        return _service.Channel.invokeMethod<object?>(
+            "dispose",
+            new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = false }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInternals
@@ -922,12 +1300,10 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
     private readonly PlatformViewsService _service = PlatformViewsService._instance;
     public virtual long? textureId
     {
-        get
-        {
-            throw new NotImplementedException("Not supported for hybrid composition.");
-        }
+        get { throw new NotImplementedException("Not supported for hybrid composition."); }
     }
     public virtual bool requiresViewComposition => true;
+
     public virtual Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
@@ -942,29 +1318,35 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return _service.Channel.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
+        return _service.Channel.invokeMethod<object?>(
+            "dispose",
+            new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerInternals
 {
     private readonly PlatformViewsService _service = PlatformViewsService._instance;
+
     public static async Future<bool> checkIfSurfaceControlEnabled()
     {
-        return DartRuntimePrimitives.RequireValue(await PlatformViewsService._instance.Channel2.invokeMethod<bool>("isSurfaceControlEnabled", new DartMap<string, object?>()));
+        return DartRuntimePrimitives.RequireValue(
+            await PlatformViewsService._instance.Channel2.invokeMethod<bool>(
+                "isSurfaceControlEnabled",
+                new DartMap<string, object?>()
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long? textureId
     {
-        get
-        {
-            throw new NotImplementedException("Not supported for hybrid composition.");
-        }
+        get { throw new NotImplementedException("Not supported for hybrid composition."); }
     }
     public virtual bool requiresViewComposition => true;
+
     public virtual Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
@@ -979,10 +1361,12 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return _service.Channel2.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
+        return _service.Channel2.invokeMethod<object?>(
+            "dispose",
+            new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class DarwinPlatformViewController
@@ -998,7 +1382,7 @@ public abstract class DarwinPlatformViewController
         _layoutDirection = layoutDirection;
     }
 
-    public async virtual Future setLayoutDirection(TextDirection layoutDirection)
+    public virtual async Future setLayoutDirection(TextDirection layoutDirection)
     {
         DartRuntimePrimitives.Assert(() => !_debugDisposed);
         if (Equals(layoutDirection, _layoutDirection))
@@ -1022,14 +1406,23 @@ public abstract class DarwinPlatformViewController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future dispose()
+    public virtual async Future dispose()
     {
-        if (_debugDisposed) return;
-        _debugDisposed = true;
-        try { await _service.Channel.invokeMethod<object?>("dispose", id); }
-        finally { _service.RemoveFocus(id); }
-    }
+        if (_debugDisposed)
+        {
+            return;
+        }
 
+        _debugDisposed = true;
+        try
+        {
+            await _service.Channel.invokeMethod<object?>("dispose", id);
+        }
+        finally
+        {
+            _service.RemoveFocus(id);
+        }
+    }
 }
 
 public enum UiKitViewGestureBlockingPolicy
@@ -1037,23 +1430,19 @@ public enum UiKitViewGestureBlockingPolicy
     eager,
     waitUntilTouchesEnded,
     doNotBlockGesture,
-    fallbackToPluginDefault
+    fallbackToPluginDefault,
 }
 
 public class UiKitViewController : DarwinPlatformViewController
 {
-    public UiKitViewController(long id, TextDirection layoutDirection) : base(id: id, layoutDirection: layoutDirection)
-    {
-    }
-
+    public UiKitViewController(long id, TextDirection layoutDirection)
+        : base(id: id, layoutDirection: layoutDirection) { }
 }
 
 public class AppKitViewController : DarwinPlatformViewController
 {
-    public AppKitViewController(long id, TextDirection layoutDirection) : base(id: id, layoutDirection: layoutDirection)
-    {
-    }
-
+    public AppKitViewController(long id, TextDirection layoutDirection)
+        : base(id: id, layoutDirection: layoutDirection) { }
 }
 
 public abstract class PlatformViewController
@@ -1061,9 +1450,8 @@ public abstract class PlatformViewController
     public abstract long viewId { get; }
     public virtual bool awaitingCreation => false;
     public abstract Future dispatchPointerEvent(PointerEvent @event);
-    public async virtual Future create(Size? size = null, Offset? position = null)
-    {
-    }
+
+    public virtual async Future create(Size? size = null, Offset? position = null) { }
 
     public abstract Future dispose();
     public abstract Future clearFocus();

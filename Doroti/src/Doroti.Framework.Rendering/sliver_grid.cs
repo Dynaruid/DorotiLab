@@ -11,7 +11,12 @@ public class SliverGridGeometry
     public virtual double mainAxisExtent { get; private set; } = default!;
     public virtual double crossAxisExtent { get; private set; } = default!;
 
-    public SliverGridGeometry(double scrollOffset, double crossAxisOffset, double mainAxisExtent, double crossAxisExtent)
+    public SliverGridGeometry(
+        double scrollOffset,
+        double crossAxisOffset,
+        double mainAxisExtent,
+        double crossAxisExtent
+    )
     {
         this.scrollOffset = scrollOffset;
         this.crossAxisOffset = crossAxisOffset;
@@ -20,19 +25,29 @@ public class SliverGridGeometry
     }
 
     public virtual double trailingScrollOffset => scrollOffset + mainAxisExtent;
+
     public virtual BoxConstraints getBoxConstraints(SliverConstraints constraints)
     {
-        return constraints.asBoxConstraints(minExtent: mainAxisExtent, maxExtent: mainAxisExtent, crossAxisExtent: crossAxisExtent);
+        return constraints.asBoxConstraints(
+            minExtent: mainAxisExtent,
+            maxExtent: mainAxisExtent,
+            crossAxisExtent: crossAxisExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        var properties = new List<string> { $"scrollOffset: {scrollOffset}", $"crossAxisOffset: {crossAxisOffset}", $"mainAxisExtent: {mainAxisExtent}", $"crossAxisExtent: {crossAxisExtent}" };
+        var properties = new List<string>
+        {
+            $"scrollOffset: {scrollOffset}",
+            $"crossAxisOffset: {crossAxisOffset}",
+            $"mainAxisExtent: {mainAxisExtent}",
+            $"crossAxisExtent: {crossAxisExtent}",
+        };
         return $"SliverGridGeometry({string.Join(", ", properties)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface SliverGridLayout
@@ -52,7 +67,14 @@ public class SliverGridRegularTileLayout : SliverGridLayout
     public virtual double childCrossAxisExtent { get; private set; } = default!;
     public virtual bool reverseCrossAxis { get; private set; } = default!;
 
-    public SliverGridRegularTileLayout(long crossAxisCount, double mainAxisStride, double crossAxisStride, double childMainAxisExtent, double childCrossAxisExtent, bool reverseCrossAxis)
+    public SliverGridRegularTileLayout(
+        long crossAxisCount,
+        double mainAxisStride,
+        double crossAxisStride,
+        double childMainAxisExtent,
+        double childCrossAxisExtent,
+        bool reverseCrossAxis
+    )
     {
         this.crossAxisCount = crossAxisCount;
         this.mainAxisStride = mainAxisStride;
@@ -69,7 +91,9 @@ public class SliverGridRegularTileLayout : SliverGridLayout
 
     public virtual long getMinChildIndexForScrollOffset(double scrollOffset)
     {
-        return (mainAxisStride > Foundation.ConstantsLibrary.precisionErrorTolerance) ? (crossAxisCount * checked((long)(scrollOffset / mainAxisStride))) : 0L;
+        return (mainAxisStride > Foundation.ConstantsLibrary.precisionErrorTolerance)
+            ? (crossAxisCount * checked((long)(scrollOffset / mainAxisStride)))
+            : 0L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -88,7 +112,10 @@ public class SliverGridRegularTileLayout : SliverGridLayout
     {
         if (reverseCrossAxis)
         {
-            return (crossAxisCount * crossAxisStride) - crossAxisStart - childCrossAxisExtent - (crossAxisStride - childCrossAxisExtent);
+            return (crossAxisCount * crossAxisStride)
+                - crossAxisStart
+                - childCrossAxisExtent
+                - (crossAxisStride - childCrossAxisExtent);
         }
         return crossAxisStart;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -97,7 +124,12 @@ public class SliverGridRegularTileLayout : SliverGridLayout
     public virtual SliverGridGeometry getGeometryForChildIndex(long index)
     {
         double crossAxisStart = index % crossAxisCount * crossAxisStride;
-        return new SliverGridGeometry(scrollOffset: checked(index / crossAxisCount) * mainAxisStride, crossAxisOffset: _getOffsetFromStartInCrossAxis(crossAxisStart), mainAxisExtent: childMainAxisExtent, crossAxisExtent: childCrossAxisExtent);
+        return new SliverGridGeometry(
+            scrollOffset: checked(index / crossAxisCount) * mainAxisStride,
+            crossAxisOffset: _getOffsetFromStartInCrossAxis(crossAxisStart),
+            mainAxisExtent: childMainAxisExtent,
+            crossAxisExtent: childCrossAxisExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,7 +144,6 @@ public class SliverGridRegularTileLayout : SliverGridLayout
         return (mainAxisStride * mainAxisCount) - mainAxisSpacing;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface SliverGridDelegate
@@ -129,7 +160,13 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
     public virtual double childAspectRatio { get; private set; } = default!;
     public virtual double? mainAxisExtent { get; private set; }
 
-    public SliverGridDelegateWithFixedCrossAxisCount(long crossAxisCount, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, double? mainAxisExtent = null)
+    public SliverGridDelegateWithFixedCrossAxisCount(
+        long crossAxisCount,
+        double mainAxisSpacing = 0.0,
+        double crossAxisSpacing = 0.0,
+        double childAspectRatio = 1.0,
+        double? mainAxisExtent = null
+    )
     {
         this.crossAxisCount = crossAxisCount;
         this.mainAxisSpacing = mainAxisSpacing;
@@ -156,20 +193,36 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
     public virtual SliverGridLayout getLayout(SliverConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertIsValid());
-        double usableCrossAxisExtent = Math.Max(0.0, constraints.crossAxisExtent - (crossAxisSpacing * (crossAxisCount - 1L)));
+        double usableCrossAxisExtent = Math.Max(
+            0.0,
+            constraints.crossAxisExtent - (crossAxisSpacing * (crossAxisCount - 1L))
+        );
         double childCrossAxisExtentLocal = usableCrossAxisExtent / crossAxisCount;
-        double childMainAxisExtentLocal = mainAxisExtent ?? (childCrossAxisExtentLocal / childAspectRatio);
-        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCount, mainAxisStride: childMainAxisExtentLocal + mainAxisSpacing, crossAxisStride: childCrossAxisExtentLocal + crossAxisSpacing, childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(constraints.crossAxisDirection));
+        double childMainAxisExtentLocal =
+            mainAxisExtent ?? (childCrossAxisExtentLocal / childAspectRatio);
+        return new SliverGridRegularTileLayout(
+            crossAxisCount: crossAxisCount,
+            mainAxisStride: childMainAxisExtentLocal + mainAxisSpacing,
+            crossAxisStride: childCrossAxisExtentLocal + crossAxisSpacing,
+            childMainAxisExtent: childMainAxisExtentLocal,
+            childCrossAxisExtent: childCrossAxisExtentLocal,
+            reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(
+                constraints.crossAxisDirection
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool shouldRelayout(SliverGridDelegate oldDelegate)
     {
         var __oldDelegate = (SliverGridDelegateWithFixedCrossAxisCount)(object)oldDelegate;
-        return (__oldDelegate.crossAxisCount != crossAxisCount) || (__oldDelegate.mainAxisSpacing != mainAxisSpacing) || (__oldDelegate.crossAxisSpacing != crossAxisSpacing) || (__oldDelegate.childAspectRatio != childAspectRatio) || (__oldDelegate.mainAxisExtent != mainAxisExtent);
+        return (__oldDelegate.crossAxisCount != crossAxisCount)
+            || (__oldDelegate.mainAxisSpacing != mainAxisSpacing)
+            || (__oldDelegate.crossAxisSpacing != crossAxisSpacing)
+            || (__oldDelegate.childAspectRatio != childAspectRatio)
+            || (__oldDelegate.mainAxisExtent != mainAxisExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
@@ -180,7 +233,13 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
     public virtual double childAspectRatio { get; private set; } = default!;
     public virtual double? mainAxisExtent { get; private set; }
 
-    public SliverGridDelegateWithMaxCrossAxisExtent(double maxCrossAxisExtent, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, double? mainAxisExtent = null)
+    public SliverGridDelegateWithMaxCrossAxisExtent(
+        double maxCrossAxisExtent,
+        double mainAxisSpacing = 0.0,
+        double crossAxisSpacing = 0.0,
+        double childAspectRatio = 1.0,
+        double? mainAxisExtent = null
+    )
     {
         this.maxCrossAxisExtent = maxCrossAxisExtent;
         this.mainAxisSpacing = mainAxisSpacing;
@@ -208,22 +267,40 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
     public virtual SliverGridLayout getLayout(SliverConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertIsValid(constraints.crossAxisExtent));
-        long crossAxisCountLocal = (constraints.crossAxisExtent / (maxCrossAxisExtent + crossAxisSpacing)).ceil();
+        long crossAxisCountLocal = (
+            constraints.crossAxisExtent / (maxCrossAxisExtent + crossAxisSpacing)
+        ).ceil();
         crossAxisCountLocal = Math.Max(1L, crossAxisCountLocal);
-        double usableCrossAxisExtent = Math.Max(0.0, constraints.crossAxisExtent - (crossAxisSpacing * (crossAxisCountLocal - 1L)));
+        double usableCrossAxisExtent = Math.Max(
+            0.0,
+            constraints.crossAxisExtent - (crossAxisSpacing * (crossAxisCountLocal - 1L))
+        );
         double childCrossAxisExtentLocal = usableCrossAxisExtent / crossAxisCountLocal;
-        double childMainAxisExtentLocal = mainAxisExtent ?? (childCrossAxisExtentLocal / childAspectRatio);
-        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCountLocal, mainAxisStride: childMainAxisExtentLocal + mainAxisSpacing, crossAxisStride: childCrossAxisExtentLocal + crossAxisSpacing, childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(constraints.crossAxisDirection));
+        double childMainAxisExtentLocal =
+            mainAxisExtent ?? (childCrossAxisExtentLocal / childAspectRatio);
+        return new SliverGridRegularTileLayout(
+            crossAxisCount: crossAxisCountLocal,
+            mainAxisStride: childMainAxisExtentLocal + mainAxisSpacing,
+            crossAxisStride: childCrossAxisExtentLocal + crossAxisSpacing,
+            childMainAxisExtent: childMainAxisExtentLocal,
+            childCrossAxisExtent: childCrossAxisExtentLocal,
+            reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(
+                constraints.crossAxisDirection
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool shouldRelayout(SliverGridDelegate oldDelegate)
     {
         var __oldDelegate = (SliverGridDelegateWithMaxCrossAxisExtent)(object)oldDelegate;
-        return (__oldDelegate.maxCrossAxisExtent != maxCrossAxisExtent) || (__oldDelegate.mainAxisSpacing != mainAxisSpacing) || (__oldDelegate.crossAxisSpacing != crossAxisSpacing) || (__oldDelegate.childAspectRatio != childAspectRatio) || (__oldDelegate.mainAxisExtent != mainAxisExtent);
+        return (__oldDelegate.maxCrossAxisExtent != maxCrossAxisExtent)
+            || (__oldDelegate.mainAxisSpacing != mainAxisSpacing)
+            || (__oldDelegate.crossAxisSpacing != crossAxisSpacing)
+            || (__oldDelegate.childAspectRatio != childAspectRatio)
+            || (__oldDelegate.mainAxisExtent != mainAxisExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverGridParentData : SliverMultiBoxAdaptorParentData
@@ -237,7 +314,11 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
 {
     internal virtual SliverGridDelegate _gridDelegate { get; set; } = default!;
 
-    public RenderSliverGrid(RenderSliverBoxChildManager childManager, SliverGridDelegate gridDelegate) : base(childManager: childManager)
+    public RenderSliverGrid(
+        RenderSliverBoxChildManager childManager,
+        SliverGridDelegate gridDelegate
+    )
+        : base(childManager: childManager)
     {
         _gridDelegate = gridDelegate;
     }
@@ -260,13 +341,21 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
             {
                 return;
             }
-            if ((!Equals(DartRuntimePrimitives.RuntimeType(__value), DartRuntimePrimitives.RuntimeType(_gridDelegate))) || __value.shouldRelayout(_gridDelegate))
+            if (
+                (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(__value),
+                        DartRuntimePrimitives.RuntimeType(_gridDelegate)
+                    )
+                ) || __value.shouldRelayout(_gridDelegate)
+            )
             {
                 markNeedsLayout();
             }
             _gridDelegate = __value;
         }
     }
+
     public override double childCrossAxisPosition(RenderObject child)
     {
         var __child = (RenderBox)(object)child;
@@ -287,21 +376,37 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         double targetEndScrollOffset = scrollOffsetLocal + remainingExtent;
         SliverGridLayout layoutLocal = _gridDelegate.getLayout(constraintsLocal);
         long firstIndexLocal = layoutLocal.getMinChildIndexForScrollOffset(scrollOffsetLocal);
-        long? targetLastIndex = double.IsFinite(targetEndScrollOffset) ? layoutLocal.getMaxChildIndexForScrollOffset(targetEndScrollOffset) : null;
+        long? targetLastIndex = double.IsFinite(targetEndScrollOffset)
+            ? layoutLocal.getMaxChildIndexForScrollOffset(targetEndScrollOffset)
+            : null;
         if (firstChild is not null)
         {
             long leadingGarbage = calculateLeadingGarbage(firstIndex: firstIndexLocal);
-            long trailingGarbage = (targetLastIndex is not null) ? calculateTrailingGarbage(lastIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetLastIndex))) : 0L;
+            long trailingGarbage =
+                (targetLastIndex is not null)
+                    ? calculateTrailingGarbage(
+                        lastIndex: DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(targetLastIndex)
+                        )
+                    )
+                    : 0L;
             collectGarbage(leadingGarbage, trailingGarbage);
         }
         else
         {
             collectGarbage(0L, 0L);
         }
-        SliverGridGeometry firstChildGridGeometry = layoutLocal.getGeometryForChildIndex(firstIndexLocal);
+        SliverGridGeometry firstChildGridGeometry = layoutLocal.getGeometryForChildIndex(
+            firstIndexLocal
+        );
         if (firstChild is null)
         {
-            if (!addInitialChild(index: firstIndexLocal, layoutOffset: firstChildGridGeometry.scrollOffset))
+            if (
+                !addInitialChild(
+                    index: firstIndexLocal,
+                    layoutOffset: firstChildGridGeometry.scrollOffset
+                )
+            )
             {
                 double max = layoutLocal.computeMaxScrollOffset(childManager.childCount);
                 geometry = new SliverGeometry(scrollExtent: max, maxPaintExtent: max);
@@ -313,16 +418,25 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         double trailingScrollOffsetLocal = firstChildGridGeometry.trailingScrollOffset;
         RenderBox? trailingChildWithLayout = default!;
         var reachedEnd = false;
-        for (long indexLocal = indexOf(firstChild!) - 1L; indexLocal >= firstIndexLocal; --indexLocal)
+        for (
+            long indexLocal = indexOf(firstChild!) - 1L;
+            indexLocal >= firstIndexLocal;
+            --indexLocal
+        )
         {
             SliverGridGeometry gridGeometry = layoutLocal.getGeometryForChildIndex(indexLocal);
-            RenderBox child = insertAndLayoutLeadingChild(gridGeometry.getBoxConstraints(constraintsLocal))!;
+            RenderBox child = insertAndLayoutLeadingChild(
+                gridGeometry.getBoxConstraints(constraintsLocal)
+            )!;
             var childParentData = ((SliverGridParentData?)(object?)child.parentData!)!;
             childParentData.layoutOffset = gridGeometry.scrollOffset;
             childParentData.crossAxisOffset = gridGeometry.crossAxisOffset;
             DartRuntimePrimitives.Assert(() => childParentData.index == indexLocal);
             trailingChildWithLayout ??= child;
-            trailingScrollOffsetLocal = Math.Max(trailingScrollOffsetLocal, gridGeometry.trailingScrollOffset);
+            trailingScrollOffsetLocal = Math.Max(
+                trailingScrollOffsetLocal,
+                gridGeometry.trailingScrollOffset
+            );
         }
         if (trailingChildWithLayout is null)
         {
@@ -332,9 +446,16 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
             childParentDataLocal.crossAxisOffset = firstChildGridGeometry.crossAxisOffset;
             trailingChildWithLayout = firstChild;
         }
-        for (long indexAlternate = indexOf(trailingChildWithLayout!) + 1L; (targetLastIndex is null) || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex)); ++indexAlternate)
+        for (
+            long indexAlternate = indexOf(trailingChildWithLayout!) + 1L;
+            (targetLastIndex is null)
+                || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex));
+            ++indexAlternate
+        )
         {
-            SliverGridGeometry gridGeometryLocal = layoutLocal.getGeometryForChildIndex(indexAlternate);
+            SliverGridGeometry gridGeometryLocal = layoutLocal.getGeometryForChildIndex(
+                indexAlternate
+            );
             BoxConstraints childConstraints = gridGeometryLocal.getBoxConstraints(constraintsLocal);
             RenderBox? childLocal = childAfter(trailingChildWithLayout!);
             if ((childLocal is null) || (indexOf(childLocal) != indexAlternate))
@@ -351,26 +472,56 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
                 childLocal.layout(childConstraints);
             }
             trailingChildWithLayout = childLocal;
-            var childParentDataAlternate = ((SliverGridParentData?)(object?)childLocal.parentData!)!;
+            var childParentDataAlternate = (
+                (SliverGridParentData?)(object?)childLocal.parentData!
+            )!;
             childParentDataAlternate.layoutOffset = gridGeometryLocal.scrollOffset;
             childParentDataAlternate.crossAxisOffset = gridGeometryLocal.crossAxisOffset;
             DartRuntimePrimitives.Assert(() => childParentDataAlternate.index == indexAlternate);
-            trailingScrollOffsetLocal = Math.Max(trailingScrollOffsetLocal, gridGeometryLocal.trailingScrollOffset);
+            trailingScrollOffsetLocal = Math.Max(
+                trailingScrollOffsetLocal,
+                gridGeometryLocal.trailingScrollOffset
+            );
         }
         long lastIndexLocal = indexOf(lastChild!);
         DartRuntimePrimitives.Assert(() => debugAssertChildListIsNonEmptyAndContiguous());
         DartRuntimePrimitives.Assert(() => indexOf(firstChild!) == firstIndexLocal);
-        DartRuntimePrimitives.Assert(() => (targetLastIndex is null) || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex)));
-        double estimatedTotalExtent = reachedEnd ? trailingScrollOffsetLocal : childManager.estimateMaxScrollOffset(constraintsLocal, firstIndex: firstIndexLocal, lastIndex: lastIndexLocal, leadingScrollOffset: leadingScrollOffsetLocal, trailingScrollOffset: trailingScrollOffsetLocal);
-        double paintExtentLocal = calculatePaintOffset(constraintsLocal, from: Math.Min(constraintsLocal.scrollOffset, leadingScrollOffsetLocal), to: trailingScrollOffsetLocal);
-        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: leadingScrollOffsetLocal, to: trailingScrollOffsetLocal);
-        geometry = new SliverGeometry(scrollExtent: estimatedTotalExtent, paintExtent: paintExtentLocal, maxPaintExtent: estimatedTotalExtent, cacheExtent: cacheExtentLocal, hasVisualOverflow: (estimatedTotalExtent > paintExtentLocal) || (constraintsLocal.scrollOffset > 0.0) || (constraintsLocal.overlap != 0.0));
+        DartRuntimePrimitives.Assert(() =>
+            (targetLastIndex is null)
+            || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))
+        );
+        double estimatedTotalExtent = reachedEnd
+            ? trailingScrollOffsetLocal
+            : childManager.estimateMaxScrollOffset(
+                constraintsLocal,
+                firstIndex: firstIndexLocal,
+                lastIndex: lastIndexLocal,
+                leadingScrollOffset: leadingScrollOffsetLocal,
+                trailingScrollOffset: trailingScrollOffsetLocal
+            );
+        double paintExtentLocal = calculatePaintOffset(
+            constraintsLocal,
+            from: Math.Min(constraintsLocal.scrollOffset, leadingScrollOffsetLocal),
+            to: trailingScrollOffsetLocal
+        );
+        double cacheExtentLocal = calculateCacheOffset(
+            constraintsLocal,
+            from: leadingScrollOffsetLocal,
+            to: trailingScrollOffsetLocal
+        );
+        geometry = new SliverGeometry(
+            scrollExtent: estimatedTotalExtent,
+            paintExtent: paintExtentLocal,
+            maxPaintExtent: estimatedTotalExtent,
+            cacheExtent: cacheExtentLocal,
+            hasVisualOverflow: (estimatedTotalExtent > paintExtentLocal)
+                || (constraintsLocal.scrollOffset > 0.0)
+                || (constraintsLocal.overlap != 0.0)
+        );
         if (estimatedTotalExtent == trailingScrollOffsetLocal)
         {
             childManager.setDidUnderflow(true);
         }
         childManager.didFinishLayout();
     }
-
 }
-

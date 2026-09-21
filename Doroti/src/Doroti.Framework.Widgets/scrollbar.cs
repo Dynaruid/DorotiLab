@@ -35,7 +35,7 @@ public enum ScrollbarOrientation
     left,
     right,
     top,
-    bottom
+    bottom,
 }
 
 public class ScrollbarPainter : ChangeNotifier
@@ -64,7 +64,24 @@ public class ScrollbarPainter : ChangeNotifier
     internal virtual ScrollMetrics? _lastMetrics { get; set; } = default;
     internal virtual AxisDirection? _lastAxisDirection { get; set; } = default;
 
-    public ScrollbarPainter(Color color, Animation<double> fadeoutOpacityAnimation, Color trackColor = default!, Color trackBorderColor = default!, TextDirection? textDirection = null, double? thickness = null, EdgeInsetsGeometry padding = default!, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, Radius? radius = null, Radius? trackRadius = null, OutlinedBorder? shape = null, double? minLength = null, double? minOverscrollLength = null, ScrollbarOrientation? scrollbarOrientation = null, bool ignorePointer = false)
+    public ScrollbarPainter(
+        Color color,
+        Animation<double> fadeoutOpacityAnimation,
+        Color trackColor = default!,
+        Color trackBorderColor = default!,
+        TextDirection? textDirection = null,
+        double? thickness = null,
+        EdgeInsetsGeometry padding = default!,
+        double mainAxisMargin = 0.0,
+        double crossAxisMargin = 0.0,
+        Radius? radius = null,
+        Radius? trackRadius = null,
+        OutlinedBorder? shape = null,
+        double? minLength = null,
+        double? minOverscrollLength = null,
+        ScrollbarOrientation? scrollbarOrientation = null,
+        bool ignorePointer = false
+    )
     {
         Color __trackColor = trackColor ?? new Color(0x00000000);
         Color __trackBorderColor = trackBorderColor ?? new Color(0x00000000);
@@ -91,10 +108,16 @@ public class ScrollbarPainter : ChangeNotifier
         this.fadeoutOpacityAnimation.addListener(notifyListeners);
         System.Diagnostics.Debug.Assert((radius is null) || (shape is null));
         System.Diagnostics.Debug.Assert(__minLength >= 0L);
-        System.Diagnostics.Debug.Assert((minOverscrollLength is null) || (minOverscrollLength <= __minLength));
-        System.Diagnostics.Debug.Assert((minOverscrollLength is null) || (minOverscrollLength >= 0L));
+        System.Diagnostics.Debug.Assert(
+            (minOverscrollLength is null) || (minOverscrollLength <= __minLength)
+        );
+        System.Diagnostics.Debug.Assert(
+            (minOverscrollLength is null) || (minOverscrollLength >= 0L)
+        );
         System.Diagnostics.Debug.Assert(__padding.isNonNegative);
-        System.Diagnostics.Debug.Assert((__padding is not EdgeInsetsDirectional) || (textDirection is not null));
+        System.Diagnostics.Debug.Assert(
+            (__padding is not EdgeInsetsDirectional) || (textDirection is not null)
+        );
     }
 
     public virtual Color color
@@ -312,31 +335,83 @@ public class ScrollbarPainter : ChangeNotifier
             notifyListeners();
         }
     }
-    internal virtual double _trackExtent => DartRuntimePrimitives.ConvertValue<double>(_lastMetrics!.viewportDimension - _totalTrackMainAxisOffsets);
-    internal virtual double _traversableTrackExtent => DartRuntimePrimitives.ConvertValue<double>(_trackExtent - 2L * mainAxisMargin);
-    internal virtual double _totalTrackMainAxisOffsets => _isVertical ? _resolvedPadding!.vertical : _resolvedPadding!.horizontal;
-    internal virtual double _leadingTrackMainAxisOffset => _resolvedOrientation switch { ScrollbarOrientation.left => _resolvedPadding!.top, ScrollbarOrientation.right => _resolvedPadding!.top, ScrollbarOrientation.top => _resolvedPadding!.left, ScrollbarOrientation.bottom => _resolvedPadding!.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-    internal virtual double _leadingThumbMainAxisOffset => DartRuntimePrimitives.ConvertValue<double>(_leadingTrackMainAxisOffset + mainAxisMargin);
+    internal virtual double _trackExtent =>
+        DartRuntimePrimitives.ConvertValue<double>(
+            _lastMetrics!.viewportDimension - _totalTrackMainAxisOffsets
+        );
+    internal virtual double _traversableTrackExtent =>
+        DartRuntimePrimitives.ConvertValue<double>(_trackExtent - (2L * mainAxisMargin));
+    internal virtual double _totalTrackMainAxisOffsets =>
+        _isVertical ? _resolvedPadding!.vertical : _resolvedPadding!.horizontal;
+    internal virtual double _leadingTrackMainAxisOffset =>
+        _resolvedOrientation switch
+        {
+            ScrollbarOrientation.left => _resolvedPadding!.top,
+            ScrollbarOrientation.right => _resolvedPadding!.top,
+            ScrollbarOrientation.top => _resolvedPadding!.left,
+            ScrollbarOrientation.bottom => _resolvedPadding!.left,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+    internal virtual double _leadingThumbMainAxisOffset =>
+        DartRuntimePrimitives.ConvertValue<double>(_leadingTrackMainAxisOffset + mainAxisMargin);
+
     internal virtual void _setThumbExtent()
     {
-        double fractionVisible = Dart_uiLibrary.clampDouble((_lastMetrics!.extentInside - _totalTrackMainAxisOffsets) / (_totalContentExtent - _totalTrackMainAxisOffsets), 0.0, 1.0);
-        double thumbExtent = Math.Max(Math.Min(_traversableTrackExtent, minOverscrollLength), _traversableTrackExtent * fractionVisible);
-        double fractionOverscrolled = 1.0 - (_lastMetrics!.extentInside / _lastMetrics!.viewportDimension);
-        double safeMinLength = Math.Min(DartRuntimePrimitives.RequireValue(minLength), _traversableTrackExtent);
-        double newMinLength = ((_beforeExtent > 0L) && (_afterExtent > 0L)) ? safeMinLength : (safeMinLength * (1.0 - (Dart_uiLibrary.clampDouble(fractionOverscrolled, 0.0, 0.2) / 0.2)));
-        _thumbExtent = Dart_uiLibrary.clampDouble(thumbExtent, newMinLength, _traversableTrackExtent);
+        double fractionVisible = Dart_uiLibrary.clampDouble(
+            (_lastMetrics!.extentInside - _totalTrackMainAxisOffsets)
+                / (_totalContentExtent - _totalTrackMainAxisOffsets),
+            0.0,
+            1.0
+        );
+        double thumbExtent = Math.Max(
+            Math.Min(_traversableTrackExtent, minOverscrollLength),
+            _traversableTrackExtent * fractionVisible
+        );
+        double fractionOverscrolled =
+            1.0 - (_lastMetrics!.extentInside / _lastMetrics!.viewportDimension);
+        double safeMinLength = Math.Min(
+            DartRuntimePrimitives.RequireValue(minLength),
+            _traversableTrackExtent
+        );
+        double newMinLength =
+            ((_beforeExtent > 0L) && (_afterExtent > 0L))
+                ? safeMinLength
+                : (
+                    safeMinLength
+                    * (1.0 - (Dart_uiLibrary.clampDouble(fractionOverscrolled, 0.0, 0.2) / 0.2))
+                );
+        _thumbExtent = Dart_uiLibrary.clampDouble(
+            thumbExtent,
+            newMinLength,
+            _traversableTrackExtent
+        );
     }
 
-    internal virtual bool _lastMetricsAreScrollable => DartRuntimePrimitives.ConvertValue<bool>(_lastMetrics!.minScrollExtent != _lastMetrics!.maxScrollExtent);
-    internal virtual bool _isVertical => DartRuntimePrimitives.ConvertValue<bool>(Equals(_lastAxisDirection, AxisDirection.down) || Equals(_lastAxisDirection, AxisDirection.up));
-    internal virtual bool _isReversed => DartRuntimePrimitives.ConvertValue<bool>(Equals(_lastAxisDirection, AxisDirection.up) || Equals(_lastAxisDirection, AxisDirection.left));
-    internal virtual double _beforeExtent => _isReversed ? _lastMetrics!.extentAfter : _lastMetrics!.extentBefore;
-    internal virtual double _afterExtent => _isReversed ? _lastMetrics!.extentBefore : _lastMetrics!.extentAfter;
+    internal virtual bool _lastMetricsAreScrollable =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _lastMetrics!.minScrollExtent != _lastMetrics!.maxScrollExtent
+        );
+    internal virtual bool _isVertical =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            Equals(_lastAxisDirection, AxisDirection.down)
+                || Equals(_lastAxisDirection, AxisDirection.up)
+        );
+    internal virtual bool _isReversed =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            Equals(_lastAxisDirection, AxisDirection.up)
+                || Equals(_lastAxisDirection, AxisDirection.left)
+        );
+    internal virtual double _beforeExtent =>
+        _isReversed ? _lastMetrics!.extentAfter : _lastMetrics!.extentBefore;
+    internal virtual double _afterExtent =>
+        _isReversed ? _lastMetrics!.extentBefore : _lastMetrics!.extentAfter;
     internal virtual double _totalContentExtent
     {
         get
         {
-            return _lastMetrics!.maxScrollExtent - _lastMetrics!.minScrollExtent + _lastMetrics!.viewportDimension;
+            return _lastMetrics!.maxScrollExtent
+                - _lastMetrics!.minScrollExtent
+                + _lastMetrics!.viewportDimension;
         }
     }
     internal virtual ScrollbarOrientation _resolvedOrientation
@@ -347,30 +422,48 @@ public class ScrollbarPainter : ChangeNotifier
             {
                 if (_isVertical)
                 {
-                    return Equals(textDirection, TextDirection.ltr) ? ScrollbarOrientation.right : ScrollbarOrientation.left;
+                    return Equals(textDirection, TextDirection.ltr)
+                        ? ScrollbarOrientation.right
+                        : ScrollbarOrientation.left;
                 }
                 return ScrollbarOrientation.bottom;
             }
             return DartRuntimePrimitives.RequireValue(scrollbarOrientation);
         }
     }
+
     internal virtual void _debugAssertIsValidOrientation(ScrollbarOrientation orientation)
     {
-        DartRuntimePrimitives.Assert(() =>
+        DartRuntimePrimitives.Assert(
+            () =>
             {
                 bool isVerticalOrientation(ScrollbarOrientation orientation)
                 {
-                    return Equals(orientation, ScrollbarOrientation.left) || Equals(orientation, ScrollbarOrientation.right);
-                    throw new InvalidOperationException("Dart control flow completed without a value.");
+                    return Equals(orientation, ScrollbarOrientation.left)
+                        || Equals(orientation, ScrollbarOrientation.right);
+                    throw new InvalidOperationException(
+                        "Dart control flow completed without a value."
+                    );
                 }
-                return _isVertical && isVerticalOrientation(orientation) || !_isVertical && !isVerticalOrientation(orientation);
+                return (_isVertical && isVerticalOrientation(orientation))
+                    || (!_isVertical && !isVerticalOrientation(orientation));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }, () => (object?)$"The given ScrollbarOrientation: {orientation} is incompatible with the " + $"current AxisDirection: {_lastAxisDirection}.");
+            },
+            () =>
+                (object?)$"The given ScrollbarOrientation: {orientation} is incompatible with the "
+                + $"current AxisDirection: {_lastAxisDirection}."
+        );
     }
 
     public virtual void update(ScrollMetrics metrics, AxisDirection axisDirection)
     {
-        if ((_lastMetrics is not null) && (_lastMetrics!.extentBefore == metrics.extentBefore) && (_lastMetrics!.extentInside == metrics.extentInside) && (_lastMetrics!.extentAfter == metrics.extentAfter) && Equals(_lastAxisDirection, axisDirection))
+        if (
+            (_lastMetrics is not null)
+            && (_lastMetrics!.extentBefore == metrics.extentBefore)
+            && (_lastMetrics!.extentInside == metrics.extentInside)
+            && (_lastMetrics!.extentAfter == metrics.extentAfter)
+            && Equals(_lastAxisDirection, axisDirection)
+        )
         {
             return;
         }
@@ -394,17 +487,28 @@ public class ScrollbarPainter : ChangeNotifier
     {
         get
         {
-            return ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color.withOpacity(color.opacity * fadeoutOpacityAnimation.value);
-    return __cascade;
-}))();
+            return (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = color.withOpacity(
+                            color.opacity * fadeoutOpacityAnimation.value
+                        );
+                        return __cascade;
+                    }
+                )
+            )();
         }
     }
+
     internal virtual bool _needPaint(ScrollMetrics? metrics)
     {
-        return (metrics is not null) && ((metrics.maxScrollExtent - metrics.minScrollExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance);
+        return (metrics is not null)
+            && (
+                (metrics.maxScrollExtent - metrics.minScrollExtent)
+                > Foundation.ConstantsLibrary.precisionErrorTolerance
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -412,27 +516,42 @@ public class ScrollbarPainter : ChangeNotifier
     {
         if (isBorder)
         {
-            return ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = trackBorderColor.withOpacity(trackBorderColor.opacity * fadeoutOpacityAnimation.value);
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 1.0;
-    return __cascade;
-}))();
+            return (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = trackBorderColor.withOpacity(
+                            trackBorderColor.opacity * fadeoutOpacityAnimation.value
+                        );
+                        __cascade.style = PaintingStyle.stroke;
+                        __cascade.strokeWidth = 1.0;
+                        return __cascade;
+                    }
+                )
+            )();
         }
-        return ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = trackColor.withOpacity(trackColor.opacity * fadeoutOpacityAnimation.value);
-    return __cascade;
-}))();
+        return (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = trackColor.withOpacity(
+                        trackColor.opacity * fadeoutOpacityAnimation.value
+                    );
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _paintScrollbar(Canvas canvas, Size size)
     {
-        DartRuntimePrimitives.Assert(() => textDirection is not null, () => (object?)"A TextDirection must be provided before a Scrollbar can be painted.");
+        DartRuntimePrimitives.Assert(
+            () => textDirection is not null,
+            () => (object?)"A TextDirection must be provided before a Scrollbar can be painted."
+        );
         double x = default!;
         double y = default!;
         Size thumbSize = default!;
@@ -444,49 +563,55 @@ public class ScrollbarPainter : ChangeNotifier
         switch (_resolvedOrientation)
         {
             case ScrollbarOrientation.left:
-                {
-                    thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
-                    trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
-                    x = crossAxisMargin + _resolvedPadding!.left;
-                    y = _thumbOffset;
-                    trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
-                    borderStart = trackOffset + new Offset(trackSize.width, 0.0);
-                    borderEnd = new Offset(trackOffset.dx + trackSize.width, trackOffset.dy + _trackExtent);
-                    break;
-                }
+            {
+                thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
+                x = crossAxisMargin + _resolvedPadding!.left;
+                y = _thumbOffset;
+                trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
+                borderStart = trackOffset + new Offset(trackSize.width, 0.0);
+                borderEnd = new Offset(
+                    trackOffset.dx + trackSize.width,
+                    trackOffset.dy + _trackExtent
+                );
+                break;
+            }
             case ScrollbarOrientation.right:
-                {
-                    thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
-                    trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
-                    x = size.width - thickness - crossAxisMargin - _resolvedPadding!.right;
-                    y = _thumbOffset;
-                    trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
-                    borderStart = trackOffset;
-                    borderEnd = new Offset(trackOffset.dx, trackOffset.dy + _trackExtent);
-                    break;
-                }
+            {
+                thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
+                x = size.width - thickness - crossAxisMargin - _resolvedPadding!.right;
+                y = _thumbOffset;
+                trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
+                borderStart = trackOffset;
+                borderEnd = new Offset(trackOffset.dx, trackOffset.dy + _trackExtent);
+                break;
+            }
             case ScrollbarOrientation.top:
-                {
-                    thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
-                    trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
-                    x = _thumbOffset;
-                    y = crossAxisMargin + _resolvedPadding!.top;
-                    trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
-                    borderStart = trackOffset + new Offset(0.0, trackSize.height);
-                    borderEnd = new Offset(trackOffset.dx + _trackExtent, trackOffset.dy + trackSize.height);
-                    break;
-                }
+            {
+                thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
+                x = _thumbOffset;
+                y = crossAxisMargin + _resolvedPadding!.top;
+                trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
+                borderStart = trackOffset + new Offset(0.0, trackSize.height);
+                borderEnd = new Offset(
+                    trackOffset.dx + _trackExtent,
+                    trackOffset.dy + trackSize.height
+                );
+                break;
+            }
             case ScrollbarOrientation.bottom:
-                {
-                    thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
-                    trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
-                    x = _thumbOffset;
-                    y = size.height - thickness - crossAxisMargin - _resolvedPadding!.bottom;
-                    trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
-                    borderStart = trackOffset;
-                    borderEnd = new Offset(trackOffset.dx + _trackExtent, trackOffset.dy);
-                    break;
-                }
+            {
+                thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
+                x = _thumbOffset;
+                y = size.height - thickness - crossAxisMargin - _resolvedPadding!.bottom;
+                trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
+                borderStart = trackOffset;
+                borderEnd = new Offset(trackOffset.dx + _trackExtent, trackOffset.dy);
+                break;
+            }
         }
         _trackRect = trackOffset & trackSize;
         _thumbRect = new Offset(x, y) & thumbSize;
@@ -498,13 +623,25 @@ public class ScrollbarPainter : ChangeNotifier
             }
             else
             {
-                canvas.drawRRect(RRect.fromRectAndRadius(DartRuntimePrimitives.RequireValue(_trackRect), DartRuntimePrimitives.RequireValue(trackRadius)), _paintTrack());
+                canvas.drawRRect(
+                    RRect.fromRectAndRadius(
+                        DartRuntimePrimitives.RequireValue(_trackRect),
+                        DartRuntimePrimitives.RequireValue(trackRadius)
+                    ),
+                    _paintTrack()
+                );
             }
             canvas.drawLine(borderStart, borderEnd, _paintTrack(isBorder: true));
             if (radius is not null)
             {
                 Radius radius__value22874 = DartRuntimePrimitives.RequireValue(radius);
-                canvas.drawRRect(RRect.fromRectAndRadius(DartRuntimePrimitives.RequireValue(_thumbRect), DartRuntimePrimitives.RequireValue(radius)), _paintThumb);
+                canvas.drawRRect(
+                    RRect.fromRectAndRadius(
+                        DartRuntimePrimitives.RequireValue(_thumbRect),
+                        DartRuntimePrimitives.RequireValue(radius)
+                    ),
+                    _paintThumb
+                );
                 return;
             }
             if (shape is null)
@@ -514,11 +651,17 @@ public class ScrollbarPainter : ChangeNotifier
             }
             if (shape!.preferPaintInterior)
             {
-                shape!.paintInterior(canvas, DartRuntimePrimitives.RequireValue(_thumbRect), _paintThumb);
+                shape!.paintInterior(
+                    canvas,
+                    DartRuntimePrimitives.RequireValue(_thumbRect),
+                    _paintThumb
+                );
             }
             else
             {
-                Path outerPath = shape!.getOuterPath(DartRuntimePrimitives.RequireValue(_thumbRect));
+                Path outerPath = shape!.getOuterPath(
+                    DartRuntimePrimitives.RequireValue(_thumbRect)
+                );
                 canvas.drawPath(outerPath, _paintThumb);
             }
             shape!.paint(canvas, DartRuntimePrimitives.RequireValue(_thumbRect));
@@ -556,11 +699,21 @@ public class ScrollbarPainter : ChangeNotifier
 
     public virtual double getThumbScrollOffset()
     {
-        DartRuntimePrimitives.Assert(() => double.IsFinite(_lastMetrics!.maxScrollExtent) && double.IsFinite(_lastMetrics!.minScrollExtent));
+        DartRuntimePrimitives.Assert(() =>
+            double.IsFinite(_lastMetrics!.maxScrollExtent)
+            && double.IsFinite(_lastMetrics!.minScrollExtent)
+        );
         double scrollableExtent = _lastMetrics!.maxScrollExtent - _lastMetrics!.minScrollExtent;
         double maxFraction = _lastMetrics!.maxScrollExtent / scrollableExtent;
         double minFraction = _lastMetrics!.minScrollExtent / scrollableExtent;
-        double fractionPast = (scrollableExtent > 0L) ? Dart_uiLibrary.clampDouble(_lastMetrics!.pixels / scrollableExtent, minFraction, maxFraction) : 0;
+        double fractionPast =
+            (scrollableExtent > 0L)
+                ? Dart_uiLibrary.clampDouble(
+                    _lastMetrics!.pixels / scrollableExtent,
+                    minFraction,
+                    maxFraction
+                )
+                : 0;
         return fractionPast * (_traversableTrackExtent - _thumbExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -568,8 +721,16 @@ public class ScrollbarPainter : ChangeNotifier
     internal virtual double _getScrollToTrack(ScrollMetrics metrics, double thumbExtent)
     {
         double scrollableExtent = metrics.maxScrollExtent - metrics.minScrollExtent;
-        double fractionPast = (scrollableExtent > 0L) ? Dart_uiLibrary.clampDouble((metrics.pixels - metrics.minScrollExtent) / scrollableExtent, 0.0, 1.0) : 0;
-        return (_isReversed ? (1L - fractionPast) : fractionPast) * (_traversableTrackExtent - thumbExtent);
+        double fractionPast =
+            (scrollableExtent > 0L)
+                ? Dart_uiLibrary.clampDouble(
+                    (metrics.pixels - metrics.minScrollExtent) / scrollableExtent,
+                    0.0,
+                    1.0
+                )
+                : 0;
+        return (_isReversed ? (1L - fractionPast) : fractionPast)
+            * (_traversableTrackExtent - thumbExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -583,11 +744,17 @@ public class ScrollbarPainter : ChangeNotifier
         {
             return false;
         }
-        return DartRuntimePrimitives.RequireValue(_trackRect).contains(DartRuntimePrimitives.RequireValue(position));
+        return DartRuntimePrimitives
+            .RequireValue(_trackRect)
+            .contains(DartRuntimePrimitives.RequireValue(position));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool hitTestInteractive(Offset position, PointerDeviceKind kind, bool forHover = false)
+    public virtual bool hitTestInteractive(
+        Offset position,
+        PointerDeviceKind kind,
+        bool forHover = false
+    )
     {
         if (_trackRect is null)
         {
@@ -602,12 +769,19 @@ public class ScrollbarPainter : ChangeNotifier
             return false;
         }
         Rect interactiveRect = DartRuntimePrimitives.RequireValue(_trackRect);
-        Rect paddedRect = interactiveRect.expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
+        Rect paddedRect = interactiveRect.expandToInclude(
+            Rect.fromCircle(
+                center: DartRuntimePrimitives.RequireValue(_thumbRect).center,
+                radius: ScrollbarLibrary._kMinInteractiveSize / 2L
+            )
+        );
         if (fadeoutOpacityAnimation.value == 0.0)
         {
             if (forHover && Equals(kind, PointerDeviceKind.mouse))
             {
-                return paddedRect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
+                return paddedRect.contains(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                );
             }
             return false;
         }
@@ -615,16 +789,20 @@ public class ScrollbarPainter : ChangeNotifier
         {
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
-                {
-                    return paddedRect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
-                }
+            {
+                return paddedRect.contains(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                );
+            }
             case PointerDeviceKind.mouse:
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
-                {
-                    return interactiveRect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
-                }
+            {
+                return interactiveRect.contains(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -653,17 +831,32 @@ public class ScrollbarPainter : ChangeNotifier
         {
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
-                {
-                    Rect touchThumbRect = DartRuntimePrimitives.RequireValue(_thumbRect).expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
-                    return touchThumbRect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
-                }
+            {
+                Rect touchThumbRect = DartRuntimePrimitives
+                    .RequireValue(_thumbRect)
+                    .expandToInclude(
+                        Rect.fromCircle(
+                            center: DartRuntimePrimitives.RequireValue(_thumbRect).center,
+                            radius: ScrollbarLibrary._kMinInteractiveSize / 2L
+                        )
+                    );
+                return touchThumbRect.contains(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                );
+            }
             case PointerDeviceKind.mouse:
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
-                {
-                    return DartRuntimePrimitives.RequireValue(_thumbRect).contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
-                }
+            {
+                return DartRuntimePrimitives
+                    .RequireValue(_thumbRect)
+                    .contains(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(position)
+                        )
+                    );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -672,19 +865,37 @@ public class ScrollbarPainter : ChangeNotifier
 
     public virtual bool shouldRepaint(ScrollbarPainter oldDelegate)
     {
-        return (!Equals(color, oldDelegate.color)) || (!Equals(trackColor, oldDelegate.trackColor)) || (!Equals(trackBorderColor, oldDelegate.trackBorderColor)) || (!Equals(textDirection, oldDelegate.textDirection)) || (thickness != oldDelegate.thickness) || (!Equals(fadeoutOpacityAnimation, oldDelegate.fadeoutOpacityAnimation)) || (mainAxisMargin != oldDelegate.mainAxisMargin) || (crossAxisMargin != oldDelegate.crossAxisMargin) || (!Equals(radius, oldDelegate.radius)) || (!Equals(trackRadius, oldDelegate.trackRadius)) || (!Equals(shape, oldDelegate.shape)) || (!Equals(padding, oldDelegate.padding)) || (minLength != oldDelegate.minLength) || (minOverscrollLength != oldDelegate.minOverscrollLength) || (!Equals(scrollbarOrientation, oldDelegate.scrollbarOrientation)) || (ignorePointer != oldDelegate.ignorePointer);
+        return (!Equals(color, oldDelegate.color))
+            || (!Equals(trackColor, oldDelegate.trackColor))
+            || (!Equals(trackBorderColor, oldDelegate.trackBorderColor))
+            || (!Equals(textDirection, oldDelegate.textDirection))
+            || (thickness != oldDelegate.thickness)
+            || (!Equals(fadeoutOpacityAnimation, oldDelegate.fadeoutOpacityAnimation))
+            || (mainAxisMargin != oldDelegate.mainAxisMargin)
+            || (crossAxisMargin != oldDelegate.crossAxisMargin)
+            || (!Equals(radius, oldDelegate.radius))
+            || (!Equals(trackRadius, oldDelegate.trackRadius))
+            || (!Equals(shape, oldDelegate.shape))
+            || (!Equals(padding, oldDelegate.padding))
+            || (minLength != oldDelegate.minLength)
+            || (minOverscrollLength != oldDelegate.minOverscrollLength)
+            || (!Equals(scrollbarOrientation, oldDelegate.scrollbarOrientation))
+            || (ignorePointer != oldDelegate.ignorePointer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
-    public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
+
+    public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder =>
+        DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
+
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
+
     public override void dispose()
     {
         fadeoutOpacityAnimation.removeListener(notifyListeners);
         base.dispose();
     }
-
 }
 
 public class RawScrollbar : StatefulWidget
@@ -705,19 +916,46 @@ public class RawScrollbar : StatefulWidget
     public virtual Duration fadeDuration { get; private set; } = default!;
     public virtual Duration timeToFade { get; private set; } = default!;
     public virtual Duration pressDuration { get; private set; } = default!;
-    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
+    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } =
+        default!;
     public virtual bool? interactive { get; private set; }
     public virtual ScrollbarOrientation? scrollbarOrientation { get; private set; }
     public virtual double mainAxisMargin { get; private set; } = default!;
     public virtual double crossAxisMargin { get; private set; } = default!;
     public virtual EdgeInsetsGeometry? padding { get; private set; }
 
-    public RawScrollbar(Key? key = null, Widget child = default!, ScrollController? controller = null, bool? thumbVisibility = null, OutlinedBorder? shape = null, Radius? radius = null, double? thickness = null, Color? thumbColor = null, double? minThumbLength = null, double? minOverscrollLength = null, bool? trackVisibility = null, Radius? trackRadius = null, Color? trackColor = null, Color? trackBorderColor = null, Duration? fadeDuration = null, Duration? timeToFade = null, Duration pressDuration = default, Func<ScrollNotification, bool> notificationPredicate = default!, bool? interactive = null, ScrollbarOrientation? scrollbarOrientation = null, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, EdgeInsetsGeometry? padding = null) : base(key: key)
+    public RawScrollbar(
+        Key? key = null,
+        Widget child = default!,
+        ScrollController? controller = null,
+        bool? thumbVisibility = null,
+        OutlinedBorder? shape = null,
+        Radius? radius = null,
+        double? thickness = null,
+        Color? thumbColor = null,
+        double? minThumbLength = null,
+        double? minOverscrollLength = null,
+        bool? trackVisibility = null,
+        Radius? trackRadius = null,
+        Color? trackColor = null,
+        Color? trackBorderColor = null,
+        Duration? fadeDuration = null,
+        Duration? timeToFade = null,
+        Duration pressDuration = default,
+        Func<ScrollNotification, bool> notificationPredicate = default!,
+        bool? interactive = null,
+        ScrollbarOrientation? scrollbarOrientation = null,
+        double mainAxisMargin = 0.0,
+        double crossAxisMargin = 0.0,
+        EdgeInsetsGeometry? padding = null
+    )
+        : base(key: key)
     {
         double __minThumbLength = minThumbLength ?? ScrollbarLibrary._kMinThumbExtent;
         Duration __fadeDuration = fadeDuration ?? ScrollbarLibrary._kScrollbarFadeDuration;
         Duration __timeToFade = timeToFade ?? ScrollbarLibrary._kScrollbarTimeToFade;
-        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate =
+            notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         this.child = child;
         this.controller = controller;
         this.thumbVisibility = thumbVisibility;
@@ -740,17 +978,25 @@ public class RawScrollbar : StatefulWidget
         this.mainAxisMargin = mainAxisMargin;
         this.crossAxisMargin = crossAxisMargin;
         this.padding = padding;
-        System.Diagnostics.Debug.Assert(!((thumbVisibility == false) && (trackVisibility ?? false)));
+        System.Diagnostics.Debug.Assert(
+            !((thumbVisibility == false) && (trackVisibility ?? false))
+        );
         System.Diagnostics.Debug.Assert(__minThumbLength >= 0L);
-        System.Diagnostics.Debug.Assert((minOverscrollLength is null) || (minOverscrollLength <= __minThumbLength));
-        System.Diagnostics.Debug.Assert((minOverscrollLength is null) || (minOverscrollLength >= 0L));
+        System.Diagnostics.Debug.Assert(
+            (minOverscrollLength is null) || (minOverscrollLength <= __minThumbLength)
+        );
+        System.Diagnostics.Debug.Assert(
+            (minOverscrollLength is null) || (minOverscrollLength >= 0L)
+        );
         System.Diagnostics.Debug.Assert((radius is null) || (shape is null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new RawScrollbarState<RawScrollbar>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new RawScrollbarState<RawScrollbar>());
 }
 
-public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where T : RawScrollbar
+public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
+    where T : RawScrollbar
 {
     internal virtual Offset? _startDragScrollbarAxisOffset { get; set; } = default;
     internal virtual Offset? _lastDragUpdateOffset { get; set; } = default;
@@ -760,32 +1006,65 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     internal virtual bool _isDisposed { get; set; }
     internal virtual AnimationController _fadeoutAnimationController { get; set; } = default!;
     internal virtual CurvedAnimation _fadeoutOpacityAnimation { get; set; } = default!;
-    internal virtual GlobalKey<IState> _scrollbarPainterKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _scrollbarPainterKey { get; private set; } =
+        GlobalKey<IState>.Create();
     internal virtual bool _hoverIsActive { get; set; } = false;
     internal virtual Drag? _thumbDrag { get; set; } = default;
     internal virtual bool _maxScrollExtentPermitsScrolling { get; set; } = false;
     internal virtual ScrollHoldController? _thumbHold { get; set; } = default;
     internal virtual Axis? _axis { get; set; } = default;
-    internal virtual GlobalKey<RawGestureDetectorState> _gestureDetectorKey { get; private set; } = GlobalKey<RawGestureDetectorState>.Create();
+    internal virtual GlobalKey<RawGestureDetectorState> _gestureDetectorKey { get; private set; } =
+        GlobalKey<RawGestureDetectorState>.Create();
     public virtual ScrollbarPainter scrollbarPainter { get; private set; } = default!;
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual ScrollController? _effectiveScrollController => DartRuntimePrimitives.ConvertValue<ScrollController>(widget.controller ?? PrimaryScrollController.maybeOf(context));
-    public virtual bool showScrollbar => DartRuntimePrimitives.ConvertValue<bool>(widget.thumbVisibility ?? false);
-    internal virtual bool _showTrack => DartRuntimePrimitives.ConvertValue<bool>(showScrollbar && (widget.trackVisibility ?? false));
-    public virtual bool enableGestures => DartRuntimePrimitives.ConvertValue<bool>(widget.interactive ?? true);
+    internal virtual ScrollController? _effectiveScrollController =>
+        DartRuntimePrimitives.ConvertValue<ScrollController>(
+            widget.controller ?? PrimaryScrollController.maybeOf(context)
+        );
+    public virtual bool showScrollbar =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.thumbVisibility ?? false);
+    internal virtual bool _showTrack =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            showScrollbar && (widget.trackVisibility ?? false)
+        );
+    public virtual bool enableGestures =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.interactive ?? true);
+
     public override void initState()
     {
         base.initState();
-        _fadeoutAnimationController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(vsync: this, duration: widget.fadeDuration);
-    __cascade.addStatusListener(_validateInteractions);
-    return __cascade;
-}))();
-        _fadeoutOpacityAnimation = new CurvedAnimation(parent: _fadeoutAnimationController, curve: Curves.fastOutSlowIn);
-        scrollbarPainter = new ScrollbarPainter(color: widget.thumbColor ?? new Color(1723645116L), fadeoutOpacityAnimation: _fadeoutOpacityAnimation, thickness: widget.thickness ?? ScrollbarLibrary._kScrollbarThickness, radius: widget.radius, trackRadius: widget.trackRadius, scrollbarOrientation: widget.scrollbarOrientation, mainAxisMargin: widget.mainAxisMargin, shape: widget.shape, crossAxisMargin: widget.crossAxisMargin, minLength: widget.minThumbLength, minOverscrollLength: widget.minOverscrollLength ?? widget.minThumbLength);
+        _fadeoutAnimationController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        vsync: this,
+                        duration: widget.fadeDuration
+                    );
+                    __cascade.addStatusListener(_validateInteractions);
+                    return __cascade;
+                }
+            )
+        )();
+        _fadeoutOpacityAnimation = new CurvedAnimation(
+            parent: _fadeoutAnimationController,
+            curve: Curves.fastOutSlowIn
+        );
+        scrollbarPainter = new ScrollbarPainter(
+            color: widget.thumbColor ?? new Color(1723645116L),
+            fadeoutOpacityAnimation: _fadeoutOpacityAnimation,
+            thickness: widget.thickness ?? ScrollbarLibrary._kScrollbarThickness,
+            radius: widget.radius,
+            trackRadius: widget.trackRadius,
+            scrollbarOrientation: widget.scrollbarOrientation,
+            mainAxisMargin: widget.mainAxisMargin,
+            shape: widget.shape,
+            crossAxisMargin: widget.crossAxisMargin,
+            minLength: widget.minThumbLength,
+            minOverscrollLength: widget.minOverscrollLength ?? widget.minThumbLength
+        );
     }
 
     public override void didChangeDependencies()
@@ -800,10 +1079,13 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return true;
         }
-        WidgetsBinding.instance.addPostFrameCallback((duration) =>
-        {
-            DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
-        }, debugLabel: "RawScrollbar.checkScrollPosition");
+        WidgetsBinding.instance.addPostFrameCallback(
+            (duration) =>
+            {
+                DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
+            },
+            debugLabel: "RawScrollbar.checkScrollPosition"
+        );
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -818,7 +1100,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             if ((_effectiveScrollController is not null) && enableGestures)
             {
-                if (Equals(_fadeoutAnimationController.status, AnimationStatus.forward) && (widget.thumbVisibility ?? false))
+                if (
+                    Equals(_fadeoutAnimationController.status, AnimationStatus.forward)
+                    && (widget.thumbVisibility ?? false)
+                )
                 {
                     return;
                 }
@@ -835,7 +1120,9 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         }
         ScrollController? scrollController = _effectiveScrollController;
         var tryPrimary = widget.controller is null;
-        var controllerForError = tryPrimary ? "PrimaryScrollController" : "provided ScrollController";
+        var controllerForError = tryPrimary
+            ? "PrimaryScrollController"
+            : "provided ScrollController";
         var @when = "";
         if (widget.thumbVisibility ?? false)
         {
@@ -852,33 +1139,71 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 @when = "using the Scrollbar";
             }
         }
-        DartRuntimePrimitives.Assert(() => scrollController is not null, () => (object?)$"A ScrollController is required when {@when}. " + $"{(tryPrimary ? "The Scrollbar was not provided a ScrollController, " + "and attempted to use the PrimaryScrollController, but none was found." : "")}");
+        DartRuntimePrimitives.Assert(
+            () => scrollController is not null,
+            () =>
+                (object?)$"A ScrollController is required when {@when}. "
+                + $"{(tryPrimary ? "The Scrollbar was not provided a ScrollController, " + "and attempted to use the PrimaryScrollController, but none was found." : "")}"
+        );
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (!scrollController!.hasClients)
             {
-                if (!scrollController!.hasClients)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("The Scrollbar's ScrollController has no ScrollPosition attached."), new ErrorDescription("A Scrollbar cannot be painted without a ScrollPosition. "), new ErrorHint($"The Scrollbar attempted to use the {controllerForError}. This " + "ScrollController should be associated with the ScrollView that " + "the Scrollbar is being applied to.") }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "The Scrollbar's ScrollController has no ScrollPosition attached."
+                            ),
+                            new ErrorDescription(
+                                "A Scrollbar cannot be painted without a ScrollPosition. "
+                            ),
+                            new ErrorHint(
+                                $"The Scrollbar attempted to use the {controllerForError}. This "
+                                    + "ScrollController should be associated with the ScrollView that "
+                                    + "the Scrollbar is being applied to."
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         DartRuntimePrimitives.Assert(() =>
+        {
+            try
             {
-                try
+                DartRuntimePrimitives.Ignore(scrollController!.position);
+            }
+            catch (Exception)
+            {
+                if ((scrollController is null) || (scrollController.positions.Count() <= 1L))
                 {
-                    DartRuntimePrimitives.Ignore(scrollController!.position);
+                    throw;
                 }
-                catch (Exception)
-                {
-                    if ((scrollController is null) || (scrollController.positions.Count() <= 1L))
-                    {
-                        throw;
-                    }
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {controllerForError} is attached to more than one ScrollPosition."), new ErrorDescription("The Scrollbar requires a single ScrollPosition in order to be painted."), new ErrorHint($"When {@when}, the associated ScrollController must only have one " + "ScrollPosition attached.") }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"The {controllerForError} is attached to more than one ScrollPosition."
+                            ),
+                            new ErrorDescription(
+                                "The Scrollbar requires a single ScrollPosition in order to be painted."
+                            ),
+                            new ErrorHint(
+                                $"When {@when}, the associated ScrollController must only have one "
+                                    + "ScrollPosition attached."
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -886,26 +1211,40 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     public virtual void updateScrollbarPainter()
     {
         TextDirection textDirectionLocal = Directionality.of(context);
-        DartRuntimePrimitives.Ignore(((Func<ScrollbarPainter>)(() =>
-{
-    var __cascade = scrollbarPainter;
-    __cascade.color = widget.thumbColor ?? new Color(1723645116L);
-    __cascade.trackRadius = widget.trackRadius;
-    __cascade.trackColor = _showTrack ? (widget.trackColor ?? new Color(134217728L)) : new Color(0L);
-    __cascade.trackBorderColor = _showTrack ? (widget.trackBorderColor ?? new Color(436207616L)) : new Color(0L);
-    __cascade.textDirection = textDirectionLocal;
-    __cascade.thickness = widget.thickness ?? ScrollbarLibrary._kScrollbarThickness;
-    __cascade.radius = widget.radius;
-    __cascade.padding = (widget.padding ?? MediaQuery.paddingOf(context)).resolve(textDirectionLocal);
-    __cascade.scrollbarOrientation = widget.scrollbarOrientation;
-    __cascade.mainAxisMargin = widget.mainAxisMargin;
-    __cascade.shape = widget.shape;
-    __cascade.crossAxisMargin = widget.crossAxisMargin;
-    __cascade.minLength = widget.minThumbLength;
-    __cascade.minOverscrollLength = widget.minOverscrollLength ?? widget.minThumbLength;
-    __cascade.ignorePointer = !enableGestures;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ScrollbarPainter>)(
+                    () =>
+                    {
+                        var __cascade = scrollbarPainter;
+                        __cascade.color = widget.thumbColor ?? new Color(1723645116L);
+                        __cascade.trackRadius = widget.trackRadius;
+                        __cascade.trackColor = _showTrack
+                            ? (widget.trackColor ?? new Color(134217728L))
+                            : new Color(0L);
+                        __cascade.trackBorderColor = _showTrack
+                            ? (widget.trackBorderColor ?? new Color(436207616L))
+                            : new Color(0L);
+                        __cascade.textDirection = textDirectionLocal;
+                        __cascade.thickness =
+                            widget.thickness ?? ScrollbarLibrary._kScrollbarThickness;
+                        __cascade.radius = widget.radius;
+                        __cascade.padding = (
+                            widget.padding ?? MediaQuery.paddingOf(context)
+                        ).resolve(textDirectionLocal);
+                        __cascade.scrollbarOrientation = widget.scrollbarOrientation;
+                        __cascade.mainAxisMargin = widget.mainAxisMargin;
+                        __cascade.shape = widget.shape;
+                        __cascade.crossAxisMargin = widget.crossAxisMargin;
+                        __cascade.minLength = widget.minThumbLength;
+                        __cascade.minOverscrollLength =
+                            widget.minOverscrollLength ?? widget.minThumbLength;
+                        __cascade.ignorePointer = !enableGestures;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void didUpdateWidget(T oldWidget)
@@ -931,25 +1270,29 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         if (!showScrollbar)
         {
             _fadeoutTimer?.cancel();
-            _fadeoutTimer = new Timer(widget.timeToFade, () =>
-            {
-                if (!_isDisposed)
+            _fadeoutTimer = new Timer(
+                widget.timeToFade,
+                () =>
                 {
-                    try
+                    if (!_isDisposed)
                     {
-                        _fadeoutAnimationController.reverse();
+                        try
+                        {
+                            _fadeoutAnimationController.reverse();
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // The host dispatcher can finish before a delayed scrollbar fade.
+                        }
                     }
-                    catch (ObjectDisposedException)
-                    {
-                        // The host dispatcher can finish before a delayed scrollbar fade.
-                    }
+                    _fadeoutTimer = null;
                 }
-                _fadeoutTimer = null;
-            });
+            );
         }
     }
 
     public virtual Axis? getScrollbarDirection() => _axis;
+
     internal virtual void _disposeThumbDrag()
     {
         _thumbDrag = null;
@@ -972,38 +1315,60 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         switch (positionLocal.axisDirection)
         {
             case AxisDirection.up:
-                {
-                    primaryDeltaFromDragStart = DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy - localPosition.dy;
-                    primaryDeltaFromLastDragUpdate = DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy - localPosition.dy;
-                    break;
-                }
+            {
+                primaryDeltaFromDragStart =
+                    DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy
+                    - localPosition.dy;
+                primaryDeltaFromLastDragUpdate =
+                    DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy - localPosition.dy;
+                break;
+            }
             case AxisDirection.right:
-                {
-                    primaryDeltaFromDragStart = localPosition.dx - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx;
-                    primaryDeltaFromLastDragUpdate = localPosition.dx - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx;
-                    break;
-                }
+            {
+                primaryDeltaFromDragStart =
+                    localPosition.dx
+                    - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx;
+                primaryDeltaFromLastDragUpdate =
+                    localPosition.dx - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx;
+                break;
+            }
             case AxisDirection.down:
-                {
-                    primaryDeltaFromDragStart = localPosition.dy - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy;
-                    primaryDeltaFromLastDragUpdate = localPosition.dy - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy;
-                    break;
-                }
+            {
+                primaryDeltaFromDragStart =
+                    localPosition.dy
+                    - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy;
+                primaryDeltaFromLastDragUpdate =
+                    localPosition.dy - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy;
+                break;
+            }
             case AxisDirection.left:
-                {
-                    primaryDeltaFromDragStart = DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx - localPosition.dx;
-                    primaryDeltaFromLastDragUpdate = DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx - localPosition.dx;
-                    break;
-                }
+            {
+                primaryDeltaFromDragStart =
+                    DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx
+                    - localPosition.dx;
+                primaryDeltaFromLastDragUpdate =
+                    DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx - localPosition.dx;
+                break;
+            }
         }
-        double scrollOffsetGlobal = scrollbarPainter.getTrackToScroll(DartRuntimePrimitives.RequireValue(_startDragThumbOffset) + primaryDeltaFromDragStart);
-        if (((primaryDeltaFromDragStart > 0L) && (scrollOffsetGlobal < positionLocal.pixels)) || ((primaryDeltaFromDragStart < 0L) && (scrollOffsetGlobal > positionLocal.pixels)))
+        double scrollOffsetGlobal = scrollbarPainter.getTrackToScroll(
+            DartRuntimePrimitives.RequireValue(_startDragThumbOffset) + primaryDeltaFromDragStart
+        );
+        if (
+            ((primaryDeltaFromDragStart > 0L) && (scrollOffsetGlobal < positionLocal.pixels))
+            || ((primaryDeltaFromDragStart < 0L) && (scrollOffsetGlobal > positionLocal.pixels))
+        )
         {
-            scrollOffsetGlobal = positionLocal.pixels + scrollbarPainter.getTrackToScroll(primaryDeltaFromLastDragUpdate);
+            scrollOffsetGlobal =
+                positionLocal.pixels
+                + scrollbarPainter.getTrackToScroll(primaryDeltaFromLastDragUpdate);
         }
         if (scrollOffsetGlobal != positionLocal.pixels)
         {
-            double physicsAdjustment = positionLocal.physics.applyBoundaryConditions(positionLocal, scrollOffsetGlobal);
+            double physicsAdjustment = positionLocal.physics.applyBoundaryConditions(
+                positionLocal,
+                scrollOffsetGlobal
+            );
             double newPosition = scrollOffsetGlobal - physicsAdjustment;
             switch (ScrollConfiguration.of(context).getPlatform(context))
             {
@@ -1011,16 +1376,24 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 case TargetPlatform.linux:
                 case TargetPlatform.macOS:
                 case TargetPlatform.windows:
-                    {
-                        newPosition = Dart_uiLibrary.clampDouble(newPosition, positionLocal.minScrollExtent, positionLocal.maxScrollExtent);
-                        break;
-                    }
+                {
+                    newPosition = Dart_uiLibrary.clampDouble(
+                        newPosition,
+                        positionLocal.minScrollExtent,
+                        positionLocal.maxScrollExtent
+                    );
+                    break;
+                }
                 case TargetPlatform.iOS:
                 case TargetPlatform.android:
                     break;
             }
-            bool isReversed = Basic_typesLibrary.axisDirectionIsReversed(positionLocal.axisDirection);
-            return isReversed ? (newPosition - positionLocal.pixels) : (positionLocal.pixels - newPosition);
+            bool isReversed = Basic_typesLibrary.axisDirectionIsReversed(
+                positionLocal.axisDirection
+            );
+            return isReversed
+                ? (newPosition - positionLocal.pixels)
+                : (positionLocal.pixels - newPosition);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1051,7 +1424,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         DartRuntimePrimitives.Assert(() => _thumbDrag is null);
         ScrollPosition positionLocal = _cachedController!.position;
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var details = new DragStartDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition));
+        var details = new DragStartDetails(
+            localPosition: localPosition,
+            globalPosition: renderBox.localToGlobal(localPosition)
+        );
         _thumbDrag = positionLocal.drag(details, () => _disposeThumbDrag());
         DartRuntimePrimitives.Assert(() => _thumbDrag is not null);
         DartRuntimePrimitives.Assert(() => _thumbHold is null);
@@ -1087,9 +1463,19 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        Offset deltaLocal = DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => new Offset(DartRuntimePrimitives.RequireValue(primaryDeltaLocal), 0), Axis.vertical => new Offset(0, DartRuntimePrimitives.RequireValue(primaryDeltaLocal)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Offset deltaLocal = DartRuntimePrimitives.RequireValue(direction) switch
+        {
+            Axis.horizontal => new Offset(DartRuntimePrimitives.RequireValue(primaryDeltaLocal), 0),
+            Axis.vertical => new Offset(0, DartRuntimePrimitives.RequireValue(primaryDeltaLocal)),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var scrollDetails = new DragUpdateDetails(delta: deltaLocal, primaryDelta: DartRuntimePrimitives.RequireValue(primaryDeltaLocal), globalPosition: renderBox.localToGlobal(localPosition), localPosition: localPosition);
+        var scrollDetails = new DragUpdateDetails(
+            delta: deltaLocal,
+            primaryDelta: DartRuntimePrimitives.RequireValue(primaryDeltaLocal),
+            globalPosition: renderBox.localToGlobal(localPosition),
+            localPosition: localPosition
+        );
         _thumbDrag!.update(scrollDetails);
         _lastDragUpdateOffset = localPosition;
     }
@@ -1111,9 +1497,24 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             return;
         }
         TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
-        Velocity adjustedVelocity = platform switch { TargetPlatform.iOS => -velocity, TargetPlatform.android => -velocity, _ => Velocity.zero };
+        Velocity adjustedVelocity = platform switch
+        {
+            TargetPlatform.iOS => -velocity,
+            TargetPlatform.android => -velocity,
+            _ => Velocity.zero,
+        };
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var details = new DragEndDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition), velocity: adjustedVelocity, primaryVelocity: DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx, Axis.vertical => adjustedVelocity.pixelsPerSecond.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var details = new DragEndDetails(
+            localPosition: localPosition,
+            globalPosition: renderBox.localToGlobal(localPosition),
+            velocity: adjustedVelocity,
+            primaryVelocity: DartRuntimePrimitives.RequireValue(direction) switch
+            {
+                Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx,
+                Axis.vertical => adjustedVelocity.pixelsPerSecond.dy,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         _thumbDrag?.end(details);
         DartRuntimePrimitives.Assert(() => _thumbDrag is null);
         _startDragScrollbarAxisOffset = null;
@@ -1135,35 +1536,44 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         switch (Basic_typesLibrary.axisDirectionToAxis(positionLocal.axisDirection))
         {
             case Axis.vertical:
+            {
+                if (details.localPosition.dy > scrollbarPainter._thumbOffset)
                 {
-                    if (details.localPosition.dy > scrollbarPainter._thumbOffset)
-                    {
-                        scrollDirection = AxisDirection.down;
-                    }
-                    else
-                    {
-                        scrollDirection = AxisDirection.up;
-                    }
-                    break;
+                    scrollDirection = AxisDirection.down;
                 }
+                else
+                {
+                    scrollDirection = AxisDirection.up;
+                }
+                break;
+            }
             case Axis.horizontal:
+            {
+                if (details.localPosition.dx > scrollbarPainter._thumbOffset)
                 {
-                    if (details.localPosition.dx > scrollbarPainter._thumbOffset)
-                    {
-                        scrollDirection = AxisDirection.right;
-                    }
-                    else
-                    {
-                        scrollDirection = AxisDirection.left;
-                    }
-                    break;
+                    scrollDirection = AxisDirection.right;
                 }
+                else
+                {
+                    scrollDirection = AxisDirection.left;
+                }
+                break;
+            }
         }
         ScrollableState? state = Scrollable.maybeOf(positionLocal.context.notificationContext!);
         var intent = new ScrollIntent(direction: scrollDirection, type: ScrollIncrementType.page);
         DartRuntimePrimitives.Assert(() => state is not null);
-        double scrollIncrement = ScrollAction.getDirectionalIncrement(DartRuntimePrimitives.RequireValue(state), intent);
-        DartRuntimePrimitives.Ignore(_cachedController!.position.moveTo(_cachedController!.position.pixels + scrollIncrement, duration: Duration.Create(milliseconds: 100L), curve: Curves.easeInOut));
+        double scrollIncrement = ScrollAction.getDirectionalIncrement(
+            DartRuntimePrimitives.RequireValue(state),
+            intent
+        );
+        DartRuntimePrimitives.Ignore(
+            _cachedController!.position.moveTo(
+                _cachedController!.position.pixels + scrollIncrement,
+                duration: Duration.Create(milliseconds: 100L),
+                curve: Curves.easeInOut
+            )
+        );
     }
 
     internal virtual bool _shouldUpdatePainter(Axis notificationAxis)
@@ -1177,7 +1587,8 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return false;
         }
-        return !scrollController.hasClients || Equals(scrollController.position.axis, notificationAxis);
+        return !scrollController.hasClients
+            || Equals(scrollController.position.axis, notificationAxis);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1313,7 +1724,16 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
 
     internal virtual bool _canHandleScrollGestures()
     {
-        return enableGestures && (_effectiveScrollController is not null) && (_effectiveScrollController!.positions.Count() == 1L) && _effectiveScrollController!.position.hasContentDimensions && ((_effectiveScrollController!.position.maxScrollExtent - _effectiveScrollController!.position.minScrollExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance);
+        return enableGestures
+            && (_effectiveScrollController is not null)
+            && (_effectiveScrollController!.positions.Count() == 1L)
+            && _effectiveScrollController!.position.hasContentDimensions
+            && (
+                (
+                    _effectiveScrollController!.position.maxScrollExtent
+                    - _effectiveScrollController!.position.minScrollExtent
+                ) > Foundation.ConstantsLibrary.precisionErrorTolerance
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1329,23 +1749,58 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             switch (_effectiveScrollController!.position.axis)
             {
                 case Axis.horizontal:
-                    {
-                        gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(() => new _HorizontalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
-                        break;
-                    }
+                {
+                    gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] =
+                        new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(
+                            () =>
+                                new _HorizontalThumbDragGestureRecognizer__scrollbar(
+                                    debugOwner: this,
+                                    customPaintKey: _scrollbarPainterKey
+                                ),
+                            (__arg0) =>
+                                ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(
+                                    DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(
+                                        __arg0
+                                    )
+                                )
+                        );
+                    break;
+                }
                 case Axis.vertical:
-                    {
-                        gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(() => new _VerticalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
-                        break;
-                    }
+                {
+                    gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] =
+                        new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(
+                            () =>
+                                new _VerticalThumbDragGestureRecognizer__scrollbar(
+                                    debugOwner: this,
+                                    customPaintKey: _scrollbarPainterKey
+                                ),
+                            (__arg0) =>
+                                ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(
+                                    DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(
+                                        __arg0
+                                    )
+                                )
+                        );
+                    break;
+                }
             }
-            gestures[typeof(_TrackTapGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_TrackTapGestureRecognizer__scrollbar>(() => new _TrackTapGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (instance) =>
-            {
-                instance.onTapDown = handleTrackTapDown;
-            });
+            gestures[typeof(_TrackTapGestureRecognizer__scrollbar)] =
+                new GestureRecognizerFactoryWithHandlers<_TrackTapGestureRecognizer__scrollbar>(
+                    () =>
+                        new _TrackTapGestureRecognizer__scrollbar(
+                            debugOwner: this,
+                            customPaintKey: _scrollbarPainterKey
+                        ),
+                    (instance) =>
+                    {
+                        instance.onTapDown = handleTrackTapDown;
+                    }
+                );
             return gestures;
         }
     }
+
     public virtual bool isPointerOverTrack(Offset position, PointerDeviceKind kind)
     {
         if (_scrollbarPainterKey.currentContext is null)
@@ -1353,7 +1808,8 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             return false;
         }
         Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
-        return scrollbarPainter.hitTestInteractive(localOffset, kind) && !scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
+        return scrollbarPainter.hitTestInteractive(localOffset, kind)
+            && !scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1368,7 +1824,11 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool isPointerOverScrollbar(Offset position, PointerDeviceKind kind, bool forHover = false)
+    public virtual bool isPointerOverScrollbar(
+        Offset position,
+        PointerDeviceKind kind,
+        bool forHover = false
+    )
     {
         if (_scrollbarPainterKey.currentContext is null)
         {
@@ -1406,7 +1866,9 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     internal virtual double _pointerSignalEventDelta(PointerScrollEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _cachedController is not null);
-        double delta = Equals(_cachedController!.position.axis, Axis.horizontal) ? @event.scrollDelta.dx : @event.scrollDelta.dy;
+        double delta = Equals(_cachedController!.position.axis, Axis.horizontal)
+            ? @event.scrollDelta.dx
+            : @event.scrollDelta.dy;
         if (Basic_typesLibrary.axisDirectionIsReversed(_cachedController!.position.axisDirection))
         {
             delta *= -1L;
@@ -1418,7 +1880,13 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     internal virtual double _targetScrollOffsetForPointerScroll(double delta)
     {
         DartRuntimePrimitives.Assert(() => _cachedController is not null);
-        return Math.Min(Math.Max(_cachedController!.position.pixels + delta, _cachedController!.position.minScrollExtent), _cachedController!.position.maxScrollExtent);
+        return Math.Min(
+            Math.Max(
+                _cachedController!.position.pixels + delta,
+                _cachedController!.position.minScrollExtent
+            ),
+            _cachedController!.position.maxScrollExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1437,7 +1905,12 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     internal virtual void _receivedPointerSignal(PointerSignalEvent @event)
     {
         _cachedController = _effectiveScrollController;
-        if ((scrollbarPainter.hitTest(@event.localPosition) ?? false) && (_cachedController is not null) && _cachedController!.hasClients && ((_thumbDrag is null) || Foundation.ConstantsLibrary.kIsWeb))
+        if (
+            (scrollbarPainter.hitTest(@event.localPosition) ?? false)
+            && (_cachedController is not null)
+            && _cachedController!.hasClients
+            && ((_thumbDrag is null) || Foundation.ConstantsLibrary.kIsWeb)
+        )
         {
             ScrollPosition positionLocal = _cachedController!.position;
             if (@event is PointerScrollEvent)
@@ -1451,14 +1924,21 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
                 if ((delta != 0.0) && (targetScrollOffset != positionLocal.pixels))
                 {
-                    GestureBinding.instance.pointerSignalResolver.register(@event__as82127, (__arg0) => ((Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
+                    GestureBinding.instance.pointerSignalResolver.register(
+                        @event__as82127,
+                        (__arg0) =>
+                            ((Action<PointerEvent>)_handlePointerScroll)(
+                                DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)
+                            )
+                    );
                 }
             }
             else
             {
                 if (@event is PointerScrollInertiaCancelEvent)
                 {
-                    PointerScrollInertiaCancelEvent @event__as82591 = (PointerScrollInertiaCancelEvent)@event;
+                    PointerScrollInertiaCancelEvent @event__as82591 =
+                        (PointerScrollInertiaCancelEvent)@event;
                     positionLocal.jumpTo(positionLocal.pixels);
                 }
             }
@@ -1474,20 +1954,38 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         scrollbarPainter.dispose();
         _fadeoutOpacityAnimation.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -1496,49 +1994,74 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     public override Widget build(BuildContext context)
     {
         updateScrollbarPainter();
-        return new NotificationListener<ScrollMetricsNotification>(onNotification: _handleScrollMetricsNotification, child: new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new RepaintBoundary(child: new Listener(onPointerSignal: _receivedPointerSignal, child: new RawGestureDetector(key: _gestureDetectorKey, gestures: _gestures, child: new MouseRegion(onExit: (@event) =>
-        {
-            switch (@event.kind)
-            {
-                case PointerDeviceKind.mouse:
-                case PointerDeviceKind.trackpad:
-                    {
-                        if (enableGestures)
-                        {
-                            handleHoverExit(@event);
-                        }
-                        break;
-                    }
-                case PointerDeviceKind.stylus:
-                case PointerDeviceKind.invertedStylus:
-                case PointerDeviceKind.unknown:
-                case PointerDeviceKind.touch:
-                    {
-                        break;
-                    }
-            }
-        }, onHover: (@event) =>
-        {
-            switch (@event.kind)
-            {
-                case PointerDeviceKind.mouse:
-                case PointerDeviceKind.trackpad:
-                    {
-                        if (enableGestures)
-                        {
-                            handleHover(@event);
-                        }
-                        break;
-                    }
-                case PointerDeviceKind.stylus:
-                case PointerDeviceKind.invertedStylus:
-                case PointerDeviceKind.unknown:
-                case PointerDeviceKind.touch:
-                    {
-                        break;
-                    }
-            }
-        }, child: new CustomPaint(key: _scrollbarPainterKey, foregroundPainter: new _ScrollbarCustomPainterAdapter(scrollbarPainter), child: new RepaintBoundary(child: widget.child))))))));
+        return new NotificationListener<ScrollMetricsNotification>(
+            onNotification: _handleScrollMetricsNotification,
+            child: new NotificationListener<ScrollNotification>(
+                onNotification: _handleScrollNotification,
+                child: new RepaintBoundary(
+                    child: new Listener(
+                        onPointerSignal: _receivedPointerSignal,
+                        child: new RawGestureDetector(
+                            key: _gestureDetectorKey,
+                            gestures: _gestures,
+                            child: new MouseRegion(
+                                onExit: (@event) =>
+                                {
+                                    switch (@event.kind)
+                                    {
+                                        case PointerDeviceKind.mouse:
+                                        case PointerDeviceKind.trackpad:
+                                        {
+                                            if (enableGestures)
+                                            {
+                                                handleHoverExit(@event);
+                                            }
+                                            break;
+                                        }
+                                        case PointerDeviceKind.stylus:
+                                        case PointerDeviceKind.invertedStylus:
+                                        case PointerDeviceKind.unknown:
+                                        case PointerDeviceKind.touch:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                },
+                                onHover: (@event) =>
+                                {
+                                    switch (@event.kind)
+                                    {
+                                        case PointerDeviceKind.mouse:
+                                        case PointerDeviceKind.trackpad:
+                                        {
+                                            if (enableGestures)
+                                            {
+                                                handleHover(@event);
+                                            }
+                                            break;
+                                        }
+                                        case PointerDeviceKind.stylus:
+                                        case PointerDeviceKind.invertedStylus:
+                                        case PointerDeviceKind.unknown:
+                                        case PointerDeviceKind.touch:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                },
+                                child: new CustomPaint(
+                                    key: _scrollbarPainterKey,
+                                    foregroundPainter: new _ScrollbarCustomPainterAdapter(
+                                        scrollbarPainter
+                                    ),
+                                    child: new RepaintBoundary(child: widget.child)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1551,13 +2074,23 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1606,9 +2139,17 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public static partial class ScrollbarLibrary
@@ -1649,7 +2190,8 @@ public static partial class ScrollbarLibrary
         var painter = _ScrollbarCustomPainterAdapter.Unwrap(customPaint.foregroundPainter!);
         Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
         PointerDeviceKind kindLocal = @event.kind;
-        return painter.hitTestInteractive(localOffset, kindLocal) && !painter.hitTestOnlyThumbInteractive(localOffset, kindLocal);
+        return painter.hitTestInteractive(localOffset, kindLocal)
+            && !painter.hitTestOnlyThumbInteractive(localOffset, kindLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1658,24 +2200,32 @@ internal class _TrackTapGestureRecognizer__scrollbar : TapGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
-    internal _TrackTapGestureRecognizer__scrollbar(object? debugOwner, GlobalKey<IState> customPaintKey) : base(debugOwner: debugOwner)
+    internal _TrackTapGestureRecognizer__scrollbar(
+        object? debugOwner,
+        GlobalKey<IState> customPaintKey
+    )
+        : base(debugOwner: debugOwner)
     {
         _customPaintKey = customPaintKey;
     }
 
     public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
-        return ScrollbarLibrary._isTrackEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
+        return ScrollbarLibrary._isTrackEvent(_customPaintKey, @event)
+            && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _VerticalThumbDragGestureRecognizer__scrollbar : VerticalDragGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
-    internal _VerticalThumbDragGestureRecognizer__scrollbar(object debugOwner, GlobalKey<IState> customPaintKey) : base(debugOwner: debugOwner)
+    internal _VerticalThumbDragGestureRecognizer__scrollbar(
+        object debugOwner,
+        GlobalKey<IState> customPaintKey
+    )
+        : base(debugOwner: debugOwner)
     {
         _customPaintKey = customPaintKey;
     }
@@ -1688,17 +2238,21 @@ internal class _VerticalThumbDragGestureRecognizer__scrollbar : VerticalDragGest
 
     public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
-        return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
+        return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event)
+            && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _HorizontalThumbDragGestureRecognizer__scrollbar : HorizontalDragGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
-    internal _HorizontalThumbDragGestureRecognizer__scrollbar(object debugOwner, GlobalKey<IState> customPaintKey) : base(debugOwner: debugOwner)
+    internal _HorizontalThumbDragGestureRecognizer__scrollbar(
+        object debugOwner,
+        GlobalKey<IState> customPaintKey
+    )
+        : base(debugOwner: debugOwner)
     {
         _customPaintKey = customPaintKey;
     }
@@ -1711,19 +2265,29 @@ internal class _HorizontalThumbDragGestureRecognizer__scrollbar : HorizontalDrag
 
     public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
-        return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
+        return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event)
+            && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-
 
 internal sealed class _ScrollbarCustomPainterAdapter : CustomPainter
 {
     private readonly ScrollbarPainter _owner;
-    internal _ScrollbarCustomPainterAdapter(ScrollbarPainter owner) : base(owner) => _owner = owner;
-    internal static ScrollbarPainter Unwrap(CustomPainter painter) => painter is _ScrollbarCustomPainterAdapter adapter ? adapter._owner : (ScrollbarPainter)(object)painter;
+
+    internal _ScrollbarCustomPainterAdapter(ScrollbarPainter owner)
+        : base(owner) => _owner = owner;
+
+    internal static ScrollbarPainter Unwrap(CustomPainter painter) =>
+        painter is _ScrollbarCustomPainterAdapter adapter
+            ? adapter._owner
+            : (ScrollbarPainter)(object)painter;
+
     public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);
-    public override bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate is not _ScrollbarCustomPainterAdapter other || _owner.shouldRepaint(other._owner);
+
+    public override bool shouldRepaint(CustomPainter oldDelegate) =>
+        oldDelegate is not _ScrollbarCustomPainterAdapter other
+        || _owner.shouldRepaint(other._owner);
+
     public override bool? hitTest(Offset position) => _owner.hitTest(position);
 }

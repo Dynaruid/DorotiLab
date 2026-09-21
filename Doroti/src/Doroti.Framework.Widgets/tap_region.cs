@@ -42,14 +42,22 @@ public interface TapRegionRegistry
     {
         TapRegionRegistry? registry = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (registry is null)
             {
-                if (registry is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("TapRegionRegistry.of() was called with a context that does not contain a TapRegionSurface widget.\n" + "No TapRegionSurface widget ancestor could be found starting from the context that was passed to " + "TapRegionRegistry.of().\n" + "The context used was:\n" + $"  {context}"));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "TapRegionRegistry.of() was called with a context that does not contain a TapRegionSurface widget.\n"
+                            + "No TapRegionSurface widget ancestor could be found starting from the context that was passed to "
+                            + "TapRegionRegistry.of().\n"
+                            + "The context used was:\n"
+                            + $"  {context}"
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return registry!;
     }
     public static TapRegionRegistry? maybeOf(BuildContext context)
@@ -60,9 +68,8 @@ public interface TapRegionRegistry
 
 public class TapRegionSurface : SingleChildRenderObjectWidget
 {
-    public TapRegionSurface(Key? key = null, Widget child = default!) : base(key: key, child: child)
-    {
-    }
+    public TapRegionSurface(Key? key = null, Widget child = default!)
+        : base(key: key, child: child) { }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
@@ -74,32 +81,44 @@ public class TapRegionSurface : SingleChildRenderObjectWidget
     {
         var __renderObject = (RenderProxyBoxWithHitTestBehavior)renderObject;
     }
-
 }
 
 internal delegate void _ClassifiedTapRegions__tap_region();
 
 public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegionRegistry
 {
-    internal virtual Expando<BoxHitTestResult> _cachedResults { get; private set; } = new Expando<BoxHitTestResult>();
-    internal virtual HashSet<RenderTapRegion> _registeredRegions { get; private set; } = new HashSet<RenderTapRegion>();
-    internal virtual DartMap<object, HashSet<RenderTapRegion>> _groupIdToRegions { get; private set; } = new DartMap<object, HashSet<RenderTapRegion>>();
+    internal virtual Expando<BoxHitTestResult> _cachedResults { get; private set; } =
+        new Expando<BoxHitTestResult>();
+    internal virtual HashSet<RenderTapRegion> _registeredRegions { get; private set; } =
+        new HashSet<RenderTapRegion>();
+    internal virtual DartMap<object, HashSet<RenderTapRegion>> _groupIdToRegions
+    {
+        get;
+        private set;
+    } = new DartMap<object, HashSet<RenderTapRegion>>();
 
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener(_handleSemanticsAction);
+        Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener(
+            _handleSemanticsAction
+        );
     }
 
     public override void detach()
     {
-        Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(_handleSemanticsAction);
+        Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(
+            _handleSemanticsAction
+        );
         base.detach();
     }
 
     internal virtual void _handleSemanticsAction(SemanticsActionEvent @event)
     {
-        if ((!Equals(@event.type, SemanticsAction.tap)) && (!Equals(@event.type, SemanticsAction.longPress)))
+        if (
+            (!Equals(@event.type, SemanticsAction.tap))
+            && (!Equals(@event.type, SemanticsAction.longPress))
+        )
         {
             return;
         }
@@ -107,7 +126,11 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         {
             return;
         }
-        Rect? globalRect = Framework.Semantics.SemanticsBinding.instance.getRectOfSemanticsNodeInViewCoordinates(checked((long)@event.viewId), @event.nodeId);
+        Rect? globalRect =
+            Framework.Semantics.SemanticsBinding.instance.getRectOfSemanticsNodeInViewCoordinates(
+                checked((long)@event.viewId),
+                @event.nodeId
+            );
         if (globalRect is null)
         {
             return;
@@ -120,41 +143,66 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             return;
         }
         var (inside, outside) = _classifyRegions(hitResult);
-        var syntheticEvent = new Gestures.PointerDownEvent(viewId: checked((long)@event.viewId), position: globalCenter);
+        var syntheticEvent = new Gestures.PointerDownEvent(
+            viewId: checked((long)@event.viewId),
+            position: globalCenter
+        );
         foreach (var region in outside)
         {
-            DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapOutside for {region} (from semantics action)"));
+            DartRuntimePrimitives.Assert(() =>
+                Tap_regionLibrary._tapRegionDebug(
+                    $"Calling onTapOutside for {region} (from semantics action)"
+                )
+            );
             region.onTapOutside?.Invoke(syntheticEvent);
         }
         foreach (var regionLocal in inside)
         {
-            DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapInside for {regionLocal} (from semantics action)"));
+            DartRuntimePrimitives.Assert(() =>
+                Tap_regionLibrary._tapRegionDebug(
+                    $"Calling onTapInside for {regionLocal} (from semantics action)"
+                )
+            );
             regionLocal.onTapInside?.Invoke(syntheticEvent);
         }
     }
 
     public virtual void registerTapRegion(RenderTapRegion region)
     {
-        DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Region {region} registered."));
+        DartRuntimePrimitives.Assert(() =>
+            Tap_regionLibrary._tapRegionDebug($"Region {region} registered.")
+        );
         DartRuntimePrimitives.Assert(() => !_registeredRegions.Contains(region));
         _registeredRegions.Add(region);
         if (region.groupId is not null)
         {
             _groupIdToRegions.putIfAbsent(region.groupId, () => new HashSet<RenderTapRegion>());
-            _groupIdToRegions.GetValueOrDefault(DartRuntimePrimitives.RequireReference(region.groupId))!.Add(region);
+            _groupIdToRegions
+                .GetValueOrDefault(DartRuntimePrimitives.RequireReference(region.groupId))!
+                .Add(region);
         }
     }
 
     public virtual void unregisterTapRegion(RenderTapRegion region)
     {
-        DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Region {region} unregistered."));
+        DartRuntimePrimitives.Assert(() =>
+            Tap_regionLibrary._tapRegionDebug($"Region {region} unregistered.")
+        );
         DartRuntimePrimitives.Assert(() => _registeredRegions.Contains(region));
         _registeredRegions.Remove(region);
         if (region.groupId is not null)
         {
             DartRuntimePrimitives.Assert(() => _groupIdToRegions.ContainsKey(region.groupId));
-            _groupIdToRegions.GetValueOrDefault(DartRuntimePrimitives.RequireReference(region.groupId))!.Remove(region);
-            if (!Enumerable.Any(_groupIdToRegions.GetValueOrDefault(DartRuntimePrimitives.RequireReference(region.groupId))!))
+            _groupIdToRegions
+                .GetValueOrDefault(DartRuntimePrimitives.RequireReference(region.groupId))!
+                .Remove(region);
+            if (
+                !Enumerable.Any(
+                    _groupIdToRegions.GetValueOrDefault(
+                        DartRuntimePrimitives.RequireReference(region.groupId)
+                    )!
+                )
+            )
             {
                 _groupIdToRegions.remove(region.groupId);
             }
@@ -178,10 +226,19 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (IEnumerable<RenderTapRegion> inside, IEnumerable<RenderTapRegion> outside) _classifyRegions(BoxHitTestResult result)
+    internal virtual (
+        IEnumerable<RenderTapRegion> inside,
+        IEnumerable<RenderTapRegion> outside
+    ) _classifyRegions(BoxHitTestResult result)
     {
-        IEnumerable<RenderTapRegion> hitRegions = _getRegionsHit(_registeredRegions, result.path.Cast<HitTestEntry<HitTestTarget>>()).cast<RenderTapRegion>();
-        DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Tap event hit {hitRegions.Count()} descendants."));
+        IEnumerable<RenderTapRegion> hitRegions = _getRegionsHit(
+                _registeredRegions,
+                result.path.Cast<HitTestEntry<HitTestTarget>>()
+            )
+            .cast<RenderTapRegion>();
+        DartRuntimePrimitives.Assert(() =>
+            Tap_regionLibrary._tapRegionDebug($"Tap event hit {hitRegions.Count()} descendants.")
+        );
         var insideRegions = new HashSet<RenderTapRegion>();
         foreach (RenderTapRegion region in hitRegions)
         {
@@ -190,20 +247,26 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
                 insideRegions.Add(region);
                 continue;
             }
-            HashSet<RenderTapRegion>? groupedRegions = _groupIdToRegions.GetValueOrDefault(region.groupId);
+            HashSet<RenderTapRegion>? groupedRegions = _groupIdToRegions.GetValueOrDefault(
+                region.groupId
+            );
             if (groupedRegions is not null)
             {
                 insideRegions.UnionWith(groupedRegions);
             }
         }
-        return (inside: insideRegions, outside: _registeredRegions.where((r) => !insideRegions.Contains(r)).ToList());
+        return (
+            inside: insideRegions,
+            outside: _registeredRegions.where((r) => !insideRegions.Contains(r)).ToList()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
-        DartRuntimePrimitives.Assert(() =>
+        DartRuntimePrimitives.Assert(
+            () =>
             {
                 foreach (RenderTapRegion region in _registeredRegions)
                 {
@@ -214,20 +277,30 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }, () => (object?)"A RenderTapRegion was registered when it was disabled.");
+            },
+            () => (object?)"A RenderTapRegion was registered when it was disabled."
+        );
         if ((@event is not Gestures.PointerDownEvent) && (@event is not Gestures.PointerUpEvent))
         {
             return;
         }
         if (!Enumerable.Any(_registeredRegions))
         {
-            DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no regions are registered."));
+            DartRuntimePrimitives.Assert(() =>
+                Tap_regionLibrary._tapRegionDebug(
+                    "Ignored tap event because no regions are registered."
+                )
+            );
             return;
         }
         BoxHitTestResult? result = _cachedResults[entry.identity];
         if (result is null)
         {
-            DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no surface descendants were hit."));
+            DartRuntimePrimitives.Assert(() =>
+                Tap_regionLibrary._tapRegionDebug(
+                    "Ignored tap event because no surface descendants were hit."
+                )
+            );
             return;
         }
         var (inside, outside) = _classifyRegions(result);
@@ -237,7 +310,9 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             if (@event is Gestures.PointerDownEvent)
             {
                 Gestures.PointerDownEvent @event__as14985 = (Gestures.PointerDownEvent)@event;
-                DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapOutside for {regionLocal}"));
+                DartRuntimePrimitives.Assert(() =>
+                    Tap_regionLibrary._tapRegionDebug($"Calling onTapOutside for {regionLocal}")
+                );
                 regionLocal.onTapOutside?.Invoke(@event__as14985);
             }
             else
@@ -245,13 +320,21 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
                 if (@event is Gestures.PointerUpEvent)
                 {
                     Gestures.PointerUpEvent @event__as15142 = (Gestures.PointerUpEvent)@event;
-                    DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapUpOutside for {regionLocal}"));
+                    DartRuntimePrimitives.Assert(() =>
+                        Tap_regionLibrary._tapRegionDebug(
+                            $"Calling onTapUpOutside for {regionLocal}"
+                        )
+                    );
                     regionLocal.onTapUpOutside?.Invoke(@event__as15142);
                 }
             }
             if (regionLocal.consumeOutsideTaps)
             {
-                DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Stopping tap propagation for {regionLocal} (and all of {regionLocal.groupId})"));
+                DartRuntimePrimitives.Assert(() =>
+                    Tap_regionLibrary._tapRegionDebug(
+                        $"Stopping tap propagation for {regionLocal} (and all of {regionLocal.groupId})"
+                    )
+                );
                 consumeOutsideTapsLocal = true;
             }
         }
@@ -260,7 +343,9 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             if (@event is Gestures.PointerDownEvent)
             {
                 Gestures.PointerDownEvent @event__as15551 = (Gestures.PointerDownEvent)@event;
-                DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapInside for {regionAlternate}"));
+                DartRuntimePrimitives.Assert(() =>
+                    Tap_regionLibrary._tapRegionDebug($"Calling onTapInside for {regionAlternate}")
+                );
                 regionAlternate.onTapInside?.Invoke(@event__as15551);
             }
             else
@@ -268,7 +353,11 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
                 if (@event is Gestures.PointerUpEvent)
                 {
                     Gestures.PointerUpEvent @event__as15706 = (Gestures.PointerUpEvent)@event;
-                    DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapUpInside for {regionAlternate}"));
+                    DartRuntimePrimitives.Assert(() =>
+                        Tap_regionLibrary._tapRegionDebug(
+                            $"Calling onTapUpInside for {regionAlternate}"
+                        )
+                    );
                     regionAlternate.onTapUpInside?.Invoke(@event__as15706);
                 }
             }
@@ -276,11 +365,19 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         if (consumeOutsideTapsLocal && (@event is Gestures.PointerDownEvent))
         {
             Gestures.PointerDownEvent @event__as16104 = (Gestures.PointerDownEvent)@event;
-            GestureBinding.instance.gestureArena.add(@event__as16104.pointer, new _DummyTapRecognizer__tap_region()).resolve(GestureDisposition.accepted);
+            GestureBinding
+                .instance.gestureArena.add(
+                    @event__as16104.pointer,
+                    new _DummyTapRecognizer__tap_region()
+                )
+                .resolve(GestureDisposition.accepted);
         }
     }
 
-    internal virtual HashSet<HitTestTarget> _getRegionsHit(HashSet<RenderTapRegion> detectors, IEnumerable<HitTestEntry<HitTestTarget>> hitTestPath)
+    internal virtual HashSet<HitTestTarget> _getRegionsHit(
+        HashSet<RenderTapRegion> detectors,
+        IEnumerable<HitTestEntry<HitTestTarget>> hitTestPath
+    )
     {
         var regions = new HashSet<HitTestTarget>();
         foreach (HitTestEntry<HitTestTarget> entry in hitTestPath)
@@ -293,19 +390,13 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         return regions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DummyTapRecognizer__tap_region : GestureArenaMember
 {
-    public virtual void acceptGesture(long pointer)
-    {
-    }
+    public virtual void acceptGesture(long pointer) { }
 
-    public virtual void rejectGesture(long pointer)
-    {
-    }
-
+    public virtual void rejectGesture(long pointer) { }
 }
 
 public class TapRegion : SingleChildRenderObjectWidget
@@ -320,7 +411,20 @@ public class TapRegion : SingleChildRenderObjectWidget
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual string? debugLabel { get; private set; }
 
-    public TapRegion(Key? key = null, Widget? child = default!, bool enabled = true, HitTestBehavior behavior = HitTestBehavior.deferToChild, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, object? groupId = null, bool consumeOutsideTaps = false, string? debugLabel = null) : base(key: key, child: child)
+    public TapRegion(
+        Key? key = null,
+        Widget? child = default!,
+        bool enabled = true,
+        HitTestBehavior behavior = HitTestBehavior.deferToChild,
+        Action<Gestures.PointerDownEvent>? onTapOutside = null,
+        Action<Gestures.PointerDownEvent>? onTapInside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpOutside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpInside = null,
+        object? groupId = null,
+        bool consumeOutsideTaps = false,
+        string? debugLabel = null
+    )
+        : base(key: key, child: child)
     {
         this.enabled = enabled;
         this.behavior = behavior;
@@ -336,7 +440,18 @@ public class TapRegion : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         bool isCurrent = ModalRoute<object>.isCurrentOf(context) ?? true;
-        return new RenderTapRegion(registry: TapRegionRegistry.maybeOf(context), enabled: enabled, consumeOutsideTaps: isCurrent && consumeOutsideTaps, behavior: behavior, onTapOutside: isCurrent ? onTapOutside : null, onTapInside: onTapInside, onTapUpOutside: isCurrent ? onTapUpOutside : null, onTapUpInside: onTapUpInside, groupId: groupId, debugLabel: debugLabel);
+        return new RenderTapRegion(
+            registry: TapRegionRegistry.maybeOf(context),
+            enabled: enabled,
+            consumeOutsideTaps: isCurrent && consumeOutsideTaps,
+            behavior: behavior,
+            onTapOutside: isCurrent ? onTapOutside : null,
+            onTapInside: onTapInside,
+            onTapUpOutside: isCurrent ? onTapUpOutside : null,
+            onTapUpInside: onTapUpInside,
+            groupId: groupId,
+            debugLabel: debugLabel
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -344,20 +459,26 @@ public class TapRegion : SingleChildRenderObjectWidget
     {
         var __renderObject = (RenderTapRegion)renderObject;
         bool isCurrent = ModalRoute<object>.isCurrentOf(context) ?? true;
-        DartRuntimePrimitives.Ignore(((Func<RenderTapRegion>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.registry = TapRegionRegistry.maybeOf(context);
-    __cascade.enabled = enabled;
-    __cascade.consumeOutsideTaps = isCurrent && consumeOutsideTaps;
-    __cascade.behavior = behavior;
-    __cascade.groupId = groupId;
-    __cascade.onTapOutside = isCurrent ? onTapOutside : null;
-    __cascade.onTapInside = onTapInside;
-    __cascade.onTapUpOutside = isCurrent ? onTapUpOutside : null;
-    __cascade.onTapUpInside = onTapUpInside;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderTapRegion>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.registry = TapRegionRegistry.maybeOf(context);
+                        __cascade.enabled = enabled;
+                        __cascade.consumeOutsideTaps = isCurrent && consumeOutsideTaps;
+                        __cascade.behavior = behavior;
+                        __cascade.groupId = groupId;
+                        __cascade.onTapOutside = isCurrent ? onTapOutside : null;
+                        __cascade.onTapInside = onTapInside;
+                        __cascade.onTapUpOutside = isCurrent ? onTapUpOutside : null;
+                        __cascade.onTapUpInside = onTapUpInside;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             __renderObject.debugLabel = debugLabel;
@@ -367,12 +488,21 @@ public class TapRegion : SingleChildRenderObjectWidget
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
-        properties.add(new DiagnosticsProperty<HitTestBehavior>("behavior", behavior, defaultValue: HitTestBehavior.deferToChild));
-        properties.add(new DiagnosticsProperty<object?>("debugLabel", debugLabel, defaultValue: null));
+        properties.add(
+            new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true)
+        );
+        properties.add(
+            new DiagnosticsProperty<HitTestBehavior>(
+                "behavior",
+                behavior,
+                defaultValue: HitTestBehavior.deferToChild
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<object?>("debugLabel", debugLabel, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
     }
-
 }
 
 public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
@@ -388,7 +518,19 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
     internal virtual object? _groupId { get; set; } = default;
     internal virtual TapRegionRegistry? _registry { get; set; } = default;
 
-    public RenderTapRegion(TapRegionRegistry? registry = null, bool enabled = true, bool consumeOutsideTaps = false, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, object? groupId = null, string? debugLabel = null) : base(behavior: behavior)
+    public RenderTapRegion(
+        TapRegionRegistry? registry = null,
+        bool enabled = true,
+        bool consumeOutsideTaps = false,
+        Action<Gestures.PointerDownEvent>? onTapOutside = null,
+        Action<Gestures.PointerDownEvent>? onTapInside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpOutside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpInside = null,
+        HitTestBehavior behavior = HitTestBehavior.deferToChild,
+        object? groupId = null,
+        string? debugLabel = null
+    )
+        : base(behavior: behavior)
     {
         this.onTapOutside = onTapOutside;
         this.onTapInside = onTapInside;
@@ -463,6 +605,7 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
             }
         }
     }
+
     public override void layout(Constraints constraints, bool parentUsesSize = false)
     {
         base.layout(constraints, parentUsesSize: parentUsesSize);
@@ -494,17 +637,40 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<string?>("debugLabel", debugLabel, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<string?>("debugLabel", debugLabel, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
-        properties.add(new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
+        properties.add(
+            new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true)
+        );
     }
-
 }
 
 public class TextFieldTapRegion : TapRegion
 {
-    public TextFieldTapRegion(Key? key = null, Widget? child = default!, bool enabled = true, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, bool consumeOutsideTaps = false, string? debugLabel = null, object? groupId = default!) : base(key: key, child: child, enabled: enabled, onTapOutside: onTapOutside, onTapInside: onTapInside, onTapUpOutside: onTapUpOutside, onTapUpInside: onTapUpInside, consumeOutsideTaps: consumeOutsideTaps, debugLabel: debugLabel, groupId: groupId ?? typeof(EditableText))
-    {
-    }
-
+    public TextFieldTapRegion(
+        Key? key = null,
+        Widget? child = default!,
+        bool enabled = true,
+        Action<Gestures.PointerDownEvent>? onTapOutside = null,
+        Action<Gestures.PointerDownEvent>? onTapInside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpOutside = null,
+        Action<Gestures.PointerUpEvent>? onTapUpInside = null,
+        bool consumeOutsideTaps = false,
+        string? debugLabel = null,
+        object? groupId = default!
+    )
+        : base(
+            key: key,
+            child: child,
+            enabled: enabled,
+            onTapOutside: onTapOutside,
+            onTapInside: onTapInside,
+            onTapUpOutside: onTapUpOutside,
+            onTapUpInside: onTapUpInside,
+            consumeOutsideTaps: consumeOutsideTaps,
+            debugLabel: debugLabel,
+            groupId: groupId ?? typeof(EditableText)
+        ) { }
 }

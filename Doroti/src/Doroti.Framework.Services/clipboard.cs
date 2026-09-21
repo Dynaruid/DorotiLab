@@ -13,7 +13,6 @@ public class ClipboardData
     {
         this.text = text;
     }
-
 }
 
 public abstract class Clipboard
@@ -27,7 +26,11 @@ public abstract class Clipboard
 
     public static async Future<ClipboardData?> getData(string format)
     {
-        if (format != kTextPlain) return null;
+        if (format != kTextPlain)
+        {
+            return null;
+        }
+
         var text = await RequireHost("getData").GetClipboardTextAsync();
         return text is null ? null : new ClipboardData(text);
     }
@@ -39,12 +42,22 @@ public abstract class Clipboard
 
     private static IPlatformServicesHostCapability RequireHost(string operation)
     {
-        var invocation = DartUiInvocation.Managed($"package:flutter/services.dart#Clipboard.{operation}");
+        var invocation = DartUiInvocation.Managed(
+            $"package:flutter/services.dart#Clipboard.{operation}"
+        );
         var dispatcher = PlatformDispatcher.instance;
-        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformServices, null,
-                invocation, "clipboard access requires an attached DorotiView");
-        return view.RequireCapability<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, invocation);
+        var view =
+            dispatcher.implicitView
+            ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(
+                DorotiCapabilityIds.PlatformServices,
+                null,
+                invocation,
+                "clipboard access requires an attached DorotiView"
+            );
+        return view.RequireCapability<IPlatformServicesHostCapability>(
+            DorotiCapabilityIds.PlatformServices,
+            invocation
+        );
     }
-
 }

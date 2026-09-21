@@ -4,11 +4,26 @@ namespace Doroti.Framework.Foundation;
 
 public delegate void ObjectEventListener(ObjectEvent value);
 
-public abstract record ObjectEvent(string library, string className, object instance, DateTimeOffset timestamp);
-public sealed record ObjectCreated(string Library, string ClassName, object Instance, DateTimeOffset Timestamp)
-    : ObjectEvent(Library, ClassName, Instance, Timestamp);
-public sealed record ObjectDisposed(string Library, string ClassName, object Instance, DateTimeOffset Timestamp)
-    : ObjectEvent(Library, ClassName, Instance, Timestamp);
+public abstract record ObjectEvent(
+    string library,
+    string className,
+    object instance,
+    DateTimeOffset timestamp
+);
+
+public sealed record ObjectCreated(
+    string Library,
+    string ClassName,
+    object Instance,
+    DateTimeOffset Timestamp
+) : ObjectEvent(Library, ClassName, Instance, Timestamp);
+
+public sealed record ObjectDisposed(
+    string Library,
+    string ClassName,
+    object Instance,
+    DateTimeOffset Timestamp
+) : ObjectEvent(Library, ClassName, Instance, Timestamp);
 
 public class MemoryAllocations
 {
@@ -18,9 +33,11 @@ public class MemoryAllocations
 
     public bool hasListeners => _listeners is not null;
 
-    public void addListener(ObjectEventListener listener) => _listeners += listener ?? throw new ArgumentNullException(nameof(listener));
+    public void addListener(ObjectEventListener listener) =>
+        _listeners += listener ?? throw new ArgumentNullException(nameof(listener));
 
-    public void removeListener(ObjectEventListener listener) => _listeners -= listener ?? throw new ArgumentNullException(nameof(listener));
+    public void removeListener(ObjectEventListener listener) =>
+        _listeners -= listener ?? throw new ArgumentNullException(nameof(listener));
 
     public void dispatchObjectCreated(string library, string className, object instance)
     {
@@ -31,7 +48,14 @@ public class MemoryAllocations
     public void dispatchObjectDisposed(object instance)
     {
         ArgumentNullException.ThrowIfNull(instance);
-        _listeners?.Invoke(new ObjectDisposed(instance.GetType().Assembly.GetName().Name ?? "unknown", instance.GetType().Name, instance, DateTimeOffset.UtcNow));
+        _listeners?.Invoke(
+            new ObjectDisposed(
+                instance.GetType().Assembly.GetName().Name ?? "unknown",
+                instance.GetType().Name,
+                instance,
+                DateTimeOffset.UtcNow
+            )
+        );
     }
 }
 

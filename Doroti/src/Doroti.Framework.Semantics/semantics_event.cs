@@ -8,7 +8,7 @@ namespace Doroti.Framework.Semantics;
 public enum Assertiveness
 {
     polite,
-    assertive
+    assertive,
 }
 
 public abstract class SemanticsEvent
@@ -33,16 +33,21 @@ public abstract class SemanticsEvent
     }
 
     public abstract DartMap<string, object> getDataMap();
+
     public override string ToString()
     {
         var pairs = new List<string>();
         DartMap<string, object> dataMap = getDataMap();
-        List<string> sortedKeys = ((Func<List<string>>)(() =>
-{
-    var __cascade = dataMap.Keys.ToList();
-    __cascade.sort();
-    return __cascade;
-}))();
+        List<string> sortedKeys = (
+            (Func<List<string>>)(
+                () =>
+                {
+                    var __cascade = dataMap.Keys.ToList();
+                    __cascade.sort();
+                    return __cascade;
+                }
+            )
+        )();
         foreach (var key in sortedKeys)
         {
             pairs.Add($"{key}: {dataMap.GetValueOrDefault(key)}");
@@ -50,7 +55,6 @@ public abstract class SemanticsEvent
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent")}({string.Join(", ", pairs)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnnounceSemanticsEvent : SemanticsEvent
@@ -60,7 +64,13 @@ public class AnnounceSemanticsEvent : SemanticsEvent
     public virtual TextDirection textDirection { get; private set; } = default!;
     public virtual Assertiveness assertiveness { get; private set; } = default!;
 
-    public AnnounceSemanticsEvent(string message, TextDirection textDirection, long viewId, Assertiveness assertiveness = Assertiveness.polite) : base("announce")
+    public AnnounceSemanticsEvent(
+        string message,
+        TextDirection textDirection,
+        long viewId,
+        Assertiveness assertiveness = Assertiveness.polite
+    )
+        : base("announce")
     {
         this.message = message;
         this.textDirection = textDirection;
@@ -70,17 +80,22 @@ public class AnnounceSemanticsEvent : SemanticsEvent
 
     public override DartMap<string, object> getDataMap()
     {
-        return new DartMap<string, object> { ["viewId"] = viewId, ["message"] = message, ["textDirection"] = FoundationRuntimePorts.EnumIndex(textDirection) };
+        return new DartMap<string, object>
+        {
+            ["viewId"] = viewId,
+            ["message"] = message,
+            ["textDirection"] = FoundationRuntimePorts.EnumIndex(textDirection),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TooltipSemanticsEvent : SemanticsEvent
 {
     public virtual string message { get; private set; } = default!;
 
-    public TooltipSemanticsEvent(string message) : base("tooltip")
+    public TooltipSemanticsEvent(string message)
+        : base("tooltip")
     {
         this.message = message;
     }
@@ -90,33 +105,28 @@ public class TooltipSemanticsEvent : SemanticsEvent
         return new DartMap<string, object> { ["message"] = message };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class LongPressSemanticsEvent : SemanticsEvent
 {
-    public LongPressSemanticsEvent() : base("longPress")
-    {
-    }
+    public LongPressSemanticsEvent()
+        : base("longPress") { }
 
     public override DartMap<string, object> getDataMap() => new DartMap<string, object>();
 }
 
 public class TapSemanticEvent : SemanticsEvent
 {
-    public TapSemanticEvent() : base("tap")
-    {
-    }
+    public TapSemanticEvent()
+        : base("tap") { }
 
     public override DartMap<string, object> getDataMap() => new DartMap<string, object>();
 }
 
 public class FocusSemanticEvent : SemanticsEvent
 {
-    public FocusSemanticEvent() : base("focus")
-    {
-    }
+    public FocusSemanticEvent()
+        : base("focus") { }
 
     public override DartMap<string, object> getDataMap() => new DartMap<string, object>();
 }
-

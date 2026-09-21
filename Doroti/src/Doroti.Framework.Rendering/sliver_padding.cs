@@ -5,7 +5,9 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Rendering;
 
-public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObjectWithChildMixin<RenderSliver>
+public abstract class RenderSliverEdgeInsetsPadding
+    : RenderSliver,
+        RenderObjectWithChildMixin<RenderSliver>
 {
     public virtual RenderSliver? _child { get; set; } = default;
 
@@ -15,7 +17,17 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         get
         {
             DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
-            return SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => resolvedPadding!.bottom, AxisDirection.right => resolvedPadding!.left, AxisDirection.down => resolvedPadding!.top, AxisDirection.left => resolvedPadding!.right, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return SliverLibrary.applyGrowthDirectionToAxisDirection(
+                constraints.axisDirection,
+                constraints.growthDirection
+            ) switch
+            {
+                AxisDirection.up => resolvedPadding!.bottom,
+                AxisDirection.right => resolvedPadding!.left,
+                AxisDirection.down => resolvedPadding!.top,
+                AxisDirection.left => resolvedPadding!.right,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
     public virtual double afterPadding
@@ -23,7 +35,17 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         get
         {
             DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
-            return SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => resolvedPadding!.top, AxisDirection.right => resolvedPadding!.right, AxisDirection.down => resolvedPadding!.bottom, AxisDirection.left => resolvedPadding!.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return SliverLibrary.applyGrowthDirectionToAxisDirection(
+                constraints.axisDirection,
+                constraints.growthDirection
+            ) switch
+            {
+                AxisDirection.up => resolvedPadding!.top,
+                AxisDirection.right => resolvedPadding!.right,
+                AxisDirection.down => resolvedPadding!.bottom,
+                AxisDirection.left => resolvedPadding!.left,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
     public virtual double mainAxisPadding
@@ -39,9 +61,15 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         get
         {
             DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
-            return constraints.axis switch { Axis.horizontal => resolvedPadding!.vertical, Axis.vertical => resolvedPadding!.horizontal, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return constraints.axis switch
+            {
+                Axis.horizontal => resolvedPadding!.vertical,
+                Axis.vertical => resolvedPadding!.horizontal,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     public override void setupParentData(RenderObject child)
     {
         if (child.parentData is not SliverPhysicalParentData)
@@ -73,7 +101,12 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         {
             double paintExtentLocal = paintOffset(from: 0.0, to: mainAxisPaddingLocal);
             double cacheExtentLocal = cacheOffset(from: 0.0, to: mainAxisPaddingLocal);
-            geometry = new SliverGeometry(scrollExtent: mainAxisPaddingLocal, paintExtent: Math.Min(paintExtentLocal, constraintsLocal.remainingPaintExtent), maxPaintExtent: mainAxisPaddingLocal, cacheExtent: cacheExtentLocal);
+            geometry = new SliverGeometry(
+                scrollExtent: mainAxisPaddingLocal,
+                paintExtent: Math.Min(paintExtentLocal, constraintsLocal.remainingPaintExtent),
+                maxPaintExtent: mainAxisPaddingLocal,
+                cacheExtent: cacheExtentLocal
+            );
             return;
         }
         double beforePaddingPaintExtent = paintOffset(from: 0.0, to: beforePaddingLocal);
@@ -82,36 +115,117 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         {
             overlapLocal = Math.Max(0.0, constraintsLocal.overlap - beforePaddingPaintExtent);
         }
-        child!.layout(constraintsLocal.copyWith(scrollOffset: Math.Max(0.0, constraintsLocal.scrollOffset - beforePaddingLocal), cacheOrigin: Math.Min(0.0, constraintsLocal.cacheOrigin + beforePaddingLocal), overlap: overlapLocal, remainingPaintExtent: constraintsLocal.remainingPaintExtent - paintOffset(from: 0.0, to: beforePaddingLocal), remainingCacheExtent: constraintsLocal.remainingCacheExtent - cacheOffset(from: 0.0, to: beforePaddingLocal), crossAxisExtent: Math.Max(0.0, constraintsLocal.crossAxisExtent - crossAxisPaddingLocal), precedingScrollExtent: beforePaddingLocal + constraintsLocal.precedingScrollExtent), parentUsesSize: true);
+        child!.layout(
+            constraintsLocal.copyWith(
+                scrollOffset: Math.Max(0.0, constraintsLocal.scrollOffset - beforePaddingLocal),
+                cacheOrigin: Math.Min(0.0, constraintsLocal.cacheOrigin + beforePaddingLocal),
+                overlap: overlapLocal,
+                remainingPaintExtent: constraintsLocal.remainingPaintExtent
+                    - paintOffset(from: 0.0, to: beforePaddingLocal),
+                remainingCacheExtent: constraintsLocal.remainingCacheExtent
+                    - cacheOffset(from: 0.0, to: beforePaddingLocal),
+                crossAxisExtent: Math.Max(
+                    0.0,
+                    constraintsLocal.crossAxisExtent - crossAxisPaddingLocal
+                ),
+                precedingScrollExtent: beforePaddingLocal + constraintsLocal.precedingScrollExtent
+            ),
+            parentUsesSize: true
+        );
         SliverGeometry childLayoutGeometry = child!.geometry!;
         if (childLayoutGeometry.scrollOffsetCorrection is not null)
         {
-            geometry = new SliverGeometry(scrollOffsetCorrection: childLayoutGeometry.scrollOffsetCorrection);
+            geometry = new SliverGeometry(
+                scrollOffsetCorrection: childLayoutGeometry.scrollOffsetCorrection
+            );
             return;
         }
         double scrollExtentLocal = childLayoutGeometry.scrollExtent;
         double beforePaddingCacheExtent = cacheOffset(from: 0.0, to: beforePaddingLocal);
-        double afterPaddingCacheExtent = cacheOffset(from: beforePaddingLocal + scrollExtentLocal, to: mainAxisPaddingLocal + scrollExtentLocal);
-        double afterPaddingPaintExtent = paintOffset(from: beforePaddingLocal + scrollExtentLocal, to: mainAxisPaddingLocal + scrollExtentLocal);
+        double afterPaddingCacheExtent = cacheOffset(
+            from: beforePaddingLocal + scrollExtentLocal,
+            to: mainAxisPaddingLocal + scrollExtentLocal
+        );
+        double afterPaddingPaintExtent = paintOffset(
+            from: beforePaddingLocal + scrollExtentLocal,
+            to: mainAxisPaddingLocal + scrollExtentLocal
+        );
         double mainAxisPaddingCacheExtent = beforePaddingCacheExtent + afterPaddingCacheExtent;
         double mainAxisPaddingPaintExtent = beforePaddingPaintExtent + afterPaddingPaintExtent;
-        double paintExtentAlternate = Math.Min(beforePaddingPaintExtent + Math.Max(childLayoutGeometry.paintExtent, childLayoutGeometry.layoutExtent + afterPaddingPaintExtent), constraintsLocal.remainingPaintExtent);
-        geometry = new SliverGeometry(paintOrigin: childLayoutGeometry.paintOrigin, scrollExtent: mainAxisPaddingLocal + scrollExtentLocal, paintExtent: paintExtentAlternate, layoutExtent: Math.Min(mainAxisPaddingPaintExtent + childLayoutGeometry.layoutExtent, paintExtentAlternate), cacheExtent: Math.Min(mainAxisPaddingCacheExtent + childLayoutGeometry.cacheExtent, constraintsLocal.remainingCacheExtent), maxPaintExtent: mainAxisPaddingLocal + childLayoutGeometry.maxPaintExtent, hitTestExtent: Math.Max(mainAxisPaddingPaintExtent + childLayoutGeometry.paintExtent, beforePaddingPaintExtent + childLayoutGeometry.hitTestExtent), hasVisualOverflow: childLayoutGeometry.hasVisualOverflow);
-        double calculatedOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(constraintsLocal.axisDirection, constraintsLocal.growthDirection) switch { AxisDirection.up => paintOffset(from: resolvedPaddingLocal.bottom + scrollExtentLocal, to: resolvedPaddingLocal.vertical + scrollExtentLocal), AxisDirection.left => paintOffset(from: resolvedPaddingLocal.right + scrollExtentLocal, to: resolvedPaddingLocal.horizontal + scrollExtentLocal), AxisDirection.right => paintOffset(from: 0.0, to: resolvedPaddingLocal.left), AxisDirection.down => paintOffset(from: 0.0, to: resolvedPaddingLocal.top), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        double paintExtentAlternate = Math.Min(
+            beforePaddingPaintExtent
+                + Math.Max(
+                    childLayoutGeometry.paintExtent,
+                    childLayoutGeometry.layoutExtent + afterPaddingPaintExtent
+                ),
+            constraintsLocal.remainingPaintExtent
+        );
+        geometry = new SliverGeometry(
+            paintOrigin: childLayoutGeometry.paintOrigin,
+            scrollExtent: mainAxisPaddingLocal + scrollExtentLocal,
+            paintExtent: paintExtentAlternate,
+            layoutExtent: Math.Min(
+                mainAxisPaddingPaintExtent + childLayoutGeometry.layoutExtent,
+                paintExtentAlternate
+            ),
+            cacheExtent: Math.Min(
+                mainAxisPaddingCacheExtent + childLayoutGeometry.cacheExtent,
+                constraintsLocal.remainingCacheExtent
+            ),
+            maxPaintExtent: mainAxisPaddingLocal + childLayoutGeometry.maxPaintExtent,
+            hitTestExtent: Math.Max(
+                mainAxisPaddingPaintExtent + childLayoutGeometry.paintExtent,
+                beforePaddingPaintExtent + childLayoutGeometry.hitTestExtent
+            ),
+            hasVisualOverflow: childLayoutGeometry.hasVisualOverflow
+        );
+        double calculatedOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(
+            constraintsLocal.axisDirection,
+            constraintsLocal.growthDirection
+        ) switch
+        {
+            AxisDirection.up => paintOffset(
+                from: resolvedPaddingLocal.bottom + scrollExtentLocal,
+                to: resolvedPaddingLocal.vertical + scrollExtentLocal
+            ),
+            AxisDirection.left => paintOffset(
+                from: resolvedPaddingLocal.right + scrollExtentLocal,
+                to: resolvedPaddingLocal.horizontal + scrollExtentLocal
+            ),
+            AxisDirection.right => paintOffset(from: 0.0, to: resolvedPaddingLocal.left),
+            AxisDirection.down => paintOffset(from: 0.0, to: resolvedPaddingLocal.top),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
-        childParentData.paintOffset = constraintsLocal.axis switch { Axis.horizontal => new Offset(calculatedOffset, resolvedPaddingLocal.top), Axis.vertical => new Offset(resolvedPaddingLocal.left, calculatedOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        childParentData.paintOffset = constraintsLocal.axis switch
+        {
+            Axis.horizontal => new Offset(calculatedOffset, resolvedPaddingLocal.top),
+            Axis.vertical => new Offset(resolvedPaddingLocal.left, calculatedOffset),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         DartRuntimePrimitives.Assert(() => beforePaddingLocal == beforePadding);
         DartRuntimePrimitives.Assert(() => afterPaddingLocal == afterPadding);
         DartRuntimePrimitives.Assert(() => mainAxisPaddingLocal == mainAxisPadding);
         DartRuntimePrimitives.Assert(() => crossAxisPaddingLocal == crossAxisPadding);
     }
 
-    public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTestChildren(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
         if ((child is not null) && (child!.geometry!.hitTestExtent > 0.0))
         {
             var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
-            return result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, mainAxisOffset: childMainAxisPosition(child!), crossAxisOffset: childCrossAxisPosition(child!), paintOffset: childParentData.paintOffset, hitTest: child!.hitTest);
+            return result.addWithAxisOffset(
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition,
+                mainAxisOffset: childMainAxisPosition(child!),
+                crossAxisOffset: childCrossAxisPosition(child!),
+                paintOffset: childParentData.paintOffset,
+                hitTest: child!.hitTest
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -130,7 +244,12 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         var __child = (RenderSliver)(object)child;
         DartRuntimePrimitives.Assert(() => Equals(__child, this.child));
         DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
-        return constraints.axis switch { Axis.horizontal => resolvedPadding!.top, Axis.vertical => resolvedPadding!.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return constraints.axis switch
+        {
+            Axis.horizontal => resolvedPadding!.top,
+            Axis.vertical => resolvedPadding!.left,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -161,38 +280,73 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
     {
         base.debugPaint(context, offset);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (DebugLibrary.debugPaintSizeEnabled)
             {
-                if (DebugLibrary.debugPaintSizeEnabled)
+                Size parentSize = getAbsoluteSize();
+                Rect outerRect = offset & parentSize;
+                Rect? innerRect = default!;
+                if (child is not null)
                 {
-                    Size parentSize = getAbsoluteSize();
-                    Rect outerRect = offset & parentSize;
-                    Rect? innerRect = default!;
-                    if (child is not null)
-                    {
-                        Size childSize = child!.getAbsoluteSize();
-                        var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
-                        innerRect = offset + childParentData.paintOffset & childSize;
-                        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(innerRect).top >= outerRect.top);
-                        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(innerRect).left >= outerRect.left);
-                        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(innerRect).right <= outerRect.right);
-                        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(innerRect).bottom <= outerRect.bottom);
-                    }
-                    DebugLibrary.debugPaintPadding(context.canvas, outerRect, innerRect);
+                    Size childSize = child!.getAbsoluteSize();
+                    var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
+                    innerRect = (offset + childParentData.paintOffset) & childSize;
+                    DartRuntimePrimitives.Assert(() =>
+                        DartRuntimePrimitives.RequireValue(innerRect).top >= outerRect.top
+                    );
+                    DartRuntimePrimitives.Assert(() =>
+                        DartRuntimePrimitives.RequireValue(innerRect).left >= outerRect.left
+                    );
+                    DartRuntimePrimitives.Assert(() =>
+                        DartRuntimePrimitives.RequireValue(innerRect).right <= outerRect.right
+                    );
+                    DartRuntimePrimitives.Assert(() =>
+                        DartRuntimePrimitives.RequireValue(innerRect).bottom <= outerRect.bottom
+                    );
                 }
-                return true;
-            });
+                DebugLibrary.debugPaintPadding(context.canvas, outerRect, innerRect);
+            }
+            return true;
+        });
     }
 
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderSliver)
             {
-                if (child is not RenderSliver)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderSliver)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -214,6 +368,7 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -244,10 +399,14 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
@@ -256,7 +415,11 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
     internal virtual EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderSliverPadding(EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderSliver? child = null)
+    public RenderSliverPadding(
+        EdgeInsetsGeometry padding,
+        TextDirection? textDirection = null,
+        RenderSliver? child = null
+    )
     {
         _padding = padding;
         _textDirection = textDirection;
@@ -264,6 +427,7 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
     }
 
     public override EdgeInsets? resolvedPadding => _resolvedPadding;
+
     internal virtual void _resolve()
     {
         if (resolvedPadding is not null)
@@ -309,6 +473,7 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
             _markNeedsResolution();
         }
     }
+
     public override void performLayout()
     {
         _resolve();
@@ -319,8 +484,8 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
-
 }
-

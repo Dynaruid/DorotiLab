@@ -15,7 +15,8 @@ public sealed record BrowserFrameDiagnostics(
     long InputSequence,
     bool InvalidatePending,
     string BackendIdentity,
-    Skia.Rendering.SkiaFrameDiagnostics? Skia = null);
+    Skia.Rendering.SkiaFrameDiagnostics? Skia = null
+);
 
 /// <summary>Composition-root boundary implemented by Doroti.Target.Web.browser-wasm.</summary>
 public interface IDorotiBrowserTarget : IDisposable
@@ -25,23 +26,35 @@ public interface IDorotiBrowserTarget : IDisposable
     DorotiApplicationBoundary LoadApplicationBoundary(
         Assembly manifestAssembly,
         Assembly applicationAssembly,
-        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null);
+        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null
+    );
 
     DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,
         string canvasId,
         DorotiViewConfiguration configuration,
-        DorotiApplicationBoundary? application = null);
+        DorotiApplicationBoundary? application = null
+    );
 
     void AttachSkiaSurface(ulong viewId, Action invalidate);
 
     string PaintSkiaSurface(
-        ulong viewId, SKSurface surface, int pixelWidth, int pixelHeight,
-        DorotiResizeEpoch target, long requestId);
+        ulong viewId,
+        SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch target,
+        long requestId
+    );
 
     void CompleteSkiaSurfacePaint(
-        ulong viewId, long requestId, long generation, string terminal, string reason);
+        ulong viewId,
+        long requestId,
+        long generation,
+        string terminal,
+        string reason
+    );
 
     void InvalidateSkiaGpuContext(ulong viewId, long requestId, string reason);
 

@@ -57,7 +57,8 @@ public readonly record struct DartSourceSpan(string Source, int Offset, int Leng
 
 public readonly record struct DartUiInvocation(string ElementId, DartSourceSpan SourceSpan)
 {
-    public static DartUiInvocation Managed(string elementId) => new(elementId, DartSourceSpan.Unknown);
+    public static DartUiInvocation Managed(string elementId) =>
+        new(elementId, DartSourceSpan.Unknown);
 }
 
 /// <summary>A fail-closed error for a missing or lifetime-invalid host capability.</summary>
@@ -68,10 +69,13 @@ public sealed class DorotiCapabilityException : InvalidOperationException
         ulong? viewId,
         DartUiInvocation invocation,
         string reason,
-        string targetIdentity = "<unspecified>")
-        : base($"Flutter capability '{capabilityId}' is unavailable for view " +
-            $"{(viewId is null ? "<unregistered>" : viewId.Value)} at {invocation.SourceSpan} " +
-            $"({invocation.ElementId}) on target '{targetIdentity}': {reason}")
+        string targetIdentity = "<unspecified>"
+    )
+        : base(
+            $"Flutter capability '{capabilityId}' is unavailable for view "
+                + $"{(viewId is null ? "<unregistered>" : viewId.Value)} at {invocation.SourceSpan} "
+                + $"({invocation.ElementId}) on target '{targetIdentity}': {reason}"
+        )
     {
         CapabilityId = capabilityId;
         ViewId = viewId;
@@ -99,11 +103,14 @@ public sealed class DorotiViewCapabilities : IDisposable
     private bool _disposed;
 
     public DorotiViewCapabilities(string targetIdentity = "<unspecified>") =>
-        TargetIdentity = string.IsNullOrWhiteSpace(targetIdentity) ? "<unspecified>" : targetIdentity;
+        TargetIdentity = string.IsNullOrWhiteSpace(targetIdentity)
+            ? "<unspecified>"
+            : targetIdentity;
 
     public string TargetIdentity { get; }
 
-    public IReadOnlyCollection<string> RegisteredIds => _values.Keys.Order(StringComparer.Ordinal).ToArray();
+    public IReadOnlyCollection<string> RegisteredIds =>
+        _values.Keys.Order(StringComparer.Ordinal).ToArray();
 
     public DorotiViewCapabilities Register<TCapability>(string id, TCapability capability)
         where TCapability : class
@@ -113,11 +120,15 @@ public sealed class DorotiViewCapabilities : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_sealed)
         {
-            throw new InvalidOperationException("A registered Flutter view capability set is immutable.");
+            throw new InvalidOperationException(
+                "A registered Flutter view capability set is immutable."
+            );
         }
         if (!_values.TryAdd(id, capability))
         {
-            throw new InvalidOperationException($"Flutter capability '{id}' was registered more than once.");
+            throw new InvalidOperationException(
+                $"Flutter capability '{id}' was registered more than once."
+            );
         }
         return this;
     }
@@ -128,13 +139,23 @@ public sealed class DorotiViewCapabilities : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (!_values.TryGetValue(id, out var value))
         {
-            throw new DorotiCapabilityException(id, viewId, invocation, "the active host did not register it", TargetIdentity);
+            throw new DorotiCapabilityException(
+                id,
+                viewId,
+                invocation,
+                "the active host did not register it",
+                TargetIdentity
+            );
         }
         if (value is not TCapability typed)
         {
-            throw new DorotiCapabilityException(id, viewId, invocation,
+            throw new DorotiCapabilityException(
+                id,
+                viewId,
+                invocation,
                 $"the registered implementation has type {value.GetType().FullName}, not {typeof(TCapability).FullName}",
-                TargetIdentity);
+                TargetIdentity
+            );
         }
         return typed;
     }
@@ -148,7 +169,11 @@ public sealed class DorotiViewCapabilities : IDisposable
             return;
         }
         _disposed = true;
-        foreach (var item in _values.Values.Distinct(ReferenceEqualityComparer.Instance).OfType<IDisposable>())
+        foreach (
+            var item in _values
+                .Values.Distinct(ReferenceEqualityComparer.Instance)
+                .OfType<IDisposable>()
+        )
         {
             item.Dispose();
         }

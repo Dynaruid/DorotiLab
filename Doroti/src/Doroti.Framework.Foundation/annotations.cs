@@ -10,7 +10,6 @@ public class Category
     {
         this.sections = sections;
     }
-
 }
 
 public class DocumentationIcon
@@ -21,7 +20,6 @@ public class DocumentationIcon
     {
         this.url = url;
     }
-
 }
 
 public class Summary
@@ -32,6 +30,4 @@ public class Summary
     {
         this.text = text;
     }
-
 }
-

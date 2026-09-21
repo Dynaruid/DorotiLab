@@ -17,32 +17,60 @@ internal static class AnalyzerHomeResolver
         var entryPointPath = Path.Combine(analyzerRoot, "entrypoints", "extract.dart");
         if (!File.Exists(pubspecPath) || !File.Exists(entryPointPath))
         {
-            throw new DirectoryNotFoundException($"Compiler-owned Dart analyzer is incomplete: {analyzerRoot}");
+            throw new DirectoryNotFoundException(
+                $"Compiler-owned Dart analyzer is incomplete: {analyzerRoot}"
+            );
         }
 
         var pubspec = File.ReadAllText(pubspecPath);
-        var packageMatch = Regex.Match(pubspec, @"(?m)^name:\s*(?<name>[^\s#]+)\s*$", RegexOptions.CultureInvariant);
-        if (!packageMatch.Success || !string.Equals(packageMatch.Groups["name"].Value, PackageName, StringComparison.Ordinal))
+        var packageMatch = Regex.Match(
+            pubspec,
+            @"(?m)^name:\s*(?<name>[^\s#]+)\s*$",
+            RegexOptions.CultureInvariant
+        );
+        if (
+            !packageMatch.Success
+            || !string.Equals(
+                packageMatch.Groups["name"].Value,
+                PackageName,
+                StringComparison.Ordinal
+            )
+        )
         {
-            throw new InvalidDataException($"Compiler-owned analyzer package must be named {PackageName}: {pubspecPath}");
+            throw new InvalidDataException(
+                $"Compiler-owned analyzer package must be named {PackageName}: {pubspecPath}"
+            );
         }
 
-        if (string.Equals(manifest.SchemaVersion, "doroti.converter-selection/v4", StringComparison.Ordinal))
+        if (
+            string.Equals(
+                manifest.SchemaVersion,
+                "doroti.converter-selection/v4",
+                StringComparison.Ordinal
+            )
+        )
         {
             if (!string.IsNullOrWhiteSpace(manifest.AnalyzerProject))
             {
-                throw new InvalidDataException("Selection schema v4 must not inject analyzerProject; the compiler owns its Dart frontend.");
+                throw new InvalidDataException(
+                    "Selection schema v4 must not inject analyzerProject; the compiler owns its Dart frontend."
+                );
             }
         }
         else if (!string.IsNullOrWhiteSpace(manifest.AnalyzerProject))
         {
             var requested = Path.GetFullPath(manifest.AnalyzerProject, manifestDirectory);
-            if (!string.Equals(
+            if (
+                !string.Equals(
                     Path.TrimEndingDirectorySeparator(requested),
                     Path.TrimEndingDirectorySeparator(analyzerRoot),
-                    StringComparison.OrdinalIgnoreCase))
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
-                throw new InvalidDataException($"Legacy selection analyzerProject must resolve to the compiler-owned analyzer: {requested}");
+                throw new InvalidDataException(
+                    $"Legacy selection analyzerProject must resolve to the compiler-owned analyzer: {requested}"
+                );
             }
         }
 
@@ -51,15 +79,30 @@ internal static class AnalyzerHomeResolver
 
     private static string FindRepositoryRoot(string startDirectory)
     {
-        for (var directory = new DirectoryInfo(Path.GetFullPath(startDirectory)); directory is not null; directory = directory.Parent)
+        for (
+            var directory = new DirectoryInfo(Path.GetFullPath(startDirectory));
+            directory is not null;
+            directory = directory.Parent
+        )
         {
-            if (File.Exists(Path.Combine(directory.FullName, "Doroti", "Doroti.slnx")) &&
-                File.Exists(Path.Combine(directory.FullName, "tools", "Doroti.DartToCSharp", "Doroti.DartToCSharp.csproj")))
+            if (
+                File.Exists(Path.Combine(directory.FullName, "Doroti", "Doroti.slnx"))
+                && File.Exists(
+                    Path.Combine(
+                        directory.FullName,
+                        "tools",
+                        "Doroti.DartToCSharp",
+                        "Doroti.DartToCSharp.csproj"
+                    )
+                )
+            )
             {
                 return directory.FullName;
             }
         }
 
-        throw new DirectoryNotFoundException($"Could not find the DorotiLab compiler root from {startDirectory}.");
+        throw new DirectoryNotFoundException(
+            $"Could not find the DorotiLab compiler root from {startDirectory}."
+        );
     }
 }

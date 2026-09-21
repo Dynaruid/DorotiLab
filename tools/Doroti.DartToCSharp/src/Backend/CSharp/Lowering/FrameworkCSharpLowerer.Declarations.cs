@@ -10,14 +10,25 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
-        var onClause = declaration.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExtensionOnClause);
+        var onClause = declaration.Ast.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.ExtensionOnClause
+        );
         var receiverNode = onClause?.Children.FirstOrDefault(item => item.Category == "type");
         if (receiverNode is null)
         {
-            AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, declaration.Ast,
-                "extension-receiver", "Expose the resolved extension receiver type in typed IR.");
+            AddUnsupportedDiagnostic(
+                diagnostics,
+                package,
+                library,
+                inputPath,
+                declaration,
+                declaration.Ast,
+                "extension-receiver",
+                "Expose the resolved extension receiver type in typed IR."
+            );
             return;
         }
 
@@ -26,16 +37,32 @@ internal sealed partial class FrameworkCSharpLowerer
         var extensionName = EmittedTypeName(library, declaration.Name) + "Extension";
         builder.AppendLine($"{visibility} static class {extensionName}");
         builder.AppendLine("{");
-        foreach (var member in declaration.Members.Where(item => item.Kind == "method").OrderBy(item => item.Offset))
+        foreach (
+            var member in declaration
+                .Members.Where(item => item.Kind == "method")
+                .OrderBy(item => item.Offset)
+        )
         {
-            var expressionBody = member.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-            var blockBody = member.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
+            var expressionBody = member.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ExpressionFunctionBody
+            );
+            var blockBody = member.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            );
             var expression = expressionBody?.Child(CoreChildRole.expressionOffset);
             var block = blockBody?.Child(CoreChildRole.blockOffset);
             if (expression is null && block is null)
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, member.Ast,
-                    "extension-member-body", "Expose the typed extension member body.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    member.Ast,
+                    "extension-member-body",
+                    "Expose the typed extension member body."
+                );
                 continue;
             }
 
@@ -47,21 +74,42 @@ internal sealed partial class FrameworkCSharpLowerer
             _session.ExplicitThisExpression = "value";
             try
             {
-                builder.Append($"    {visibility} static {returnType} {methodName}({string.Join(", ", new[] { receiver }.Concat(parameters))})");
+                builder.Append(
+                    $"    {visibility} static {returnType} {methodName}({string.Join(", ", new[] { receiver }.Concat(parameters))})"
+                );
                 if (expression is not null)
                 {
                     builder.Append(" => ");
-                    LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                    LowerExpression(
+                        builder,
+                        expression,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                 }
                 else
                 {
                     builder.AppendLine();
                     builder.AppendLine("    {");
-                    EmitBlockBody(builder, block!, declaration, package, library, inputPath, diagnostics, 2);
+                    EmitBlockBody(
+                        builder,
+                        block!,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics,
+                        2
+                    );
                     if (returnType != "void")
                     {
-                        builder.AppendLine("        throw new InvalidOperationException(\"Dart control flow completed without a value.\");");
+                        builder.AppendLine(
+                            "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                        );
                     }
                     builder.AppendLine("    }");
                 }
@@ -83,7 +131,9 @@ internal sealed partial class FrameworkCSharpLowerer
             // CLR delegates cannot declare a generic Invoke method. Dart uses
             // this callback through Route<dynamic>, so erase only the method
             // type parameter while retaining the named callback boundary.
-            builder.AppendLine($"{visibility} delegate Route<object> PageRouteFactory(RouteSettings settings, global::System.Func<BuildContext, Widget> builder);");
+            builder.AppendLine(
+                $"{visibility} delegate Route<object> PageRouteFactory(RouteSettings settings, global::System.Func<BuildContext, Widget> builder);"
+            );
             builder.AppendLine();
             return;
         }
@@ -92,7 +142,9 @@ internal sealed partial class FrameworkCSharpLowerer
             // The analyzer canonicalizes named parameters alphabetically.  C#
             // delegate binding, however, is positional, so retain Flutter's
             // source order for the requestFocusCallback method tear-offs.
-            builder.AppendLine($"{visibility} delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null);");
+            builder.AppendLine(
+                $"{visibility} delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null);"
+            );
             builder.AppendLine();
             return;
         }
@@ -100,10 +152,18 @@ internal sealed partial class FrameworkCSharpLowerer
         var typeParameters = FormatTypeParameters(declaration.Element.TypeParameters);
         var constraints = FormatTypeParameterConstraints(
             declaration.Element.TypeParameters,
-            new[] { returnType }.Concat((declaration.Element.Parameters ?? []).Select(item => MapType(item.Type))));
+            new[] { returnType }.Concat(
+                (declaration.Element.Parameters ?? []).Select(item => MapType(item.Type))
+            )
+        );
         var parameters = string.Join(", ", MapParameters(declaration.Element.Parameters ?? []));
-        var emittedName = EmittedTypeName(LibraryUriFromElementId(declaration.Element.CanonicalId), declaration.Name);
-        builder.AppendLine($"{visibility} delegate {returnType} {emittedName}{typeParameters}({parameters}){constraints};");
+        var emittedName = EmittedTypeName(
+            LibraryUriFromElementId(declaration.Element.CanonicalId),
+            declaration.Name
+        );
+        builder.AppendLine(
+            $"{visibility} delegate {returnType} {emittedName}{typeParameters}({parameters}){constraints};"
+        );
         builder.AppendLine();
     }
 
@@ -113,16 +173,25 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         // A single Dart declaration may introduce multiple top-level variables.
         // Every resolved declaration points at the shared declaration-list AST,
         // so select the variable matching the element instead of always lowering
         // the first sibling (which duplicated names and initializers in C#).
-        var variable = DescendantsAndSelf(declaration.Ast).FirstOrDefault(item =>
-                item.Kind == CoreNodeKind.VariableDeclaration &&
-                string.Equals(item.Text(CoreProperty.name), declaration.Name, StringComparison.Ordinal))
-            ?? DescendantsAndSelf(declaration.Ast).FirstOrDefault(item => item.Kind == CoreNodeKind.VariableDeclaration);
+        var variable =
+            DescendantsAndSelf(declaration.Ast)
+                .FirstOrDefault(item =>
+                    item.Kind == CoreNodeKind.VariableDeclaration
+                    && string.Equals(
+                        item.Text(CoreProperty.name),
+                        declaration.Name,
+                        StringComparison.Ordinal
+                    )
+                )
+            ?? DescendantsAndSelf(declaration.Ast)
+                .FirstOrDefault(item => item.Kind == CoreNodeKind.VariableDeclaration);
         var name = SafeIdentifier(variable?.Text(CoreProperty.name) ?? declaration.Name);
         var type = MapType(declaration.Element.Type ?? "object");
         var visibility = IsDartPrivate(declaration) ? "internal" : "public";
@@ -136,12 +205,20 @@ internal sealed partial class FrameworkCSharpLowerer
         if (initializer is not null)
         {
             builder.Append(" = ");
-            EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+            EmitFieldInitializer(
+                builder,
+                type,
+                initializer,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
         }
         builder.AppendLine(";");
         builder.AppendLine("}");
         builder.AppendLine();
-
     }
 
     private void EmitEnum(
@@ -150,11 +227,13 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
-        var visibility = declaration.Name == "_StateLifecycle"
-            ? "public"
-            : IsDartPrivate(declaration) && !IsPublicMixinStorageType(declaration.Name) ? "internal" : "public";
+        var visibility =
+            declaration.Name == "_StateLifecycle" ? "public"
+            : IsDartPrivate(declaration) && !IsPublicMixinStorageType(declaration.Name) ? "internal"
+            : "public";
         var enumName = EmittedTypeName(library, declaration.Name);
         var names = DescendantsAndSelf(declaration.Ast)
             .Where(item => item.Kind == CoreNodeKind.EnumConstantDeclaration)
@@ -172,8 +251,8 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("}");
         builder.AppendLine();
 
-        var instanceMembers = declaration.Members
-            .Where(member => member.Kind == "method" && !member.IsStatic)
+        var instanceMembers = declaration
+            .Members.Where(member => member.Kind == "method" && !member.IsStatic)
             .OrderBy(member => member.Offset)
             .ToArray();
         if (instanceMembers.Length == 0)
@@ -185,21 +264,38 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("{");
         foreach (var member in instanceMembers)
         {
-            var expressionBody = member.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-            var blockBody = member.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
-            var expression = expressionBody is null ? null : expressionBody.Child(CoreChildRole.expressionOffset);
+            var expressionBody = member.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ExpressionFunctionBody
+            );
+            var blockBody = member.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            );
+            var expression = expressionBody is null
+                ? null
+                : expressionBody.Child(CoreChildRole.expressionOffset);
             var block = blockBody is null ? null : blockBody.Child(CoreChildRole.blockOffset);
             if (expression is null && block is null)
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, member.Ast,
-                    "enum-member", "Enum instance members require a typed expression or block body.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    member.Ast,
+                    "enum-member",
+                    "Enum instance members require a typed expression or block body."
+                );
                 continue;
             }
             var memberVisibility = IsDartPrivate(member) ? "internal" : "public";
             var returnType = MapType(member.Element.ReturnType ?? member.Element.Type ?? "object");
             var methodName = MapMethodDeclarationName(member);
             var parameters = MapParameters(member.Element.Parameters ?? []).ToArray();
-            var receiverAndParameters = string.Join(", ", new[] { $"this {enumName} value" }.Concat(parameters));
+            var receiverAndParameters = string.Join(
+                ", ",
+                new[] { $"this {enumName} value" }.Concat(parameters)
+            );
             var previousThis = _session.ExplicitThisExpression;
             var previousEnum = _session.ExplicitEnumDeclaration;
             _session.ExplicitThisExpression = "value";
@@ -208,26 +304,49 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 if (member.IsGetter)
                 {
-                    builder.Append($"    {memberVisibility} static {returnType} {methodName}(this {enumName} value)");
+                    builder.Append(
+                        $"    {memberVisibility} static {returnType} {methodName}(this {enumName} value)"
+                    );
                 }
                 else
                 {
-                    builder.Append($"    {memberVisibility} static {returnType} {methodName}({receiverAndParameters})");
+                    builder.Append(
+                        $"    {memberVisibility} static {returnType} {methodName}({receiverAndParameters})"
+                    );
                 }
                 if (expression is not null)
                 {
                     builder.Append(" => ");
-                    LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                    LowerExpression(
+                        builder,
+                        expression,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                 }
                 else
                 {
                     builder.AppendLine();
                     builder.AppendLine("    {");
-                    EmitBlockBody(builder, block!, declaration, package, library, inputPath, diagnostics, 2);
+                    EmitBlockBody(
+                        builder,
+                        block!,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics,
+                        2
+                    );
                     if (returnType != "void")
                     {
-                        builder.AppendLine("        throw new InvalidOperationException(\"Dart control flow completed without a value.\");");
+                        builder.AppendLine(
+                            "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                        );
                     }
                     builder.AppendLine("    }");
                 }
@@ -241,28 +360,42 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("}");
         builder.AppendLine();
 
-        var implementedInterface = (declaration.Element.Interfaces ?? [])
-            .FirstOrDefault(type => type.Contains('<', StringComparison.Ordinal));
+        var implementedInterface = (declaration.Element.Interfaces ?? []).FirstOrDefault(type =>
+            type.Contains('<', StringComparison.Ordinal)
+        );
         if (implementedInterface is not null)
         {
             var adapterName = enumName + "InterfaceAdapter";
-            builder.AppendLine($"{visibility} sealed class {adapterName} : {MapType(implementedInterface)}");
+            builder.AppendLine(
+                $"{visibility} sealed class {adapterName} : {MapType(implementedInterface)}"
+            );
             builder.AppendLine("{");
             builder.AppendLine($"    private readonly {enumName} _value;");
             builder.AppendLine($"    public {adapterName}({enumName} value) => _value = value;");
             foreach (var member in instanceMembers)
             {
-                var returnType = MapType(member.Element.ReturnType ?? member.Element.Type ?? "object");
+                var returnType = MapType(
+                    member.Element.ReturnType ?? member.Element.Type ?? "object"
+                );
                 var methodName = MapMethodDeclarationName(member);
                 var parameters = MapParameters(member.Element.Parameters ?? []).ToArray();
-                var argumentNames = string.Join(", ", (member.Element.Parameters ?? []).Select(parameter => SafeIdentifier(parameter.Name)));
+                var argumentNames = string.Join(
+                    ", ",
+                    (member.Element.Parameters ?? []).Select(parameter =>
+                        SafeIdentifier(parameter.Name)
+                    )
+                );
                 if (member.IsGetter)
                 {
-                    builder.AppendLine($"    public {returnType} {methodName} => _value.{methodName}();");
+                    builder.AppendLine(
+                        $"    public {returnType} {methodName} => _value.{methodName}();"
+                    );
                 }
                 else
                 {
-                    builder.AppendLine($"    public {returnType} {methodName}({string.Join(", ", parameters)}) => _value.{methodName}({argumentNames});");
+                    builder.AppendLine(
+                        $"    public {returnType} {methodName}({string.Join(", ", parameters)}) => _value.{methodName}({argumentNames});"
+                    );
                 }
             }
             builder.AppendLine("}");
@@ -276,37 +409,58 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
-        var visibility = IsDartPrivate(declaration) || IsPrivateCompanionLibrary(library)
-            ? IsPublicMixinStorageType(declaration.Name) ? "public" : "internal"
-            : "public";
+        var visibility =
+            IsDartPrivate(declaration) || IsPrivateCompanionLibrary(library)
+                ? IsPublicMixinStorageType(declaration.Name)
+                    ? "public"
+                    : "internal"
+                : "public";
         if (declaration.Name is "_UiKitPlatformView" or "_AppKitPlatformView")
         {
             visibility = "internal";
         }
-        var abstractModifier = declaration.Element.IsAbstract || declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
-            ? "abstract "
-            : string.Empty;
-        if (declaration.Name == "GlobalKey") abstractModifier = string.Empty;
+        var abstractModifier =
+            declaration.Element.IsAbstract || declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                ? "abstract "
+                : string.Empty;
+        if (declaration.Name == "GlobalKey")
+        {
+            abstractModifier = string.Empty;
+        }
+
         var typeParameters = FormatTypeParameters(declaration.Element.TypeParameters);
-        var typeParameterConstraints = FormatTypeParameterConstraints(declaration.Element.TypeParameters, declaration);
+        var typeParameterConstraints = FormatTypeParameterConstraints(
+            declaration.Element.TypeParameters,
+            declaration
+        );
         var bases = new List<string>();
         var displacedStructuralSuperclass = DisplacedStructuralSuperclass(declaration);
         var structuralWrapperBase = displacedStructuralSuperclass is null
             ? null
             : ConcreteImplementedClass(declaration);
-        var mappedDeclaredSupertype = declaration.Element.Supertype is { } declaredSupertype && declaredSupertype != "Object"
-            ? MapInheritanceType(declaredSupertype)
-            : null;
+        var mappedDeclaredSupertype =
+            declaration.Element.Supertype is { } declaredSupertype && declaredSupertype != "Object"
+                ? MapInheritanceType(declaredSupertype)
+                : null;
         var declaredSupertypeDeclaration = mappedDeclaredSupertype is null
             ? null
             : FindGlobalDeclaration(mappedDeclaredSupertype);
-        var declaredSupertypeIsInterface = mappedDeclaredSupertype is not null &&
-            (mappedDeclaredSupertype is "IEnumerable" || mappedDeclaredSupertype.StartsWith("IEnumerable<", StringComparison.Ordinal) ||
-             declaredSupertypeDeclaration is not null && WillEmitAsInterface(declaredSupertypeDeclaration));
-        var hasConcreteBase = structuralWrapperBase is not null ||
-            mappedDeclaredSupertype is not null && !declaredSupertypeIsInterface;
+        var declaredSupertypeIsInterface =
+            mappedDeclaredSupertype is not null
+            && (
+                mappedDeclaredSupertype is "IEnumerable"
+                || mappedDeclaredSupertype.StartsWith("IEnumerable<", StringComparison.Ordinal)
+                || (
+                    declaredSupertypeDeclaration is not null
+                    && WillEmitAsInterface(declaredSupertypeDeclaration)
+                )
+            );
+        var hasConcreteBase =
+            structuralWrapperBase is not null
+            || (mappedDeclaredSupertype is not null && !declaredSupertypeIsInterface);
         if (structuralWrapperBase is not null)
         {
             bases.Add(MapType(structuralWrapperBase));
@@ -315,8 +469,12 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             bases.Add(MapInheritanceType(supertype));
         }
-        if (declaration.Name == "RenderingFlutterBinding" &&
-            (declaration.Element.Mixins ?? []).Any(type => StripLibraryPrefix(type).Split('<')[0] == "GestureBinding"))
+        if (
+            declaration.Name == "RenderingFlutterBinding"
+            && (declaration.Element.Mixins ?? []).Any(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "GestureBinding"
+            )
+        )
         {
             // The reviewed binding chain is a CLR abstract-class chain through
             // Scheduler -> Services -> Gestures. Use its most-specific product
@@ -325,8 +483,12 @@ internal sealed partial class FrameworkCSharpLowerer
             bases.Add("global::Doroti.Framework.Gestures.GestureBinding");
             hasConcreteBase = true;
         }
-        if (declaration.Name == "WidgetsFlutterBinding" &&
-            (declaration.Element.Mixins ?? []).Any(type => StripLibraryPrefix(type).Split('<')[0] == "GestureBinding"))
+        if (
+            declaration.Name == "WidgetsFlutterBinding"
+            && (declaration.Element.Mixins ?? []).Any(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "GestureBinding"
+            )
+        )
         {
             // G5-3 consumes the reviewed Scheduler -> Services -> Gestures CLR
             // class chain and keeps the remaining binding mixins as interfaces.
@@ -334,17 +496,31 @@ internal sealed partial class FrameworkCSharpLowerer
             bases.Add("global::Doroti.Framework.Gestures.GestureBinding");
             hasConcreteBase = true;
         }
-        if (!hasConcreteBase && (declaration.Element.Mixins ?? []).Any(type =>
-            StripLibraryPrefix(type).Split('<')[0] == "ChangeNotifier"))
+        if (
+            !hasConcreteBase
+            && (declaration.Element.Mixins ?? []).Any(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "ChangeNotifier"
+            )
+        )
         {
             bases.Insert(0, "ChangeNotifier");
             hasConcreteBase = true;
         }
-        if (!hasConcreteBase && (declaration.Element.Mixins ?? [])
-            .Select(type => new { DartType = type, MappedType = MapType(type) })
-            .FirstOrDefault(candidate =>
-                HasPromotedClassRepresentation(StripLibraryPrefix(candidate.DartType).Split('<')[0]) ||
-                FindGlobalDeclaration(candidate.DartType) is { } mixin && !WillEmitAsInterface(mixin)) is { } promotedMixin)
+        if (
+            !hasConcreteBase
+            && (declaration.Element.Mixins ?? [])
+                .Select(type => new { DartType = type, MappedType = MapType(type) })
+                .FirstOrDefault(candidate =>
+                    HasPromotedClassRepresentation(
+                        StripLibraryPrefix(candidate.DartType).Split('<')[0]
+                    )
+                    || (
+                        FindGlobalDeclaration(candidate.DartType) is { } mixin
+                        && !WillEmitAsInterface(mixin)
+                    )
+                )
+                is { } promotedMixin
+        )
         {
             // A Dart `with` application may reference a contract deliberately
             // emitted as a CLR class (for example TextInputControl). With no
@@ -364,11 +540,13 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration)
         {
-            var onClause = declaration.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.MixinOnClause);
+            var onClause = declaration.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.MixinOnClause
+            );
             if (onClause is not null)
             {
-                var onTypes = onClause.Children
-                    .Where(item => item.Category == "type")
+                var onTypes = onClause
+                    .Children.Where(item => item.Category == "type")
                     .Select(MapTypeFromAst)
                     .ToArray();
                 if (onTypes.Length > 0)
@@ -397,24 +575,38 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             bases.Add("IState");
         }
-        bases.AddRange((declaration.Element.Mixins ?? [])
-            .Where(type => !(declaration.Name == "SlottedMultiChildRenderObjectWidget" &&
-                StripLibraryPrefix(type).Split('<')[0] == "SlottedMultiChildRenderObjectWidgetMixin"))
-            .Where(type => !(declaration.Name is "_OverridableAction" or "_OverridableContextAction" &&
-                StripLibraryPrefix(type).Split('<')[0] == "_OverridableActionMixin"))
-            .Select(MapType)
-            .Where(type => FindGlobalDeclaration(type) is { } mixin
-                ? WillEmitAsInterface(mixin)
-                : HasPromotedInterfaceRepresentation(StripLibraryPrefix(type).Split('<')[0])));
+        bases.AddRange(
+            (declaration.Element.Mixins ?? [])
+                .Where(type =>
+                    !(
+                        declaration.Name == "SlottedMultiChildRenderObjectWidget"
+                        && StripLibraryPrefix(type).Split('<')[0]
+                            == "SlottedMultiChildRenderObjectWidgetMixin"
+                    )
+                )
+                .Where(type =>
+                    !(
+                        declaration.Name is "_OverridableAction" or "_OverridableContextAction"
+                        && StripLibraryPrefix(type).Split('<')[0] == "_OverridableActionMixin"
+                    )
+                )
+                .Select(MapType)
+                .Where(type =>
+                    FindGlobalDeclaration(type) is { } mixin
+                        ? WillEmitAsInterface(mixin)
+                        : HasPromotedInterfaceRepresentation(StripLibraryPrefix(type).Split('<')[0])
+                )
+        );
         // Dart `implements Class` is structural; C# allows only one class base. Keep
         // the true superclass and omit class-typed implements entries (mixin/interface
         // implements remain).
         foreach (var interfaceType in declaration.Element.Interfaces ?? [])
         {
-            var mapped = IsPrivateCompanionLibrary(library) &&
-                StripLibraryPrefix(interfaceType).Split('<')[0] == "NetworkImage"
-                ? "NetworkImage"
-                : MapType(interfaceType);
+            var mapped =
+                IsPrivateCompanionLibrary(library)
+                && StripLibraryPrefix(interfaceType).Split('<')[0] == "NetworkImage"
+                    ? "NetworkImage"
+                    : MapType(interfaceType);
             if (mapped.Length == 0)
             {
                 continue;
@@ -439,10 +631,12 @@ internal sealed partial class FrameworkCSharpLowerer
                 hasConcreteBase = true;
                 continue;
             }
-            if (!hasConcreteBase &&
-                interfaceDeclaration is not null &&
-                interfaceDeclaration.Ast.Kind != CoreNodeKind.MixinDeclaration &&
-                !WillEmitAsInterface(interfaceDeclaration))
+            if (
+                !hasConcreteBase
+                && interfaceDeclaration is not null
+                && interfaceDeclaration.Ast.Kind != CoreNodeKind.MixinDeclaration
+                && !WillEmitAsInterface(interfaceDeclaration)
+            )
             {
                 // Dart's abstract `implements ConcreteClass` is structural. When
                 // there is no other superclass, deriving from that class is the
@@ -454,26 +648,38 @@ internal sealed partial class FrameworkCSharpLowerer
                 hasConcreteBase = true;
                 continue;
             }
-            if (interfaceDeclaration is null ||
-                interfaceDeclaration.Ast.Kind == CoreNodeKind.MixinDeclaration ||
-                WillEmitAsInterface(interfaceDeclaration))
+            if (
+                interfaceDeclaration is null
+                || interfaceDeclaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                || WillEmitAsInterface(interfaceDeclaration)
+            )
             {
                 bases.Add(mapped);
                 continue;
             }
             // Known product interfaces that are not in this compilation unit.
-            if (simpleInterface is "Diagnosticable" or "DiagnosticableTree" or "Listenable" or "ValueListenable")
+            if (
+                simpleInterface
+                is "Diagnosticable"
+                    or "DiagnosticableTree"
+                    or "Listenable"
+                    or "ValueListenable"
+            )
             {
                 bases.Add(mapped);
             }
         }
-        var isPlatformNetworkImage = IsPrivateCompanionLibrary(library) &&
-            string.Equals(declaration.Name, "NetworkImage", StringComparison.Ordinal);
+        var isPlatformNetworkImage =
+            IsPrivateCompanionLibrary(library)
+            && string.Equals(declaration.Name, "NetworkImage", StringComparison.Ordinal);
         if (isPlatformNetworkImage)
         {
             bases.Add("NetworkImage");
         }
-        var baseList = bases.Count == 0 ? string.Empty : " : " + string.Join(", ", bases.Distinct(StringComparer.Ordinal));
+        var baseList =
+            bases.Count == 0
+                ? string.Empty
+                : " : " + string.Join(", ", bases.Distinct(StringComparer.Ordinal));
         var isMixinDeclaration = declaration.Ast.Kind == CoreNodeKind.MixinDeclaration;
         // Dart mixins must lower to interfaces so classes can `extend Super, Mixin1, Mixin2`.
         var isInterface = WillEmitAsInterface(declaration);
@@ -489,22 +695,27 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Where(type =>
                 {
                     var interfaceDeclaration = FindGlobalDeclaration(type);
-                    return interfaceDeclaration is null ||
-                        interfaceDeclaration.Ast.Kind == CoreNodeKind.MixinDeclaration ||
-                        WillEmitAsInterface(interfaceDeclaration);
+                    return interfaceDeclaration is null
+                        || interfaceDeclaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                        || WillEmitAsInterface(interfaceDeclaration);
                 })
                 .Distinct(StringComparer.Ordinal)
                 .ToArray();
-            baseList = mixinInterfaces.Length == 0
-                ? string.Empty
-                : " : " + string.Join(", ", mixinInterfaces);
+            baseList =
+                mixinInterfaces.Length == 0
+                    ? string.Empty
+                    : " : " + string.Join(", ", mixinInterfaces);
         }
         if (!isInterface && declaration.Name == "MouseTrackerAnnotation")
         {
             builder.AppendLine("public interface IMouseTrackerAnnotation");
             builder.AppendLine("{");
-            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? onEnter { get; }");
-            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? onExit { get; }");
+            builder.AppendLine(
+                "    global::Doroti.Framework.Services.IMouseTrackerCallback? onEnter { get; }"
+            );
+            builder.AppendLine(
+                "    global::Doroti.Framework.Services.IMouseTrackerCallback? onExit { get; }"
+            );
             builder.AppendLine("    MouseCursor cursor { get; }");
             builder.AppendLine("    bool validForMouseTracker { get; }");
             builder.AppendLine("}");
@@ -512,33 +723,55 @@ internal sealed partial class FrameworkCSharpLowerer
             bases.Add("IMouseTrackerAnnotation");
             baseList = " : " + string.Join(", ", bases.Distinct(StringComparer.Ordinal));
         }
-        builder.AppendLine($"{visibility} {classModifiers}{kind} {emittedName}{typeParameters}{baseList}{typeParameterConstraints}");
+        builder.AppendLine(
+            $"{visibility} {classModifiers}{kind} {emittedName}{typeParameters}{baseList}{typeParameterConstraints}"
+        );
         builder.AppendLine("{");
 
         if (declaration.Ast.Kind == CoreNodeKind.ExtensionTypeDeclaration)
         {
             var representation = declaration.Ast.Children.FirstOrDefault(item =>
-                item.Kind == CoreNodeKind.RepresentationDeclaration);
-            var representationTypeNode = representation?.Children.FirstOrDefault(item => item.Category == "type");
+                item.Kind == CoreNodeKind.RepresentationDeclaration
+            );
+            var representationTypeNode = representation?.Children.FirstOrDefault(item =>
+                item.Category == "type"
+            );
             if (representation is null || representationTypeNode is null)
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, declaration.Ast,
-                    "extension-type-representation", "Expose the typed extension representation declaration.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    declaration.Ast,
+                    "extension-type-representation",
+                    "Expose the typed extension representation declaration."
+                );
             }
             else
             {
                 var representationType = MapTypeFromAst(representationTypeNode);
-                var representationName = SafeIdentifier(representation.Text(CoreProperty.name) ?? "value");
-                var representationConstructor = representation.Text(CoreProperty.constructor) ?? "new";
-                builder.AppendLine($"    public {representationType} {representationName} {{ get; }}");
+                var representationName = SafeIdentifier(
+                    representation.Text(CoreProperty.name) ?? "value"
+                );
+                var representationConstructor =
+                    representation.Text(CoreProperty.constructor) ?? "new";
+                builder.AppendLine(
+                    $"    public {representationType} {representationName} {{ get; }}"
+                );
                 builder.AppendLine();
                 if (representationConstructor is "new" or "")
                 {
-                    builder.AppendLine($"    public {emittedName}({representationType} {representationName})");
+                    builder.AppendLine(
+                        $"    public {emittedName}({representationType} {representationName})"
+                    );
                 }
                 else
                 {
-                    builder.AppendLine($"    private {emittedName}({representationType} {representationName})");
+                    builder.AppendLine(
+                        $"    private {emittedName}({representationType} {representationName})"
+                    );
                 }
                 builder.AppendLine("    {");
                 builder.AppendLine($"        this.{representationName} = {representationName};");
@@ -546,13 +779,19 @@ internal sealed partial class FrameworkCSharpLowerer
                 builder.AppendLine();
                 if (representationConstructor is not ("new" or ""))
                 {
-                    builder.AppendLine($"    public static {emittedName} {NamedConstructorMethodName(representationConstructor)}({representationType} {representationName}) => new {emittedName}({representationName});");
+                    builder.AppendLine(
+                        $"    public static {emittedName} {NamedConstructorMethodName(representationConstructor)}({representationType} {representationName}) => new {emittedName}({representationName});"
+                    );
                     builder.AppendLine();
                 }
                 if (representationType is not ("object" or "dynamic"))
                 {
-                    builder.AppendLine($"    public static implicit operator {representationType}({emittedName} value) => value.{representationName};");
-                    builder.AppendLine($"    public static implicit operator {emittedName}({representationType} value) => new {emittedName}(value);");
+                    builder.AppendLine(
+                        $"    public static implicit operator {representationType}({emittedName} value) => value.{representationName};"
+                    );
+                    builder.AppendLine(
+                        $"    public static implicit operator {emittedName}({representationType} value) => new {emittedName}(value);"
+                    );
                     builder.AppendLine();
                 }
             }
@@ -564,50 +803,83 @@ internal sealed partial class FrameworkCSharpLowerer
             .Where(member => member.Kind == "field")
             .Select(member => member.Name)
             .ToHashSet(StringComparer.Ordinal);
-        foreach (var field in declaration.Members.Where(item => item.Kind == "field").OrderBy(item => item.Offset))
+        foreach (
+            var field in declaration
+                .Members.Where(item => item.Kind == "field")
+                .OrderBy(item => item.Offset)
+        )
         {
             if (isInterface)
             {
                 if (field.IsStatic)
                 {
-                    EmitField(builder, declaration, field, package, library, inputPath, diagnostics);
+                    EmitField(
+                        builder,
+                        declaration,
+                        field,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     continue;
                 }
                 // Interface-hosted state: abstract properties filled by the mixing class.
                 var fieldType = MapType(field.Element.Type ?? "object");
                 var fieldName = SafeIdentifier(field.Name);
-                var getterOnlyBindingField = declaration.Name == "RendererBinding" &&
-                    field.Name is "_manifold" or "pipelineOwner" or "renderView";
-                var setter = field.IsFinal || getterOnlyBindingField
-                    ? string.Empty
-                    : " set;";
+                var getterOnlyBindingField =
+                    declaration.Name == "RendererBinding"
+                    && field.Name is "_manifold" or "pipelineOwner" or "renderView";
+                var setter = field.IsFinal || getterOnlyBindingField ? string.Empty : " set;";
                 builder.AppendLine($"    {fieldType} {fieldName} {{ get;{setter} }}");
             }
             else
             {
-                EmitField(builder, declaration, field, package, library, inputPath, diagnostics, requiredMixinStorage.Contains(field.Name));
+                EmitField(
+                    builder,
+                    declaration,
+                    field,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    requiredMixinStorage.Contains(field.Name)
+                );
             }
         }
         if (!isInterface && declaration.Name == "RenderMouseRegion")
         {
-            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(this.onEnter);");
-            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(this.onExit);");
+            builder.AppendLine(
+                "    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(this.onEnter);"
+            );
+            builder.AppendLine(
+                "    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(this.onExit);"
+            );
         }
         // Concrete storage for mixin interface fields used by this class.
         if (!isMixinDeclaration)
         {
-            var emittedFieldNames = declaration.Members
-                .Where(item => item.Kind == "field")
+            var emittedFieldNames = declaration
+                .Members.Where(item => item.Kind == "field")
                 .Select(item => item.Name)
                 .ToHashSet(StringComparer.Ordinal);
-            foreach (var mixinDeclaration in ImplementationDonorDeclarations(declaration)
-                .Where(mixin => !HasPromotedClassRepresentation(mixin)))
+            foreach (
+                var mixinDeclaration in ImplementationDonorDeclarations(declaration)
+                    .Where(mixin => !HasPromotedClassRepresentation(mixin))
+            )
             {
                 var previousSubstitutions = _session.TypeParameterSubstitutions;
-                _session.TypeParameterSubstitutions = TypeParameterSubstitutions(declaration, mixinDeclaration);
+                _session.TypeParameterSubstitutions = TypeParameterSubstitutions(
+                    declaration,
+                    mixinDeclaration
+                );
                 try
                 {
-                    foreach (var field in mixinDeclaration.Members.Where(item => item.Kind == "field" && !item.IsStatic).OrderBy(item => item.Offset))
+                    foreach (
+                        var field in mixinDeclaration
+                            .Members.Where(item => item.Kind == "field" && !item.IsStatic)
+                            .OrderBy(item => item.Offset)
+                    )
                     {
                         if (!emittedFieldNames.Add(field.Name))
                         {
@@ -615,11 +887,22 @@ internal sealed partial class FrameworkCSharpLowerer
                         }
                         var previousSourceLibrary = _session.ActiveSourceLibrary;
                         var previousDonorDeclaration = _session.ActiveDonorDeclaration;
-                        _session.ActiveSourceLibrary = LibraryUriFromElementId(mixinDeclaration.Element.CanonicalId);
+                        _session.ActiveSourceLibrary = LibraryUriFromElementId(
+                            mixinDeclaration.Element.CanonicalId
+                        );
                         _session.ActiveDonorDeclaration = mixinDeclaration;
                         try
                         {
-                            EmitField(builder, mixinDeclaration, field, package, library, inputPath, diagnostics, forcePublic: true);
+                            EmitField(
+                                builder,
+                                mixinDeclaration,
+                                field,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics,
+                                forcePublic: true
+                            );
                         }
                         finally
                         {
@@ -634,80 +917,133 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
             }
         }
-        if (!isInterface && IsStructurallyImplementedClass(declaration) &&
-            !declaration.Members.Any(member => member.Kind == "constructor" && (member.Element.Parameters?.Length ?? 0) == 0))
+        if (
+            !isInterface
+            && IsStructurallyImplementedClass(declaration)
+            && !declaration.Members.Any(member =>
+                member.Kind == "constructor" && (member.Element.Parameters?.Length ?? 0) == 0
+            )
+        )
         {
             var structuralBaseCall = string.Empty;
-            if (declaration.Element.Supertype is { } structuralSupertype &&
-                FindGlobalDeclaration(structuralSupertype) is { } structuralBase)
+            if (
+                declaration.Element.Supertype is { } structuralSupertype
+                && FindGlobalDeclaration(structuralSupertype) is { } structuralBase
+            )
             {
-                var baseConstructors = structuralBase.Members
-                    .Where(member => member.Kind == "constructor")
+                var baseConstructors = structuralBase
+                    .Members.Where(member => member.Kind == "constructor")
                     .OrderBy(member => member.Offset)
                     .ToArray();
                 var baseConstructor = PrimaryGenerativeConstructor(baseConstructors);
                 var baseParameters = baseConstructor?.Element.Parameters ?? [];
-                if (baseParameters.Any(parameter => parameter.Kind is "required-named" or "required-positional"))
+                if (
+                    baseParameters.Any(parameter =>
+                        parameter.Kind is "required-named" or "required-positional"
+                    )
+                )
                 {
-                    structuralBaseCall = $" : base({string.Join(", ", baseParameters.Select(_ => "default!"))})";
+                    structuralBaseCall =
+                        $" : base({string.Join(", ", baseParameters.Select(_ => "default!"))})";
                 }
             }
             builder.AppendLine($"    public {emittedName}(){structuralBaseCall} {{ }}");
             builder.AppendLine();
         }
-        if (declaration.Members.Any(item => item.Kind == "field") ||
-            (!isMixinDeclaration && (declaration.Element.Mixins?.Length ?? 0) > 0))
+        if (
+            declaration.Members.Any(item => item.Kind == "field")
+            || (!isMixinDeclaration && (declaration.Element.Mixins?.Length ?? 0) > 0)
+        )
         {
             builder.AppendLine();
         }
-        var constructors = declaration.Members.Where(item => item.Kind == "constructor").OrderBy(item => item.Offset).ToArray();
+        var constructors = declaration
+            .Members.Where(item => item.Kind == "constructor")
+            .OrderBy(item => item.Offset)
+            .ToArray();
         if (!isInterface)
         {
             foreach (var constructor in constructors)
             {
-                EmitConstructor(builder, declaration, constructor, package, library, inputPath, diagnostics);
+                EmitConstructor(
+                    builder,
+                    declaration,
+                    constructor,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
             }
         }
         else
         {
             foreach (var constructor in constructors.Where(item => item.IsFactory))
             {
-                EmitConstructor(builder, declaration, constructor, package, library, inputPath, diagnostics);
+                EmitConstructor(
+                    builder,
+                    declaration,
+                    constructor,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
             }
         }
         var orderedMembers = declaration.Members.OrderBy(item => item.Offset).ToArray();
-        if (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration ||
-            (!isInterface && declaration.Element.IsAbstract))
+        if (
+            declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+            || (!isInterface && declaration.Element.IsAbstract)
+        )
         {
             var appliedMixinMemberNames = ImplementationDonorDeclarations(declaration)
                 .SelectMany(mixin => mixin.Members)
                 .Select(item => item.Name)
                 .ToHashSet(StringComparer.Ordinal);
-            var contractBases = declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
-                ? DirectBaseNames(declaration)
-                    .Concat(declaration.Name == "AutofillScopeMixin"
-                        ? declaration.Element.Interfaces ?? []
-                        : [])
-                    .Select(MapType)
-                    .Distinct(StringComparer.Ordinal)
-                : bases;
+            var contractBases =
+                declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                    ? DirectBaseNames(declaration)
+                        .Concat(
+                            declaration.Name == "AutofillScopeMixin"
+                                ? declaration.Element.Interfaces ?? []
+                                : []
+                        )
+                        .Select(MapType)
+                        .Distinct(StringComparer.Ordinal)
+                    : bases;
             var emittedConstraintMemberNames = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var constraint in contractBases
-                .Select(FindGlobalDeclaration)
-                .Where(candidate => candidate is not null &&
-                    (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration || WillEmitAsInterface(candidate)))
-                .Cast<CoreResolvedDeclaration>()
-                .SelectMany(InterfaceContractDeclarations)
-                .DistinctBy(candidate => candidate.Element.CanonicalId, StringComparer.Ordinal))
+            foreach (
+                var constraint in contractBases
+                    .Select(FindGlobalDeclaration)
+                    .Where(candidate =>
+                        candidate is not null
+                        && (
+                            declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                            || WillEmitAsInterface(candidate)
+                        )
+                    )
+                    .Cast<CoreResolvedDeclaration>()
+                    .SelectMany(InterfaceContractDeclarations)
+                    .DistinctBy(candidate => candidate.Element.CanonicalId, StringComparer.Ordinal)
+            )
             {
                 var constraintMembers = constraint.Members.OrderBy(item => item.Offset).ToArray();
-                foreach (var requiredMember in constraintMembers.Where(item =>
-                     item.Kind is "method" or "field" &&
-                     !item.IsStatic &&
-                     (!item.IsSetter || !constraintMembers.Any(candidate => candidate.IsGetter && candidate.Name == item.Name)) &&
-                     emittedConstraintMemberNames.Add(item.Name) &&
-                     !orderedMembers.Any(own => own.Name == item.Name) &&
-                    !appliedMixinMemberNames.Contains(item.Name)))
+                foreach (
+                    var requiredMember in constraintMembers.Where(item =>
+                        item.Kind is "method" or "field"
+                        && !item.IsStatic
+                        && (
+                            !item.IsSetter
+                            || !constraintMembers.Any(candidate =>
+                                candidate.IsGetter && candidate.Name == item.Name
+                            )
+                        )
+                        && emittedConstraintMemberNames.Add(item.Name)
+                        && !orderedMembers.Any(own => own.Name == item.Name)
+                        && !appliedMixinMemberNames.Contains(item.Name)
+                    )
+                )
                 {
                     if (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration)
                     {
@@ -724,8 +1060,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         // bodyless contracts is invalid C# and also hides the base
                         // implementation (ServicesBinding/SchedulerBinding is the
                         // representative Flutter binding-chain case).
-                        if (!WillEmitAsInterface(declaration) &&
-                            !WillEmitAsInterface(constraint))
+                        if (!WillEmitAsInterface(declaration) && !WillEmitAsInterface(constraint))
                         {
                             continue;
                         }
@@ -738,8 +1073,11 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
             }
         }
-        if (!isInterface && declaration.Name == "SelectionRegistrant" &&
-            !orderedMembers.Any(member => member.Name == "value"))
+        if (
+            !isInterface
+            && declaration.Name == "SelectionRegistrant"
+            && !orderedMembers.Any(member => member.Name == "value")
+        )
         {
             builder.AppendLine("    public abstract SelectionGeometry value { get; }");
         }
@@ -754,16 +1092,37 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
                 emittedWidgetDiagnosticsNode = true;
             }
-            EmitClassMethod(builder, declaration, method, orderedMembers, isInterface, package, library, inputPath, diagnostics);
+            EmitClassMethod(
+                builder,
+                declaration,
+                method,
+                orderedMembers,
+                isInterface,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             EmitTypedCallbackInvariantOverload(builder, declaration, method, isInterface);
         }
-        if (!isInterface && declaration.Name is "RouteInformationProvider" or "SelectionContainerDelegate")
+        if (
+            !isInterface
+            && declaration.Name is "RouteInformationProvider" or "SelectionContainerDelegate"
+        )
         {
-            builder.AppendLine("    private readonly HashSet<global::System.Action> __listeners = new();");
+            builder.AppendLine(
+                "    private readonly HashSet<global::System.Action> __listeners = new();"
+            );
             builder.AppendLine("    public virtual bool hasListeners => __listeners.Count != 0;");
-            builder.AppendLine("    public virtual void addListener(global::System.Action listener) => __listeners.Add(listener);");
-            builder.AppendLine("    public virtual void removeListener(global::System.Action listener) => __listeners.Remove(listener);");
-            builder.AppendLine("    public virtual void notifyListeners() { foreach (var listener in __listeners.ToArray()) listener(); }");
+            builder.AppendLine(
+                "    public virtual void addListener(global::System.Action listener) => __listeners.Add(listener);"
+            );
+            builder.AppendLine(
+                "    public virtual void removeListener(global::System.Action listener) => __listeners.Remove(listener);"
+            );
+            builder.AppendLine(
+                "    public virtual void notifyListeners() { foreach (var listener in __listeners.ToArray()) listener(); }"
+            );
             builder.AppendLine("    public virtual void dispose() => __listeners.Clear();");
         }
         if (!isInterface && declaration.Name == "ScrollPosition")
@@ -772,31 +1131,53 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "_WidgetStateCombo")
         {
-            builder.AppendLine(isInterface
-                ? "    public bool isSatisfiedBy(HashSet<WidgetState> states);"
-                : "    public virtual bool isSatisfiedBy(HashSet<WidgetState> states) => throw new NotSupportedException();");
+            builder.AppendLine(
+                isInterface
+                    ? "    public bool isSatisfiedBy(HashSet<WidgetState> states);"
+                    : "    public virtual bool isSatisfiedBy(HashSet<WidgetState> states) => throw new NotSupportedException();"
+            );
         }
-        if (!isInterface && declaration.Name == "State" && declaration.Element.TypeParameters is { Length: 1 })
+        if (
+            !isInterface
+            && declaration.Name == "State"
+            && declaration.Element.TypeParameters is { Length: 1 }
+        )
         {
             var stateType = SafeIdentifier(declaration.Element.TypeParameters[0].Name);
-            builder.AppendLine($"    StatefulWidget? IState._widget {{ get => _widget; set => _widget = ({stateType}?)value; }}");
-            builder.AppendLine("    _StateLifecycle__framework IState._debugLifecycleState { get => _debugLifecycleState; set => _debugLifecycleState = value; }");
-            builder.AppendLine("    StatefulElement? IState._element { get => _element; set => _element = value; }");
+            builder.AppendLine(
+                $"    StatefulWidget? IState._widget {{ get => _widget; set => _widget = ({stateType}?)value; }}"
+            );
+            builder.AppendLine(
+                "    _StateLifecycle__framework IState._debugLifecycleState { get => _debugLifecycleState; set => _debugLifecycleState = value; }"
+            );
+            builder.AppendLine(
+                "    StatefulElement? IState._element { get => _element; set => _element = value; }"
+            );
             builder.AppendLine("    StatefulWidget IState.widget => widget;");
-            builder.AppendLine($"    void IState.didUpdateWidget(StatefulWidget oldWidget) => didUpdateWidget(({stateType})oldWidget);");
-            builder.AppendLine("    public virtual void didChangeAppLifecycleState(AppLifecycleState state) { }");
+            builder.AppendLine(
+                $"    void IState.didUpdateWidget(StatefulWidget oldWidget) => didUpdateWidget(({stateType})oldWidget);"
+            );
+            builder.AppendLine(
+                "    public virtual void didChangeAppLifecycleState(AppLifecycleState state) { }"
+            );
             builder.AppendLine("    public virtual void didChangeAccessibilityFeatures() { }");
             builder.AppendLine();
         }
-        if (isInterface && string.Equals(declaration.Name, "PaintingBinding", StringComparison.Ordinal) &&
-            !orderedMembers.Any(member => member.Name == "platformDispatcher"))
+        if (
+            isInterface
+            && string.Equals(declaration.Name, "PaintingBinding", StringComparison.Ordinal)
+            && !orderedMembers.Any(member => member.Name == "platformDispatcher")
+        )
         {
             // The G4-5 graph consumes BindingBase from the reviewed Foundation
             // project instead of regenerating it. Preserve the Dart mixin's
             // `on BindingBase` requirement as an explicit CLR interface member.
             builder.AppendLine("    PlatformDispatcher platformDispatcher { get; }");
         }
-        if (isInterface && string.Equals(declaration.Name, "RendererBinding", StringComparison.Ordinal))
+        if (
+            isInterface
+            && string.Equals(declaration.Name, "RendererBinding", StringComparison.Ordinal)
+        )
         {
             // RendererBinding's Dart `on SemanticsBinding` contract is consumed
             // by _BindingPipelineManifold. The concrete application supplies it;
@@ -805,7 +1186,10 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    bool semanticsEnabled { get; }");
             builder.AppendLine("    void removeSemanticsEnabledListener(Action listener);");
         }
-        if (isInterface && string.Equals(declaration.Name, "WidgetsBinding", StringComparison.Ordinal))
+        if (
+            isInterface
+            && string.Equals(declaration.Name, "WidgetsBinding", StringComparison.Ordinal)
+        )
         {
             // WidgetsBinding is a Dart mixin constrained by the complete binding
             // chain. CLR interfaces cannot inherit that class chain, so retain the
@@ -813,13 +1197,25 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    PlatformDispatcher platformDispatcher { get; }");
             builder.AppendLine("    AppLifecycleState? lifecycleState { get; }");
             builder.AppendLine("    bool debugCheckZone(string entryPoint);");
-            builder.AppendLine("    void addPostFrameCallback(global::System.Action<Duration> callback, string debugLabel = \"callback\");");
+            builder.AppendLine(
+                "    void addPostFrameCallback(global::System.Action<Duration> callback, string debugLabel = \"callback\");"
+            );
             builder.AppendLine("    void scheduleWarmUpFrame();");
-            builder.AppendLine("    IEnumerable<global::Doroti.Framework.Rendering.RenderView> renderViews { get; }");
-            builder.AppendLine("    void hitTestInView(global::Doroti.Framework.Gestures.HitTestResult result, Offset position, long viewId);");
-            builder.AppendLine("    DorotiView window => platformDispatcher.implicitView ?? throw new InvalidOperationException(\"WidgetsBinding.window requires exactly one Flutter view.\");");
-            builder.AppendLine("    Future endOfFrame => global::Doroti.Framework.Scheduler.SchedulerBinding.instance.endOfFrame;");
-            builder.AppendLine("    void cancelPointer(long pointer) => global::Doroti.Framework.Gestures.GestureBinding.instance.cancelPointer(pointer);");
+            builder.AppendLine(
+                "    IEnumerable<global::Doroti.Framework.Rendering.RenderView> renderViews { get; }"
+            );
+            builder.AppendLine(
+                "    void hitTestInView(global::Doroti.Framework.Gestures.HitTestResult result, Offset position, long viewId);"
+            );
+            builder.AppendLine(
+                "    DorotiView window => platformDispatcher.implicitView ?? throw new InvalidOperationException(\"WidgetsBinding.window requires exactly one Flutter view.\");"
+            );
+            builder.AppendLine(
+                "    Future endOfFrame => global::Doroti.Framework.Scheduler.SchedulerBinding.instance.endOfFrame;"
+            );
+            builder.AppendLine(
+                "    void cancelPointer(long pointer) => global::Doroti.Framework.Gestures.GestureBinding.instance.cancelPointer(pointer);"
+            );
         }
         if (!isInterface)
         {
@@ -827,28 +1223,50 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Where(item => item.Kind == "method")
                 .Select(MethodSignatureKey)
                 .ToHashSet(StringComparer.Ordinal);
-            foreach (var mixinDeclaration in ImplementationDonorDeclarations(declaration)
-                .Where(mixin => !HasPromotedClassRepresentation(mixin)))
+            foreach (
+                var mixinDeclaration in ImplementationDonorDeclarations(declaration)
+                    .Where(mixin => !HasPromotedClassRepresentation(mixin))
+            )
             {
                 var previousSubstitutions = _session.TypeParameterSubstitutions;
-                _session.TypeParameterSubstitutions = TypeParameterSubstitutions(declaration, mixinDeclaration);
+                _session.TypeParameterSubstitutions = TypeParameterSubstitutions(
+                    declaration,
+                    mixinDeclaration
+                );
                 try
                 {
-                    var mixinMembers = mixinDeclaration.Members.OrderBy(item => item.Offset).ToArray();
-                    foreach (var method in mixinMembers.Where(item =>
-                                 item.Kind == "method" &&
-                                 !item.IsStatic &&
-                                 !item.IsAbstract &&
-                                 !orderedMembers.Any(own => own.Name == item.Name) &&
-                                 emittedMethodSignatures.Add(MethodSignatureKey(item))))
+                    var mixinMembers = mixinDeclaration
+                        .Members.OrderBy(item => item.Offset)
+                        .ToArray();
+                    foreach (
+                        var method in mixinMembers.Where(item =>
+                            item.Kind == "method"
+                            && !item.IsStatic
+                            && !item.IsAbstract
+                            && !orderedMembers.Any(own => own.Name == item.Name)
+                            && emittedMethodSignatures.Add(MethodSignatureKey(item))
+                        )
+                    )
                     {
                         var previousSourceLibrary = _session.ActiveSourceLibrary;
                         var previousDonorDeclaration = _session.ActiveDonorDeclaration;
-                        _session.ActiveSourceLibrary = LibraryUriFromElementId(mixinDeclaration.Element.CanonicalId);
+                        _session.ActiveSourceLibrary = LibraryUriFromElementId(
+                            mixinDeclaration.Element.CanonicalId
+                        );
                         _session.ActiveDonorDeclaration = mixinDeclaration;
                         try
                         {
-                            EmitClassMethod(builder, declaration, method, mixinMembers, false, package, library, inputPath, diagnostics);
+                            EmitClassMethod(
+                                builder,
+                                declaration,
+                                method,
+                                mixinMembers,
+                                false,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                         }
                         finally
                         {
@@ -865,11 +1283,15 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "RenderingFlutterBinding")
         {
-            builder.AppendLine("    public void handleMetricsChanged(DorotiView _) => handleMetricsChanged();");
+            builder.AppendLine(
+                "    public void handleMetricsChanged(DorotiView _) => handleMetricsChanged();"
+            );
         }
         if (!isInterface && declaration.Name == "MultiChildRenderObjectWidget")
         {
-            builder.AppendLine("    protected MultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }");
+            builder.AppendLine(
+                "    protected MultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }"
+            );
         }
         if (!isInterface && declaration.Name == "InheritedWidget")
         {
@@ -877,7 +1299,9 @@ internal sealed partial class FrameworkCSharpLowerer
             // shorthand. The canonical generated constructor keeps the named
             // key/child API, while this forwarding overload preserves that Dart
             // positional base-initializer form.
-            builder.AppendLine("    protected InheritedWidget(Widget child) : this(null, child) { }");
+            builder.AppendLine(
+                "    protected InheritedWidget(Widget child) : this(null, child) { }"
+            );
         }
         if (!isInterface && declaration.Name == "GlobalKey")
         {
@@ -885,45 +1309,81 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "Velocity")
         {
-            builder.AppendLine("    public static Velocity operator -(Velocity value) => value.op_Subtract();");
+            builder.AppendLine(
+                "    public static Velocity operator -(Velocity value) => value.op_Subtract();"
+            );
         }
         if (!isInterface && declaration.Name == "_ReorderableItemGlobalKey")
         {
-            builder.AppendLine("    internal static _ReorderableItemGlobalKey__reorderable_list Create(global::Doroti.Framework.Foundation.Key key, long index, SliverReorderableListState state) => new(key, index, state);");
+            builder.AppendLine(
+                "    internal static _ReorderableItemGlobalKey__reorderable_list Create(global::Doroti.Framework.Foundation.Key key, long index, SliverReorderableListState state) => new(key, index, state);"
+            );
         }
-        if (!isInterface && bases.Any(b => b == "IEnumerable" || b.StartsWith("IEnumerable<", StringComparison.Ordinal)))
+        if (
+            !isInterface
+            && bases.Any(b =>
+                b == "IEnumerable" || b.StartsWith("IEnumerable<", StringComparison.Ordinal)
+            )
+        )
         {
-            builder.AppendLine("    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();");
+            builder.AppendLine(
+                "    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();"
+            );
         }
-        if (!isInterface && bases.FirstOrDefault(b => b.StartsWith("IEnumerator<", StringComparison.Ordinal)) is { } iteratorBase)
+        if (
+            !isInterface
+            && bases.FirstOrDefault(b => b.StartsWith("IEnumerator<", StringComparison.Ordinal))
+                is { } iteratorBase
+        )
         {
             var iteratorType = iteratorBase["IEnumerator<".Length..^1];
-            builder.AppendLine($"    {iteratorType} IEnumerator<{iteratorType}>.Current => current;");
+            builder.AppendLine(
+                $"    {iteratorType} IEnumerator<{iteratorType}>.Current => current;"
+            );
             builder.AppendLine("    object System.Collections.IEnumerator.Current => current!;");
             builder.AppendLine("    bool System.Collections.IEnumerator.MoveNext() => moveNext();");
-            builder.AppendLine("    void System.Collections.IEnumerator.Reset() => throw new NotSupportedException();");
+            builder.AppendLine(
+                "    void System.Collections.IEnumerator.Reset() => throw new NotSupportedException();"
+            );
             builder.AppendLine("    void IDisposable.Dispose() { }");
         }
-        if (!isInterface && bases.FirstOrDefault(item => item.StartsWith("IComparable<", StringComparison.Ordinal)) is { } comparableBase &&
-            orderedMembers.Any(member => member.Name == "compareTo"))
+        if (
+            !isInterface
+            && bases.FirstOrDefault(item =>
+                item.StartsWith("IComparable<", StringComparison.Ordinal)
+            )
+                is { } comparableBase
+            && orderedMembers.Any(member => member.Name == "compareTo")
+        )
         {
             var comparableType = comparableBase["IComparable<".Length..^1];
-            builder.AppendLine($"    public int CompareTo({comparableType}? other) => checked((int)compareTo(other!));");
+            builder.AppendLine(
+                $"    public int CompareTo({comparableType}? other) => checked((int)compareTo(other!));"
+            );
         }
-        if (!isInterface && declaration.Name == "PointerEvent" &&
-            !orderedMembers.Any(member => member.Name == "toDiagnosticsNode"))
+        if (
+            !isInterface
+            && declaration.Name == "PointerEvent"
+            && !orderedMembers.Any(member => member.Name == "toDiagnosticsNode")
+        )
         {
             // Diagnosticable is a CLR interface with default implementations.
             // Pointer-event subclasses call these Dart-inherited members as
             // concrete methods, so expose the bridge once on the family root.
-            builder.AppendLine("    public DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null) =>");
+            builder.AppendLine(
+                "    public DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null) =>"
+            );
             builder.AppendLine("        ((Diagnosticable)this).toDiagnosticsNode(name, style);");
-            builder.AppendLine("    public virtual string toStringShort() => ((Diagnosticable)this).toStringShort();");
+            builder.AppendLine(
+                "    public virtual string toStringShort() => ((Diagnosticable)this).toStringShort();"
+            );
         }
         if (!isInterface && declaration.Name is "PointerEnterEvent" or "PointerExitEvent")
         {
             var uiEventType = $"global::Doroti.Ui.{declaration.Name}";
-            builder.AppendLine($"    public static implicit operator {uiEventType}({declaration.Name} value) => new()");
+            builder.AppendLine(
+                $"    public static implicit operator {uiEventType}({declaration.Name} value) => new()"
+            );
             builder.AppendLine("    {");
             builder.AppendLine("        pointer = value.pointer,");
             builder.AppendLine("        embedderId = value.embedderId,");
@@ -947,10 +1407,16 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("        _transforms = result._transforms;");
             builder.AppendLine("        _localTransforms = result._localTransforms;");
             builder.AppendLine("    }");
-            builder.AppendLine("    public virtual void add<T>(HitTestEntry<T> entry) where T : HitTestTarget");
+            builder.AppendLine(
+                "    public virtual void add<T>(HitTestEntry<T> entry) where T : HitTestTarget"
+            );
             builder.AppendLine("    {");
-            builder.AppendLine("        DartRuntimePrimitives.Assert(() => entry._transform is null);");
-            builder.AppendLine("        var compatibleEntry = new HitTestEntry<HitTestTarget>(entry.target)");
+            builder.AppendLine(
+                "        DartRuntimePrimitives.Assert(() => entry._transform is null);"
+            );
+            builder.AppendLine(
+                "        var compatibleEntry = new HitTestEntry<HitTestTarget>(entry.target)"
+            );
             builder.AppendLine("        {");
             builder.AppendLine("            _transform = _lastTransform,");
             builder.AppendLine("        };");
@@ -958,17 +1424,28 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("        _path.Add(compatibleEntry);");
             builder.AppendLine("    }");
         }
-        if (!isInterface && bases.Any(item => StripLibraryPrefix(item).Split('<')[0] == "DiagnosticableTree") &&
-            !orderedMembers.Any(member => member.Name == "toStringDeep"))
+        if (
+            !isInterface
+            && bases.Any(item => StripLibraryPrefix(item).Split('<')[0] == "DiagnosticableTree")
+            && !orderedMembers.Any(member => member.Name == "toStringDeep")
+        )
         {
-            builder.AppendLine("    public virtual string toStringDeep(string prefixLineOne = \"\", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = null) =>");
-            builder.AppendLine("        ((DiagnosticableTree)this).toStringDeep(prefixLineOne, prefixOtherLines, minLevel, wrapWidth);");
+            builder.AppendLine(
+                "    public virtual string toStringDeep(string prefixLineOne = \"\", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = null) =>"
+            );
+            builder.AppendLine(
+                "        ((DiagnosticableTree)this).toStringDeep(prefixLineOne, prefixOtherLines, minLevel, wrapWidth);"
+            );
         }
         if (!isInterface && isPlatformNetworkImage)
         {
-            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, DecoderBufferCallback decode) =>");
+            builder.AppendLine(
+                "    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, DecoderBufferCallback decode) =>"
+            );
             builder.AppendLine($"        loadBuffer(({emittedName})key, decode);");
-            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, ImageDecoderCallback decode) =>");
+            builder.AppendLine(
+                "    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, ImageDecoderCallback decode) =>"
+            );
             builder.AppendLine($"        loadImage(({emittedName})key, decode);");
         }
         builder.AppendLine("}");
@@ -982,24 +1459,42 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var parameters = constructor.Element.Parameters ?? [];
         var visibility = ConstructorVisibility(declaration, constructor);
 
-        var constructors = declaration.Members.Where(item => item.Kind == "constructor").OrderBy(item => item.Offset).ToArray();
+        var constructors = declaration
+            .Members.Where(item => item.Kind == "constructor")
+            .OrderBy(item => item.Offset)
+            .ToArray();
         var primaryConstructor = PrimaryGenerativeConstructor(constructors);
-        var primaryHasRedirectSignatureCollision = constructor == primaryConstructor &&
-            constructors.Any(candidate => candidate != primaryConstructor &&
-                !candidate.IsFactory && candidate.Name == "new" &&
-                DescendantsAndSelf(candidate.Ast).Any(node => node.Kind == CoreNodeKind.RedirectingConstructorInvocation) &&
-                SameMappedParameterTypes(candidate.Element.Parameters ?? [], primaryConstructor?.Element.Parameters ?? []));
-        var generativeRedirect = !constructor.IsFactory && constructor.Name == "new"
-            ? DescendantsAndSelf(constructor.Ast)
-                .FirstOrDefault(item => item.Kind == CoreNodeKind.RedirectingConstructorInvocation)
-            : null;
-        if (generativeRedirect is not null && constructor != primaryConstructor &&
-            primaryConstructor is { IsFactory: false })
+        var primaryHasRedirectSignatureCollision =
+            constructor == primaryConstructor
+            && constructors.Any(candidate =>
+                candidate != primaryConstructor
+                && !candidate.IsFactory
+                && candidate.Name == "new"
+                && DescendantsAndSelf(candidate.Ast)
+                    .Any(node => node.Kind == CoreNodeKind.RedirectingConstructorInvocation)
+                && SameMappedParameterTypes(
+                    candidate.Element.Parameters ?? [],
+                    primaryConstructor?.Element.Parameters ?? []
+                )
+            );
+        var generativeRedirect =
+            !constructor.IsFactory && constructor.Name == "new"
+                ? DescendantsAndSelf(constructor.Ast)
+                    .FirstOrDefault(item =>
+                        item.Kind == CoreNodeKind.RedirectingConstructorInvocation
+                    )
+                : null;
+        if (
+            generativeRedirect is not null
+            && constructor != primaryConstructor
+            && primaryConstructor is { IsFactory: false }
+        )
         {
             // An unnamed generative redirect remains a real CLR constructor:
             // derived classes bind their super-formals to this signature. A
@@ -1009,21 +1504,35 @@ internal sealed partial class FrameworkCSharpLowerer
             var primaryParameters = primaryConstructor.Element.Parameters ?? [];
             EmitArguments(
                 redirectedArguments,
-                generativeRedirect.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList),
+                generativeRedirect.Children.FirstOrDefault(item =>
+                    item.Kind == CoreNodeKind.ArgumentList
+                ),
                 declaration,
                 package,
                 library,
                 inputPath,
                 diagnostics,
                 expectedParameters: primaryParameters,
-                expectedArgumentTypes: primaryParameters.Select(item => MapType(item.Type)).ToArray());
-            builder.Append("    ").Append(visibility).Append(' ')
-                .Append(EmittedTypeName(library, declaration.Name)).Append('(')
-                .Append(string.Join(", ", MapParameters(parameters))).Append(") : this(")
+                expectedArgumentTypes: primaryParameters
+                    .Select(item => MapType(item.Type))
+                    .ToArray()
+            );
+            builder
+                .Append("    ")
+                .Append(visibility)
+                .Append(' ')
+                .Append(EmittedTypeName(library, declaration.Name))
+                .Append('(')
+                .Append(string.Join(", ", MapParameters(parameters)))
+                .Append(") : this(")
                 .Append(redirectedArguments.RenderFragment());
             if (SameMappedParameterTypes(parameters, primaryParameters))
             {
-                if (parameters.Length > 0) builder.Append(", ");
+                if (parameters.Length > 0)
+                {
+                    builder.Append(", ");
+                }
+
                 builder.Append("__dorotiPrimary: true");
             }
             builder.AppendLine(")");
@@ -1037,25 +1546,40 @@ internal sealed partial class FrameworkCSharpLowerer
         // initialized by the constructor that actually declares them.
         // Skip this when the primary is itself a factory
         // (e.g. _CriticalSolution factory + withArgs generative) — emit a real ctor.
-        if (!constructor.IsFactory && constructors.Length > 1 && constructor != primaryConstructor &&
-            primaryConstructor is { IsFactory: false })
+        if (
+            !constructor.IsFactory
+            && constructors.Length > 1
+            && constructor != primaryConstructor
+            && primaryConstructor is { IsFactory: false }
+        )
         {
-            var namedClassName = EmittedTypeName(library, declaration.Name) + FormatTypeParameters(declaration.Element.TypeParameters);
-            var methodName = constructor.Name == "new" ? "Create" : NamedConstructorMethodName(constructor.Name);
+            var namedClassName =
+                EmittedTypeName(library, declaration.Name)
+                + FormatTypeParameters(declaration.Element.TypeParameters);
+            var methodName =
+                constructor.Name == "new" ? "Create" : NamedConstructorMethodName(constructor.Name);
             if (constructor.Name == "wrap" && parameters is [{ IsSuperFormal: true } wrapParameter])
             {
-                builder.AppendLine($"    private {namedClassName}({string.Join(", ", MapParameters(parameters))}) : base({SafeIdentifier(wrapParameter.Name)})");
+                builder.AppendLine(
+                    $"    private {namedClassName}({string.Join(", ", MapParameters(parameters))}) : base({SafeIdentifier(wrapParameter.Name)})"
+                );
                 builder.AppendLine("    {");
                 builder.AppendLine("    }");
-                builder.AppendLine($"    public static {namedClassName} CreateWrap({string.Join(", ", MapParameters(parameters))}) => new {namedClassName}({SafeIdentifier(wrapParameter.Name)});");
+                builder.AppendLine(
+                    $"    public static {namedClassName} CreateWrap({string.Join(", ", MapParameters(parameters))}) => new {namedClassName}({SafeIdentifier(wrapParameter.Name)});"
+                );
                 builder.AppendLine();
                 return;
             }
-            builder.AppendLine($"    {visibility} static {namedClassName} {methodName}({string.Join(", ", MapParameters(parameters))})");
+            builder.AppendLine(
+                $"    {visibility} static {namedClassName} {methodName}({string.Join(", ", MapParameters(parameters))})"
+            );
             builder.AppendLine("    {");
             if (declaration.Element.IsAbstract)
             {
-                builder.AppendLine("        throw new InvalidOperationException(\"Dart abstract constructors cannot be invoked directly.\");");
+                builder.AppendLine(
+                    "        throw new InvalidOperationException(\"Dart abstract constructors cannot be invoked directly.\");"
+                );
                 builder.AppendLine("    }");
                 builder.AppendLine();
                 return;
@@ -1064,25 +1588,37 @@ internal sealed partial class FrameworkCSharpLowerer
                 .FirstOrDefault(item => item.Kind == CoreNodeKind.RedirectingConstructorInvocation);
             if (redirect is not null)
             {
-                var targetName = redirect.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier)
-                    ?.Text(CoreProperty.name) ?? primaryConstructor.Name;
-                var targetCall = string.Equals(targetName, primaryConstructor.Name, StringComparison.Ordinal)
+                var targetName =
+                    redirect
+                        .Children.FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier)
+                        ?.Text(CoreProperty.name)
+                    ?? primaryConstructor.Name;
+                var targetCall = string.Equals(
+                    targetName,
+                    primaryConstructor.Name,
+                    StringComparison.Ordinal
+                )
                     ? $"new {namedClassName}"
                     : $"{namedClassName}.{NamedConstructorMethodName(targetName)}";
                 builder.Append("        return ").Append(targetCall).Append('(');
                 var redirectedPrimaryParameters = primaryConstructor.Element.Parameters ?? [];
                 EmitArguments(
                     builder,
-                    redirect.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList),
+                    redirect.Children.FirstOrDefault(item =>
+                        item.Kind == CoreNodeKind.ArgumentList
+                    ),
                     declaration,
                     package,
                     library,
                     inputPath,
                     diagnostics,
                     expectedParameters: redirectedPrimaryParameters,
-                    expectedArgumentTypes: redirectedPrimaryParameters.Select(item => MapType(item.Type)).ToArray(),
+                    expectedArgumentTypes: redirectedPrimaryParameters
+                        .Select(item => MapType(item.Type))
+                        .ToArray(),
                     invocationName: namedClassName,
-                    nullAsGenericDefault: ContainsUnboundTypeParameter(namedClassName));
+                    nullAsGenericDefault: ContainsUnboundTypeParameter(namedClassName)
+                );
                 builder.AppendLine(");");
                 builder.AppendLine("    }");
                 builder.AppendLine();
@@ -1101,35 +1637,49 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Select(item => item.Name)
                 .ToHashSet(StringComparer.Ordinal);
             var forwardedPrimaryArguments = primaryParameters
-                .Where(item => availableParameterNames.Contains(item.Name) ||
-                    NeedsRuntimeDefaultRestore(item) ||
-                    item.Kind is not "optional-named" and not "optional-positional")
-                .Select(item => availableParameterNames.Contains(item.Name)
-                    ? $"{SafeIdentifier(item.Name)}: {SafeIdentifier(item.Name)}"
+                .Where(item =>
+                    availableParameterNames.Contains(item.Name)
+                    || NeedsRuntimeDefaultRestore(item)
+                    || item.Kind is not "optional-named" and not "optional-positional"
+                )
+                .Select(item =>
+                    availableParameterNames.Contains(item.Name)
+                        ? $"{SafeIdentifier(item.Name)}: {SafeIdentifier(item.Name)}"
                     : NeedsRuntimeDefaultRestore(item)
                         ? $"{SafeIdentifier(item.Name)}: {MapParameterRuntimeDefault(item, library)}"
-                        : $"{SafeIdentifier(item.Name)}: default!");
-            builder.AppendLine($"        var __instance = new {namedClassName}({string.Join(", ", forwardedPrimaryArguments)});");
+                    : $"{SafeIdentifier(item.Name)}: default!"
+                );
+            builder.AppendLine(
+                $"        var __instance = new {namedClassName}({string.Join(", ", forwardedPrimaryArguments)});"
+            );
             var restoredValueParameters = parameters.Where(NeedsRuntimeDefaultRestore).ToArray();
             foreach (var parameter in restoredValueParameters)
             {
                 var mappedParameterType = MapType(parameter.Type);
                 var mappedDefault = MapParameterRuntimeDefault(parameter, library);
                 builder.AppendLine(
-                    $"        {mappedParameterType} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {mappedDefault};");
+                    $"        {mappedParameterType} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {mappedDefault};"
+                );
             }
             foreach (var parameter in parameters.Where(item => item.IsInitializingFormal))
             {
-                var parameterField = declaration.Members.FirstOrDefault(member => member.Kind == "field" && member.Name == parameter.Name);
-                var targetName = parameterField is { IsFinal: true } && HasOverridableBaseMember(declaration, parameterField)
-                    ? "__field_" + SafeIdentifier(parameter.Name).TrimStart('@')
-                    : SafeIdentifier(parameter.Name);
+                var parameterField = declaration.Members.FirstOrDefault(member =>
+                    member.Kind == "field" && member.Name == parameter.Name
+                );
+                var targetName =
+                    parameterField is { IsFinal: true }
+                    && HasOverridableBaseMember(declaration, parameterField)
+                        ? "__field_" + SafeIdentifier(parameter.Name).TrimStart('@')
+                        : SafeIdentifier(parameter.Name);
                 var sourceName = restoredValueParameters.Contains(parameter)
                     ? SyntheticIdentifier(parameter.Name)
                     : SafeIdentifier(parameter.Name);
                 builder.AppendLine($"        __instance.{targetName} = {sourceName};");
             }
-            foreach (var initializer in DescendantsAndSelf(constructor.Ast).Where(item => item.Kind == CoreNodeKind.ConstructorFieldInitializer))
+            foreach (
+                var initializer in DescendantsAndSelf(constructor.Ast)
+                    .Where(item => item.Kind == CoreNodeKind.ConstructorFieldInitializer)
+            )
             {
                 var fieldName = initializer.Text(CoreProperty.fieldName);
                 var value = initializer.Child(CoreChildRole.expressionOffset);
@@ -1137,31 +1687,55 @@ internal sealed partial class FrameworkCSharpLowerer
                 {
                     continue;
                 }
-                var initializedField = declaration.Members.FirstOrDefault(member => member.Name == fieldName);
-                var initializedTarget = initializedField is { IsFinal: true } && HasOverridableBaseMember(declaration, initializedField)
-                    ? "__field_" + SafeIdentifier(fieldName).TrimStart('@')
-                    : SafeIdentifier(fieldName);
+                var initializedField = declaration.Members.FirstOrDefault(member =>
+                    member.Name == fieldName
+                );
+                var initializedTarget =
+                    initializedField is { IsFinal: true }
+                    && HasOverridableBaseMember(declaration, initializedField)
+                        ? "__field_" + SafeIdentifier(fieldName).TrimStart('@')
+                        : SafeIdentifier(fieldName);
                 builder.Append($"        __instance.{initializedTarget} = ");
-                var restoredParameter = value.Kind == CoreNodeKind.SimpleIdentifier
-                    ? restoredValueParameters.FirstOrDefault(parameter =>
-                        string.Equals(parameter.Name, value.Text(CoreProperty.name), StringComparison.Ordinal))
-                    : null;
+                var restoredParameter =
+                    value.Kind == CoreNodeKind.SimpleIdentifier
+                        ? restoredValueParameters.FirstOrDefault(parameter =>
+                            string.Equals(
+                                parameter.Name,
+                                value.Text(CoreProperty.name),
+                                StringComparison.Ordinal
+                            )
+                        )
+                        : null;
                 if (restoredParameter is not null)
                 {
                     builder.Append(SyntheticIdentifier(restoredParameter.Name));
                 }
                 else
                 {
-                    LowerExpression(builder, value, declaration, package, library, inputPath, diagnostics);
-                    if (fieldName == "displayFeatures" &&
-                        DescendantsAndSelf(value).Any(item => item.Text(CoreProperty.name) == "displayFeatures"))
+                    LowerExpression(
+                        builder,
+                        value,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
+                    if (
+                        fieldName == "displayFeatures"
+                        && DescendantsAndSelf(value)
+                            .Any(item => item.Text(CoreProperty.name) == "displayFeatures")
+                    )
                     {
                         builder.Append(".ToList()");
                     }
                 }
                 builder.AppendLine(";");
             }
-            var constructorBody = constructor.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody) is { } bodyNode
+            var constructorBody = constructor.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            )
+                is { } bodyNode
                 ? bodyNode.Child(CoreChildRole.blockOffset)
                 : null;
             if (constructorBody is not null)
@@ -1171,11 +1745,23 @@ internal sealed partial class FrameworkCSharpLowerer
                 try
                 {
                     var emittedBody = new CsSyntaxBuilder();
-                    EmitBlockBody(emittedBody, constructorBody, declaration, package, library, inputPath, diagnostics, 2);
+                    EmitBlockBody(
+                        emittedBody,
+                        constructorBody,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics,
+                        2
+                    );
                     var bodySyntax = emittedBody.Build();
                     foreach (var parameter in restoredValueParameters)
                     {
-                        bodySyntax = bodySyntax.RenameIdentifier(SafeIdentifier(parameter.Name), SyntheticIdentifier(parameter.Name));
+                        bodySyntax = bodySyntax.RenameIdentifier(
+                            SafeIdentifier(parameter.Name),
+                            SyntheticIdentifier(parameter.Name)
+                        );
                     }
                     builder.Append(bodySyntax);
                 }
@@ -1192,93 +1778,178 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (constructor.IsFactory)
         {
-            var methodName = constructor.Name == "new" ? "Create" : NamedConstructorMethodName(constructor.Name);
+            var methodName =
+                constructor.Name == "new" ? "Create" : NamedConstructorMethodName(constructor.Name);
             var returnType = MapType(constructor.Element.ReturnType ?? declaration.Name);
-            var expressionBody = constructor.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-            var blockBody = constructor.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
-            var expression = expressionBody is null ? null : expressionBody.Child(CoreChildRole.expressionOffset);
+            var expressionBody = constructor.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ExpressionFunctionBody
+            );
+            var blockBody = constructor.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            );
+            var expression = expressionBody is null
+                ? null
+                : expressionBody.Child(CoreChildRole.expressionOffset);
             var block = blockBody is null ? null : blockBody.Child(CoreChildRole.blockOffset);
             if (expression is not null)
             {
-                builder.Append($"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))}) => ");
+                builder.Append(
+                    $"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))}) => "
+                );
                 var expressionType = MapType(expression.StaticType ?? string.Empty);
-                var needsCheckedCast = returnType.TrimEnd('?') is not ("object" or "dynamic" or "void") &&
-                    expressionType.TrimEnd('?') is not ("object" or "dynamic" or "void") &&
-                    !IsValueType(returnType.TrimEnd('?')) &&
-                    !IsValueType(expressionType.TrimEnd('?')) &&
-                    !string.Equals(returnType.TrimEnd('?'), expressionType.TrimEnd('?'), StringComparison.Ordinal);
+                var needsCheckedCast =
+                    returnType.TrimEnd('?') is not ("object" or "dynamic" or "void")
+                    && expressionType.TrimEnd('?') is not ("object" or "dynamic" or "void")
+                    && !IsValueType(returnType.TrimEnd('?'))
+                    && !IsValueType(expressionType.TrimEnd('?'))
+                    && !string.Equals(
+                        returnType.TrimEnd('?'),
+                        expressionType.TrimEnd('?'),
+                        StringComparison.Ordinal
+                    );
                 if (needsCheckedCast)
                 {
                     // Preserve the Dart expression's nullability while bridging
                     // CLR representations. A nullable object cast loses the flow
                     // state even for a freshly constructed, non-null instance.
                     builder.Append("((").Append(returnType).Append(")(object");
-                    if (expressionType.EndsWith("?", StringComparison.Ordinal)) builder.Append('?');
+                    if (expressionType.EndsWith("?", StringComparison.Ordinal))
+                    {
+                        builder.Append('?');
+                    }
+
                     builder.Append(')');
                 }
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
-                if (needsCheckedCast) builder.Append(')');
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
+                if (needsCheckedCast)
+                {
+                    builder.Append(')');
+                }
+
                 builder.AppendLine(";");
                 builder.AppendLine();
                 return;
             }
             if (block is not null)
             {
-                builder.AppendLine($"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))})");
+                builder.AppendLine(
+                    $"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))})"
+                );
                 builder.AppendLine("    {");
-                var restoredValueParameters = parameters.Where(NeedsRuntimeDefaultRestore).ToArray();
+                var restoredValueParameters = parameters
+                    .Where(NeedsRuntimeDefaultRestore)
+                    .ToArray();
                 foreach (var parameter in restoredValueParameters)
                 {
                     builder.AppendLine(
-                        $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};");
+                        $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};"
+                    );
                 }
                 var emittedBody = new CsSyntaxBuilder();
-                EmitBlockBody(emittedBody, block, declaration, package, library, inputPath, diagnostics, 2);
+                EmitBlockBody(
+                    emittedBody,
+                    block,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2
+                );
                 var bodySyntax = emittedBody.Build();
                 foreach (var parameter in restoredValueParameters)
                 {
-                    bodySyntax = bodySyntax.RenameIdentifier(SafeIdentifier(parameter.Name), SyntheticIdentifier(parameter.Name));
+                    bodySyntax = bodySyntax.RenameIdentifier(
+                        SafeIdentifier(parameter.Name),
+                        SyntheticIdentifier(parameter.Name)
+                    );
                 }
                 builder.Append(bodySyntax);
                 builder.AppendLine("    }");
                 builder.AppendLine();
                 return;
             }
-            var redirectName = DescendantsAndSelf(constructor.Ast).FirstOrDefault(item => item.Kind == CoreNodeKind.ConstructorName);
+            var redirectName = DescendantsAndSelf(constructor.Ast)
+                .FirstOrDefault(item => item.Kind == CoreNodeKind.ConstructorName);
             if (redirectName is null)
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, constructor.Ast,
-                    "factory-redirect-target", "Add typed factory redirect target resolution.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    constructor.Ast,
+                    "factory-redirect-target",
+                    "Add typed factory redirect target resolution."
+                );
                 return;
             }
             var targetType = MapRedirectTargetType(redirectName, declaration);
-            var redirectConstructor = redirectName.Children
-                .FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier)
+            var redirectConstructor = redirectName
+                .Children.FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier)
                 ?.Text(CoreProperty.name);
-            var targetCall = !string.IsNullOrEmpty(redirectConstructor) &&
-                TryResolveEmittedNamedConstructor(targetType, redirectConstructor, out var redirectFactory)
+            var targetCall =
+                !string.IsNullOrEmpty(redirectConstructor)
+                && TryResolveEmittedNamedConstructor(
+                    targetType,
+                    redirectConstructor,
+                    out var redirectFactory
+                )
                     ? $"{targetType}.{redirectFactory}"
                     : $"new {targetType}";
-            builder.AppendLine($"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))})");
-            var redirectExpression = $"{targetCall}({string.Join(", ", parameters.Select(item => SafeIdentifier(item.Name)))})";
-            var redirectRequiresCheckedCast = returnType.TrimEnd('?') is not ("object" or "dynamic" or "void") &&
-                !string.Equals(returnType.TrimEnd('?'), targetType.TrimEnd('?'), StringComparison.Ordinal);
-            builder.AppendLine(redirectRequiresCheckedCast
-                ? $"        => (({returnType})(object?){redirectExpression});"
-                : $"        => {redirectExpression};");
+            builder.AppendLine(
+                $"    {visibility} static {returnType} {methodName}({string.Join(", ", MapParameters(parameters))})"
+            );
+            var redirectExpression =
+                $"{targetCall}({string.Join(", ", parameters.Select(item => SafeIdentifier(item.Name)))})";
+            var redirectRequiresCheckedCast =
+                returnType.TrimEnd('?') is not ("object" or "dynamic" or "void")
+                && !string.Equals(
+                    returnType.TrimEnd('?'),
+                    targetType.TrimEnd('?'),
+                    StringComparison.Ordinal
+                );
+            builder.AppendLine(
+                redirectRequiresCheckedCast
+                    ? $"        => (({returnType})(object?){redirectExpression});"
+                    : $"        => {redirectExpression};"
+            );
             builder.AppendLine();
             return;
         }
 
         var emittedClassName = EmittedTypeName(library, declaration.Name);
-        var baseCall = BuildBaseInitializer(constructor.Ast, parameters, declaration, package, library, inputPath, diagnostics);
+        var baseCall = BuildBaseInitializer(
+            constructor.Ast,
+            parameters,
+            declaration,
+            package,
+            library,
+            inputPath,
+            diagnostics
+        );
         var mappedConstructorParameters = string.Join(", ", MapParameters(parameters));
         if (primaryHasRedirectSignatureCollision)
         {
-            if (mappedConstructorParameters.Length > 0) mappedConstructorParameters += ", ";
+            if (mappedConstructorParameters.Length > 0)
+            {
+                mappedConstructorParameters += ", ";
+            }
+
             mappedConstructorParameters += "bool __dorotiPrimary";
         }
-        builder.AppendLine($"    {visibility} {emittedClassName}({mappedConstructorParameters}){baseCall}");
+        builder.AppendLine(
+            $"    {visibility} {emittedClassName}({mappedConstructorParameters}){baseCall}"
+        );
         builder.AppendLine("    {");
         var restoredConstructorParameters = parameters
             .Where(parameter => NeedsRuntimeDefaultRestore(parameter) && !parameter.IsSuperFormal)
@@ -1286,28 +1957,59 @@ internal sealed partial class FrameworkCSharpLowerer
         foreach (var parameter in restoredConstructorParameters)
         {
             builder.AppendLine(
-                $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};");
+                $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};"
+            );
         }
-        if (declaration.Ast.Kind == CoreNodeKind.ExtensionTypeDeclaration &&
-            DescendantsAndSelf(constructor.Ast).FirstOrDefault(item => item.Kind == CoreNodeKind.RedirectingConstructorInvocation) is { } extensionRedirect &&
-            declaration.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.RepresentationDeclaration) is { } representation &&
-            extensionRedirect.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList)?
-                .Children.FirstOrDefault(item => item.Category == "expression") is { } representationValue)
+        if (
+            declaration.Ast.Kind == CoreNodeKind.ExtensionTypeDeclaration
+            && DescendantsAndSelf(constructor.Ast)
+                .FirstOrDefault(item => item.Kind == CoreNodeKind.RedirectingConstructorInvocation)
+                is { } extensionRedirect
+            && declaration.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.RepresentationDeclaration
+            )
+                is { } representation
+            && extensionRedirect
+                .Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList)
+                ?.Children.FirstOrDefault(item => item.Category == "expression")
+                is { } representationValue
+        )
         {
-            builder.Append("        this.").Append(SafeIdentifier(representation.Text(CoreProperty.name) ?? "value")).Append(" = ");
-            LowerExpression(builder, representationValue, declaration, package, library, inputPath, diagnostics);
+            builder
+                .Append("        this.")
+                .Append(SafeIdentifier(representation.Text(CoreProperty.name) ?? "value"))
+                .Append(" = ");
+            LowerExpression(
+                builder,
+                representationValue,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.AppendLine(";");
         }
         foreach (var parameter in parameters.Where(item => item.IsInitializingFormal))
         {
             var mappedParameterType = MapType(parameter.Type);
-            var parameterField = declaration.Members.FirstOrDefault(member => member.Kind == "field" && member.Name == parameter.Name);
-            var targetName = parameterField is { IsFinal: true } && HasOverridableBaseMember(declaration, parameterField)
-                ? "__field_" + SafeIdentifier(parameter.Name).TrimStart('@')
-                : SafeIdentifier(parameter.Name);
-            if (!IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type) &&
-                (NeedsNonConstValueDefault(parameter) || !IsValueType(mappedParameterType) || mappedParameterType.EndsWith("?", StringComparison.Ordinal)) &&
-                !string.IsNullOrEmpty(parameter.DefaultValue))
+            var parameterField = declaration.Members.FirstOrDefault(member =>
+                member.Kind == "field" && member.Name == parameter.Name
+            );
+            var targetName =
+                parameterField is { IsFinal: true }
+                && HasOverridableBaseMember(declaration, parameterField)
+                    ? "__field_" + SafeIdentifier(parameter.Name).TrimStart('@')
+                    : SafeIdentifier(parameter.Name);
+            if (
+                !IsCompileTimeConstantDefault(parameter.DefaultValue, parameter.Type)
+                && (
+                    NeedsNonConstValueDefault(parameter)
+                    || !IsValueType(mappedParameterType)
+                    || mappedParameterType.EndsWith("?", StringComparison.Ordinal)
+                )
+                && !string.IsNullOrEmpty(parameter.DefaultValue)
+            )
             {
                 var restoredName = NeedsRuntimeDefaultRestore(parameter)
                     ? SyntheticIdentifier(parameter.Name)
@@ -1316,10 +2018,15 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             else
             {
-                builder.AppendLine($"        this.{targetName} = {SafeIdentifier(parameter.Name)};");
+                builder.AppendLine(
+                    $"        this.{targetName} = {SafeIdentifier(parameter.Name)};"
+                );
             }
         }
-        foreach (var initializer in DescendantsAndSelf(constructor.Ast).Where(item => item.Kind == CoreNodeKind.ConstructorFieldInitializer))
+        foreach (
+            var initializer in DescendantsAndSelf(constructor.Ast)
+                .Where(item => item.Kind == CoreNodeKind.ConstructorFieldInitializer)
+        )
         {
             var fieldName = initializer.Text(CoreProperty.fieldName);
             var expression = initializer.Child(CoreChildRole.expressionOffset);
@@ -1327,19 +2034,34 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 continue;
             }
-            var initializedField = declaration.Members.FirstOrDefault(member => member.Kind == "field" && member.Name == fieldName);
-            var initializedTarget = initializedField is { IsFinal: true } && HasOverridableBaseMember(declaration, initializedField)
-                ? "__field_" + SafeIdentifier(fieldName).TrimStart('@')
-                : SafeIdentifier(fieldName);
-            var fieldType = MapType(declaration.Members.FirstOrDefault(member => member.Name == fieldName)?.Element.Type ?? string.Empty);
+            var initializedField = declaration.Members.FirstOrDefault(member =>
+                member.Kind == "field" && member.Name == fieldName
+            );
+            var initializedTarget =
+                initializedField is { IsFinal: true }
+                && HasOverridableBaseMember(declaration, initializedField)
+                    ? "__field_" + SafeIdentifier(fieldName).TrimStart('@')
+                    : SafeIdentifier(fieldName);
+            var fieldType = MapType(
+                declaration.Members.FirstOrDefault(member => member.Name == fieldName)?.Element.Type
+                    ?? string.Empty
+            );
             var expressionType = MapType(expression.StaticType ?? string.Empty);
-            var defaultedParameter = expression.Kind == CoreNodeKind.SimpleIdentifier
-                ? parameters.FirstOrDefault(parameter =>
-                    string.Equals(parameter.Name, expression.Text(CoreProperty.name), StringComparison.Ordinal) &&
-                    NeedsRuntimeDefaultRestore(parameter))
-                : null;
-            var requiresValue = IsValueType(fieldType) && !fieldType.EndsWith("?", StringComparison.Ordinal) &&
-                expressionType == fieldType + "?" && defaultedParameter is null;
+            var defaultedParameter =
+                expression.Kind == CoreNodeKind.SimpleIdentifier
+                    ? parameters.FirstOrDefault(parameter =>
+                        string.Equals(
+                            parameter.Name,
+                            expression.Text(CoreProperty.name),
+                            StringComparison.Ordinal
+                        ) && NeedsRuntimeDefaultRestore(parameter)
+                    )
+                    : null;
+            var requiresValue =
+                IsValueType(fieldType)
+                && !fieldType.EndsWith("?", StringComparison.Ordinal)
+                && expressionType == fieldType + "?"
+                && defaultedParameter is null;
             builder.Append($"        this.{initializedTarget} = ");
             if (defaultedParameter is not null)
             {
@@ -1347,23 +2069,46 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             else
             {
-                if (requiresValue) builder.Append("DartRuntimePrimitives.RequireValue(");
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
-                if (requiresValue) builder.Append(')');
+                if (requiresValue)
+                {
+                    builder.Append("DartRuntimePrimitives.RequireValue(");
+                }
+
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
+                if (requiresValue)
+                {
+                    builder.Append(')');
+                }
             }
-            if (fieldType.StartsWith("DartMap<", StringComparison.Ordinal) &&
-                expressionType.StartsWith("DartMap<", StringComparison.Ordinal) && fieldType != expressionType)
+            if (
+                fieldType.StartsWith("DartMap<", StringComparison.Ordinal)
+                && expressionType.StartsWith("DartMap<", StringComparison.Ordinal)
+                && fieldType != expressionType
+            )
             {
                 builder.Append(".cast<").Append(DartMapTypeArguments(fieldType)).Append(">()");
             }
-            else if (fieldType.StartsWith("List<", StringComparison.Ordinal) &&
-                IsDartTypedDataList(expression.StaticType))
+            else if (
+                fieldType.StartsWith("List<", StringComparison.Ordinal)
+                && IsDartTypedDataList(expression.StaticType)
+            )
             {
                 builder.Append(".ToList()");
             }
             builder.AppendLine(";");
         }
-        foreach (var assertInitializer in DescendantsAndSelf(constructor.Ast).Where(item => item.Kind == CoreNodeKind.AssertInitializer))
+        foreach (
+            var assertInitializer in DescendantsAndSelf(constructor.Ast)
+                .Where(item => item.Kind == CoreNodeKind.AssertInitializer)
+        )
         {
             var condition = assertInitializer.Child(CoreChildRole.conditionOffset);
             if (condition is null)
@@ -1371,19 +2116,31 @@ internal sealed partial class FrameworkCSharpLowerer
                 continue;
             }
             var emittedCondition = new CsSyntaxBuilder();
-            LowerExpression(emittedCondition, condition, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                emittedCondition,
+                condition,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             var conditionSyntax = emittedCondition.Build();
             foreach (var parameter in restoredConstructorParameters)
             {
                 conditionSyntax = conditionSyntax.RenameIdentifier(
                     SafeIdentifier(parameter.Name),
-                    SyntheticIdentifier(parameter.Name));
+                    SyntheticIdentifier(parameter.Name)
+                );
             }
-            builder.Append("        DartRuntimePrimitives.Assert(() => ").Append(conditionSyntax).AppendLine(");");
+            builder
+                .Append("        DartRuntimePrimitives.Assert(() => ")
+                .Append(conditionSyntax)
+                .AppendLine(");");
         }
-        var generativeConstructorBody = constructor.Ast.Children
-            .FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody)?
-            .Child(CoreChildRole.blockOffset);
+        var generativeConstructorBody = constructor
+            .Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody)
+            ?.Child(CoreChildRole.blockOffset);
         if (generativeConstructorBody is not null)
         {
             var emittedBody = new CsSyntaxBuilder();
@@ -1395,13 +2152,15 @@ internal sealed partial class FrameworkCSharpLowerer
                 library,
                 inputPath,
                 diagnostics,
-                2);
+                2
+            );
             var bodySyntax = emittedBody.Build();
             foreach (var parameter in restoredConstructorParameters)
             {
                 bodySyntax = bodySyntax.RenameIdentifier(
                     SafeIdentifier(parameter.Name),
-                    SyntheticIdentifier(parameter.Name));
+                    SyntheticIdentifier(parameter.Name)
+                );
             }
             builder.Append(bodySyntax);
         }
@@ -1409,19 +2168,29 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine();
     }
 
-    private bool SameMappedParameterTypes(CoreResolvedParameter[] left, CoreResolvedParameter[] right) =>
-        left.Length == right.Length && left.Select(item => MapType(item.Type))
+    private bool SameMappedParameterTypes(
+        CoreResolvedParameter[] left,
+        CoreResolvedParameter[] right
+    ) =>
+        left.Length == right.Length
+        && left.Select(item => MapType(item.Type))
             .SequenceEqual(right.Select(item => MapType(item.Type)), StringComparer.Ordinal);
 
-    private string ConstructorVisibility(CoreResolvedDeclaration declaration, CoreResolvedMember constructor)
+    private string ConstructorVisibility(
+        CoreResolvedDeclaration declaration,
+        CoreResolvedMember constructor
+    )
     {
         if (IsDartPrivate(declaration))
         {
             return "internal";
         }
-        if ((constructor.Element.Parameters ?? []).Any(parameter =>
-                FindGlobalDeclaration(MapType(parameter.Type)) is { } parameterType &&
-                IsDartPrivate(parameterType)))
+        if (
+            (constructor.Element.Parameters ?? []).Any(parameter =>
+                FindGlobalDeclaration(MapType(parameter.Type)) is { } parameterType
+                && IsDartPrivate(parameterType)
+            )
+        )
         {
             // A public CLR constructor cannot expose a Dart library-private
             // implementation type. Public redirecting/factory entrypoints can
@@ -1431,7 +2200,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Element.IsAbstract && !constructor.IsFactory)
         {
-            if (declaration.Name == "GlobalKey") return "public";
+            if (declaration.Name == "GlobalKey")
+            {
+                return "public";
+            }
+
             return "protected";
         }
         if (IsDartPrivate(constructor))
@@ -1449,9 +2222,16 @@ internal sealed partial class FrameworkCSharpLowerer
         CsSyntaxBuilder builder,
         CoreResolvedDeclaration declaration,
         CoreResolvedMember method,
-        bool isInterface)
+        bool isInterface
+    )
     {
-        if (isInterface || method.IsAbstract || method.IsStatic || IsDartPrivate(declaration) || IsDartPrivate(method))
+        if (
+            isInterface
+            || method.IsAbstract
+            || method.IsStatic
+            || IsDartPrivate(declaration)
+            || IsDartPrivate(method)
+        )
         {
             return;
         }
@@ -1466,8 +2246,10 @@ internal sealed partial class FrameworkCSharpLowerer
         var typeParameter = SafeIdentifier(typeParameters[0].Name);
         var returnType = MapType(method.Element.ReturnType ?? method.Element.Type ?? "object");
         var firstParameterType = MapType(parameters[0].Type);
-        if (returnType != $"Future<{typeParameter}>" ||
-            firstParameterType is not ("Func<object>" or "global::System.Func<object>"))
+        if (
+            returnType != $"Future<{typeParameter}>"
+            || firstParameterType is not ("Func<object>" or "global::System.Func<object>")
+        )
         {
             return;
         }
@@ -1475,12 +2257,15 @@ internal sealed partial class FrameworkCSharpLowerer
         var mappedParameters = MapParameters(parameters).ToArray();
         var callbackName = SafeIdentifier(parameters[0].Name);
         mappedParameters[0] = $"global::System.Func<{typeParameter}> {callbackName}";
-        var arguments = new[] { $"() => (object?){callbackName}()!" }
-            .Concat(parameters.Skip(1).Select(parameter => SafeIdentifier(parameter.Name)));
+        var arguments = new[] { $"() => (object?){callbackName}()!" }.Concat(
+            parameters.Skip(1).Select(parameter => SafeIdentifier(parameter.Name))
+        );
         builder.AppendLine(
-            $"    public virtual {returnType} {MapMethodDeclarationName(method)}<{typeParameter}>({string.Join(", ", mappedParameters)}) =>");
+            $"    public virtual {returnType} {MapMethodDeclarationName(method)}<{typeParameter}>({string.Join(", ", mappedParameters)}) =>"
+        );
         builder.AppendLine(
-            $"        {MapMethodDeclarationName(method)}<{typeParameter}>({string.Join(", ", arguments)});");
+            $"        {MapMethodDeclarationName(method)}<{typeParameter}>({string.Join(", ", arguments)});"
+        );
         builder.AppendLine();
     }
 
@@ -1491,7 +2276,8 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var baseDeclaration = declaration.Element.Supertype is { } supertype
             ? FindGlobalDeclaration(supertype)
@@ -1499,35 +2285,48 @@ internal sealed partial class FrameworkCSharpLowerer
         var baseLibrary = baseDeclaration is null
             ? library
             : LibraryUriFromElementId(baseDeclaration.Element.CanonicalId);
-        var superInvocation = DescendantsAndSelf(constructorAst).FirstOrDefault(item => item.Kind == CoreNodeKind.SuperConstructorInvocation);
+        var superInvocation = DescendantsAndSelf(constructorAst)
+            .FirstOrDefault(item => item.Kind == CoreNodeKind.SuperConstructorInvocation);
         if (superInvocation is not null)
         {
-            var arguments = superInvocation.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList);
-            var argumentValues = arguments?.Children.Where(item => item.Category == "expression").ToArray() ?? [];
+            var arguments = superInvocation.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ArgumentList
+            );
+            var argumentValues =
+                arguments?.Children.Where(item => item.Category == "expression").ToArray() ?? [];
             var namedArguments = argumentValues
                 .Where(item => item.Kind == CoreNodeKind.NamedExpression)
                 .Select(item => item.Text(CoreProperty.name))
                 .Where(name => !string.IsNullOrEmpty(name))
                 .ToHashSet(StringComparer.Ordinal);
-            var expectedBaseConstructor = baseDeclaration?.Members
-                .Where(member => member.Kind == "constructor" && !member.IsFactory)
+            var expectedBaseConstructor = baseDeclaration
+                ?.Members.Where(member => member.Kind == "constructor" && !member.IsFactory)
                 .OrderByDescending(member => (member.Element.Parameters ?? []).Length)
-                .FirstOrDefault(member => namedArguments.All(name =>
-                    (member.Element.Parameters ?? []).Any(parameter => parameter.Name == name)));
+                .FirstOrDefault(member =>
+                    namedArguments.All(name =>
+                        (member.Element.Parameters ?? []).Any(parameter => parameter.Name == name)
+                    )
+                );
             var expectedBaseParameters = expectedBaseConstructor?.Element.Parameters;
             var baseTypeSubstitutions = baseDeclaration is null
                 ? new Dictionary<string, string>(StringComparer.Ordinal)
                 : TypeParameterSubstitutions(declaration, baseDeclaration);
-            var expectedBaseArgumentTypes = expectedBaseParameters?.Select(parameter =>
-            {
-                var substituted = ApplyTypeParameterSubstitutions(parameter.Type, baseTypeSubstitutions);
-                var mapped = MapType(substituted);
-                return baseDeclaration is not null &&
-                    IsTypeParameter(parameter.Type.TrimEnd('?'), baseDeclaration) &&
-                    IsValueType(mapped.TrimEnd('?'))
+            var expectedBaseArgumentTypes = expectedBaseParameters
+                ?.Select(parameter =>
+                {
+                    var substituted = ApplyTypeParameterSubstitutions(
+                        parameter.Type,
+                        baseTypeSubstitutions
+                    );
+                    var mapped = MapType(substituted);
+                    return
+                        baseDeclaration is not null
+                        && IsTypeParameter(parameter.Type.TrimEnd('?'), baseDeclaration)
+                        && IsValueType(mapped.TrimEnd('?'))
                         ? mapped.TrimEnd('?')
                         : mapped;
-            }).ToArray();
+                })
+                .ToArray();
             var temp = new CsSyntaxBuilder();
             EmitArguments(
                 temp,
@@ -1538,11 +2337,16 @@ internal sealed partial class FrameworkCSharpLowerer
                 inputPath,
                 diagnostics,
                 expectedParameters: expectedBaseParameters,
-                expectedArgumentTypes: expectedBaseArgumentTypes);
+                expectedArgumentTypes: expectedBaseArgumentTypes
+            );
             if (temp.Length > 0)
             {
                 var explicitArguments = temp.RenderFragment();
-                foreach (var parameter in parameters.Where(parameter => MapType(parameter.Type) == "dynamic"))
+                foreach (
+                    var parameter in parameters.Where(parameter =>
+                        MapType(parameter.Type) == "dynamic"
+                    )
+                )
                 {
                     var name = SafeIdentifier(parameter.Name);
                     // A dynamic expression in a C# constructor initializer
@@ -1553,7 +2357,8 @@ internal sealed partial class FrameworkCSharpLowerer
                         explicitArguments,
                         $@"\b{Regex.Escape(name)}\b(?!\s*:)",
                         $"(object){name}",
-                        RegexOptions.CultureInvariant);
+                        RegexOptions.CultureInvariant
+                    );
                 }
                 foreach (var parameter in parameters.Where(NeedsRuntimeDefaultRestore))
                 {
@@ -1561,12 +2366,16 @@ internal sealed partial class FrameworkCSharpLowerer
                     explicitArguments = explicitArguments.Replace(
                         $"{name}: {name}",
                         $"{name}: {name} ?? {MapParameterRuntimeDefault(parameter, library)}",
-                        StringComparison.Ordinal);
+                        StringComparison.Ordinal
+                    );
                 }
-                var forwarded = parameters.Where(item => item.IsSuperFormal)
-                    .Select(item => item.Kind.EndsWith("-named", StringComparison.Ordinal)
-                        ? $"{SafeIdentifier(item.Name)}: {SuperFormalArgument(item, declaration, baseDeclaration, baseLibrary)}"
-                        : SuperFormalArgument(item, declaration, baseDeclaration, baseLibrary))
+                var forwarded = parameters
+                    .Where(item => item.IsSuperFormal)
+                    .Select(item =>
+                        item.Kind.EndsWith("-named", StringComparison.Ordinal)
+                            ? $"{SafeIdentifier(item.Name)}: {SuperFormalArgument(item, declaration, baseDeclaration, baseLibrary)}"
+                            : SuperFormalArgument(item, declaration, baseDeclaration, baseLibrary)
+                    )
                     .ToArray();
                 return $" : base({string.Join(", ", forwarded.Concat([explicitArguments]))})";
             }
@@ -1588,10 +2397,14 @@ internal sealed partial class FrameworkCSharpLowerer
         // identical constructor contracts on both classes.
         var matchingBaseConstructor = baseDeclaration?.Members.FirstOrDefault(member =>
         {
-            if (member.Kind != "constructor" || member.IsFactory) return false;
+            if (member.Kind != "constructor" || member.IsFactory)
+            {
+                return false;
+            }
+
             var baseParameters = member.Element.Parameters ?? [];
-            return baseParameters.Length == parameters.Length &&
-                baseParameters.Zip(parameters).All(pair => pair.First.Name == pair.Second.Name);
+            return baseParameters.Length == parameters.Length
+                && baseParameters.Zip(parameters).All(pair => pair.First.Name == pair.Second.Name);
         });
         if (matchingBaseConstructor is not null && parameters.Length > 0)
         {
@@ -1605,16 +2418,25 @@ internal sealed partial class FrameworkCSharpLowerer
             // Constructor initializers cannot contain dynamically dispatched
             // calls. Preserve Dart's dynamic value while forcing an ordinary
             // CLR base-constructor invocation.
-            if (MapType(parameter.Type) == "dynamic") return $"(object?){name}";
-            var baseParameter = matchingBaseConstructor?.Element.Parameters?
-                .FirstOrDefault(candidate => candidate.Name == parameter.Name);
+            if (MapType(parameter.Type) == "dynamic")
+            {
+                return $"(object?){name}";
+            }
+
+            var baseParameter = matchingBaseConstructor?.Element.Parameters?.FirstOrDefault(
+                candidate => candidate.Name == parameter.Name
+            );
             if (baseDeclaration is not null && baseParameter is not null)
             {
                 var substitutions = TypeParameterSubstitutions(declaration, baseDeclaration);
-                var expected = MapType(ApplyTypeParameterSubstitutions(baseParameter.Type, substitutions));
-                if (IsTypeParameter(baseParameter.Type.TrimEnd('?'), baseDeclaration) &&
-                    IsValueType(expected.TrimEnd('?')) &&
-                    MapType(parameter.Type) == expected.TrimEnd('?') + "?")
+                var expected = MapType(
+                    ApplyTypeParameterSubstitutions(baseParameter.Type, substitutions)
+                );
+                if (
+                    IsTypeParameter(baseParameter.Type.TrimEnd('?'), baseDeclaration)
+                    && IsValueType(expected.TrimEnd('?'))
+                    && MapType(parameter.Type) == expected.TrimEnd('?') + "?"
+                )
                 {
                     return $"DartRuntimePrimitives.RequireValue({name})";
                 }
@@ -1627,7 +2449,8 @@ internal sealed partial class FrameworkCSharpLowerer
         CoreResolvedParameter parameter,
         CoreResolvedDeclaration declaration,
         CoreResolvedDeclaration? baseDeclaration,
-        string library)
+        string library
+    )
     {
         var name = SafeIdentifier(parameter.Name);
         var mapped = MapType(parameter.Type);
@@ -1647,18 +2470,26 @@ internal sealed partial class FrameworkCSharpLowerer
             // into an eager null assertion (for example Stack.textDirection).
             return name;
         }
-        var baseParameter = baseDeclaration?.Members
-            .Where(member => member.Kind == "constructor" && !member.IsFactory)
+        var baseParameter = baseDeclaration
+            ?.Members.Where(member => member.Kind == "constructor" && !member.IsFactory)
             .SelectMany(member => member.Element.Parameters ?? [])
             .FirstOrDefault(candidate => candidate.Name == parameter.Name);
         if (baseDeclaration is not null && baseParameter is not null)
         {
-            if (MapType(baseParameter.Type) == mapped) return name;
+            if (MapType(baseParameter.Type) == mapped)
+            {
+                return name;
+            }
+
             var substitutions = TypeParameterSubstitutions(declaration, baseDeclaration);
-            var expected = MapType(ApplyTypeParameterSubstitutions(baseParameter.Type, substitutions));
-            if (IsTypeParameter(baseParameter.Type.TrimEnd('?'), baseDeclaration) &&
-                IsValueType(expected.TrimEnd('?')) &&
-                mapped == expected.TrimEnd('?') + "?")
+            var expected = MapType(
+                ApplyTypeParameterSubstitutions(baseParameter.Type, substitutions)
+            );
+            if (
+                IsTypeParameter(baseParameter.Type.TrimEnd('?'), baseDeclaration)
+                && IsValueType(expected.TrimEnd('?'))
+                && mapped == expected.TrimEnd('?') + "?"
+            )
             {
                 return $"DartRuntimePrimitives.RequireValue({name})";
             }
@@ -1674,7 +2505,8 @@ internal sealed partial class FrameworkCSharpLowerer
     private string MapInheritedDefaultExpression(
         string value,
         CoreResolvedDeclaration? baseDeclaration,
-        string fallbackLibrary)
+        string fallbackLibrary
+    )
     {
         var expression = value.StartsWith("const ", StringComparison.Ordinal)
             ? value["const ".Length..].Trim()
@@ -1682,18 +2514,23 @@ internal sealed partial class FrameworkCSharpLowerer
         if (Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant))
         {
             var visited = new HashSet<string>(StringComparer.Ordinal);
-            for (var owner = baseDeclaration;
-                 owner is not null && visited.Add(owner.Element.CanonicalId);
-                 owner = owner.Element.Supertype is { } supertype ? FindGlobalDeclaration(supertype) : null)
+            for (
+                var owner = baseDeclaration;
+                owner is not null && visited.Add(owner.Element.CanonicalId);
+                owner = owner.Element.Supertype is { } supertype
+                        ? FindGlobalDeclaration(supertype)
+                        : null
+            )
             {
                 if (owner.Members.Any(member => member.IsStatic && member.Name == expression))
                 {
                     var ownerLibrary = LibraryUriFromElementId(owner.Element.CanonicalId);
-                    return EmittedTypeName(ownerLibrary, owner.Name) + "." + SafeIdentifier(expression);
+                    return EmittedTypeName(ownerLibrary, owner.Name)
+                        + "."
+                        + SafeIdentifier(expression);
                 }
             }
         }
         return MapNonConstDefaultExpression(value, fallbackLibrary);
     }
-
 }

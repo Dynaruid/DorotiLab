@@ -6,4 +6,3 @@ public static partial class _window_ioLibrary
 {
     public static WindowingOwnerIo? createDefaultOwner() => null;
 }
-

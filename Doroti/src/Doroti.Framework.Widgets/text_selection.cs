@@ -16,10 +16,25 @@ public class ToolbarItemsParentData : ContainerBoxParentData<RenderBox>
 
 public abstract class TextSelectionControls
 {
-    public abstract Widget buildHandle(BuildContext context, TextSelectionHandleType type, double textLineHeight, Action? onTap = null);
+    public abstract Widget buildHandle(
+        BuildContext context,
+        TextSelectionHandleType type,
+        double textLineHeight,
+        Action? onTap = null
+    );
     public abstract Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight);
-    public abstract Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition);
+    public abstract Widget buildToolbar(
+        BuildContext context,
+        Rect globalEditableRegion,
+        double textLineHeight,
+        Offset selectionMidpoint,
+        List<TextSelectionPoint> endpoints,
+        TextSelectionDelegate @delegate,
+        ValueListenable<ClipboardStatus>? clipboardStatus,
+        Offset? lastSecondaryTapDownPosition
+    );
     public abstract Size getHandleSize(double textLineHeight);
+
     public virtual bool canCut(TextSelectionDelegate @delegate)
     {
         return @delegate.cutEnabled && !@delegate.textEditingValue.selection.isCollapsed;
@@ -40,7 +55,9 @@ public abstract class TextSelectionControls
 
     public virtual bool canSelectAll(TextSelectionDelegate @delegate)
     {
-        return @delegate.selectAllEnabled && (@delegate.textEditingValue.text.Length != 0) && @delegate.textEditingValue.selection.isCollapsed;
+        return @delegate.selectAllEnabled
+            && (@delegate.textEditingValue.text.Length != 0)
+            && @delegate.textEditingValue.selection.isCollapsed;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -54,7 +71,7 @@ public abstract class TextSelectionControls
         @delegate.copySelection(SelectionChangedCause.toolbar);
     }
 
-    public async virtual Future handlePaste(TextSelectionDelegate @delegate)
+    public virtual async Future handlePaste(TextSelectionDelegate @delegate)
     {
         await @delegate.pasteText(SelectionChangedCause.toolbar);
     }
@@ -63,14 +80,29 @@ public abstract class TextSelectionControls
     {
         @delegate.selectAll(SelectionChangedCause.toolbar);
     }
-
 }
 
 public class EmptyTextSelectionControls : TextSelectionControls
 {
     public override Size getHandleSize(double textLineHeight) => Size.zero;
-    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
-    public override Widget buildHandle(BuildContext context, TextSelectionHandleType type, double textLineHeight, Action? onTap = null)
+
+    public override Widget buildToolbar(
+        BuildContext context,
+        Rect globalEditableRegion,
+        double textLineHeight,
+        Offset selectionMidpoint,
+        List<TextSelectionPoint> endpoints,
+        TextSelectionDelegate @delegate,
+        ValueListenable<ClipboardStatus>? clipboardStatus,
+        Offset? lastSecondaryTapDownPosition
+    ) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
+
+    public override Widget buildHandle(
+        BuildContext context,
+        TextSelectionHandleType type,
+        double textLineHeight,
+        Action? onTap = null
+    )
     {
         return SizedBox.CreateShrink();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -81,12 +113,12 @@ public class EmptyTextSelectionControls : TextSelectionControls
         return Offset.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Text_selectionLibrary
 {
-    public static TextSelectionControls emptyTextSelectionControls = new EmptyTextSelectionControls();
+    public static TextSelectionControls emptyTextSelectionControls =
+        new EmptyTextSelectionControls();
 }
 
 public class TextSelectionOverlay
@@ -98,9 +130,12 @@ public class TextSelectionOverlay
     internal virtual SelectionOverlay _selectionOverlay { get; private set; } = default!;
     public virtual Func<BuildContext, Widget>? contextMenuBuilder { get; private set; }
     internal virtual TextEditingValue _value { get; set; } = default!;
-    internal virtual ValueNotifier<bool> _effectiveStartHandleVisibility { get; private set; } = new ValueNotifier<bool>(false);
-    internal virtual ValueNotifier<bool> _effectiveEndHandleVisibility { get; private set; } = new ValueNotifier<bool>(false);
-    internal virtual ValueNotifier<bool> _effectiveToolbarVisibility { get; private set; } = new ValueNotifier<bool>(false);
+    internal virtual ValueNotifier<bool> _effectiveStartHandleVisibility { get; private set; } =
+        new ValueNotifier<bool>(false);
+    internal virtual ValueNotifier<bool> _effectiveEndHandleVisibility { get; private set; } =
+        new ValueNotifier<bool>(false);
+    internal virtual ValueNotifier<bool> _effectiveToolbarVisibility { get; private set; } =
+        new ValueNotifier<bool>(false);
     internal virtual bool _handlesVisible { get; set; } = false;
     internal virtual double _endHandleDragPosition { get; set; } = default!;
     internal virtual double _endHandleDragTarget { get; set; } = default!;
@@ -108,7 +143,23 @@ public class TextSelectionOverlay
     internal virtual double _startHandleDragPosition { get; set; } = default!;
     internal virtual double _startHandleDragTarget { get; set; } = default!;
 
-    public TextSelectionOverlay(TextEditingValue value, BuildContext context, Widget? debugRequiredFor = null, LayerLink toolbarLayerLink = default!, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, RenderEditable renderObject = default!, TextSelectionControls? selectionControls = null, bool handlesVisible = false, TextSelectionDelegate selectionDelegate = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Action? onSelectionHandleTapped = null, ClipboardStatusNotifier? clipboardStatus = null, Func<BuildContext, Widget>? contextMenuBuilder = null, TextMagnifierConfiguration magnifierConfiguration = default!)
+    public TextSelectionOverlay(
+        TextEditingValue value,
+        BuildContext context,
+        Widget? debugRequiredFor = null,
+        LayerLink toolbarLayerLink = default!,
+        LayerLink startHandleLayerLink = default!,
+        LayerLink endHandleLayerLink = default!,
+        RenderEditable renderObject = default!,
+        TextSelectionControls? selectionControls = null,
+        bool handlesVisible = false,
+        TextSelectionDelegate selectionDelegate = default!,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        Action? onSelectionHandleTapped = null,
+        ClipboardStatusNotifier? clipboardStatus = null,
+        Func<BuildContext, Widget>? contextMenuBuilder = null,
+        TextMagnifierConfiguration magnifierConfiguration = default!
+    )
     {
         this.context = context;
         this.renderObject = renderObject;
@@ -117,31 +168,55 @@ public class TextSelectionOverlay
         this.contextMenuBuilder = contextMenuBuilder;
         _handlesVisible = handlesVisible;
         _value = value;
-        this.renderObject.selectionStartInViewport.addListener(_updateTextSelectionOverlayVisibilities);
-        this.renderObject.selectionEndInViewport.addListener(_updateTextSelectionOverlayVisibilities);
+        this.renderObject.selectionStartInViewport.addListener(
+            _updateTextSelectionOverlayVisibilities
+        );
+        this.renderObject.selectionEndInViewport.addListener(
+            _updateTextSelectionOverlayVisibilities
+        );
         _updateTextSelectionOverlayVisibilities();
         _selectionOverlay = new SelectionOverlay(
-            magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,
+            magnifierConfiguration: magnifierConfiguration,
+            context: context,
+            debugRequiredFor: debugRequiredFor,
             startHandleType: TextSelectionHandleType.collapsed,
-            startHandlesVisible: _effectiveStartHandleVisibility, lineHeightAtStart: 0.0,
-            onStartHandleDragStart: _handleSelectionStartHandleDragStart, onStartHandleDragUpdate: _handleSelectionStartHandleDragUpdate,
-            onStartHandleDragEnd: _handleAnyDragEnd, endHandleType: TextSelectionHandleType.collapsed,
-            endHandlesVisible: _effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,
-            onEndHandleDragStart: _handleSelectionEndHandleDragStart, onEndHandleDragUpdate: _handleSelectionEndHandleDragUpdate,
-            onEndHandleDragEnd: _handleAnyDragEnd, toolbarVisible: _effectiveToolbarVisibility,
-            selectionEndpoints: new List<TextSelectionPoint>(), selectionControls: selectionControls,
-            selectionDelegate: selectionDelegate, clipboardStatus: clipboardStatus, startHandleLayerLink: startHandleLayerLink,
-            endHandleLayerLink: endHandleLayerLink, toolbarLayerLink: toolbarLayerLink, onSelectionHandleTapped: onSelectionHandleTapped,
-            dragStartBehavior: dragStartBehavior, toolbarLocation: renderObject.lastSecondaryTapDownPosition);
+            startHandlesVisible: _effectiveStartHandleVisibility,
+            lineHeightAtStart: 0.0,
+            onStartHandleDragStart: _handleSelectionStartHandleDragStart,
+            onStartHandleDragUpdate: _handleSelectionStartHandleDragUpdate,
+            onStartHandleDragEnd: _handleAnyDragEnd,
+            endHandleType: TextSelectionHandleType.collapsed,
+            endHandlesVisible: _effectiveEndHandleVisibility,
+            lineHeightAtEnd: 0.0,
+            onEndHandleDragStart: _handleSelectionEndHandleDragStart,
+            onEndHandleDragUpdate: _handleSelectionEndHandleDragUpdate,
+            onEndHandleDragEnd: _handleAnyDragEnd,
+            toolbarVisible: _effectiveToolbarVisibility,
+            selectionEndpoints: new List<TextSelectionPoint>(),
+            selectionControls: selectionControls,
+            selectionDelegate: selectionDelegate,
+            clipboardStatus: clipboardStatus,
+            startHandleLayerLink: startHandleLayerLink,
+            endHandleLayerLink: endHandleLayerLink,
+            toolbarLayerLink: toolbarLayerLink,
+            onSelectionHandleTapped: onSelectionHandleTapped,
+            dragStartBehavior: dragStartBehavior,
+            toolbarLocation: renderObject.lastSecondaryTapDownPosition
+        );
     }
 
     public virtual TextEditingValue value => _value;
     internal virtual TextSelection _selection => _value.selection;
+
     internal virtual void _updateTextSelectionOverlayVisibilities()
     {
-        _effectiveStartHandleVisibility.value = _handlesVisible && renderObject.selectionStartInViewport.value;
-        _effectiveEndHandleVisibility.value = _handlesVisible && renderObject.selectionEndInViewport.value;
-        _effectiveToolbarVisibility.value = renderObject.selectionStartInViewport.value || renderObject.selectionEndInViewport.value;
+        _effectiveStartHandleVisibility.value =
+            _handlesVisible && renderObject.selectionStartInViewport.value;
+        _effectiveEndHandleVisibility.value =
+            _handlesVisible && renderObject.selectionEndInViewport.value;
+        _effectiveToolbarVisibility.value =
+            renderObject.selectionStartInViewport.value
+            || renderObject.selectionEndInViewport.value;
     }
 
     public virtual bool handlesVisible
@@ -158,6 +233,7 @@ public class TextSelectionOverlay
             _updateTextSelectionOverlayVisibilities();
         }
     }
+
     public virtual void showHandles()
     {
         _updateSelectionOverlay();
@@ -165,11 +241,22 @@ public class TextSelectionOverlay
     }
 
     public virtual void hideHandles() => _selectionOverlay.hideHandles();
+
     public virtual void showToolbar()
     {
-        DartRuntimePrimitives.Assert(() => !Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks), () => (object?)"showToolbar must not be called during the build or layout phase.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                !Equals(
+                    Scheduler.SchedulerBinding.instance.schedulerPhase,
+                    Scheduler.SchedulerPhase.persistentCallbacks
+                ),
+            () => (object?)"showToolbar must not be called during the build or layout phase."
+        );
         _updateSelectionOverlay();
-        if ((selectionControls is not null) && (selectionControls is not TextSelectionHandleControls))
+        if (
+            (selectionControls is not null)
+            && (selectionControls is not TextSelectionHandleControls)
+        )
         {
             _selectionOverlay.showToolbar();
             return;
@@ -179,30 +266,54 @@ public class TextSelectionOverlay
             return;
         }
         DartRuntimePrimitives.Assert(() => context.mounted);
-        _selectionOverlay.showToolbar(context: context, contextMenuBuilder: (Func<BuildContext, Widget>?)contextMenuBuilder);
+        _selectionOverlay.showToolbar(
+            context: context,
+            contextMenuBuilder: (Func<BuildContext, Widget>?)contextMenuBuilder
+        );
         return;
     }
 
-    public virtual void showSpellCheckSuggestionsToolbar(Func<BuildContext, Widget> spellCheckSuggestionsToolbarBuilder)
+    public virtual void showSpellCheckSuggestionsToolbar(
+        Func<BuildContext, Widget> spellCheckSuggestionsToolbarBuilder
+    )
     {
         _updateSelectionOverlay();
         DartRuntimePrimitives.Assert(() => context.mounted);
-        _selectionOverlay.showSpellCheckSuggestionsToolbar(context: context, builder: spellCheckSuggestionsToolbarBuilder);
+        _selectionOverlay.showSpellCheckSuggestionsToolbar(
+            context: context,
+            builder: spellCheckSuggestionsToolbarBuilder
+        );
         hideHandles();
     }
 
     public virtual void showMagnifier(Offset positionToShow)
     {
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(positionToShow));
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(positionToShow)
+        );
         _updateSelectionOverlay();
-        _selectionOverlay.showMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: positionToShow, renderEditable: renderObject));
+        _selectionOverlay.showMagnifier(
+            _buildMagnifier(
+                currentTextPosition: position,
+                globalGesturePosition: positionToShow,
+                renderEditable: renderObject
+            )
+        );
     }
 
     public virtual void updateMagnifier(Offset positionToShow)
     {
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(positionToShow));
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(positionToShow)
+        );
         _updateSelectionOverlay();
-        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: positionToShow, renderEditable: renderObject));
+        _selectionOverlay.updateMagnifier(
+            _buildMagnifier(
+                currentTextPosition: position,
+                globalGesturePosition: positionToShow,
+                renderEditable: renderObject
+            )
+        );
     }
 
     public virtual void hideMagnifier()
@@ -223,7 +334,9 @@ public class TextSelectionOverlay
 
     internal virtual void _updateSelectionOverlay()
     {
-        List<TextSelectionPoint> endpoints = DartRuntimePrimitives.ConvertValue<List<TextSelectionPoint>>(renderObject.getEndpointsForSelection(_selection));
+        List<TextSelectionPoint> endpoints = DartRuntimePrimitives.ConvertValue<
+            List<TextSelectionPoint>
+        >(renderObject.getEndpointsForSelection(_selection));
         DartRuntimePrimitives.Assert(() => Enumerable.Any(endpoints));
         TextSelectionHandleType startHandleTypeLocal = default!;
         TextSelectionHandleType endHandleTypeLocal = default!;
@@ -234,8 +347,13 @@ public class TextSelectionOverlay
         }
         else
         {
-            TextDirection textDirectionLocal = DartRuntimePrimitives.ConvertValue<TextDirection>(renderObject.textDirection);
-            var preferRenderObjectDirectionForSelectionHandles = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS);
+            TextDirection textDirectionLocal = DartRuntimePrimitives.ConvertValue<TextDirection>(
+                renderObject.textDirection
+            );
+            var preferRenderObjectDirectionForSelectionHandles = Equals(
+                PlatformLibrary.defaultTargetPlatform,
+                TargetPlatform.iOS
+            );
             TextDirection startHandleDirection = default!;
             TextDirection endHandleDirection = default!;
             if (preferRenderObjectDirectionForSelectionHandles || (checked(endpoints.Count) < 2L))
@@ -248,20 +366,36 @@ public class TextSelectionOverlay
                 startHandleDirection = endpoints.First().direction ?? textDirectionLocal;
                 endHandleDirection = endpoints.Last().direction ?? textDirectionLocal;
             }
-            startHandleTypeLocal = startHandleDirection switch { TextDirection.ltr => TextSelectionHandleType.left, TextDirection.rtl => TextSelectionHandleType.right, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-            endHandleTypeLocal = endHandleDirection switch { TextDirection.ltr => TextSelectionHandleType.right, TextDirection.rtl => TextSelectionHandleType.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            startHandleTypeLocal = startHandleDirection switch
+            {
+                TextDirection.ltr => TextSelectionHandleType.left,
+                TextDirection.rtl => TextSelectionHandleType.right,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
+            endHandleTypeLocal = endHandleDirection switch
+            {
+                TextDirection.ltr => TextSelectionHandleType.right,
+                TextDirection.rtl => TextSelectionHandleType.left,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
-        DartRuntimePrimitives.Ignore(((Func<SelectionOverlay>)(() =>
-{
-    var __cascade = _selectionOverlay;
-    __cascade.startHandleType = startHandleTypeLocal;
-    __cascade.lineHeightAtStart = _getStartGlyphHeight();
-    __cascade.endHandleType = endHandleTypeLocal;
-    __cascade.lineHeightAtEnd = _getEndGlyphHeight();
-    __cascade.selectionEndpoints = endpoints;
-    __cascade.toolbarLocation = renderObject.lastSecondaryTapDownPosition;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<SelectionOverlay>)(
+                    () =>
+                    {
+                        var __cascade = _selectionOverlay;
+                        __cascade.startHandleType = startHandleTypeLocal;
+                        __cascade.lineHeightAtStart = _getStartGlyphHeight();
+                        __cascade.endHandleType = endHandleTypeLocal;
+                        __cascade.lineHeightAtEnd = _getEndGlyphHeight();
+                        __cascade.selectionEndpoints = endpoints;
+                        __cascade.toolbarLocation = renderObject.lastSecondaryTapDownPosition;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public virtual void updateForScroll()
@@ -275,18 +409,29 @@ public class TextSelectionOverlay
         _selectionOverlay.markNeedsBuild();
     }
 
-    public virtual bool handlesAreVisible => DartRuntimePrimitives.ConvertValue<bool>((_selectionOverlay._handles is not null) && handlesVisible);
+    public virtual bool handlesAreVisible =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (_selectionOverlay._handles is not null) && handlesVisible
+        );
     public virtual bool toolbarIsVisible => _selectionOverlay.toolbarIsVisible;
     public virtual bool magnifierIsVisible => _selectionOverlay.magnifierIsVisible;
     public virtual bool magnifierExists => _selectionOverlay.magnifierExists;
-    public virtual bool spellCheckToolbarIsVisible => _selectionOverlay._spellCheckToolbarController.isShown;
+    public virtual bool spellCheckToolbarIsVisible =>
+        _selectionOverlay._spellCheckToolbarController.isShown;
+
     public virtual void hide() => _selectionOverlay.hide();
+
     public virtual void hideToolbar() => _selectionOverlay.hideToolbar();
+
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _selectionOverlay.dispose();
-        renderObject.selectionStartInViewport.removeListener(_updateTextSelectionOverlayVisibilities);
+        renderObject.selectionStartInViewport.removeListener(
+            _updateTextSelectionOverlayVisibilities
+        );
         renderObject.selectionEndInViewport.removeListener(_updateTextSelectionOverlayVisibilities);
         _effectiveToolbarVisibility.dispose();
         _effectiveStartHandleVisibility.dispose();
@@ -303,7 +448,12 @@ public class TextSelectionOverlay
         {
             string selectedGraphemes = _selection.textInside(currText);
             firstSelectedGraphemeExtent = selectedGraphemes.characters().first.Length;
-            startHandleRect = renderObject.getRectForComposingRange(new TextRange(start: _selection.start, end: _selection.start + firstSelectedGraphemeExtent));
+            startHandleRect = renderObject.getRectForComposingRange(
+                new TextRange(
+                    start: _selection.start,
+                    end: _selection.start + firstSelectedGraphemeExtent
+                )
+            );
         }
         return startHandleRect?.height ?? (double)renderObject.preferredLineHeight;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -318,25 +468,51 @@ public class TextSelectionOverlay
         {
             string selectedGraphemes = _selection.textInside(currText);
             lastSelectedGraphemeExtent = selectedGraphemes.characters().last.Length;
-            endHandleRect = renderObject.getRectForComposingRange(new TextRange(start: _selection.end - lastSelectedGraphemeExtent, end: _selection.end));
+            endHandleRect = renderObject.getRectForComposingRange(
+                new TextRange(
+                    start: _selection.end - lastSelectedGraphemeExtent,
+                    end: _selection.end
+                )
+            );
         }
         return endHandleRect?.height ?? (double)renderObject.preferredLineHeight;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual MagnifierInfo _buildMagnifier(RenderEditable renderEditable, Offset globalGesturePosition, TextPosition currentTextPosition)
+    internal virtual MagnifierInfo _buildMagnifier(
+        RenderEditable renderEditable,
+        Offset globalGesturePosition,
+        TextPosition currentTextPosition
+    )
     {
         TextSelection lineAtOffset = renderEditable.getLineAtOffset(currentTextPosition);
-        var positionAtEndOfLine = new TextPosition(offset: lineAtOffset.extentOffset, affinity: TextAffinity.upstream);
+        var positionAtEndOfLine = new TextPosition(
+            offset: lineAtOffset.extentOffset,
+            affinity: TextAffinity.upstream
+        );
         var positionAtBeginningOfLine = new TextPosition(offset: lineAtOffset.baseOffset);
-        var localLineBoundaries = Rect.fromPoints(renderEditable.getLocalRectForCaret(positionAtBeginningOfLine).topCenter, renderEditable.getLocalRectForCaret(positionAtEndOfLine).bottomCenter);
-        var overlay = ((RenderBox?)Overlay.of(context, rootOverlay: true).context.findRenderObject())!;
+        var localLineBoundaries = Rect.fromPoints(
+            renderEditable.getLocalRectForCaret(positionAtBeginningOfLine).topCenter,
+            renderEditable.getLocalRectForCaret(positionAtEndOfLine).bottomCenter
+        );
+        var overlay = (
+            (RenderBox?)Overlay.of(context, rootOverlay: true).context.findRenderObject()
+        )!;
         Matrix4 transformToOverlay = renderEditable.getTransformTo(overlay);
-        Rect overlayLineBoundaries = MatrixUtils.transformRect(transformToOverlay, localLineBoundaries);
+        Rect overlayLineBoundaries = MatrixUtils.transformRect(
+            transformToOverlay,
+            localLineBoundaries
+        );
         Rect localCaretRect = renderEditable.getLocalRectForCaret(currentTextPosition);
         Rect overlayCaretRect = MatrixUtils.transformRect(transformToOverlay, localCaretRect);
-        Offset overlayGesturePosition = (overlay?.globalToLocal(globalGesturePosition)) ?? globalGesturePosition;
-        return new MagnifierInfo(fieldBounds: MatrixUtils.transformRect(transformToOverlay, renderEditable.paintBounds), globalGesturePosition: overlayGesturePosition, caretRect: overlayCaretRect, currentLineBoundaries: overlayLineBoundaries);
+        Offset overlayGesturePosition =
+            (overlay?.globalToLocal(globalGesturePosition)) ?? globalGesturePosition;
+        return new MagnifierInfo(
+            fieldBounds: MatrixUtils.transformRect(transformToOverlay, renderEditable.paintBounds),
+            globalGesturePosition: overlayGesturePosition,
+            caretRect: overlayCaretRect,
+            currentLineBoundaries: overlayLineBoundaries
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -347,28 +523,56 @@ public class TextSelectionOverlay
             return;
         }
         _endHandleDragPosition = details.globalPosition.dy;
-        double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>(_selectionOverlay.selectionEndpoints.Last().point.dy - (renderObject.preferredLineHeight / 2L));
-        double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(renderObject.localToGlobal(new Offset(0.0, centerOfLineLocal)).dy);
+        double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>(
+            _selectionOverlay.selectionEndpoints.Last().point.dy
+                - (renderObject.preferredLineHeight / 2L)
+        );
+        double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(
+            renderObject.localToGlobal(new Offset(0.0, centerOfLineLocal)).dy
+        );
         _endHandleDragTarget = centerOfLineGlobal - details.globalPosition.dy;
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(new Offset(details.globalPosition.dx, centerOfLineGlobal)));
-        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) || Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(
+                new Offset(details.globalPosition.dx, centerOfLineGlobal)
+            )
+        );
+        if (
+            Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)
+            || Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)
+        )
         {
             _dragStartSelection ??= _selection;
         }
-        _selectionOverlay.showMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
+        _selectionOverlay.showMagnifier(
+            _buildMagnifier(
+                currentTextPosition: position,
+                globalGesturePosition: details.globalPosition,
+                renderEditable: renderObject
+            )
+        );
     }
 
     internal virtual double? _getHandleDy(double dragDy, double handleDy)
     {
-        double preferredLineHeightLocal = DartRuntimePrimitives.ConvertValue<double>(renderObject.preferredLineHeight);
-        DartRuntimePrimitives.Assert(() => double.IsFinite(preferredLineHeightLocal), () => (object?)"Preferred line height is expected to always be finite.");
-        if ((preferredLineHeightLocal <= 0.0) || !double.IsFinite(dragDy) || !double.IsFinite(handleDy))
+        double preferredLineHeightLocal = DartRuntimePrimitives.ConvertValue<double>(
+            renderObject.preferredLineHeight
+        );
+        DartRuntimePrimitives.Assert(
+            () => double.IsFinite(preferredLineHeightLocal),
+            () => (object?)"Preferred line height is expected to always be finite."
+        );
+        if (
+            (preferredLineHeightLocal <= 0.0)
+            || !double.IsFinite(dragDy)
+            || !double.IsFinite(handleDy)
+        )
         {
             return null;
         }
         double distanceDragged = dragDy - handleDy;
         var dragDirection = (distanceDragged < 0.0) ? -1L : 1L;
-        long linesDragged = dragDirection * (distanceDragged.abs() / preferredLineHeightLocal).floor();
+        long linesDragged =
+            dragDirection * (distanceDragged.abs() / preferredLineHeightLocal).floor();
         return handleDy + (linesDragged * preferredLineHeightLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -379,55 +583,98 @@ public class TextSelectionOverlay
         {
             return;
         }
-        Offset localPosition = DartRuntimePrimitives.ConvertValue<Offset>(renderObject.globalToLocal(details.globalPosition));
-        double? nextEndHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(_getHandleDy(localPosition.dy, renderObject.globalToLocal(new Offset(0.0, _endHandleDragPosition)).dy));
+        Offset localPosition = DartRuntimePrimitives.ConvertValue<Offset>(
+            renderObject.globalToLocal(details.globalPosition)
+        );
+        double? nextEndHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(
+            _getHandleDy(
+                localPosition.dy,
+                renderObject.globalToLocal(new Offset(0.0, _endHandleDragPosition)).dy
+            )
+        );
         if (nextEndHandleDragPositionLocal is null)
         {
             return;
         }
-        _endHandleDragPosition = renderObject.localToGlobal(new Offset(0.0, DartRuntimePrimitives.RequireValue(nextEndHandleDragPositionLocal))).dy;
-        var handleTargetGlobal = new Offset(details.globalPosition.dx, _endHandleDragPosition + _endHandleDragTarget);
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(handleTargetGlobal));
+        _endHandleDragPosition = renderObject
+            .localToGlobal(
+                new Offset(0.0, DartRuntimePrimitives.RequireValue(nextEndHandleDragPositionLocal))
+            )
+            .dy;
+        var handleTargetGlobal = new Offset(
+            details.globalPosition.dx,
+            _endHandleDragPosition + _endHandleDragTarget
+        );
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(handleTargetGlobal)
+        );
         TextSelection newSelection = default!;
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
+            {
+                DartRuntimePrimitives.Assert(() => _dragStartSelection is not null);
+                if (_dragStartSelection!.isCollapsed)
                 {
-                    DartRuntimePrimitives.Assert(() => _dragStartSelection is not null);
-                    if (_dragStartSelection!.isCollapsed)
-                    {
-                        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
-                        var currentSelection = TextSelection.CreateFromPosition(position);
-                        _handleSelectionHandleChanged(currentSelection);
-                        return;
-                    }
-                    bool dragStartSelectionNormalized = _dragStartSelection!.extentOffset >= _dragStartSelection!.baseOffset;
-                    newSelection = new TextSelection(baseOffset: dragStartSelectionNormalized ? _dragStartSelection!.baseOffset : _dragStartSelection!.extentOffset, extentOffset: position.offset);
-                    break;
+                    _selectionOverlay.updateMagnifier(
+                        _buildMagnifier(
+                            currentTextPosition: position,
+                            globalGesturePosition: details.globalPosition,
+                            renderEditable: renderObject
+                        )
+                    );
+                    var currentSelection = TextSelection.CreateFromPosition(position);
+                    _handleSelectionHandleChanged(currentSelection);
+                    return;
                 }
+                bool dragStartSelectionNormalized =
+                    _dragStartSelection!.extentOffset >= _dragStartSelection!.baseOffset;
+                newSelection = new TextSelection(
+                    baseOffset: dragStartSelectionNormalized
+                        ? _dragStartSelection!.baseOffset
+                        : _dragStartSelection!.extentOffset,
+                    extentOffset: position.offset
+                );
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                if (_selection.isCollapsed)
                 {
-                    if (_selection.isCollapsed)
-                    {
-                        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
-                        var currentSelectionLocal = TextSelection.CreateFromPosition(position);
-                        _handleSelectionHandleChanged(currentSelectionLocal);
-                        return;
-                    }
-                    newSelection = new TextSelection(baseOffset: _selection.baseOffset, extentOffset: position.offset);
-                    if (newSelection.baseOffset >= newSelection.extentOffset)
-                    {
-                        return;
-                    }
-                    break;
+                    _selectionOverlay.updateMagnifier(
+                        _buildMagnifier(
+                            currentTextPosition: position,
+                            globalGesturePosition: details.globalPosition,
+                            renderEditable: renderObject
+                        )
+                    );
+                    var currentSelectionLocal = TextSelection.CreateFromPosition(position);
+                    _handleSelectionHandleChanged(currentSelectionLocal);
+                    return;
                 }
+                newSelection = new TextSelection(
+                    baseOffset: _selection.baseOffset,
+                    extentOffset: position.offset
+                );
+                if (newSelection.baseOffset >= newSelection.extentOffset)
+                {
+                    return;
+                }
+                break;
+            }
         }
         _handleSelectionHandleChanged(newSelection);
-        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: newSelection.extent, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
+        _selectionOverlay.updateMagnifier(
+            _buildMagnifier(
+                currentTextPosition: newSelection.extent,
+                globalGesturePosition: details.globalPosition,
+                renderEditable: renderObject
+            )
+        );
     }
 
     internal virtual void _handleSelectionStartHandleDragStart(DragStartDetails details)
@@ -437,15 +684,33 @@ public class TextSelectionOverlay
             return;
         }
         _startHandleDragPosition = details.globalPosition.dy;
-        double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>(_selectionOverlay.selectionEndpoints.First().point.dy - (renderObject.preferredLineHeight / 2L));
-        double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(renderObject.localToGlobal(new Offset(0.0, centerOfLineLocal)).dy);
+        double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>(
+            _selectionOverlay.selectionEndpoints.First().point.dy
+                - (renderObject.preferredLineHeight / 2L)
+        );
+        double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(
+            renderObject.localToGlobal(new Offset(0.0, centerOfLineLocal)).dy
+        );
         _startHandleDragTarget = centerOfLineGlobal - details.globalPosition.dy;
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(new Offset(details.globalPosition.dx, centerOfLineGlobal)));
-        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) || Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(
+                new Offset(details.globalPosition.dx, centerOfLineGlobal)
+            )
+        );
+        if (
+            Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)
+            || Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)
+        )
         {
             _dragStartSelection ??= _selection;
         }
-        _selectionOverlay.showMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
+        _selectionOverlay.showMagnifier(
+            _buildMagnifier(
+                currentTextPosition: position,
+                globalGesturePosition: details.globalPosition,
+                renderEditable: renderObject
+            )
+        );
     }
 
     internal virtual void _handleSelectionStartHandleDragUpdate(DragUpdateDetails details)
@@ -454,54 +719,102 @@ public class TextSelectionOverlay
         {
             return;
         }
-        Offset localPosition = DartRuntimePrimitives.ConvertValue<Offset>(renderObject.globalToLocal(details.globalPosition));
-        double? nextStartHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(_getHandleDy(localPosition.dy, renderObject.globalToLocal(new Offset(0.0, _startHandleDragPosition)).dy));
+        Offset localPosition = DartRuntimePrimitives.ConvertValue<Offset>(
+            renderObject.globalToLocal(details.globalPosition)
+        );
+        double? nextStartHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(
+            _getHandleDy(
+                localPosition.dy,
+                renderObject.globalToLocal(new Offset(0.0, _startHandleDragPosition)).dy
+            )
+        );
         if (nextStartHandleDragPositionLocal is null)
         {
             return;
         }
-        _startHandleDragPosition = renderObject.localToGlobal(new Offset(0.0, DartRuntimePrimitives.RequireValue(nextStartHandleDragPositionLocal))).dy;
-        var handleTargetGlobal = new Offset(details.globalPosition.dx, _startHandleDragPosition + _startHandleDragTarget);
-        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(renderObject.getPositionForPoint(handleTargetGlobal));
+        _startHandleDragPosition = renderObject
+            .localToGlobal(
+                new Offset(
+                    0.0,
+                    DartRuntimePrimitives.RequireValue(nextStartHandleDragPositionLocal)
+                )
+            )
+            .dy;
+        var handleTargetGlobal = new Offset(
+            details.globalPosition.dx,
+            _startHandleDragPosition + _startHandleDragTarget
+        );
+        TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
+            renderObject.getPositionForPoint(handleTargetGlobal)
+        );
         TextSelection newSelection = default!;
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
+            {
+                DartRuntimePrimitives.Assert(() => _dragStartSelection is not null);
+                if (_dragStartSelection!.isCollapsed)
                 {
-                    DartRuntimePrimitives.Assert(() => _dragStartSelection is not null);
-                    if (_dragStartSelection!.isCollapsed)
-                    {
-                        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
-                        var currentSelection = TextSelection.CreateFromPosition(position);
-                        _handleSelectionHandleChanged(currentSelection);
-                        return;
-                    }
-                    bool dragStartSelectionNormalized = _dragStartSelection!.extentOffset >= _dragStartSelection!.baseOffset;
-                    newSelection = new TextSelection(baseOffset: dragStartSelectionNormalized ? _dragStartSelection!.extentOffset : _dragStartSelection!.baseOffset, extentOffset: position.offset);
-                    break;
+                    _selectionOverlay.updateMagnifier(
+                        _buildMagnifier(
+                            currentTextPosition: position,
+                            globalGesturePosition: details.globalPosition,
+                            renderEditable: renderObject
+                        )
+                    );
+                    var currentSelection = TextSelection.CreateFromPosition(position);
+                    _handleSelectionHandleChanged(currentSelection);
+                    return;
                 }
+                bool dragStartSelectionNormalized =
+                    _dragStartSelection!.extentOffset >= _dragStartSelection!.baseOffset;
+                newSelection = new TextSelection(
+                    baseOffset: dragStartSelectionNormalized
+                        ? _dragStartSelection!.extentOffset
+                        : _dragStartSelection!.baseOffset,
+                    extentOffset: position.offset
+                );
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                if (_selection.isCollapsed)
                 {
-                    if (_selection.isCollapsed)
-                    {
-                        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
-                        var currentSelectionLocal = TextSelection.CreateFromPosition(position);
-                        _handleSelectionHandleChanged(currentSelectionLocal);
-                        return;
-                    }
-                    newSelection = new TextSelection(baseOffset: position.offset, extentOffset: _selection.extentOffset);
-                    if (newSelection.baseOffset >= newSelection.extentOffset)
-                    {
-                        return;
-                    }
-                    break;
+                    _selectionOverlay.updateMagnifier(
+                        _buildMagnifier(
+                            currentTextPosition: position,
+                            globalGesturePosition: details.globalPosition,
+                            renderEditable: renderObject
+                        )
+                    );
+                    var currentSelectionLocal = TextSelection.CreateFromPosition(position);
+                    _handleSelectionHandleChanged(currentSelectionLocal);
+                    return;
                 }
+                newSelection = new TextSelection(
+                    baseOffset: position.offset,
+                    extentOffset: _selection.extentOffset
+                );
+                if (newSelection.baseOffset >= newSelection.extentOffset)
+                {
+                    return;
+                }
+                break;
+            }
         }
-        _selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: (newSelection.extent.offset < newSelection.@base.offset) ? newSelection.extent : newSelection.@base, globalGesturePosition: details.globalPosition, renderEditable: renderObject));
+        _selectionOverlay.updateMagnifier(
+            _buildMagnifier(
+                currentTextPosition: (newSelection.extent.offset < newSelection.@base.offset)
+                    ? newSelection.extent
+                    : newSelection.@base,
+                globalGesturePosition: details.globalPosition,
+                renderEditable: renderObject
+            )
+        );
         _handleSelectionHandleChanged(newSelection);
     }
 
@@ -512,7 +825,8 @@ public class TextSelectionOverlay
             return;
         }
         _dragStartSelection = null;
-        bool draggingHandles = _selectionOverlay.isDraggingStartHandle || _selectionOverlay.isDraggingEndHandle;
+        bool draggingHandles =
+            _selectionOverlay.isDraggingStartHandle || _selectionOverlay.isDraggingEndHandle;
         if (selectionControls is not TextSelectionHandleControls)
         {
             if (!draggingHandles)
@@ -530,24 +844,32 @@ public class TextSelectionOverlay
             _selectionOverlay.hideMagnifier();
             if (!_selection.isCollapsed)
             {
-                _selectionOverlay.showToolbar(context: context, contextMenuBuilder: contextMenuBuilder);
+                _selectionOverlay.showToolbar(
+                    context: context,
+                    contextMenuBuilder: contextMenuBuilder
+                );
             }
         }
     }
 
     internal virtual void _handleSelectionHandleChanged(TextSelection newSelection)
     {
-        selectionDelegate.userUpdateTextEditingValue(_value.copyWith(selection: newSelection), SelectionChangedCause.drag);
+        selectionDelegate.userUpdateTextEditingValue(
+            _value.copyWith(selection: newSelection),
+            SelectionChangedCause.drag
+        );
     }
-
 }
 
 public class SelectionOverlay
 {
     public virtual BuildContext context { get; private set; } = default!;
-    internal virtual ValueNotifier<MagnifierInfo> _magnifierInfo { get; private set; } = new ValueNotifier<MagnifierInfo>(MagnifierInfo.empty);
-    internal virtual MagnifierController _magnifierController { get; private set; } = new MagnifierController();
-    public virtual TextMagnifierConfiguration magnifierConfiguration { get; private set; } = default!;
+    internal virtual ValueNotifier<MagnifierInfo> _magnifierInfo { get; private set; } =
+        new ValueNotifier<MagnifierInfo>(MagnifierInfo.empty);
+    internal virtual MagnifierController _magnifierController { get; private set; } =
+        new MagnifierController();
+    public virtual TextMagnifierConfiguration magnifierConfiguration { get; private set; } =
+        default!;
     internal virtual TextSelectionHandleType _startHandleType { get; set; } = default!;
     internal virtual double _lineHeightAtStart { get; set; } = default!;
     internal virtual bool _startHandleDragInProgress { get; set; } = false;
@@ -579,13 +901,43 @@ public class SelectionOverlay
     public static Duration fadeDuration = Duration.Create(milliseconds: 150L);
     internal virtual (OverlayEntry end, OverlayEntry start)? _handles { get; set; } = default;
     internal virtual OverlayEntry? _toolbar { get; set; } = default;
-    internal virtual ContextMenuController _contextMenuController { get; private set; } = new ContextMenuController();
-    internal virtual ContextMenuController _spellCheckToolbarController { get; private set; } = new ContextMenuController();
+    internal virtual ContextMenuController _contextMenuController { get; private set; } =
+        new ContextMenuController();
+    internal virtual ContextMenuController _spellCheckToolbarController { get; private set; } =
+        new ContextMenuController();
     internal virtual bool _buildScheduled { get; set; } = false;
 
-    public SelectionOverlay(BuildContext context, Widget? debugRequiredFor = null, TextSelectionHandleType startHandleType = default!, double lineHeightAtStart = default!, ValueListenable<bool>? startHandlesVisible = null, Action<DragStartDetails>? onStartHandleDragStart = null, Action<DragUpdateDetails>? onStartHandleDragUpdate = null, Action<DragEndDetails>? onStartHandleDragEnd = null, TextSelectionHandleType endHandleType = default!, double lineHeightAtEnd = default!, ValueListenable<bool>? endHandlesVisible = null, Action<DragStartDetails>? onEndHandleDragStart = null, Action<DragUpdateDetails>? onEndHandleDragUpdate = null, Action<DragEndDetails>? onEndHandleDragEnd = null, ValueListenable<bool>? toolbarVisible = null, List<TextSelectionPoint> selectionEndpoints = default!, TextSelectionControls? selectionControls = default!, TextSelectionDelegate? selectionDelegate = default!, ClipboardStatusNotifier? clipboardStatus = default!, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, LayerLink toolbarLayerLink = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Action? onSelectionHandleTapped = null, Offset? toolbarLocation = null, TextMagnifierConfiguration magnifierConfiguration = default!)
+    public SelectionOverlay(
+        BuildContext context,
+        Widget? debugRequiredFor = null,
+        TextSelectionHandleType startHandleType = default!,
+        double lineHeightAtStart = default!,
+        ValueListenable<bool>? startHandlesVisible = null,
+        Action<DragStartDetails>? onStartHandleDragStart = null,
+        Action<DragUpdateDetails>? onStartHandleDragUpdate = null,
+        Action<DragEndDetails>? onStartHandleDragEnd = null,
+        TextSelectionHandleType endHandleType = default!,
+        double lineHeightAtEnd = default!,
+        ValueListenable<bool>? endHandlesVisible = null,
+        Action<DragStartDetails>? onEndHandleDragStart = null,
+        Action<DragUpdateDetails>? onEndHandleDragUpdate = null,
+        Action<DragEndDetails>? onEndHandleDragEnd = null,
+        ValueListenable<bool>? toolbarVisible = null,
+        List<TextSelectionPoint> selectionEndpoints = default!,
+        TextSelectionControls? selectionControls = default!,
+        TextSelectionDelegate? selectionDelegate = default!,
+        ClipboardStatusNotifier? clipboardStatus = default!,
+        LayerLink startHandleLayerLink = default!,
+        LayerLink endHandleLayerLink = default!,
+        LayerLink toolbarLayerLink = default!,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        Action? onSelectionHandleTapped = null,
+        Offset? toolbarLocation = null,
+        TextMagnifierConfiguration magnifierConfiguration = default!
+    )
     {
-        TextMagnifierConfiguration __magnifierConfiguration = magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
+        TextMagnifierConfiguration __magnifierConfiguration =
+            magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
         this.context = context;
         this.debugRequiredFor = debugRequiredFor;
         this.startHandlesVisible = startHandlesVisible;
@@ -619,11 +971,15 @@ public class SelectionOverlay
     {
         get
         {
-            return (selectionControls is TextSelectionHandleControls) ? (_contextMenuController.isShown || _spellCheckToolbarController.isShown) : ((_toolbar is not null) || _spellCheckToolbarController.isShown);
+            return (selectionControls is TextSelectionHandleControls)
+                ? (_contextMenuController.isShown || _spellCheckToolbarController.isShown)
+                : ((_toolbar is not null) || _spellCheckToolbarController.isShown);
         }
     }
     public virtual bool magnifierIsVisible => _magnifierController.shown;
-    public virtual bool magnifierExists => DartRuntimePrimitives.ConvertValue<bool>(_magnifierController.overlayEntry is not null);
+    public virtual bool magnifierExists =>
+        DartRuntimePrimitives.ConvertValue<bool>(_magnifierController.overlayEntry is not null);
+
     public virtual void showMagnifier(MagnifierInfo initialMagnifierInfo)
     {
         if (_magnifierController.overlayEntry is not null)
@@ -635,12 +991,24 @@ public class SelectionOverlay
             hideToolbar();
         }
         _magnifierInfo.value = initialMagnifierInfo;
-        Widget? builtMagnifier = magnifierConfiguration.magnifierBuilder(context, _magnifierController, _magnifierInfo);
+        Widget? builtMagnifier = magnifierConfiguration.magnifierBuilder(
+            context,
+            _magnifierController,
+            _magnifierInfo
+        );
         if (builtMagnifier is null)
         {
             return;
         }
-        DartRuntimePrimitives.Ignore(_magnifierController.show(context: context, below: magnifierConfiguration.shouldDisplayHandlesInMagnifier ? null : _handles?.start, builder: (_) => builtMagnifier));
+        DartRuntimePrimitives.Ignore(
+            _magnifierController.show(
+                context: context,
+                below: magnifierConfiguration.shouldDisplayHandlesInMagnifier
+                    ? null
+                    : _handles?.start,
+                builder: (_) => builtMagnifier
+            )
+        );
     }
 
     public virtual void hideMagnifier()
@@ -680,8 +1048,20 @@ public class SelectionOverlay
             markNeedsBuild();
         }
     }
-    public virtual bool isDraggingStartHandle => DartRuntimePrimitives.ConvertValue<bool>(_isDraggingStartHandle || _startHandleDragInProgress);
-    internal virtual bool _canDragStartHandle => DartRuntimePrimitives.ConvertValue<bool>(!_isDraggingEndHandle || (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)) && !Foundation.ConstantsLibrary.kIsWeb);
+    public virtual bool isDraggingStartHandle =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _isDraggingStartHandle || _startHandleDragInProgress
+        );
+    internal virtual bool _canDragStartHandle =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            !_isDraggingEndHandle
+                || (
+                    (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
+                    && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+                    && !Foundation.ConstantsLibrary.kIsWeb
+                )
+        );
+
     internal virtual void _handleStartHandleDragStart(DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => !_isDraggingStartHandle);
@@ -713,7 +1093,12 @@ public class SelectionOverlay
         if (!_isDraggingStartHandle)
         {
             _isDraggingStartHandle = Equals(details.kind, PointerDeviceKind.touch);
-            var startDetails = new DragStartDetails(globalPosition: details.globalPosition, localPosition: details.localPosition, sourceTimeStamp: details.sourceTimeStamp, kind: details.kind);
+            var startDetails = new DragStartDetails(
+                globalPosition: details.globalPosition,
+                localPosition: details.localPosition,
+                sourceTimeStamp: details.sourceTimeStamp,
+                kind: details.kind
+            );
             onStartHandleDragStart?.Invoke(startDetails);
         }
         onStartHandleDragUpdate?.Invoke(details);
@@ -762,8 +1147,18 @@ public class SelectionOverlay
             markNeedsBuild();
         }
     }
-    public virtual bool isDraggingEndHandle => DartRuntimePrimitives.ConvertValue<bool>(_isDraggingEndHandle || _endHandleDragInProgress);
-    internal virtual bool _canDragEndHandle => DartRuntimePrimitives.ConvertValue<bool>(!_isDraggingStartHandle || (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)) && !Foundation.ConstantsLibrary.kIsWeb);
+    public virtual bool isDraggingEndHandle =>
+        DartRuntimePrimitives.ConvertValue<bool>(_isDraggingEndHandle || _endHandleDragInProgress);
+    internal virtual bool _canDragEndHandle =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            !_isDraggingStartHandle
+                || (
+                    (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
+                    && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+                    && !Foundation.ConstantsLibrary.kIsWeb
+                )
+        );
+
     internal virtual void _handleEndHandleDragStart(DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => !_isDraggingEndHandle);
@@ -795,7 +1190,12 @@ public class SelectionOverlay
         if (!_isDraggingEndHandle)
         {
             _isDraggingEndHandle = Equals(details.kind, PointerDeviceKind.touch);
-            var startDetails = new DragStartDetails(globalPosition: details.globalPosition, localPosition: details.localPosition, sourceTimeStamp: details.sourceTimeStamp, kind: details.kind);
+            var startDetails = new DragStartDetails(
+                globalPosition: details.globalPosition,
+                localPosition: details.localPosition,
+                sourceTimeStamp: details.sourceTimeStamp,
+                kind: details.kind
+            );
             onEndHandleDragStart?.Invoke(startDetails);
         }
         onEndHandleDragUpdate?.Invoke(details);
@@ -830,18 +1230,18 @@ public class SelectionOverlay
                     switch (PlatformLibrary.defaultTargetPlatform)
                     {
                         case TargetPlatform.android:
-                            {
-                                DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
-                                break;
-                            }
+                        {
+                            DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
+                            break;
+                        }
                         case TargetPlatform.fuchsia:
                         case TargetPlatform.iOS:
                         case TargetPlatform.linux:
                         case TargetPlatform.macOS:
                         case TargetPlatform.windows:
-                            {
-                                break;
-                            }
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -862,24 +1262,42 @@ public class SelectionOverlay
             markNeedsBuild();
         }
     }
+
     public virtual void showHandles()
     {
         if (_handles is not null)
         {
             return;
         }
-        OverlayState overlay = Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor);
+        OverlayState overlay = Overlay.of(
+            context,
+            rootOverlay: true,
+            debugRequiredFor: debugRequiredFor
+        );
         CapturedThemes capturedThemes = InheritedTheme.capture(from: context, to: overlay.context);
-        _handles = (end: new OverlayEntry(builder: (context) =>
-        {
-            return capturedThemes.wrap(_buildEndHandle(context));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }), start: new OverlayEntry(builder: (context) =>
-        {
-            return capturedThemes.wrap(_buildStartHandle(context));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
-        overlay.insertAll(new List<OverlayEntry> { DartRuntimePrimitives.RequireValue(_handles).start, DartRuntimePrimitives.RequireValue(_handles).end }.Cast<OverlayEntry>());
+        _handles = (
+            end: new OverlayEntry(
+                builder: (context) =>
+                {
+                    return capturedThemes.wrap(_buildEndHandle(context));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            ),
+            start: new OverlayEntry(
+                builder: (context) =>
+                {
+                    return capturedThemes.wrap(_buildStartHandle(context));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+        overlay.insertAll(
+            new List<OverlayEntry>
+            {
+                DartRuntimePrimitives.RequireValue(_handles).start,
+                DartRuntimePrimitives.RequireValue(_handles).end,
+            }.Cast<OverlayEntry>()
+        );
     }
 
     public virtual void hideHandles()
@@ -894,7 +1312,10 @@ public class SelectionOverlay
         }
     }
 
-    public virtual void showToolbar(BuildContext? context = null, Func<BuildContext, Widget>? contextMenuBuilder = null)
+    public virtual void showToolbar(
+        BuildContext? context = null,
+        Func<BuildContext, Widget>? contextMenuBuilder = null
+    )
     {
         if (contextMenuBuilder is null)
         {
@@ -903,7 +1324,9 @@ public class SelectionOverlay
                 return;
             }
             _toolbar = new OverlayEntry(builder: _buildToolbar);
-            Overlay.of(this.context, rootOverlay: true, debugRequiredFor: debugRequiredFor).insert(_toolbar!, above: _handles?.end);
+            Overlay
+                .of(this.context, rootOverlay: true, debugRequiredFor: debugRequiredFor)
+                .insert(_toolbar!, above: _handles?.end);
             return;
         }
         if (context is null)
@@ -911,58 +1334,89 @@ public class SelectionOverlay
             return;
         }
         var renderBox = ((RenderBox?)context.findRenderObject()!)!;
-        _contextMenuController.show(context: context, contextMenuBuilder: (context) =>
-        {
-            return new _SelectionToolbarWrapper__text_selection(visibility: toolbarVisible, layerLink: toolbarLayerLink, offset: -renderBox.localToGlobal(Offset.zero), child: contextMenuBuilder(context));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        _contextMenuController.show(
+            context: context,
+            contextMenuBuilder: (context) =>
+            {
+                return new _SelectionToolbarWrapper__text_selection(
+                    visibility: toolbarVisible,
+                    layerLink: toolbarLayerLink,
+                    offset: -renderBox.localToGlobal(Offset.zero),
+                    child: contextMenuBuilder(context)
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
     }
 
-    public virtual void showSpellCheckSuggestionsToolbar(BuildContext? context = null, Func<BuildContext, Widget> builder = default!)
+    public virtual void showSpellCheckSuggestionsToolbar(
+        BuildContext? context = null,
+        Func<BuildContext, Widget> builder = default!
+    )
     {
         if (context is null)
         {
             return;
         }
         var renderBox = ((RenderBox?)context.findRenderObject()!)!;
-        _spellCheckToolbarController.show(context: context, contextMenuBuilder: (context) =>
-        {
-            return new _SelectionToolbarWrapper__text_selection(layerLink: toolbarLayerLink, offset: -renderBox.localToGlobal(Offset.zero), child: builder(context));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        _spellCheckToolbarController.show(
+            context: context,
+            contextMenuBuilder: (context) =>
+            {
+                return new _SelectionToolbarWrapper__text_selection(
+                    layerLink: toolbarLayerLink,
+                    offset: -renderBox.localToGlobal(Offset.zero),
+                    child: builder(context)
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
     }
 
     public virtual void markNeedsBuild()
     {
-        if ((_handles is null) && (_toolbar is null) && !_contextMenuController.isShown && !_spellCheckToolbarController.isShown)
+        if (
+            (_handles is null)
+            && (_toolbar is null)
+            && !_contextMenuController.isShown
+            && !_spellCheckToolbarController.isShown
+        )
         {
             return;
         }
-        if (Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
+        if (
+            Equals(
+                Scheduler.SchedulerBinding.instance.schedulerPhase,
+                Scheduler.SchedulerPhase.persistentCallbacks
+            )
+        )
         {
             if (_buildScheduled)
             {
                 return;
             }
             _buildScheduled = true;
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) =>
-            {
-                _buildScheduled = false;
-                _handles?.start.markNeedsBuild();
-                _handles?.end.markNeedsBuild();
-                _toolbar?.markNeedsBuild();
-                if (_contextMenuController.isShown)
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (duration) =>
                 {
-                    _contextMenuController.markNeedsBuild();
-                }
-                else
-                {
-                    if (_spellCheckToolbarController.isShown)
+                    _buildScheduled = false;
+                    _handles?.start.markNeedsBuild();
+                    _handles?.end.markNeedsBuild();
+                    _toolbar?.markNeedsBuild();
+                    if (_contextMenuController.isShown)
                     {
-                        _spellCheckToolbarController.markNeedsBuild();
+                        _contextMenuController.markNeedsBuild();
                     }
-                }
-            }, debugLabel: "SelectionOverlay.markNeedsBuild");
+                    else
+                    {
+                        if (_spellCheckToolbarController.isShown)
+                        {
+                            _spellCheckToolbarController.markNeedsBuild();
+                        }
+                    }
+                },
+                debugLabel: "SelectionOverlay.markNeedsBuild"
+            );
         }
         else
         {
@@ -990,7 +1444,11 @@ public class SelectionOverlay
     {
         DartRuntimePrimitives.Ignore(_magnifierController.hide());
         hideHandles();
-        if ((_toolbar is not null) || _contextMenuController.isShown || _spellCheckToolbarController.isShown)
+        if (
+            (_toolbar is not null)
+            || _contextMenuController.isShown
+            || _spellCheckToolbarController.isShown
+        )
         {
             hideToolbar();
         }
@@ -1011,7 +1469,9 @@ public class SelectionOverlay
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         hide();
         _magnifierInfo.dispose();
     }
@@ -1020,15 +1480,34 @@ public class SelectionOverlay
     {
         Widget handle = default!;
         TextSelectionControls? selectionControlsLocal = selectionControls;
-        if ((selectionControlsLocal is null) || Equals(_startHandleType, TextSelectionHandleType.collapsed) && _isDraggingEndHandle)
+        if (
+            (selectionControlsLocal is null)
+            || (Equals(_startHandleType, TextSelectionHandleType.collapsed) && _isDraggingEndHandle)
+        )
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
         }
         else
         {
-            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: _startHandleType, handleLayerLink: startHandleLayerLink, onSelectionHandleTapped: onSelectionHandleTapped, onSelectionHandleDragStart: _handleStartHandleDragStart, onSelectionHandleDragUpdate: _handleStartHandleDragUpdate, onSelectionHandleDragEnd: _handleStartHandleDragEnd, selectionControls: selectionControlsLocal, visibility: startHandlesVisible, preferredLineHeight: _lineHeightAtStart, dragStartBehavior: dragStartBehavior));
+            handle = DartRuntimePrimitives.ConvertValue<Widget>(
+                new _SelectionHandleOverlay__text_selection(
+                    type: _startHandleType,
+                    handleLayerLink: startHandleLayerLink,
+                    onSelectionHandleTapped: onSelectionHandleTapped,
+                    onSelectionHandleDragStart: _handleStartHandleDragStart,
+                    onSelectionHandleDragUpdate: _handleStartHandleDragUpdate,
+                    onSelectionHandleDragEnd: _handleStartHandleDragEnd,
+                    selectionControls: selectionControlsLocal,
+                    visibility: startHandlesVisible,
+                    preferredLineHeight: _lineHeightAtStart,
+                    dragStartBehavior: dragStartBehavior
+                )
+            );
         }
-        return new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle)));
+        return new TapRegion(
+            groupId: typeof(SelectableRegion),
+            child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1036,15 +1515,39 @@ public class SelectionOverlay
     {
         Widget handle = default!;
         TextSelectionControls? selectionControlsLocal = selectionControls;
-        if ((selectionControlsLocal is null) || Equals(_endHandleType, TextSelectionHandleType.collapsed) && _isDraggingStartHandle || Equals(_endHandleType, TextSelectionHandleType.collapsed) && !_isDraggingStartHandle && !_isDraggingEndHandle)
+        if (
+            (selectionControlsLocal is null)
+            || (Equals(_endHandleType, TextSelectionHandleType.collapsed) && _isDraggingStartHandle)
+            || (
+                Equals(_endHandleType, TextSelectionHandleType.collapsed)
+                && !_isDraggingStartHandle
+                && !_isDraggingEndHandle
+            )
+        )
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
         }
         else
         {
-            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: _endHandleType, handleLayerLink: endHandleLayerLink, onSelectionHandleTapped: onSelectionHandleTapped, onSelectionHandleDragStart: _handleEndHandleDragStart, onSelectionHandleDragUpdate: _handleEndHandleDragUpdate, onSelectionHandleDragEnd: _handleEndHandleDragEnd, selectionControls: selectionControlsLocal, visibility: endHandlesVisible, preferredLineHeight: _lineHeightAtEnd, dragStartBehavior: dragStartBehavior));
+            handle = DartRuntimePrimitives.ConvertValue<Widget>(
+                new _SelectionHandleOverlay__text_selection(
+                    type: _endHandleType,
+                    handleLayerLink: endHandleLayerLink,
+                    onSelectionHandleTapped: onSelectionHandleTapped,
+                    onSelectionHandleDragStart: _handleEndHandleDragStart,
+                    onSelectionHandleDragUpdate: _handleEndHandleDragUpdate,
+                    onSelectionHandleDragEnd: _handleEndHandleDragEnd,
+                    selectionControls: selectionControlsLocal,
+                    visibility: endHandlesVisible,
+                    preferredLineHeight: _lineHeightAtEnd,
+                    dragStartBehavior: dragStartBehavior
+                )
+            );
         }
-        return new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle)));
+        return new TapRegion(
+            groupId: typeof(SelectableRegion),
+            child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1054,17 +1557,43 @@ public class SelectionOverlay
         {
             return SizedBox.CreateShrink();
         }
-        DartRuntimePrimitives.Assert(() => selectionDelegate is not null, () => (object?)"If not using contextMenuBuilder, must pass selectionDelegate.");
+        DartRuntimePrimitives.Assert(
+            () => selectionDelegate is not null,
+            () => (object?)"If not using contextMenuBuilder, must pass selectionDelegate."
+        );
         var renderBox = ((RenderBox?)this.context.findRenderObject()!)!;
-        var editingRegion = Rect.fromPoints(renderBox.localToGlobal(Offset.zero), renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero)));
-        bool isMultiline = (selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy) > (lineHeightAtEnd / 2L);
-        double midX = isMultiline ? (editingRegion.width / 2L) : ((selectionEndpoints.First().point.dx + selectionEndpoints.Last().point.dx) / 2L);
+        var editingRegion = Rect.fromPoints(
+            renderBox.localToGlobal(Offset.zero),
+            renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero))
+        );
+        bool isMultiline =
+            (selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy)
+            > (lineHeightAtEnd / 2L);
+        double midX = isMultiline
+            ? (editingRegion.width / 2L)
+            : ((selectionEndpoints.First().point.dx + selectionEndpoints.Last().point.dx) / 2L);
         var midpoint = new Offset(midX, selectionEndpoints.First().point.dy - lineHeightAtStart);
-        return new _SelectionToolbarWrapper__text_selection(visibility: toolbarVisible, layerLink: toolbarLayerLink, offset: -editingRegion.topLeft, child: new Builder(builder: (context) =>
-        {
-            return selectionControls!.buildToolbar(context, editingRegion, lineHeightAtStart, midpoint, selectionEndpoints, selectionDelegate!, clipboardStatus, toolbarLocation);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        return new _SelectionToolbarWrapper__text_selection(
+            visibility: toolbarVisible,
+            layerLink: toolbarLayerLink,
+            offset: -editingRegion.topLeft,
+            child: new Builder(
+                builder: (context) =>
+                {
+                    return selectionControls!.buildToolbar(
+                        context,
+                        editingRegion,
+                        lineHeightAtStart,
+                        midpoint,
+                        selectionEndpoints,
+                        selectionDelegate!,
+                        clipboardStatus,
+                        toolbarLocation
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1076,7 +1605,6 @@ public class SelectionOverlay
         }
         _magnifierInfo.value = magnifierInfo;
     }
-
 }
 
 public class _SelectionToolbarWrapper__text_selection : StatefulWidget
@@ -1086,7 +1614,12 @@ public class _SelectionToolbarWrapper__text_selection : StatefulWidget
     public virtual LayerLink layerLink { get; private set; } = default!;
     public virtual ValueListenable<bool>? visibility { get; private set; }
 
-    internal _SelectionToolbarWrapper__text_selection(ValueListenable<bool>? visibility = null, LayerLink layerLink = default!, Offset offset = default!, Widget child = default!)
+    internal _SelectionToolbarWrapper__text_selection(
+        ValueListenable<bool>? visibility = null,
+        LayerLink layerLink = default!,
+        Offset offset = default!,
+        Widget child = default!
+    )
     {
         this.visibility = visibility;
         this.layerLink = layerLink;
@@ -1094,16 +1627,22 @@ public class _SelectionToolbarWrapper__text_selection : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionToolbarWrapperState__text_selection());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SelectionToolbarWrapperState__text_selection()
+        );
 }
 
-internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionToolbarWrapper__text_selection>, SingleTickerProviderStateMixin<_SelectionToolbarWrapper__text_selection>
+internal class _SelectionToolbarWrapperState__text_selection
+    : State<_SelectionToolbarWrapper__text_selection>,
+        SingleTickerProviderStateMixin<_SelectionToolbarWrapper__text_selection>
 {
     internal virtual AnimationController _controller { get; set; } = default!;
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     internal virtual Animation<double> _opacity => _controller.view;
+
     public override void initState()
     {
         base.initState();
@@ -1129,14 +1668,32 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
         widget.visibility?.removeListener(_toolbarVisibilityChanged);
         _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -1156,22 +1713,60 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
 
     public override Widget build(BuildContext context)
     {
-        return new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new Directionality(textDirection: Directionality.of(this.context), child: new FadeTransition(opacity: _opacity, child: new CompositedTransformFollower(link: widget.layerLink, showWhenUnlinked: false, offset: widget.offset, child: widget.child)))));
+        return new TapRegion(
+            groupId: typeof(SelectableRegion),
+            child: new TextFieldTapRegion(
+                child: new Directionality(
+                    textDirection: Directionality.of(this.context),
+                    child: new FadeTransition(
+                        opacity: _opacity,
+                        child: new CompositedTransformFollower(
+                            link: widget.layerLink,
+                            showWhenUnlinked: false,
+                            offset: widget.offset,
+                            child: widget.child
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -1210,10 +1805,24 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class _SelectionHandleOverlay__text_selection : StatefulWidget
@@ -1229,7 +1838,18 @@ public class _SelectionHandleOverlay__text_selection : StatefulWidget
     public virtual TextSelectionHandleType type { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
 
-    internal _SelectionHandleOverlay__text_selection(TextSelectionHandleType type, LayerLink handleLayerLink, Action? onSelectionHandleTapped = null, Action<DragStartDetails>? onSelectionHandleDragStart = null, Action<DragUpdateDetails>? onSelectionHandleDragUpdate = null, Action<DragEndDetails>? onSelectionHandleDragEnd = null, TextSelectionControls selectionControls = default!, ValueListenable<bool>? visibility = null, double preferredLineHeight = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start)
+    internal _SelectionHandleOverlay__text_selection(
+        TextSelectionHandleType type,
+        LayerLink handleLayerLink,
+        Action? onSelectionHandleTapped = null,
+        Action<DragStartDetails>? onSelectionHandleDragStart = null,
+        Action<DragUpdateDetails>? onSelectionHandleDragUpdate = null,
+        Action<DragEndDetails>? onSelectionHandleDragEnd = null,
+        TextSelectionControls selectionControls = default!,
+        ValueListenable<bool>? visibility = null,
+        double preferredLineHeight = default!,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start
+    )
     {
         this.type = type;
         this.handleLayerLink = handleLayerLink;
@@ -1243,16 +1863,22 @@ public class _SelectionHandleOverlay__text_selection : StatefulWidget
         this.dragStartBehavior = dragStartBehavior;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionHandleOverlayState__text_selection());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SelectionHandleOverlayState__text_selection()
+        );
 }
 
-internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHandleOverlay__text_selection>, SingleTickerProviderStateMixin<_SelectionHandleOverlay__text_selection>
+internal class _SelectionHandleOverlayState__text_selection
+    : State<_SelectionHandleOverlay__text_selection>,
+        SingleTickerProviderStateMixin<_SelectionHandleOverlay__text_selection>
 {
     internal virtual AnimationController _controller { get; set; } = default!;
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     internal virtual Animation<double> _opacity => _controller.view;
+
     public override void initState()
     {
         base.initState();
@@ -1293,14 +1919,32 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
         widget.visibility?.removeListener(_handleVisibilityChanged);
         _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -1309,41 +1953,142 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
     public override Widget build(BuildContext context)
     {
         Rect handleRect = _getHandleRect(widget.type, widget.preferredLineHeight);
-        Rect interactiveRect = handleRect.isEmpty ? handleRect : handleRect.expandToInclude(Rect.fromCircle(center: handleRect.center, radius: ConstantsLibrary.kMinInteractiveDimension / 2L));
-        RelativeRect paddingLocal = interactiveRect.isEmpty ? RelativeRect.fill : new RelativeRect(Math.Max((interactiveRect.width - handleRect.width) / 2L, 0), Math.Max((interactiveRect.height - handleRect.height) / 2L, 0), Math.Max((interactiveRect.width - handleRect.width) / 2L, 0), Math.Max((interactiveRect.height - handleRect.height) / 2L, 0));
-        Offset handleAnchor = widget.selectionControls.getHandleAnchor(widget.type, widget.preferredLineHeight);
-        bool eagerlyAcceptDragWhenCollapsed = Equals(widget.type, TextSelectionHandleType.collapsed) && Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS);
-        return new CompositedTransformFollower(link: widget.handleLayerLink, offset: -handleAnchor - new Offset(paddingLocal.left, paddingLocal.top), showWhenUnlinked: false, child: new FadeTransition(opacity: _opacity, child: new SizedBox(width: interactiveRect.width, height: interactiveRect.height, child: new Align(alignment: Alignment.topLeft, child: new RawGestureDetector(behavior: HitTestBehavior.translucent, gestures: new DartMap<Type, dynamic>
-        {
-            [typeof(PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(() => new PanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown }), (instance) =>
-            {
-                DartRuntimePrimitives.Ignore(((Func<PanGestureRecognizer>)(() =>
-                {
-                    var __cascade = instance;
-                    __cascade.dragStartBehavior = widget.dragStartBehavior;
-                    __cascade.gestureSettings = eagerlyAcceptDragWhenCollapsed ? new DeviceGestureSettings(touchSlop: 1.0) : null;
-                    __cascade.onStart = widget.onSelectionHandleDragStart;
-                    __cascade.onUpdate = widget.onSelectionHandleDragUpdate;
-                    __cascade.onEnd = widget.onSelectionHandleDragEnd;
-                    return __cascade;
-                }))());
-            })
-        }, child: new Padding(padding: EdgeInsets.CreateOnly(left: paddingLocal.left, top: paddingLocal.top, right: paddingLocal.right, bottom: paddingLocal.bottom), child: widget.selectionControls.buildHandle(context, widget.type, widget.preferredLineHeight, () => widget.onSelectionHandleTapped?.Invoke())))))));
+        Rect interactiveRect = handleRect.isEmpty
+            ? handleRect
+            : handleRect.expandToInclude(
+                Rect.fromCircle(
+                    center: handleRect.center,
+                    radius: ConstantsLibrary.kMinInteractiveDimension / 2L
+                )
+            );
+        RelativeRect paddingLocal = interactiveRect.isEmpty
+            ? RelativeRect.fill
+            : new RelativeRect(
+                Math.Max((interactiveRect.width - handleRect.width) / 2L, 0),
+                Math.Max((interactiveRect.height - handleRect.height) / 2L, 0),
+                Math.Max((interactiveRect.width - handleRect.width) / 2L, 0),
+                Math.Max((interactiveRect.height - handleRect.height) / 2L, 0)
+            );
+        Offset handleAnchor = widget.selectionControls.getHandleAnchor(
+            widget.type,
+            widget.preferredLineHeight
+        );
+        bool eagerlyAcceptDragWhenCollapsed =
+            Equals(widget.type, TextSelectionHandleType.collapsed)
+            && Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS);
+        return new CompositedTransformFollower(
+            link: widget.handleLayerLink,
+            offset: -handleAnchor - new Offset(paddingLocal.left, paddingLocal.top),
+            showWhenUnlinked: false,
+            child: new FadeTransition(
+                opacity: _opacity,
+                child: new SizedBox(
+                    width: interactiveRect.width,
+                    height: interactiveRect.height,
+                    child: new Align(
+                        alignment: Alignment.topLeft,
+                        child: new RawGestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            gestures: new DartMap<Type, dynamic>
+                            {
+                                [typeof(PanGestureRecognizer)] =
+                                    new GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+                                        () =>
+                                            new PanGestureRecognizer(
+                                                debugOwner: this,
+                                                supportedDevices: new HashSet<PointerDeviceKind>
+                                                {
+                                                    PointerDeviceKind.touch,
+                                                    PointerDeviceKind.stylus,
+                                                    PointerDeviceKind.unknown,
+                                                }
+                                            ),
+                                        (instance) =>
+                                        {
+                                            DartRuntimePrimitives.Ignore(
+                                                (
+                                                    (Func<PanGestureRecognizer>)(
+                                                        () =>
+                                                        {
+                                                            var __cascade = instance;
+                                                            __cascade.dragStartBehavior =
+                                                                widget.dragStartBehavior;
+                                                            __cascade.gestureSettings =
+                                                                eagerlyAcceptDragWhenCollapsed
+                                                                    ? new DeviceGestureSettings(
+                                                                        touchSlop: 1.0
+                                                                    )
+                                                                    : null;
+                                                            __cascade.onStart =
+                                                                widget.onSelectionHandleDragStart;
+                                                            __cascade.onUpdate =
+                                                                widget.onSelectionHandleDragUpdate;
+                                                            __cascade.onEnd =
+                                                                widget.onSelectionHandleDragEnd;
+                                                            return __cascade;
+                                                        }
+                                                    )
+                                                )()
+                                            );
+                                        }
+                                    ),
+                            },
+                            child: new Padding(
+                                padding: EdgeInsets.CreateOnly(
+                                    left: paddingLocal.left,
+                                    top: paddingLocal.top,
+                                    right: paddingLocal.right,
+                                    bottom: paddingLocal.bottom
+                                ),
+                                child: widget.selectionControls.buildHandle(
+                                    context,
+                                    widget.type,
+                                    widget.preferredLineHeight,
+                                    () => widget.onSelectionHandleTapped?.Invoke()
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -1382,10 +2127,24 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public interface TextSelectionGestureDetectorBuilderDelegate
@@ -1397,7 +2156,8 @@ public interface TextSelectionGestureDetectorBuilderDelegate
 
 public class TextSelectionGestureDetectorBuilder
 {
-    public virtual TextSelectionGestureDetectorBuilderDelegate @delegate { get; private set; } = default!;
+    public virtual TextSelectionGestureDetectorBuilderDelegate @delegate { get; private set; } =
+        default!;
     internal virtual bool _shouldShowSelectionToolbar { get; set; } = true;
     internal virtual bool _shouldShowSelectionHandles { get; set; } = true;
     internal virtual bool _isShiftPressed { get; set; } = false;
@@ -1406,7 +2166,9 @@ public class TextSelectionGestureDetectorBuilder
     internal virtual TextSelection? _dragStartSelection { get; set; } = default;
     internal virtual bool _longPressStartedWithoutFocus { get; set; } = false;
 
-    public TextSelectionGestureDetectorBuilder(TextSelectionGestureDetectorBuilderDelegate @delegate)
+    public TextSelectionGestureDetectorBuilder(
+        TextSelectionGestureDetectorBuilderDelegate @delegate
+    )
     {
         this.@delegate = @delegate;
     }
@@ -1417,10 +2179,10 @@ public class TextSelectionGestureDetectorBuilder
         {
             case TargetPlatform.android:
             case TargetPlatform.iOS:
-                {
-                    editableText.showMagnifier(positionToShow);
-                    break;
-                }
+            {
+                editableText.showMagnifier(positionToShow);
+                break;
+            }
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
@@ -1439,10 +2201,10 @@ public class TextSelectionGestureDetectorBuilder
         {
             case TargetPlatform.android:
             case TargetPlatform.iOS:
-                {
-                    editableText.hideMagnifier();
-                    break;
-                }
+            {
+                editableText.hideMagnifier();
+                break;
+            }
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
@@ -1455,15 +2217,21 @@ public class TextSelectionGestureDetectorBuilder
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => renderEditable.lastSecondaryTapDownPosition is not null);
+            DartRuntimePrimitives.Assert(() =>
+                renderEditable.lastSecondaryTapDownPosition is not null
+            );
             if (renderEditable.selection is null)
             {
                 return false;
             }
-            TextPosition textPosition = renderEditable.getPositionForPoint(DartRuntimePrimitives.RequireValue(renderEditable.lastSecondaryTapDownPosition));
-            return (renderEditable.selection!.start <= textPosition.offset) && (renderEditable.selection!.end >= textPosition.offset);
+            TextPosition textPosition = renderEditable.getPositionForPoint(
+                DartRuntimePrimitives.RequireValue(renderEditable.lastSecondaryTapDownPosition)
+            );
+            return (renderEditable.selection!.start <= textPosition.offset)
+                && (renderEditable.selection!.end >= textPosition.offset);
         }
     }
+
     internal virtual bool _positionWasOnSelectionExclusive(TextPosition textPosition)
     {
         TextSelection? selectionLocal = renderEditable.selection;
@@ -1471,7 +2239,8 @@ public class TextSelectionGestureDetectorBuilder
         {
             return false;
         }
-        return (selectionLocal.start < textPosition.offset) && (selectionLocal.end > textPosition.offset);
+        return (selectionLocal.start < textPosition.offset)
+            && (selectionLocal.end > textPosition.offset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1482,18 +2251,31 @@ public class TextSelectionGestureDetectorBuilder
         {
             return false;
         }
-        return (selectionLocal.start <= textPosition.offset) && (selectionLocal.end >= textPosition.offset);
+        return (selectionLocal.start <= textPosition.offset)
+            && (selectionLocal.end >= textPosition.offset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _expandSelection(Offset offset, SelectionChangedCause cause, TextSelection? fromSelection = null)
+    internal virtual void _expandSelection(
+        Offset offset,
+        SelectionChangedCause cause,
+        TextSelection? fromSelection = null
+    )
     {
         DartRuntimePrimitives.Assert(() => renderEditable.selection?.baseOffset is not null);
         TextPosition tappedPosition = renderEditable.getPositionForPoint(offset);
         TextSelection selectionLocal = fromSelection ?? renderEditable.selection!;
-        bool baseIsCloser = (tappedPosition.offset - selectionLocal.baseOffset).abs() < (tappedPosition.offset - selectionLocal.extentOffset).abs();
-        TextSelection nextSelection = selectionLocal.copyWith(baseOffset: baseIsCloser ? selectionLocal.extentOffset : selectionLocal.baseOffset, extentOffset: tappedPosition.offset);
-        editableText.userUpdateTextEditingValue(editableText.textEditingValue.copyWith(selection: nextSelection), DartRuntimePrimitives.RequireValue(cause));
+        bool baseIsCloser =
+            (tappedPosition.offset - selectionLocal.baseOffset).abs()
+            < (tappedPosition.offset - selectionLocal.extentOffset).abs();
+        TextSelection nextSelection = selectionLocal.copyWith(
+            baseOffset: baseIsCloser ? selectionLocal.extentOffset : selectionLocal.baseOffset,
+            extentOffset: tappedPosition.offset
+        );
+        editableText.userUpdateTextEditingValue(
+            editableText.textEditingValue.copyWith(selection: nextSelection),
+            DartRuntimePrimitives.RequireValue(cause)
+        );
     }
 
     internal virtual void _extendSelection(Offset offset, SelectionChangedCause cause)
@@ -1502,19 +2284,31 @@ public class TextSelectionGestureDetectorBuilder
         TextPosition tappedPosition = renderEditable.getPositionForPoint(offset);
         TextSelection selectionLocal = renderEditable.selection!;
         TextSelection nextSelection = selectionLocal.copyWith(extentOffset: tappedPosition.offset);
-        editableText.userUpdateTextEditingValue(editableText.textEditingValue.copyWith(selection: nextSelection), DartRuntimePrimitives.RequireValue(cause));
+        editableText.userUpdateTextEditingValue(
+            editableText.textEditingValue.copyWith(selection: nextSelection),
+            DartRuntimePrimitives.RequireValue(cause)
+        );
     }
 
     public virtual bool shouldShowSelectionToolbar => _shouldShowSelectionToolbar;
     public virtual bool shouldShowSelectionHandles => _shouldShowSelectionHandles;
-    public virtual EditableTextState editableText => DartRuntimePrimitives.ConvertValue<EditableTextState>(@delegate.editableTextKey.currentState!);
+    public virtual EditableTextState editableText =>
+        DartRuntimePrimitives.ConvertValue<EditableTextState>(
+            @delegate.editableTextKey.currentState!
+        );
     public virtual RenderEditable renderEditable => editableText.renderEditable;
-    internal virtual bool _isEditableTextMounted => DartRuntimePrimitives.ConvertValue<bool>(@delegate.editableTextKey.currentContext?.mounted ?? false);
+    internal virtual bool _isEditableTextMounted =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            @delegate.editableTextKey.currentContext?.mounted ?? false
+        );
     internal virtual double _scrollPosition
     {
         get
         {
-            ScrollableState? scrollableState = (@delegate.editableTextKey.currentContext is null) ? null : Scrollable.maybeOf(@delegate.editableTextKey.currentContext!);
+            ScrollableState? scrollableState =
+                (@delegate.editableTextKey.currentContext is null)
+                    ? null
+                    : Scrollable.maybeOf(@delegate.editableTextKey.currentContext!);
             return (scrollableState is null) ? 0.0 : scrollableState.position.pixels;
         }
     }
@@ -1522,13 +2316,25 @@ public class TextSelectionGestureDetectorBuilder
     {
         get
         {
-            ScrollableState? scrollableState = (@delegate.editableTextKey.currentContext is null) ? null : Scrollable.maybeOf(@delegate.editableTextKey.currentContext!);
+            ScrollableState? scrollableState =
+                (@delegate.editableTextKey.currentContext is null)
+                    ? null
+                    : Scrollable.maybeOf(@delegate.editableTextKey.currentContext!);
             return scrollableState?.axisDirection;
         }
     }
+
     public virtual void onTapTrackStart()
     {
-        _isShiftPressed = Enumerable.Any(HardwareKeyboard.instance.logicalKeysPressed.intersection(new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight }));
+        _isShiftPressed = Enumerable.Any(
+            HardwareKeyboard.instance.logicalKeysPressed.intersection(
+                new HashSet<LogicalKeyboardKey>
+                {
+                    LogicalKeyboardKey.shiftLeft,
+                    LogicalKeyboardKey.shiftRight,
+                }
+            )
+        );
     }
 
     public virtual void onTapTrackReset()
@@ -1544,59 +2350,86 @@ public class TextSelectionGestureDetectorBuilder
         }
         renderEditable.handleTapDown(new TapDownDetails(globalPosition: details.globalPosition));
         PointerDeviceKind? kindLocal = details.kind;
-        _shouldShowSelectionToolbar = (kindLocal is null) || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch) || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
+        _shouldShowSelectionToolbar =
+            (kindLocal is null)
+            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch)
+            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
         _shouldShowSelectionHandles = _shouldShowSelectionToolbar;
-        bool isShiftPressedValid = _isShiftPressed && (renderEditable.selection?.baseOffset is not null);
+        bool isShiftPressedValid =
+            _isShiftPressed && (renderEditable.selection?.baseOffset is not null);
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.android:
+            {
+                if (editableText.widget.stylusHandwritingEnabled)
                 {
-                    if (editableText.widget.stylusHandwritingEnabled)
+                    bool stylusEnabled = kindLocal switch
                     {
-                        bool stylusEnabled = kindLocal switch { PointerDeviceKind.stylus => editableText.widget.stylusHandwritingEnabled, PointerDeviceKind.invertedStylus => editableText.widget.stylusHandwritingEnabled, _ => false };
-                        if (stylusEnabled)
-                        {
-                            DartRuntimePrimitives.Ignore(Scribe.isFeatureAvailable().then((isAvailable) =>
-                            {
-                                if (isAvailable)
-                                {
-                                    renderEditable.selectPosition(cause: SelectionChangedCause.stylusHandwriting);
-                                    DartRuntimePrimitives.Ignore(Scribe.startStylusHandwriting());
-                                }
-                            }));
-                        }
+                        PointerDeviceKind.stylus => editableText.widget.stylusHandwritingEnabled,
+                        PointerDeviceKind.invertedStylus => editableText
+                            .widget
+                            .stylusHandwritingEnabled,
+                        _ => false,
+                    };
+                    if (stylusEnabled)
+                    {
+                        DartRuntimePrimitives.Ignore(
+                            Scribe
+                                .isFeatureAvailable()
+                                .then(
+                                    (isAvailable) =>
+                                    {
+                                        if (isAvailable)
+                                        {
+                                            renderEditable.selectPosition(
+                                                cause: SelectionChangedCause.stylusHandwriting
+                                            );
+                                            DartRuntimePrimitives.Ignore(
+                                                Scribe.startStylusHandwriting()
+                                            );
+                                        }
+                                    }
+                                )
+                        );
                     }
-                    break;
                 }
+                break;
+            }
             case TargetPlatform.fuchsia:
             case TargetPlatform.iOS:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case TargetPlatform.macOS:
+            {
+                editableText.hideToolbar();
+                if (isShiftPressedValid)
                 {
-                    editableText.hideToolbar();
-                    if (isShiftPressedValid)
-                    {
-                        TextSelection? fromSelection = renderEditable.hasFocus ? null : TextSelection.CreateCollapsed(offset: 0L);
-                        _expandSelection(details.globalPosition, SelectionChangedCause.tap, fromSelection);
-                        return;
-                    }
-                    renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                    break;
+                    TextSelection? fromSelection = renderEditable.hasFocus
+                        ? null
+                        : TextSelection.CreateCollapsed(offset: 0L);
+                    _expandSelection(
+                        details.globalPosition,
+                        SelectionChangedCause.tap,
+                        fromSelection
+                    );
+                    return;
                 }
+                renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+                break;
+            }
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                editableText.hideToolbar();
+                if (isShiftPressedValid)
                 {
-                    editableText.hideToolbar();
-                    if (isShiftPressedValid)
-                    {
-                        _extendSelection(details.globalPosition, SelectionChangedCause.tap);
-                        return;
-                    }
-                    renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                    break;
+                    _extendSelection(details.globalPosition, SelectionChangedCause.tap);
+                    return;
                 }
+                renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+                break;
+            }
         }
     }
 
@@ -1608,14 +2441,20 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        renderEditable.selectWordsInRange(from: details.globalPosition, cause: SelectionChangedCause.forcePress);
+        renderEditable.selectWordsInRange(
+            from: details.globalPosition,
+            cause: SelectionChangedCause.forcePress
+        );
         editableText.showToolbar();
     }
 
     public virtual void onForcePressEnd(ForcePressDetails details)
     {
         DartRuntimePrimitives.Assert(() => @delegate.forcePressEnabled);
-        renderEditable.selectWordsInRange(from: details.globalPosition, cause: SelectionChangedCause.forcePress);
+        renderEditable.selectWordsInRange(
+            from: details.globalPosition,
+            cause: SelectionChangedCause.forcePress
+        );
         if (shouldShowSelectionToolbar)
         {
             editableText.showToolbar();
@@ -1623,9 +2462,8 @@ public class TextSelectionGestureDetectorBuilder
     }
 
     public virtual bool onUserTapAlwaysCalled => false;
-    public virtual void onUserTap()
-    {
-    }
+
+    public virtual void onUserTap() { }
 
     public virtual void onSingleTapUp(TapDragUpDetails details)
     {
@@ -1634,107 +2472,140 @@ public class TextSelectionGestureDetectorBuilder
             editableText.requestKeyboard();
             return;
         }
-        bool isShiftPressedValid = _isShiftPressed && (renderEditable.selection?.baseOffset is not null);
+        bool isShiftPressedValid =
+            _isShiftPressed && (renderEditable.selection?.baseOffset is not null);
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case TargetPlatform.android:
+            {
+                editableText.hideToolbar(false);
+                if (isShiftPressedValid)
                 {
-                    editableText.hideToolbar(false);
-                    if (isShiftPressedValid)
-                    {
-                        _extendSelection(details.globalPosition, SelectionChangedCause.tap);
-                        return;
-                    }
-                    renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                    editableText.showSpellCheckSuggestionsToolbar();
-                    break;
+                    _extendSelection(details.globalPosition, SelectionChangedCause.tap);
+                    return;
                 }
+                renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+                editableText.showSpellCheckSuggestionsToolbar();
+                break;
+            }
             case TargetPlatform.fuchsia:
+            {
+                editableText.hideToolbar(false);
+                if (isShiftPressedValid)
                 {
-                    editableText.hideToolbar(false);
-                    if (isShiftPressedValid)
-                    {
-                        _extendSelection(details.globalPosition, SelectionChangedCause.tap);
-                        return;
-                    }
-                    renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                    break;
+                    _extendSelection(details.globalPosition, SelectionChangedCause.tap);
+                    return;
                 }
+                renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+                break;
+            }
             case TargetPlatform.iOS:
+            {
+                if (isShiftPressedValid)
                 {
-                    if (isShiftPressedValid)
+                    TextSelection? fromSelection = renderEditable.hasFocus
+                        ? null
+                        : TextSelection.CreateCollapsed(offset: 0L);
+                    _expandSelection(
+                        details.globalPosition,
+                        SelectionChangedCause.tap,
+                        fromSelection
+                    );
+                    return;
+                }
+                switch (details.kind)
+                {
+                    case PointerDeviceKind.mouse:
+                    case PointerDeviceKind.trackpad:
+                    case PointerDeviceKind.stylus:
+                    case PointerDeviceKind.invertedStylus:
                     {
-                        TextSelection? fromSelection = renderEditable.hasFocus ? null : TextSelection.CreateCollapsed(offset: 0L);
-                        _expandSelection(details.globalPosition, SelectionChangedCause.tap, fromSelection);
-                        return;
+                        renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+                        editableText.hideToolbar();
+                        break;
                     }
-                    switch (details.kind)
+                    case PointerDeviceKind.touch:
+                    case PointerDeviceKind.unknown:
                     {
-                        case PointerDeviceKind.mouse:
-                        case PointerDeviceKind.trackpad:
-                        case PointerDeviceKind.stylus:
-                        case PointerDeviceKind.invertedStylus:
+                        TextSelection previousSelection =
+                            renderEditable.selection ?? editableText.textEditingValue.selection;
+                        TextPosition textPosition = renderEditable.getPositionForPoint(
+                            details.globalPosition
+                        );
+                        var isAffinityTheSame = Equals(
+                            textPosition.affinity,
+                            previousSelection.affinity
+                        );
+                        var wordAtCursorIndexIsMisspelled =
+                            editableText.findSuggestionSpanAtCursorIndex(textPosition.offset)
+                            is not null;
+                        if (wordAtCursorIndexIsMisspelled)
+                        {
+                            renderEditable.selectWord(cause: SelectionChangedCause.tap);
+                            if (!Equals(previousSelection, editableText.textEditingValue.selection))
                             {
-                                renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                                editableText.hideToolbar();
-                                break;
+                                editableText.showSpellCheckSuggestionsToolbar();
                             }
-                        case PointerDeviceKind.touch:
-                        case PointerDeviceKind.unknown:
+                            else
                             {
-                                TextSelection previousSelection = renderEditable.selection ?? editableText.textEditingValue.selection;
-                                TextPosition textPosition = renderEditable.getPositionForPoint(details.globalPosition);
-                                var isAffinityTheSame = Equals(textPosition.affinity, previousSelection.affinity);
-                                var wordAtCursorIndexIsMisspelled = editableText.findSuggestionSpanAtCursorIndex(textPosition.offset) is not null;
-                                if (wordAtCursorIndexIsMisspelled)
+                                editableText.toggleToolbar(false);
+                            }
+                        }
+                        else
+                        {
+                            if (
+                                (
+                                    (
+                                        _positionWasOnSelectionExclusive(textPosition)
+                                        && !previousSelection.isCollapsed
+                                    )
+                                    || (
+                                        _positionWasOnSelectionInclusive(textPosition)
+                                        && previousSelection.isCollapsed
+                                        && isAffinityTheSame
+                                        && !renderEditable.readOnly
+                                    )
+                                ) && renderEditable.hasFocus
+                            )
+                            {
+                                editableText.toggleToolbar(false);
+                            }
+                            else
+                            {
+                                renderEditable.selectWordEdge(cause: SelectionChangedCause.tap);
+                                if (
+                                    Equals(
+                                        previousSelection,
+                                        editableText.textEditingValue.selection
+                                    )
+                                    && renderEditable.hasFocus
+                                    && !renderEditable.readOnly
+                                )
                                 {
-                                    renderEditable.selectWord(cause: SelectionChangedCause.tap);
-                                    if (!Equals(previousSelection, editableText.textEditingValue.selection))
-                                    {
-                                        editableText.showSpellCheckSuggestionsToolbar();
-                                    }
-                                    else
-                                    {
-                                        editableText.toggleToolbar(false);
-                                    }
+                                    editableText.toggleToolbar(false);
                                 }
                                 else
                                 {
-                                    if ((_positionWasOnSelectionExclusive(textPosition) && !previousSelection.isCollapsed || _positionWasOnSelectionInclusive(textPosition) && previousSelection.isCollapsed && isAffinityTheSame && !renderEditable.readOnly) && renderEditable.hasFocus)
-                                    {
-                                        editableText.toggleToolbar(false);
-                                    }
-                                    else
-                                    {
-                                        renderEditable.selectWordEdge(cause: SelectionChangedCause.tap);
-                                        if (Equals(previousSelection, editableText.textEditingValue.selection) && renderEditable.hasFocus && !renderEditable.readOnly)
-                                        {
-                                            editableText.toggleToolbar(false);
-                                        }
-                                        else
-                                        {
-                                            editableText.hideToolbar(false);
-                                        }
-                                    }
+                                    editableText.hideToolbar(false);
                                 }
-                                break;
                             }
+                        }
+                        break;
                     }
-                    break;
                 }
+                break;
+            }
         }
         editableText.requestKeyboard();
     }
 
-    public virtual void onSingleTapCancel()
-    {
-    }
+    public virtual void onSingleTapCancel() { }
 
     public virtual void onSingleLongTapStart(LongPressStartDetails details)
     {
@@ -1746,43 +2617,58 @@ public class TextSelectionGestureDetectorBuilder
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
+            {
+                if (!renderEditable.hasFocus)
                 {
-                    if (!renderEditable.hasFocus)
+                    _longPressStartedWithoutFocus = true;
+                    renderEditable.selectWord(cause: SelectionChangedCause.longPress);
+                }
+                else
+                {
+                    if (renderEditable.readOnly)
                     {
-                        _longPressStartedWithoutFocus = true;
                         renderEditable.selectWord(cause: SelectionChangedCause.longPress);
+                        if (editableText.context.mounted)
+                        {
+                            DartRuntimePrimitives.Ignore(
+                                Feedback.forLongPress(editableText.context)
+                            );
+                        }
                     }
                     else
                     {
-                        if (renderEditable.readOnly)
-                        {
-                            renderEditable.selectWord(cause: SelectionChangedCause.longPress);
-                            if (editableText.context.mounted)
-                            {
-                                DartRuntimePrimitives.Ignore(Feedback.forLongPress(editableText.context));
-                            }
-                        }
-                        else
-                        {
-                            renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.longPress);
-                            var cursorPoint = new RawFloatingCursorPoint(state: FloatingCursorDragState.Start, startLocation: (renderEditable.globalToLocal(details.globalPosition), new TextPosition(offset: editableText.textEditingValue.selection.baseOffset, affinity: editableText.textEditingValue.selection.affinity)), offset: Offset.zero);
-                            editableText.updateFloatingCursor(cursorPoint);
-                        }
+                        renderEditable.selectPositionAt(
+                            from: details.globalPosition,
+                            cause: SelectionChangedCause.longPress
+                        );
+                        var cursorPoint = new RawFloatingCursorPoint(
+                            state: FloatingCursorDragState.Start,
+                            startLocation: (
+                                renderEditable.globalToLocal(details.globalPosition),
+                                new TextPosition(
+                                    offset: editableText.textEditingValue.selection.baseOffset,
+                                    affinity: editableText.textEditingValue.selection.affinity
+                                )
+                            ),
+                            offset: Offset.zero
+                        );
+                        editableText.updateFloatingCursor(cursorPoint);
                     }
-                    break;
                 }
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                renderEditable.selectWord(cause: SelectionChangedCause.longPress);
+                if (editableText.context.mounted)
                 {
-                    renderEditable.selectWord(cause: SelectionChangedCause.longPress);
-                    if (editableText.context.mounted)
-                    {
-                        DartRuntimePrimitives.Ignore(Feedback.forLongPress(editableText.context));
-                    }
-                    break;
+                    DartRuntimePrimitives.Ignore(Feedback.forLongPress(editableText.context));
                 }
+                break;
+            }
         }
         _showMagnifierIfSupportedByPlatform(details.globalPosition);
         _dragStartViewportOffset = renderEditable.offset.pixels;
@@ -1795,33 +2681,63 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        var editableOffset = (renderEditable.maxLines == 1L) ? new Offset(renderEditable.offset.pixels - _dragStartViewportOffset, 0.0) : new Offset(0.0, renderEditable.offset.pixels - _dragStartViewportOffset);
-        Offset scrollableOffset = Basic_typesLibrary.axisDirectionToAxis(_scrollDirection ?? AxisDirection.left) switch { Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0), Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var editableOffset =
+            (renderEditable.maxLines == 1L)
+                ? new Offset(renderEditable.offset.pixels - _dragStartViewportOffset, 0.0)
+                : new Offset(0.0, renderEditable.offset.pixels - _dragStartViewportOffset);
+        Offset scrollableOffset = Basic_typesLibrary.axisDirectionToAxis(
+            _scrollDirection ?? AxisDirection.left
+        ) switch
+        {
+            Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0),
+            Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
+            {
+                if (_longPressStartedWithoutFocus || renderEditable.readOnly)
                 {
-                    if (_longPressStartedWithoutFocus || renderEditable.readOnly)
-                    {
-                        renderEditable.selectWordsInRange(from: details.globalPosition - details.offsetFromOrigin - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.longPress);
-                    }
-                    else
-                    {
-                        renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.longPress);
-                        var cursorPoint = new RawFloatingCursorPoint(state: FloatingCursorDragState.Update, offset: details.offsetFromOrigin);
-                        editableText.updateFloatingCursor(cursorPoint);
-                    }
-                    break;
+                    renderEditable.selectWordsInRange(
+                        from: details.globalPosition
+                            - details.offsetFromOrigin
+                            - editableOffset
+                            - scrollableOffset,
+                        to: details.globalPosition,
+                        cause: SelectionChangedCause.longPress
+                    );
                 }
+                else
+                {
+                    renderEditable.selectPositionAt(
+                        from: details.globalPosition,
+                        cause: SelectionChangedCause.longPress
+                    );
+                    var cursorPoint = new RawFloatingCursorPoint(
+                        state: FloatingCursorDragState.Update,
+                        offset: details.offsetFromOrigin
+                    );
+                    editableText.updateFloatingCursor(cursorPoint);
+                }
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
-                {
-                    renderEditable.selectWordsInRange(from: details.globalPosition - details.offsetFromOrigin - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.longPress);
-                    break;
-                }
+            {
+                renderEditable.selectWordsInRange(
+                    from: details.globalPosition
+                        - details.offsetFromOrigin
+                        - editableOffset
+                        - scrollableOffset,
+                    to: details.globalPosition,
+                    cause: SelectionChangedCause.longPress
+                );
+                break;
+            }
         }
         _showMagnifierIfSupportedByPlatform(details.globalPosition);
     }
@@ -1850,38 +2766,43 @@ public class TextSelectionGestureDetectorBuilder
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
+            {
+                if (!_lastSecondaryTapWasOnSelection || !renderEditable.hasFocus)
                 {
-                    if (!_lastSecondaryTapWasOnSelection || !renderEditable.hasFocus)
-                    {
-                        renderEditable.selectWord(cause: SelectionChangedCause.tap);
-                    }
-                    if (shouldShowSelectionToolbar)
-                    {
-                        editableText.hideToolbar();
-                        editableText.showToolbar();
-                    }
-                    break;
+                    renderEditable.selectWord(cause: SelectionChangedCause.tap);
                 }
+                if (shouldShowSelectionToolbar)
+                {
+                    editableText.hideToolbar();
+                    editableText.showToolbar();
+                }
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                if (!renderEditable.hasFocus)
                 {
-                    if (!renderEditable.hasFocus)
-                    {
-                        renderEditable.selectPosition(cause: SelectionChangedCause.tap);
-                    }
-                    editableText.toggleToolbar();
-                    break;
+                    renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                 }
+                editableText.toggleToolbar();
+                break;
+            }
         }
     }
 
     public virtual void onSecondaryTapDown(TapDownDetails details)
     {
-        renderEditable.handleSecondaryTapDown(new TapDownDetails(globalPosition: details.globalPosition));
+        renderEditable.handleSecondaryTapDown(
+            new TapDownDetails(globalPosition: details.globalPosition)
+        );
         _shouldShowSelectionToolbar = true;
-        _shouldShowSelectionHandles = (details.kind is null) || Equals(details.kind, PointerDeviceKind.touch) || Equals(details.kind, PointerDeviceKind.stylus);
+        _shouldShowSelectionHandles =
+            (details.kind is null)
+            || Equals(details.kind, PointerDeviceKind.touch)
+            || Equals(details.kind, PointerDeviceKind.stylus);
     }
 
     public virtual void onDoubleTapDown(TapDragDownDetails details)
@@ -1902,20 +2823,33 @@ public class TextSelectionGestureDetectorBuilder
         _longPressStartedWithoutFocus = false;
         _dragStartViewportOffset = 0.0;
         _dragStartScrollOffset = 0.0;
-        if (_isEditableTextMounted && Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) && @delegate.selectionEnabled && editableText.textEditingValue.selection.isCollapsed)
+        if (
+            _isEditableTextMounted
+            && Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)
+            && @delegate.selectionEnabled
+            && editableText.textEditingValue.selection.isCollapsed
+        )
         {
             var cursorPoint = new RawFloatingCursorPoint(state: FloatingCursorDragState.End);
             editableText.updateFloatingCursor(cursorPoint);
         }
     }
 
-    internal virtual void _selectParagraphsInRange(Offset from, Offset? to = null, SelectionChangedCause? cause = null)
+    internal virtual void _selectParagraphsInRange(
+        Offset from,
+        Offset? to = null,
+        SelectionChangedCause? cause = null
+    )
     {
         TextBoundary paragraphBoundary = new ParagraphBoundary(editableText.textEditingValue.text);
         _selectTextBoundariesInRange(boundary: paragraphBoundary, from: from, to: to, cause: cause);
     }
 
-    internal virtual void _selectLinesInRange(Offset from, Offset? to = null, SelectionChangedCause? cause = null)
+    internal virtual void _selectLinesInRange(
+        Offset from,
+        Offset? to = null,
+        SelectionChangedCause? cause = null
+    )
     {
         TextBoundary lineBoundary = new LineBoundary(renderEditable);
         _selectTextBoundariesInRange(boundary: lineBoundary, from: from, to: to, cause: cause);
@@ -1924,21 +2858,45 @@ public class TextSelectionGestureDetectorBuilder
     internal virtual TextRange _moveToTextBoundary(TextPosition extent, TextBoundary textBoundary)
     {
         DartRuntimePrimitives.Assert(() => extent.offset >= 0L);
-        long startLocal = textBoundary.getLeadingTextBoundaryAt((extent.offset == editableText.textEditingValue.text.Length) ? (extent.offset - 1L) : extent.offset) ?? 0L;
-        long endLocal = textBoundary.getTrailingTextBoundaryAt(extent.offset) ?? editableText.textEditingValue.text.Length;
+        long startLocal =
+            textBoundary.getLeadingTextBoundaryAt(
+                (extent.offset == editableText.textEditingValue.text.Length)
+                    ? (extent.offset - 1L)
+                    : extent.offset
+            ) ?? 0L;
+        long endLocal =
+            textBoundary.getTrailingTextBoundaryAt(extent.offset)
+            ?? editableText.textEditingValue.text.Length;
         return new TextRange(start: startLocal, end: endLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _selectTextBoundariesInRange(TextBoundary boundary, Offset from, Offset? to = null, SelectionChangedCause? cause = null)
+    internal virtual void _selectTextBoundariesInRange(
+        TextBoundary boundary,
+        Offset from,
+        Offset? to = null,
+        SelectionChangedCause? cause = null
+    )
     {
         TextPosition fromPosition = renderEditable.getPositionForPoint(from);
         TextRange fromRange = _moveToTextBoundary(fromPosition, boundary);
-        TextPosition toPosition = (to is null) ? fromPosition : renderEditable.getPositionForPoint(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to)));
-        TextRange toRange = Equals(toPosition, fromPosition) ? fromRange : _moveToTextBoundary(toPosition, boundary);
+        TextPosition toPosition =
+            (to is null)
+                ? fromPosition
+                : renderEditable.getPositionForPoint(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                );
+        TextRange toRange = Equals(toPosition, fromPosition)
+            ? fromRange
+            : _moveToTextBoundary(toPosition, boundary);
         bool isFromBoundaryBeforeToBoundary = fromRange.start < toRange.end;
-        var newSelection = isFromBoundaryBeforeToBoundary ? new TextSelection(baseOffset: fromRange.start, extentOffset: toRange.end) : new TextSelection(baseOffset: fromRange.end, extentOffset: toRange.start);
-        editableText.userUpdateTextEditingValue(editableText.textEditingValue.copyWith(selection: newSelection), DartRuntimePrimitives.RequireValue(cause));
+        var newSelection = isFromBoundaryBeforeToBoundary
+            ? new TextSelection(baseOffset: fromRange.start, extentOffset: toRange.end)
+            : new TextSelection(baseOffset: fromRange.end, extentOffset: toRange.start);
+        editableText.userUpdateTextEditingValue(
+            editableText.textEditingValue.copyWith(selection: newSelection),
+            DartRuntimePrimitives.RequireValue(cause)
+        );
     }
 
     public virtual void onTripleTapDown(TapDragDownDetails details)
@@ -1960,15 +2918,21 @@ public class TextSelectionGestureDetectorBuilder
                 case TargetPlatform.iOS:
                 case TargetPlatform.macOS:
                 case TargetPlatform.windows:
-                    {
-                        _selectParagraphsInRange(from: details.globalPosition, cause: SelectionChangedCause.tap);
-                        break;
-                    }
+                {
+                    _selectParagraphsInRange(
+                        from: details.globalPosition,
+                        cause: SelectionChangedCause.tap
+                    );
+                    break;
+                }
                 case TargetPlatform.linux:
-                    {
-                        _selectLinesInRange(from: details.globalPosition, cause: SelectionChangedCause.tap);
-                        break;
-                    }
+                {
+                    _selectLinesInRange(
+                        from: details.globalPosition,
+                        cause: SelectionChangedCause.tap
+                    );
+                    break;
+                }
             }
         }
         if (shouldShowSelectionToolbar)
@@ -1984,33 +2948,44 @@ public class TextSelectionGestureDetectorBuilder
             return;
         }
         PointerDeviceKind? kindLocal = details.kind;
-        _shouldShowSelectionToolbar = (kindLocal is null) || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch) || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
+        _shouldShowSelectionToolbar =
+            (kindLocal is null)
+            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch)
+            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
         _shouldShowSelectionHandles = _shouldShowSelectionToolbar;
         _dragStartSelection = renderEditable.selection;
         _dragStartScrollOffset = _scrollPosition;
         _dragStartViewportOffset = renderEditable.offset.pixels;
-        if (_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(details.consecutiveTapCount) > 1L)
+        if (
+            _TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(
+                details.consecutiveTapCount
+            ) > 1L
+        )
         {
             return;
         }
-        if (_isShiftPressed && (renderEditable.selection is not null) && renderEditable.selection!.isValid)
+        if (
+            _isShiftPressed
+            && (renderEditable.selection is not null)
+            && renderEditable.selection!.isValid
+        )
         {
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case TargetPlatform.iOS:
                 case TargetPlatform.macOS:
-                    {
-                        _expandSelection(details.globalPosition, SelectionChangedCause.drag);
-                        break;
-                    }
+                {
+                    _expandSelection(details.globalPosition, SelectionChangedCause.drag);
+                    break;
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
-                    {
-                        _extendSelection(details.globalPosition, SelectionChangedCause.drag);
-                        break;
-                    }
+                {
+                    _extendSelection(details.globalPosition, SelectionChangedCause.drag);
+                    break;
+                }
             }
         }
         else
@@ -2018,59 +2993,71 @@ public class TextSelectionGestureDetectorBuilder
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case TargetPlatform.iOS:
+                {
+                    switch (details.kind)
                     {
-                        switch (details.kind)
+                        case PointerDeviceKind.mouse:
+                        case PointerDeviceKind.trackpad:
                         {
-                            case PointerDeviceKind.mouse:
-                            case PointerDeviceKind.trackpad:
-                                {
-                                    renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.drag);
-                                    break;
-                                }
-                            case PointerDeviceKind.stylus:
-                            case PointerDeviceKind.invertedStylus:
-                            case PointerDeviceKind.touch:
-                            case PointerDeviceKind.unknown:
-                            case null:
-                                break;
+                            renderEditable.selectPositionAt(
+                                from: details.globalPosition,
+                                cause: SelectionChangedCause.drag
+                            );
+                            break;
                         }
-                        break;
+                        case PointerDeviceKind.stylus:
+                        case PointerDeviceKind.invertedStylus:
+                        case PointerDeviceKind.touch:
+                        case PointerDeviceKind.unknown:
+                        case null:
+                            break;
                     }
+                    break;
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
+                {
+                    switch (details.kind)
                     {
-                        switch (details.kind)
+                        case PointerDeviceKind.mouse:
+                        case PointerDeviceKind.trackpad:
                         {
-                            case PointerDeviceKind.mouse:
-                            case PointerDeviceKind.trackpad:
-                                {
-                                    renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.drag);
-                                    break;
-                                }
-                            case PointerDeviceKind.stylus:
-                            case PointerDeviceKind.invertedStylus:
-                            case PointerDeviceKind.touch:
-                            case PointerDeviceKind.unknown:
-                                {
-                                    if (renderEditable.hasFocus)
-                                    {
-                                        renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.drag);
-                                        _showMagnifierIfSupportedByPlatform(details.globalPosition);
-                                    }
-                                    break;
-                                }
-                            case null:
-                                break;
+                            renderEditable.selectPositionAt(
+                                from: details.globalPosition,
+                                cause: SelectionChangedCause.drag
+                            );
+                            break;
                         }
-                        break;
+                        case PointerDeviceKind.stylus:
+                        case PointerDeviceKind.invertedStylus:
+                        case PointerDeviceKind.touch:
+                        case PointerDeviceKind.unknown:
+                        {
+                            if (renderEditable.hasFocus)
+                            {
+                                renderEditable.selectPositionAt(
+                                    from: details.globalPosition,
+                                    cause: SelectionChangedCause.drag
+                                );
+                                _showMagnifierIfSupportedByPlatform(details.globalPosition);
+                            }
+                            break;
+                        }
+                        case null:
+                            break;
                     }
+                    break;
+                }
                 case TargetPlatform.linux:
                 case TargetPlatform.macOS:
                 case TargetPlatform.windows:
-                    {
-                        renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.drag);
-                        break;
-                    }
+                {
+                    renderEditable.selectPositionAt(
+                        from: details.globalPosition,
+                        cause: SelectionChangedCause.drag
+                    );
+                    break;
+                }
             }
         }
     }
@@ -2083,72 +3070,110 @@ public class TextSelectionGestureDetectorBuilder
         }
         if (!_isShiftPressed)
         {
-            var editableOffset = (renderEditable.maxLines == 1L) ? new Offset(renderEditable.offset.pixels - _dragStartViewportOffset, 0.0) : new Offset(0.0, renderEditable.offset.pixels - _dragStartViewportOffset);
-            Offset scrollableOffset = Basic_typesLibrary.axisDirectionToAxis(_scrollDirection ?? AxisDirection.left) switch { Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0), Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-            Offset dragStartGlobalPosition = details.globalPosition - details.offsetFromOrigin;
-            if (_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(details.consecutiveTapCount) == 2L)
+            var editableOffset =
+                (renderEditable.maxLines == 1L)
+                    ? new Offset(renderEditable.offset.pixels - _dragStartViewportOffset, 0.0)
+                    : new Offset(0.0, renderEditable.offset.pixels - _dragStartViewportOffset);
+            Offset scrollableOffset = Basic_typesLibrary.axisDirectionToAxis(
+                _scrollDirection ?? AxisDirection.left
+            ) switch
             {
-                renderEditable.selectWordsInRange(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
+                Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0),
+                Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
+            Offset dragStartGlobalPosition = details.globalPosition - details.offsetFromOrigin;
+            if (
+                _TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(
+                    details.consecutiveTapCount
+                ) == 2L
+            )
+            {
+                renderEditable.selectWordsInRange(
+                    from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                    to: details.globalPosition,
+                    cause: SelectionChangedCause.drag
+                );
                 switch (details.kind)
                 {
                     case PointerDeviceKind.stylus:
                     case PointerDeviceKind.invertedStylus:
                     case PointerDeviceKind.touch:
                     case PointerDeviceKind.unknown:
-                        {
-                            _showMagnifierIfSupportedByPlatform(details.globalPosition);
-                            return;
-                        }
+                    {
+                        _showMagnifierIfSupportedByPlatform(details.globalPosition);
+                        return;
+                    }
                     case PointerDeviceKind.mouse:
                     case PointerDeviceKind.trackpad:
                     case null:
-                        {
-                            return;
-                        }
+                    {
+                        return;
+                    }
                     default:
                         throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
             }
-            if (_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(details.consecutiveTapCount) == 3L)
+            if (
+                _TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(
+                    details.consecutiveTapCount
+                ) == 3L
+            )
             {
                 switch (PlatformLibrary.defaultTargetPlatform)
                 {
                     case TargetPlatform.android:
                     case TargetPlatform.fuchsia:
                     case TargetPlatform.iOS:
+                    {
+                        switch (details.kind)
                         {
-                            switch (details.kind)
+                            case PointerDeviceKind.mouse:
+                            case PointerDeviceKind.trackpad:
                             {
-                                case PointerDeviceKind.mouse:
-                                case PointerDeviceKind.trackpad:
-                                    {
-                                        _selectParagraphsInRange(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                                        return;
-                                    }
-                                case PointerDeviceKind.stylus:
-                                case PointerDeviceKind.invertedStylus:
-                                case PointerDeviceKind.touch:
-                                case PointerDeviceKind.unknown:
-                                case null:
-                                    {
-                                        break;
-                                    }
-                                default:
-                                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                                _selectParagraphsInRange(
+                                    from: dragStartGlobalPosition
+                                        - editableOffset
+                                        - scrollableOffset,
+                                    to: details.globalPosition,
+                                    cause: SelectionChangedCause.drag
+                                );
+                                return;
                             }
-                            return;
+                            case PointerDeviceKind.stylus:
+                            case PointerDeviceKind.invertedStylus:
+                            case PointerDeviceKind.touch:
+                            case PointerDeviceKind.unknown:
+                            case null:
+                            {
+                                break;
+                            }
+                            default:
+                                throw new InvalidOperationException(
+                                    "Non-exhaustive Dart switch value."
+                                );
                         }
+                        return;
+                    }
                     case TargetPlatform.linux:
-                        {
-                            _selectLinesInRange(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                            return;
-                        }
+                    {
+                        _selectLinesInRange(
+                            from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                            to: details.globalPosition,
+                            cause: SelectionChangedCause.drag
+                        );
+                        return;
+                    }
                     case TargetPlatform.windows:
                     case TargetPlatform.macOS:
-                        {
-                            _selectParagraphsInRange(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                            return;
-                        }
+                    {
+                        _selectParagraphsInRange(
+                            from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                            to: details.globalPosition,
+                            cause: SelectionChangedCause.drag
+                        );
+                        return;
+                    }
                     default:
                         throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
@@ -2156,88 +3181,134 @@ public class TextSelectionGestureDetectorBuilder
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case TargetPlatform.iOS:
+                {
+                    switch (details.kind)
                     {
-                        switch (details.kind)
+                        case PointerDeviceKind.mouse:
+                        case PointerDeviceKind.trackpad:
                         {
-                            case PointerDeviceKind.mouse:
-                            case PointerDeviceKind.trackpad:
-                                {
-                                    renderEditable.selectPositionAt(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                                    return;
-                                }
-                            case PointerDeviceKind.stylus:
-                            case PointerDeviceKind.invertedStylus:
-                            case PointerDeviceKind.touch:
-                            case PointerDeviceKind.unknown:
-                            case null:
-                                {
-                                    break;
-                                }
-                            default:
-                                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                            renderEditable.selectPositionAt(
+                                from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                                to: details.globalPosition,
+                                cause: SelectionChangedCause.drag
+                            );
+                            return;
                         }
-                        return;
+                        case PointerDeviceKind.stylus:
+                        case PointerDeviceKind.invertedStylus:
+                        case PointerDeviceKind.touch:
+                        case PointerDeviceKind.unknown:
+                        case null:
+                        {
+                            break;
+                        }
+                        default:
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            );
                     }
+                    return;
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
+                {
+                    switch (details.kind)
                     {
-                        switch (details.kind)
+                        case PointerDeviceKind.mouse:
+                        case PointerDeviceKind.trackpad:
+                        case PointerDeviceKind.stylus:
+                        case PointerDeviceKind.invertedStylus:
                         {
-                            case PointerDeviceKind.mouse:
-                            case PointerDeviceKind.trackpad:
-                            case PointerDeviceKind.stylus:
-                            case PointerDeviceKind.invertedStylus:
-                                {
-                                    renderEditable.selectPositionAt(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                                    return;
-                                }
-                            case PointerDeviceKind.touch:
-                            case PointerDeviceKind.unknown:
-                                {
-                                    if (renderEditable.hasFocus)
-                                    {
-                                        renderEditable.selectPositionAt(from: details.globalPosition, cause: SelectionChangedCause.drag);
-                                        _showMagnifierIfSupportedByPlatform(details.globalPosition);
-                                        return;
-                                    }
-                                    break;
-                                }
-                            case null:
-                                {
-                                    break;
-                                }
+                            renderEditable.selectPositionAt(
+                                from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                                to: details.globalPosition,
+                                cause: SelectionChangedCause.drag
+                            );
+                            return;
                         }
-                        return;
+                        case PointerDeviceKind.touch:
+                        case PointerDeviceKind.unknown:
+                        {
+                            if (renderEditable.hasFocus)
+                            {
+                                renderEditable.selectPositionAt(
+                                    from: details.globalPosition,
+                                    cause: SelectionChangedCause.drag
+                                );
+                                _showMagnifierIfSupportedByPlatform(details.globalPosition);
+                                return;
+                            }
+                            break;
+                        }
+                        case null:
+                        {
+                            break;
+                        }
                     }
+                    return;
+                }
                 case TargetPlatform.macOS:
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
-                    {
-                        renderEditable.selectPositionAt(from: dragStartGlobalPosition - editableOffset - scrollableOffset, to: details.globalPosition, cause: SelectionChangedCause.drag);
-                        return;
-                    }
+                {
+                    renderEditable.selectPositionAt(
+                        from: dragStartGlobalPosition - editableOffset - scrollableOffset,
+                        to: details.globalPosition,
+                        cause: SelectionChangedCause.drag
+                    );
+                    return;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
         }
-        if (_dragStartSelection!.isCollapsed || (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)))
+        if (
+            _dragStartSelection!.isCollapsed
+            || (
+                (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
+                && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+            )
+        )
         {
             _extendSelection(details.globalPosition, SelectionChangedCause.drag);
             return;
         }
         TextSelection selectionLocal = editableText.textEditingValue.selection;
         TextPosition nextExtent = renderEditable.getPositionForPoint(details.globalPosition);
-        bool isShiftTapDragSelectionForward = _dragStartSelection!.baseOffset < _dragStartSelection!.extentOffset;
-        bool isInverted = isShiftTapDragSelectionForward ? (nextExtent.offset < _dragStartSelection!.baseOffset) : (nextExtent.offset > _dragStartSelection!.baseOffset);
+        bool isShiftTapDragSelectionForward =
+            _dragStartSelection!.baseOffset < _dragStartSelection!.extentOffset;
+        bool isInverted = isShiftTapDragSelectionForward
+            ? (nextExtent.offset < _dragStartSelection!.baseOffset)
+            : (nextExtent.offset > _dragStartSelection!.baseOffset);
         if (isInverted && (selectionLocal.baseOffset == _dragStartSelection!.baseOffset))
         {
-            editableText.userUpdateTextEditingValue(editableText.textEditingValue.copyWith(selection: new TextSelection(baseOffset: _dragStartSelection!.extentOffset, extentOffset: nextExtent.offset)), SelectionChangedCause.drag);
+            editableText.userUpdateTextEditingValue(
+                editableText.textEditingValue.copyWith(
+                    selection: new TextSelection(
+                        baseOffset: _dragStartSelection!.extentOffset,
+                        extentOffset: nextExtent.offset
+                    )
+                ),
+                SelectionChangedCause.drag
+            );
         }
         else
         {
-            if (!isInverted && (nextExtent.offset != _dragStartSelection!.baseOffset) && (selectionLocal.baseOffset != _dragStartSelection!.baseOffset))
+            if (
+                !isInverted
+                && (nextExtent.offset != _dragStartSelection!.baseOffset)
+                && (selectionLocal.baseOffset != _dragStartSelection!.baseOffset)
+            )
             {
-                editableText.userUpdateTextEditingValue(editableText.textEditingValue.copyWith(selection: new TextSelection(baseOffset: _dragStartSelection!.baseOffset, extentOffset: nextExtent.offset)), SelectionChangedCause.drag);
+                editableText.userUpdateTextEditingValue(
+                    editableText.textEditingValue.copyWith(
+                        selection: new TextSelection(
+                            baseOffset: _dragStartSelection!.baseOffset,
+                            extentOffset: nextExtent.offset
+                        )
+                    ),
+                    SelectionChangedCause.drag
+                );
             }
             else
             {
@@ -2248,7 +3319,14 @@ public class TextSelectionGestureDetectorBuilder
 
     public virtual void onDragSelectionEnd(TapDragEndDetails details)
     {
-        if (_shouldShowSelectionToolbar && (_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(details.consecutiveTapCount) == 2L))
+        if (
+            _shouldShowSelectionToolbar
+            && (
+                _TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(
+                    details.consecutiveTapCount
+                ) == 2L
+            )
+        )
         {
             editableText.showToolbar();
         }
@@ -2259,12 +3337,39 @@ public class TextSelectionGestureDetectorBuilder
         _hideMagnifierIfSupportedByPlatform();
     }
 
-    public virtual Widget buildGestureDetector(Key? key = null, HitTestBehavior? behavior = null, Widget child = default!)
+    public virtual Widget buildGestureDetector(
+        Key? key = null,
+        HitTestBehavior? behavior = null,
+        Widget child = default!
+    )
     {
-        return new TextSelectionGestureDetector(key: key, onTapTrackStart: () => onTapTrackStart(), onTapTrackReset: () => onTapTrackReset(), onTapDown: onTapDown, onForcePressStart: @delegate.forcePressEnabled ? onForcePressStart : null, onForcePressEnd: @delegate.forcePressEnabled ? onForcePressEnd : null, onSecondaryTap: () => onSecondaryTap(), onSecondaryTapDown: onSecondaryTapDown, onSingleTapUp: onSingleTapUp, onSingleTapCancel: () => onSingleTapCancel(), onUserTap: () => onUserTap(), onSingleLongTapStart: onSingleLongTapStart, onSingleLongTapMoveUpdate: onSingleLongTapMoveUpdate, onSingleLongTapEnd: onSingleLongTapEnd, onSingleLongTapCancel: () => onSingleLongTapCancel(), onDoubleTapDown: onDoubleTapDown, onTripleTapDown: onTripleTapDown, onDragSelectionStart: onDragSelectionStart, onDragSelectionUpdate: onDragSelectionUpdate, onDragSelectionEnd: onDragSelectionEnd, onUserTapAlwaysCalled: onUserTapAlwaysCalled, behavior: behavior, child: child);
+        return new TextSelectionGestureDetector(
+            key: key,
+            onTapTrackStart: () => onTapTrackStart(),
+            onTapTrackReset: () => onTapTrackReset(),
+            onTapDown: onTapDown,
+            onForcePressStart: @delegate.forcePressEnabled ? onForcePressStart : null,
+            onForcePressEnd: @delegate.forcePressEnabled ? onForcePressEnd : null,
+            onSecondaryTap: () => onSecondaryTap(),
+            onSecondaryTapDown: onSecondaryTapDown,
+            onSingleTapUp: onSingleTapUp,
+            onSingleTapCancel: () => onSingleTapCancel(),
+            onUserTap: () => onUserTap(),
+            onSingleLongTapStart: onSingleLongTapStart,
+            onSingleLongTapMoveUpdate: onSingleLongTapMoveUpdate,
+            onSingleLongTapEnd: onSingleLongTapEnd,
+            onSingleLongTapCancel: () => onSingleLongTapCancel(),
+            onDoubleTapDown: onDoubleTapDown,
+            onTripleTapDown: onTripleTapDown,
+            onDragSelectionStart: onDragSelectionStart,
+            onDragSelectionUpdate: onDragSelectionUpdate,
+            onDragSelectionEnd: onDragSelectionEnd,
+            onUserTapAlwaysCalled: onUserTapAlwaysCalled,
+            behavior: behavior,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TextSelectionGestureDetector : StatefulWidget
@@ -2280,7 +3385,11 @@ public class TextSelectionGestureDetector : StatefulWidget
     public virtual Action? onSingleTapCancel { get; private set; }
     public virtual Action? onUserTap { get; private set; }
     public virtual Action<LongPressStartDetails>? onSingleLongTapStart { get; private set; }
-    public virtual Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate { get; private set; }
+    public virtual Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate
+    {
+        get;
+        private set;
+    }
     public virtual Action<LongPressEndDetails>? onSingleLongTapEnd { get; private set; }
     public virtual Action? onSingleLongTapCancel { get; private set; }
     public virtual Action<TapDragDownDetails>? onDoubleTapDown { get; private set; }
@@ -2292,7 +3401,32 @@ public class TextSelectionGestureDetector : StatefulWidget
     public virtual HitTestBehavior? behavior { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public TextSelectionGestureDetector(Key? key = null, Action? onTapTrackStart = null, Action? onTapTrackReset = null, Action<TapDragDownDetails>? onTapDown = null, Action<ForcePressDetails>? onForcePressStart = null, Action<ForcePressDetails>? onForcePressEnd = null, Action? onSecondaryTap = null, Action<TapDownDetails>? onSecondaryTapDown = null, Action<TapDragUpDetails>? onSingleTapUp = null, Action? onSingleTapCancel = null, Action? onUserTap = null, Action<LongPressStartDetails>? onSingleLongTapStart = null, Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate = null, Action<LongPressEndDetails>? onSingleLongTapEnd = null, Action? onSingleLongTapCancel = null, Action<TapDragDownDetails>? onDoubleTapDown = null, Action<TapDragDownDetails>? onTripleTapDown = null, Action<TapDragStartDetails>? onDragSelectionStart = null, Action<TapDragUpdateDetails>? onDragSelectionUpdate = null, Action<TapDragEndDetails>? onDragSelectionEnd = null, bool onUserTapAlwaysCalled = false, HitTestBehavior? behavior = null, Widget child = default!) : base(key: key)
+    public TextSelectionGestureDetector(
+        Key? key = null,
+        Action? onTapTrackStart = null,
+        Action? onTapTrackReset = null,
+        Action<TapDragDownDetails>? onTapDown = null,
+        Action<ForcePressDetails>? onForcePressStart = null,
+        Action<ForcePressDetails>? onForcePressEnd = null,
+        Action? onSecondaryTap = null,
+        Action<TapDownDetails>? onSecondaryTapDown = null,
+        Action<TapDragUpDetails>? onSingleTapUp = null,
+        Action? onSingleTapCancel = null,
+        Action? onUserTap = null,
+        Action<LongPressStartDetails>? onSingleLongTapStart = null,
+        Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate = null,
+        Action<LongPressEndDetails>? onSingleLongTapEnd = null,
+        Action? onSingleLongTapCancel = null,
+        Action<TapDragDownDetails>? onDoubleTapDown = null,
+        Action<TapDragDownDetails>? onTripleTapDown = null,
+        Action<TapDragStartDetails>? onDragSelectionStart = null,
+        Action<TapDragUpdateDetails>? onDragSelectionUpdate = null,
+        Action<TapDragEndDetails>? onDragSelectionEnd = null,
+        bool onUserTapAlwaysCalled = false,
+        HitTestBehavior? behavior = null,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.onTapTrackStart = onTapTrackStart;
         this.onTapTrackReset = onTapTrackReset;
@@ -2318,10 +3452,14 @@ public class TextSelectionGestureDetector : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TextSelectionGestureDetectorState__text_selection());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _TextSelectionGestureDetectorState__text_selection()
+        );
 }
 
-internal class _TextSelectionGestureDetectorState__text_selection : State<TextSelectionGestureDetector>
+internal class _TextSelectionGestureDetectorState__text_selection
+    : State<TextSelectionGestureDetector>
 {
     internal static long _getEffectiveConsecutiveTapCount(long rawCount)
     {
@@ -2330,18 +3468,20 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
-                {
-                    return (rawCount <= 3L) ? rawCount : (((rawCount % 3L) == 0L) ? 3L : (rawCount % 3L));
-                }
+            {
+                return (rawCount <= 3L)
+                    ? rawCount
+                    : (((rawCount % 3L) == 0L) ? 3L : (rawCount % 3L));
+            }
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
-                {
-                    return Math.Min(rawCount, 3L);
-                }
+            {
+                return Math.Min(rawCount, 3L);
+            }
             case TargetPlatform.windows:
-                {
-                    return (rawCount < 2L) ? rawCount : (2L + (rawCount % 2L));
-                }
+            {
+                return (rawCount < 2L) ? rawCount : (2L + (rawCount % 2L));
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -2442,112 +3582,193 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
     public override Widget build(BuildContext context)
     {
         var gesturesLocal = new DartMap<Type, dynamic>();
-        gesturesLocal[typeof(TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(() => new TapGestureRecognizer(debugOwner: this), (instance) =>
-        {
-            DartRuntimePrimitives.Ignore(((Func<TapGestureRecognizer>)(() =>
-            {
-                var __cascade = instance;
-                __cascade.onSecondaryTap = widget.onSecondaryTap;
-                __cascade.onSecondaryTapDown = widget.onSecondaryTapDown;
-                return __cascade;
-            }))());
-        });
-        if ((widget.onSingleLongTapStart is not null) || (widget.onSingleLongTapMoveUpdate is not null) || (widget.onSingleLongTapEnd is not null) || (widget.onSingleLongTapCancel is not null))
-        {
-            gesturesLocal[typeof(LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(() => new LongPressGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch }), (instance) =>
-            {
-                DartRuntimePrimitives.Ignore(((Func<LongPressGestureRecognizer>)(() =>
+        gesturesLocal[typeof(TapGestureRecognizer)] =
+            new GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+                () => new TapGestureRecognizer(debugOwner: this),
+                (instance) =>
                 {
-                    var __cascade = instance;
-                    __cascade.onLongPressStart = _handleLongPressStart;
-                    __cascade.onLongPressMoveUpdate = _handleLongPressMoveUpdate;
-                    __cascade.onLongPressEnd = _handleLongPressEnd;
-                    __cascade.onLongPressCancel = _handleLongPressCancel;
-                    return __cascade;
-                }))());
-            });
+                    DartRuntimePrimitives.Ignore(
+                        (
+                            (Func<TapGestureRecognizer>)(
+                                () =>
+                                {
+                                    var __cascade = instance;
+                                    __cascade.onSecondaryTap = widget.onSecondaryTap;
+                                    __cascade.onSecondaryTapDown = widget.onSecondaryTapDown;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    );
+                }
+            );
+        if (
+            (widget.onSingleLongTapStart is not null)
+            || (widget.onSingleLongTapMoveUpdate is not null)
+            || (widget.onSingleLongTapEnd is not null)
+            || (widget.onSingleLongTapCancel is not null)
+        )
+        {
+            gesturesLocal[typeof(LongPressGestureRecognizer)] =
+                new GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+                    () =>
+                        new LongPressGestureRecognizer(
+                            debugOwner: this,
+                            supportedDevices: new HashSet<PointerDeviceKind>
+                            {
+                                PointerDeviceKind.touch,
+                            }
+                        ),
+                    (instance) =>
+                    {
+                        DartRuntimePrimitives.Ignore(
+                            (
+                                (Func<LongPressGestureRecognizer>)(
+                                    () =>
+                                    {
+                                        var __cascade = instance;
+                                        __cascade.onLongPressStart = _handleLongPressStart;
+                                        __cascade.onLongPressMoveUpdate =
+                                            _handleLongPressMoveUpdate;
+                                        __cascade.onLongPressEnd = _handleLongPressEnd;
+                                        __cascade.onLongPressCancel = _handleLongPressCancel;
+                                        return __cascade;
+                                    }
+                                )
+                            )()
+                        );
+                    }
+                );
         }
-        if ((widget.onDragSelectionStart is not null) || (widget.onDragSelectionUpdate is not null) || (widget.onDragSelectionEnd is not null))
+        if (
+            (widget.onDragSelectionStart is not null)
+            || (widget.onDragSelectionUpdate is not null)
+            || (widget.onDragSelectionEnd is not null)
+        )
         {
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.iOS:
-                    {
-                        gesturesLocal[typeof(TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<TapAndHorizontalDragGestureRecognizer>(() => new TapAndHorizontalDragGestureRecognizer(debugOwner: this), (instance) =>
-                        {
-                            DartRuntimePrimitives.Ignore(((Func<TapAndHorizontalDragGestureRecognizer>)(() =>
+                {
+                    gesturesLocal[typeof(TapAndHorizontalDragGestureRecognizer)] =
+                        new GestureRecognizerFactoryWithHandlers<TapAndHorizontalDragGestureRecognizer>(
+                            () => new TapAndHorizontalDragGestureRecognizer(debugOwner: this),
+                            (instance) =>
                             {
-                                var __cascade = instance;
-                                __cascade.dragStartBehavior = DragStartBehavior.down;
-                                __cascade.eagerVictoryOnDrag = !Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS);
-                                __cascade.onTapTrackStart = _handleTapTrackStart;
-                                __cascade.onTapTrackReset = _handleTapTrackReset;
-                                __cascade.onTapDown = _handleTapDown;
-                                __cascade.onDragStart = _handleDragStart;
-                                __cascade.onDragUpdate = _handleDragUpdate;
-                                __cascade.onDragEnd = _handleDragEnd;
-                                __cascade.onTapUp = _handleTapUp;
-                                __cascade.onCancel = _handleTapCancel;
-                                return __cascade;
-                            }))());
-                        });
-                        break;
-                    }
+                                DartRuntimePrimitives.Ignore(
+                                    (
+                                        (Func<TapAndHorizontalDragGestureRecognizer>)(
+                                            () =>
+                                            {
+                                                var __cascade = instance;
+                                                __cascade.dragStartBehavior =
+                                                    DragStartBehavior.down;
+                                                __cascade.eagerVictoryOnDrag = !Equals(
+                                                    PlatformLibrary.defaultTargetPlatform,
+                                                    TargetPlatform.iOS
+                                                );
+                                                __cascade.onTapTrackStart = _handleTapTrackStart;
+                                                __cascade.onTapTrackReset = _handleTapTrackReset;
+                                                __cascade.onTapDown = _handleTapDown;
+                                                __cascade.onDragStart = _handleDragStart;
+                                                __cascade.onDragUpdate = _handleDragUpdate;
+                                                __cascade.onDragEnd = _handleDragEnd;
+                                                __cascade.onTapUp = _handleTapUp;
+                                                __cascade.onCancel = _handleTapCancel;
+                                                return __cascade;
+                                            }
+                                        )
+                                    )()
+                                );
+                            }
+                        );
+                    break;
+                }
                 case TargetPlatform.linux:
                 case TargetPlatform.macOS:
                 case TargetPlatform.windows:
-                    {
-                        gesturesLocal[typeof(TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<TapAndPanGestureRecognizer>(() => new TapAndPanGestureRecognizer(debugOwner: this), (instance) =>
-                        {
-                            DartRuntimePrimitives.Ignore(((Func<TapAndPanGestureRecognizer>)(() =>
+                {
+                    gesturesLocal[typeof(TapAndPanGestureRecognizer)] =
+                        new GestureRecognizerFactoryWithHandlers<TapAndPanGestureRecognizer>(
+                            () => new TapAndPanGestureRecognizer(debugOwner: this),
+                            (instance) =>
                             {
-                                var __cascade = instance;
-                                __cascade.dragStartBehavior = DragStartBehavior.down;
-                                __cascade.onTapTrackStart = _handleTapTrackStart;
-                                __cascade.onTapTrackReset = _handleTapTrackReset;
-                                __cascade.onTapDown = _handleTapDown;
-                                __cascade.onDragStart = _handleDragStart;
-                                __cascade.onDragUpdate = _handleDragUpdate;
-                                __cascade.onDragEnd = _handleDragEnd;
-                                __cascade.onTapUp = _handleTapUp;
-                                __cascade.onCancel = _handleTapCancel;
-                                return __cascade;
-                            }))());
-                        });
-                        break;
-                    }
+                                DartRuntimePrimitives.Ignore(
+                                    (
+                                        (Func<TapAndPanGestureRecognizer>)(
+                                            () =>
+                                            {
+                                                var __cascade = instance;
+                                                __cascade.dragStartBehavior =
+                                                    DragStartBehavior.down;
+                                                __cascade.onTapTrackStart = _handleTapTrackStart;
+                                                __cascade.onTapTrackReset = _handleTapTrackReset;
+                                                __cascade.onTapDown = _handleTapDown;
+                                                __cascade.onDragStart = _handleDragStart;
+                                                __cascade.onDragUpdate = _handleDragUpdate;
+                                                __cascade.onDragEnd = _handleDragEnd;
+                                                __cascade.onTapUp = _handleTapUp;
+                                                __cascade.onCancel = _handleTapCancel;
+                                                return __cascade;
+                                            }
+                                        )
+                                    )()
+                                );
+                            }
+                        );
+                    break;
+                }
             }
         }
         if ((widget.onForcePressStart is not null) || (widget.onForcePressEnd is not null))
         {
-            gesturesLocal[typeof(ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<ForcePressGestureRecognizer>(() => new ForcePressGestureRecognizer(debugOwner: this), (instance) =>
-            {
-                DartRuntimePrimitives.Ignore(((Func<ForcePressGestureRecognizer>)(() =>
-                {
-                    var __cascade = instance;
-                    __cascade.onStart = (widget.onForcePressStart is not null) ? _forcePressStarted : null;
-                    __cascade.onEnd = (widget.onForcePressEnd is not null) ? _forcePressEnded : null;
-                    return __cascade;
-                }))());
-            });
+            gesturesLocal[typeof(ForcePressGestureRecognizer)] =
+                new GestureRecognizerFactoryWithHandlers<ForcePressGestureRecognizer>(
+                    () => new ForcePressGestureRecognizer(debugOwner: this),
+                    (instance) =>
+                    {
+                        DartRuntimePrimitives.Ignore(
+                            (
+                                (Func<ForcePressGestureRecognizer>)(
+                                    () =>
+                                    {
+                                        var __cascade = instance;
+                                        __cascade.onStart =
+                                            (widget.onForcePressStart is not null)
+                                                ? _forcePressStarted
+                                                : null;
+                                        __cascade.onEnd =
+                                            (widget.onForcePressEnd is not null)
+                                                ? _forcePressEnded
+                                                : null;
+                                        return __cascade;
+                                    }
+                                )
+                            )()
+                        );
+                    }
+                );
         }
-        return new RawGestureDetector(gestures: gesturesLocal, excludeFromSemantics: true, behavior: widget.behavior, child: widget.child);
+        return new RawGestureDetector(
+            gestures: gesturesLocal,
+            excludeFromSemantics: true,
+            behavior: widget.behavior,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBindingObserver
 {
     internal virtual bool _disposed { get; set; } = false;
 
-    public ClipboardStatusNotifier(ClipboardStatus value = ClipboardStatus.unknown) : base(value)
-    {
-    }
+    public ClipboardStatusNotifier(ClipboardStatus value = ClipboardStatus.unknown)
+        : base(value) { }
 
-    public async virtual Future update()
+    public virtual async Future update()
     {
         if (_disposed)
         {
@@ -2561,7 +3782,14 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new ErrorDescription("while checking if the clipboard has strings")));
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "widget library",
+                    context: new ErrorDescription("while checking if the clipboard has strings")
+                )
+            );
             if (_disposed)
             {
                 return;
@@ -2569,7 +3797,9 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
             value = ClipboardStatus.unknown;
             return;
         }
-        ClipboardStatus nextStatus = hasStringsLocal ? ClipboardStatus.pasteable : ClipboardStatus.notPasteable;
+        ClipboardStatus nextStatus = hasStringsLocal
+            ? ClipboardStatus.pasteable
+            : ClipboardStatus.notPasteable;
         if (_disposed)
         {
             return;
@@ -2604,17 +3834,17 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
         switch (state)
         {
             case var __constant148294 when Equals(__constant148294, AppLifecycleState.resumed):
-                {
-                    DartRuntimePrimitives.Ignore(update());
-                    break;
-                }
+            {
+                DartRuntimePrimitives.Ignore(update());
+                break;
+            }
             case var __constant148350 when Equals(__constant148350, AppLifecycleState.detached):
             case var __constant148389 when Equals(__constant148389, AppLifecycleState.inactive):
             case var __constant148428 when Equals(__constant148428, AppLifecycleState.hidden):
             case var __constant148465 when Equals(__constant148465, AppLifecycleState.paused):
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
@@ -2624,25 +3854,25 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
         _disposed = true;
         base.dispose();
     }
-
 }
 
 public enum ClipboardStatus
 {
     pasteable,
     unknown,
-    notPasteable
+    notPasteable,
 }
 
-public class LiveTextInputStatusNotifier : ValueNotifier<LiveTextInputStatus>, WidgetsBindingObserver
+public class LiveTextInputStatusNotifier
+    : ValueNotifier<LiveTextInputStatus>,
+        WidgetsBindingObserver
 {
     internal virtual bool _disposed { get; set; } = false;
 
-    public LiveTextInputStatusNotifier(LiveTextInputStatus value = LiveTextInputStatus.unknown) : base(value)
-    {
-    }
+    public LiveTextInputStatusNotifier(LiveTextInputStatus value = LiveTextInputStatus.unknown)
+        : base(value) { }
 
-    public async virtual Future update()
+    public virtual async Future update()
     {
         if (_disposed)
         {
@@ -2656,7 +3886,16 @@ public class LiveTextInputStatusNotifier : ValueNotifier<LiveTextInputStatus>, W
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new ErrorDescription("while checking the availability of Live Text input")));
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "widget library",
+                    context: new ErrorDescription(
+                        "while checking the availability of Live Text input"
+                    )
+                )
+            );
             if (_disposed || Equals(value, LiveTextInputStatus.unknown))
             {
                 return;
@@ -2664,7 +3903,9 @@ public class LiveTextInputStatusNotifier : ValueNotifier<LiveTextInputStatus>, W
             value = LiveTextInputStatus.unknown;
             return;
         }
-        LiveTextInputStatus nextStatus = isLiveTextInputEnabled ? LiveTextInputStatus.enabled : LiveTextInputStatus.disabled;
+        LiveTextInputStatus nextStatus = isLiveTextInputEnabled
+            ? LiveTextInputStatus.enabled
+            : LiveTextInputStatus.disabled;
         if (_disposed || Equals(nextStatus, value))
         {
             return;
@@ -2699,10 +3940,10 @@ public class LiveTextInputStatusNotifier : ValueNotifier<LiveTextInputStatus>, W
         switch (state)
         {
             case var __constant151548 when Equals(__constant151548, AppLifecycleState.resumed):
-                {
-                    DartRuntimePrimitives.Ignore(update());
-                    break;
-                }
+            {
+                DartRuntimePrimitives.Ignore(update());
+                break;
+            }
             case var __constant151604 when Equals(__constant151604, AppLifecycleState.detached):
             case var __constant151643 when Equals(__constant151643, AppLifecycleState.inactive):
             case var __constant151682 when Equals(__constant151682, AppLifecycleState.paused):
@@ -2717,20 +3958,17 @@ public class LiveTextInputStatusNotifier : ValueNotifier<LiveTextInputStatus>, W
         _disposed = true;
         base.dispose();
     }
-
 }
 
 public enum LiveTextInputStatus
 {
     enabled,
     unknown,
-    disabled
+    disabled,
 }
 
 // Dart models this as a member-less mixin applied after a concrete selection
 // controls superclass. A CLR interface preserves that marker relationship so
 // EditableText can select the contextMenuBuilder path without multiple
 // inheritance.
-public interface TextSelectionHandleControls
-{
-}
+public interface TextSelectionHandleControls { }

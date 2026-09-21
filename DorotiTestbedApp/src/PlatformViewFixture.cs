@@ -33,16 +33,20 @@ internal sealed class PlatformViewFixture : StatefulWidget
             canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
             paint.color = new Color(0xffc7c7c7);
             for (var row = 0; row * cell < size.height; row++)
-            for (var column = row % 2; column * cell < size.width; column += 2)
-                canvas.drawRect(
-                    Rect.fromLTWH(
-                        column * cell,
-                        row * cell,
-                        Math.Min(cell, size.width - column * cell),
-                        Math.Min(cell, size.height - row * cell)
-                    ),
-                    paint
-                );
+            {
+                for (var column = row % 2; column * cell < size.width; column += 2)
+                {
+                    canvas.drawRect(
+                        Rect.fromLTWH(
+                            column * cell,
+                            row * cell,
+                            Math.Min(cell, size.width - (column * cell)),
+                            Math.Min(cell, size.height - (row * cell))
+                        ),
+                        paint
+                    );
+                }
+            }
         }
 
         public override bool shouldRepaint(CustomPainter oldDelegate) => false;
@@ -54,7 +58,10 @@ internal sealed class PlatformViewFixture : StatefulWidget
     {
         var owner = View.of(context);
         if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews))
+        {
             return false;
+        }
+
         var selection = SelectComposition(
             owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
@@ -127,7 +134,9 @@ internal sealed class PlatformViewFixture : StatefulWidget
         {
             base.initState();
             if (widget.Embedded)
+            {
                 _exampleId = Interlocked.Add(ref _nextExampleId, 2);
+            }
         }
 
         private long InstanceId(long id) => (widget.Embedded ? _exampleId : _generation * 10L) + id;
@@ -140,7 +149,9 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 {
                     _generation++;
                     if (widget.Embedded)
+                    {
                         _exampleId = Interlocked.Add(ref _nextExampleId, 2);
+                    }
                 }
             });
 
@@ -174,26 +185,38 @@ internal sealed class PlatformViewFixture : StatefulWidget
                     Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_EVIDENCE")
                 )
             )
+            {
                 Environment.SetEnvironmentVariable(
                     "DOROTI_PLATFORM_VIEW_PROBE_STATE",
                     $"{_stage},{PlatformViewFixtureProbe.ForegroundClicks},{_generation},{_mounted}"
                 );
+            }
+
             var owner = View.of(context);
             if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews))
+            {
                 return Unavailable(
                     $"{owner.targetIdentity}: platform views are unavailable on this host."
                 );
+            }
+
             var host = owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformViewExample.support")
             );
             var (composition, support) = SelectComposition(host, InstanceId(1), InstanceId(2));
             if (!support.Supported)
+            {
                 return Unavailable(
                     support.Reason ?? "Native controls are unavailable on this host."
                 );
+            }
+
             if (composition == PlatformViewComposition.NativeOverlay)
+            {
                 return BuildOverlay(owner);
+            }
+
             PlatformViewFixtureProbe.ToggleMounted = ToggleControls;
             PlatformViewFixtureProbe.SetStage = stage =>
                 setState(() =>
@@ -213,25 +236,23 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 );
             List<Widget> content =
             [
-                ..
-                    widget.Embedded
-                        ? new Widget[]
-                        {
-                            new Padding(
-                                padding: EdgeInsets.CreateAll(16),
-                                child: new Text(
-                                    "Platform views\n\nTry a native button and editor with Doroti layers.\nChange the overlap, open a modal, or recreate the controls."
-                                )
-                            ),
-                            new Padding(
-                                padding: EdgeInsets.CreateSymmetric(horizontal: 16),
-                                child: new Text(
-                                    $"{Scenarios[_stage]} · Foreground taps: {PlatformViewFixtureProbe.ForegroundClicks}"
-                                )
-                            ),
-                        }
-                        : []
-                ,
+                .. widget.Embedded
+                    ? new Widget[]
+                    {
+                        new Padding(
+                            padding: EdgeInsets.CreateAll(16),
+                            child: new Text(
+                                "Platform views\n\nTry a native button and editor with Doroti layers.\nChange the overlap, open a modal, or recreate the controls."
+                            )
+                        ),
+                        new Padding(
+                            padding: EdgeInsets.CreateSymmetric(horizontal: 16),
+                            child: new Text(
+                                $"{Scenarios[_stage]} · Foreground taps: {PlatformViewFixtureProbe.ForegroundClicks}"
+                            )
+                        ),
+                    }
+                    : [],
                 new Wrap(
                     children:
                     [
@@ -266,16 +287,12 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         ),
                     ]
                 ),
-                ..
-                    !widget.Embedded
-                        ? new Widget[]
-                        {
-                            new Text(
-                                $"Foreground taps: {PlatformViewFixtureProbe.ForegroundClicks}"
-                            ),
-                        }
-                        : []
-                ,
+                .. !widget.Embedded
+                    ? new Widget[]
+                    {
+                        new Text($"Foreground taps: {PlatformViewFixtureProbe.ForegroundClicks}"),
+                    }
+                    : [],
                 widget.Embedded
                     ? new SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -303,53 +320,45 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 ),
-                ..
-                    host.QuerySupport(
-                        new PlatformViewRequest(
-                            0,
-                            "doroti/webview",
-                            PlatformViewComposition.InterleavedComposition
-                        )
-                    ).Supported
-                        ? new Widget[]
-                        {
-                            new M.TextButton(
-                                onPressed: () =>
-                                    Navigator.push(
-                                        context,
-                                        new PageRouteBuilder<object>(
-                                            pageBuilder: (_, _, _) => new PlatformEffectFixture(),
-                                            transitionDuration: new Doroti.Runtime.Duration(0),
-                                            reverseTransitionDuration: new Doroti.Runtime.Duration(
-                                                0
-                                            ),
-                                            maintainState: false,
-                                            allowSnapshotting: false
-                                        )
-                                    ),
-                                child: new Text("WebView effects")
-                            ),
-                        }
-                        : []
-                ,
-                ..
-                    widget.Embedded
-                        ? new Widget[]
-                        {
-                            new ClipRect(
-                                child: new RepaintBoundary(
-                                    child: new Container(
-                                        key: new ValueKey<string>("platform-view-scroll-box"),
-                                        height: 400,
-                                        color: M.Theme.of(
-                                            context
-                                        ).colorScheme.surfaceContainerHighest
+                .. host.QuerySupport(
+                    new PlatformViewRequest(
+                        0,
+                        "doroti/webview",
+                        PlatformViewComposition.InterleavedComposition
+                    )
+                ).Supported
+                    ? new Widget[]
+                    {
+                        new M.TextButton(
+                            onPressed: () =>
+                                Navigator.push(
+                                    context,
+                                    new PageRouteBuilder<object>(
+                                        pageBuilder: (_, _, _) => new PlatformEffectFixture(),
+                                        transitionDuration: new Doroti.Runtime.Duration(0),
+                                        reverseTransitionDuration: new Doroti.Runtime.Duration(0),
+                                        maintainState: false,
+                                        allowSnapshotting: false
                                     )
+                                ),
+                            child: new Text("WebView effects")
+                        ),
+                    }
+                    : [],
+                .. widget.Embedded
+                    ? new Widget[]
+                    {
+                        new ClipRect(
+                            child: new RepaintBoundary(
+                                child: new Container(
+                                    key: new ValueKey<string>("platform-view-scroll-box"),
+                                    height: 400,
+                                    color: M.Theme.of(context).colorScheme.surfaceContainerHighest
                                 )
-                            ),
-                        }
-                        : []
-                ,
+                            )
+                        ),
+                    }
+                    : [],
             ];
             // Android's stretch overscroll wraps the entire list in an image filter;
             // live native children cannot participate in that group effect.
@@ -427,10 +436,17 @@ internal sealed class PlatformViewFixture : StatefulWidget
                     )
                 );
             if (_stage is 4 or 8)
+            {
                 children.Add(Foreground());
+            }
+
             if (_mounted)
+            {
                 children.Add(Button());
+            }
+
             if (_stage == 5)
+            {
                 children.Add(
                     new Positioned(
                         left: 120,
@@ -444,11 +460,20 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 );
+            }
+
             if (_mounted)
+            {
                 children.Add(Editor());
+            }
+
             if (_stage is 1 or 2 or 5 or 6 or 7 or 9)
+            {
                 children.Add(Foreground());
+            }
+
             if (_mounted)
+            {
                 children.Add(
                     new Positioned(
                         key: new ValueKey<string>("native-loading-spinner"),
@@ -473,6 +498,8 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 );
+            }
+
             return children;
         }
 
@@ -513,16 +540,14 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 ),
-                ..
-                    _mounted
-                        ? new Widget[]
-                        {
-                            Native(1, "doroti/native-button"),
-                            new SizedBox(height: 24),
-                            Native(2, "doroti/native-editor"),
-                        }
-                        : []
-                ,
+                .. _mounted
+                    ? new Widget[]
+                    {
+                        Native(1, "doroti/native-button"),
+                        new SizedBox(height: 24),
+                        Native(2, "doroti/native-editor"),
+                    }
+                    : [],
             ];
             // Scrollbar/glow painters are foreground layers; the basic native host
             // cannot composite them above controls. Wheel/touch scrolling still works.

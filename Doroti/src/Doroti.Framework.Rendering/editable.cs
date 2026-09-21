@@ -17,7 +17,10 @@ public static partial class EditableLibrary
 
 public static partial class EditableLibrary
 {
-    internal static EdgeInsets _kFloatingCursorSizeIncrease = EdgeInsets.CreateSymmetric(horizontal: 0.5, vertical: 1.0);
+    internal static EdgeInsets _kFloatingCursorSizeIncrease = EdgeInsets.CreateSymmetric(
+        horizontal: 0.5,
+        vertical: 1.0
+    );
 }
 
 public static partial class EditableLibrary
@@ -44,7 +47,11 @@ public class TextSelectionPoint
     public override bool Equals(object? other)
     {
         var __other = other as TextSelectionPoint;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -53,12 +60,20 @@ public class TextSelectionPoint
         {
             return false;
         }
-        return (__other is TextSelectionPoint) && Equals(__other.point, point) && Equals(__other.direction, direction);
+        return (__other is TextSelectionPoint)
+            && Equals(__other.point, point)
+            && Equals(__other.direction, direction);
     }
 
     public override string ToString()
     {
-        return direction switch { TextDirection.ltr => $"{point}-ltr", TextDirection.rtl => $"{point}-rtl", null => $"{point}", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return direction switch
+        {
+            TextDirection.ltr => $"{point}-ltr",
+            TextDirection.rtl => $"{point}-rtl",
+            null => $"{point}",
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -73,9 +88,19 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
     internal virtual List<LineMetrics> _lineMetrics { get; private set; } = default!;
     internal virtual RenderEditable _editable { get; private set; } = default!;
     internal virtual bool _isValid { get; set; } = true;
-    internal virtual DartMap<long, MapEntry<Offset, TextPosition>> _positionCache { get; private set; } = new DartMap<long, MapEntry<Offset, TextPosition>>();
+    internal virtual DartMap<long, MapEntry<Offset, TextPosition>> _positionCache
+    {
+        get;
+        private set;
+    } = new DartMap<long, MapEntry<Offset, TextPosition>>();
 
-    public VerticalCaretMovementRun(RenderEditable _editable, List<LineMetrics> _lineMetrics, TextPosition _currentTextPosition, long _currentLine, Offset _currentOffset)
+    public VerticalCaretMovementRun(
+        RenderEditable _editable,
+        List<LineMetrics> _lineMetrics,
+        TextPosition _currentTextPosition,
+        long _currentLine,
+        Offset _currentOffset
+    )
     {
         this._editable = _editable;
         this._lineMetrics = _lineMetrics;
@@ -100,14 +125,18 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
             return _isValid;
         }
     }
+
     internal virtual MapEntry<Offset, TextPosition> _getTextPositionForLine(long lineNumber)
     {
         DartRuntimePrimitives.Assert(() => isValid);
         DartRuntimePrimitives.Assert(() => lineNumber >= 0L);
-        MapEntry<Offset, TextPosition>? cachedPosition = _positionCache.GetValueOrDefault(lineNumber);
+        MapEntry<Offset, TextPosition>? cachedPosition = _positionCache.GetValueOrDefault(
+            lineNumber
+        );
         if (cachedPosition is not null)
         {
-            MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 = DartRuntimePrimitives.RequireValue(cachedPosition);
+            MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 =
+                DartRuntimePrimitives.RequireValue(cachedPosition);
             return DartRuntimePrimitives.RequireValue(cachedPosition__6901__value6954);
         }
         DartRuntimePrimitives.Assert(() => lineNumber != _currentLine);
@@ -127,6 +156,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
             return _currentTextPosition;
         }
     }
+
     public virtual bool moveNext()
     {
         DartRuntimePrimitives.Assert(() => isValid);
@@ -186,15 +216,25 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
 
     TextPosition IEnumerator<TextPosition>.Current => current;
     object System.Collections.IEnumerator.Current => current!;
+
     bool System.Collections.IEnumerator.MoveNext() => moveNext();
+
     void System.Collections.IEnumerator.Reset() => throw new NotSupportedException();
+
     void IDisposable.Dispose() { }
 }
 
-public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, ContainerRenderObjectMixin<RenderBox, TextParentData>, RenderInlineChildrenContainerDefaults, TextLayoutMetrics
+public class RenderEditable
+    : RenderBox,
+        RelayoutWhenSystemFontsChangeMixin,
+        ContainerRenderObjectMixin<RenderBox, TextParentData>,
+        RenderInlineChildrenContainerDefaults,
+        TextLayoutMetrics
 {
-    internal virtual _RenderEditableCustomPaint__editable? _foregroundRenderObject { get; set; } = default;
-    internal virtual _RenderEditableCustomPaint__editable? _backgroundRenderObject { get; set; } = default;
+    internal virtual _RenderEditableCustomPaint__editable? _foregroundRenderObject { get; set; } =
+        default;
+    internal virtual _RenderEditableCustomPaint__editable? _backgroundRenderObject { get; set; } =
+        default;
     internal virtual RenderEditablePainter? _foregroundPainter { get; set; } = default;
     internal virtual RenderEditablePainter? _painter { get; set; } = default;
     private bool __late__caretPainter_initialized;
@@ -211,20 +251,30 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return __late__caretPainter;
         }
     }
-    internal virtual _TextHighlightPainter__editable _selectionPainter { get; private set; } = new _TextHighlightPainter__editable();
-    internal virtual _TextHighlightPainter__editable _autocorrectHighlightPainter { get; private set; } = new _TextHighlightPainter__editable();
-    internal virtual _CompositeRenderEditablePainter__editable? _cachedBuiltInForegroundPainters { get; set; } = default;
-    internal virtual _CompositeRenderEditablePainter__editable? _cachedBuiltInPainters { get; set; } = default;
+    internal virtual _TextHighlightPainter__editable _selectionPainter { get; private set; } =
+        new _TextHighlightPainter__editable();
+    internal virtual _TextHighlightPainter__editable _autocorrectHighlightPainter
+    {
+        get;
+        private set;
+    } = new _TextHighlightPainter__editable();
+    internal virtual _CompositeRenderEditablePainter__editable? _cachedBuiltInForegroundPainters { get; set; } =
+        default;
+    internal virtual _CompositeRenderEditablePainter__editable? _cachedBuiltInPainters { get; set; } =
+        default;
     public virtual bool ignorePointer { get; set; } = default!;
     internal virtual double _devicePixelRatio { get; set; } = default!;
     internal virtual string _obscuringCharacter { get; set; } = default!;
     internal virtual bool _obscureText { get; set; } = default!;
     public virtual TextSelectionDelegate textSelectionDelegate { get; set; } = default!;
-    internal virtual ValueNotifier<bool> _selectionStartInViewport { get; private set; } = new ValueNotifier<bool>(true);
-    internal virtual ValueNotifier<bool> _selectionEndInViewport { get; private set; } = new ValueNotifier<bool>(true);
+    internal virtual ValueNotifier<bool> _selectionStartInViewport { get; private set; } =
+        new ValueNotifier<bool>(true);
+    internal virtual ValueNotifier<bool> _selectionEndInViewport { get; private set; } =
+        new ValueNotifier<bool>(true);
     internal virtual TextPainter _textPainter { get; private set; } = default!;
     internal virtual AttributedString? _cachedAttributedValue { get; set; } = default;
-    internal virtual List<InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
+    internal virtual List<InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } =
+        default;
     internal virtual TextPainter? _textIntrinsicsCache { get; set; } = default;
     internal virtual bool _disposeShowCursor { get; set; } = default!;
     internal virtual ValueNotifier<bool> _showCursor { get; set; } = default!;
@@ -264,21 +314,80 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     internal virtual bool _resetOriginOnTop { get; set; } = false;
     internal virtual bool _resetOriginOnBottom { get; set; } = false;
     internal virtual double? _resetFloatingCursorAnimationValue { get; set; } = default;
-    internal virtual LayerHandle<LeaderLayer> _leaderLayerHandler { get; private set; } = new LayerHandle<LeaderLayer>();
-    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
+    internal virtual LayerHandle<LeaderLayer> _leaderLayerHandler { get; private set; } =
+        new LayerHandle<LeaderLayer>();
+    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } =
+        new LayerHandle<ClipRectLayer>();
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderEditable(InlineSpan? text = null, TextDirection textDirection = default!, TextAlign textAlign = TextAlign.start, Color? cursorColor = null, Color? backgroundCursorColor = null, ValueNotifier<bool>? showCursor = null, bool? hasFocus = null, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, long? maxLines = 1, long? minLines = null, bool expands = false, Painting.StrutStyle? strutStyle = null, Color? selectionColor = null, double textScaleFactor = 1.0, TextScaler textScaler = default!, TextSelection? selection = null, ViewportOffset offset = default!, bool ignorePointer = false, bool readOnly = false, bool forceLine = true, TextHeightBehavior? textHeightBehavior = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, string obscuringCharacter = "•", bool obscureText = false, Locale? locale = null, double cursorWidth = 1.0, double? cursorHeight = null, Radius? cursorRadius = null, bool paintCursorAboveText = false, Offset cursorOffset = default, double devicePixelRatio = 1.0, BoxHeightStyle selectionHeightStyle = BoxHeightStyle.max, BoxWidthStyle selectionWidthStyle = BoxWidthStyle.max, bool? enableInteractiveSelection = null, EdgeInsets floatingCursorAddedMargin = default!, TextRange? promptRectRange = null, Color? promptRectColor = null, Clip clipBehavior = Clip.hardEdge, TextSelectionDelegate textSelectionDelegate = default!, RenderEditablePainter? painter = null, RenderEditablePainter? foregroundPainter = null, List<RenderBox>? children = null)
+    public RenderEditable(
+        InlineSpan? text = null,
+        TextDirection textDirection = default!,
+        TextAlign textAlign = TextAlign.start,
+        Color? cursorColor = null,
+        Color? backgroundCursorColor = null,
+        ValueNotifier<bool>? showCursor = null,
+        bool? hasFocus = null,
+        LayerLink startHandleLayerLink = default!,
+        LayerLink endHandleLayerLink = default!,
+        long? maxLines = 1,
+        long? minLines = null,
+        bool expands = false,
+        Painting.StrutStyle? strutStyle = null,
+        Color? selectionColor = null,
+        double textScaleFactor = 1.0,
+        TextScaler textScaler = default!,
+        TextSelection? selection = null,
+        ViewportOffset offset = default!,
+        bool ignorePointer = false,
+        bool readOnly = false,
+        bool forceLine = true,
+        TextHeightBehavior? textHeightBehavior = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        string obscuringCharacter = "•",
+        bool obscureText = false,
+        Locale? locale = null,
+        double cursorWidth = 1.0,
+        double? cursorHeight = null,
+        Radius? cursorRadius = null,
+        bool paintCursorAboveText = false,
+        Offset cursorOffset = default,
+        double devicePixelRatio = 1.0,
+        BoxHeightStyle selectionHeightStyle = BoxHeightStyle.max,
+        BoxWidthStyle selectionWidthStyle = BoxWidthStyle.max,
+        bool? enableInteractiveSelection = null,
+        EdgeInsets floatingCursorAddedMargin = default!,
+        TextRange? promptRectRange = null,
+        Color? promptRectColor = null,
+        Clip clipBehavior = Clip.hardEdge,
+        TextSelectionDelegate textSelectionDelegate = default!,
+        RenderEditablePainter? painter = null,
+        RenderEditablePainter? foregroundPainter = null,
+        List<RenderBox>? children = null
+    )
     {
         TextScaler __textScaler = textScaler ?? TextScaler.noScaling;
-        EdgeInsets __floatingCursorAddedMargin = floatingCursorAddedMargin ?? new EdgeInsets(4, 4, 4, 5);
+        EdgeInsets __floatingCursorAddedMargin =
+            floatingCursorAddedMargin ?? new EdgeInsets(4, 4, 4, 5);
         this.ignorePointer = ignorePointer;
         this.floatingCursorAddedMargin = __floatingCursorAddedMargin;
         this.textSelectionDelegate = textSelectionDelegate;
-        _textPainter = new TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: Equals(textScaler, TextScaler.noScaling) ? TextScaler.CreateLinear(textScaleFactor) : textScaler, locale: locale, maxLines: (maxLines == 1L) ? 1L : null, strutStyle: strutStyle, textHeightBehavior: textHeightBehavior, textWidthBasis: textWidthBasis);
+        _textPainter = new TextPainter(
+            text: text,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            textScaler: Equals(textScaler, TextScaler.noScaling)
+                ? TextScaler.CreateLinear(textScaleFactor)
+                : textScaler,
+            locale: locale,
+            maxLines: (maxLines == 1L) ? 1L : null,
+            strutStyle: strutStyle,
+            textHeightBehavior: textHeightBehavior,
+            textWidthBasis: textWidthBasis
+        );
         _showCursor = showCursor ?? new ValueNotifier<bool>(false);
         _maxLines = maxLines;
         _minLines = minLines;
@@ -299,11 +408,22 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _clipBehavior = clipBehavior;
         _hasFocus = hasFocus ?? false;
         _disposeShowCursor = showCursor is null;
-        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
-        System.Diagnostics.Debug.Assert((minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L));
-        System.Diagnostics.Debug.Assert(maxLines is null || minLines is null || maxLines >= DartRuntimePrimitives.RequireValue(minLines));
-        System.Diagnostics.Debug.Assert(!expands || (maxLines is null) && (minLines is null));
-        System.Diagnostics.Debug.Assert(DartRuntimePrimitives.Identical(__textScaler, TextScaler.noScaling) || (textScaleFactor == 1.0));
+        System.Diagnostics.Debug.Assert(
+            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            maxLines is null
+                || minLines is null
+                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+        );
+        System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
+        System.Diagnostics.Debug.Assert(
+            DartRuntimePrimitives.Identical(__textScaler, TextScaler.noScaling)
+                || (textScaleFactor == 1.0)
+        );
         System.Diagnostics.Debug.Assert(obscuringCharacter.characters().Count == 1L);
         System.Diagnostics.Debug.Assert(cursorWidth >= 0.0);
         System.Diagnostics.Debug.Assert((cursorHeight is null) || (cursorHeight >= 0.0));
@@ -350,10 +470,21 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     internal virtual void _updateForegroundPainter(RenderEditablePainter? newPainter)
     {
-        _CompositeRenderEditablePainter__editable effectivePainter = (newPainter is null) ? _builtInForegroundPainters : new _CompositeRenderEditablePainter__editable(painters: new List<RenderEditablePainter> { _builtInForegroundPainters, newPainter });
+        _CompositeRenderEditablePainter__editable effectivePainter =
+            (newPainter is null)
+                ? _builtInForegroundPainters
+                : new _CompositeRenderEditablePainter__editable(
+                    painters: new List<RenderEditablePainter>
+                    {
+                        _builtInForegroundPainters,
+                        newPainter,
+                    }
+                );
         if (_foregroundRenderObject is null)
         {
-            var foregroundRenderObject = new _RenderEditableCustomPaint__editable(painter: effectivePainter);
+            var foregroundRenderObject = new _RenderEditableCustomPaint__editable(
+                painter: effectivePainter
+            );
             adoptChild(foregroundRenderObject);
             _foregroundRenderObject = foregroundRenderObject;
         }
@@ -377,12 +508,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             _updateForegroundPainter(newPainter);
         }
     }
+
     internal virtual void _updatePainter(RenderEditablePainter? newPainter)
     {
-        _CompositeRenderEditablePainter__editable effectivePainter = (newPainter is null) ? _builtInPainters : new _CompositeRenderEditablePainter__editable(painters: new List<RenderEditablePainter> { _builtInPainters, newPainter });
+        _CompositeRenderEditablePainter__editable effectivePainter =
+            (newPainter is null)
+                ? _builtInPainters
+                : new _CompositeRenderEditablePainter__editable(
+                    painters: new List<RenderEditablePainter> { _builtInPainters, newPainter }
+                );
         if (_backgroundRenderObject is null)
         {
-            var backgroundRenderObject = new _RenderEditableCustomPaint__editable(painter: effectivePainter);
+            var backgroundRenderObject = new _RenderEditableCustomPaint__editable(
+                painter: effectivePainter
+            );
             adoptChild(backgroundRenderObject);
             _backgroundRenderObject = backgroundRenderObject;
         }
@@ -406,7 +545,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             _updatePainter(newPainter);
         }
     }
-    internal virtual _CompositeRenderEditablePainter__editable _builtInForegroundPainters => _cachedBuiltInForegroundPainters ??= _createBuiltInForegroundPainters();
+    internal virtual _CompositeRenderEditablePainter__editable _builtInForegroundPainters =>
+        _cachedBuiltInForegroundPainters ??= _createBuiltInForegroundPainters();
+
     internal virtual _CompositeRenderEditablePainter__editable _createBuiltInForegroundPainters()
     {
         var painters = new List<RenderEditablePainter>();
@@ -418,10 +559,16 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual _CompositeRenderEditablePainter__editable _builtInPainters => _cachedBuiltInPainters ??= _createBuiltInPainters();
+    internal virtual _CompositeRenderEditablePainter__editable _builtInPainters =>
+        _cachedBuiltInPainters ??= _createBuiltInPainters();
+
     internal virtual _CompositeRenderEditablePainter__editable _createBuiltInPainters()
     {
-        var painters = new List<RenderEditablePainter> { _autocorrectHighlightPainter, _selectionPainter };
+        var painters = new List<RenderEditablePainter>
+        {
+            _autocorrectHighlightPainter,
+            _selectionPainter,
+        };
         if (!paintCursorAboveText)
         {
             painters.Add(_caretPainter);
@@ -522,7 +669,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual ValueListenable<bool> selectionStartInViewport => _selectionStartInViewport;
     public virtual ValueListenable<bool> selectionEndInViewport => _selectionEndInViewport;
-    internal virtual TextPosition _getTextPositionVertical(TextPosition position, double verticalOffset)
+
+    internal virtual TextPosition _getTextPositionVertical(
+        TextPosition position,
+        double verticalOffset
+    )
     {
         Offset caretOffset = _textPainter.getOffsetForCaret(position, _caretPrototype);
         Offset caretOffsetTranslated = caretOffset.translate(0.0, verticalOffset);
@@ -573,14 +724,27 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return;
         }
         Rect visibleRegion = Offset.zero & size;
-        Offset startOffset = _textPainter.getOffsetForCaret(new TextPosition(offset: selection!.start, affinity: selection!.affinity), _caretPrototype);
+        Offset startOffset = _textPainter.getOffsetForCaret(
+            new TextPosition(offset: selection!.start, affinity: selection!.affinity),
+            _caretPrototype
+        );
         var visibleRegionSlop = 0.5;
-        _selectionStartInViewport.value = visibleRegion.inflate(visibleRegionSlop).contains(startOffset + effectiveOffset);
-        Offset endOffset = _textPainter.getOffsetForCaret(new TextPosition(offset: selection!.end, affinity: selection!.affinity), _caretPrototype);
-        _selectionEndInViewport.value = visibleRegion.inflate(visibleRegionSlop).contains(endOffset + effectiveOffset);
+        _selectionStartInViewport.value = visibleRegion
+            .inflate(visibleRegionSlop)
+            .contains(startOffset + effectiveOffset);
+        Offset endOffset = _textPainter.getOffsetForCaret(
+            new TextPosition(offset: selection!.end, affinity: selection!.affinity),
+            _caretPrototype
+        );
+        _selectionEndInViewport.value = visibleRegion
+            .inflate(visibleRegionSlop)
+            .contains(endOffset + effectiveOffset);
     }
 
-    internal virtual void _setTextEditingValue(TextEditingValue newValue, SelectionChangedCause cause)
+    internal virtual void _setTextEditingValue(
+        TextEditingValue newValue,
+        SelectionChangedCause cause
+    )
     {
         textSelectionDelegate.userUpdateTextEditingValue(newValue, cause);
     }
@@ -590,9 +754,15 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         if (nextSelection.isValid)
         {
             long textLength = textSelectionDelegate.textEditingValue.text.Length;
-            nextSelection = nextSelection.copyWith(baseOffset: Math.Min(nextSelection.baseOffset, textLength), extentOffset: Math.Min(nextSelection.extentOffset, textLength));
+            nextSelection = nextSelection.copyWith(
+                baseOffset: Math.Min(nextSelection.baseOffset, textLength),
+                extentOffset: Math.Min(nextSelection.extentOffset, textLength)
+            );
         }
-        _setTextEditingValue(textSelectionDelegate.textEditingValue.copyWith(selection: nextSelection), cause);
+        _setTextEditingValue(
+            textSelectionDelegate.textEditingValue.copyWith(selection: nextSelection),
+            cause
+        );
     }
 
     public override void markNeedsPaint()
@@ -631,21 +801,25 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         get
         {
-            return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsicsCache ??= new TextPainter();
-    __cascade.text = _textPainter.text;
-    __cascade.textAlign = _textPainter.textAlign;
-    __cascade.textDirection = _textPainter.textDirection;
-    __cascade.textScaler = _textPainter.textScaler;
-    __cascade.maxLines = _textPainter.maxLines;
-    __cascade.ellipsis = _textPainter.ellipsis;
-    __cascade.locale = _textPainter.locale;
-    __cascade.strutStyle = _textPainter.strutStyle;
-    __cascade.textWidthBasis = _textPainter.textWidthBasis;
-    __cascade.textHeightBehavior = _textPainter.textHeightBehavior;
-    return __cascade;
-}))();
+            return (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = _textIntrinsicsCache ??= new TextPainter();
+                        __cascade.text = _textPainter.text;
+                        __cascade.textAlign = _textPainter.textAlign;
+                        __cascade.textDirection = _textPainter.textDirection;
+                        __cascade.textScaler = _textPainter.textScaler;
+                        __cascade.maxLines = _textPainter.maxLines;
+                        __cascade.ellipsis = _textPainter.ellipsis;
+                        __cascade.locale = _textPainter.locale;
+                        __cascade.strutStyle = _textPainter.strutStyle;
+                        __cascade.textWidthBasis = _textPainter.textWidthBasis;
+                        __cascade.textHeightBehavior = _textPainter.textHeightBehavior;
+                        return __cascade;
+                    }
+                )
+            )();
         }
     }
     public virtual TextAlign textAlign
@@ -750,6 +924,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             }
         }
     }
+
     internal virtual void _showHideCursor()
     {
         _caretPainter.shouldPaint = showCursor.value;
@@ -803,7 +978,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+            );
             if (maxLines == __value)
             {
                 return;
@@ -819,7 +996,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+            );
             if (minLines == __value)
             {
                 return;
@@ -931,6 +1110,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         get => _cursorHeight ?? preferredLineHeight;
         set => setCursorHeight(value);
     }
+
     public virtual void setCursorHeight(double? value)
     {
         if (_cursorHeight == value)
@@ -940,6 +1120,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _cursorHeight = value;
         markNeedsLayout();
     }
+
     public virtual bool paintCursorAboveText
     {
         get => _paintCursorOnTop;
@@ -1021,10 +1202,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual bool selectionEnabled
     {
-        get
-        {
-            return enableInteractiveSelection ?? !obscureText;
-        }
+        get { return enableInteractiveSelection ?? !obscureText; }
     }
     public virtual Color? promptRectColor
     {
@@ -1035,6 +1213,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             _autocorrectHighlightPainter.highlightColor = newValue;
         }
     }
+
     public virtual void setPromptRectRange(TextRange? newRange)
     {
         _autocorrectHighlightPainter.highlightedRange = newRange;
@@ -1056,10 +1235,27 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             }
         }
     }
+
     public virtual List<TextBox> getBoxesForSelection(TextSelection selection)
     {
         _computeTextMetricsIfNeeded();
-        return _textPainter.getBoxesForSelection(selection, boxHeightStyle: selectionHeightStyle, boxWidthStyle: selectionWidthStyle).map((textBox) => new TextBox(textBox.left + _paintOffset.dx, textBox.top + _paintOffset.dy, textBox.right + _paintOffset.dx, textBox.bottom + _paintOffset.dy, textBox.direction)).ToList();
+        return _textPainter
+            .getBoxesForSelection(
+                selection,
+                boxHeightStyle: selectionHeightStyle,
+                boxWidthStyle: selectionWidthStyle
+            )
+            .map(
+                (textBox) =>
+                    new TextBox(
+                        textBox.left + _paintOffset.dx,
+                        textBox.top + _paintOffset.dy,
+                        textBox.right + _paintOffset.dx,
+                        textBox.bottom + _paintOffset.dy,
+                        textBox.direction
+                    )
+            )
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1067,23 +1263,32 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         base.describeSemanticsConfiguration(config);
         _semanticsInfo = _textPainter.text!.getSemanticsInformation();
-        if (_semanticsInfo!.any((info) => info.recognizer is not null) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS)))
+        if (
+            _semanticsInfo!.any((info) => info.recognizer is not null)
+            && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))
+        )
         {
             DartRuntimePrimitives.Assert(() => readOnly && !obscureText);
-            ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = config;
-    __cascade.isSemanticBoundary = true;
-    __cascade.explicitChildNodes = true;
-    return __cascade;
-}))();
+            (
+                (Func<SemanticsConfiguration>)(
+                    () =>
+                    {
+                        var __cascade = config;
+                        __cascade.isSemanticBoundary = true;
+                        __cascade.explicitChildNodes = true;
+                        return __cascade;
+                    }
+                )
+            )();
             return;
         }
         if (_cachedAttributedValue is null)
         {
             if (obscureText)
             {
-                _cachedAttributedValue = new AttributedString(DartCoreExtensions.repeat(obscuringCharacter, plainText.Length));
+                _cachedAttributedValue = new AttributedString(
+                    DartCoreExtensions.repeat(obscuringCharacter, plainText.Length)
+                );
             }
             else
             {
@@ -1096,28 +1301,42 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                     foreach (StringAttribute infoAttribute in infoLocal.stringAttributes)
                     {
                         TextRange originalRange = infoAttribute.range;
-                        attributesLocal.Add(infoAttribute.copy(range: new TextRange(start: offset + originalRange.start, end: offset + originalRange.end)));
+                        attributesLocal.Add(
+                            infoAttribute.copy(
+                                range: new TextRange(
+                                    start: offset + originalRange.start,
+                                    end: offset + originalRange.end
+                                )
+                            )
+                        );
                     }
                     buffer.write(label);
                     offset += label.Length;
                 }
-                _cachedAttributedValue = new AttributedString(buffer.ToString(), attributes: attributesLocal);
+                _cachedAttributedValue = new AttributedString(
+                    buffer.ToString(),
+                    attributes: attributesLocal
+                );
             }
         }
-        ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = config;
-    __cascade.attributedValue = _cachedAttributedValue!;
-    __cascade.isObscured = obscureText;
-    __cascade.isMultiline = _isMultiline;
-    __cascade.textDirection = textDirection;
-    __cascade.isFocused = hasFocus;
-    __cascade.isFocusable = true;
-    __cascade.isTextField = true;
-    __cascade.isReadOnly = readOnly;
-    __cascade.inputType = Dart_uiLibrary.SemanticsInputType.text;
-    return __cascade;
-}))();
+        (
+            (Func<SemanticsConfiguration>)(
+                () =>
+                {
+                    var __cascade = config;
+                    __cascade.attributedValue = _cachedAttributedValue!;
+                    __cascade.isObscured = obscureText;
+                    __cascade.isMultiline = _isMultiline;
+                    __cascade.textDirection = textDirection;
+                    __cascade.isFocused = hasFocus;
+                    __cascade.isFocusable = true;
+                    __cascade.isTextField = true;
+                    __cascade.isReadOnly = readOnly;
+                    __cascade.inputType = Dart_uiLibrary.SemanticsInputType.text;
+                    return __cascade;
+                }
+            )
+        )();
         if (hasFocus && selectionEnabled)
         {
             config.onSetSelection = _handleSetSelection;
@@ -1131,35 +1350,57 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             config.textSelection = selection;
             if (_textPainter.getOffsetBefore(selection!.extentOffset) is not null)
             {
-                ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = config;
-    __cascade.onMoveCursorBackwardByWord = _handleMoveCursorBackwardByWord;
-    __cascade.onMoveCursorBackwardByCharacter = _handleMoveCursorBackwardByCharacter;
-    return __cascade;
-}))();
+                (
+                    (Func<SemanticsConfiguration>)(
+                        () =>
+                        {
+                            var __cascade = config;
+                            __cascade.onMoveCursorBackwardByWord = _handleMoveCursorBackwardByWord;
+                            __cascade.onMoveCursorBackwardByCharacter =
+                                _handleMoveCursorBackwardByCharacter;
+                            return __cascade;
+                        }
+                    )
+                )();
             }
             if (_textPainter.getOffsetAfter(selection!.extentOffset) is not null)
             {
-                ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = config;
-    __cascade.onMoveCursorForwardByWord = _handleMoveCursorForwardByWord;
-    __cascade.onMoveCursorForwardByCharacter = _handleMoveCursorForwardByCharacter;
-    return __cascade;
-}))();
+                (
+                    (Func<SemanticsConfiguration>)(
+                        () =>
+                        {
+                            var __cascade = config;
+                            __cascade.onMoveCursorForwardByWord = _handleMoveCursorForwardByWord;
+                            __cascade.onMoveCursorForwardByCharacter =
+                                _handleMoveCursorForwardByCharacter;
+                            return __cascade;
+                        }
+                    )
+                )();
             }
         }
     }
 
     internal virtual void _handleSetText(string text)
     {
-        textSelectionDelegate.userUpdateTextEditingValue(new TextEditingValue(text: text, selection: TextSelection.CreateCollapsed(offset: text.Length)), SelectionChangedCause.keyboard);
+        textSelectionDelegate.userUpdateTextEditingValue(
+            new TextEditingValue(
+                text: text,
+                selection: TextSelection.CreateCollapsed(offset: text.Length)
+            ),
+            SelectionChangedCause.keyboard
+        );
     }
 
-    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
+    public override void assembleSemanticsNode(
+        SemanticsNode node,
+        SemanticsConfiguration config,
+        IEnumerable<SemanticsNode> children
+    )
     {
-        DartRuntimePrimitives.Assert(() => (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0));
+        DartRuntimePrimitives.Assert(() =>
+            (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0)
+        );
         var newChildren = new List<SemanticsNode>();
         TextDirection currentDirection = textDirection;
         Rect currentRect = default!;
@@ -1172,11 +1413,19 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _cachedCombinedSemanticsInfos ??= Inline_spanLibrary.combineSemanticsInfo(_semanticsInfo!);
         foreach (InlineSpanSemanticsInformation info in _cachedCombinedSemanticsInfos!)
         {
-            var selection = new TextSelection(baseOffset: start, extentOffset: start + info.text.Length);
+            var selection = new TextSelection(
+                baseOffset: start,
+                extentOffset: start + info.text.Length
+            );
             start += info.text.Length;
             if (info.isPlaceholder)
             {
-                while ((children.Count() > childIndex) && children.elementAt(childIndex).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex)))
+                while (
+                    (children.Count() > childIndex)
+                    && children
+                        .elementAt(childIndex)
+                        .isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex))
+                )
                 {
                     SemanticsNode childNode = children.elementAt(childIndex);
                     var parentDataLocal = ((TextParentData?)child!.parentData!)!;
@@ -1202,76 +1451,114 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                     rectLocal = rectLocal.expandToInclude(textBox.toRect());
                     currentDirection = textBox.direction;
                 }
-                rectLocal = Rect.fromLTWH(Math.Max(0.0, rectLocal.left), Math.Max(0.0, rectLocal.top), Math.Min(rectLocal.width, constraints.maxWidth), Math.Min(rectLocal.height, constraints.maxHeight));
-                currentRect = Rect.fromLTRB(rectLocal.left.floorToDouble() - 4.0, rectLocal.top.floorToDouble() - 4.0, rectLocal.right.ceilToDouble() + 4.0, rectLocal.bottom.ceilToDouble() + 4.0);
-                var configuration = ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = new SemanticsConfiguration();
-    __cascade.sortKey = new OrdinalSortKey(ordinal++);
-    __cascade.textDirection = initialDirection;
-    __cascade.attributedLabel = new AttributedString(info.semanticsLabel ?? info.text, attributes: info.stringAttributes);
-    return __cascade;
-}))();
+                rectLocal = Rect.fromLTWH(
+                    Math.Max(0.0, rectLocal.left),
+                    Math.Max(0.0, rectLocal.top),
+                    Math.Min(rectLocal.width, constraints.maxWidth),
+                    Math.Min(rectLocal.height, constraints.maxHeight)
+                );
+                currentRect = Rect.fromLTRB(
+                    rectLocal.left.floorToDouble() - 4.0,
+                    rectLocal.top.floorToDouble() - 4.0,
+                    rectLocal.right.ceilToDouble() + 4.0,
+                    rectLocal.bottom.ceilToDouble() + 4.0
+                );
+                var configuration = (
+                    (Func<SemanticsConfiguration>)(
+                        () =>
+                        {
+                            var __cascade = new SemanticsConfiguration();
+                            __cascade.sortKey = new OrdinalSortKey(ordinal++);
+                            __cascade.textDirection = initialDirection;
+                            __cascade.attributedLabel = new AttributedString(
+                                info.semanticsLabel ?? info.text,
+                                attributes: info.stringAttributes
+                            );
+                            return __cascade;
+                        }
+                    )
+                )();
                 switch (info.recognizer)
                 {
                     case TapGestureRecognizer { onTap: Action handler } __object55475:
+                    {
+                        if (handler is not null)
                         {
-                            if (handler is not null)
-                            {
-                                configuration.onTap = handler;
-                                configuration.isLink = true;
-                            }
-                            break;
+                            configuration.onTap = handler;
+                            configuration.isLink = true;
                         }
-                    case DoubleTapGestureRecognizer { onDoubleTap: Action handlerLocal } __object55548:
+                        break;
+                    }
+                    case DoubleTapGestureRecognizer
+                    {
+                        onDoubleTap: Action handlerLocal
+                    } __object55548:
+                    {
+                        if (handlerLocal is not null)
                         {
-                            if (handlerLocal is not null)
-                            {
-                                configuration.onTap = handlerLocal;
-                                configuration.isLink = true;
-                            }
-                            break;
+                            configuration.onTap = handlerLocal;
+                            configuration.isLink = true;
                         }
-                    case LongPressGestureRecognizer { onLongPress: Action onLongPressLocal } __object55770:
+                        break;
+                    }
+                    case LongPressGestureRecognizer
+                    {
+                        onLongPress: Action onLongPressLocal
+                    } __object55770:
+                    {
+                        if (onLongPressLocal is not null)
                         {
-                            if (onLongPressLocal is not null)
-                            {
-                                configuration.onLongPress = onLongPressLocal;
-                            }
-                            break;
+                            configuration.onLongPress = onLongPressLocal;
                         }
+                        break;
+                    }
                     case null:
-                        {
-                            break;
-                        }
+                    {
+                        break;
+                    }
                     default:
-                        {
-                            DartRuntimePrimitives.Assert(() => false);
-                            break;
-                        }
+                    {
+                        DartRuntimePrimitives.Assert(() => false);
+                        break;
+                    }
                 }
                 if (node.parentPaintClipRect is not null)
                 {
-                    Rect paintRect = DartRuntimePrimitives.RequireValue(node.parentPaintClipRect).intersect(currentRect);
+                    Rect paintRect = DartRuntimePrimitives
+                        .RequireValue(node.parentPaintClipRect)
+                        .intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
                 }
                 SemanticsNode newChild = default!;
-                if ((((long?)(_cachedChildNodes?.Count)) is { } __count56386 ? __count56386 != 0 : (bool?)null) ?? false)
+                if (
+                    (
+                        ((long?)(_cachedChildNodes?.Count)) is { } __count56386
+                            ? __count56386 != 0
+                            : (bool?)null
+                    ) ?? false
+                )
                 {
                     newChild = _cachedChildNodes!.remove(_cachedChildNodes!.Keys.First())!;
                 }
                 else
                 {
                     var keyLocal = new UniqueKey();
-                    newChild = new SemanticsNode(key: keyLocal, showOnScreen: _createShowOnScreenFor(keyLocal));
+                    newChild = new SemanticsNode(
+                        key: keyLocal,
+                        showOnScreen: _createShowOnScreenFor(keyLocal)
+                    );
                 }
-                ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = newChild;
-    __cascade.updateWith(config: configuration);
-    __cascade.rect = currentRect;
-    return __cascade;
-}))();
+                (
+                    (Func<SemanticsNode>)(
+                        () =>
+                        {
+                            var __cascade = newChild;
+                            __cascade.updateWith(config: configuration);
+                            __cascade.rect = currentRect;
+                            return __cascade;
+                        }
+                    )
+                )();
                 newChildCache[newChild.key!] = newChild;
                 newChildren.Add(newChild);
             }
@@ -1303,8 +1590,16 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             return;
         }
-        long baseOffsetLocal = !extendSelection ? DartRuntimePrimitives.RequireValue(extentOffsetLocal) : selection!.baseOffset;
-        _setSelection(new TextSelection(baseOffset: baseOffsetLocal, extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)), SelectionChangedCause.keyboard);
+        long baseOffsetLocal = !extendSelection
+            ? DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            : selection!.baseOffset;
+        _setSelection(
+            new TextSelection(
+                baseOffset: baseOffsetLocal,
+                extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            ),
+            SelectionChangedCause.keyboard
+        );
     }
 
     internal virtual void _handleMoveCursorBackwardByCharacter(bool extendSelection)
@@ -1315,8 +1610,16 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             return;
         }
-        long baseOffsetLocal = !extendSelection ? DartRuntimePrimitives.RequireValue(extentOffsetLocal) : selection!.baseOffset;
-        _setSelection(new TextSelection(baseOffset: baseOffsetLocal, extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)), SelectionChangedCause.keyboard);
+        long baseOffsetLocal = !extendSelection
+            ? DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            : selection!.baseOffset;
+        _setSelection(
+            new TextSelection(
+                baseOffset: baseOffsetLocal,
+                extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            ),
+            SelectionChangedCause.keyboard
+        );
     }
 
     internal virtual void _handleMoveCursorForwardByWord(bool extendSelection)
@@ -1329,7 +1632,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return;
         }
         long baseOffsetLocal = extendSelection ? selection!.baseOffset : nextWord.start;
-        _setSelection(new TextSelection(baseOffset: baseOffsetLocal, extentOffset: nextWord.start), SelectionChangedCause.keyboard);
+        _setSelection(
+            new TextSelection(baseOffset: baseOffsetLocal, extentOffset: nextWord.start),
+            SelectionChangedCause.keyboard
+        );
     }
 
     internal virtual void _handleMoveCursorBackwardByWord(bool extendSelection)
@@ -1342,7 +1648,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return;
         }
         long baseOffsetLocal = extendSelection ? selection!.baseOffset : previousWord.start;
-        _setSelection(new TextSelection(baseOffset: baseOffsetLocal, extentOffset: previousWord.start), SelectionChangedCause.keyboard);
+        _setSelection(
+            new TextSelection(baseOffset: baseOffsetLocal, extentOffset: previousWord.start),
+            SelectionChangedCause.keyboard
+        );
     }
 
     internal virtual TextRange? _getNextWord(long offset)
@@ -1408,19 +1717,27 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         _foregroundRenderObject?.attach(owner);
         _backgroundRenderObject?.attach(owner);
-        _tap = ((Func<TapGestureRecognizer>)(() =>
-{
-    var __cascade = new TapGestureRecognizer(debugOwner: this);
-    __cascade.onTapDown = _handleTapDown;
-    __cascade.onTap = _handleTap;
-    return __cascade;
-}))();
-        _longPress = ((Func<LongPressGestureRecognizer>)(() =>
-{
-    var __cascade = new LongPressGestureRecognizer(debugOwner: this);
-    __cascade.onLongPress = _handleLongPress;
-    return __cascade;
-}))();
+        _tap = (
+            (Func<TapGestureRecognizer>)(
+                () =>
+                {
+                    var __cascade = new TapGestureRecognizer(debugOwner: this);
+                    __cascade.onTapDown = _handleTapDown;
+                    __cascade.onTap = _handleTap;
+                    return __cascade;
+                }
+            )
+        )();
+        _longPress = (
+            (Func<LongPressGestureRecognizer>)(
+                () =>
+                {
+                    var __cascade = new LongPressGestureRecognizer(debugOwner: this);
+                    __cascade.onLongPress = _handleLongPress;
+                    return __cascade;
+                }
+            )
+        )();
         _offset.addListener(markNeedsPaint);
         _showHideCursor();
         _showCursor.addListener(_showHideCursor);
@@ -1488,46 +1805,89 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     internal virtual bool _isMultiline => maxLines != 1L;
     internal virtual Axis _viewportAxis => _isMultiline ? Axis.vertical : Axis.horizontal;
-    internal virtual Offset _paintOffset => _viewportAxis switch { Axis.horizontal => new Offset(-offset.pixels, 0.0), Axis.vertical => new Offset(0.0, -offset.pixels), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    internal virtual Offset _paintOffset =>
+        _viewportAxis switch
+        {
+            Axis.horizontal => new Offset(-offset.pixels, 0.0),
+            Axis.vertical => new Offset(0.0, -offset.pixels),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     internal virtual double _viewportExtent
     {
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            return _viewportAxis switch { Axis.horizontal => size.width, Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return _viewportAxis switch
+            {
+                Axis.horizontal => size.width,
+                Axis.vertical => size.height,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     internal virtual double _getMaxScrollExtent(Size contentSize)
     {
         DartRuntimePrimitives.Assert(() => hasSize);
-        return _viewportAxis switch { Axis.horizontal => Math.Max(0.0, contentSize.width - size.width), Axis.vertical => Math.Max(0.0, contentSize.height - size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return _viewportAxis switch
+        {
+            Axis.horizontal => Math.Max(0.0, contentSize.width - size.width),
+            Axis.vertical => Math.Max(0.0, contentSize.height - size.height),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _hasVisualOverflow => (_maxScrollExtent > 0L) || (!Equals(_paintOffset, Offset.zero));
+    internal virtual bool _hasVisualOverflow =>
+        (_maxScrollExtent > 0L) || (!Equals(_paintOffset, Offset.zero));
+
     public virtual List<TextSelectionPoint> getEndpointsForSelection(TextSelection selection)
     {
         _computeTextMetricsIfNeeded();
         Offset paintOffset = _paintOffset;
-        List<TextBox> boxes = selection.isCollapsed ? new List<TextBox>() : _textPainter.getBoxesForSelection(selection, boxHeightStyle: selectionHeightStyle, boxWidthStyle: selectionWidthStyle);
+        List<TextBox> boxes = selection.isCollapsed
+            ? new List<TextBox>()
+            : _textPainter.getBoxesForSelection(
+                selection,
+                boxHeightStyle: selectionHeightStyle,
+                boxWidthStyle: selectionWidthStyle
+            );
         if (checked((long)boxes.Count) == 0)
         {
             Offset caretOffset = _textPainter.getOffsetForCaret(selection.extent, _caretPrototype);
             Offset startLocal = new Offset(0.0, preferredLineHeight) + caretOffset + paintOffset;
-            if (selection.isCollapsed && PlatformLibrary.defaultTargetPlatform == TargetPlatform.android)
+            if (
+                selection.isCollapsed
+                && PlatformLibrary.defaultTargetPlatform == TargetPlatform.android
+            )
             {
                 // The Material insertion handle points at the caret's center, not
                 // its leading edge. Use the painted rect so custom cursor widths,
                 // offsets, scrolling, and physical-pixel snapping stay aligned.
-                startLocal = new Offset(getLocalRectForCaret(selection.extent).center.dx, startLocal.dy);
+                startLocal = new Offset(
+                    getLocalRectForCaret(selection.extent).center.dx,
+                    startLocal.dy
+                );
             }
             return new List<TextSelectionPoint> { new TextSelectionPoint(startLocal, null) };
         }
         else
         {
-            Offset startAlternate = new Offset(Dart_uiLibrary.clampDouble(boxes.First().start, 0, _textPainter.size.width), boxes.First().bottom) + paintOffset;
-            Offset endLocal = new Offset(Dart_uiLibrary.clampDouble(boxes.Last().end, 0, _textPainter.size.width), boxes.Last().bottom) + paintOffset;
-            return new List<TextSelectionPoint> { new TextSelectionPoint(startAlternate, boxes.First().direction), new TextSelectionPoint(endLocal, boxes.Last().direction) };
+            Offset startAlternate =
+                new Offset(
+                    Dart_uiLibrary.clampDouble(boxes.First().start, 0, _textPainter.size.width),
+                    boxes.First().bottom
+                ) + paintOffset;
+            Offset endLocal =
+                new Offset(
+                    Dart_uiLibrary.clampDouble(boxes.Last().end, 0, _textPainter.size.width),
+                    boxes.Last().bottom
+                ) + paintOffset;
+            return new List<TextSelectionPoint>
+            {
+                new TextSelectionPoint(startAlternate, boxes.First().direction),
+                new TextSelectionPoint(endLocal, boxes.Last().direction),
+            };
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1539,8 +1899,18 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return null;
         }
         _computeTextMetricsIfNeeded();
-        List<TextBox> boxes = _textPainter.getBoxesForSelection(new TextSelection(baseOffset: range.start, extentOffset: range.end), boxHeightStyle: selectionHeightStyle, boxWidthStyle: selectionWidthStyle);
-        return Enumerable.Aggregate(boxes, (Rect?)null, (accum, incoming) => accum?.expandToInclude(incoming.toRect()) ?? incoming.toRect())?.shift(_paintOffset);
+        List<TextBox> boxes = _textPainter.getBoxesForSelection(
+            new TextSelection(baseOffset: range.start, extentOffset: range.end),
+            boxHeightStyle: selectionHeightStyle,
+            boxWidthStyle: selectionWidthStyle
+        );
+        return Enumerable
+            .Aggregate(
+                boxes,
+                (Rect?)null,
+                (accum, incoming) => accum?.expandToInclude(incoming.toRect()) ?? incoming.toRect()
+            )
+            ?.shift(_paintOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1558,28 +1928,42 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         Offset caretOffset = _textPainter.getOffsetForCaret(caretPosition, caretPrototype);
         Rect caretRect = caretPrototype.shift(caretOffset + cursorOffset);
         double scrollableWidth = Math.Max(_textPainter.width + _caretMargin, size.width);
-        double caretX = Dart_uiLibrary.clampDouble(caretRect.left, 0, Math.Max(scrollableWidth - _caretMargin, 0));
+        double caretX = Dart_uiLibrary.clampDouble(
+            caretRect.left,
+            0,
+            Math.Max(scrollableWidth - _caretMargin, 0)
+        );
         caretRect = new Offset(caretX, caretRect.top) & caretRect.size;
         double fullHeight = _textPainter.getFullHeightForCaret(caretPosition, caretPrototype);
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant67807 when Equals(__constant67807, TargetPlatform.iOS):
             case var __constant67838 when Equals(__constant67838, TargetPlatform.macOS):
-                {
-                    double heightDiff = fullHeight - caretRect.height;
-                    caretRect = Rect.fromLTWH(caretRect.left, caretRect.top + (heightDiff / 2L), caretRect.width, caretRect.height);
-                    break;
-                }
+            {
+                double heightDiff = fullHeight - caretRect.height;
+                caretRect = Rect.fromLTWH(
+                    caretRect.left,
+                    caretRect.top + (heightDiff / 2L),
+                    caretRect.width,
+                    caretRect.height
+                );
+                break;
+            }
             case var __constant68160 when Equals(__constant68160, TargetPlatform.android):
             case var __constant68195 when Equals(__constant68195, TargetPlatform.fuchsia):
             case var __constant68230 when Equals(__constant68230, TargetPlatform.linux):
             case var __constant68263 when Equals(__constant68263, TargetPlatform.windows):
-                {
-                    double caretHeight = cursorHeight;
-                    double heightDiffLocal = fullHeight - caretHeight;
-                    caretRect = Rect.fromLTWH(caretRect.left, caretRect.top - EditableLibrary._kCaretHeightOffset + (heightDiffLocal / 2L), caretRect.width, caretHeight);
-                    break;
-                }
+            {
+                double caretHeight = cursorHeight;
+                double heightDiffLocal = fullHeight - caretHeight;
+                caretRect = Rect.fromLTWH(
+                    caretRect.left,
+                    caretRect.top - EditableLibrary._kCaretHeightOffset + (heightDiffLocal / 2L),
+                    caretRect.width,
+                    caretHeight
+                );
+                break;
+            }
         }
         caretRect = caretRect.shift(_paintOffset);
         return caretRect.shift(_snapToPhysicalPixel(caretRect.topLeft));
@@ -1588,33 +1972,52 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, (child, constraints) => new Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0), ChildLayoutHelper.getDryBaseline);
+        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(
+            double.PositiveInfinity,
+            (child, constraints) =>
+                new Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0),
+            ChildLayoutHelper.getDryBaseline
+        );
         var (minWidthLocal, maxWidthLocal) = _adjustConstraints();
-        return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions);
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))().minIntrinsicWidth;
+        return (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(placeholderDimensions);
+                    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                    return __cascade;
+                }
+            )
+        )().minIntrinsicWidth;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, (child, constraints) => new Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0), ChildLayoutHelper.getDryBaseline);
+        List<PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(
+            double.PositiveInfinity,
+            (child, constraints) =>
+                new Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0),
+            ChildLayoutHelper.getDryBaseline
+        );
         var (minWidthLocal, maxWidthLocal) = _adjustConstraints();
-        return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions);
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))().maxIntrinsicWidth + _caretMargin;
+        return (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = _textIntrinsics;
+                        __cascade.setPlaceholderDimensions(placeholderDimensions);
+                        __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                        return __cascade;
+                    }
+                )
+            )().maxIntrinsicWidth + _caretMargin;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double preferredLineHeight => _textPainter.preferredLineHeight;
+
     internal virtual long _countHardLineBreaks(string text)
     {
         long? cachedValue = _cachedLineBreakCount;
@@ -1634,10 +2037,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                 case 12L:
                 case 8232L:
                 case 8233L:
-                    {
-                        count += 1L;
-                        break;
-                    }
+                {
+                    count += 1L;
+                    break;
+                }
             }
         }
         return DartRuntimePrimitives.RequireValue(_cachedLineBreakCount = count);
@@ -1649,7 +2052,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         long? maxLinesLocal = maxLines;
         long? minLinesLocal = minLines ?? maxLinesLocal;
         double minHeight = preferredLineHeight * (minLinesLocal ?? 0L);
-        DartRuntimePrimitives.Assert(() => (maxLinesLocal != 1L) || (_textIntrinsics.maxLines == 1L));
+        DartRuntimePrimitives.Assert(() =>
+            (maxLinesLocal != 1L) || (_textIntrinsics.maxLines == 1L)
+        );
         if (maxLinesLocal is null)
         {
             double estimatedHeight = default!;
@@ -1660,24 +2065,32 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             else
             {
                 var (minWidthLocal, maxWidthLocal) = _adjustConstraints(maxWidth: width);
-                estimatedHeight = ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))().height;
+                estimatedHeight = (
+                    (Func<TextPainter>)(
+                        () =>
+                        {
+                            var __cascade = _textIntrinsics;
+                            __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                            return __cascade;
+                        }
+                    )
+                )().height;
             }
             return Math.Max(estimatedHeight, minHeight);
         }
         if (DartRuntimePrimitives.RequireValue(maxLinesLocal) == 1L)
         {
             var (minWidthAlternate, maxWidthAlternate) = _adjustConstraints(maxWidth: width);
-            return ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.layout(minWidth: minWidthAlternate, maxWidth: maxWidthAlternate);
-    return __cascade;
-}))().height;
+            return (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = _textIntrinsics;
+                        __cascade.layout(minWidth: minWidthAlternate, maxWidth: maxWidthAlternate);
+                        return __cascade;
+                    }
+                )
+            )().height;
         }
         if (minLinesLocal == DartRuntimePrimitives.RequireValue(maxLinesLocal))
         {
@@ -1685,19 +2098,34 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         double maxHeight = preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLinesLocal);
         var (minWidthNested, maxWidthNested) = _adjustConstraints(maxWidth: width);
-        return Dart_uiLibrary.clampDouble(((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.layout(minWidth: minWidthNested, maxWidth: maxWidthNested);
-    return __cascade;
-}))().height, minHeight, maxHeight);
+        return Dart_uiLibrary.clampDouble(
+            (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = _textIntrinsics;
+                        __cascade.layout(minWidth: minWidthNested, maxWidth: maxWidthNested);
+                        return __cascade;
+                    }
+                )
+            )().height,
+            minHeight,
+            maxHeight
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width) => getMaxIntrinsicHeight(width);
+
     public override double computeMaxIntrinsicHeight(double width)
     {
-        _textIntrinsics.setPlaceholderDimensions(layoutInlineChildren(width, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
+        _textIntrinsics.setPlaceholderDimensions(
+            layoutInlineChildren(
+                width,
+                ChildLayoutHelper.dryLayoutChild,
+                ChildLayoutHelper.getDryBaseline
+            )
+        );
         return _preferredHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1710,22 +2138,28 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
 
     public override bool hitTestSelf(Offset position) => true;
+
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         Offset effectivePosition = position - _paintOffset;
         GlyphInfo? glyph = _textPainter.getClosestGlyphForOffset(effectivePosition);
-        InlineSpan? spanHit = ((glyph is not null) && glyph.graphemeClusterLayoutBounds.contains(effectivePosition)) ? _textPainter.text!.getSpanForPosition(new TextPosition(offset: glyph.graphemeClusterCodeUnitRange.start)) : null;
+        InlineSpan? spanHit =
+            ((glyph is not null) && glyph.graphemeClusterLayoutBounds.contains(effectivePosition))
+                ? _textPainter.text!.getSpanForPosition(
+                    new TextPosition(offset: glyph.graphemeClusterCodeUnitRange.start)
+                )
+                : null;
         switch (spanHit)
         {
             case HitTestTarget span:
-                {
-                    result.add(new HitTestEntry<HitTestTarget>(span));
-                    return true;
-                }
+            {
+                result.add(new HitTestEntry<HitTestTarget>(span));
+                return true;
+            }
             default:
-                {
-                    return hitTestInlineChildren(result, effectivePosition);
-                }
+            {
+                return hitTestInlineChildren(result, effectivePosition);
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1746,6 +2180,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
 
     public virtual Offset? lastSecondaryTapDownPosition => _lastSecondaryTapDownPosition;
+
     public virtual void handleSecondaryTapDown(TapDownDetails details)
     {
         _lastTapDownPosition = details.globalPosition;
@@ -1792,42 +2227,90 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public virtual void selectPosition(SelectionChangedCause cause)
     {
-        selectPositionAt(from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition), cause: cause);
+        selectPositionAt(
+            from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition),
+            cause: cause
+        );
     }
 
-    public virtual void selectPositionAt(Offset from, Offset? to = null, SelectionChangedCause cause = default!)
+    public virtual void selectPositionAt(
+        Offset from,
+        Offset? to = null,
+        SelectionChangedCause cause = default!
+    )
     {
         _computeTextMetricsIfNeeded();
-        TextPosition fromPosition = _textPainter.getPositionForOffset(globalToLocal(from) - _paintOffset);
-        TextPosition? toPosition = (to is null) ? null : _textPainter.getPositionForOffset(globalToLocal(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))) - _paintOffset);
+        TextPosition fromPosition = _textPainter.getPositionForOffset(
+            globalToLocal(from) - _paintOffset
+        );
+        TextPosition? toPosition =
+            (to is null)
+                ? null
+                : _textPainter.getPositionForOffset(
+                    globalToLocal(
+                        DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                    ) - _paintOffset
+                );
         long baseOffsetLocal = fromPosition.offset;
         long extentOffsetLocal = toPosition?.offset ?? fromPosition.offset;
-        var newSelection = new TextSelection(baseOffset: baseOffsetLocal, extentOffset: extentOffsetLocal, affinity: fromPosition.affinity);
+        var newSelection = new TextSelection(
+            baseOffset: baseOffsetLocal,
+            extentOffset: extentOffsetLocal,
+            affinity: fromPosition.affinity
+        );
         _setSelection(newSelection, cause);
     }
 
     public virtual WordBoundary wordBoundaries => _textPainter.wordBoundaries;
+
     public virtual void selectWord(SelectionChangedCause cause)
     {
-        selectWordsInRange(from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition), cause: cause);
+        selectWordsInRange(
+            from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition),
+            cause: cause
+        );
     }
 
-    public virtual void selectWordsInRange(Offset from, Offset? to = null, SelectionChangedCause cause = default!)
+    public virtual void selectWordsInRange(
+        Offset from,
+        Offset? to = null,
+        SelectionChangedCause cause = default!
+    )
     {
         _computeTextMetricsIfNeeded();
-        TextPosition fromPosition = _textPainter.getPositionForOffset(globalToLocal(from) - _paintOffset);
+        TextPosition fromPosition = _textPainter.getPositionForOffset(
+            globalToLocal(from) - _paintOffset
+        );
         TextSelection fromWord = getWordAtOffset(fromPosition);
-        TextPosition toPosition = (to is null) ? fromPosition : _textPainter.getPositionForOffset(globalToLocal(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))) - _paintOffset);
-        TextSelection toWord = Equals(toPosition, fromPosition) ? fromWord : getWordAtOffset(toPosition);
+        TextPosition toPosition =
+            (to is null)
+                ? fromPosition
+                : _textPainter.getPositionForOffset(
+                    globalToLocal(
+                        DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                    ) - _paintOffset
+                );
+        TextSelection toWord = Equals(toPosition, fromPosition)
+            ? fromWord
+            : getWordAtOffset(toPosition);
         bool isFromWordBeforeToWord = fromWord.start < toWord.end;
-        _setSelection(new TextSelection(baseOffset: isFromWordBeforeToWord ? fromWord.@base.offset : fromWord.extent.offset, extentOffset: isFromWordBeforeToWord ? toWord.extent.offset : toWord.@base.offset, affinity: fromWord.affinity), cause);
+        _setSelection(
+            new TextSelection(
+                baseOffset: isFromWordBeforeToWord ? fromWord.@base.offset : fromWord.extent.offset,
+                extentOffset: isFromWordBeforeToWord ? toWord.extent.offset : toWord.@base.offset,
+                affinity: fromWord.affinity
+            ),
+            cause
+        );
     }
 
     public virtual void selectWordEdge(SelectionChangedCause cause)
     {
         _computeTextMetricsIfNeeded();
         DartRuntimePrimitives.Assert(() => _lastTapDownPosition is not null);
-        TextPosition position = _textPainter.getPositionForOffset(globalToLocal(DartRuntimePrimitives.RequireValue(_lastTapDownPosition)) - _paintOffset);
+        TextPosition position = _textPainter.getPositionForOffset(
+            globalToLocal(DartRuntimePrimitives.RequireValue(_lastTapDownPosition)) - _paintOffset
+        );
         TextRange word = _textPainter.getWordBoundary(position);
         TextSelection newSelection = default!;
         if (position.offset <= word.start)
@@ -1836,7 +2319,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         else
         {
-            newSelection = TextSelection.CreateCollapsed(offset: word.end, affinity: TextAffinity.upstream);
+            newSelection = TextSelection.CreateCollapsed(
+                offset: word.end,
+                affinity: TextAffinity.upstream
+            );
         }
         _setSelection(newSelection, cause);
     }
@@ -1845,7 +2331,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         if (position.offset >= plainText.Length)
         {
-            return TextSelection.CreateFromPosition(new TextPosition(offset: plainText.Length, affinity: TextAffinity.upstream));
+            return TextSelection.CreateFromPosition(
+                new TextPosition(offset: plainText.Length, affinity: TextAffinity.upstream)
+            );
         }
         if (obscureText)
         {
@@ -1856,71 +2344,95 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         switch (position.affinity)
         {
             case TextAffinity.upstream:
-                {
-                    effectiveOffset = position.offset - 1L;
-                    break;
-                }
+            {
+                effectiveOffset = position.offset - 1L;
+                break;
+            }
             case TextAffinity.downstream:
-                {
-                    effectiveOffset = position.offset;
-                    break;
-                }
+            {
+                effectiveOffset = position.offset;
+                break;
+            }
         }
         DartRuntimePrimitives.Assert(() => effectiveOffset >= 0L);
-        if ((effectiveOffset > 0L) && TextLayoutMetrics.isWhitespace(plainText.codeUnitAt(effectiveOffset)))
+        if (
+            (effectiveOffset > 0L)
+            && TextLayoutMetrics.isWhitespace(plainText.codeUnitAt(effectiveOffset))
+        )
         {
             TextRange? previousWord = _getPreviousWord(word.start);
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case var __constant83254 when Equals(__constant83254, TargetPlatform.iOS):
+                {
+                    if (previousWord is null)
+                    {
+                        TextRange? nextWord = _getNextWord(word.start);
+                        if (nextWord is null)
+                        {
+                            return TextSelection.CreateCollapsed(offset: position.offset);
+                        }
+                        return new TextSelection(
+                            baseOffset: position.offset,
+                            extentOffset: nextWord.end
+                        );
+                    }
+                    return new TextSelection(
+                        baseOffset: previousWord.start,
+                        extentOffset: position.offset
+                    );
+                }
+                case var __constant83710 when Equals(__constant83710, TargetPlatform.android):
+                {
+                    if (readOnly)
                     {
                         if (previousWord is null)
                         {
-                            TextRange? nextWord = _getNextWord(word.start);
-                            if (nextWord is null)
-                            {
-                                return TextSelection.CreateCollapsed(offset: position.offset);
-                            }
-                            return new TextSelection(baseOffset: position.offset, extentOffset: nextWord.end);
+                            return new TextSelection(
+                                baseOffset: position.offset,
+                                extentOffset: position.offset + 1L
+                            );
                         }
-                        return new TextSelection(baseOffset: previousWord.start, extentOffset: position.offset);
+                        return new TextSelection(
+                            baseOffset: previousWord.start,
+                            extentOffset: position.offset
+                        );
                     }
-                case var __constant83710 when Equals(__constant83710, TargetPlatform.android):
-                    {
-                        if (readOnly)
-                        {
-                            if (previousWord is null)
-                            {
-                                return new TextSelection(baseOffset: position.offset, extentOffset: position.offset + 1L);
-                            }
-                            return new TextSelection(baseOffset: previousWord.start, extentOffset: position.offset);
-                        }
-                        break;
-                    }
+                    break;
+                }
                 case var __constant84036 when Equals(__constant84036, TargetPlatform.fuchsia):
                 case var __constant84073 when Equals(__constant84073, TargetPlatform.macOS):
                 case var __constant84108 when Equals(__constant84108, TargetPlatform.linux):
                 case var __constant84143 when Equals(__constant84143, TargetPlatform.windows):
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
             }
         }
         return new TextSelection(baseOffset: word.start, extentOffset: word.end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (double, double) _adjustConstraints(double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
+    internal virtual (double, double) _adjustConstraints(
+        double minWidth = 0.0,
+        double maxWidth = double.PositiveInfinity
+    )
     {
         double availableMaxWidth = Math.Max(0.0, maxWidth - _caretMargin);
         double availableMinWidth = Math.Min(minWidth, availableMaxWidth);
-        return (forceLine ? availableMaxWidth : availableMinWidth, _isMultiline ? availableMaxWidth : double.PositiveInfinity);
+        return (
+            forceLine ? availableMaxWidth : availableMinWidth,
+            _isMultiline ? availableMaxWidth : double.PositiveInfinity
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _computeTextMetricsIfNeeded()
     {
-        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth);
+        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.maxWidth
+        );
         _textPainter.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
     }
 
@@ -1930,18 +2442,23 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             case var __constant86723 when Equals(__constant86723, TargetPlatform.iOS):
             case var __constant86754 when Equals(__constant86754, TargetPlatform.macOS):
-                {
-                    _caretPrototype = Rect.fromLTWH(0.0, 0.0, cursorWidth, cursorHeight + 2L);
-                    break;
-                }
+            {
+                _caretPrototype = Rect.fromLTWH(0.0, 0.0, cursorWidth, cursorHeight + 2L);
+                break;
+            }
             case var __constant86869 when Equals(__constant86869, TargetPlatform.android):
             case var __constant86904 when Equals(__constant86904, TargetPlatform.fuchsia):
             case var __constant86939 when Equals(__constant86939, TargetPlatform.linux):
             case var __constant86972 when Equals(__constant86972, TargetPlatform.windows):
-                {
-                    _caretPrototype = Rect.fromLTWH(0.0, EditableLibrary._kCaretHeightOffset, cursorWidth, cursorHeight - (2.0 * EditableLibrary._kCaretHeightOffset));
-                    break;
-                }
+            {
+                _caretPrototype = Rect.fromLTWH(
+                    0.0,
+                    EditableLibrary._kCaretHeightOffset,
+                    cursorWidth,
+                    cursorHeight - (2.0 * EditableLibrary._kCaretHeightOffset)
+                );
+                break;
+            }
         }
     }
 
@@ -1949,35 +2466,73 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         Offset globalOffset = localToGlobal(sourceOffset);
         double pixelMultiple = 1.0 / _devicePixelRatio;
-        return new Offset(double.IsFinite(globalOffset.dx) ? (((globalOffset.dx / pixelMultiple).round() * pixelMultiple) - globalOffset.dx) : 0, double.IsFinite(globalOffset.dy) ? (((globalOffset.dy / pixelMultiple).round() * pixelMultiple) - globalOffset.dy) : 0);
+        return new Offset(
+            double.IsFinite(globalOffset.dx)
+                ? (((globalOffset.dx / pixelMultiple).round() * pixelMultiple) - globalOffset.dx)
+                : 0,
+            double.IsFinite(globalOffset.dy)
+                ? (((globalOffset.dy / pixelMultiple).round() * pixelMultiple) - globalOffset.dy)
+                : 0
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth);
-        ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(layoutInlineChildren(constraints.maxWidth, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))();
-        double widthLocal = forceLine ? constraints.maxWidth : constraints.constrainWidth(_textIntrinsics.size.width + _caretMargin);
-        return new Size(widthLocal, constraints.constrainHeight(_preferredHeight(constraints.maxWidth)));
+        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.maxWidth
+        );
+        (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(
+                        layoutInlineChildren(
+                            constraints.maxWidth,
+                            ChildLayoutHelper.dryLayoutChild,
+                            ChildLayoutHelper.getDryBaseline
+                        )
+                    );
+                    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                    return __cascade;
+                }
+            )
+        )();
+        double widthLocal = forceLine
+            ? constraints.maxWidth
+            : constraints.constrainWidth(_textIntrinsics.size.width + _caretMargin);
+        return new Size(
+            widthLocal,
+            constraints.constrainHeight(_preferredHeight(constraints.maxWidth))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth);
-        ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textIntrinsics;
-    __cascade.setPlaceholderDimensions(layoutInlineChildren(constraints.maxWidth, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline));
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))();
+        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.maxWidth
+        );
+        (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textIntrinsics;
+                    __cascade.setPlaceholderDimensions(
+                        layoutInlineChildren(
+                            constraints.maxWidth,
+                            ChildLayoutHelper.dryLayoutChild,
+                            ChildLayoutHelper.getDryBaseline
+                        )
+                    );
+                    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                    return __cascade;
+                }
+            )
+        )();
         return _textIntrinsics.computeDistanceToActualBaseline(baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1985,20 +2540,43 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public override void performLayout()
     {
         BoxConstraints constraintsLocal = constraints;
-        _placeholderDimensions = layoutInlineChildren(constraintsLocal.maxWidth, ChildLayoutHelper.layoutChild, ChildLayoutHelper.getBaseline);
-        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(minWidth: constraintsLocal.minWidth, maxWidth: constraintsLocal.maxWidth);
-        ((Func<TextPainter>)(() =>
-{
-    var __cascade = _textPainter;
-    __cascade.setPlaceholderDimensions(_placeholderDimensions);
-    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
-    return __cascade;
-}))();
+        _placeholderDimensions = layoutInlineChildren(
+            constraintsLocal.maxWidth,
+            ChildLayoutHelper.layoutChild,
+            ChildLayoutHelper.getBaseline
+        );
+        var (minWidthLocal, maxWidthLocal) = _adjustConstraints(
+            minWidth: constraintsLocal.minWidth,
+            maxWidth: constraintsLocal.maxWidth
+        );
+        (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = _textPainter;
+                    __cascade.setPlaceholderDimensions(_placeholderDimensions);
+                    __cascade.layout(minWidth: minWidthLocal, maxWidth: maxWidthLocal);
+                    return __cascade;
+                }
+            )
+        )();
         positionInlineChildren(_textPainter.inlinePlaceholderBoxes!);
         _computeCaretPrototype();
-        double widthLocal = forceLine ? constraintsLocal.maxWidth : constraintsLocal.constrainWidth(_textPainter.width + _caretMargin);
+        double widthLocal = forceLine
+            ? constraintsLocal.maxWidth
+            : constraintsLocal.constrainWidth(_textPainter.width + _caretMargin);
         DartRuntimePrimitives.Assert(() => (maxLines != 1L) || (_textPainter.maxLines == 1L));
-        double preferredHeight = maxLines switch { null => Math.Max(_textPainter.height, preferredLineHeight * (minLines ?? 0L)), 1L => _textPainter.height, long maxLinesLocal => Dart_uiLibrary.clampDouble(_textPainter.height, preferredLineHeight * (minLines ?? DartRuntimePrimitives.RequireValue(maxLinesLocal)), preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLinesLocal)) };
+        double preferredHeight = maxLines switch
+        {
+            null => Math.Max(_textPainter.height, preferredLineHeight * (minLines ?? 0L)),
+            1L => _textPainter.height,
+            long maxLinesLocal => Dart_uiLibrary.clampDouble(
+                _textPainter.height,
+                preferredLineHeight
+                    * (minLines ?? DartRuntimePrimitives.RequireValue(maxLinesLocal)),
+                preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLinesLocal)
+            ),
+        };
         size = new Size(widthLocal, constraintsLocal.constrainHeight(preferredHeight));
         var contentSize = new Size(_textPainter.width + _caretMargin, _textPainter.height);
         var painterConstraints = BoxConstraints.CreateTight(contentSize);
@@ -2011,23 +2589,40 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     internal static Offset _calculateAdjustedCursorOffset(Offset offset, Rect boundingRects)
     {
-        double adjustedX = Dart_uiLibrary.clampDouble(offset.dx, boundingRects.left, boundingRects.right);
-        double adjustedY = Dart_uiLibrary.clampDouble(offset.dy, boundingRects.top, boundingRects.bottom);
+        double adjustedX = Dart_uiLibrary.clampDouble(
+            offset.dx,
+            boundingRects.left,
+            boundingRects.right
+        );
+        double adjustedY = Dart_uiLibrary.clampDouble(
+            offset.dy,
+            boundingRects.top,
+            boundingRects.bottom
+        );
         return new Offset(adjustedX, adjustedY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Offset calculateBoundedFloatingCursorOffset(Offset rawCursorOffset, bool? shouldResetOrigin = null)
+    public virtual Offset calculateBoundedFloatingCursorOffset(
+        Offset rawCursorOffset,
+        bool? shouldResetOrigin = null
+    )
     {
         Offset deltaPosition = Offset.zero;
         double topBound = -floatingCursorAddedMargin.top;
-        double bottomBound = Math.Min(size.height, _textPainter.height) - preferredLineHeight + floatingCursorAddedMargin.bottom;
+        double bottomBound =
+            Math.Min(size.height, _textPainter.height)
+            - preferredLineHeight
+            + floatingCursorAddedMargin.bottom;
         double leftBound = -floatingCursorAddedMargin.left;
-        double rightBound = Math.Min(size.width, _textPainter.width) + floatingCursorAddedMargin.right;
+        double rightBound =
+            Math.Min(size.width, _textPainter.width) + floatingCursorAddedMargin.right;
         var boundingRects = Rect.fromLTRB(leftBound, topBound, rightBound, bottomBound);
         if (shouldResetOrigin is not null)
         {
-            bool shouldResetOrigin__value92495 = DartRuntimePrimitives.RequireValue(shouldResetOrigin);
+            bool shouldResetOrigin__value92495 = DartRuntimePrimitives.RequireValue(
+                shouldResetOrigin
+            );
             _shouldResetOrigin = DartRuntimePrimitives.RequireValue(shouldResetOrigin__value92495);
         }
         if (!_shouldResetOrigin)
@@ -2040,33 +2635,48 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         if (_resetOriginOnLeft && (deltaPosition.dx > 0L))
         {
-            _relativeOrigin = new Offset(rawCursorOffset.dx - boundingRects.left, _relativeOrigin.dy);
+            _relativeOrigin = new Offset(
+                rawCursorOffset.dx - boundingRects.left,
+                _relativeOrigin.dy
+            );
             _resetOriginOnLeft = false;
         }
         else
         {
             if (_resetOriginOnRight && (deltaPosition.dx < 0L))
             {
-                _relativeOrigin = new Offset(rawCursorOffset.dx - boundingRects.right, _relativeOrigin.dy);
+                _relativeOrigin = new Offset(
+                    rawCursorOffset.dx - boundingRects.right,
+                    _relativeOrigin.dy
+                );
                 _resetOriginOnRight = false;
             }
         }
         if (_resetOriginOnTop && (deltaPosition.dy > 0L))
         {
-            _relativeOrigin = new Offset(_relativeOrigin.dx, rawCursorOffset.dy - boundingRects.top);
+            _relativeOrigin = new Offset(
+                _relativeOrigin.dx,
+                rawCursorOffset.dy - boundingRects.top
+            );
             _resetOriginOnTop = false;
         }
         else
         {
             if (_resetOriginOnBottom && (deltaPosition.dy < 0L))
             {
-                _relativeOrigin = new Offset(_relativeOrigin.dx, rawCursorOffset.dy - boundingRects.bottom);
+                _relativeOrigin = new Offset(
+                    _relativeOrigin.dx,
+                    rawCursorOffset.dy - boundingRects.bottom
+                );
                 _resetOriginOnBottom = false;
             }
         }
         double currentX = rawCursorOffset.dx - _relativeOrigin.dx;
         double currentY = rawCursorOffset.dy - _relativeOrigin.dy;
-        Offset adjustedOffset = _calculateAdjustedCursorOffset(new Offset(currentX, currentY), boundingRects);
+        Offset adjustedOffset = _calculateAdjustedCursorOffset(
+            new Offset(currentX, currentY),
+            boundingRects
+        );
         if ((currentX < boundingRects.left) && (deltaPosition.dx < 0L))
         {
             _resetOriginOnLeft = true;
@@ -2094,7 +2704,12 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void setFloatingCursor(FloatingCursorDragState state, Offset boundedOffset, TextPosition lastTextPosition, double? resetLerpValue = null)
+    public virtual void setFloatingCursor(
+        FloatingCursorDragState state,
+        Offset boundedOffset,
+        TextPosition lastTextPosition,
+        double? resetLerpValue = null
+    )
     {
         if (Equals(state, FloatingCursorDragState.End))
         {
@@ -2112,8 +2727,19 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             _floatingCursorTextPosition = lastTextPosition;
             double? animationValue = _resetFloatingCursorAnimationValue;
-            EdgeInsets sizeAdjustment = (animationValue is not null) ? EdgeInsets.lerp(EditableLibrary._kFloatingCursorSizeIncrease, EdgeInsets.zero, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(animationValue)))! : EditableLibrary._kFloatingCursorSizeIncrease;
-            _caretPainter.floatingCursorRect = sizeAdjustment.inflateRect(_caretPrototype).shift(boundedOffset);
+            EdgeInsets sizeAdjustment =
+                (animationValue is not null)
+                    ? EdgeInsets.lerp(
+                        EditableLibrary._kFloatingCursorSizeIncrease,
+                        EdgeInsets.zero,
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(animationValue)
+                        )
+                    )!
+                    : EditableLibrary._kFloatingCursorSizeIncrease;
+            _caretPainter.floatingCursorRect = sizeAdjustment
+                .inflateRect(_caretPrototype)
+                .shift(boundedOffset);
         }
         else
         {
@@ -2122,18 +2748,32 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _caretPainter.showRegularCaret = _resetFloatingCursorAnimationValue is null;
     }
 
-    internal virtual MapEntry<long, Offset> _lineNumberFor(TextPosition startPosition, List<LineMetrics> metrics)
+    internal virtual MapEntry<long, Offset> _lineNumberFor(
+        TextPosition startPosition,
+        List<LineMetrics> metrics
+    )
     {
         Offset offsetLocal = _textPainter.getOffsetForCaret(startPosition, Rect.zero);
         foreach (var lineMetrics in metrics)
         {
             if (lineMetrics.baseline > offsetLocal.dy)
             {
-                return new MapEntry<long, Offset>(lineMetrics.lineNumber, new Offset(offsetLocal.dx, lineMetrics.baseline));
+                return new MapEntry<long, Offset>(
+                    lineMetrics.lineNumber,
+                    new Offset(offsetLocal.dx, lineMetrics.baseline)
+                );
             }
         }
         DartRuntimePrimitives.Assert(() => startPosition.offset == 0L);
-        return new MapEntry<long, Offset>(Math.Max(0L, checked(metrics.Count) - 1L), new Offset(offsetLocal.dx, (checked((long)metrics.Count) != 0) ? (metrics.Last().baseline + metrics.Last().descent) : 0.0));
+        return new MapEntry<long, Offset>(
+            Math.Max(0L, checked(metrics.Count) - 1L),
+            new Offset(
+                offsetLocal.dx,
+                (checked((long)metrics.Count) != 0)
+                    ? (metrics.Last().baseline + metrics.Last().descent)
+                    : 0.0
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2141,7 +2781,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         List<LineMetrics> metrics = _textPainter.computeLineMetrics();
         MapEntry<long, Offset> currentLine = _lineNumberFor(startPosition, metrics);
-        return new VerticalCaretMovementRun(this, metrics, startPosition, currentLine.key, currentLine.value);
+        return new VerticalCaretMovementRun(
+            this,
+            metrics,
+            startPosition,
+            currentLine.key,
+            currentLine.value
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2166,23 +2812,44 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
     }
 
-    internal virtual void _paintHandleLayers(PaintingContext context, List<TextSelectionPoint> endpoints, Offset offset)
+    internal virtual void _paintHandleLayers(
+        PaintingContext context,
+        List<TextSelectionPoint> endpoints,
+        Offset offset
+    )
     {
         Offset startPoint = endpoints[(int)0L].point;
-        startPoint = new Offset(Dart_uiLibrary.clampDouble(startPoint.dx, 0.0, size.width), Dart_uiLibrary.clampDouble(startPoint.dy, 0.0, size.height));
-        _leaderLayerHandler.layer = new LeaderLayer(link: startHandleLayerLink, offset: startPoint + offset);
+        startPoint = new Offset(
+            Dart_uiLibrary.clampDouble(startPoint.dx, 0.0, size.width),
+            Dart_uiLibrary.clampDouble(startPoint.dy, 0.0, size.height)
+        );
+        _leaderLayerHandler.layer = new LeaderLayer(
+            link: startHandleLayerLink,
+            offset: startPoint + offset
+        );
         context.pushLayer(_leaderLayerHandler.layer!, base.paint, Offset.zero);
         if (checked(endpoints.Count) == 2L)
         {
             Offset endPoint = endpoints[(int)1L].point;
-            endPoint = new Offset(Dart_uiLibrary.clampDouble(endPoint.dx, 0.0, size.width), Dart_uiLibrary.clampDouble(endPoint.dy, 0.0, size.height));
-            context.pushLayer(new LeaderLayer(link: endHandleLayerLink, offset: endPoint + offset), base.paint, Offset.zero);
+            endPoint = new Offset(
+                Dart_uiLibrary.clampDouble(endPoint.dx, 0.0, size.width),
+                Dart_uiLibrary.clampDouble(endPoint.dy, 0.0, size.height)
+            );
+            context.pushLayer(
+                new LeaderLayer(link: endHandleLayerLink, offset: endPoint + offset),
+                base.paint,
+                Offset.zero
+            );
         }
         else
         {
             if (selection!.isCollapsed)
             {
-                context.pushLayer(new LeaderLayer(link: endHandleLayerLink, offset: startPoint + offset), base.paint, Offset.zero);
+                context.pushLayer(
+                    new LeaderLayer(link: endHandleLayerLink, offset: startPoint + offset),
+                    base.paint,
+                    Offset.zero
+                );
             }
         }
     }
@@ -2202,7 +2869,14 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _computeTextMetricsIfNeeded();
         if (_hasVisualOverflow && (!Equals(clipBehavior, Clip.none)))
         {
-            _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, _paintContents, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
+            _clipRectLayer.layer = context.pushClipRect(
+                needsCompositing,
+                offset,
+                Offset.zero & size,
+                _paintContents,
+                clipBehavior: clipBehavior,
+                oldLayer: _clipRectLayer.layer
+            );
         }
         else
         {
@@ -2221,15 +2895,15 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         switch (clipBehavior)
         {
             case Clip.none:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case Clip.hardEdge:
             case Clip.antiAlias:
             case Clip.antiAliasWithSaveLayer:
-                {
-                    return _hasVisualOverflow ? (Offset.zero & size) : null;
-                }
+            {
+                return _hasVisualOverflow ? (Offset.zero & size) : null;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2243,7 +2917,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         properties.add(new IntProperty("minLines", minLines));
         properties.add(new DiagnosticsProperty<bool>("expands", expands, defaultValue: false));
         properties.add(new ColorProperty("selectionColor", selectionColor));
-        properties.add(new DiagnosticsProperty<TextScaler>("textScaler", textScaler, defaultValue: TextScaler.noScaling));
+        properties.add(
+            new DiagnosticsProperty<TextScaler>(
+                "textScaler",
+                textScaler,
+                defaultValue: TextScaler.noScaling
+            )
+        );
         properties.add(new DiagnosticsProperty<Locale>("locale", locale, defaultValue: null));
         properties.add(new DiagnosticsProperty<TextSelection>("selection", selection));
         properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
@@ -2262,16 +2942,18 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             return;
         }
         _hasPendingSystemFontsDidChangeCallBack = true;
-        SchedulerBinding.instance.scheduleFrameCallback((timeStamp) =>
-        {
-            DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
-            _hasPendingSystemFontsDidChangeCallBack = false;
-            DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true));
-            if (attached)
+        SchedulerBinding.instance.scheduleFrameCallback(
+            (timeStamp) =>
             {
-                systemFontsDidChange();
+                DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
+                _hasPendingSystemFontsDidChangeCallBack = false;
+                DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true));
+                if (attached)
+                {
+                    systemFontsDidChange();
+                }
             }
-        });
+        );
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -2301,16 +2983,44 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
 
     public virtual long childCount => _childCount;
+
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2337,8 +3047,12 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             DartRuntimePrimitives.Assert(() => _firstChild is not null);
             DartRuntimePrimitives.Assert(() => _lastChild is not null);
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimatePreviousSiblingOf(after, equals: _firstChild)
+            );
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimateNextSiblingOf(after, equals: _lastChild)
+            );
             var afterParentData = ((TextParentData?)after.parentData!)!;
             if (afterParentData.nextSibling is null)
             {
@@ -2351,8 +3065,12 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = (
+                    (TextParentData?)childParentData.previousSibling!.parentData!
+                )!;
+                var childNextSiblingParentData = (
+                    (TextParentData?)childParentData.nextSibling!.parentData!
+                )!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
                 DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
@@ -2385,7 +3103,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((TextParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() =>
+            _debugUltimatePreviousSiblingOf(child, equals: _firstChild)
+        );
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
         DartRuntimePrimitives.Assert(() => _childCount >= 0L);
         if (childParentData.previousSibling is null)
@@ -2395,7 +3115,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         else
         {
-            var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = (
+                (TextParentData?)childParentData.previousSibling!.parentData!
+            )!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if (childParentData.nextSibling is null)
@@ -2405,7 +3127,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         else
         {
-            var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = (
+                (TextParentData?)childParentData.nextSibling!.parentData!
+            )!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -2454,6 +3178,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public virtual RenderBox? firstChild => _firstChild;
     public virtual RenderBox? lastChild => _lastChild;
+
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
@@ -2479,7 +3204,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
     }
 
-    public virtual List<PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
+    public virtual List<PlaceholderDimensions> layoutInlineChildren(
+        double maxWidth,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline
+    )
     {
         var constraints = new BoxConstraints(maxWidth: maxWidth);
         return new List<PlaceholderDimensions>();
@@ -2494,9 +3223,30 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             if (child is null)
             {
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Invalid number of boxes provided to positionInlineChildren."), new ErrorDescription($"The number of boxes ({checked((long)boxes.Count)}) exceeds the number of child render objects ({childCount}). " + "Each box corresponds to a child, but there are not enough children to position all boxes."), new ErrorHint("This error typically occurs when a custom InlineSpan implementation returns a list of boxes " + "that is longer than the number of inline children. Ensure that the number of boxes returned " + "by `computeLineMetrics` or similar methods does not exceed the number of children."), new DiagnosticsProperty<RenderObject>("The RenderParagraph receiving the boxes", this, style: DiagnosticsTreeStyle.errorProperty) });
-                    });
+                {
+                    throw new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "Invalid number of boxes provided to positionInlineChildren."
+                            ),
+                            new ErrorDescription(
+                                $"The number of boxes ({checked((long)boxes.Count)}) exceeds the number of child render objects ({childCount}). "
+                                    + "Each box corresponds to a child, but there are not enough children to position all boxes."
+                            ),
+                            new ErrorHint(
+                                "This error typically occurs when a custom InlineSpan implementation returns a list of boxes "
+                                    + "that is longer than the number of inline children. Ensure that the number of boxes returned "
+                                    + "by `computeLineMetrics` or similar methods does not exceed the number of children."
+                            ),
+                            new DiagnosticsProperty<RenderObject>(
+                                "The RenderParagraph receiving the boxes",
+                                this,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    );
+                });
                 return;
             }
             var textParentData = ((TextParentData?)child.parentData!)!;
@@ -2521,7 +3271,12 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         else
         {
-            transform.translateByDouble(DartRuntimePrimitives.RequireValue(offsetLocal).dx, DartRuntimePrimitives.RequireValue(offsetLocal).dy, 0, 1);
+            transform.translateByDouble(
+                DartRuntimePrimitives.RequireValue(offsetLocal).dx,
+                DartRuntimePrimitives.RequireValue(offsetLocal).dy,
+                0,
+                1
+            );
         }
     }
 
@@ -2552,7 +3307,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             {
                 return false;
             }
-            bool isHit = result.addWithPaintOffset(offset: DartRuntimePrimitives.RequireValue(childOffset), position: position, hitTest: (result, transformed) => child!.hitTest(result, position: transformed));
+            bool isHit = result.addWithPaintOffset(
+                offset: DartRuntimePrimitives.RequireValue(childOffset),
+                position: position,
+                hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
+            );
             if (isHit)
             {
                 return true;
@@ -2562,7 +3321,6 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RenderEditableCustomPaint__editable : RenderBox
@@ -2600,6 +3358,7 @@ internal class _RenderEditableCustomPaint__editable : RenderBox
             }
         }
     }
+
     public override void paint(PaintingContext context, Offset offset)
     {
         RenderEditable? parentLocal = parent;
@@ -2638,10 +3397,15 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
     public virtual Paint highlightPaint { get; private set; } = new Paint();
     internal virtual Color? _highlightColor { get; set; } = default;
     internal virtual TextRange? _highlightedRange { get; set; } = default;
-    internal virtual BoxHeightStyle _selectionHeightStyle { get; set; } = Dart_uiLibrary.BoxHeightStyle.tight;
-    internal virtual BoxWidthStyle _selectionWidthStyle { get; set; } = Dart_uiLibrary.BoxWidthStyle.tight;
+    internal virtual BoxHeightStyle _selectionHeightStyle { get; set; } =
+        Dart_uiLibrary.BoxHeightStyle.tight;
+    internal virtual BoxWidthStyle _selectionWidthStyle { get; set; } =
+        Dart_uiLibrary.BoxWidthStyle.tight;
 
-    internal _TextHighlightPainter__editable(TextRange? highlightedRange = null, Color? highlightColor = null)
+    internal _TextHighlightPainter__editable(
+        TextRange? highlightedRange = null,
+        Color? highlightColor = null
+    )
     {
         _highlightedRange = highlightedRange;
         _highlightColor = highlightColor;
@@ -2703,6 +3467,7 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
             notifyListeners();
         }
     }
+
     public override void paint(Canvas canvas, Size size, RenderEditable renderEditable)
     {
         TextRange? range = highlightedRange;
@@ -2713,10 +3478,21 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
         }
         highlightPaint.color = colorLocal;
         TextPainter textPainter = renderEditable._textPainter;
-        HashSet<TextBox> boxes = textPainter.getBoxesForSelection(new TextSelection(baseOffset: range.start, extentOffset: range.end), boxHeightStyle: selectionHeightStyle, boxWidthStyle: selectionWidthStyle).toSet();
+        HashSet<TextBox> boxes = textPainter
+            .getBoxesForSelection(
+                new TextSelection(baseOffset: range.start, extentOffset: range.end),
+                boxHeightStyle: selectionHeightStyle,
+                boxWidthStyle: selectionWidthStyle
+            )
+            .toSet();
         foreach (var box in boxes)
         {
-            canvas.drawRect(box.toRect().shift(renderEditable._paintOffset).intersect(Rect.fromLTWH(0, 0, textPainter.width, textPainter.height)), highlightPaint);
+            canvas.drawRect(
+                box.toRect()
+                    .shift(renderEditable._paintOffset)
+                    .intersect(Rect.fromLTWH(0, 0, textPainter.width, textPainter.height)),
+                highlightPaint
+            );
         }
     }
 
@@ -2730,10 +3506,33 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
         {
             return (highlightColor is not null) && (highlightedRange is not null);
         }
-        return (oldDelegate is not _TextHighlightPainter__editable) || (!Equals(((_TextHighlightPainter__editable)oldDelegate).highlightColor, highlightColor)) || (!Equals(((_TextHighlightPainter__editable)oldDelegate).highlightedRange, highlightedRange)) || (!Equals(((_TextHighlightPainter__editable)oldDelegate).selectionHeightStyle, selectionHeightStyle)) || (!Equals(((_TextHighlightPainter__editable)oldDelegate).selectionWidthStyle, selectionWidthStyle));
+        return (oldDelegate is not _TextHighlightPainter__editable)
+            || (
+                !Equals(
+                    ((_TextHighlightPainter__editable)oldDelegate).highlightColor,
+                    highlightColor
+                )
+            )
+            || (
+                !Equals(
+                    ((_TextHighlightPainter__editable)oldDelegate).highlightedRange,
+                    highlightedRange
+                )
+            )
+            || (
+                !Equals(
+                    ((_TextHighlightPainter__editable)oldDelegate).selectionHeightStyle,
+                    selectionHeightStyle
+                )
+            )
+            || (
+                !Equals(
+                    ((_TextHighlightPainter__editable)oldDelegate).selectionWidthStyle,
+                    selectionWidthStyle
+                )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CaretPainter__editable : RenderEditablePainter
@@ -2761,9 +3560,7 @@ internal class _CaretPainter__editable : RenderEditablePainter
     internal virtual Color? _backgroundCursorColor { get; set; } = default;
     internal virtual Rect? _floatingCursorRect { get; set; } = default;
 
-    internal _CaretPainter__editable()
-    {
-    }
+    internal _CaretPainter__editable() { }
 
     public virtual bool shouldPaint
     {
@@ -2852,15 +3649,27 @@ internal class _CaretPainter__editable : RenderEditablePainter
             notifyListeners();
         }
     }
-    public virtual void paintRegularCursor(Canvas canvas, RenderEditable renderEditable, Color caretColor, TextPosition textPosition)
+
+    public virtual void paintRegularCursor(
+        Canvas canvas,
+        RenderEditable renderEditable,
+        Color caretColor,
+        TextPosition textPosition
+    )
     {
         Rect integralRect = renderEditable.getLocalRectForCaret(textPosition);
         if (shouldPaint)
         {
             if (floatingCursorRect is not null)
             {
-                double distanceSquaredLocal = (DartRuntimePrimitives.RequireValue(floatingCursorRect).center - integralRect.center).distanceSquared;
-                if (distanceSquaredLocal < EditableLibrary._kShortestDistanceSquaredWithFloatingAndRegularCursors)
+                double distanceSquaredLocal = (
+                    DartRuntimePrimitives.RequireValue(floatingCursorRect).center
+                    - integralRect.center
+                ).distanceSquared;
+                if (
+                    distanceSquaredLocal
+                    < EditableLibrary._kShortestDistanceSquaredWithFloatingAndRegularCursors
+                )
                 {
                     return;
                 }
@@ -2873,7 +3682,10 @@ internal class _CaretPainter__editable : RenderEditablePainter
             }
             else
             {
-                var caretRRect = RRect.fromRectAndRadius(integralRect, DartRuntimePrimitives.RequireValue(radius));
+                var caretRRect = RRect.fromRectAndRadius(
+                    integralRect,
+                    DartRuntimePrimitives.RequireValue(radius)
+                );
                 canvas.drawRRect(caretRRect, caretPaint);
             }
         }
@@ -2887,8 +3699,14 @@ internal class _CaretPainter__editable : RenderEditablePainter
             return;
         }
         Rect? floatingCursorRectLocal = floatingCursorRect;
-        Color? caretColorLocal = (floatingCursorRectLocal is null) ? caretColor : (showRegularCaret ? backgroundCursorColor : null);
-        TextPosition caretTextPosition = (floatingCursorRectLocal is null) ? selectionLocal.extent : renderEditable._floatingCursorTextPosition;
+        Color? caretColorLocal =
+            (floatingCursorRectLocal is null)
+                ? caretColor
+                : (showRegularCaret ? backgroundCursorColor : null);
+        TextPosition caretTextPosition =
+            (floatingCursorRectLocal is null)
+                ? selectionLocal.extent
+                : renderEditable._floatingCursorTextPosition;
         if (caretColorLocal is not null)
         {
             paintRegularCursor(canvas, renderEditable, caretColorLocal, caretTextPosition);
@@ -2898,12 +3716,22 @@ internal class _CaretPainter__editable : RenderEditablePainter
         {
             return;
         }
-        canvas.drawRRect(RRect.fromRectAndRadius(DartRuntimePrimitives.RequireValue(floatingCursorRectLocal), EditableLibrary._kFloatingCursorRadius), ((Func<Paint>)(() =>
-{
-    var __cascade = floatingCursorPaint;
-    __cascade.color = floatingCursorColor;
-    return __cascade;
-}))());
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(
+                DartRuntimePrimitives.RequireValue(floatingCursorRectLocal),
+                EditableLibrary._kFloatingCursorRadius
+            ),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = floatingCursorPaint;
+                        __cascade.color = floatingCursorColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override bool shouldRepaint(RenderEditablePainter? oldDelegate)
@@ -2916,10 +3744,26 @@ internal class _CaretPainter__editable : RenderEditablePainter
         {
             return shouldPaint;
         }
-        return (oldDelegate is not _CaretPainter__editable) || (((_CaretPainter__editable)oldDelegate).shouldPaint != shouldPaint) || (((_CaretPainter__editable)oldDelegate).showRegularCaret != showRegularCaret) || (!Equals(((_CaretPainter__editable)oldDelegate).caretColor, caretColor)) || (!Equals(((_CaretPainter__editable)oldDelegate).cursorRadius, cursorRadius)) || (!Equals(((_CaretPainter__editable)oldDelegate).cursorOffset, cursorOffset)) || (!Equals(((_CaretPainter__editable)oldDelegate).backgroundCursorColor, backgroundCursorColor)) || (!Equals(((_CaretPainter__editable)oldDelegate).floatingCursorRect, floatingCursorRect));
+        return (oldDelegate is not _CaretPainter__editable)
+            || (((_CaretPainter__editable)oldDelegate).shouldPaint != shouldPaint)
+            || (((_CaretPainter__editable)oldDelegate).showRegularCaret != showRegularCaret)
+            || (!Equals(((_CaretPainter__editable)oldDelegate).caretColor, caretColor))
+            || (!Equals(((_CaretPainter__editable)oldDelegate).cursorRadius, cursorRadius))
+            || (!Equals(((_CaretPainter__editable)oldDelegate).cursorOffset, cursorOffset))
+            || (
+                !Equals(
+                    ((_CaretPainter__editable)oldDelegate).backgroundCursorColor,
+                    backgroundCursorColor
+                )
+            )
+            || (
+                !Equals(
+                    ((_CaretPainter__editable)oldDelegate).floatingCursorRect,
+                    floatingCursorRect
+                )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
@@ -2961,11 +3805,19 @@ internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
         {
             return false;
         }
-        if ((oldDelegate is not _CompositeRenderEditablePainter__editable) || (checked(((_CompositeRenderEditablePainter__editable)oldDelegate).painters.Count) != checked((long)painters.Count)))
+        if (
+            (oldDelegate is not _CompositeRenderEditablePainter__editable)
+            || (
+                checked(((_CompositeRenderEditablePainter__editable)oldDelegate).painters.Count)
+                != checked((long)painters.Count)
+            )
+        )
         {
             return true;
         }
-        IEnumerator<RenderEditablePainter> oldPainters = ((_CompositeRenderEditablePainter__editable)oldDelegate).painters.GetEnumerator();
+        IEnumerator<RenderEditablePainter> oldPainters = (
+            (_CompositeRenderEditablePainter__editable)oldDelegate
+        ).painters.GetEnumerator();
         IEnumerator<RenderEditablePainter> newPainters = painters.GetEnumerator();
         while (oldPainters.MoveNext() && newPainters.MoveNext())
         {
@@ -2977,5 +3829,4 @@ internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

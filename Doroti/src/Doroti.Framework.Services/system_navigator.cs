@@ -19,14 +19,17 @@ public abstract class SystemNavigator
             case var __case1138 when Equals(__case1138, TargetPlatform.fuchsia):
             case var __case1173 when Equals(__case1173, TargetPlatform.linux):
             case var __case1206 when Equals(__case1206, TargetPlatform.windows):
-                {
-                    return;
-                }
+            {
+                return;
+            }
             case var __case1257 when Equals(__case1257, TargetPlatform.android):
-                {
-                    await SystemChannels.platform.invokeMethod<object?>("SystemNavigator.setFrameworkHandlesBack", frameworkHandlesBack);
-                    return;
-                }
+            {
+                await SystemChannels.platform.invokeMethod<object?>(
+                    "SystemNavigator.setFrameworkHandlesBack",
+                    frameworkHandlesBack
+                );
+                return;
+            }
         }
     }
 
@@ -47,13 +50,24 @@ public abstract class SystemNavigator
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Future routeInformationUpdated(string? location = null, DartUri? uri = null, object? state = null, bool replace = false)
+    public static Future routeInformationUpdated(
+        string? location = null,
+        DartUri? uri = null,
+        object? state = null,
+        bool replace = false
+    )
     {
-        DartRuntimePrimitives.Assert(() => location is not null != uri is not null);
+        DartRuntimePrimitives.Assert(() => (location is not null) != (uri is not null));
         uri ??= DartUri.parse(location!);
-        return SystemChannels.navigation.invokeMethod<object?>("routeInformationUpdated", new DartMap<string, object?> { ["uri"] = uri.ToString(), ["state"] = state, ["replace"] = replace });
+        return SystemChannels.navigation.invokeMethod<object?>(
+            "routeInformationUpdated",
+            new DartMap<string, object?>
+            {
+                ["uri"] = uri.ToString(),
+                ["state"] = state,
+                ["replace"] = replace,
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

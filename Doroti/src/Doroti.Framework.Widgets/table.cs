@@ -11,7 +11,11 @@ public class TableRow
     public virtual Decoration? decoration { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
 
-    public TableRow(LocalKey? key = null, Decoration? decoration = null, List<Widget> children = default!)
+    public TableRow(
+        LocalKey? key = null,
+        Decoration? decoration = null,
+        List<Widget> children = default!
+    )
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.key = key;
@@ -43,7 +47,6 @@ public class TableRow
         return result.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TableElementRow__table
@@ -56,7 +59,6 @@ internal class _TableElementRow__table
         this.key = key;
         this.children = children;
     }
-
 }
 
 public class Table : RenderObjectWidget
@@ -66,11 +68,22 @@ public class Table : RenderObjectWidget
     public virtual TableColumnWidth defaultColumnWidth { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
     public virtual TableBorder? border { get; private set; }
-    public virtual TableCellVerticalAlignment defaultVerticalAlignment { get; private set; } = default!;
+    public virtual TableCellVerticalAlignment defaultVerticalAlignment { get; private set; } =
+        default!;
     public virtual TextBaseline? textBaseline { get; private set; }
     internal virtual List<Decoration?>? _rowDecorations { get; private set; }
 
-    public Table(Key? key = null, List<TableRow> children = default!, DartMap<long, TableColumnWidth>? columnWidths = null, TableColumnWidth defaultColumnWidth = default!, TextDirection? textDirection = null, TableBorder? border = null, TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null) : base(key: key)
+    public Table(
+        Key? key = null,
+        List<TableRow> children = default!,
+        DartMap<long, TableColumnWidth>? columnWidths = null,
+        TableColumnWidth defaultColumnWidth = default!,
+        TextDirection? textDirection = null,
+        TableBorder? border = null,
+        TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top,
+        TextBaseline? textBaseline = null
+    )
+        : base(key: key)
     {
         List<TableRow> __children = children ?? new List<TableRow>();
         TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new FlexColumnWidth();
@@ -81,41 +94,100 @@ public class Table : RenderObjectWidget
         this.border = border;
         this.defaultVerticalAlignment = defaultVerticalAlignment;
         this.textBaseline = textBaseline;
-        _rowDecorations = this.children.any((row) => row.decoration is not null) ? this.children.map((row) => row.decoration).ToList() : null;
-        System.Diagnostics.Debug.Assert((!Equals(defaultVerticalAlignment, TableCellVerticalAlignment.baseline)) || (textBaseline is not null));
-        System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
-        {
-            if (__children.any((row1) => (row1.key is not null) && __children.any((row2) => (!Equals(row1, row2)) && Equals(row1.key, row2.key))))
-            {
-                throw DartRuntimePrimitives.AsException(FlutterError.Create("Two or more TableRow children of this Table had the same key.\n" + "All the keyed TableRow children of a Table must have different Keys."));
-            }
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))());
-        System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
-        {
-            if (Enumerable.Any(__children))
-            {
-                long cellCount = checked(__children.First().children.Count);
-                if (__children.any((row) => checked(row.children.Count) != cellCount))
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Table contains irregular row lengths.\n" + "Every TableRow in a Table must have the same number of children, so that every cell is filled. " + "Otherwise, the table will contain holes."));
-                }
-                if (__children.any((row) => !Enumerable.Any(row.children)))
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("One or more TableRow have no children.\n" + "Every TableRow in a Table must have at least one child, so there is no empty row. "));
-                }
-            }
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))());
+        _rowDecorations = this.children.any((row) => row.decoration is not null)
+            ? this.children.map((row) => row.decoration).ToList()
+            : null;
+        System.Diagnostics.Debug.Assert(
+            (!Equals(defaultVerticalAlignment, TableCellVerticalAlignment.baseline))
+                || (textBaseline is not null)
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (Func<bool>)(
+                    () =>
+                    {
+                        if (
+                            __children.any(
+                                (row1) =>
+                                    (row1.key is not null)
+                                    && __children.any(
+                                        (row2) =>
+                                            (!Equals(row1, row2)) && Equals(row1.key, row2.key)
+                                    )
+                            )
+                        )
+                        {
+                            throw DartRuntimePrimitives.AsException(
+                                FlutterError.Create(
+                                    "Two or more TableRow children of this Table had the same key.\n"
+                                        + "All the keyed TableRow children of a Table must have different Keys."
+                                )
+                            );
+                        }
+                        return true;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )()
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (Func<bool>)(
+                    () =>
+                    {
+                        if (Enumerable.Any(__children))
+                        {
+                            long cellCount = checked(__children.First().children.Count);
+                            if (__children.any((row) => checked(row.children.Count) != cellCount))
+                            {
+                                throw DartRuntimePrimitives.AsException(
+                                    FlutterError.Create(
+                                        "Table contains irregular row lengths.\n"
+                                            + "Every TableRow in a Table must have the same number of children, so that every cell is filled. "
+                                            + "Otherwise, the table will contain holes."
+                                    )
+                                );
+                            }
+                            if (__children.any((row) => !Enumerable.Any(row.children)))
+                            {
+                                throw DartRuntimePrimitives.AsException(
+                                    FlutterError.Create(
+                                        "One or more TableRow have no children.\n"
+                                            + "Every TableRow in a Table must have at least one child, so there is no empty row. "
+                                    )
+                                );
+                            }
+                        }
+                        return true;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )()
+        );
     }
 
-    public override RenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _TableElement__table(this));
+    public override RenderObjectElement createElement() =>
+        DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _TableElement__table(this));
+
     public override RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
-        return new RenderTable(columns: Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L, rows: checked(children.Count), columnWidths: columnWidths, defaultColumnWidth: defaultColumnWidth, textDirection: textDirection ?? Directionality.of(context), border: border, rowDecorations: _rowDecorations, configuration: ImageLibrary.createLocalImageConfiguration(context), defaultVerticalAlignment: defaultVerticalAlignment, textBaseline: textBaseline);
+        return new RenderTable(
+            columns: Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L,
+            rows: checked(children.Count),
+            columnWidths: columnWidths,
+            defaultColumnWidth: defaultColumnWidth,
+            textDirection: textDirection ?? Directionality.of(context),
+            border: border,
+            rowDecorations: _rowDecorations,
+            configuration: ImageLibrary.createLocalImageConfiguration(context),
+            defaultVerticalAlignment: defaultVerticalAlignment,
+            textBaseline: textBaseline
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -123,53 +195,80 @@ public class Table : RenderObjectWidget
     {
         var __renderObject = (RenderTable)renderObject;
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
-        DartRuntimePrimitives.Assert(() => __renderObject.columns == (Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L));
+        DartRuntimePrimitives.Assert(() =>
+            __renderObject.columns
+            == (Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L)
+        );
         DartRuntimePrimitives.Assert(() => __renderObject.rows == checked(children.Count));
-        DartRuntimePrimitives.Ignore(((Func<RenderTable>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.columnWidths = columnWidths;
-    __cascade.defaultColumnWidth = defaultColumnWidth;
-    __cascade.textDirection = textDirection ?? Directionality.of(context);
-    __cascade.border = border;
-    __cascade.rowDecorations = _rowDecorations;
-    __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
-    __cascade.defaultVerticalAlignment = defaultVerticalAlignment;
-    __cascade.textBaseline = textBaseline;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderTable>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.columnWidths = columnWidths;
+                        __cascade.defaultColumnWidth = defaultColumnWidth;
+                        __cascade.textDirection = textDirection ?? Directionality.of(context);
+                        __cascade.border = border;
+                        __cascade.rowDecorations = _rowDecorations;
+                        __cascade.configuration = ImageLibrary.createLocalImageConfiguration(
+                            context
+                        );
+                        __cascade.defaultVerticalAlignment = defaultVerticalAlignment;
+                        __cascade.textBaseline = textBaseline;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 internal class _TableElement__table : RenderObjectElement
 {
-    internal virtual List<_TableElementRow__table> _children { get; set; } = new List<_TableElementRow__table>();
+    internal virtual List<_TableElementRow__table> _children { get; set; } =
+        new List<_TableElementRow__table>();
     internal virtual bool _doingMountOrUpdate { get; set; } = false;
-    internal virtual HashSet<Element> _forgottenChildren { get; private set; } = new HashSet<Element>();
+    internal virtual HashSet<Element> _forgottenChildren { get; private set; } =
+        new HashSet<Element>();
 
-    internal _TableElement__table(Table widget) : base(widget)
-    {
-    }
+    internal _TableElement__table(Table widget)
+        : base(widget) { }
 
     public override RenderTable renderObject => (RenderTable)base.renderObject;
+
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !_doingMountOrUpdate);
         _doingMountOrUpdate = true;
         base.mount(parent, newSlot);
         var rowIndex = -1L;
-        _children = ((Table?)widget)!.children.map((row) =>
-        {
-            var columnIndex = 0L;
-            rowIndex += 1L;
-            return new _TableElementRow__table(key: row.key, children: row.children.map((child) =>
-            {
-                return inflateWidget(child, new _TableSlot__table(columnIndex++, rowIndex));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }).ToList());
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList();
+        _children = ((Table?)widget)!
+            .children.map(
+                (row) =>
+                {
+                    var columnIndex = 0L;
+                    rowIndex += 1L;
+                    return new _TableElementRow__table(
+                        key: row.key,
+                        children: row.children.map(
+                                (child) =>
+                                {
+                                    return inflateWidget(
+                                        child,
+                                        new _TableSlot__table(columnIndex++, rowIndex)
+                                    );
+                                    throw new InvalidOperationException(
+                                        "Dart closure completed without a value."
+                                    );
+                                }
+                            )
+                            .ToList()
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList();
         _updateRenderObjectChildren();
         DartRuntimePrimitives.Assert(() => _doingMountOrUpdate);
         _doingMountOrUpdate = false;
@@ -178,7 +277,9 @@ internal class _TableElement__table : RenderObjectElement
     public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         var __child = (RenderBox)child;
-        var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
+        var __slot =
+            slot as _TableSlot__table
+            ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
         renderObject.setupParentData(__child);
         if (!_doingMountOrUpdate)
         {
@@ -197,7 +298,9 @@ internal class _TableElement__table : RenderObjectElement
     public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
         var __child = (RenderBox)child;
-        var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
+        var __slot =
+            slot as _TableSlot__table
+            ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
         renderObject.setChild(__slot.column, __slot.row, null);
     }
 
@@ -214,7 +317,9 @@ internal class _TableElement__table : RenderObjectElement
                 oldKeyedRows[rowLocal.key!] = rowLocal.children;
             }
         }
-        IEnumerator<_TableElementRow__table> oldUnkeyedRows = _children.where((row) => row.key is null).GetEnumerator();
+        IEnumerator<_TableElementRow__table> oldUnkeyedRows = _children
+            .where((row) => row.key is null)
+            .GetEnumerator();
         var newChildren = new List<_TableElementRow__table>();
         var taken = new HashSet<List<Element>>();
         for (var rowIndex = 0L; rowIndex < checked(__newWidget.children.Count); rowIndex++)
@@ -223,7 +328,9 @@ internal class _TableElement__table : RenderObjectElement
             List<Element> oldChildren = default!;
             if ((rowAlternate.key is not null) && oldKeyedRows.ContainsKey(rowAlternate.key))
             {
-                oldChildren = oldKeyedRows.GetValueOrDefault(DartRuntimePrimitives.RequireReference(rowAlternate.key))!;
+                oldChildren = oldKeyedRows.GetValueOrDefault(
+                    DartRuntimePrimitives.RequireReference(rowAlternate.key)
+                )!;
                 taken.Add(oldChildren);
             }
             else
@@ -237,16 +344,43 @@ internal class _TableElement__table : RenderObjectElement
                     oldChildren = new List<Element>();
                 }
             }
-            var slotsLocal = new List<_TableSlot__table>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)rowAlternate.children.Count))), (columnIndex) => new _TableSlot__table(columnIndex, rowIndex)));
-            newChildren.Add(new _TableElementRow__table(key: rowAlternate.key, children: updateChildren(oldChildren, rowAlternate.children, forgottenChildren: _forgottenChildren, slots: slotsLocal.Cast<object>().ToList())));
+            var slotsLocal = new List<_TableSlot__table>(
+                Enumerable.Select(
+                    Enumerable.Range(0, checked((int)checked((long)rowAlternate.children.Count))),
+                    (columnIndex) => new _TableSlot__table(columnIndex, rowIndex)
+                )
+            );
+            newChildren.Add(
+                new _TableElementRow__table(
+                    key: rowAlternate.key,
+                    children: updateChildren(
+                        oldChildren,
+                        rowAlternate.children,
+                        forgottenChildren: _forgottenChildren,
+                        slots: slotsLocal.Cast<object>().ToList()
+                    )
+                )
+            );
         }
         while (oldUnkeyedRows.MoveNext())
         {
-            updateChildren(oldUnkeyedRows.Current.children, new List<Widget>(), forgottenChildren: _forgottenChildren);
+            updateChildren(
+                oldUnkeyedRows.Current.children,
+                new List<Widget>(),
+                forgottenChildren: _forgottenChildren
+            );
         }
-        foreach (List<Element> oldChildrenLocal in oldKeyedRows.Values.where((list) => !taken.Contains(list)))
+        foreach (
+            List<Element> oldChildrenLocal in oldKeyedRows.Values.where(
+                (list) => !taken.Contains(list)
+            )
+        )
         {
-            updateChildren(oldChildrenLocal, new List<Widget>(), forgottenChildren: _forgottenChildren);
+            updateChildren(
+                oldChildrenLocal,
+                new List<Widget>(),
+                forgottenChildren: _forgottenChildren
+            );
         }
         _children = newChildren;
         _updateRenderObjectChildren();
@@ -259,16 +393,31 @@ internal class _TableElement__table : RenderObjectElement
 
     internal virtual void _updateRenderObjectChildren()
     {
-        renderObject.setFlatChildren(Enumerable.Any(_children) ? checked(_children[(int)0L].children.Count) : 0L, _children.expand((row) =>
-        {
-            return row.children.map((child) =>
-            {
-                var box = ((RenderBox?)child.renderObject!)!;
-                return box;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList().Cast<RenderBox?>().ToList());
+        renderObject.setFlatChildren(
+            Enumerable.Any(_children) ? checked(_children[(int)0L].children.Count) : 0L,
+            _children
+                .expand(
+                    (row) =>
+                    {
+                        return row.children.map(
+                            (child) =>
+                            {
+                                var box = ((RenderBox?)child.renderObject!)!;
+                                return box;
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            }
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+                .ToList()
+                .Cast<RenderBox?>()
+                .ToList()
+        );
     }
 
     public override void visitChildren(Action<Element> visitor)
@@ -289,7 +438,6 @@ internal class _TableElement__table : RenderObjectElement
         _ = true;
         return;
     }
-
 }
 
 public class TableCell : StatelessWidget
@@ -297,7 +445,12 @@ public class TableCell : StatelessWidget
     public virtual TableCellVerticalAlignment? verticalAlignment { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public TableCell(Key? key = null, TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(key: key)
+    public TableCell(
+        Key? key = null,
+        TableCellVerticalAlignment? verticalAlignment = null,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.verticalAlignment = verticalAlignment;
         this.child = child;
@@ -305,17 +458,23 @@ public class TableCell : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new _TableCell__table(verticalAlignment: verticalAlignment, child: new Semantics(role: SemanticsRole.cell, child: child));
+        return new _TableCell__table(
+            verticalAlignment: verticalAlignment,
+            child: new Semantics(role: SemanticsRole.cell, child: child)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TableCell__table : ParentDataWidget<TableCellParentData>
 {
     public virtual TableCellVerticalAlignment? verticalAlignment { get; private set; }
 
-    internal _TableCell__table(TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(child: child)
+    internal _TableCell__table(
+        TableCellVerticalAlignment? verticalAlignment = null,
+        Widget child = default!
+    )
+        : base(child: child)
     {
         this.verticalAlignment = verticalAlignment;
     }
@@ -331,12 +490,14 @@ internal class _TableCell__table : ParentDataWidget<TableCellParentData>
     }
 
     public override Type debugTypicalAncestorWidgetClass => typeof(Table);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<TableCellVerticalAlignment>("verticalAlignment", verticalAlignment));
+        properties.add(
+            new EnumProperty<TableCellVerticalAlignment>("verticalAlignment", verticalAlignment)
+        );
     }
-
 }
 
 public class _TableSlot__table : Diagnosticable
@@ -353,7 +514,11 @@ public class _TableSlot__table : Diagnosticable
     public override bool Equals(object? other)
     {
         var __other = other as _TableSlot__table;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
@@ -361,7 +526,9 @@ public class _TableSlot__table : Diagnosticable
         return (__other is _TableSlot__table) && (column == __other.column) && (row == __other.row);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(column, row));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(column, row));
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         properties.add(new IntProperty("x", column));
@@ -369,26 +536,30 @@ public class _TableSlot__table : Diagnosticable
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

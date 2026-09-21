@@ -10,7 +10,8 @@ public sealed record FrameworkCoverageDocument(
     int AstNodeCount,
     int UnclassifiedAstNodeCount,
     int SilentOmissionCount,
-    int GeneratedCompileErrorCount);
+    int GeneratedCompileErrorCount
+);
 
 public sealed record FrameworkCoverageInput(
     string Source,
@@ -19,6 +20,7 @@ public sealed record FrameworkCoverageInput(
     string[] DependencyPath,
     string[] DeclarationElementIds,
     string[] MemberElementIds,
-    FrameworkAstClassification[] Classifications);
+    FrameworkAstClassification[] Classifications
+);
 
 public sealed record FrameworkAstClassification(string Category, string Kind, int Count);

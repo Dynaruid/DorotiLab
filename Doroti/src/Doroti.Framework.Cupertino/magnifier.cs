@@ -16,7 +16,16 @@ public class CupertinoTextMagnifier : StatefulWidget
     public virtual ValueNotifier<MagnifierInfo> magnifierInfo { get; private set; } = default!;
     internal static Duration _kDragAnimationDuration = Duration.Create(milliseconds: 45L);
 
-    public CupertinoTextMagnifier(Key? key = null, Curve animationCurve = default!, MagnifierController controller = default!, double dragResistance = 10.0, double hideBelowThreshold = 48.0, double horizontalScreenEdgePadding = 10.0, ValueNotifier<MagnifierInfo> magnifierInfo = default!) : base(key: key)
+    public CupertinoTextMagnifier(
+        Key? key = null,
+        Curve animationCurve = default!,
+        MagnifierController controller = default!,
+        double dragResistance = 10.0,
+        double hideBelowThreshold = 48.0,
+        double horizontalScreenEdgePadding = 10.0,
+        ValueNotifier<MagnifierInfo> magnifierInfo = default!
+    )
+        : base(key: key)
     {
         Curve __animationCurve = animationCurve ?? Curves.easeOut;
         this.animationCurve = __animationCurve;
@@ -27,10 +36,13 @@ public class CupertinoTextMagnifier : StatefulWidget
         this.magnifierInfo = magnifierInfo;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextMagnifierState__magnifier());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextMagnifierState__magnifier());
 }
 
-internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagnifier>, SingleTickerProviderStateMixin<CupertinoTextMagnifier>
+internal class _CupertinoTextMagnifierState__magnifier
+    : State<CupertinoTextMagnifier>,
+        SingleTickerProviderStateMixin<CupertinoTextMagnifier>
 {
     internal virtual Offset _currentAdjustedMagnifierPosition { get; set; } = Offset.zero;
     internal virtual double _verticalFocalPointAdjustment { get; set; } = 0;
@@ -47,20 +59,29 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
         base.initState();
         _magnifierInfoListener = _determineMagnifierPositionAndFocalPoint;
         _tickerModeListener = _updateTicker;
-        _ioAnimationController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(value: 0, vsync: this, duration: CupertinoMagnifier._kInOutAnimationDuration);
-    __cascade.addListener(() =>
-    {
-        setState(() =>
-        {
-        });
-    });
-    return __cascade;
-}))();
+        _ioAnimationController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        value: 0,
+                        vsync: this,
+                        duration: CupertinoMagnifier._kInOutAnimationDuration
+                    );
+                    __cascade.addListener(() =>
+                    {
+                        setState(() => { });
+                    });
+                    return __cascade;
+                }
+            )
+        )();
         widget.controller.animationController = _ioAnimationController;
         widget.magnifierInfo.addListener(_magnifierInfoListener);
-        _ioCurvedAnimation = new CurvedAnimation(parent: _ioAnimationController, curve: widget.animationCurve);
+        _ioCurvedAnimation = new CurvedAnimation(
+            parent: _ioAnimationController,
+            curve: widget.animationCurve
+        );
         _ioAnimation = new Tween<double>(begin: 0.0, end: 1.0).animate(_ioCurvedAnimation);
     }
 
@@ -72,13 +93,31 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
         _ioAnimationController.dispose();
         _ioCurvedAnimation.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+        });
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -103,7 +142,10 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
     {
         MagnifierInfo textEditingContext = widget.magnifierInfo.value;
         double verticalCenterOfCurrentLine = textEditingContext.caretRect.center.dy;
-        if ((verticalCenterOfCurrentLine - textEditingContext.globalGesturePosition.dy) < -widget.hideBelowThreshold)
+        if (
+            (verticalCenterOfCurrentLine - textEditingContext.globalGesturePosition.dy)
+            < -widget.hideBelowThreshold
+        )
         {
             if (widget.controller.shown)
             {
@@ -115,10 +157,43 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
         {
             _ioAnimationController.forward();
         }
-        double verticalPositionOfLens = Math.Max(verticalCenterOfCurrentLine, verticalCenterOfCurrentLine - ((verticalCenterOfCurrentLine - textEditingContext.globalGesturePosition.dy) / widget.dragResistance));
-        var rawMagnifierPosition = new Offset(textEditingContext.globalGesturePosition.dx - (CupertinoMagnifier.kDefaultSize.width / 2L), verticalPositionOfLens - (CupertinoMagnifier.kDefaultSize.height - CupertinoMagnifier.kMagnifierAboveFocalPoint));
+        double verticalPositionOfLens = Math.Max(
+            verticalCenterOfCurrentLine,
+            verticalCenterOfCurrentLine
+                - (
+                    (verticalCenterOfCurrentLine - textEditingContext.globalGesturePosition.dy)
+                    / widget.dragResistance
+                )
+        );
+        var rawMagnifierPosition = new Offset(
+            textEditingContext.globalGesturePosition.dx
+                - (CupertinoMagnifier.kDefaultSize.width / 2L),
+            verticalPositionOfLens
+                - (
+                    CupertinoMagnifier.kDefaultSize.height
+                    - CupertinoMagnifier.kMagnifierAboveFocalPoint
+                )
+        );
         Rect screenRect = Offset.zero & MediaQuery.sizeOf(context);
-        Offset adjustedMagnifierPosition = MagnifierController.shiftWithinBounds(bounds: Rect.fromLTRB(screenRect.left + widget.horizontalScreenEdgePadding, screenRect.top - (CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint), screenRect.right - widget.horizontalScreenEdgePadding, screenRect.bottom + (CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint)), rect: rawMagnifierPosition & CupertinoMagnifier.kDefaultSize).topLeft;
+        Offset adjustedMagnifierPosition = MagnifierController
+            .shiftWithinBounds(
+                bounds: Rect.fromLTRB(
+                    screenRect.left + widget.horizontalScreenEdgePadding,
+                    screenRect.top
+                        - (
+                            CupertinoMagnifier.kDefaultSize.height
+                            + CupertinoMagnifier.kMagnifierAboveFocalPoint
+                        ),
+                    screenRect.right - widget.horizontalScreenEdgePadding,
+                    screenRect.bottom
+                        + (
+                            CupertinoMagnifier.kDefaultSize.height
+                            + CupertinoMagnifier.kMagnifierAboveFocalPoint
+                        )
+                ),
+                rect: rawMagnifierPosition & CupertinoMagnifier.kDefaultSize
+            )
+            .topLeft;
         setState(() =>
         {
             _currentAdjustedMagnifierPosition = adjustedMagnifierPosition;
@@ -129,21 +204,53 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
     public override Widget build(BuildContext context)
     {
         CupertinoThemeData themeData = CupertinoTheme.of(context);
-        return new AnimatedPositioned(duration: CupertinoTextMagnifier._kDragAnimationDuration, curve: widget.animationCurve, left: _currentAdjustedMagnifierPosition.dx, top: _currentAdjustedMagnifierPosition.dy, child: new CupertinoMagnifier(inOutAnimation: _ioAnimation, additionalFocalPointOffset: new Offset(0, _verticalFocalPointAdjustment), borderSide: new BorderSide(color: themeData.primaryColor, width: 2.0)));
+        return new AnimatedPositioned(
+            duration: CupertinoTextMagnifier._kDragAnimationDuration,
+            curve: widget.animationCurve,
+            left: _currentAdjustedMagnifierPosition.dx,
+            top: _currentAdjustedMagnifierPosition.dy,
+            child: new CupertinoMagnifier(
+                inOutAnimation: _ioAnimation,
+                additionalFocalPointOffset: new Offset(0, _verticalFocalPointAdjustment),
+                borderSide: new BorderSide(color: themeData.primaryColor, width: 2.0)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -182,10 +289,24 @@ internal class _CupertinoTextMagnifierState__magnifier : State<CupertinoTextMagn
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class CupertinoMagnifier : StatelessWidget
@@ -202,12 +323,35 @@ public class CupertinoMagnifier : StatelessWidget
     public virtual Offset additionalFocalPointOffset { get; private set; } = default!;
     public virtual double magnificationScale { get; private set; } = default!;
 
-    public CupertinoMagnifier(Key? key = null, Size? size = null, BorderRadius borderRadius = default!, Offset additionalFocalPointOffset = default, List<BoxShadow> shadows = default!, Clip clipBehavior = Clip.none, BorderSide borderSide = default!, Animation<double>? inOutAnimation = null, double magnificationScale = 1.0) : base(key: key)
+    public CupertinoMagnifier(
+        Key? key = null,
+        Size? size = null,
+        BorderRadius borderRadius = default!,
+        Offset additionalFocalPointOffset = default,
+        List<BoxShadow> shadows = default!,
+        Clip clipBehavior = Clip.none,
+        BorderSide borderSide = default!,
+        Animation<double>? inOutAnimation = null,
+        double magnificationScale = 1.0
+    )
+        : base(key: key)
     {
         Size __size = size ?? kDefaultSize;
-        BorderRadius __borderRadius = borderRadius ?? BorderRadius.CreateAll(Radius.elliptical(60, 50));
-        List<BoxShadow> __shadows = shadows ?? new List<BoxShadow> { new BoxShadow(color: Color.fromARGB(25, 0, 0, 0), blurRadius: 11, spreadRadius: 0.2, blurStyle: BlurStyle.outer) };
-        BorderSide __borderSide = borderSide ?? new BorderSide(color: Color.fromARGB(255, 0, 124, 255), width: 2.0);
+        BorderRadius __borderRadius =
+            borderRadius ?? BorderRadius.CreateAll(Radius.elliptical(60, 50));
+        List<BoxShadow> __shadows =
+            shadows
+            ?? new List<BoxShadow>
+            {
+                new BoxShadow(
+                    color: Color.fromARGB(25, 0, 0, 0),
+                    blurRadius: 11,
+                    spreadRadius: 0.2,
+                    blurStyle: BlurStyle.outer
+                ),
+            };
+        BorderSide __borderSide =
+            borderSide ?? new BorderSide(color: Color.fromARGB(255, 0, 124, 255), width: 2.0);
         this.size = __size;
         this.borderRadius = __borderRadius;
         this.additionalFocalPointOffset = additionalFocalPointOffset;
@@ -221,11 +365,32 @@ public class CupertinoMagnifier : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var focalPointOffsetLocal = new Offset(0, kDefaultSize.height / 2L - kMagnifierAboveFocalPoint);
+        var focalPointOffsetLocal = new Offset(
+            0,
+            (kDefaultSize.height / 2L) - kMagnifierAboveFocalPoint
+        );
         focalPointOffsetLocal.scale(1, inOutAnimation?.value ?? 1);
         focalPointOffsetLocal += additionalFocalPointOffset;
-        return Transform.CreateTranslate(offset: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(new Offset(0, -kMagnifierAboveFocalPoint), Offset.zero, inOutAnimation?.value ?? 1)), child: new RawMagnifier(size: DartRuntimePrimitives.RequireValue(size), focalPointOffset: focalPointOffsetLocal, decoration: new MagnifierDecoration(opacity: inOutAnimation?.value ?? 1, shape: new RoundedRectangleBorder(borderRadius: borderRadius, side: borderSide), shadows: shadows), clipBehavior: clipBehavior, magnificationScale: magnificationScale));
+        return Transform.CreateTranslate(
+            offset: DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.Offset.lerp(
+                    new Offset(0, -kMagnifierAboveFocalPoint),
+                    Offset.zero,
+                    inOutAnimation?.value ?? 1
+                )
+            ),
+            child: new RawMagnifier(
+                size: DartRuntimePrimitives.RequireValue(size),
+                focalPointOffset: focalPointOffsetLocal,
+                decoration: new MagnifierDecoration(
+                    opacity: inOutAnimation?.value ?? 1,
+                    shape: new RoundedRectangleBorder(borderRadius: borderRadius, side: borderSide),
+                    shadows: shadows
+                ),
+                clipBehavior: clipBehavior,
+                magnificationScale: magnificationScale
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

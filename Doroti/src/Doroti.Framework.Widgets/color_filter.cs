@@ -9,12 +9,17 @@ public class ColorFiltered : SingleChildRenderObjectWidget
 {
     public virtual ColorFilter colorFilter { get; private set; } = default!;
 
-    public ColorFiltered(ColorFilter colorFilter, Widget? child = null, Key? key = null) : base(child: child, key: key)
+    public ColorFiltered(ColorFilter colorFilter, Widget? child = null, Key? key = null)
+        : base(child: child, key: key)
     {
         this.colorFilter = colorFilter;
     }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new _ColorFilterRenderObject__color_filter(colorFilter));
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(
+            new _ColorFilterRenderObject__color_filter(colorFilter)
+        );
+
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         ((_ColorFilterRenderObject__color_filter?)renderObject)!.colorFilter = colorFilter;
@@ -25,7 +30,6 @@ public class ColorFiltered : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<ColorFilter>("colorFilter", colorFilter));
     }
-
 }
 
 internal class _ColorFilterRenderObject__color_filter : RenderProxyBox
@@ -50,17 +54,22 @@ internal class _ColorFilterRenderObject__color_filter : RenderProxyBox
             }
         }
     }
-    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>(child is not null);
+    public override bool alwaysNeedsCompositing =>
+        DartRuntimePrimitives.ConvertValue<bool>(child is not null);
+
     public override void paint(PaintingContext context, Offset offset)
     {
-        layer = context.pushColorFilter(offset, colorFilter, base.paint, oldLayer: ((ColorFilterLayer?)layer)!);
+        layer = context.pushColorFilter(
+            offset,
+            colorFilter,
+            base.paint,
+            oldLayer: ((ColorFilterLayer?)layer)!
+        );
         DartRuntimePrimitives.Assert(() =>
-            {
-                layer!.debugCreator = debugCreator;
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            layer!.debugCreator = debugCreator;
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
     }
-
 }
-

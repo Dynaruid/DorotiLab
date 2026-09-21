@@ -6,7 +6,11 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public delegate Widget ButtonLayerBuilder(BuildContext context, HashSet<WidgetState> states, Widget? child);
+public delegate Widget ButtonLayerBuilder(
+    BuildContext context,
+    HashSet<WidgetState> states,
+    Widget? child
+);
 
 public class ButtonStyle : Diagnosticable
 {
@@ -33,10 +37,44 @@ public class ButtonStyle : Diagnosticable
     public virtual bool? enableFeedback { get; private set; }
     public virtual AlignmentGeometry? alignment { get; private set; }
     public virtual InteractiveInkFeatureFactory? splashFactory { get; private set; }
-    public virtual Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder { get; private set; }
-    public virtual Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder { get; private set; }
+    public virtual Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder
+    {
+        get;
+        private set;
+    }
+    public virtual Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder
+    {
+        get;
+        private set;
+    }
 
-    public ButtonStyle(WidgetStateProperty<TextStyle?>? textStyle = null, WidgetStateProperty<Color?>? backgroundColor = null, WidgetStateProperty<Color?>? foregroundColor = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<Color?>? shadowColor = null, WidgetStateProperty<Color?>? surfaceTintColor = null, WidgetStateProperty<double?>? elevation = null, WidgetStateProperty<EdgeInsetsGeometry?>? padding = null, WidgetStateProperty<Size?>? minimumSize = null, WidgetStateProperty<Size?>? fixedSize = null, WidgetStateProperty<Size?>? maximumSize = null, WidgetStateProperty<Color?>? iconColor = null, WidgetStateProperty<double?>? iconSize = null, IconAlignment? iconAlignment = null, WidgetStateProperty<BorderSide?>? side = null, WidgetStateProperty<OutlinedBorder?>? shape = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder = null)
+    public ButtonStyle(
+        WidgetStateProperty<TextStyle?>? textStyle = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        WidgetStateProperty<Color?>? foregroundColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        WidgetStateProperty<Color?>? shadowColor = null,
+        WidgetStateProperty<Color?>? surfaceTintColor = null,
+        WidgetStateProperty<double?>? elevation = null,
+        WidgetStateProperty<EdgeInsetsGeometry?>? padding = null,
+        WidgetStateProperty<Size?>? minimumSize = null,
+        WidgetStateProperty<Size?>? fixedSize = null,
+        WidgetStateProperty<Size?>? maximumSize = null,
+        WidgetStateProperty<Color?>? iconColor = null,
+        WidgetStateProperty<double?>? iconSize = null,
+        IconAlignment? iconAlignment = null,
+        WidgetStateProperty<BorderSide?>? side = null,
+        WidgetStateProperty<OutlinedBorder?>? shape = null,
+        WidgetStateProperty<MouseCursor?>? mouseCursor = null,
+        VisualDensity? visualDensity = null,
+        MaterialTapTargetSize? tapTargetSize = null,
+        Duration? animationDuration = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry? alignment = null,
+        InteractiveInkFeatureFactory? splashFactory = null,
+        Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder = null,
+        Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder = null
+    )
     {
         this.textStyle = textStyle;
         this.backgroundColor = backgroundColor;
@@ -65,9 +103,61 @@ public class ButtonStyle : Diagnosticable
         this.foregroundBuilder = foregroundBuilder;
     }
 
-    public virtual ButtonStyle copyWith(WidgetStateProperty<TextStyle?>? textStyle = null, WidgetStateProperty<Color?>? backgroundColor = null, WidgetStateProperty<Color?>? foregroundColor = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<Color?>? shadowColor = null, WidgetStateProperty<Color?>? surfaceTintColor = null, WidgetStateProperty<double?>? elevation = null, WidgetStateProperty<EdgeInsetsGeometry?>? padding = null, WidgetStateProperty<Size?>? minimumSize = null, WidgetStateProperty<Size?>? fixedSize = null, WidgetStateProperty<Size?>? maximumSize = null, WidgetStateProperty<Color?>? iconColor = null, WidgetStateProperty<double?>? iconSize = null, IconAlignment? iconAlignment = null, WidgetStateProperty<BorderSide?>? side = null, WidgetStateProperty<OutlinedBorder?>? shape = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder = null)
+    public virtual ButtonStyle copyWith(
+        WidgetStateProperty<TextStyle?>? textStyle = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        WidgetStateProperty<Color?>? foregroundColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        WidgetStateProperty<Color?>? shadowColor = null,
+        WidgetStateProperty<Color?>? surfaceTintColor = null,
+        WidgetStateProperty<double?>? elevation = null,
+        WidgetStateProperty<EdgeInsetsGeometry?>? padding = null,
+        WidgetStateProperty<Size?>? minimumSize = null,
+        WidgetStateProperty<Size?>? fixedSize = null,
+        WidgetStateProperty<Size?>? maximumSize = null,
+        WidgetStateProperty<Color?>? iconColor = null,
+        WidgetStateProperty<double?>? iconSize = null,
+        IconAlignment? iconAlignment = null,
+        WidgetStateProperty<BorderSide?>? side = null,
+        WidgetStateProperty<OutlinedBorder?>? shape = null,
+        WidgetStateProperty<MouseCursor?>? mouseCursor = null,
+        VisualDensity? visualDensity = null,
+        MaterialTapTargetSize? tapTargetSize = null,
+        Duration? animationDuration = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry? alignment = null,
+        InteractiveInkFeatureFactory? splashFactory = null,
+        Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder = null,
+        Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder = null
+    )
     {
-        return new ButtonStyle(textStyle: textStyle ?? this.textStyle, backgroundColor: backgroundColor ?? this.backgroundColor, foregroundColor: foregroundColor ?? this.foregroundColor, overlayColor: overlayColor ?? this.overlayColor, shadowColor: shadowColor ?? this.shadowColor, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, elevation: elevation ?? this.elevation, padding: padding ?? this.padding, minimumSize: minimumSize ?? this.minimumSize, fixedSize: fixedSize ?? this.fixedSize, maximumSize: maximumSize ?? this.maximumSize, iconColor: iconColor ?? this.iconColor, iconSize: iconSize ?? this.iconSize, iconAlignment: iconAlignment ?? this.iconAlignment, side: side ?? this.side, shape: shape ?? this.shape, mouseCursor: mouseCursor ?? this.mouseCursor, visualDensity: visualDensity ?? this.visualDensity, tapTargetSize: tapTargetSize ?? this.tapTargetSize, animationDuration: animationDuration ?? this.animationDuration, enableFeedback: enableFeedback ?? this.enableFeedback, alignment: alignment ?? this.alignment, splashFactory: splashFactory ?? this.splashFactory, backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder, foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder);
+        return new ButtonStyle(
+            textStyle: textStyle ?? this.textStyle,
+            backgroundColor: backgroundColor ?? this.backgroundColor,
+            foregroundColor: foregroundColor ?? this.foregroundColor,
+            overlayColor: overlayColor ?? this.overlayColor,
+            shadowColor: shadowColor ?? this.shadowColor,
+            surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor,
+            elevation: elevation ?? this.elevation,
+            padding: padding ?? this.padding,
+            minimumSize: minimumSize ?? this.minimumSize,
+            fixedSize: fixedSize ?? this.fixedSize,
+            maximumSize: maximumSize ?? this.maximumSize,
+            iconColor: iconColor ?? this.iconColor,
+            iconSize: iconSize ?? this.iconSize,
+            iconAlignment: iconAlignment ?? this.iconAlignment,
+            side: side ?? this.side,
+            shape: shape ?? this.shape,
+            mouseCursor: mouseCursor ?? this.mouseCursor,
+            visualDensity: visualDensity ?? this.visualDensity,
+            tapTargetSize: tapTargetSize ?? this.tapTargetSize,
+            animationDuration: animationDuration ?? this.animationDuration,
+            enableFeedback: enableFeedback ?? this.enableFeedback,
+            alignment: alignment ?? this.alignment,
+            splashFactory: splashFactory ?? this.splashFactory,
+            backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder,
+            foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -77,19 +167,77 @@ public class ButtonStyle : Diagnosticable
         {
             return this;
         }
-        return copyWith(textStyle: textStyle ?? style.textStyle, backgroundColor: backgroundColor ?? style.backgroundColor, foregroundColor: foregroundColor ?? style.foregroundColor, overlayColor: overlayColor ?? style.overlayColor, shadowColor: shadowColor ?? style.shadowColor, surfaceTintColor: surfaceTintColor ?? style.surfaceTintColor, elevation: elevation ?? style.elevation, padding: padding ?? style.padding, minimumSize: minimumSize ?? style.minimumSize, fixedSize: fixedSize ?? style.fixedSize, maximumSize: maximumSize ?? style.maximumSize, iconColor: iconColor ?? style.iconColor, iconSize: iconSize ?? style.iconSize, iconAlignment: iconAlignment ?? style.iconAlignment, side: side ?? style.side, shape: shape ?? style.shape, mouseCursor: mouseCursor ?? style.mouseCursor, visualDensity: visualDensity ?? style.visualDensity, tapTargetSize: tapTargetSize ?? style.tapTargetSize, animationDuration: animationDuration ?? style.animationDuration, enableFeedback: enableFeedback ?? style.enableFeedback, alignment: alignment ?? style.alignment, splashFactory: splashFactory ?? style.splashFactory, backgroundBuilder: backgroundBuilder ?? style.backgroundBuilder, foregroundBuilder: foregroundBuilder ?? style.foregroundBuilder);
+        return copyWith(
+            textStyle: textStyle ?? style.textStyle,
+            backgroundColor: backgroundColor ?? style.backgroundColor,
+            foregroundColor: foregroundColor ?? style.foregroundColor,
+            overlayColor: overlayColor ?? style.overlayColor,
+            shadowColor: shadowColor ?? style.shadowColor,
+            surfaceTintColor: surfaceTintColor ?? style.surfaceTintColor,
+            elevation: elevation ?? style.elevation,
+            padding: padding ?? style.padding,
+            minimumSize: minimumSize ?? style.minimumSize,
+            fixedSize: fixedSize ?? style.fixedSize,
+            maximumSize: maximumSize ?? style.maximumSize,
+            iconColor: iconColor ?? style.iconColor,
+            iconSize: iconSize ?? style.iconSize,
+            iconAlignment: iconAlignment ?? style.iconAlignment,
+            side: side ?? style.side,
+            shape: shape ?? style.shape,
+            mouseCursor: mouseCursor ?? style.mouseCursor,
+            visualDensity: visualDensity ?? style.visualDensity,
+            tapTargetSize: tapTargetSize ?? style.tapTargetSize,
+            animationDuration: animationDuration ?? style.animationDuration,
+            enableFeedback: enableFeedback ?? style.enableFeedback,
+            alignment: alignment ?? style.alignment,
+            splashFactory: splashFactory ?? style.splashFactory,
+            backgroundBuilder: backgroundBuilder ?? style.backgroundBuilder,
+            foregroundBuilder: foregroundBuilder ?? style.foregroundBuilder
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override int GetHashCode()
     {
-        var values = new List<object?> { textStyle, backgroundColor, foregroundColor, overlayColor, shadowColor, surfaceTintColor, elevation, padding, minimumSize, fixedSize, maximumSize, iconColor, iconSize, iconAlignment, side, shape, mouseCursor, visualDensity, tapTargetSize, animationDuration, enableFeedback, alignment, splashFactory, backgroundBuilder, foregroundBuilder };
+        var values = new List<object?>
+        {
+            textStyle,
+            backgroundColor,
+            foregroundColor,
+            overlayColor,
+            shadowColor,
+            surfaceTintColor,
+            elevation,
+            padding,
+            minimumSize,
+            fixedSize,
+            maximumSize,
+            iconColor,
+            iconSize,
+            iconAlignment,
+            side,
+            shape,
+            mouseCursor,
+            visualDensity,
+            tapTargetSize,
+            animationDuration,
+            enableFeedback,
+            alignment,
+            splashFactory,
+            backgroundBuilder,
+            foregroundBuilder,
+        };
         return FoundationRuntimePorts.ObjectHashAll(values);
     }
+
     public override bool Equals(object? other)
     {
         var __other = other as ButtonStyle;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -98,35 +246,192 @@ public class ButtonStyle : Diagnosticable
         {
             return false;
         }
-        return (__other is ButtonStyle) && Equals(__other.textStyle, textStyle) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.foregroundColor, foregroundColor) && Equals(__other.overlayColor, overlayColor) && Equals(__other.shadowColor, shadowColor) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.elevation, elevation) && Equals(__other.padding, padding) && Equals(__other.minimumSize, minimumSize) && Equals(__other.fixedSize, fixedSize) && Equals(__other.maximumSize, maximumSize) && Equals(__other.iconColor, iconColor) && Equals(__other.iconSize, iconSize) && Equals(__other.iconAlignment, iconAlignment) && Equals(__other.side, side) && Equals(__other.shape, shape) && Equals(__other.mouseCursor, mouseCursor) && Equals(__other.visualDensity, visualDensity) && Equals(__other.tapTargetSize, tapTargetSize) && Equals(__other.animationDuration, animationDuration) && (__other.enableFeedback == enableFeedback) && Equals(__other.alignment, alignment) && Equals(__other.splashFactory, splashFactory) && Equals(__other.backgroundBuilder, backgroundBuilder) && Equals(__other.foregroundBuilder, foregroundBuilder);
+        return (__other is ButtonStyle)
+            && Equals(__other.textStyle, textStyle)
+            && Equals(__other.backgroundColor, backgroundColor)
+            && Equals(__other.foregroundColor, foregroundColor)
+            && Equals(__other.overlayColor, overlayColor)
+            && Equals(__other.shadowColor, shadowColor)
+            && Equals(__other.surfaceTintColor, surfaceTintColor)
+            && Equals(__other.elevation, elevation)
+            && Equals(__other.padding, padding)
+            && Equals(__other.minimumSize, minimumSize)
+            && Equals(__other.fixedSize, fixedSize)
+            && Equals(__other.maximumSize, maximumSize)
+            && Equals(__other.iconColor, iconColor)
+            && Equals(__other.iconSize, iconSize)
+            && Equals(__other.iconAlignment, iconAlignment)
+            && Equals(__other.side, side)
+            && Equals(__other.shape, shape)
+            && Equals(__other.mouseCursor, mouseCursor)
+            && Equals(__other.visualDensity, visualDensity)
+            && Equals(__other.tapTargetSize, tapTargetSize)
+            && Equals(__other.animationDuration, animationDuration)
+            && (__other.enableFeedback == enableFeedback)
+            && Equals(__other.alignment, alignment)
+            && Equals(__other.splashFactory, splashFactory)
+            && Equals(__other.backgroundBuilder, backgroundBuilder)
+            && Equals(__other.foregroundBuilder, foregroundBuilder);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<TextStyle?>>("textStyle", textStyle, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("backgroundColor", backgroundColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("foregroundColor", foregroundColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("overlayColor", overlayColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("shadowColor", shadowColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("surfaceTintColor", surfaceTintColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<double?>>("elevation", elevation, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<EdgeInsetsGeometry?>>("padding", padding, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Size?>>("minimumSize", minimumSize, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Size?>>("fixedSize", fixedSize, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Size?>>("maximumSize", maximumSize, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("iconColor", iconColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<double?>>("iconSize", iconSize, defaultValue: null));
-        properties.add(new EnumProperty<IconAlignment>("iconAlignment", iconAlignment, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<BorderSide?>>("side", side, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<OutlinedBorder?>>("shape", shape, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
-        properties.add(new EnumProperty<MaterialTapTargetSize>("tapTargetSize", tapTargetSize, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Duration>("animationDuration", animationDuration, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("enableFeedback", enableFeedback, defaultValue: null));
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>>("backgroundBuilder", backgroundBuilder, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>>("foregroundBuilder", foregroundBuilder, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<TextStyle?>>(
+                "textStyle",
+                textStyle,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "backgroundColor",
+                backgroundColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "foregroundColor",
+                foregroundColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "overlayColor",
+                overlayColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "shadowColor",
+                shadowColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "surfaceTintColor",
+                surfaceTintColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<double?>>(
+                "elevation",
+                elevation,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<EdgeInsetsGeometry?>>(
+                "padding",
+                padding,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Size?>>(
+                "minimumSize",
+                minimumSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Size?>>(
+                "fixedSize",
+                fixedSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Size?>>(
+                "maximumSize",
+                maximumSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "iconColor",
+                iconColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<double?>>(
+                "iconSize",
+                iconSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new EnumProperty<IconAlignment>("iconAlignment", iconAlignment, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<BorderSide?>>(
+                "side",
+                side,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<OutlinedBorder?>>(
+                "shape",
+                shape,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>(
+                "mouseCursor",
+                mouseCursor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<VisualDensity>(
+                "visualDensity",
+                visualDensity,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new EnumProperty<MaterialTapTargetSize>(
+                "tapTargetSize",
+                tapTargetSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "animationDuration",
+                animationDuration,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>("enableFeedback", enableFeedback, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>>(
+                "backgroundBuilder",
+                backgroundBuilder,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>>(
+                "foregroundBuilder",
+                foregroundBuilder,
+                defaultValue: null
+            )
+        );
     }
 
     public static ButtonStyle? lerp(ButtonStyle? a, ButtonStyle? b, double t)
@@ -135,29 +440,85 @@ public class ButtonStyle : Diagnosticable
         {
             return a;
         }
-        return new ButtonStyle(textStyle: WidgetStateProperty.lerp(a?.textStyle, b?.textStyle, t, TextStyle.lerp), backgroundColor: WidgetStateProperty.lerp(a?.backgroundColor, b?.backgroundColor, t, Color.lerp), foregroundColor: WidgetStateProperty.lerp(a?.foregroundColor, b?.foregroundColor, t, Color.lerp), overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp), shadowColor: WidgetStateProperty.lerp(a?.shadowColor, b?.shadowColor, t, Color.lerp), surfaceTintColor: WidgetStateProperty.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t, Color.lerp), elevation: WidgetStateProperty.lerp(a?.elevation, b?.elevation, t, Dart_uiLibrary.lerpDouble), padding: WidgetStateProperty.lerp(a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp), minimumSize: WidgetStateProperty.lerp(a?.minimumSize, b?.minimumSize, t, Size.lerp), fixedSize: WidgetStateProperty.lerp(a?.fixedSize, b?.fixedSize, t, Size.lerp), maximumSize: WidgetStateProperty.lerp(a?.maximumSize, b?.maximumSize, t, Size.lerp), iconColor: WidgetStateProperty.lerp(a?.iconColor, b?.iconColor, t, Color.lerp), iconSize: WidgetStateProperty.lerp(a?.iconSize, b?.iconSize, t, Dart_uiLibrary.lerpDouble), iconAlignment: (t < 0.5) ? a?.iconAlignment : b?.iconAlignment, side: WidgetStateBorderSide.lerp(a?.side, b?.side, t), shape: WidgetStateProperty.lerp(a?.shape, b?.shape, t, OutlinedBorder.lerp), mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor, visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity, tapTargetSize: (t < 0.5) ? a?.tapTargetSize : b?.tapTargetSize, animationDuration: (t < 0.5) ? a?.animationDuration : b?.animationDuration, enableFeedback: (t < 0.5) ? a?.enableFeedback : b?.enableFeedback, alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t), splashFactory: (t < 0.5) ? a?.splashFactory : b?.splashFactory, backgroundBuilder: (t < 0.5) ? a?.backgroundBuilder : b?.backgroundBuilder, foregroundBuilder: (t < 0.5) ? a?.foregroundBuilder : b?.foregroundBuilder);
+        return new ButtonStyle(
+            textStyle: WidgetStateProperty.lerp(a?.textStyle, b?.textStyle, t, TextStyle.lerp),
+            backgroundColor: WidgetStateProperty.lerp(
+                a?.backgroundColor,
+                b?.backgroundColor,
+                t,
+                Color.lerp
+            ),
+            foregroundColor: WidgetStateProperty.lerp(
+                a?.foregroundColor,
+                b?.foregroundColor,
+                t,
+                Color.lerp
+            ),
+            overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
+            shadowColor: WidgetStateProperty.lerp(a?.shadowColor, b?.shadowColor, t, Color.lerp),
+            surfaceTintColor: WidgetStateProperty.lerp(
+                a?.surfaceTintColor,
+                b?.surfaceTintColor,
+                t,
+                Color.lerp
+            ),
+            elevation: WidgetStateProperty.lerp(
+                a?.elevation,
+                b?.elevation,
+                t,
+                Dart_uiLibrary.lerpDouble
+            ),
+            padding: WidgetStateProperty.lerp(a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp),
+            minimumSize: WidgetStateProperty.lerp(a?.minimumSize, b?.minimumSize, t, Size.lerp),
+            fixedSize: WidgetStateProperty.lerp(a?.fixedSize, b?.fixedSize, t, Size.lerp),
+            maximumSize: WidgetStateProperty.lerp(a?.maximumSize, b?.maximumSize, t, Size.lerp),
+            iconColor: WidgetStateProperty.lerp(a?.iconColor, b?.iconColor, t, Color.lerp),
+            iconSize: WidgetStateProperty.lerp(
+                a?.iconSize,
+                b?.iconSize,
+                t,
+                Dart_uiLibrary.lerpDouble
+            ),
+            iconAlignment: (t < 0.5) ? a?.iconAlignment : b?.iconAlignment,
+            side: WidgetStateBorderSide.lerp(a?.side, b?.side, t),
+            shape: WidgetStateProperty.lerp(a?.shape, b?.shape, t, OutlinedBorder.lerp),
+            mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor,
+            visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,
+            tapTargetSize: (t < 0.5) ? a?.tapTargetSize : b?.tapTargetSize,
+            animationDuration: (t < 0.5) ? a?.animationDuration : b?.animationDuration,
+            enableFeedback: (t < 0.5) ? a?.enableFeedback : b?.enableFeedback,
+            alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
+            splashFactory: (t < 0.5) ? a?.splashFactory : b?.splashFactory,
+            backgroundBuilder: (t < 0.5) ? a?.backgroundBuilder : b?.backgroundBuilder,
+            foregroundBuilder: (t < 0.5) ? a?.foregroundBuilder : b?.foregroundBuilder
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

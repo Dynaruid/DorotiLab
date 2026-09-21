@@ -23,31 +23,51 @@ public class AssetImage : AssetBundleImageProvider
         this.package = package;
     }
 
-    public virtual string keyName => (package is null) ? assetName : $"packages/{package}/{assetName}";
+    public virtual string keyName =>
+        (package is null) ? assetName : $"packages/{package}/{assetName}";
+
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        AssetBundle chosenBundle = (bundle ?? configuration.bundle) ?? Asset_bundleLibrary.rootBundle;
+        AssetBundle chosenBundle =
+            (bundle ?? configuration.bundle) ?? Asset_bundleLibrary.rootBundle;
         Completer<AssetBundleImageKey>? completer = default!;
         Future<AssetBundleImageKey>? result = default!;
-        _ = AssetManifest.loadFromAssetBundle(chosenBundle).then((manifest) =>
-        {
-            IEnumerable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(keyName);
-            AssetMetadata chosenVariant = _chooseVariant(keyName, configuration, candidateVariants);
-            var keyLocal = new AssetBundleImageKey(bundle: chosenBundle, name: chosenVariant.key, scale: chosenVariant.targetDevicePixelRatio ?? _naturalResolution);
-            if (completer is not null)
-            {
-                completer.complete(keyLocal);
-            }
-            else
-            {
-                result = new SynchronousFuture<AssetBundleImageKey>(keyLocal);
-            }
-        }).onError((error, stack) =>
-        {
-            DartRuntimePrimitives.Assert(() => completer is not null);
-            DartRuntimePrimitives.Assert(() => result is null);
-            completer!.completeError(error, stack);
-        });
+        _ = AssetManifest
+            .loadFromAssetBundle(chosenBundle)
+            .then(
+                (manifest) =>
+                {
+                    IEnumerable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(
+                        keyName
+                    );
+                    AssetMetadata chosenVariant = _chooseVariant(
+                        keyName,
+                        configuration,
+                        candidateVariants
+                    );
+                    var keyLocal = new AssetBundleImageKey(
+                        bundle: chosenBundle,
+                        name: chosenVariant.key,
+                        scale: chosenVariant.targetDevicePixelRatio ?? _naturalResolution
+                    );
+                    if (completer is not null)
+                    {
+                        completer.complete(keyLocal);
+                    }
+                    else
+                    {
+                        result = new SynchronousFuture<AssetBundleImageKey>(keyLocal);
+                    }
+                }
+            )
+            .onError(
+                (error, stack) =>
+                {
+                    DartRuntimePrimitives.Assert(() => completer is not null);
+                    DartRuntimePrimitives.Assert(() => result is null);
+                    completer!.completeError(error, stack);
+                }
+            );
         if (result is not null)
         {
             return result!;
@@ -57,22 +77,37 @@ public class AssetImage : AssetBundleImageProvider
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual AssetMetadata _chooseVariant(string mainAssetKey, ImageConfiguration config, IEnumerable<AssetMetadata>? candidateVariants)
+    internal virtual AssetMetadata _chooseVariant(
+        string mainAssetKey,
+        ImageConfiguration config,
+        IEnumerable<AssetMetadata>? candidateVariants
+    )
     {
-        if ((candidateVariants is null) || (candidateVariants.Count() == 0) || (config.devicePixelRatio is null))
+        if (
+            (candidateVariants is null)
+            || (candidateVariants.Count() == 0)
+            || (config.devicePixelRatio is null)
+        )
         {
             return new AssetMetadata(key: mainAssetKey, targetDevicePixelRatio: null, main: true);
         }
         var candidatesByDevicePixelRatio = new SortedDictionary<double, AssetMetadata>();
         foreach (AssetMetadata candidate in candidateVariants)
         {
-            candidatesByDevicePixelRatio[candidate.targetDevicePixelRatio ?? _naturalResolution] = candidate;
+            candidatesByDevicePixelRatio[candidate.targetDevicePixelRatio ?? _naturalResolution] =
+                candidate;
         }
-        return _findBestVariant(candidatesByDevicePixelRatio, DartRuntimePrimitives.RequireValue(config.devicePixelRatio));
+        return _findBestVariant(
+            candidatesByDevicePixelRatio,
+            DartRuntimePrimitives.RequireValue(config.devicePixelRatio)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual AssetMetadata _findBestVariant(SortedDictionary<double, AssetMetadata> candidatesByDpr, double value)
+    internal virtual AssetMetadata _findBestVariant(
+        SortedDictionary<double, AssetMetadata> candidatesByDpr,
+        double value
+    )
     {
         if (candidatesByDpr.ContainsKey(value))
         {
@@ -88,7 +123,18 @@ public class AssetImage : AssetBundleImageProvider
         {
             return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
         }
-        if ((value < Image_resolutionLibrary._kLowDprLimit) || (value > ((DartRuntimePrimitives.RequireValue(lower) + DartRuntimePrimitives.RequireValue(upper)) / 2L)))
+        if (
+            (value < Image_resolutionLibrary._kLowDprLimit)
+            || (
+                value
+                > (
+                    (
+                        DartRuntimePrimitives.RequireValue(lower)
+                        + DartRuntimePrimitives.RequireValue(upper)
+                    ) / 2L
+                )
+            )
+        )
         {
             return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
         }
@@ -102,15 +148,22 @@ public class AssetImage : AssetBundleImageProvider
     public override bool Equals(object? other)
     {
         var __other = other as AssetImage;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is AssetImage) && (__other.keyName == keyName) && Equals(__other.bundle, bundle);
+        return (__other is AssetImage)
+            && (__other.keyName == keyName)
+            && Equals(__other.bundle, bundle);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(keyName, bundle);
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage")}(bundle: {bundle}, name: \"{keyName}\")";
-}
 
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage")}(bundle: {bundle}, name: \"{keyName}\")";
+}

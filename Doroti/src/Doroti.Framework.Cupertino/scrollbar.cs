@@ -33,7 +33,10 @@ public static partial class ScrollbarLibrary
 
 public static partial class ScrollbarLibrary
 {
-    internal static Color _kScrollbarColor = new CupertinoDynamicColor(color: new Color(1493172224L), darkColor: new Color(2164260863L));
+    internal static Color _kScrollbarColor = new CupertinoDynamicColor(
+        color: new Color(1493172224L),
+        darkColor: new Color(2164260863L)
+    );
 }
 
 public static partial class ScrollbarLibrary
@@ -55,7 +58,34 @@ public class CupertinoScrollbar : RawScrollbar
     public virtual double thicknessWhileDragging { get; private set; } = default!;
     public virtual Radius radiusWhileDragging { get; private set; } = default!;
 
-    public CupertinoScrollbar(Key? key = null, Widget child = default!, ScrollController? controller = null, bool? thumbVisibility = null, double? thickness = null, double? thicknessWhileDragging = null, Radius? radius = null, Radius? radiusWhileDragging = null, Func<ScrollNotification, bool>? notificationPredicate = null, ScrollbarOrientation? scrollbarOrientation = null, double? mainAxisMargin = null) : base(key: key, child: child, controller: controller, thickness: thickness ?? defaultThickness, radius: radius ?? defaultRadius, scrollbarOrientation: scrollbarOrientation, mainAxisMargin: mainAxisMargin ?? ScrollbarLibrary._kScrollbarMainAxisMargin, thumbVisibility: thumbVisibility ?? false, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.Create(milliseconds: 100L), notificationPredicate: notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate)
+    public CupertinoScrollbar(
+        Key? key = null,
+        Widget child = default!,
+        ScrollController? controller = null,
+        bool? thumbVisibility = null,
+        double? thickness = null,
+        double? thicknessWhileDragging = null,
+        Radius? radius = null,
+        Radius? radiusWhileDragging = null,
+        Func<ScrollNotification, bool>? notificationPredicate = null,
+        ScrollbarOrientation? scrollbarOrientation = null,
+        double? mainAxisMargin = null
+    )
+        : base(
+            key: key,
+            child: child,
+            controller: controller,
+            thickness: thickness ?? defaultThickness,
+            radius: radius ?? defaultRadius,
+            scrollbarOrientation: scrollbarOrientation,
+            mainAxisMargin: mainAxisMargin ?? ScrollbarLibrary._kScrollbarMainAxisMargin,
+            thumbVisibility: thumbVisibility ?? false,
+            fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration,
+            timeToFade: ScrollbarLibrary._kScrollbarTimeToFade,
+            pressDuration: Duration.Create(milliseconds: 100L),
+            notificationPredicate: notificationPredicate
+                ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate
+        )
     {
         double __thicknessWhileDragging = thicknessWhileDragging ?? defaultThicknessWhileDragging;
         Radius __radiusWhileDragging = radiusWhileDragging ?? defaultRadiusWhileDragging;
@@ -65,7 +95,8 @@ public class CupertinoScrollbar : RawScrollbar
         System.Diagnostics.Debug.Assert(__thicknessWhileDragging < double.PositiveInfinity);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoScrollbarState__scrollbar());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoScrollbarState__scrollbar());
 }
 
 internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<CupertinoScrollbar>
@@ -77,20 +108,37 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
     {
         get
         {
-            return DartRuntimePrimitives.RequireValue(widget.thickness) + (_thicknessAnimationController.value * (widget.thicknessWhileDragging - DartRuntimePrimitives.RequireValue(widget.thickness)));
+            return DartRuntimePrimitives.RequireValue(widget.thickness)
+                + (
+                    _thicknessAnimationController.value
+                    * (
+                        widget.thicknessWhileDragging
+                        - DartRuntimePrimitives.RequireValue(widget.thickness)
+                    )
+                );
         }
     }
     internal virtual Radius _radius
     {
         get
         {
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(widget.radius, widget.radiusWhileDragging, _thicknessAnimationController.value));
+            return DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.Radius.lerp(
+                    widget.radius,
+                    widget.radiusWhileDragging,
+                    _thicknessAnimationController.value
+                )
+            );
         }
     }
+
     public override void initState()
     {
         base.initState();
-        _thicknessAnimationController = new AnimationController(vsync: this, duration: ScrollbarLibrary._kScrollbarResizeDuration);
+        _thicknessAnimationController = new AnimationController(
+            vsync: this,
+            duration: ScrollbarLibrary._kScrollbarResizeDuration
+        );
         _thicknessAnimationController.addListener(() =>
         {
             updateScrollbarPainter();
@@ -99,21 +147,31 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
 
     public override void updateScrollbarPainter()
     {
-        DartRuntimePrimitives.Ignore(((Func<ScrollbarPainter>)(() =>
-{
-    var __cascade = scrollbarPainter;
-    __cascade.color = CupertinoDynamicColor.resolve(ScrollbarLibrary._kScrollbarColor, context);
-    __cascade.textDirection = Directionality.of(context);
-    __cascade.thickness = _thickness;
-    __cascade.mainAxisMargin = widget.mainAxisMargin;
-    __cascade.crossAxisMargin = ScrollbarLibrary._kScrollbarCrossAxisMargin;
-    __cascade.radius = _radius;
-    __cascade.padding = MediaQuery.paddingOf(context);
-    __cascade.minLength = ScrollbarLibrary._kScrollbarMinLength;
-    __cascade.minOverscrollLength = ScrollbarLibrary._kScrollbarMinOverscrollLength;
-    __cascade.scrollbarOrientation = widget.scrollbarOrientation;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ScrollbarPainter>)(
+                    () =>
+                    {
+                        var __cascade = scrollbarPainter;
+                        __cascade.color = CupertinoDynamicColor.resolve(
+                            ScrollbarLibrary._kScrollbarColor,
+                            context
+                        );
+                        __cascade.textDirection = Directionality.of(context);
+                        __cascade.thickness = _thickness;
+                        __cascade.mainAxisMargin = widget.mainAxisMargin;
+                        __cascade.crossAxisMargin = ScrollbarLibrary._kScrollbarCrossAxisMargin;
+                        __cascade.radius = _radius;
+                        __cascade.padding = MediaQuery.paddingOf(context);
+                        __cascade.minLength = ScrollbarLibrary._kScrollbarMinLength;
+                        __cascade.minOverscrollLength =
+                            ScrollbarLibrary._kScrollbarMinOverscrollLength;
+                        __cascade.scrollbarOrientation = widget.scrollbarOrientation;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void handleThumbPressStart(Offset localPosition)
@@ -124,7 +182,12 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         {
             return;
         }
-        _pressStartAxisPosition = DartRuntimePrimitives.RequireValue(direction) switch { Axis.vertical => localPosition.dy, Axis.horizontal => localPosition.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        _pressStartAxisPosition = DartRuntimePrimitives.RequireValue(direction) switch
+        {
+            Axis.vertical => localPosition.dy,
+            Axis.horizontal => localPosition.dx,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     }
 
     public override void handleThumbPress()
@@ -134,7 +197,9 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
             return;
         }
         base.handleThumbPress();
-        DartRuntimePrimitives.Ignore(_thicknessAnimationController.forward().then((_) => HapticFeedback.mediumImpact()));
+        DartRuntimePrimitives.Ignore(
+            _thicknessAnimationController.forward().then((_) => HapticFeedback.mediumImpact())
+        );
     }
 
     public override void handleThumbPressEnd(Offset localPosition, Gestures.Velocity velocity)
@@ -146,7 +211,12 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         }
         _thicknessAnimationController.reverse();
         base.handleThumbPressEnd(localPosition, velocity);
-        var (axisPosition, axisVelocity) = DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => (localPosition.dx, velocity.pixelsPerSecond.dx), Axis.vertical => (localPosition.dy, velocity.pixelsPerSecond.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (axisPosition, axisVelocity) = DartRuntimePrimitives.RequireValue(direction) switch
+        {
+            Axis.horizontal => (localPosition.dx, velocity.pixelsPerSecond.dx),
+            Axis.vertical => (localPosition.dy, velocity.pixelsPerSecond.dy),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         if ((axisPosition != _pressStartAxisPosition) && (axisVelocity.abs() < 10L))
         {
             DartRuntimePrimitives.Ignore(HapticFeedback.mediumImpact());
@@ -166,5 +236,4 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         _thicknessAnimationController.dispose();
         base.dispose();
     }
-
 }

@@ -7,9 +7,8 @@ namespace Doroti.Framework.Material;
 
 public class MenuBarThemeData : MenuThemeData
 {
-    public MenuBarThemeData(MenuStyle? style = null) : base(style: style)
-    {
-    }
+    public MenuBarThemeData(MenuStyle? style = null)
+        : base(style: style) { }
 
     public static MenuBarThemeData? lerp(MenuBarThemeData? a, MenuBarThemeData? b, double t)
     {
@@ -20,21 +19,22 @@ public class MenuBarThemeData : MenuThemeData
         return new MenuBarThemeData(style: MenuStyle.lerp(a?.style, b?.style, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class MenuBarTheme : InheritedTheme
 {
     public virtual MenuBarThemeData data { get; private set; } = default!;
 
-    public MenuBarTheme(Key? key = null, MenuBarThemeData data = default!, Widget child = default!) : base(key: key, child: child)
+    public MenuBarTheme(Key? key = null, MenuBarThemeData data = default!, Widget child = default!)
+        : base(key: key, child: child)
     {
         this.data = data;
     }
 
     public static MenuBarThemeData of(BuildContext context)
     {
-        MenuBarTheme? menuBarThemeLocal = context.dependOnInheritedWidgetOfExactType<MenuBarTheme>();
+        MenuBarTheme? menuBarThemeLocal =
+            context.dependOnInheritedWidgetOfExactType<MenuBarTheme>();
         return menuBarThemeLocal?.data ?? Theme.of(context).menuBarTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -45,5 +45,6 @@ public class MenuBarTheme : InheritedTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuBarTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
+        DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuBarTheme)oldWidget).data));
 }

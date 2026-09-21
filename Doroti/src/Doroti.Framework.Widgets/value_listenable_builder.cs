@@ -12,17 +12,27 @@ public class ValueListenableBuilder<T> : StatefulWidget
     public virtual Func<BuildContext, T, Widget?, Widget> builder { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public ValueListenableBuilder(Key? key = null, ValueListenable<T> valueListenable = default!, Func<BuildContext, T, Widget?, Widget> builder = default!, Widget? child = null) : base(key: key)
+    public ValueListenableBuilder(
+        Key? key = null,
+        ValueListenable<T> valueListenable = default!,
+        Func<BuildContext, T, Widget?, Widget> builder = default!,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         this.valueListenable = valueListenable;
         this.builder = builder;
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ValueListenableBuilderState__value_listenable_builder<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _ValueListenableBuilderState__value_listenable_builder<T>()
+        );
 }
 
-internal class _ValueListenableBuilderState__value_listenable_builder<T> : State<ValueListenableBuilder<T>>
+internal class _ValueListenableBuilderState__value_listenable_builder<T>
+    : State<ValueListenableBuilder<T>>
 {
     public virtual T value { get; set; } = default!;
 
@@ -63,6 +73,4 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
         return widget.builder(context, value, widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

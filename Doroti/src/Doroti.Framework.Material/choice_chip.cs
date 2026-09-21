@@ -9,10 +9,15 @@ namespace Doroti.Framework.Material;
 internal enum _ChipVariant__choice_chip
 {
     flat,
-    elevated
+    elevated,
 }
 
-public class ChoiceChip : StatelessWidget, ChipAttributes, SelectableChipAttributes, CheckmarkableChipAttributes, DisabledChipAttributes
+public class ChoiceChip
+    : StatelessWidget,
+        ChipAttributes,
+        SelectableChipAttributes,
+        CheckmarkableChipAttributes,
+        DisabledChipAttributes
 {
     public virtual Widget? avatar { get; private set; }
     public virtual Widget label { get; private set; } = default!;
@@ -47,7 +52,41 @@ public class ChoiceChip : StatelessWidget, ChipAttributes, SelectableChipAttribu
     public virtual MouseCursor? mouseCursor { get; private set; }
     internal virtual _ChipVariant__choice_chip _chipVariant { get; private set; } = default!;
 
-    public ChoiceChip(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
+    public ChoiceChip(
+        Key? key = null,
+        Widget? avatar = null,
+        Widget label = default!,
+        TextStyle? labelStyle = null,
+        EdgeInsetsGeometry? labelPadding = null,
+        Action<bool>? onSelected = null,
+        double? pressElevation = null,
+        bool selected = default!,
+        Color? selectedColor = null,
+        Color? disabledColor = null,
+        string? tooltip = null,
+        BorderSide? side = null,
+        OutlinedBorder? shape = null,
+        Clip clipBehavior = Clip.none,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        WidgetStateProperty<Color?>? color = null,
+        Color? backgroundColor = null,
+        EdgeInsetsGeometry? padding = null,
+        VisualDensity? visualDensity = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        double? elevation = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        IconThemeData? iconTheme = null,
+        Color? selectedShadowColor = null,
+        bool? showCheckmark = null,
+        Color? checkmarkColor = null,
+        ShapeBorder avatarBorder = default!,
+        BoxConstraints? avatarBoxConstraints = null,
+        ChipAnimationStyle? chipAnimationStyle = null,
+        MouseCursor? mouseCursor = null
+    )
+        : base(key: key)
     {
         ShapeBorder __avatarBorder = avatarBorder ?? new CircleBorder();
         this.avatar = avatar;
@@ -86,9 +125,75 @@ public class ChoiceChip : StatelessWidget, ChipAttributes, SelectableChipAttribu
         System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
     }
 
-    public static ChoiceChip CreateElevated(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null)
+    public static ChoiceChip CreateElevated(
+        Key? key = null,
+        Widget? avatar = null,
+        Widget label = default!,
+        TextStyle? labelStyle = null,
+        EdgeInsetsGeometry? labelPadding = null,
+        Action<bool>? onSelected = null,
+        double? pressElevation = null,
+        bool selected = default!,
+        Color? selectedColor = null,
+        Color? disabledColor = null,
+        string? tooltip = null,
+        BorderSide? side = null,
+        OutlinedBorder? shape = null,
+        Clip clipBehavior = Clip.none,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        WidgetStateProperty<Color?>? color = null,
+        Color? backgroundColor = null,
+        EdgeInsetsGeometry? padding = null,
+        VisualDensity? visualDensity = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        double? elevation = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        IconThemeData? iconTheme = null,
+        Color? selectedShadowColor = null,
+        bool? showCheckmark = null,
+        Color? checkmarkColor = null,
+        ShapeBorder avatarBorder = default!,
+        BoxConstraints? avatarBoxConstraints = null,
+        ChipAnimationStyle? chipAnimationStyle = null,
+        MouseCursor? mouseCursor = null
+    )
     {
-        var __instance = new ChoiceChip(key: key, avatar: avatar, label: label, labelStyle: labelStyle, labelPadding: labelPadding, onSelected: onSelected, pressElevation: pressElevation, selected: selected, selectedColor: selectedColor, disabledColor: disabledColor, tooltip: tooltip, side: side, shape: shape, clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, color: color, backgroundColor: backgroundColor, padding: padding, visualDensity: visualDensity, materialTapTargetSize: materialTapTargetSize, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, iconTheme: iconTheme, selectedShadowColor: selectedShadowColor, showCheckmark: showCheckmark, checkmarkColor: checkmarkColor, avatarBorder: avatarBorder, avatarBoxConstraints: avatarBoxConstraints, chipAnimationStyle: chipAnimationStyle, mouseCursor: mouseCursor);
+        var __instance = new ChoiceChip(
+            key: key,
+            avatar: avatar,
+            label: label,
+            labelStyle: labelStyle,
+            labelPadding: labelPadding,
+            onSelected: onSelected,
+            pressElevation: pressElevation,
+            selected: selected,
+            selectedColor: selectedColor,
+            disabledColor: disabledColor,
+            tooltip: tooltip,
+            side: side,
+            shape: shape,
+            clipBehavior: clipBehavior,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            color: color,
+            backgroundColor: backgroundColor,
+            padding: padding,
+            visualDensity: visualDensity,
+            materialTapTargetSize: materialTapTargetSize,
+            elevation: elevation,
+            shadowColor: shadowColor,
+            surfaceTintColor: surfaceTintColor,
+            iconTheme: iconTheme,
+            selectedShadowColor: selectedShadowColor,
+            showCheckmark: showCheckmark,
+            checkmarkColor: checkmarkColor,
+            avatarBorder: avatarBorder,
+            avatarBoxConstraints: avatarBoxConstraints,
+            chipAnimationStyle: chipAnimationStyle,
+            mouseCursor: mouseCursor
+        );
         ShapeBorder __avatarBorder = avatarBorder ?? new CircleBorder();
         __instance.avatar = avatar;
         __instance.label = label;
@@ -125,15 +230,51 @@ public class ChoiceChip : StatelessWidget, ChipAttributes, SelectableChipAttribu
         return __instance;
     }
 
-    public virtual bool isEnabled => DartRuntimePrimitives.ConvertValue<bool>(onSelected is not null);
+    public virtual bool isEnabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(onSelected is not null);
+
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         ChipThemeData chipTheme = ChipTheme.of(context);
-        ChipThemeData? defaults = (ChipThemeData?)new _ChoiceChipDefaultsM3__choice_chip(context, isEnabled, selected, _chipVariant);
-        return new RawChip(defaultProperties: defaults, avatar: avatar, label: label, labelStyle: labelStyle ?? (selected ? chipTheme.secondaryLabelStyle : null), labelPadding: labelPadding, onSelected: onSelected, pressElevation: pressElevation, selected: selected, showCheckmark: (showCheckmark ?? chipTheme.showCheckmark) ?? true, checkmarkColor: checkmarkColor, tooltip: tooltip, side: side, shape: shape, clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, disabledColor: disabledColor, selectedColor: selectedColor ?? chipTheme.secondarySelectedColor, color: color, backgroundColor: backgroundColor, padding: padding, visualDensity: visualDensity, isEnabled: isEnabled, materialTapTargetSize: materialTapTargetSize, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, selectedShadowColor: selectedShadowColor, avatarBorder: avatarBorder, iconTheme: iconTheme, avatarBoxConstraints: avatarBoxConstraints, chipAnimationStyle: chipAnimationStyle, mouseCursor: mouseCursor);
+        ChipThemeData? defaults = (ChipThemeData?)
+            new _ChoiceChipDefaultsM3__choice_chip(context, isEnabled, selected, _chipVariant);
+        return new RawChip(
+            defaultProperties: defaults,
+            avatar: avatar,
+            label: label,
+            labelStyle: labelStyle ?? (selected ? chipTheme.secondaryLabelStyle : null),
+            labelPadding: labelPadding,
+            onSelected: onSelected,
+            pressElevation: pressElevation,
+            selected: selected,
+            showCheckmark: (showCheckmark ?? chipTheme.showCheckmark) ?? true,
+            checkmarkColor: checkmarkColor,
+            tooltip: tooltip,
+            side: side,
+            shape: shape,
+            clipBehavior: clipBehavior,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            disabledColor: disabledColor,
+            selectedColor: selectedColor ?? chipTheme.secondarySelectedColor,
+            color: color,
+            backgroundColor: backgroundColor,
+            padding: padding,
+            visualDensity: visualDensity,
+            isEnabled: isEnabled,
+            materialTapTargetSize: materialTapTargetSize,
+            elevation: elevation,
+            shadowColor: shadowColor,
+            surfaceTintColor: surfaceTintColor,
+            selectedShadowColor: selectedShadowColor,
+            avatarBorder: avatarBorder,
+            iconTheme: iconTheme,
+            avatarBoxConstraints: avatarBoxConstraints,
+            chipAnimationStyle: chipAnimationStyle,
+            mouseCursor: mouseCursor
+        );
     }
-
 }
 
 internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
@@ -171,7 +312,18 @@ internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
         }
     }
 
-    internal _ChoiceChipDefaultsM3__choice_chip(BuildContext context, bool isEnabled, bool isSelected, _ChipVariant__choice_chip _chipVariant) : base(shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(8.0))), showCheckmark: true)
+    internal _ChoiceChipDefaultsM3__choice_chip(
+        BuildContext context,
+        bool isEnabled,
+        bool isSelected,
+        _ChipVariant__choice_chip _chipVariant
+    )
+        : base(
+            shape: new RoundedRectangleBorder(
+                borderRadius: BorderRadius.CreateAll(Radius.circular(8.0))
+            ),
+            showCheckmark: true
+        )
     {
         this.context = context;
         this.isEnabled = isEnabled;
@@ -179,40 +331,96 @@ internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
         this._chipVariant = _chipVariant;
     }
 
-    public override double? elevation => Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? 0.0 : (isEnabled ? 1.0 : 0.0);
+    public override double? elevation =>
+        Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? 0.0 : (isEnabled ? 1.0 : 0.0);
     public override double? pressElevation => 1.0;
-    public override TextStyle? labelStyle => _textTheme.labelLarge?.copyWith(color: isEnabled ? (isSelected ? _colors.onSecondaryContainer : _colors.onSurfaceVariant) : _colors.onSurface);
-    public override WidgetStateProperty<Color?>? color => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected) && states.Contains(WidgetState.disabled))
-        {
-            return Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? _colors.onSurface.withOpacity(0.12) : _colors.onSurface.withOpacity(0.12);
-        }
-        if (states.Contains(WidgetState.disabled))
-        {
-            return Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? null : _colors.onSurface.withOpacity(0.12);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? _colors.secondaryContainer : _colors.secondaryContainer;
-        }
-        return Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? null : _colors.surfaceContainerLow;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(Equals(_chipVariant, _ChipVariant__choice_chip.flat) ? Colors.transparent : _colors.shadow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<Color>(isEnabled ? (isSelected ? _colors.onSecondaryContainer : _colors.primary) : _colors.onSurface);
-    public override Color? deleteIconColor => DartRuntimePrimitives.ConvertValue<Color>(isEnabled ? (isSelected ? _colors.onSecondaryContainer : _colors.onSurfaceVariant) : _colors.onSurface);
-    public override BorderSide? side => (Equals(_chipVariant, _ChipVariant__choice_chip.flat) && !isSelected) ? (isEnabled ? new BorderSide(color: _colors.outlineVariant) : new BorderSide(color: _colors.onSurface.withOpacity(0.12))) : new BorderSide(color: Colors.transparent);
-    public override IconThemeData? iconTheme => new IconThemeData(color: isEnabled ? (isSelected ? _colors.onSecondaryContainer : _colors.primary) : _colors.onSurface, size: 18.0);
-    public override EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0));
+    public override TextStyle? labelStyle =>
+        _textTheme.labelLarge?.copyWith(
+            color: isEnabled
+                ? (isSelected ? _colors.onSecondaryContainer : _colors.onSurfaceVariant)
+                : _colors.onSurface
+        );
+    public override WidgetStateProperty<Color?>? color =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (
+                        states.Contains(WidgetState.selected)
+                        && states.Contains(WidgetState.disabled)
+                    )
+                    {
+                        return Equals(_chipVariant, _ChipVariant__choice_chip.flat)
+                            ? _colors.onSurface.withOpacity(0.12)
+                            : _colors.onSurface.withOpacity(0.12);
+                    }
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return Equals(_chipVariant, _ChipVariant__choice_chip.flat)
+                            ? null
+                            : _colors.onSurface.withOpacity(0.12);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return Equals(_chipVariant, _ChipVariant__choice_chip.flat)
+                            ? _colors.secondaryContainer
+                            : _colors.secondaryContainer;
+                    }
+                    return Equals(_chipVariant, _ChipVariant__choice_chip.flat)
+                        ? null
+                        : _colors.surfaceContainerLow;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override Color? shadowColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            Equals(_chipVariant, _ChipVariant__choice_chip.flat)
+                ? Colors.transparent
+                : _colors.shadow
+        );
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override Color? checkmarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            isEnabled
+                ? (isSelected ? _colors.onSecondaryContainer : _colors.primary)
+                : _colors.onSurface
+        );
+    public override Color? deleteIconColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            isEnabled
+                ? (isSelected ? _colors.onSecondaryContainer : _colors.onSurfaceVariant)
+                : _colors.onSurface
+        );
+    public override BorderSide? side =>
+        (Equals(_chipVariant, _ChipVariant__choice_chip.flat) && !isSelected)
+            ? (
+                isEnabled
+                    ? new BorderSide(color: _colors.outlineVariant)
+                    : new BorderSide(color: _colors.onSurface.withOpacity(0.12))
+            )
+            : new BorderSide(color: Colors.transparent);
+    public override IconThemeData? iconTheme =>
+        new IconThemeData(
+            color: isEnabled
+                ? (isSelected ? _colors.onSecondaryContainer : _colors.primary)
+                : _colors.onSurface,
+            size: 18.0
+        );
+    public override EdgeInsetsGeometry? padding =>
+        DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0));
     public override EdgeInsetsGeometry? labelPadding
     {
         get
         {
             double fontSizeLocal = labelStyle?.fontSize ?? 14.0;
             double fontSizeRatio = MediaQuery.textScalerOf(context).scale(fontSizeLocal) / 14.0;
-            return EdgeInsets.lerp(EdgeInsets.CreateSymmetric(horizontal: 8.0), EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0))!;
+            return EdgeInsets.lerp(
+                EdgeInsets.CreateSymmetric(horizontal: 8.0),
+                EdgeInsets.CreateSymmetric(horizontal: 4.0),
+                Dart_uiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0)
+            )!;
         }
     }
 }

@@ -7,19 +7,18 @@ namespace Doroti.Framework.Painting;
 
 public class FractionalOffset : Alignment
 {
-    public new static FractionalOffset topLeft = new FractionalOffset(0.0, 0.0);
-    public new static FractionalOffset topCenter = new FractionalOffset(0.5, 0.0);
-    public new static FractionalOffset topRight = new FractionalOffset(1.0, 0.0);
-    public new static FractionalOffset centerLeft = new FractionalOffset(0.0, 0.5);
-    public new static FractionalOffset center = new FractionalOffset(0.5, 0.5);
-    public new static FractionalOffset centerRight = new FractionalOffset(1.0, 0.5);
-    public new static FractionalOffset bottomLeft = new FractionalOffset(0.0, 1.0);
-    public new static FractionalOffset bottomCenter = new FractionalOffset(0.5, 1.0);
-    public new static FractionalOffset bottomRight = new FractionalOffset(1.0, 1.0);
+    public static new FractionalOffset topLeft = new FractionalOffset(0.0, 0.0);
+    public static new FractionalOffset topCenter = new FractionalOffset(0.5, 0.0);
+    public static new FractionalOffset topRight = new FractionalOffset(1.0, 0.0);
+    public static new FractionalOffset centerLeft = new FractionalOffset(0.0, 0.5);
+    public static new FractionalOffset center = new FractionalOffset(0.5, 0.5);
+    public static new FractionalOffset centerRight = new FractionalOffset(1.0, 0.5);
+    public static new FractionalOffset bottomLeft = new FractionalOffset(0.0, 1.0);
+    public static new FractionalOffset bottomCenter = new FractionalOffset(0.5, 1.0);
+    public static new FractionalOffset bottomRight = new FractionalOffset(1.0, 1.0);
 
-    public FractionalOffset(double dx, double dy) : base((dx * 2.0) - 1.0, (dy * 2.0) - 1.0)
-    {
-    }
+    public FractionalOffset(double dx, double dy)
+        : base((dx * 2.0) - 1.0, (dy * 2.0) - 1.0) { }
 
     public static FractionalOffset CreateFromOffsetAndSize(Offset offset, Size size)
     {
@@ -33,13 +32,17 @@ public class FractionalOffset : Alignment
 
     public virtual double dx => (x + 1.0) / 2.0;
     public virtual double dy => (y + 1.0) / 2.0;
+
     public override Alignment op_Subtract(Alignment other)
     {
         if (other is not FractionalOffset)
         {
             return base.op_Subtract(other);
         }
-        return new FractionalOffset(dx - ((FractionalOffset)other).dx, dy - ((FractionalOffset)other).dy);
+        return new FractionalOffset(
+            dx - ((FractionalOffset)other).dx,
+            dy - ((FractionalOffset)other).dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -49,7 +52,10 @@ public class FractionalOffset : Alignment
         {
             return base.op_Add(other);
         }
-        return new FractionalOffset(dx + ((FractionalOffset)other).dx, dy + ((FractionalOffset)other).dy);
+        return new FractionalOffset(
+            dx + ((FractionalOffset)other).dx,
+            dy + ((FractionalOffset)other).dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -73,7 +79,10 @@ public class FractionalOffset : Alignment
 
     public override FractionalOffset ___(double other)
     {
-        return new FractionalOffset(checked((long)(dx / other)).toDouble(), checked((long)(dy / other)).toDouble());
+        return new FractionalOffset(
+            checked((long)(dx / other)).toDouble(),
+            checked((long)(dy / other)).toDouble()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -91,13 +100,22 @@ public class FractionalOffset : Alignment
         }
         if (a is null)
         {
-            return new FractionalOffset(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b.dy, t)));
+            return new FractionalOffset(
+                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)),
+                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b.dy, t))
+            );
         }
         if (b is null)
         {
-            return new FractionalOffset(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, 0.5, t)));
+            return new FractionalOffset(
+                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)),
+                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, 0.5, t))
+            );
         }
-        return new FractionalOffset(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, b.dy, t)));
+        return new FractionalOffset(
+            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)),
+            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, b.dy, t))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -106,6 +124,4 @@ public class FractionalOffset : Alignment
         return $"FractionalOffset({dx.toStringAsFixed(1L)}, " + $"{dy.toStringAsFixed(1L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

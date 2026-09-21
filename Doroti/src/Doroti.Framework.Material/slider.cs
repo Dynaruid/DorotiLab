@@ -11,7 +11,7 @@ public delegate void PaintValueIndicator(PaintingContext context, Offset offset)
 internal enum _SliderType__slider
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public enum SliderInteraction
@@ -19,7 +19,7 @@ public enum SliderInteraction
     tapAndSlide,
     tapOnly,
     slideOnly,
-    slideThumb
+    slideThumb,
 }
 
 public class Slider : StatefulWidget
@@ -48,7 +48,32 @@ public class Slider : StatefulWidget
     public virtual bool? year2023 { get; private set; }
     internal virtual _SliderType__slider _sliderType { get; private set; } = default!;
 
-    public Slider(Key? key = null, double value = default!, double? secondaryTrackValue = null, Action<double>? onChanged = default!, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, EdgeInsetsGeometry? padding = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null) : base(key: key)
+    public Slider(
+        Key? key = null,
+        double value = default!,
+        double? secondaryTrackValue = null,
+        Action<double>? onChanged = default!,
+        Action<double>? onChangeStart = null,
+        Action<double>? onChangeEnd = null,
+        double min = 0.0,
+        double max = 1.0,
+        long? divisions = null,
+        string? label = null,
+        Color? activeColor = null,
+        Color? inactiveColor = null,
+        Color? secondaryActiveColor = null,
+        Color? thumbColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        MouseCursor? mouseCursor = null,
+        SemanticFormatterCallback? semanticFormatterCallback = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        SliderInteraction? allowedInteraction = null,
+        EdgeInsetsGeometry? padding = null,
+        ShowValueIndicator? showValueIndicator = null,
+        bool? year2023 = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.secondaryTrackValue = secondaryTrackValue;
@@ -75,13 +100,64 @@ public class Slider : StatefulWidget
         _sliderType = _SliderType__slider.material;
         System.Diagnostics.Debug.Assert(min <= max);
         System.Diagnostics.Debug.Assert((value >= min) && (value <= max));
-        System.Diagnostics.Debug.Assert((secondaryTrackValue is null) || (secondaryTrackValue >= min) && (secondaryTrackValue <= max));
-        System.Diagnostics.Debug.Assert((divisions is null) || (DartRuntimePrimitives.RequireValue(divisions) > 0L));
+        System.Diagnostics.Debug.Assert(
+            (secondaryTrackValue is null)
+                || ((secondaryTrackValue >= min) && (secondaryTrackValue <= max))
+        );
+        System.Diagnostics.Debug.Assert(
+            (divisions is null) || (DartRuntimePrimitives.RequireValue(divisions) > 0L)
+        );
     }
 
-    public static Slider CreateAdaptive(Key? key = null, double value = default!, double? secondaryTrackValue = null, Action<double>? onChanged = default!, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null)
+    public static Slider CreateAdaptive(
+        Key? key = null,
+        double value = default!,
+        double? secondaryTrackValue = null,
+        Action<double>? onChanged = default!,
+        Action<double>? onChangeStart = null,
+        Action<double>? onChangeEnd = null,
+        double min = 0.0,
+        double max = 1.0,
+        long? divisions = null,
+        string? label = null,
+        MouseCursor? mouseCursor = null,
+        Color? activeColor = null,
+        Color? inactiveColor = null,
+        Color? secondaryActiveColor = null,
+        Color? thumbColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        SemanticFormatterCallback? semanticFormatterCallback = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        SliderInteraction? allowedInteraction = null,
+        ShowValueIndicator? showValueIndicator = null,
+        bool? year2023 = null
+    )
     {
-        var __instance = new Slider(key: key, value: value, secondaryTrackValue: secondaryTrackValue, onChanged: onChanged, onChangeStart: onChangeStart, onChangeEnd: onChangeEnd, min: min, max: max, divisions: divisions, label: label, activeColor: activeColor, inactiveColor: inactiveColor, secondaryActiveColor: secondaryActiveColor, thumbColor: thumbColor, overlayColor: overlayColor, mouseCursor: mouseCursor, semanticFormatterCallback: semanticFormatterCallback, focusNode: focusNode, autofocus: autofocus, allowedInteraction: allowedInteraction, showValueIndicator: showValueIndicator, year2023: year2023);
+        var __instance = new Slider(
+            key: key,
+            value: value,
+            secondaryTrackValue: secondaryTrackValue,
+            onChanged: onChanged,
+            onChangeStart: onChangeStart,
+            onChangeEnd: onChangeEnd,
+            min: min,
+            max: max,
+            divisions: divisions,
+            label: label,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            secondaryActiveColor: secondaryActiveColor,
+            thumbColor: thumbColor,
+            overlayColor: overlayColor,
+            mouseCursor: mouseCursor,
+            semanticFormatterCallback: semanticFormatterCallback,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            allowedInteraction: allowedInteraction,
+            showValueIndicator: showValueIndicator,
+            year2023: year2023
+        );
         __instance.value = value;
         __instance.secondaryTrackValue = secondaryTrackValue;
         __instance.onChanged = onChanged;
@@ -108,14 +184,20 @@ public class Slider : StatefulWidget
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SliderState__slider());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SliderState__slider());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("value", value));
         properties.add(new DoubleProperty("secondaryTrackValue", secondaryTrackValue));
-        properties.add(new ObjectFlagProperty<Action<double>>("onChanged", onChanged, ifNull: "disabled"));
-        properties.add(ObjectFlagProperty<Action<double>>.CreateHas("onChangeStart", onChangeStart));
+        properties.add(
+            new ObjectFlagProperty<Action<double>>("onChanged", onChanged, ifNull: "disabled")
+        );
+        properties.add(
+            ObjectFlagProperty<Action<double>>.CreateHas("onChangeStart", onChangeStart)
+        );
         properties.add(ObjectFlagProperty<Action<double>>.CreateHas("onChangeEnd", onChangeEnd));
         properties.add(new DoubleProperty("min", min));
         properties.add(new DoubleProperty("max", max));
@@ -124,11 +206,15 @@ public class Slider : StatefulWidget
         properties.add(new ColorProperty("activeColor", activeColor));
         properties.add(new ColorProperty("inactiveColor", inactiveColor));
         properties.add(new ColorProperty("secondaryActiveColor", secondaryActiveColor));
-        properties.add(ObjectFlagProperty<SemanticFormatterCallback>.CreateHas("semanticFormatterCallback", semanticFormatterCallback));
+        properties.add(
+            ObjectFlagProperty<SemanticFormatterCallback>.CreateHas(
+                "semanticFormatterCallback",
+                semanticFormatterCallback
+            )
+        );
         properties.add(ObjectFlagProperty<FocusNode>.CreateHas("focusNode", focusNode));
         properties.add(new FlagProperty("autofocus", value: autofocus, ifTrue: "autofocus"));
     }
-
 }
 
 public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slider>
@@ -140,38 +226,89 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
     public virtual AnimationController enableController { get; set; } = default!;
     public virtual AnimationController positionController { get; set; } = default!;
     public virtual Timer? interactionTimer { get; set; } = default;
-    internal virtual GlobalKey<IState> _renderObjectKey { get; private set; } = GlobalKey<IState>.Create();
-    internal static DartMap<ShortcutActivator, Intent> _traditionalNavShortcutMap = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = _AdjustSliderIntent__slider.CreateUp(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = _AdjustSliderIntent__slider.CreateDown(), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = _AdjustSliderIntent__slider.CreateLeft(), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = _AdjustSliderIntent__slider.CreateRight() };
-    internal static DartMap<ShortcutActivator, Intent> _directionalNavShortcutMap = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = _AdjustSliderIntent__slider.CreateLeft(), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = _AdjustSliderIntent__slider.CreateRight() };
+    internal virtual GlobalKey<IState> _renderObjectKey { get; private set; } =
+        GlobalKey<IState>.Create();
+    internal static DartMap<ShortcutActivator, Intent> _traditionalNavShortcutMap = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] = _AdjustSliderIntent__slider.CreateUp(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] =
+            _AdjustSliderIntent__slider.CreateDown(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] =
+            _AdjustSliderIntent__slider.CreateLeft(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] =
+            _AdjustSliderIntent__slider.CreateRight(),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _directionalNavShortcutMap = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] =
+            _AdjustSliderIntent__slider.CreateLeft(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] =
+            _AdjustSliderIntent__slider.CreateRight(),
+    };
     internal virtual DartMap<Type, dynamic> _actionMap { get; set; } = default!;
     public virtual Action<PaintingContext, Offset>? paintValueIndicator { get; set; } = default;
     internal virtual bool _dragging { get; set; } = false;
     internal virtual double? _currentChangedValue { get; set; } = default;
     internal virtual FocusNode? _focusNode { get; set; } = default;
-    internal virtual OverlayPortalController _valueIndicatorOverlayPortalController { get; private set; } = ((Func<OverlayPortalController>)(() =>
-{
-    var __cascade = new OverlayPortalController(debugLabel: "Slider ValueIndicator");
-    __cascade.show();
-    return __cascade;
-}))();
+    internal virtual OverlayPortalController _valueIndicatorOverlayPortalController
+    {
+        get;
+        private set;
+    } =
+        (
+            (Func<OverlayPortalController>)(
+                () =>
+                {
+                    var __cascade = new OverlayPortalController(
+                        debugLabel: "Slider ValueIndicator"
+                    );
+                    __cascade.show();
+                    return __cascade;
+                }
+            )
+        )();
     internal virtual bool _focused { get; set; } = false;
     internal virtual bool _hovering { get; set; } = false;
     internal virtual LayerLink _layerLink { get; private set; } = new LayerLink();
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>(widget.onChanged is not null);
-    public virtual FocusNode focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _focusNode!);
+    internal virtual bool _enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.onChanged is not null);
+    public virtual FocusNode focusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _focusNode!);
+
     public override void initState()
     {
         base.initState();
-        overlayController = new AnimationController(duration: ConstantsLibrary.kRadialReactionDuration, vsync: this);
-        valueIndicatorController = new AnimationController(duration: valueIndicatorAnimationDuration, vsync: this);
+        overlayController = new AnimationController(
+            duration: ConstantsLibrary.kRadialReactionDuration,
+            vsync: this
+        );
+        valueIndicatorController = new AnimationController(
+            duration: valueIndicatorAnimationDuration,
+            vsync: this
+        );
         enableController = new AnimationController(duration: enableAnimationDuration, vsync: this);
         positionController = new AnimationController(duration: Duration.zero, vsync: this);
         enableController.value = (widget.onChanged is not null) ? 1.0 : 0.0;
         positionController.value = _convert(widget.value);
-        _actionMap = new DartMap<Type, dynamic> { [typeof(_AdjustSliderIntent__slider)] = new CallbackAction<_AdjustSliderIntent__slider>(onInvoke: (__arg0) => { ((Action<_AdjustSliderIntent__slider>)_actionHandler)(__arg0); return default!; }) };
+        _actionMap = new DartMap<Type, dynamic>
+        {
+            [typeof(_AdjustSliderIntent__slider)] = new CallbackAction<_AdjustSliderIntent__slider>(
+                onInvoke: (__arg0) =>
+                {
+                    ((Action<_AdjustSliderIntent__slider>)_actionHandler)(__arg0);
+                    return default!;
+                }
+            ),
+        };
         if (widget.focusNode is null)
         {
             _focusNode ??= new FocusNode();
@@ -187,19 +324,37 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         positionController.dispose();
         _focusNode?.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -241,9 +396,26 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
     internal virtual void _actionHandler(_AdjustSliderIntent__slider intent)
     {
         TextDirection directionality = Directionality.of(_renderObjectKey.currentContext!);
-        bool shouldIncrease = intent.type switch { _SliderAdjustmentType__slider.up => true,_SliderAdjustmentType__slider.down => false,_SliderAdjustmentType__slider.left => Equals(directionality, TextDirection.rtl),_SliderAdjustmentType__slider.right => Equals(directionality, TextDirection.ltr),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        var slider = ((_RenderSlider__slider?)_renderObjectKey.currentContext!.findRenderObject()!)!;
-        if (shouldIncrease) { slider.increaseAction(); } else { slider.decreaseAction(); }
+        bool shouldIncrease = intent.type switch
+        {
+            _SliderAdjustmentType__slider.up => true,
+            _SliderAdjustmentType__slider.down => false,
+            _SliderAdjustmentType__slider.left => Equals(directionality, TextDirection.rtl),
+            _SliderAdjustmentType__slider.right => Equals(directionality, TextDirection.ltr),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        var slider = (
+            (_RenderSlider__slider?)_renderObjectKey.currentContext!.findRenderObject()!
+        )!;
+        if (shouldIncrease)
+        {
+            slider.increaseAction();
+        }
+        else
+        {
+            slider.decreaseAction();
+        }
         return;
     }
 
@@ -312,30 +484,30 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         switch (widget._sliderType)
         {
             case _SliderType__slider.material:
-                {
-                    return _buildMaterialSlider(context);
-                }
+            {
+                return _buildMaterialSlider(context);
+            }
             case _SliderType__slider.adaptive:
+            {
+                ThemeData theme = Theme.of(context);
+                switch (theme.platform)
                 {
-                    ThemeData theme = Theme.of(context);
-                    switch (theme.platform)
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.windows:
                     {
-                        case TargetPlatform.android:
-                        case TargetPlatform.fuchsia:
-                        case TargetPlatform.linux:
-                        case TargetPlatform.windows:
-                            {
-                                return _buildMaterialSlider(context);
-                            }
-                        case TargetPlatform.iOS:
-                        case TargetPlatform.macOS:
-                            {
-                                return _buildCupertinoSlider(context);
-                            }
-                        default:
-                            throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        return _buildMaterialSlider(context);
                     }
+                    case TargetPlatform.iOS:
+                    case TargetPlatform.macOS:
+                    {
+                        return _buildCupertinoSlider(context);
+                    }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -345,34 +517,120 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         ThemeData theme = Theme.of(context);
         SliderThemeData sliderThemeLocal = SliderTheme.of(context);
         bool year2023Local = (widget.year2023 ?? sliderThemeLocal.year2023) ?? true;
-        SliderThemeData defaults = year2023Local ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context);
+        SliderThemeData defaults = year2023Local
+            ? new _SliderDefaultsM3Year2023__slider(context)
+            : new _SliderDefaultsM3__slider(context);
         ShowValueIndicator defaultShowValueIndicator = ShowValueIndicator.onlyForDiscrete;
         SliderInteraction defaultAllowedInteraction = SliderInteraction.tapAndSlide;
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection31364 = new HashSet<WidgetState>(); if (!_enabled) { __collection31364.Add(WidgetState.disabled); } if (_hovering) { __collection31364.Add(WidgetState.hovered); } if (_focused) { __collection31364.Add(WidgetState.focused); } if (_dragging) { __collection31364.Add(WidgetState.dragged); } return __collection31364; }))();
-        SliderComponentShape valueIndicatorShapeLocal = sliderThemeLocal.valueIndicatorShape ?? defaults.valueIndicatorShape!;
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection31364 = new HashSet<WidgetState>();
+                    if (!_enabled)
+                    {
+                        __collection31364.Add(WidgetState.disabled);
+                    }
+                    if (_hovering)
+                    {
+                        __collection31364.Add(WidgetState.hovered);
+                    }
+                    if (_focused)
+                    {
+                        __collection31364.Add(WidgetState.focused);
+                    }
+                    if (_dragging)
+                    {
+                        __collection31364.Add(WidgetState.dragged);
+                    }
+                    return __collection31364;
+                }
+            )
+        )();
+        SliderComponentShape valueIndicatorShapeLocal =
+            sliderThemeLocal.valueIndicatorShape ?? defaults.valueIndicatorShape!;
         Color valueIndicatorColorLocal = default!;
         if (valueIndicatorShapeLocal is RectangularSliderValueIndicatorShape)
         {
-            RectangularSliderValueIndicatorShape valueIndicatorShape__31866__as32007 = (RectangularSliderValueIndicatorShape)valueIndicatorShapeLocal;
-            valueIndicatorColorLocal = sliderThemeLocal.valueIndicatorColor ?? Dart_uiLibrary.Color.alphaBlend(theme.colorScheme.onSurface.withOpacity(0.6), theme.colorScheme.surface.withOpacity(0.9));
+            RectangularSliderValueIndicatorShape valueIndicatorShape__31866__as32007 =
+                (RectangularSliderValueIndicatorShape)valueIndicatorShapeLocal;
+            valueIndicatorColorLocal =
+                sliderThemeLocal.valueIndicatorColor
+                ?? Dart_uiLibrary.Color.alphaBlend(
+                    theme.colorScheme.onSurface.withOpacity(0.6),
+                    theme.colorScheme.surface.withOpacity(0.9)
+                );
         }
         else
         {
-            valueIndicatorColorLocal = (widget.activeColor ?? sliderThemeLocal.valueIndicatorColor) ?? defaults.valueIndicatorColor!;
+            valueIndicatorColorLocal =
+                (widget.activeColor ?? sliderThemeLocal.valueIndicatorColor)
+                ?? defaults.valueIndicatorColor!;
         }
         Color? effectiveOverlayColor()
         {
-            return ((widget.overlayColor?.resolve(states) ?? widget.activeColor?.withOpacity(0.12)) ?? WidgetStateProperty.resolveAs(sliderThemeLocal.overlayColor, states)) ?? WidgetStateProperty.resolveAs(defaults.overlayColor, states);
+            return (
+                    (widget.overlayColor?.resolve(states) ?? widget.activeColor?.withOpacity(0.12))
+                    ?? WidgetStateProperty.resolveAs(sliderThemeLocal.overlayColor, states)
+                ) ?? WidgetStateProperty.resolveAs(defaults.overlayColor, states);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        TextStyle valueIndicatorTextStyleLocal = sliderThemeLocal.valueIndicatorTextStyle ?? defaults.valueIndicatorTextStyle!;
+        TextStyle valueIndicatorTextStyleLocal =
+            sliderThemeLocal.valueIndicatorTextStyle ?? defaults.valueIndicatorTextStyle!;
         if (MediaQuery.boldTextOf(context))
         {
-            valueIndicatorTextStyleLocal = valueIndicatorTextStyleLocal.merge(new TextStyle(fontWeight: FontWeight.bold));
+            valueIndicatorTextStyleLocal = valueIndicatorTextStyleLocal.merge(
+                new TextStyle(fontWeight: FontWeight.bold)
+            );
         }
-        sliderThemeLocal = sliderThemeLocal.copyWith(trackHeight: sliderThemeLocal.trackHeight ?? defaults.trackHeight, activeTrackColor: (widget.activeColor ?? sliderThemeLocal.activeTrackColor) ?? defaults.activeTrackColor, inactiveTrackColor: (widget.inactiveColor ?? sliderThemeLocal.inactiveTrackColor) ?? defaults.inactiveTrackColor, secondaryActiveTrackColor: (widget.secondaryActiveColor ?? sliderThemeLocal.secondaryActiveTrackColor) ?? defaults.secondaryActiveTrackColor, disabledActiveTrackColor: sliderThemeLocal.disabledActiveTrackColor ?? defaults.disabledActiveTrackColor, disabledInactiveTrackColor: sliderThemeLocal.disabledInactiveTrackColor ?? defaults.disabledInactiveTrackColor, disabledSecondaryActiveTrackColor: sliderThemeLocal.disabledSecondaryActiveTrackColor ?? defaults.disabledSecondaryActiveTrackColor, activeTickMarkColor: (widget.inactiveColor ?? sliderThemeLocal.activeTickMarkColor) ?? defaults.activeTickMarkColor, inactiveTickMarkColor: (widget.activeColor ?? sliderThemeLocal.inactiveTickMarkColor) ?? defaults.inactiveTickMarkColor, disabledActiveTickMarkColor: sliderThemeLocal.disabledActiveTickMarkColor ?? defaults.disabledActiveTickMarkColor, disabledInactiveTickMarkColor: sliderThemeLocal.disabledInactiveTickMarkColor ?? defaults.disabledInactiveTickMarkColor, thumbColor: ((widget.thumbColor ?? widget.activeColor) ?? sliderThemeLocal.thumbColor) ?? defaults.thumbColor, disabledThumbColor: sliderThemeLocal.disabledThumbColor ?? defaults.disabledThumbColor, overlayColor: effectiveOverlayColor(), valueIndicatorColor: valueIndicatorColorLocal, trackShape: sliderThemeLocal.trackShape ?? defaults.trackShape, tickMarkShape: sliderThemeLocal.tickMarkShape ?? defaults.tickMarkShape, thumbShape: sliderThemeLocal.thumbShape ?? defaults.thumbShape, overlayShape: sliderThemeLocal.overlayShape ?? defaults.overlayShape, valueIndicatorShape: valueIndicatorShapeLocal, showValueIndicator: (widget.showValueIndicator ?? sliderThemeLocal.showValueIndicator) ?? defaultShowValueIndicator, valueIndicatorTextStyle: valueIndicatorTextStyleLocal, padding: widget.padding ?? sliderThemeLocal.padding, thumbSize: sliderThemeLocal.thumbSize ?? defaults.thumbSize, trackGap: sliderThemeLocal.trackGap ?? defaults.trackGap);
-        MouseCursor effectiveMouseCursor = (WidgetStateProperty.resolveAs(widget.mouseCursor, states) ?? (sliderThemeLocal.mouseCursor?.resolve(states))) ?? WidgetStateMouseCursor.clickable.resolve(states);
-        SliderInteraction effectiveAllowedInteraction = (widget.allowedInteraction ?? sliderThemeLocal.allowedInteraction) ?? defaultAllowedInteraction;
+        sliderThemeLocal = sliderThemeLocal.copyWith(
+            trackHeight: sliderThemeLocal.trackHeight ?? defaults.trackHeight,
+            activeTrackColor: (widget.activeColor ?? sliderThemeLocal.activeTrackColor)
+                ?? defaults.activeTrackColor,
+            inactiveTrackColor: (widget.inactiveColor ?? sliderThemeLocal.inactiveTrackColor)
+                ?? defaults.inactiveTrackColor,
+            secondaryActiveTrackColor: (
+                widget.secondaryActiveColor ?? sliderThemeLocal.secondaryActiveTrackColor
+            ) ?? defaults.secondaryActiveTrackColor,
+            disabledActiveTrackColor: sliderThemeLocal.disabledActiveTrackColor
+                ?? defaults.disabledActiveTrackColor,
+            disabledInactiveTrackColor: sliderThemeLocal.disabledInactiveTrackColor
+                ?? defaults.disabledInactiveTrackColor,
+            disabledSecondaryActiveTrackColor: sliderThemeLocal.disabledSecondaryActiveTrackColor
+                ?? defaults.disabledSecondaryActiveTrackColor,
+            activeTickMarkColor: (widget.inactiveColor ?? sliderThemeLocal.activeTickMarkColor)
+                ?? defaults.activeTickMarkColor,
+            inactiveTickMarkColor: (widget.activeColor ?? sliderThemeLocal.inactiveTickMarkColor)
+                ?? defaults.inactiveTickMarkColor,
+            disabledActiveTickMarkColor: sliderThemeLocal.disabledActiveTickMarkColor
+                ?? defaults.disabledActiveTickMarkColor,
+            disabledInactiveTickMarkColor: sliderThemeLocal.disabledInactiveTickMarkColor
+                ?? defaults.disabledInactiveTickMarkColor,
+            thumbColor: ((widget.thumbColor ?? widget.activeColor) ?? sliderThemeLocal.thumbColor)
+                ?? defaults.thumbColor,
+            disabledThumbColor: sliderThemeLocal.disabledThumbColor ?? defaults.disabledThumbColor,
+            overlayColor: effectiveOverlayColor(),
+            valueIndicatorColor: valueIndicatorColorLocal,
+            trackShape: sliderThemeLocal.trackShape ?? defaults.trackShape,
+            tickMarkShape: sliderThemeLocal.tickMarkShape ?? defaults.tickMarkShape,
+            thumbShape: sliderThemeLocal.thumbShape ?? defaults.thumbShape,
+            overlayShape: sliderThemeLocal.overlayShape ?? defaults.overlayShape,
+            valueIndicatorShape: valueIndicatorShapeLocal,
+            showValueIndicator: (widget.showValueIndicator ?? sliderThemeLocal.showValueIndicator)
+                ?? defaultShowValueIndicator,
+            valueIndicatorTextStyle: valueIndicatorTextStyleLocal,
+            padding: widget.padding ?? sliderThemeLocal.padding,
+            thumbSize: sliderThemeLocal.thumbSize ?? defaults.thumbSize,
+            trackGap: sliderThemeLocal.trackGap ?? defaults.trackGap
+        );
+        MouseCursor effectiveMouseCursor =
+            (
+                WidgetStateProperty.resolveAs(widget.mouseCursor, states)
+                ?? (sliderThemeLocal.mouseCursor?.resolve(states))
+            ) ?? WidgetStateMouseCursor.clickable.resolve(states);
+        SliderInteraction effectiveAllowedInteraction =
+            (widget.allowedInteraction ?? sliderThemeLocal.allowedInteraction)
+            ?? defaultAllowedInteraction;
         Size screenSize()
         {
             return MediaQuery.sizeOf(context);
@@ -386,50 +644,140 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
             case TargetPlatform.iOS:
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case TargetPlatform.windows:
+            {
+                handleDidGainAccessibilityFocus = () =>
                 {
-                    handleDidGainAccessibilityFocus = () =>
+                    if (!focusNode.hasFocus && focusNode.canRequestFocus)
                     {
-                        if (!focusNode.hasFocus && focusNode.canRequestFocus)
-                        {
-                            focusNode.requestFocus();
-                        }
-                    };
-                    break;
-                }
+                        focusNode.requestFocus();
+                    }
+                };
+                break;
+            }
         }
-        DartMap<ShortcutActivator, Intent> shortcutMap = MediaQuery.navigationModeOf(context) switch { NavigationMode.directional => _directionalNavShortcutMap, NavigationMode.traditional => _traditionalNavShortcutMap,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        double fontSizeLocal = sliderThemeLocal.valueIndicatorTextStyle?.fontSize ?? Text_painterLibrary.kDefaultFontSize;
-        double fontSizeToScale = (fontSizeLocal == 0.0) ? Text_painterLibrary.kDefaultFontSize : fontSizeLocal;
+        DartMap<ShortcutActivator, Intent> shortcutMap = MediaQuery.navigationModeOf(context) switch
+        {
+            NavigationMode.directional => _directionalNavShortcutMap,
+            NavigationMode.traditional => _traditionalNavShortcutMap,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        double fontSizeLocal =
+            sliderThemeLocal.valueIndicatorTextStyle?.fontSize
+            ?? Text_painterLibrary.kDefaultFontSize;
+        double fontSizeToScale =
+            (fontSizeLocal == 0.0) ? Text_painterLibrary.kDefaultFontSize : fontSizeLocal;
         TextScaler textScaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3);
         double effectiveTextScale = textScaler.scale(fontSizeToScale) / fontSizeToScale;
-        Widget result = new CompositedTransformTarget(link: _layerLink, child: new _SliderRenderObjectWidget__slider(key: _renderObjectKey, value: _convert(widget.value), secondaryTrackValue: (widget.secondaryTrackValue is not null) ? _convert(DartRuntimePrimitives.RequireValue(widget.secondaryTrackValue)) : null, divisions: widget.divisions, label: widget.label, sliderTheme: sliderThemeLocal, textScaleFactor: effectiveTextScale, screenSize: screenSize(), onChanged: (widget.onChanged is not null && widget.max > widget.min) ? _handleChanged : null, onChangeStart: _handleDragStart, onChangeEnd: _handleDragEnd, state: this, semanticFormatterCallback: widget.semanticFormatterCallback, onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus(), hasFocus: _focused, hovering: _hovering, allowedInteraction: effectiveAllowedInteraction));
+        Widget result = new CompositedTransformTarget(
+            link: _layerLink,
+            child: new _SliderRenderObjectWidget__slider(
+                key: _renderObjectKey,
+                value: _convert(widget.value),
+                secondaryTrackValue: (widget.secondaryTrackValue is not null)
+                    ? _convert(DartRuntimePrimitives.RequireValue(widget.secondaryTrackValue))
+                    : null,
+                divisions: widget.divisions,
+                label: widget.label,
+                sliderTheme: sliderThemeLocal,
+                textScaleFactor: effectiveTextScale,
+                screenSize: screenSize(),
+                onChanged: (widget.onChanged is not null && widget.max > widget.min)
+                    ? _handleChanged
+                    : null,
+                onChangeStart: _handleDragStart,
+                onChangeEnd: _handleDragEnd,
+                state: this,
+                semanticFormatterCallback: widget.semanticFormatterCallback,
+                onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus(),
+                hasFocus: _focused,
+                hovering: _hovering,
+                allowedInteraction: effectiveAllowedInteraction
+            )
+        );
         EdgeInsetsGeometry? paddingLocal = widget.padding ?? sliderThemeLocal.padding;
         if (paddingLocal is not null)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: paddingLocal, child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Padding(padding: paddingLocal, child: result)
+            );
         }
-        result = DartRuntimePrimitives.ConvertValue<Widget>(new OverlayPortal(controller: _valueIndicatorOverlayPortalController, overlayChildBuilder: (context) =>
-        {
-            return _buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderThemeLocal.showValueIndicator));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: result));
-        return new FocusableActionDetector(actions: _actionMap, shortcuts: shortcutMap, focusNode: focusNode, autofocus: widget.autofocus, enabled: _enabled, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: effectiveMouseCursor, includeFocusSemantics: false, child: result);
+        result = DartRuntimePrimitives.ConvertValue<Widget>(
+            new OverlayPortal(
+                controller: _valueIndicatorOverlayPortalController,
+                overlayChildBuilder: (context) =>
+                {
+                    return _buildValueIndicator(
+                        DartRuntimePrimitives.RequireValue(sliderThemeLocal.showValueIndicator)
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                child: result
+            )
+        );
+        return new FocusableActionDetector(
+            actions: _actionMap,
+            shortcuts: shortcutMap,
+            focusNode: focusNode,
+            autofocus: widget.autofocus,
+            enabled: _enabled,
+            onShowFocusHighlight: _handleFocusHighlightChanged,
+            onShowHoverHighlight: _handleHoverChanged,
+            mouseCursor: effectiveMouseCursor,
+            includeFocusSemantics: false,
+            child: result
+        );
     }
 
     internal virtual Widget _buildCupertinoSlider(BuildContext context)
     {
-        return new SizedBox(width: double.PositiveInfinity, child: new CupertinoSlider(value: widget.value, onChanged: widget.onChanged, onChangeStart: widget.onChangeStart, onChangeEnd: widget.onChangeEnd, min: widget.min, max: widget.max, divisions: widget.divisions, activeColor: widget.activeColor, thumbColor: widget.thumbColor ?? CupertinoColors.white));
+        return new SizedBox(
+            width: double.PositiveInfinity,
+            child: new CupertinoSlider(
+                value: widget.value,
+                onChanged: widget.onChanged,
+                onChangeStart: widget.onChangeStart,
+                onChangeEnd: widget.onChangeEnd,
+                min: widget.min,
+                max: widget.max,
+                divisions: widget.divisions,
+                activeColor: widget.activeColor,
+                thumbColor: widget.thumbColor ?? CupertinoColors.white
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Widget _buildValueIndicator(ShowValueIndicator showValueIndicator)
     {
-        Widget valueIndicator = new CompositedTransformFollower(link: _layerLink, child: new _ValueIndicatorRenderObjectWidget__slider(state: this));
-        return showValueIndicator switch { var __constant40364 when Equals(__constant40364, ShowValueIndicator.never) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink()),var __constant40423 when Equals(__constant40423, ShowValueIndicator.onlyForDiscrete) => (widget.divisions is not null) ? valueIndicator : SizedBox.CreateShrink(),var __constant40544 when Equals(__constant40544, ShowValueIndicator.onlyForContinuous) => (widget.divisions is null) ? valueIndicator : SizedBox.CreateShrink(),var __logical40667 when Equals(__logical40667, ShowValueIndicator.alwaysVisible) || Equals(__logical40667, ShowValueIndicator.always) => valueIndicator,var __constant40744 when Equals(__constant40744, ShowValueIndicator.onDrag) => valueIndicator,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Widget valueIndicator = new CompositedTransformFollower(
+            link: _layerLink,
+            child: new _ValueIndicatorRenderObjectWidget__slider(state: this)
+        );
+        return showValueIndicator switch
+        {
+            var __constant40364 when Equals(__constant40364, ShowValueIndicator.never) =>
+                DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink()),
+            var __constant40423 when Equals(__constant40423, ShowValueIndicator.onlyForDiscrete) =>
+                (widget.divisions is not null) ? valueIndicator : SizedBox.CreateShrink(),
+            var __constant40544
+                when Equals(__constant40544, ShowValueIndicator.onlyForContinuous) => (
+                widget.divisions is null
+            )
+                ? valueIndicator
+                : SizedBox.CreateShrink(),
+            var __logical40667
+                when Equals(__logical40667, ShowValueIndicator.alwaysVisible)
+                    || Equals(__logical40667, ShowValueIndicator.always) => valueIndicator,
+            var __constant40744 when Equals(__constant40744, ShowValueIndicator.onDrag) =>
+                valueIndicator,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -441,13 +789,23 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -496,9 +854,17 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
@@ -520,7 +886,26 @@ internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
     public virtual bool hovering { get; private set; } = default!;
     public virtual SliderInteraction allowedInteraction { get; private set; } = default!;
 
-    internal _SliderRenderObjectWidget__slider(Key? key = null, double value = default!, double? secondaryTrackValue = default!, long? divisions = default!, string? label = default!, SliderThemeData sliderTheme = default!, double textScaleFactor = default!, Size screenSize = default!, Action<double>? onChanged = default!, Action<double>? onChangeStart = default!, Action<double>? onChangeEnd = default!, _SliderState__slider state = default!, SemanticFormatterCallback? semanticFormatterCallback = default!, Action? onDidGainAccessibilityFocus = default!, bool hasFocus = default!, bool hovering = default!, SliderInteraction allowedInteraction = default!) : base(key: key)
+    internal _SliderRenderObjectWidget__slider(
+        Key? key = null,
+        double value = default!,
+        double? secondaryTrackValue = default!,
+        long? divisions = default!,
+        string? label = default!,
+        SliderThemeData sliderTheme = default!,
+        double textScaleFactor = default!,
+        Size screenSize = default!,
+        Action<double>? onChanged = default!,
+        Action<double>? onChangeStart = default!,
+        Action<double>? onChangeEnd = default!,
+        _SliderState__slider state = default!,
+        SemanticFormatterCallback? semanticFormatterCallback = default!,
+        Action? onDidGainAccessibilityFocus = default!,
+        bool hasFocus = default!,
+        bool hovering = default!,
+        SliderInteraction allowedInteraction = default!
+    )
+        : base(key: key)
     {
         this.value = value;
         this.secondaryTrackValue = secondaryTrackValue;
@@ -542,38 +927,63 @@ internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSlider__slider(value: value, secondaryTrackValue: secondaryTrackValue, divisions: divisions, label: label, sliderTheme: sliderTheme, textScaleFactor: textScaleFactor, screenSize: screenSize, onChanged: onChanged, onChangeStart: onChangeStart, onChangeEnd: onChangeEnd, state: state, textDirection: Directionality.of(context), semanticFormatterCallback: semanticFormatterCallback, onDidGainAccessibilityFocus: onDidGainAccessibilityFocus, platform: Theme.of(context).platform, hasFocus: hasFocus, hovering: hovering, gestureSettings: MediaQuery.gestureSettingsOf(context), allowedInteraction: allowedInteraction);
+        return new _RenderSlider__slider(
+            value: value,
+            secondaryTrackValue: secondaryTrackValue,
+            divisions: divisions,
+            label: label,
+            sliderTheme: sliderTheme,
+            textScaleFactor: textScaleFactor,
+            screenSize: screenSize,
+            onChanged: onChanged,
+            onChangeStart: onChangeStart,
+            onChangeEnd: onChangeEnd,
+            state: state,
+            textDirection: Directionality.of(context),
+            semanticFormatterCallback: semanticFormatterCallback,
+            onDidGainAccessibilityFocus: onDidGainAccessibilityFocus,
+            platform: Theme.of(context).platform,
+            hasFocus: hasFocus,
+            hovering: hovering,
+            gestureSettings: MediaQuery.gestureSettingsOf(context),
+            allowedInteraction: allowedInteraction
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSlider__slider)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSlider__slider>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.divisions = divisions;
-    __cascade.value = value;
-    __cascade.secondaryTrackValue = secondaryTrackValue;
-    __cascade.label = label;
-    __cascade.sliderTheme = sliderTheme;
-    __cascade.textScaleFactor = textScaleFactor;
-    __cascade.screenSize = screenSize;
-    __cascade.onChanged = onChanged;
-    __cascade.onChangeStart = onChangeStart;
-    __cascade.onChangeEnd = onChangeEnd;
-    __cascade.textDirection = Directionality.of(context);
-    __cascade.semanticFormatterCallback = semanticFormatterCallback;
-    __cascade.onDidGainAccessibilityFocus = onDidGainAccessibilityFocus;
-    __cascade.platform = Theme.of(context).platform;
-    __cascade.hasFocus = hasFocus;
-    __cascade.hovering = hovering;
-    __cascade.gestureSettings = MediaQuery.gestureSettingsOf(context);
-    __cascade.allowedInteraction = allowedInteraction;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSlider__slider>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.divisions = divisions;
+                        __cascade.value = value;
+                        __cascade.secondaryTrackValue = secondaryTrackValue;
+                        __cascade.label = label;
+                        __cascade.sliderTheme = sliderTheme;
+                        __cascade.textScaleFactor = textScaleFactor;
+                        __cascade.screenSize = screenSize;
+                        __cascade.onChanged = onChanged;
+                        __cascade.onChangeStart = onChangeStart;
+                        __cascade.onChangeEnd = onChangeEnd;
+                        __cascade.textDirection = Directionality.of(context);
+                        __cascade.semanticFormatterCallback = semanticFormatterCallback;
+                        __cascade.onDidGainAccessibilityFocus = onDidGainAccessibilityFocus;
+                        __cascade.platform = Theme.of(context).platform;
+                        __cascade.hasFocus = hasFocus;
+                        __cascade.hovering = hovering;
+                        __cascade.gestureSettings = MediaQuery.gestureSettingsOf(context);
+                        __cascade.allowedInteraction = allowedInteraction;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMixin
@@ -611,7 +1021,27 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     internal virtual SliderInteraction _allowedInteraction { get; set; } = default!;
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
 
-    internal _RenderSlider__slider(double value, double? secondaryTrackValue, long? divisions, string? label, SliderThemeData sliderTheme, double textScaleFactor, Size screenSize, TargetPlatform platform, Action<double>? onChanged, SemanticFormatterCallback? semanticFormatterCallback, Action? onDidGainAccessibilityFocus, Action<double>? onChangeStart, Action<double>? onChangeEnd, _SliderState__slider state, TextDirection textDirection, bool hasFocus, bool hovering, Gestures.DeviceGestureSettings gestureSettings, SliderInteraction allowedInteraction)
+    internal _RenderSlider__slider(
+        double value,
+        double? secondaryTrackValue,
+        long? divisions,
+        string? label,
+        SliderThemeData sliderTheme,
+        double textScaleFactor,
+        Size screenSize,
+        TargetPlatform platform,
+        Action<double>? onChanged,
+        SemanticFormatterCallback? semanticFormatterCallback,
+        Action? onDidGainAccessibilityFocus,
+        Action<double>? onChangeStart,
+        Action<double>? onChangeEnd,
+        _SliderState__slider state,
+        TextDirection textDirection,
+        bool hasFocus,
+        bool hovering,
+        Gestures.DeviceGestureSettings gestureSettings,
+        SliderInteraction allowedInteraction
+    )
     {
         this.onDidGainAccessibilityFocus = onDidGainAccessibilityFocus;
         this.onChangeStart = onChangeStart;
@@ -632,43 +1062,95 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         _hovering = hovering;
         _allowedInteraction = allowedInteraction;
         System.Diagnostics.Debug.Assert((value >= 0.0) && (value <= 1.0));
-        System.Diagnostics.Debug.Assert((secondaryTrackValue is null) || (secondaryTrackValue >= 0.0) && (secondaryTrackValue <= 1.0));
+        System.Diagnostics.Debug.Assert(
+            (secondaryTrackValue is null)
+                || ((secondaryTrackValue >= 0.0) && (secondaryTrackValue <= 1.0))
+        );
         _updateLabelPainter();
         var teamLocal = new Gestures.GestureArenaTeam();
-        _drag = ((Func<Gestures.HorizontalDragGestureRecognizer>)(() =>
-{
-    var __cascade = new Gestures.HorizontalDragGestureRecognizer();
-    __cascade.team = teamLocal;
-    __cascade.onStart = _handleDragStart;
-    __cascade.onUpdate = _handleDragUpdate;
-    __cascade.onEnd = _handleDragEnd;
-    __cascade.onCancel = _endInteraction;
-    __cascade.gestureSettings = gestureSettings;
-    return __cascade;
-}))();
-        _tap = ((Func<Gestures.TapGestureRecognizer>)(() =>
-{
-    var __cascade = new Gestures.TapGestureRecognizer();
-    __cascade.team = teamLocal;
-    __cascade.onTapDown = _handleTapDown;
-    __cascade.onTapUp = _handleTapUp;
-    __cascade.gestureSettings = gestureSettings;
-    return __cascade;
-}))();
-        _overlayAnimation = new CurvedAnimation(parent: _state.overlayController, curve: Curves.fastOutSlowIn);
-        _valueIndicatorAnimation = new CurvedAnimation(parent: _state.valueIndicatorController, curve: Curves.fastOutSlowIn);
-        _enableAnimation = new CurvedAnimation(parent: _state.enableController, curve: Curves.easeInOut);
+        _drag = (
+            (Func<Gestures.HorizontalDragGestureRecognizer>)(
+                () =>
+                {
+                    var __cascade = new Gestures.HorizontalDragGestureRecognizer();
+                    __cascade.team = teamLocal;
+                    __cascade.onStart = _handleDragStart;
+                    __cascade.onUpdate = _handleDragUpdate;
+                    __cascade.onEnd = _handleDragEnd;
+                    __cascade.onCancel = _endInteraction;
+                    __cascade.gestureSettings = gestureSettings;
+                    return __cascade;
+                }
+            )
+        )();
+        _tap = (
+            (Func<Gestures.TapGestureRecognizer>)(
+                () =>
+                {
+                    var __cascade = new Gestures.TapGestureRecognizer();
+                    __cascade.team = teamLocal;
+                    __cascade.onTapDown = _handleTapDown;
+                    __cascade.onTapUp = _handleTapUp;
+                    __cascade.gestureSettings = gestureSettings;
+                    return __cascade;
+                }
+            )
+        )();
+        _overlayAnimation = new CurvedAnimation(
+            parent: _state.overlayController,
+            curve: Curves.fastOutSlowIn
+        );
+        _valueIndicatorAnimation = new CurvedAnimation(
+            parent: _state.valueIndicatorController,
+            curve: Curves.fastOutSlowIn
+        );
+        _enableAnimation = new CurvedAnimation(
+            parent: _state.enableController,
+            curve: Curves.easeInOut
+        );
     }
 
-    internal virtual double _maxSliderPartWidth => _sliderPartSizes.map((size) => size.width).reduce(Dart_mathLibrary.max);
-    internal virtual double _maxSliderPartHeight => _sliderPartSizes.map((size) => size.height).reduce(Dart_mathLibrary.max);
-    internal virtual double _thumbSizeHeight => _sliderTheme.thumbShape!.getPreferredSize(isInteractive, isDiscrete).height;
-    internal virtual double _overlayHeight => _sliderTheme.overlayShape!.getPreferredSize(isInteractive, isDiscrete).height;
-    internal virtual List<Size> _sliderPartSizes => new List<Size> { new Size(_sliderTheme.overlayShape!.getPreferredSize(isInteractive, isDiscrete).width, (_sliderTheme.padding is not null) ? _thumbSizeHeight : _overlayHeight), _sliderTheme.thumbShape!.getPreferredSize(isInteractive, isDiscrete), _sliderTheme.tickMarkShape!.getPreferredSize(isEnabled: isInteractive, sliderTheme: sliderTheme) }.Cast<Size>().ToList();
-    internal virtual double _minPreferredTrackHeight => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_sliderTheme.trackHeight));
-    internal virtual Rect _trackRect => DartRuntimePrimitives.ConvertValue<Rect>(_sliderTheme.trackShape!.getPreferredRect(parentBox: this, sliderTheme: _sliderTheme, isDiscrete: false));
-    public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
-    public virtual bool isDiscrete => DartRuntimePrimitives.ConvertValue<bool>((divisions is not null) && (DartRuntimePrimitives.RequireValue(divisions) > 0L));
+    internal virtual double _maxSliderPartWidth =>
+        _sliderPartSizes.map((size) => size.width).reduce(Dart_mathLibrary.max);
+    internal virtual double _maxSliderPartHeight =>
+        _sliderPartSizes.map((size) => size.height).reduce(Dart_mathLibrary.max);
+    internal virtual double _thumbSizeHeight =>
+        _sliderTheme.thumbShape!.getPreferredSize(isInteractive, isDiscrete).height;
+    internal virtual double _overlayHeight =>
+        _sliderTheme.overlayShape!.getPreferredSize(isInteractive, isDiscrete).height;
+    internal virtual List<Size> _sliderPartSizes =>
+        new List<Size>
+        {
+            new Size(
+                _sliderTheme.overlayShape!.getPreferredSize(isInteractive, isDiscrete).width,
+                (_sliderTheme.padding is not null) ? _thumbSizeHeight : _overlayHeight
+            ),
+            _sliderTheme.thumbShape!.getPreferredSize(isInteractive, isDiscrete),
+            _sliderTheme.tickMarkShape!.getPreferredSize(
+                isEnabled: isInteractive,
+                sliderTheme: sliderTheme
+            ),
+        }
+            .Cast<Size>()
+            .ToList();
+    internal virtual double _minPreferredTrackHeight =>
+        DartRuntimePrimitives.ConvertValue<double>(
+            DartRuntimePrimitives.RequireValue(_sliderTheme.trackHeight)
+        );
+    internal virtual Rect _trackRect =>
+        DartRuntimePrimitives.ConvertValue<Rect>(
+            _sliderTheme.trackShape!.getPreferredRect(
+                parentBox: this,
+                sliderTheme: _sliderTheme,
+                isDiscrete: false
+            )
+        );
+    public virtual bool isInteractive =>
+        DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
+    public virtual bool isDiscrete =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (divisions is not null) && (DartRuntimePrimitives.RequireValue(divisions) > 0L)
+        );
     public virtual double value
     {
         get => _value;
@@ -676,7 +1158,11 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         {
             var newValue = value;
             DartRuntimePrimitives.Assert(() => (newValue >= 0.0) && (newValue <= 1.0));
-            double convertedValue = isDiscrete ? _discretize(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newValue))) : DartRuntimePrimitives.RequireValue(newValue);
+            double convertedValue = isDiscrete
+                ? _discretize(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newValue))
+                )
+                : DartRuntimePrimitives.RequireValue(newValue);
             if (convertedValue == _value)
             {
                 return;
@@ -685,7 +1171,10 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             if (isDiscrete)
             {
                 double distance = (_value - _state.positionController.value).abs();
-                _state.positionController.duration = (distance != 0.0) ? (_positionAnimationDuration * (1.0 / distance)) : Duration.zero;
+                _state.positionController.duration =
+                    (distance != 0.0)
+                        ? (_positionAnimationDuration * (1.0 / distance))
+                        : Duration.zero;
                 _state.positionController.animateTo(convertedValue, curve: Curves.easeInOut);
             }
             else
@@ -701,7 +1190,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => (newValue is null) || (newValue >= 0.0) && (newValue <= 1.0));
+            DartRuntimePrimitives.Assert(() =>
+                (newValue is null) || ((newValue >= 0.0) && (newValue <= 1.0))
+            );
             if (newValue == _secondaryTrackValue)
             {
                 return;
@@ -917,6 +1408,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             markNeedsSemanticsUpdate();
         }
     }
+
     internal virtual void _updateForFocus(bool focused)
     {
         if (focused)
@@ -952,8 +1444,25 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         }
     }
 
-    public virtual bool shouldAlwaysShowValueIndicator => DartRuntimePrimitives.ConvertValue<bool>(Equals(_sliderTheme.showValueIndicator, ShowValueIndicator.alwaysVisible));
-    public virtual bool shouldShowValueIndicatorWhenDragged => _sliderTheme.showValueIndicator! switch { var __constant54689 when Equals(__constant54689, ShowValueIndicator.onlyForDiscrete) => isDiscrete,var __constant54743 when Equals(__constant54743, ShowValueIndicator.onlyForContinuous) => !isDiscrete,var __constant54800 when Equals(__constant54800, ShowValueIndicator.always) => true,var __constant54829 when Equals(__constant54829, ShowValueIndicator.onDrag) => true,var __constant54868 when Equals(__constant54868, ShowValueIndicator.never) => false,var __constant54896 when Equals(__constant54896, ShowValueIndicator.alwaysVisible) => false,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    public virtual bool shouldAlwaysShowValueIndicator =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            Equals(_sliderTheme.showValueIndicator, ShowValueIndicator.alwaysVisible)
+        );
+    public virtual bool shouldShowValueIndicatorWhenDragged =>
+        _sliderTheme.showValueIndicator! switch
+        {
+            var __constant54689 when Equals(__constant54689, ShowValueIndicator.onlyForDiscrete) =>
+                isDiscrete,
+            var __constant54743
+                when Equals(__constant54743, ShowValueIndicator.onlyForContinuous) => !isDiscrete,
+            var __constant54800 when Equals(__constant54800, ShowValueIndicator.always) => true,
+            var __constant54829 when Equals(__constant54829, ShowValueIndicator.onDrag) => true,
+            var __constant54868 when Equals(__constant54868, ShowValueIndicator.never) => false,
+            var __constant54896 when Equals(__constant54896, ShowValueIndicator.alwaysVisible) =>
+                false,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     internal virtual double _adjustmentUnit
     {
         get
@@ -962,34 +1471,44 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             {
                 case TargetPlatform.iOS:
                 case TargetPlatform.macOS:
-                    {
-                        return 0.1;
-                    }
+                {
+                    return 0.1;
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
-                    {
-                        return 0.05;
-                    }
+                {
+                    return 0.05;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
         }
     }
+
     internal virtual void _updateLabelPainter()
     {
         if (label is not null)
         {
-            DartRuntimePrimitives.Ignore(((Func<TextPainter>)(() =>
-{
-    var __cascade = _labelPainter;
-    __cascade.text = new TextSpan(style: _sliderTheme.valueIndicatorTextStyle, text: label);
-    __cascade.textDirection = textDirection;
-    __cascade.textScaleFactor = textScaleFactor;
-    __cascade.layout();
-    return __cascade;
-}))());
+            DartRuntimePrimitives.Ignore(
+                (
+                    (Func<TextPainter>)(
+                        () =>
+                        {
+                            var __cascade = _labelPainter;
+                            __cascade.text = new TextSpan(
+                                style: _sliderTheme.valueIndicatorTextStyle,
+                                text: label
+                            );
+                            __cascade.textDirection = textDirection;
+                            __cascade.textScaleFactor = textScaleFactor;
+                            __cascade.layout();
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
         else
         {
@@ -1040,22 +1559,35 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
 
     internal virtual double _getValueFromVisualPosition(double visualPosition)
     {
-        return textDirection switch { TextDirection.rtl => 1.0 - visualPosition,TextDirection.ltr => visualPosition,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return textDirection switch
+        {
+            TextDirection.rtl => 1.0 - visualPosition,
+            TextDirection.ltr => visualPosition,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     }
 
     internal virtual double _getValueFromGlobalPosition(Offset globalPosition)
     {
-        double visualPosition = (globalToLocal(globalPosition).dx - _trackRect.left) / _trackRect.width;
+        double visualPosition =
+            (globalToLocal(globalPosition).dx - _trackRect.left) / _trackRect.width;
         return _getValueFromVisualPosition(visualPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _discretize(double value)
     {
-        double result = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
+        double result = Dart_uiLibrary.clampDouble(
+            DartRuntimePrimitives.RequireValue(value),
+            0.0,
+            1.0
+        );
         if (isDiscrete)
         {
-            result = (result * DartRuntimePrimitives.RequireValue(divisions)).round() / (double)DartRuntimePrimitives.RequireValue(divisions);
+            result =
+                (result * DartRuntimePrimitives.RequireValue(divisions)).round()
+                / (double)DartRuntimePrimitives.RequireValue(divisions);
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1073,26 +1605,26 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             {
                 case SliderInteraction.tapAndSlide:
                 case SliderInteraction.tapOnly:
-                    {
-                        _active = true;
-                        _currentDragValue = _getValueFromGlobalPosition(globalPosition);
-                        break;
-                    }
+                {
+                    _active = true;
+                    _currentDragValue = _getValueFromGlobalPosition(globalPosition);
+                    break;
+                }
                 case SliderInteraction.slideThumb:
-                    {
-                        if (_isPointerOnOverlay(globalPosition))
-                        {
-                            _active = true;
-                            _currentDragValue = value;
-                        }
-                        break;
-                    }
-                case SliderInteraction.slideOnly:
+                {
+                    if (_isPointerOnOverlay(globalPosition))
                     {
                         _active = true;
                         _currentDragValue = value;
-                        break;
                     }
+                    break;
+                }
+                case SliderInteraction.slideOnly:
+                {
+                    _active = true;
+                    _currentDragValue = value;
+                    break;
+                }
             }
             if (_active)
             {
@@ -1103,14 +1635,17 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                 {
                     _state.valueIndicatorController.forward();
                     _state.interactionTimer?.cancel();
-                    _state.interactionTimer = new Timer(_minimumInteractionTime * Scheduler.BindingLibrary.timeDilation, () =>
-                    {
-                        _state.interactionTimer = null;
-                        if (!_active && _state.valueIndicatorController.isCompleted)
+                    _state.interactionTimer = new Timer(
+                        _minimumInteractionTime * Scheduler.BindingLibrary.timeDilation,
+                        () =>
                         {
-                            _state.valueIndicatorController.reverse();
+                            _state.interactionTimer = null;
+                            if (!_active && _state.valueIndicatorController.isCompleted)
+                            {
+                                _state.valueIndicatorController.reverse();
+                            }
                         }
-                    });
+                    );
                 }
             }
         }
@@ -1151,19 +1686,28 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             case SliderInteraction.tapAndSlide:
             case SliderInteraction.slideOnly:
             case SliderInteraction.slideThumb:
+            {
+                if (_active && isInteractive)
                 {
-                    if (_active && isInteractive)
+                    double valueDelta =
+                        DartRuntimePrimitives.RequireValue(details.primaryDelta) / _trackRect.width;
+                    _currentDragValue += textDirection switch
                     {
-                        double valueDelta = DartRuntimePrimitives.RequireValue(details.primaryDelta) / _trackRect.width;
-                        _currentDragValue += textDirection switch { TextDirection.rtl => -valueDelta,TextDirection.ltr => valueDelta,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                        onChanged!(_discretize(_currentDragValue));
-                    }
-                    break;
+                        TextDirection.rtl => -valueDelta,
+                        TextDirection.ltr => valueDelta,
+                        _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            ),
+                    };
+                    onChanged!(_discretize(_currentDragValue));
                 }
+                break;
+            }
             case SliderInteraction.tapOnly:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
@@ -1184,12 +1728,18 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
 
     internal virtual bool _isPointerOnOverlay(Offset globalPosition)
     {
-        return DartRuntimePrimitives.RequireValue(overlayRect).contains(globalToLocal(globalPosition));
+        return DartRuntimePrimitives
+            .RequireValue(overlayRect)
+            .contains(globalToLocal(globalPosition));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
-    public override void handleEvent(Gestures.PointerEvent @event, Gestures.HitTestEntry<Gestures.HitTestTarget> entry)
+
+    public override void handleEvent(
+        Gestures.PointerEvent @event,
+        Gestures.HitTestEntry<Gestures.HitTestTarget> entry
+    )
     {
         if (!_state.mounted)
         {
@@ -1204,82 +1754,221 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         }
         if (isInteractive && (overlayRect is not null))
         {
-            hoveringThumb = DartRuntimePrimitives.RequireValue(overlayRect).contains(@event.localPosition);
+            hoveringThumb = DartRuntimePrimitives
+                .RequireValue(overlayRect)
+                .contains(@event.localPosition);
         }
     }
 
-    public override double computeMinIntrinsicWidth(double height) => DartRuntimePrimitives.ConvertValue<double>(_minPreferredTrackWidth + _maxSliderPartWidth);
-    public override double computeMaxIntrinsicWidth(double height) => DartRuntimePrimitives.ConvertValue<double>(_minPreferredTrackWidth + _maxSliderPartWidth);
-    public override double computeMinIntrinsicHeight(double width) => Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight);
-    public override double computeMaxIntrinsicHeight(double width) => Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight);
+    public override double computeMinIntrinsicWidth(double height) =>
+        DartRuntimePrimitives.ConvertValue<double>(_minPreferredTrackWidth + _maxSliderPartWidth);
+
+    public override double computeMaxIntrinsicWidth(double height) =>
+        DartRuntimePrimitives.ConvertValue<double>(_minPreferredTrackWidth + _maxSliderPartWidth);
+
+    public override double computeMinIntrinsicHeight(double width) =>
+        Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight);
+
+    public override double computeMaxIntrinsicHeight(double width) =>
+        Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight);
+
     public override bool sizedByParent => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return new Size(constraints.hasBoundedWidth ? constraints.maxWidth : (_minPreferredTrackWidth + _maxSliderPartWidth), constraints.hasBoundedHeight ? constraints.maxHeight : Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight));
+        return new Size(
+            constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : (_minPreferredTrackWidth + _maxSliderPartWidth),
+            constraints.hasBoundedHeight
+                ? constraints.maxHeight
+                : Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
         double controllerValue = _state.positionController.value;
-        var (visualPositionLocal, secondaryVisualPosition) = textDirection switch { TextDirection.rtl when _secondaryTrackValue is null => (1.0 - controllerValue, null), TextDirection.rtl => DartRuntimePrimitives.ConvertValue<(double, double?)>((1.0 - controllerValue, 1.0 - DartRuntimePrimitives.RequireValue(_secondaryTrackValue))), TextDirection.ltr => (controllerValue, _secondaryTrackValue), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        Rect trackRectLocal = _sliderTheme.trackShape!.getPreferredRect(parentBox: this, offset: offset, sliderTheme: _sliderTheme, isDiscrete: isDiscrete);
-        Offset thumbCenterLocal = _calcThumbCenter(trackRect: trackRectLocal, visualPosition: visualPositionLocal);
+        var (visualPositionLocal, secondaryVisualPosition) = textDirection switch
+        {
+            TextDirection.rtl when _secondaryTrackValue is null => (1.0 - controllerValue, null),
+            TextDirection.rtl => DartRuntimePrimitives.ConvertValue<(double, double?)>(
+                (
+                    1.0 - controllerValue,
+                    1.0 - DartRuntimePrimitives.RequireValue(_secondaryTrackValue)
+                )
+            ),
+            TextDirection.ltr => (controllerValue, _secondaryTrackValue),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        Rect trackRectLocal = _sliderTheme.trackShape!.getPreferredRect(
+            parentBox: this,
+            offset: offset,
+            sliderTheme: _sliderTheme,
+            isDiscrete: isDiscrete
+        );
+        Offset thumbCenterLocal = _calcThumbCenter(
+            trackRect: trackRectLocal,
+            visualPosition: visualPositionLocal
+        );
         if (isInteractive)
         {
             Size overlaySize = sliderTheme.overlayShape!.getPreferredSize(isInteractive, false);
-            overlayRect = Rect.fromCircle(center: thumbCenterLocal, radius: overlaySize.width / 2.0);
+            overlayRect = Rect.fromCircle(
+                center: thumbCenterLocal,
+                radius: overlaySize.width / 2.0
+            );
         }
-        Offset? secondaryOffsetLocal = (Offset?)(object?)((secondaryVisualPosition is not null) ? new Offset(trackRectLocal.left + (DartRuntimePrimitives.RequireValue(secondaryVisualPosition) * trackRectLocal.width), trackRectLocal.center.dy) : null);
+        Offset? secondaryOffsetLocal = (Offset?)
+            (object?)(
+                (secondaryVisualPosition is not null)
+                    ? new Offset(
+                        trackRectLocal.left
+                            + (
+                                DartRuntimePrimitives.RequireValue(secondaryVisualPosition)
+                                * trackRectLocal.width
+                            ),
+                        trackRectLocal.center.dy
+                    )
+                    : null
+            );
         double? thumbWidth = _sliderTheme.thumbSize?.resolve(new HashSet<WidgetState>())?.width;
         double? thumbHeight = _sliderTheme.thumbSize?.resolve(new HashSet<WidgetState>())?.height;
         double? trackGapLocal = _sliderTheme.trackGap;
-        double? pressedThumbWidth = _sliderTheme.thumbSize?.resolve(new HashSet<WidgetState> { WidgetState.pressed })?.width;
+        double? pressedThumbWidth = _sliderTheme
+            .thumbSize?.resolve(new HashSet<WidgetState> { WidgetState.pressed })
+            ?.width;
         double delta = default!;
-        if (_active && (thumbWidth is not null) && (pressedThumbWidth is not null) && (trackGapLocal is not null))
+        if (
+            _active
+            && (thumbWidth is not null)
+            && (pressedThumbWidth is not null)
+            && (trackGapLocal is not null)
+        )
         {
             double thumbWidth__63660__value64036 = DartRuntimePrimitives.RequireValue(thumbWidth);
-            double pressedThumbWidth__63884__value64058 = DartRuntimePrimitives.RequireValue(pressedThumbWidth);
+            double pressedThumbWidth__63884__value64058 = DartRuntimePrimitives.RequireValue(
+                pressedThumbWidth
+            );
             double trackGap__63832__value64087 = DartRuntimePrimitives.RequireValue(trackGapLocal);
-            delta = DartRuntimePrimitives.RequireValue(thumbWidth__63660__value64036) - DartRuntimePrimitives.RequireValue(pressedThumbWidth__63884__value64058);
+            delta =
+                DartRuntimePrimitives.RequireValue(thumbWidth__63660__value64036)
+                - DartRuntimePrimitives.RequireValue(pressedThumbWidth__63884__value64058);
             if (DartRuntimePrimitives.RequireValue(thumbWidth__63660__value64036) > 0.0)
             {
-                thumbWidth = DartRuntimePrimitives.RequireValue(pressedThumbWidth__63884__value64058);
+                thumbWidth = DartRuntimePrimitives.RequireValue(
+                    pressedThumbWidth__63884__value64058
+                );
             }
             if (DartRuntimePrimitives.RequireValue(trackGap__63832__value64087) > 0.0)
             {
-                trackGapLocal = DartRuntimePrimitives.RequireValue(trackGap__63832__value64087) - (delta / 2L);
+                trackGapLocal =
+                    DartRuntimePrimitives.RequireValue(trackGap__63832__value64087) - (delta / 2L);
             }
         }
-        _sliderTheme.trackShape!.paint(context, offset, parentBox: this, sliderTheme: _sliderTheme.copyWith(trackGap: trackGapLocal), enableAnimation: _enableAnimation, textDirection: _textDirection, thumbCenter: thumbCenterLocal, secondaryOffset: secondaryOffsetLocal, isDiscrete: isDiscrete, isEnabled: isInteractive);
+        _sliderTheme.trackShape!.paint(
+            context,
+            offset,
+            parentBox: this,
+            sliderTheme: _sliderTheme.copyWith(trackGap: trackGapLocal),
+            enableAnimation: _enableAnimation,
+            textDirection: _textDirection,
+            thumbCenter: thumbCenterLocal,
+            secondaryOffset: secondaryOffsetLocal,
+            isDiscrete: isDiscrete,
+            isEnabled: isInteractive
+        );
         if (!_overlayAnimation.isDismissed)
         {
-            _sliderTheme.overlayShape!.paint(context, thumbCenterLocal, activationAnimation: _overlayAnimation, enableAnimation: _enableAnimation, isDiscrete: isDiscrete, labelPainter: _labelPainter, parentBox: this, sliderTheme: _sliderTheme, textDirection: _textDirection, value: _value, textScaleFactor: _textScaleFactor, sizeWithOverflow: screenSize.isEmpty ? size : screenSize);
+            _sliderTheme.overlayShape!.paint(
+                context,
+                thumbCenterLocal,
+                activationAnimation: _overlayAnimation,
+                enableAnimation: _enableAnimation,
+                isDiscrete: isDiscrete,
+                labelPainter: _labelPainter,
+                parentBox: this,
+                sliderTheme: _sliderTheme,
+                textDirection: _textDirection,
+                value: _value,
+                textScaleFactor: _textScaleFactor,
+                sizeWithOverflow: screenSize.isEmpty ? size : screenSize
+            );
         }
         if (isDiscrete)
         {
-            double tickMarkWidth = _sliderTheme.tickMarkShape!.getPreferredSize(isEnabled: isInteractive, sliderTheme: _sliderTheme).width;
+            double tickMarkWidth = _sliderTheme
+                .tickMarkShape!.getPreferredSize(
+                    isEnabled: isInteractive,
+                    sliderTheme: _sliderTheme
+                )
+                .width;
             double discreteTrackPadding = trackRectLocal.height;
             double adjustedTrackWidth = trackRectLocal.width - discreteTrackPadding;
-            if ((adjustedTrackWidth / DartRuntimePrimitives.RequireValue(divisions)) >= (3.0 * tickMarkWidth))
+            if (
+                (adjustedTrackWidth / DartRuntimePrimitives.RequireValue(divisions))
+                >= (3.0 * tickMarkWidth)
+            )
             {
                 double dyLocal = trackRectLocal.center.dy;
                 for (var i = 0L; i <= DartRuntimePrimitives.RequireValue(divisions); i++)
                 {
                     double valueLocal = i / (double)DartRuntimePrimitives.RequireValue(divisions);
-                    double dx = trackRectLocal.left + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth) + (discreteTrackPadding / 2L);
+                    double dx =
+                        trackRectLocal.left
+                        + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth)
+                        + (discreteTrackPadding / 2L);
                     var tickMarkOffset = new Offset(dx, dyLocal);
-                    _sliderTheme.tickMarkShape!.paint(context, tickMarkOffset, parentBox: this, sliderTheme: _sliderTheme, enableAnimation: _enableAnimation, textDirection: _textDirection, thumbCenter: thumbCenterLocal, isEnabled: isInteractive);
+                    _sliderTheme.tickMarkShape!.paint(
+                        context,
+                        tickMarkOffset,
+                        parentBox: this,
+                        sliderTheme: _sliderTheme,
+                        enableAnimation: _enableAnimation,
+                        textDirection: _textDirection,
+                        thumbCenter: thumbCenterLocal,
+                        isEnabled: isInteractive
+                    );
                 }
             }
         }
-        if (isInteractive && (label is not null) && (shouldShowValueIndicatorWhenDragged && !_valueIndicatorAnimation.isDismissed || shouldAlwaysShowValueIndicator))
+        if (
+            isInteractive
+            && (label is not null)
+            && (
+                (shouldShowValueIndicatorWhenDragged && !_valueIndicatorAnimation.isDismissed)
+                || shouldAlwaysShowValueIndicator
+            )
+        )
         {
             _state.paintValueIndicator = (context, offset) =>
             {
                 if (attached && (_labelPainter.text is not null))
                 {
-                    _sliderTheme.valueIndicatorShape?.paint(context, offset + thumbCenterLocal, activationAnimation: shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : _valueIndicatorAnimation, enableAnimation: shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : _enableAnimation, isDiscrete: isDiscrete, labelPainter: _labelPainter, parentBox: this, sliderTheme: _sliderTheme, textDirection: _textDirection, value: _value, textScaleFactor: textScaleFactor, sizeWithOverflow: screenSize.isEmpty ? size : screenSize);
+                    _sliderTheme.valueIndicatorShape?.paint(
+                        context,
+                        offset + thumbCenterLocal,
+                        activationAnimation: shouldAlwaysShowValueIndicator
+                            ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(
+                                1
+                            )
+                            : _valueIndicatorAnimation,
+                        enableAnimation: shouldAlwaysShowValueIndicator
+                            ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(
+                                1
+                            )
+                            : _enableAnimation,
+                        isDiscrete: isDiscrete,
+                        labelPainter: _labelPainter,
+                        parentBox: this,
+                        sliderTheme: _sliderTheme,
+                        textDirection: _textDirection,
+                        value: _value,
+                        textScaleFactor: textScaleFactor,
+                        sizeWithOverflow: screenSize.isEmpty ? size : screenSize
+                    );
                 }
             };
         }
@@ -1287,16 +1976,50 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         {
             _state.paintValueIndicator = null;
         }
-        _sliderTheme.thumbShape!.paint(context, thumbCenterLocal, activationAnimation: _overlayAnimation, enableAnimation: _enableAnimation, isDiscrete: isDiscrete, labelPainter: _labelPainter, parentBox: this, sliderTheme: ((thumbWidth is not null) && (thumbHeight is not null)) ? _sliderTheme.copyWith(thumbSize: new WidgetStatePropertyAll<Size?>(new Size(DartRuntimePrimitives.RequireValue(thumbWidth), DartRuntimePrimitives.RequireValue(thumbHeight)))) : _sliderTheme, textDirection: _textDirection, value: _value, textScaleFactor: textScaleFactor, sizeWithOverflow: screenSize.isEmpty ? size : screenSize);
+        _sliderTheme.thumbShape!.paint(
+            context,
+            thumbCenterLocal,
+            activationAnimation: _overlayAnimation,
+            enableAnimation: _enableAnimation,
+            isDiscrete: isDiscrete,
+            labelPainter: _labelPainter,
+            parentBox: this,
+            sliderTheme: ((thumbWidth is not null) && (thumbHeight is not null))
+                ? _sliderTheme.copyWith(
+                    thumbSize: new WidgetStatePropertyAll<Size?>(
+                        new Size(
+                            DartRuntimePrimitives.RequireValue(thumbWidth),
+                            DartRuntimePrimitives.RequireValue(thumbHeight)
+                        )
+                    )
+                )
+                : _sliderTheme,
+            textDirection: _textDirection,
+            value: _value,
+            textScaleFactor: textScaleFactor,
+            sizeWithOverflow: screenSize.isEmpty ? size : screenSize
+        );
     }
 
     internal virtual Offset _calcThumbCenter(Rect trackRect, double visualPosition)
     {
         double padding = _sliderTheme.trackShape!.isRounded ? trackRect.height : 0.0;
-        double thumbPosition = isDiscrete ? (trackRect.left + (visualPosition * (trackRect.width - padding)) + (padding / 2L)) : (trackRect.left + (visualPosition * trackRect.width));
-        Size thumbPreferredSize = _sliderTheme.thumbShape!.getPreferredSize(isInteractive, isDiscrete);
+        double thumbPosition = isDiscrete
+            ? (trackRect.left + (visualPosition * (trackRect.width - padding)) + (padding / 2L))
+            : (trackRect.left + (visualPosition * trackRect.width));
+        Size thumbPreferredSize = _sliderTheme.thumbShape!.getPreferredSize(
+            isInteractive,
+            isDiscrete
+        );
         double thumbPadding = (padding > (thumbPreferredSize.width / 2L)) ? (padding / 2L) : 0;
-        return new Offset(Dart_uiLibrary.clampDouble(thumbPosition, trackRect.left + thumbPadding, trackRect.right - thumbPadding), trackRect.center.dy);
+        return new Offset(
+            Dart_uiLibrary.clampDouble(
+                thumbPosition,
+                trackRect.left + thumbPadding,
+                trackRect.right - thumbPadding
+            ),
+            trackRect.center.dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1304,13 +2027,28 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     {
         get
         {
-            double visualPositionLocal = textDirection switch { TextDirection.rtl => 1.0 - _value,TextDirection.ltr => _value,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            double visualPositionLocal = textDirection switch
+            {
+                TextDirection.rtl => 1.0 - _value,
+                TextDirection.ltr => _value,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             return _calcThumbCenter(trackRect: _trackRect, visualPosition: visualPositionLocal);
         }
     }
-    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
+
+    public override void assembleSemanticsNode(
+        SemanticsNode node,
+        SemanticsConfiguration config,
+        IEnumerable<SemanticsNode> children
+    )
     {
-        node.rect = Rect.fromCenter(center: _semanticThumbCenter, width: Widgets.ConstantsLibrary.kMinInteractiveDimension, height: Widgets.ConstantsLibrary.kMinInteractiveDimension);
+        node.rect = Rect.fromCenter(
+            center: _semanticThumbCenter,
+            width: Widgets.ConstantsLibrary.kMinInteractiveDimension,
+            height: Widgets.ConstantsLibrary.kMinInteractiveDimension
+        );
         node.updateWith(config: config);
     }
 
@@ -1339,19 +2077,31 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         }
         if (semanticFormatterCallback is not null)
         {
-            config.value = semanticFormatterCallback!(_state._lerp(DartRuntimePrimitives.RequireValue(value)));
-            config.increasedValue = semanticFormatterCallback!(_state._lerp(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0)));
-            config.decreasedValue = semanticFormatterCallback!(_state._lerp(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0)));
+            config.value = semanticFormatterCallback!(
+                _state._lerp(DartRuntimePrimitives.RequireValue(value))
+            );
+            config.increasedValue = semanticFormatterCallback!(
+                _state._lerp(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0))
+            );
+            config.decreasedValue = semanticFormatterCallback!(
+                _state._lerp(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0))
+            );
         }
         else
         {
             config.value = $"{(value * 100L).round()}%";
-            config.increasedValue = $"{(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
-            config.decreasedValue = $"{(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+            config.increasedValue =
+                $"{(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+            config.decreasedValue =
+                $"{(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
         }
     }
 
-    internal virtual double _semanticActionUnit => (divisions is not null) ? (1.0 / DartRuntimePrimitives.RequireValue(divisions)) : _adjustmentUnit;
+    internal virtual double _semanticActionUnit =>
+        (divisions is not null)
+            ? (1.0 / DartRuntimePrimitives.RequireValue(divisions))
+            : _adjustmentUnit;
+
     public virtual void onFocusAction()
     {
         if (isInteractive)
@@ -1399,11 +2149,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
 
     public virtual double currentValue
     {
-        get
-        {
-            return Dart_uiLibrary.clampDouble(value, 0.0, 1.0);
-        }
+        get { return Dart_uiLibrary.clampDouble(value, 0.0, 1.0); }
     }
+
     public virtual double increaseValue()
     {
         return Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0);
@@ -1423,18 +2171,24 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             return;
         }
         _hasPendingSystemFontsDidChangeCallBack = true;
-        Scheduler.SchedulerBinding.instance.scheduleFrameCallback((timeStamp) =>
-        {
-            DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
-            _hasPendingSystemFontsDidChangeCallBack = false;
-            DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true), () => (object?)$"{this} is detached during {Scheduler.SchedulerBinding.instance.schedulerPhase} but is not disposed.");
-            if (attached)
+        Scheduler.SchedulerBinding.instance.scheduleFrameCallback(
+            (timeStamp) =>
             {
-                systemFontsDidChange();
+                DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
+                _hasPendingSystemFontsDidChangeCallBack = false;
+                DartRuntimePrimitives.Assert(
+                    () => attached || (debugDisposed ?? true),
+                    () =>
+                        (object?)
+                            $"{this} is detached during {Scheduler.SchedulerBinding.instance.schedulerPhase} but is not disposed."
+                );
+                if (attached)
+                {
+                    systemFontsDidChange();
+                }
             }
-        });
+        );
     }
-
 }
 
 internal class _AdjustSliderIntent__slider : Intent
@@ -1473,7 +2227,6 @@ internal class _AdjustSliderIntent__slider : Intent
         __instance.type = _SliderAdjustmentType__slider.down;
         return __instance;
     }
-
 }
 
 internal enum _SliderAdjustmentType__slider
@@ -1481,7 +2234,7 @@ internal enum _SliderAdjustmentType__slider
     right,
     left,
     up,
-    down
+    down,
 }
 
 internal class _ValueIndicatorRenderObjectWidget__slider : LeafRenderObjectWidget
@@ -1504,7 +2257,6 @@ internal class _ValueIndicatorRenderObjectWidget__slider : LeafRenderObjectWidge
         var __renderObject = (_RenderValueIndicator__slider)renderObject;
         __renderObject._state = DartRuntimePrimitives.ConvertValue<_SliderState__slider>(state);
     }
-
 }
 
 public class _RenderValueIndicator__slider : RenderBox, RelayoutWhenSystemFontsChangeMixin
@@ -1516,10 +2268,14 @@ public class _RenderValueIndicator__slider : RenderBox, RelayoutWhenSystemFontsC
     internal _RenderValueIndicator__slider(_SliderState__slider state)
     {
         _state = state;
-        _valueIndicatorAnimation = new CurvedAnimation(parent: _state.valueIndicatorController, curve: Curves.fastOutSlowIn);
+        _valueIndicatorAnimation = new CurvedAnimation(
+            parent: _state.valueIndicatorController,
+            curve: Curves.fastOutSlowIn
+        );
     }
 
     public override bool sizedByParent => true;
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -1567,18 +2323,24 @@ public class _RenderValueIndicator__slider : RenderBox, RelayoutWhenSystemFontsC
             return;
         }
         _hasPendingSystemFontsDidChangeCallBack = true;
-        Scheduler.SchedulerBinding.instance.scheduleFrameCallback((timeStamp) =>
-        {
-            DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
-            _hasPendingSystemFontsDidChangeCallBack = false;
-            DartRuntimePrimitives.Assert(() => attached || (debugDisposed ?? true), () => (object?)$"{this} is detached during {Scheduler.SchedulerBinding.instance.schedulerPhase} but is not disposed.");
-            if (attached)
+        Scheduler.SchedulerBinding.instance.scheduleFrameCallback(
+            (timeStamp) =>
             {
-                systemFontsDidChange();
+                DartRuntimePrimitives.Assert(() => _hasPendingSystemFontsDidChangeCallBack);
+                _hasPendingSystemFontsDidChangeCallBack = false;
+                DartRuntimePrimitives.Assert(
+                    () => attached || (debugDisposed ?? true),
+                    () =>
+                        (object?)
+                            $"{this} is detached during {Scheduler.SchedulerBinding.instance.schedulerPhase} but is not disposed."
+                );
+                if (attached)
+                {
+                    systemFontsDidChange();
+                }
             }
-        });
+        );
     }
-
 }
 
 internal class _SliderDefaultsM3Year2023__slider : SliderThemeData
@@ -1599,47 +2361,75 @@ internal class _SliderDefaultsM3Year2023__slider : SliderThemeData
         }
     }
 
-    internal _SliderDefaultsM3Year2023__slider(BuildContext context) : base(trackHeight: 4.0)
+    internal _SliderDefaultsM3Year2023__slider(BuildContext context)
+        : base(trackHeight: 4.0)
     {
         this.context = context;
     }
 
-    public override Color? activeTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? inactiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerHighest);
-    public override Color? secondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary.withOpacity(0.54));
-    public override Color? disabledActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
-    public override Color? disabledInactiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
-    public override Color? disabledSecondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
-    public override Color? activeTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onPrimary.withOpacity(0.38));
-    public override Color? inactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant.withOpacity(0.38));
-    public override Color? disabledActiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
-    public override Color? disabledInactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? activeTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? inactiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerHighest);
+    public override Color? secondaryActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary.withOpacity(0.54));
+    public override Color? disabledActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? disabledInactiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
+    public override Color? disabledSecondaryActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
+    public override Color? activeTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onPrimary.withOpacity(0.38));
+    public override Color? inactiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant.withOpacity(0.38));
+    public override Color? disabledActiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? disabledInactiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
     public override Color? thumbColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? disabledThumbColor => DartRuntimePrimitives.ConvertValue<Color>(Dart_uiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface));
-    public override Color? overlayColor => DartRuntimePrimitives.ConvertValue<Color>(WidgetStateColor.CreateResolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.dragged))
-        {
-            return _colors.primary.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.primary.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.primary.withOpacity(0.1);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override TextStyle? valueIndicatorTextStyle => Theme.of(context).textTheme.labelMedium!.copyWith(color: _colors.onPrimary);
-    public override Color? valueIndicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override SliderComponentShape? valueIndicatorShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new DropSliderValueIndicatorShape());
-    public override SliderComponentShape? thumbShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderThumbShape());
-    public override SliderTrackShape? trackShape => DartRuntimePrimitives.ConvertValue<SliderTrackShape>(new RoundedRectSliderTrackShape());
-    public override SliderComponentShape? overlayShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderOverlayShape());
-    public override SliderTickMarkShape? tickMarkShape => DartRuntimePrimitives.ConvertValue<SliderTickMarkShape>(new RoundSliderTickMarkShape());
+    public override Color? disabledThumbColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            Dart_uiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface)
+        );
+    public override Color? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            WidgetStateColor.CreateResolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.dragged))
+                    {
+                        return _colors.primary.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.primary.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.primary.withOpacity(0.1);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override TextStyle? valueIndicatorTextStyle =>
+        Theme.of(context).textTheme.labelMedium!.copyWith(color: _colors.onPrimary);
+    public override Color? valueIndicatorColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override SliderComponentShape? valueIndicatorShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(
+            new DropSliderValueIndicatorShape()
+        );
+    public override SliderComponentShape? thumbShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderThumbShape());
+    public override SliderTrackShape? trackShape =>
+        DartRuntimePrimitives.ConvertValue<SliderTrackShape>(new RoundedRectSliderTrackShape());
+    public override SliderComponentShape? overlayShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderOverlayShape());
+    public override SliderTickMarkShape? tickMarkShape =>
+        DartRuntimePrimitives.ConvertValue<SliderTickMarkShape>(new RoundSliderTickMarkShape());
 }
 
 internal class _SliderDefaultsM3__slider : SliderThemeData
@@ -1660,72 +2450,105 @@ internal class _SliderDefaultsM3__slider : SliderThemeData
         }
     }
 
-    internal _SliderDefaultsM3__slider(BuildContext context) : base(trackHeight: 16.0)
+    internal _SliderDefaultsM3__slider(BuildContext context)
+        : base(trackHeight: 16.0)
     {
         this.context = context;
     }
 
-    public override Color? activeTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? inactiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.secondaryContainer);
-    public override Color? secondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary.withOpacity(0.54));
-    public override Color? disabledActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
-    public override Color? disabledInactiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
-    public override Color? disabledSecondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
-    public override Color? activeTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onPrimary.withOpacity(1.0));
-    public override Color? inactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSecondaryContainer.withOpacity(1.0));
-    public override Color? disabledActiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onInverseSurface);
-    public override Color? disabledInactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
+    public override Color? activeTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? inactiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.secondaryContainer);
+    public override Color? secondaryActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary.withOpacity(0.54));
+    public override Color? disabledActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? disabledInactiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.12));
+    public override Color? disabledSecondaryActiveTrackColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? activeTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onPrimary.withOpacity(1.0));
+    public override Color? inactiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSecondaryContainer.withOpacity(1.0));
+    public override Color? disabledActiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onInverseSurface);
+    public override Color? disabledInactiveTickMarkColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
     public override Color? thumbColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? disabledThumbColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
-    public override Color? overlayColor => DartRuntimePrimitives.ConvertValue<Color>(WidgetStateColor.CreateResolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.dragged))
-        {
-            return _colors.primary.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.primary.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.primary.withOpacity(0.1);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override TextStyle? valueIndicatorTextStyle => Theme.of(context).textTheme.labelLarge!.copyWith(color: _colors.onInverseSurface);
-    public override Color? valueIndicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.inverseSurface);
-    public override SliderComponentShape? valueIndicatorShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundedRectSliderValueIndicatorShape());
-    public override SliderComponentShape? thumbShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new HandleThumbShape());
-    public override SliderTrackShape? trackShape => DartRuntimePrimitives.ConvertValue<SliderTrackShape>(new GappedSliderTrackShape());
-    public override SliderComponentShape? overlayShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderOverlayShape());
-    public override SliderTickMarkShape? tickMarkShape => DartRuntimePrimitives.ConvertValue<SliderTickMarkShape>(new RoundSliderTickMarkShape(tickMarkRadius: 4.0 / 2L));
+    public override Color? disabledThumbColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface.withOpacity(0.38));
+    public override Color? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            WidgetStateColor.CreateResolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.dragged))
+                    {
+                        return _colors.primary.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.primary.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.primary.withOpacity(0.1);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override TextStyle? valueIndicatorTextStyle =>
+        Theme.of(context).textTheme.labelLarge!.copyWith(color: _colors.onInverseSurface);
+    public override Color? valueIndicatorColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.inverseSurface);
+    public override SliderComponentShape? valueIndicatorShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(
+            new RoundedRectSliderValueIndicatorShape()
+        );
+    public override SliderComponentShape? thumbShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new HandleThumbShape());
+    public override SliderTrackShape? trackShape =>
+        DartRuntimePrimitives.ConvertValue<SliderTrackShape>(new GappedSliderTrackShape());
+    public override SliderComponentShape? overlayShape =>
+        DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderOverlayShape());
+    public override SliderTickMarkShape? tickMarkShape =>
+        DartRuntimePrimitives.ConvertValue<SliderTickMarkShape>(
+            new RoundSliderTickMarkShape(tickMarkRadius: 4.0 / 2L)
+        );
     public override WidgetStateProperty<Size?>? thumbSize
     {
         get
         {
-            return (WidgetStateProperty<Size?>?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return new Size(4.0, 44.0);
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return new Size(4.0, 44.0);
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return new Size(2.0, 44.0);
-                }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return new Size(2.0, 44.0);
-                }
-                return new Size(4.0, 44.0);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return (WidgetStateProperty<Size?>?)
+                WidgetStateProperty.resolveWith(
+                    (states) =>
+                    {
+                        if (states.Contains(WidgetState.disabled))
+                        {
+                            return new Size(4.0, 44.0);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return new Size(4.0, 44.0);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return new Size(2.0, 44.0);
+                        }
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return new Size(2.0, 44.0);
+                        }
+                        return new Size(4.0, 44.0);
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                );
         }
     }
     public override double? trackGap => 6.0;

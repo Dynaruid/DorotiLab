@@ -8,13 +8,25 @@ public abstract class DeferredComponent
 {
     public static async Future installDeferredComponent(string componentName)
     {
-        await SystemChannels.deferredComponent.invokeMethod<object?>("installDeferredComponent", new DartMap<string, object> { ["loadingUnitId"] = -1L, ["componentName"] = componentName });
+        await SystemChannels.deferredComponent.invokeMethod<object?>(
+            "installDeferredComponent",
+            new DartMap<string, object>
+            {
+                ["loadingUnitId"] = -1L,
+                ["componentName"] = componentName,
+            }
+        );
     }
 
     public static async Future uninstallDeferredComponent(string componentName)
     {
-        await SystemChannels.deferredComponent.invokeMethod<object?>("uninstallDeferredComponent", new DartMap<string, object> { ["loadingUnitId"] = -1L, ["componentName"] = componentName });
+        await SystemChannels.deferredComponent.invokeMethod<object?>(
+            "uninstallDeferredComponent",
+            new DartMap<string, object>
+            {
+                ["loadingUnitId"] = -1L,
+                ["componentName"] = componentName,
+            }
+        );
     }
-
 }
-

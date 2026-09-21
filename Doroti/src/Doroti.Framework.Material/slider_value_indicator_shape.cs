@@ -8,20 +8,56 @@ namespace Doroti.Framework.Material;
 
 public interface SliderComponentShape
 {
-    public static SliderComponentShape noThumb = new _EmptySliderComponentShape__slider_value_indicator_shape();
-    public static SliderComponentShape noOverlay = new _EmptySliderComponentShape__slider_value_indicator_shape();
+    public static SliderComponentShape noThumb =
+        new _EmptySliderComponentShape__slider_value_indicator_shape();
+    public static SliderComponentShape noOverlay =
+        new _EmptySliderComponentShape__slider_value_indicator_shape();
 
-    public Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null);
-    public void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow);
+    public Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter? labelPainter = null,
+        double? textScaleFactor = null
+    );
+    public void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    );
 }
 
 internal class _EmptySliderComponentShape__slider_value_indicator_shape : SliderComponentShape
 {
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null) => Size.zero;
-    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
-    {
-    }
+    public virtual Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter? labelPainter = null,
+        double? textScaleFactor = null
+    ) => Size.zero;
 
+    public virtual void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    ) { }
 }
 
 public class RoundSliderOverlayShape : SliderComponentShape
@@ -33,79 +69,184 @@ public class RoundSliderOverlayShape : SliderComponentShape
         this.overlayRadius = overlayRadius;
     }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter? labelPainter = null,
+        double? textScaleFactor = null
+    )
     {
         return Size.fromRadius(overlayRadius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    )
     {
         Canvas canvasLocal = context.canvas;
         var radiusTween = new Tween<double>(begin: 0.0, end: overlayRadius);
-        canvasLocal.drawCircle(center, radiusTween.evaluate(activationAnimation), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = sliderTheme.overlayColor!;
-    return __cascade;
-}))());
+        canvasLocal.drawCircle(
+            center,
+            radiusTween.evaluate(activationAnimation),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = sliderTheme.overlayColor!;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class RectangularSliderValueIndicatorShape : SliderComponentShape
 {
-    internal static _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter = new _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape();
+    internal static _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter =
+        new _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape();
 
-    public RectangularSliderValueIndicatorShape()
-    {
-    }
+    public RectangularSliderValueIndicatorShape() { }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter? labelPainter = null,
+        double? textScaleFactor = null
+    )
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
-        DartRuntimePrimitives.Assert(() => (textScaleFactor is not null) && (textScaleFactor >= 0L));
-        return _pathPainter.getPreferredSize(labelPainter!, DartRuntimePrimitives.RequireValue(textScaleFactor));
+        DartRuntimePrimitives.Assert(() =>
+            (textScaleFactor is not null) && (textScaleFactor >= 0L)
+        );
+        return _pathPainter.getPreferredSize(
+            labelPainter!,
+            DartRuntimePrimitives.RequireValue(textScaleFactor)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    )
     {
         Canvas canvasLocal = context.canvas;
         double scaleLocal = activationAnimation.value;
-        _pathPainter.paint(parentBox: parentBox, canvas: canvasLocal, center: center, scale: scaleLocal, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
+        _pathPainter.paint(
+            parentBox: parentBox,
+            canvas: canvasLocal,
+            center: center,
+            scale: scaleLocal,
+            labelPainter: labelPainter,
+            textScaleFactor: DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(textScaleFactor)
+            ),
+            sizeWithOverflow: sizeWithOverflow,
+            backgroundPaintColor: sliderTheme.valueIndicatorColor!,
+            strokePaintColor: sliderTheme.valueIndicatorStrokeColor
+        );
     }
-
 }
 
 public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
 {
-    internal static _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter = new _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape();
+    internal static _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter =
+        new _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape();
 
-    public RectangularRangeSliderValueIndicatorShape()
-    {
-    }
+    public RectangularRangeSliderValueIndicatorShape() { }
 
-    public override Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter labelPainter, double textScaleFactor)
+    public override Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        double textScaleFactor
+    )
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)));
+        return _pathPainter.getPreferredSize(
+            labelPainter,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double getHorizontalShift(RenderBox? parentBox = null, Offset? center = null, TextPainter? labelPainter = null, Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
+    public override double getHorizontalShift(
+        RenderBox? parentBox = null,
+        Offset? center = null,
+        TextPainter? labelPainter = null,
+        Animation<double>? activationAnimation = null,
+        double? textScaleFactor = null,
+        Size? sizeWithOverflow = null
+    )
     {
-        return _pathPainter.getHorizontalShift(parentBox: parentBox!, center: DartRuntimePrimitives.RequireValue(center), labelPainter: labelPainter!, textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow), scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value));
+        return _pathPainter.getHorizontalShift(
+            parentBox: parentBox!,
+            center: DartRuntimePrimitives.RequireValue(center),
+            labelPainter: labelPainter!,
+            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
+            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
+    public override void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete = default!,
+        bool isOnTop = default!,
+        TextPainter labelPainter = default!,
+        double textScaleFactor = default!,
+        Size sizeWithOverflow = default!,
+        RenderBox parentBox = default!,
+        SliderThemeData sliderTheme = default!,
+        TextDirection textDirection = default!,
+        double value = default!,
+        Thumb thumb = default!
+    )
     {
         Canvas canvasLocal = context.canvas;
         double scaleLocal = activationAnimation!.value;
-        _pathPainter.paint(parentBox: parentBox!, canvas: canvasLocal, center: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)), scale: scaleLocal, labelPainter: labelPainter!, textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow), backgroundPaintColor: sliderTheme!.valueIndicatorColor!, strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop) ? sliderTheme.overlappingShapeStrokeColor : sliderTheme.valueIndicatorStrokeColor);
+        _pathPainter.paint(
+            parentBox: parentBox!,
+            canvas: canvasLocal,
+            center: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)),
+            scale: scaleLocal,
+            labelPainter: labelPainter!,
+            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
+            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            backgroundPaintColor: sliderTheme!.valueIndicatorColor!,
+            strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop)
+                ? sliderTheme.overlappingShapeStrokeColor
+                : sliderTheme.valueIndicatorStrokeColor
+        );
     }
-
 }
 
 internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape
@@ -118,24 +259,35 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
     internal static double _preferredHalfHeight = _preferredHeight / 2L;
     internal const double _upperRectRadius = 4;
 
-    internal _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape()
-    {
-    }
+    internal _RectangularSliderValueIndicatorPathPainter__slider_value_indicator_shape() { }
 
     public virtual Size getPreferredSize(TextPainter labelPainter, double textScaleFactor)
     {
-        return new Size(_upperRectangleWidth(labelPainter, 1, textScaleFactor), labelPainter.height + _labelPadding);
+        return new Size(
+            _upperRectangleWidth(labelPainter, 1, textScaleFactor),
+            labelPainter.height + _labelPadding
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double getHorizontalShift(RenderBox parentBox, Offset center, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, double scale)
+    public virtual double getHorizontalShift(
+        RenderBox parentBox,
+        Offset center,
+        TextPainter labelPainter,
+        double textScaleFactor,
+        Size sizeWithOverflow,
+        double scale
+    )
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         var edgePadding = 8.0;
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale, textScaleFactor);
         Offset globalCenter = parentBox.localToGlobal(center);
         double overflowLeft = Math.Max(0, (rectangleWidth / 2L) - globalCenter.dx + edgePadding);
-        double overflowRight = Math.Max(0, (rectangleWidth / 2L) - (sizeWithOverflow.width - globalCenter.dx - edgePadding));
+        double overflowRight = Math.Max(
+            0,
+            (rectangleWidth / 2L) - (sizeWithOverflow.width - globalCenter.dx - edgePadding)
+        );
         if (rectangleWidth < sizeWithOverflow.width)
         {
             return overflowLeft - overflowRight;
@@ -144,24 +296,39 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         {
             if ((overflowLeft - overflowRight) > 0L)
             {
-                return overflowLeft - edgePadding * textScaleFactor;
+                return overflowLeft - (edgePadding * textScaleFactor);
             }
             else
             {
-                return -overflowRight + edgePadding * textScaleFactor;
+                return -overflowRight + (edgePadding * textScaleFactor);
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _upperRectangleWidth(TextPainter labelPainter, double scale, double textScaleFactor)
+    internal virtual double _upperRectangleWidth(
+        TextPainter labelPainter,
+        double scale,
+        double textScaleFactor
+    )
     {
-        double unscaledWidth = Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L);
+        double unscaledWidth =
+            Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L);
         return unscaledWidth * scale;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(RenderBox parentBox, Canvas canvas, Offset center, double scale, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color backgroundPaintColor, Color? strokePaintColor = null)
+    public virtual void paint(
+        RenderBox parentBox,
+        Canvas canvas,
+        Offset center,
+        double scale,
+        TextPainter labelPainter,
+        double textScaleFactor,
+        Size sizeWithOverflow,
+        Color backgroundPaintColor,
+        Color? strokePaintColor = null
+    )
     {
         if (scale == 0.0)
         {
@@ -169,23 +336,43 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         }
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale, textScaleFactor);
-        double horizontalShift = getHorizontalShift(parentBox: parentBox, center: center, labelPainter: labelPainter, textScaleFactor: textScaleFactor, sizeWithOverflow: sizeWithOverflow, scale: scale);
+        double horizontalShift = getHorizontalShift(
+            parentBox: parentBox,
+            center: center,
+            labelPainter: labelPainter,
+            textScaleFactor: textScaleFactor,
+            sizeWithOverflow: sizeWithOverflow,
+            scale: scale
+        );
         double rectHeight = labelPainter.height + _labelPadding;
-        var upperRect = Rect.fromLTWH((-rectangleWidth / 2L) + horizontalShift, -_triangleHeight - rectHeight, rectangleWidth, rectHeight);
-        var trianglePath = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.lineTo(-_triangleHeight, -_triangleHeight);
-    __cascade.lineTo(_triangleHeight, -_triangleHeight);
-    __cascade.close();
-    return __cascade;
-}))();
-        var fillPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = backgroundPaintColor;
-    return __cascade;
-}))();
+        var upperRect = Rect.fromLTWH(
+            (-rectangleWidth / 2L) + horizontalShift,
+            -_triangleHeight - rectHeight,
+            rectangleWidth,
+            rectHeight
+        );
+        var trianglePath = (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.lineTo(-_triangleHeight, -_triangleHeight);
+                    __cascade.lineTo(_triangleHeight, -_triangleHeight);
+                    __cascade.close();
+                    return __cascade;
+                }
+            )
+        )();
+        var fillPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = backgroundPaintColor;
+                    return __cascade;
+                }
+            )
+        )();
         var upperRRect = RRect.fromRectAndRadius(upperRect, Radius.circular(_upperRectRadius));
         trianglePath.addRRect(upperRRect);
         canvas.save();
@@ -193,14 +380,18 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         canvas.scale(scale, scale);
         if (strokePaintColor is not null)
         {
-            var strokePaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = strokePaintColor;
-    __cascade.strokeWidth = 1.0;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))();
+            var strokePaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = strokePaintColor;
+                        __cascade.strokeWidth = 1.0;
+                        __cascade.style = PaintingStyle.stroke;
+                        return __cascade;
+                    }
+                )
+            )();
             canvas.drawPath(trianglePath, strokePaint);
         }
         canvas.drawPath(trianglePath, fillPaint);
@@ -212,72 +403,162 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         labelPainter.paint(canvas, labelOffset);
         canvas.restore();
     }
-
 }
 
 public class PaddleSliderValueIndicatorShape : SliderComponentShape
 {
-    internal static _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter = new _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape();
+    internal static _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter =
+        new _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape();
 
-    public PaddleSliderValueIndicatorShape()
-    {
-    }
+    public PaddleSliderValueIndicatorShape() { }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter? labelPainter = null,
+        double? textScaleFactor = null
+    )
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
-        DartRuntimePrimitives.Assert(() => (textScaleFactor is not null) && (textScaleFactor >= 0L));
-        return _pathPainter.getPreferredSize(labelPainter!, DartRuntimePrimitives.RequireValue(textScaleFactor));
+        DartRuntimePrimitives.Assert(() =>
+            (textScaleFactor is not null) && (textScaleFactor >= 0L)
+        );
+        return _pathPainter.getPreferredSize(
+            labelPainter!,
+            DartRuntimePrimitives.RequireValue(textScaleFactor)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    )
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        var enableColor = new ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
-        _pathPainter.paint(context.canvas, center, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = enableColor.evaluate(enableAnimation)!;
-    return __cascade;
-}))(), activationAnimation.value, labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow, sliderTheme.valueIndicatorStrokeColor);
+        var enableColor = new ColorTween(
+            begin: sliderTheme.disabledThumbColor,
+            end: sliderTheme.valueIndicatorColor
+        );
+        _pathPainter.paint(
+            context.canvas,
+            center,
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = enableColor.evaluate(enableAnimation)!;
+                        return __cascade;
+                    }
+                )
+            )(),
+            activationAnimation.value,
+            labelPainter,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)),
+            sizeWithOverflow,
+            sliderTheme.valueIndicatorStrokeColor
+        );
     }
-
 }
 
 public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
 {
-    internal static _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter = new _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape();
+    internal static _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape _pathPainter =
+        new _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape();
 
-    public PaddleRangeSliderValueIndicatorShape()
-    {
-    }
+    public PaddleRangeSliderValueIndicatorShape() { }
 
-    public override Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter labelPainter, double textScaleFactor)
+    public override Size getPreferredSize(
+        bool isEnabled,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        double textScaleFactor
+    )
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)));
+        return _pathPainter.getPreferredSize(
+            labelPainter,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double getHorizontalShift(RenderBox? parentBox = null, Offset? center = null, TextPainter? labelPainter = null, Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
+    public override double getHorizontalShift(
+        RenderBox? parentBox = null,
+        Offset? center = null,
+        TextPainter? labelPainter = null,
+        Animation<double>? activationAnimation = null,
+        double? textScaleFactor = null,
+        Size? sizeWithOverflow = null
+    )
     {
-        return _pathPainter.getHorizontalShift(center: DartRuntimePrimitives.RequireValue(center), labelPainter: labelPainter!, scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value), textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow));
+        return _pathPainter.getHorizontalShift(
+            center: DartRuntimePrimitives.RequireValue(center),
+            labelPainter: labelPainter!,
+            scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value),
+            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
+            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
+    public override void paint(
+        PaintingContext context,
+        Offset center,
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete = default!,
+        bool isOnTop = default!,
+        TextPainter labelPainter = default!,
+        double textScaleFactor = default!,
+        Size sizeWithOverflow = default!,
+        RenderBox parentBox = default!,
+        SliderThemeData sliderTheme = default!,
+        TextDirection textDirection = default!,
+        double value = default!,
+        Thumb thumb = default!
+    )
     {
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(sizeWithOverflow).isEmpty);
-        var enableColor = new ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
-        _pathPainter.paint(context.canvas, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = enableColor.evaluate(enableAnimation)!;
-    return __cascade;
-}))(), DartRuntimePrimitives.RequireValue(activationAnimation.value), labelPainter, DartRuntimePrimitives.RequireValue(textScaleFactor), DartRuntimePrimitives.RequireValue(sizeWithOverflow), isOnTop ? sliderTheme.overlappingShapeStrokeColor : sliderTheme.valueIndicatorStrokeColor);
+        DartRuntimePrimitives.Assert(() =>
+            !DartRuntimePrimitives.RequireValue(sizeWithOverflow).isEmpty
+        );
+        var enableColor = new ColorTween(
+            begin: sliderTheme.disabledThumbColor,
+            end: sliderTheme.valueIndicatorColor
+        );
+        _pathPainter.paint(
+            context.canvas,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = enableColor.evaluate(enableAnimation)!;
+                        return __cascade;
+                    }
+                )
+            )(),
+            DartRuntimePrimitives.RequireValue(activationAnimation.value),
+            labelPainter,
+            DartRuntimePrimitives.RequireValue(textScaleFactor),
+            DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            isOnTop
+                ? sliderTheme.overlappingShapeStrokeColor
+                : sliderTheme.valueIndicatorStrokeColor
+        );
     }
-
 }
 
 internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape
@@ -298,45 +579,76 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
     internal static double _twoSeventyDegrees = 3.0 * Dart_mathLibrary.pi / 2.0;
     internal static double _ninetyDegrees = Dart_mathLibrary.pi / 2.0;
     internal static double _thirtyDegrees = Dart_mathLibrary.pi / 6.0;
-    internal static double _preferredHeight = _distanceBetweenTopBottomCenters + _topLobeRadius + _bottomLobeRadius;
+    internal static double _preferredHeight =
+        _distanceBetweenTopBottomCenters + _topLobeRadius + _bottomLobeRadius;
     internal const bool _debuggingLabelLocation = false;
 
-    internal _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape()
-    {
-    }
+    internal _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_shape() { }
 
     public virtual Size getPreferredSize(TextPainter labelPainter, double textScaleFactor)
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        double widthLocal = Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L * textScaleFactor);
+        double widthLocal =
+            Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width)
+            + (_labelPadding * 2L * textScaleFactor);
         return new Size(widthLocal, _preferredHeight * textScaleFactor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static void _addArc(Path path, Offset center, double radius, double startAngle, double endAngle)
+    internal static void _addArc(
+        Path path,
+        Offset center,
+        double radius,
+        double startAngle,
+        double endAngle
+    )
     {
         DartRuntimePrimitives.Assert(() => center.isFinite);
         var arcRect = Rect.fromCircle(center: center, radius: radius);
         path.arcTo(arcRect, startAngle, endAngle - startAngle, false);
     }
 
-    public virtual double getHorizontalShift(Offset center, TextPainter labelPainter, double scale, double textScaleFactor, Size sizeWithOverflow)
+    public virtual double getHorizontalShift(
+        Offset center,
+        TextPainter labelPainter,
+        double scale,
+        double textScaleFactor,
+        Size sizeWithOverflow
+    )
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         double inverseTextScale = (textScaleFactor != 0L) ? (1.0 / textScaleFactor) : 0.0;
         double labelHalfWidth = labelPainter.width / 2.0;
-        double halfWidthNeeded = Math.Max(0.0, (inverseTextScale * labelHalfWidth) - (_topLobeRadius - _labelPadding));
-        double shift = _getIdealOffset(halfWidthNeeded, textScaleFactor * scale, center, sizeWithOverflow.width);
+        double halfWidthNeeded = Math.Max(
+            0.0,
+            (inverseTextScale * labelHalfWidth) - (_topLobeRadius - _labelPadding)
+        );
+        double shift = _getIdealOffset(
+            halfWidthNeeded,
+            textScaleFactor * scale,
+            center,
+            sizeWithOverflow.width
+        );
         return shift * textScaleFactor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _getIdealOffset(double halfWidthNeeded, double scale, Offset center, double widthWithOverflow)
+    internal virtual double _getIdealOffset(
+        double halfWidthNeeded,
+        double scale,
+        Offset center,
+        double widthWithOverflow
+    )
     {
         var edgeMargin = 8.0;
-        var topLobeRect = Rect.fromLTWH(-_topLobeRadius - halfWidthNeeded, -_topLobeRadius - _distanceBetweenTopBottomCenters, 2.0 * (_topLobeRadius + halfWidthNeeded), 2.0 * _topLobeRadius);
-        Offset topLeftLocal = topLobeRect.topLeft * scale + center;
-        Offset bottomRightLocal = topLobeRect.bottomRight * scale + center;
+        var topLobeRect = Rect.fromLTWH(
+            -_topLobeRadius - halfWidthNeeded,
+            -_topLobeRadius - _distanceBetweenTopBottomCenters,
+            2.0 * (_topLobeRadius + halfWidthNeeded),
+            2.0 * _topLobeRadius
+        );
+        Offset topLeftLocal = (topLobeRect.topLeft * scale) + center;
+        Offset bottomRightLocal = (topLobeRect.bottomRight * scale) + center;
         var shift = 0.0;
         if (topLeftLocal.dx < edgeMargin)
         {
@@ -360,7 +672,16 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(Canvas canvas, Offset center, Paint paint, double scale, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color? strokePaintColor)
+    public virtual void paint(
+        Canvas canvas,
+        Offset center,
+        Paint paint,
+        double scale,
+        TextPainter labelPainter,
+        double textScaleFactor,
+        Size sizeWithOverflow,
+        Color? strokePaintColor
+    )
     {
         if (scale == 0.0)
         {
@@ -373,74 +694,167 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         canvas.save();
         canvas.translate(center.dx, center.dy);
         canvas.scale(overallScale, overallScale);
-        double bottomNeckTriangleHypotenuse = _bottomNeckRadius + (_bottomLobeRadius / overallScale);
-        double rightBottomNeckCenterY = -Dart_mathLibrary.sqrt(Dart_mathLibrary.pow(bottomNeckTriangleHypotenuse, 2L) - Dart_mathLibrary.pow(_rightBottomNeckCenterX, 2L));
-        double rightBottomNeckAngleEnd = Dart_mathLibrary.pi + Dart_mathLibrary.atan(rightBottomNeckCenterY / _rightBottomNeckCenterX);
-        var path = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.moveTo(_middleNeckWidth / 2L, rightBottomNeckCenterY);
-    return __cascade;
-}))();
-        _addArc(path, new Offset(_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, _rightBottomNeckAngleStart, rightBottomNeckAngleEnd);
-        _addArc(path, Offset.zero, _bottomLobeRadius / overallScale, rightBottomNeckAngleEnd - Dart_mathLibrary.pi, (2L * Dart_mathLibrary.pi) - rightBottomNeckAngleEnd);
-        _addArc(path, new Offset(-_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, Dart_mathLibrary.pi - rightBottomNeckAngleEnd, 0);
-        double halfWidthNeeded = Math.Max(0.0, (inverseTextScale * labelHalfWidth) - (_topLobeRadius - _labelPadding));
-        double shift = _getIdealOffset(halfWidthNeeded, overallScale, center, sizeWithOverflow.width);
+        double bottomNeckTriangleHypotenuse =
+            _bottomNeckRadius + (_bottomLobeRadius / overallScale);
+        double rightBottomNeckCenterY = -Dart_mathLibrary.sqrt(
+            Dart_mathLibrary.pow(bottomNeckTriangleHypotenuse, 2L)
+                - Dart_mathLibrary.pow(_rightBottomNeckCenterX, 2L)
+        );
+        double rightBottomNeckAngleEnd =
+            Dart_mathLibrary.pi
+            + Dart_mathLibrary.atan(rightBottomNeckCenterY / _rightBottomNeckCenterX);
+        var path = (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.moveTo(_middleNeckWidth / 2L, rightBottomNeckCenterY);
+                    return __cascade;
+                }
+            )
+        )();
+        _addArc(
+            path,
+            new Offset(_rightBottomNeckCenterX, rightBottomNeckCenterY),
+            _bottomNeckRadius,
+            _rightBottomNeckAngleStart,
+            rightBottomNeckAngleEnd
+        );
+        _addArc(
+            path,
+            Offset.zero,
+            _bottomLobeRadius / overallScale,
+            rightBottomNeckAngleEnd - Dart_mathLibrary.pi,
+            (2L * Dart_mathLibrary.pi) - rightBottomNeckAngleEnd
+        );
+        _addArc(
+            path,
+            new Offset(-_rightBottomNeckCenterX, rightBottomNeckCenterY),
+            _bottomNeckRadius,
+            Dart_mathLibrary.pi - rightBottomNeckAngleEnd,
+            0
+        );
+        double halfWidthNeeded = Math.Max(
+            0.0,
+            (inverseTextScale * labelHalfWidth) - (_topLobeRadius - _labelPadding)
+        );
+        double shift = _getIdealOffset(
+            halfWidthNeeded,
+            overallScale,
+            center,
+            sizeWithOverflow.width
+        );
         double leftWidthNeeded = halfWidthNeeded - shift;
         double rightWidthNeeded = halfWidthNeeded + shift;
         double leftAmount = Math.Max(0.0, Math.Min(1.0, leftWidthNeeded / _neckTriangleBase));
         double rightAmount = Math.Max(0.0, Math.Min(1.0, rightWidthNeeded / _neckTriangleBase));
         double leftTheta = (1.0 - leftAmount) * _thirtyDegrees;
         double rightTheta = (1.0 - rightAmount) * _thirtyDegrees;
-        var leftTopNeckCenter = new Offset(-_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(leftTheta) * _neckTriangleHypotenuse));
-        var neckRightCenter = new Offset(_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(rightTheta) * _neckTriangleHypotenuse));
+        var leftTopNeckCenter = new Offset(
+            -_neckTriangleBase,
+            _topLobeCenter.dy + (Dart_mathLibrary.cos(leftTheta) * _neckTriangleHypotenuse)
+        );
+        var neckRightCenter = new Offset(
+            _neckTriangleBase,
+            _topLobeCenter.dy + (Dart_mathLibrary.cos(rightTheta) * _neckTriangleHypotenuse)
+        );
         double leftNeckArcAngle = _ninetyDegrees - leftTheta;
         double rightNeckArcAngle = Dart_mathLibrary.pi + _ninetyDegrees - rightTheta;
-        double neckStretchBaseline = Math.Max(0.0, rightBottomNeckCenterY - Math.Max(leftTopNeckCenter.dy, neckRightCenter.dy));
+        double neckStretchBaseline = Math.Max(
+            0.0,
+            rightBottomNeckCenterY - Math.Max(leftTopNeckCenter.dy, neckRightCenter.dy)
+        );
         var t = (double)Dart_mathLibrary.pow(inverseTextScale, 3.0);
-        double stretch = Dart_uiLibrary.clampDouble(neckStretchBaseline * t, 0.0, 10.0 * neckStretchBaseline);
+        double stretch = Dart_uiLibrary.clampDouble(
+            neckStretchBaseline * t,
+            0.0,
+            10.0 * neckStretchBaseline
+        );
         var neckStretch = new Offset(0.0, neckStretchBaseline - stretch);
-        DartRuntimePrimitives.Assert(() => !_debuggingLabelLocation || ((Func<bool>)(() =>
-        {
-            Offset leftCenter = _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch;
-            Offset rightCenter = _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch;
-            var valueRect = Rect.fromLTRB(leftCenter.dx - _topLobeRadius, leftCenter.dy - _topLobeRadius, rightCenter.dx + _topLobeRadius, rightCenter.dy + _topLobeRadius);
-            var outlinePaint = ((Func<Paint>)(() =>
-            {
-                var __cascade = new Paint();
-                __cascade.color = new Color(4294901760L);
-                __cascade.style = PaintingStyle.stroke;
-                __cascade.strokeWidth = 1.0;
-                return __cascade;
-            }))();
-            canvas.drawRect(valueRect, outlinePaint);
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))());
+        DartRuntimePrimitives.Assert(() =>
+            !_debuggingLabelLocation
+            || (
+                (Func<bool>)(
+                    () =>
+                    {
+                        Offset leftCenter =
+                            _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch;
+                        Offset rightCenter =
+                            _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch;
+                        var valueRect = Rect.fromLTRB(
+                            leftCenter.dx - _topLobeRadius,
+                            leftCenter.dy - _topLobeRadius,
+                            rightCenter.dx + _topLobeRadius,
+                            rightCenter.dy + _topLobeRadius
+                        );
+                        var outlinePaint = (
+                            (Func<Paint>)(
+                                () =>
+                                {
+                                    var __cascade = new Paint();
+                                    __cascade.color = new Color(4294901760L);
+                                    __cascade.style = PaintingStyle.stroke;
+                                    __cascade.strokeWidth = 1.0;
+                                    return __cascade;
+                                }
+                            )
+                        )();
+                        canvas.drawRect(valueRect, outlinePaint);
+                        return true;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )()
+        );
         _addArc(path, leftTopNeckCenter + neckStretch, _topNeckRadius, 0.0, -leftNeckArcAngle);
-        _addArc(path, _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _ninetyDegrees + leftTheta, _twoSeventyDegrees);
-        _addArc(path, _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _twoSeventyDegrees, _twoSeventyDegrees + Dart_mathLibrary.pi - rightTheta);
-        _addArc(path, neckRightCenter + neckStretch, _topNeckRadius, rightNeckArcAngle, Dart_mathLibrary.pi);
+        _addArc(
+            path,
+            _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch,
+            _topLobeRadius,
+            _ninetyDegrees + leftTheta,
+            _twoSeventyDegrees
+        );
+        _addArc(
+            path,
+            _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch,
+            _topLobeRadius,
+            _twoSeventyDegrees,
+            _twoSeventyDegrees + Dart_mathLibrary.pi - rightTheta
+        );
+        _addArc(
+            path,
+            neckRightCenter + neckStretch,
+            _topNeckRadius,
+            rightNeckArcAngle,
+            Dart_mathLibrary.pi
+        );
         if (strokePaintColor is not null)
         {
-            var strokePaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = strokePaintColor;
-    __cascade.strokeWidth = 1.0;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))();
+            var strokePaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = strokePaintColor;
+                        __cascade.strokeWidth = 1.0;
+                        __cascade.style = PaintingStyle.stroke;
+                        return __cascade;
+                    }
+                )
+            )();
             canvas.drawPath(path, strokePaint);
         }
         canvas.drawPath(path, paint);
         canvas.save();
         canvas.translate(shift, -_distanceBetweenTopBottomCenters + neckStretch.dy);
         canvas.scale(inverseTextScale, inverseTextScale);
-        labelPainter.paint(canvas, Offset.zero - new Offset(labelHalfWidth, labelPainter.height / 2.0));
+        labelPainter.paint(
+            canvas,
+            Offset.zero - new Offset(labelHalfWidth, labelPainter.height / 2.0)
+        );
         canvas.restore();
         canvas.restore();
     }
-
 }

@@ -10,6 +10,10 @@ public static class MacCatalystMauiTarget
     public static void EnsureSupported()
     {
         if (!OperatingSystem.IsMacCatalyst())
-            throw new PlatformNotSupportedException("Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64 requires Mac Catalyst.");
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64 requires Mac Catalyst."
+            );
+        }
     }
 }

@@ -15,8 +15,15 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly TimeProvider _timeProvider;
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
-    private AccessibilityFeatures _accessibilityFeatures =
-        new(false, false, false, false, false, false, false);
+    private AccessibilityFeatures _accessibilityFeatures = new(
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    );
     private long _frameNumber;
     private long _frameTransactionNumber;
     private int _dispatchDepth;
@@ -32,12 +39,14 @@ public sealed class PlatformDispatcher : IDisposable
     /// The dispatcher active for the current managed execution context. Hosts and
     /// framework bindings should enter a scope instead of replacing process-global state.
     /// </summary>
-    public static PlatformDispatcher instance => ActiveDispatcher.Value ??
-        throw new DorotiCapabilityException(
+    public static PlatformDispatcher instance =>
+        ActiveDispatcher.Value
+        ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.DartPerformanceMode,
             null,
             DartUiInvocation.Managed("dart:ui#PlatformDispatcher.instance"),
-            "no dispatcher is active in the current execution context");
+            "no dispatcher is active in the current execution context"
+        );
 
     internal static PlatformDispatcher? current => ActiveDispatcher.Value;
 
@@ -48,8 +57,11 @@ public sealed class PlatformDispatcher : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         var previous = ActiveDispatcher.Value;
         ActiveDispatcher.Value = this;
-        return new DispatcherScope(previous, DartAsyncRuntime.enterMicrotaskScheduler(EnqueueMicrotask),
-            DartAsyncRuntime.enterTimeProvider(_timeProvider));
+        return new DispatcherScope(
+            previous,
+            DartAsyncRuntime.enterMicrotaskScheduler(EnqueueMicrotask),
+            DartAsyncRuntime.enterTimeProvider(_timeProvider)
+        );
     }
 
     private void EnqueueMicrotask(Action callback)
@@ -61,9 +73,17 @@ public sealed class PlatformDispatcher : IDisposable
             // scheduler belongs to this dispatcher, so callbacks arriving after
             // disposal/detach must not escape on a ThreadPool thread or revive a
             // closed view.
-            if (_disposed || _views.Count == 0) return;
+            if (_disposed || _views.Count == 0)
+            {
+                return;
+            }
+
             _microtasks.enqueue(callback);
-            if (Volatile.Read(ref _dispatchDepth) != 0) return;
+            if (Volatile.Read(ref _dispatchDepth) != 0)
+            {
+                return;
+            }
+
             registered = _views.Values.ToArray();
         }
         foreach (var view in registered)
@@ -84,7 +104,8 @@ public sealed class PlatformDispatcher : IDisposable
                 DorotiCapabilityIds.DartPerformanceMode,
                 null,
                 DartUiInvocation.Managed("dart:ui#PlatformDispatcher.requestDartPerformanceMode"),
-                "the active host did not register it");
+                "the active host did not register it"
+            );
         }
         _performanceModeCapability.Request(mode);
     }
@@ -103,11 +124,14 @@ public sealed class PlatformDispatcher : IDisposable
                 DorotiCapabilityIds.ViewFrameDispatch,
                 null,
                 DartUiInvocation.Managed("dart:ui#PlatformDispatcher.scheduleFrame"),
-                "no Flutter view is registered");
+                "no Flutter view is registered"
+            );
         }
         foreach (var view in registered)
         {
-            view.ScheduleFrame(DartUiInvocation.Managed("dart:ui#PlatformDispatcher.scheduleFrame"));
+            view.ScheduleFrame(
+                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.scheduleFrame")
+            );
         }
     }
 
@@ -134,7 +158,10 @@ public sealed class PlatformDispatcher : IDisposable
         }
         finally
         {
-            foreach (var scope in buildScopes.Reverse()) scope.Dispose();
+            foreach (var scope in buildScopes.Reverse())
+            {
+                scope.Dispose();
+            }
         }
     }
 
@@ -155,7 +182,11 @@ public sealed class PlatformDispatcher : IDisposable
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            if (_accessibilityFeatures == value) return;
+            if (_accessibilityFeatures == value)
+            {
+                return;
+            }
+
             _accessibilityFeatures = value;
             onAccessibilityFeaturesChanged?.Invoke();
         }
@@ -165,15 +196,20 @@ public sealed class PlatformDispatcher : IDisposable
     public string defaultRouteName { get; set; } = "/";
     public bool brieflyShowPassword { get; set; } = true;
     private PlatformConfiguration? _configurationSnapshot;
-    public PlatformConfiguration? configurationSnapshot => PlatformEnvironmentContext.currentOrNull ?? _configurationSnapshot;
+    public PlatformConfiguration? configurationSnapshot =>
+        PlatformEnvironmentContext.currentOrNull ?? _configurationSnapshot;
     public Action? onLocaleChanged { get; set; }
     public IReadOnlyList<Locale> locales => configurationSnapshot?.locales ?? [];
-    public Brightness platformBrightness => configurationSnapshot?.platformBrightness ?? Brightness.light;
+    public Brightness platformBrightness =>
+        configurationSnapshot?.platformBrightness ?? Brightness.light;
     public bool alwaysUse24HourFormat => configurationSnapshot?.alwaysUse24HourFormat ?? false;
-    public bool nativeSpellCheckServiceDefined => configurationSnapshot?.nativeSpellCheckServiceDefined ?? false;
+    public bool nativeSpellCheckServiceDefined =>
+        configurationSnapshot?.nativeSpellCheckServiceDefined ?? false;
     public double textScaleFactor => configurationSnapshot?.textScaleFactor ?? 1.0;
-    public bool supportsShowingSystemContextMenu => configurationSnapshot?.supportsShowingSystemContextMenu ?? false;
-    public double? lineHeightScaleFactorOverride => configurationSnapshot?.lineHeightScaleFactorOverride;
+    public bool supportsShowingSystemContextMenu =>
+        configurationSnapshot?.supportsShowingSystemContextMenu ?? false;
+    public double? lineHeightScaleFactorOverride =>
+        configurationSnapshot?.lineHeightScaleFactorOverride;
     public double? letterSpacingOverride => configurationSnapshot?.letterSpacingOverride;
     public double? wordSpacingOverride => configurationSnapshot?.wordSpacingOverride;
     public double? paragraphSpacingOverride => configurationSnapshot?.paragraphSpacingOverride;
@@ -189,10 +225,22 @@ public sealed class PlatformDispatcher : IDisposable
         foreach (var preferred in locales)
         {
             var exact = supportedLocales.FirstOrDefault(candidate => candidate == preferred);
-            if (exact != default) return exact;
+            if (exact != default)
+            {
+                return exact;
+            }
+
             var language = supportedLocales.FirstOrDefault(candidate =>
-                string.Equals(candidate.languageCode, preferred.languageCode, StringComparison.OrdinalIgnoreCase));
-            if (language != default) return language;
+                string.Equals(
+                    candidate.languageCode,
+                    preferred.languageCode,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
+            if (language != default)
+            {
+                return language;
+            }
         }
         return supportedLocales.FirstOrDefault();
     }
@@ -203,20 +251,33 @@ public sealed class PlatformDispatcher : IDisposable
         {
             throw new ArgumentOutOfRangeException(nameof(unscaledFontSize));
         }
-        return configurationSnapshot?.fontSizeScaler?.Invoke(unscaledFontSize) ?? unscaledFontSize * textScaleFactor;
+        return configurationSnapshot?.fontSizeScaler?.Invoke(unscaledFontSize)
+            ?? (unscaledFontSize * textScaleFactor);
     }
 
     public DorotiView? view(long id)
     {
         lock (_gate)
         {
-            return id >= 0 && _views.TryGetValue(checked((ulong)id), out var result) ? result : null;
+            return id >= 0 && _views.TryGetValue(checked((ulong)id), out var result)
+                ? result
+                : null;
         }
     }
 
-    public void requestViewFocusChange(long viewId, ViewFocusState state, ViewFocusDirection direction)
+    public void requestViewFocusChange(
+        long viewId,
+        ViewFocusState state,
+        ViewFocusDirection direction
+    )
     {
-        var target = view(viewId) ?? throw new ArgumentOutOfRangeException(nameof(viewId), viewId, "Unknown Flutter view.");
+        var target =
+            view(viewId)
+            ?? throw new ArgumentOutOfRangeException(
+                nameof(viewId),
+                viewId,
+                "Unknown Flutter view."
+            );
         target.requestFocusChange(state, direction);
     }
 
@@ -240,7 +301,8 @@ public sealed class PlatformDispatcher : IDisposable
 
     public void addSemanticsEnabledListener(Action listener) => semanticsEnabledChanged += listener;
 
-    public void removeSemanticsEnabledListener(Action listener) => semanticsEnabledChanged -= listener;
+    public void removeSemanticsEnabledListener(Action listener) =>
+        semanticsEnabledChanged -= listener;
 
     public Action<DorotiView, AppLifecycleState>? onAppLifecycleStateChanged { get; set; }
 
@@ -279,7 +341,10 @@ public sealed class PlatformDispatcher : IDisposable
         {
             lock (_gate)
             {
-                return _views.Values.OrderBy(view => view.viewId).FirstOrDefault()?.metrics.lifecycleState.ToString();
+                return _views
+                    .Values.OrderBy(view => view.viewId)
+                    .FirstOrDefault()
+                    ?.metrics.lifecycleState.ToString();
             }
         }
     }
@@ -289,22 +354,48 @@ public sealed class PlatformDispatcher : IDisposable
     public void registerBackgroundIsolate(RootIsolateToken token)
     {
         ArgumentNullException.ThrowIfNull(token);
-        lock (_gate) _backgroundIsolates.Add(token.Value);
+        lock (_gate)
+        {
+            _backgroundIsolates.Add(token.Value);
+        }
     }
 
-    public async void sendPlatformMessage(string channel, ByteData? data, Action<ByteData?>? callback)
+    public async void sendPlatformMessage(
+        string channel,
+        ByteData? data,
+        Action<ByteData?>? callback
+    )
     {
-        var response = await RequireMessagingView().SendPlatformMessageAsync(
-            channel, data?.asMemory(), DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPlatformMessage"));
+        var response = await RequireMessagingView()
+            .SendPlatformMessageAsync(
+                channel,
+                data?.asMemory(),
+                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPlatformMessage")
+            );
         callback?.Invoke(response is null ? null : (ByteData)response.Value);
     }
 
-    public async void sendPortPlatformMessage(string channel, ByteData? data, long identifier, SendPort sendPort)
+    public async void sendPortPlatformMessage(
+        string channel,
+        ByteData? data,
+        long identifier,
+        SendPort sendPort
+    )
     {
         ArgumentNullException.ThrowIfNull(sendPort);
-        var response = await RequireMessagingView().SendPlatformMessageAsync(
-            channel, data?.asMemory(), DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPortPlatformMessage"));
-        sendPort.send(new List<object?> { identifier, response is null ? null : new Uint8List(response.Value.ToArray()) });
+        var response = await RequireMessagingView()
+            .SendPlatformMessageAsync(
+                channel,
+                data?.asMemory(),
+                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPortPlatformMessage")
+            );
+        sendPort.send(
+            new List<object?>
+            {
+                identifier,
+                response is null ? null : new Uint8List(response.Value.ToArray()),
+            }
+        );
     }
 
     public Action<DorotiView, PlatformConfiguration>? onPlatformConfigurationChanged { get; set; }
@@ -323,7 +414,8 @@ public sealed class PlatformDispatcher : IDisposable
         {
             view.SetSemanticsTreeEnabled(
                 enabled,
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.setSemanticsTreeEnabled"));
+                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.setSemanticsTreeEnabled")
+            );
         }
     }
 
@@ -331,7 +423,10 @@ public sealed class PlatformDispatcher : IDisposable
     {
         if (viewId == 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(viewId), "A Flutter view id must be non-zero.");
+            throw new ArgumentOutOfRangeException(
+                nameof(viewId),
+                "A Flutter view id must be non-zero."
+            );
         }
         ArgumentNullException.ThrowIfNull(capabilities);
         lock (_gate)
@@ -339,7 +434,9 @@ public sealed class PlatformDispatcher : IDisposable
             ObjectDisposedException.ThrowIf(_disposed, this);
             if (_views.ContainsKey(viewId))
             {
-                throw new InvalidOperationException($"Flutter view {viewId} is already registered.");
+                throw new InvalidOperationException(
+                    $"Flutter view {viewId} is already registered."
+                );
             }
             capabilities.Seal();
             DorotiView view;
@@ -372,7 +469,8 @@ public sealed class PlatformDispatcher : IDisposable
             DorotiCapabilityIds.ViewLifecycleMetrics,
             viewId,
             invocation,
-            "the view is not registered or has already shut down");
+            "the view is not registered or has already shut down"
+        );
     }
 
     internal void Remove(DorotiView view)
@@ -393,48 +491,78 @@ public sealed class PlatformDispatcher : IDisposable
     }
 
     internal void DispatchLifecycle(DorotiView view, AppLifecycleState state) =>
-        DispatchWithEnvironment(view, () =>
-        {
-            onAppLifecycleStateChanged?.Invoke(view, state);
-            lifecycleChanged?.Invoke(view, state);
-        });
+        DispatchWithEnvironment(
+            view,
+            () =>
+            {
+                onAppLifecycleStateChanged?.Invoke(view, state);
+                lifecycleChanged?.Invoke(view, state);
+            }
+        );
 
     internal void DispatchPointer(DorotiView view, PointerDataPacket packet) =>
         DispatchWithEnvironment(view, () => onPointerDataPacket?.Invoke(view, packet));
 
     internal void DispatchKey(DorotiView view, KeyData data) =>
-        DispatchWithEnvironment(view, () =>
-        {
-            onKeyData?.Invoke(data);
-            keyData?.Invoke(view, data);
-        });
+        DispatchWithEnvironment(
+            view,
+            () =>
+            {
+                onKeyData?.Invoke(data);
+                keyData?.Invoke(view, data);
+            }
+        );
 
     internal void DispatchFocus(DorotiView view, RawFocusData data)
     {
-        DispatchWithEnvironment(view, () =>
-        {
-            onFocusData?.Invoke(view, data);
-            focusData?.Invoke(view, data);
-            onViewFocusChanged?.Invoke(view);
-            onViewFocusChange?.Invoke(new ViewFocusEvent(view.viewId, data.isFocused));
-        });
+        DispatchWithEnvironment(
+            view,
+            () =>
+            {
+                onFocusData?.Invoke(view, data);
+                focusData?.Invoke(view, data);
+                onViewFocusChanged?.Invoke(view);
+                onViewFocusChange?.Invoke(new ViewFocusEvent(view.viewId, data.isFocused));
+            }
+        );
     }
 
-    internal void DispatchPlatformConfiguration(DorotiView view, PlatformConfiguration configuration, PlatformConfiguration? previous)
+    internal void DispatchPlatformConfiguration(
+        DorotiView view,
+        PlatformConfiguration configuration,
+        PlatformConfiguration? previous
+    )
     {
         _configurationSnapshot = configuration;
-        DispatchWithEnvironment(view, () =>
-        {
-            onPlatformConfigurationChanged?.Invoke(view, configuration);
-            if (previous?.textScaleFactor != configuration.textScaleFactor || previous?.fontSizeScaler != configuration.fontSizeScaler)
-                onTextScaleFactorChanged?.Invoke();
-            if (previous?.platformBrightness != configuration.platformBrightness)
-                onPlatformBrightnessChanged?.Invoke();
-            if (previous is null || !previous.locales.SequenceEqual(configuration.locales))
-                onLocaleChanged?.Invoke();
-            if (previous?.accessibilityFeatures != configuration.accessibilityFeatures)
-                onAccessibilityFeaturesChanged?.Invoke();
-        });
+        DispatchWithEnvironment(
+            view,
+            () =>
+            {
+                onPlatformConfigurationChanged?.Invoke(view, configuration);
+                if (
+                    previous?.textScaleFactor != configuration.textScaleFactor
+                    || previous?.fontSizeScaler != configuration.fontSizeScaler
+                )
+                {
+                    onTextScaleFactorChanged?.Invoke();
+                }
+
+                if (previous?.platformBrightness != configuration.platformBrightness)
+                {
+                    onPlatformBrightnessChanged?.Invoke();
+                }
+
+                if (previous is null || !previous.locales.SequenceEqual(configuration.locales))
+                {
+                    onLocaleChanged?.Invoke();
+                }
+
+                if (previous?.accessibilityFeatures != configuration.accessibilityFeatures)
+                {
+                    onAccessibilityFeaturesChanged?.Invoke();
+                }
+            }
+        );
     }
 
     internal void DispatchSemanticsAction(DorotiView view, SemanticsActionEvent action) =>
@@ -444,24 +572,31 @@ public sealed class PlatformDispatcher : IDisposable
         DorotiView view,
         TimeSpan timestamp,
         DorotiViewEpoch requestedEpoch,
-        DorotiFrameTransaction? transaction = null)
+        DorotiFrameTransaction? transaction = null
+    )
     {
-        DispatchWithEnvironment(view, () =>
-        {
-            transaction?.DeliverMetrics(requestedEpoch);
-            var frameNumber = Interlocked.Increment(ref _frameNumber);
-            using var buildScope = view.EnterSceneBuildScope(requestedEpoch, frameNumber, transaction);
-            _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
-            onBeginFrame?.Invoke(timestamp);
-            beginFrame?.Invoke(view, timestamp);
-            onDrawFrame?.Invoke();
-            drawFrame?.Invoke(view);
-            _frameTrace.Record(DorotiFramePhase.drawFrame, view.viewId, DorotiFrameClock.Now);
-        });
+        DispatchWithEnvironment(
+            view,
+            () =>
+            {
+                transaction?.DeliverMetrics(requestedEpoch);
+                var frameNumber = Interlocked.Increment(ref _frameNumber);
+                using var buildScope = view.EnterSceneBuildScope(
+                    requestedEpoch,
+                    frameNumber,
+                    transaction
+                );
+                _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
+                onBeginFrame?.Invoke(timestamp);
+                beginFrame?.Invoke(view, timestamp);
+                onDrawFrame?.Invoke();
+                drawFrame?.Invoke(view);
+                _frameTrace.Record(DorotiFramePhase.drawFrame, view.viewId, DorotiFrameClock.Now);
+            }
+        );
     }
 
-    internal long NextFrameTransactionId() =>
-        Interlocked.Increment(ref _frameTransactionNumber);
+    internal long NextFrameTransactionId() => Interlocked.Increment(ref _frameTransactionNumber);
 
     internal void DispatchWithEnvironment(DorotiView view, Action callback)
     {
@@ -504,23 +639,32 @@ public sealed class PlatformDispatcher : IDisposable
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (_views.Count == 1) return _views.Values.Single();
+            if (_views.Count == 1)
+            {
+                return _views.Values.Single();
+            }
         }
         throw new DorotiCapabilityException(
-            DorotiCapabilityIds.PlatformMessaging, null,
+            DorotiCapabilityIds.PlatformMessaging,
+            null,
             DartUiInvocation.Managed("dart:ui#PlatformDispatcher.platformMessaging"),
-            "platform messaging requires exactly one active view in this host-neutral dispatcher scope");
+            "platform messaging requires exactly one active view in this host-neutral dispatcher scope"
+        );
     }
 
     internal ValueTask<ReadOnlyMemory<byte>> LoadApplicationResourceAsync(
         string key,
         DartUiInvocation invocation,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
         var view = RequireMessagingView();
         return view.RequireCapability<IApplicationResourceHostCapability>(
-            DorotiCapabilityIds.ApplicationResources, invocation).LoadAsync(key, cancellationToken);
+                DorotiCapabilityIds.ApplicationResources,
+                invocation
+            )
+            .LoadAsync(key, cancellationToken);
     }
 
     public void Dispose()
@@ -545,7 +689,8 @@ public sealed class PlatformDispatcher : IDisposable
     private sealed class DispatcherScope(
         PlatformDispatcher? previous,
         IDisposable microtaskSchedulerScope,
-        IDisposable timeProviderScope) : IDisposable
+        IDisposable timeProviderScope
+    ) : IDisposable
     {
         private bool _disposed;
 
@@ -576,7 +721,7 @@ public enum DartPerformanceMode
     balanced,
     latency,
     throughput,
-    memory
+    memory,
 }
 
 public sealed class DorotiView : IDisposable
@@ -593,7 +738,11 @@ public sealed class DorotiView : IDisposable
     private ViewMetrics _metrics;
     private PlatformConfiguration? _environmentConfiguration;
 
-    internal DorotiView(PlatformDispatcher dispatcher, ulong viewId, DorotiViewCapabilities capabilities)
+    internal DorotiView(
+        PlatformDispatcher dispatcher,
+        ulong viewId,
+        DorotiViewCapabilities capabilities
+    )
     {
         _dispatcher = dispatcher;
         this.viewId = viewId;
@@ -601,37 +750,56 @@ public sealed class DorotiView : IDisposable
         _viewHost = capabilities.Require<IViewHostCapability>(
             viewId,
             DorotiCapabilityIds.ViewLifecycleMetrics,
-            DartUiInvocation.Managed("dart:ui#DorotiView"));
+            DartUiInvocation.Managed("dart:ui#DorotiView")
+        );
         _metrics = _viewHost.Metrics.Validate();
         _viewHost.MetricsChanged += HandleMetricsChanged;
         _viewHost.LifecycleChanged += HandleLifecycleChanged;
         _viewHost.CloseRequested += HandleCloseRequested;
         _viewHost.Closed += HandleClosed;
-        if (capabilities.RegisteredIds.Contains(DorotiCapabilityIds.InputEvents, StringComparer.Ordinal))
+        if (
+            capabilities.RegisteredIds.Contains(
+                DorotiCapabilityIds.InputEvents,
+                StringComparer.Ordinal
+            )
+        )
         {
             _inputHost = capabilities.Require<IInputHostCapability>(
                 viewId,
                 DorotiCapabilityIds.InputEvents,
-                DartUiInvocation.Managed("dart:ui#PointerDataPacket"));
+                DartUiInvocation.Managed("dart:ui#PointerDataPacket")
+            );
             _inputHost.PointerData += HandlePointerData;
             _inputHost.KeyData += HandleKeyData;
             _inputHost.FocusData += HandleFocusData;
         }
-        if (capabilities.RegisteredIds.Contains(DorotiCapabilityIds.PlatformEnvironment, StringComparer.Ordinal))
+        if (
+            capabilities.RegisteredIds.Contains(
+                DorotiCapabilityIds.PlatformEnvironment,
+                StringComparer.Ordinal
+            )
+        )
         {
             _environmentHost = capabilities.Require<IPlatformEnvironmentHostCapability>(
                 viewId,
                 DorotiCapabilityIds.PlatformEnvironment,
-                DartUiInvocation.Managed("dart:ui#PlatformConfiguration"));
+                DartUiInvocation.Managed("dart:ui#PlatformConfiguration")
+            );
             _environmentConfiguration = _environmentHost.Configuration.Snapshot();
             _environmentHost.ConfigurationChanged += HandlePlatformConfigurationChanged;
         }
-        if (capabilities.RegisteredIds.Contains(DorotiCapabilityIds.AccessibilitySemantics, StringComparer.Ordinal))
+        if (
+            capabilities.RegisteredIds.Contains(
+                DorotiCapabilityIds.AccessibilitySemantics,
+                StringComparer.Ordinal
+            )
+        )
         {
             _semanticsHost = capabilities.Require<ISemanticsHostCapability>(
                 viewId,
                 DorotiCapabilityIds.AccessibilitySemantics,
-                DartUiInvocation.Managed("dart:ui#SemanticsUpdate"));
+                DartUiInvocation.Managed("dart:ui#SemanticsUpdate")
+            );
             _semanticsHost.Action += HandleSemanticsAction;
         }
     }
@@ -654,7 +822,8 @@ public sealed class DorotiView : IDisposable
                 viewId,
                 DartUiInvocation.Managed("dart:ui#DorotiView.EnterPlatformEnvironmentScope"),
                 "the active host did not register it",
-                targetIdentity);
+                targetIdentity
+            );
         }
         return PlatformEnvironmentContext.Enter(_environmentConfiguration!);
     }
@@ -681,7 +850,8 @@ public sealed class DorotiView : IDisposable
             DorotiCapabilityIds.InputEvents,
             viewId,
             DartUiInvocation.Managed("dart:ui#PlatformDispatcher.requestViewFocusChange"),
-            "the active input host does not support outbound view-focus requests");
+            "the active input host does not support outbound view-focus requests"
+        );
     }
 
     public double devicePixelRatio => metrics.devicePixelRatio;
@@ -695,9 +865,17 @@ public sealed class DorotiView : IDisposable
     public ViewPadding viewInsets => metrics.viewInsets;
     public ViewPadding systemGestureInsets => metrics.systemGestureInsets;
 
-    public IReadOnlyList<DisplayFeature> displayFeatures { get => metrics.displayFeatures; set => HandleMetricsChanged(metrics with { displayFeatures = value }); }
+    public IReadOnlyList<DisplayFeature> displayFeatures
+    {
+        get => metrics.displayFeatures;
+        set => HandleMetricsChanged(metrics with { displayFeatures = value });
+    }
 
-    public DisplayCornerRadii? displayCornerRadii { get => metrics.displayCornerRadii; set => HandleMetricsChanged(metrics with { displayCornerRadii = value }); }
+    public DisplayCornerRadii? displayCornerRadii
+    {
+        get => metrics.displayCornerRadii;
+        set => HandleMetricsChanged(metrics with { displayCornerRadii = value });
+    }
 
     internal bool semanticsEnabled => _semanticsHost is not null;
     public bool coalesceSemanticsGeometryDuringActiveMetrics =>
@@ -705,7 +883,11 @@ public sealed class DorotiView : IDisposable
 
     public PlatformDispatcher platformDispatcher => _dispatcher;
 
-    public GestureSettings gestureSettings { get => metrics.gestureSettings; set => HandleMetricsChanged(metrics with { gestureSettings = value }); }
+    public GestureSettings gestureSettings
+    {
+        get => metrics.gestureSettings;
+        set => HandleMetricsChanged(metrics with { gestureSettings = value });
+    }
 
     public ViewMetrics metrics
     {
@@ -725,12 +907,17 @@ public sealed class DorotiView : IDisposable
     internal IDisposable EnterSceneBuildScope(
         DorotiViewEpoch epoch,
         long frameNumber,
-        DorotiFrameTransaction? transaction = null)
+        DorotiFrameTransaction? transaction = null
+    )
     {
         ArgumentNullException.ThrowIfNull(epoch);
         if (epoch.ViewId != viewId)
+        {
             throw new InvalidOperationException(
-                $"View epoch {epoch.ViewId} cannot build a scene for view {viewId}.");
+                $"View epoch {epoch.ViewId} cannot build a scene for view {viewId}."
+            );
+        }
+
         var previous = _activeBuildToken.Value;
         var previousTransaction = _activeFrameTransaction.Value;
         _activeBuildToken.Value = new(epoch, frameNumber, 0, 0);
@@ -738,12 +925,14 @@ public sealed class DorotiView : IDisposable
         return new SceneBuildScope(this, previous, previousTransaction);
     }
 
-    public PlatformConfiguration platformConfiguration => _environmentConfiguration ??
-        throw new DorotiCapabilityException(
+    public PlatformConfiguration platformConfiguration =>
+        _environmentConfiguration
+        ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
             viewId,
             DartUiInvocation.Managed("dart:ui#PlatformConfiguration"),
-            "the active host did not register it");
+            "the active host did not register it"
+        );
 
     public PlatformConfiguration? environmentConfiguration => _environmentConfiguration;
 
@@ -769,27 +958,35 @@ public sealed class DorotiView : IDisposable
         var frameHost = _capabilities.Require<IFrameHostCapability>(
             viewId,
             DorotiCapabilityIds.ViewFrameDispatch,
-            invocation);
-        _dispatcher.frameTrace.Record(DorotiFramePhase.scheduleFrame, viewId, DorotiFrameClock.Now,
-            reason: invocation.ElementId);
+            invocation
+        );
+        _dispatcher.frameTrace.Record(
+            DorotiFramePhase.scheduleFrame,
+            viewId,
+            DorotiFrameClock.Now,
+            reason: invocation.ElementId
+        );
         var requestedEpoch = CaptureViewEpoch();
         if (frameHost is ILatestMetricsFrameHostCapability latestMetricsFrameHost)
         {
             latestMetricsFrameHost.ScheduleFrame(
                 requestedEpoch,
                 (timestamp, admittedEpoch) =>
-                    _dispatcher.DispatchFrame(this, timestamp, admittedEpoch));
+                    _dispatcher.DispatchFrame(this, timestamp, admittedEpoch)
+            );
         }
         else if (frameHost is IExactFrameHostCapability exactFrameHost)
         {
             exactFrameHost.ScheduleFrame(
                 requestedEpoch,
-                timestamp => _dispatcher.DispatchFrame(this, timestamp, requestedEpoch));
+                timestamp => _dispatcher.DispatchFrame(this, timestamp, requestedEpoch)
+            );
         }
         else
         {
-            frameHost.ScheduleFrame(
-                timestamp => _dispatcher.DispatchFrame(this, timestamp, requestedEpoch));
+            frameHost.ScheduleFrame(timestamp =>
+                _dispatcher.DispatchFrame(this, timestamp, requestedEpoch)
+            );
         }
     }
 
@@ -801,13 +998,18 @@ public sealed class DorotiView : IDisposable
     public DorotiFrameTransaction RequestExactFrame(
         DorotiViewEpoch requestedEpoch,
         string visibleTargetIdentity,
-        TimeSpan? timestamp = null)
+        TimeSpan? timestamp = null
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(requestedEpoch);
         if (requestedEpoch.ViewId != viewId)
+        {
             throw new InvalidOperationException(
-                $"View epoch {requestedEpoch.ViewId} cannot request a frame for view {viewId}.");
+                $"View epoch {requestedEpoch.ViewId} cannot request a frame for view {viewId}."
+            );
+        }
+
         var target = new DorotiResizeEpoch(
             requestedEpoch.ResizeTargetGeneration,
             requestedEpoch.LogicalWidth,
@@ -816,17 +1018,28 @@ public sealed class DorotiView : IDisposable
             requestedEpoch.PhysicalHeight,
             requestedEpoch.DeviceScaleX,
             requestedEpoch.DeviceScaleY,
-            requestedEpoch.TimestampMicroseconds);
+            requestedEpoch.TimestampMicroseconds
+        );
         var transaction = new DorotiFrameTransaction(
-            _dispatcher.NextFrameTransactionId(), target, visibleTargetIdentity);
+            _dispatcher.NextFrameTransactionId(),
+            target,
+            visibleTargetIdentity
+        );
         try
         {
-            _dispatcher.DispatchFrame(this, timestamp ?? DorotiFrameClock.Now, requestedEpoch, transaction);
+            _dispatcher.DispatchFrame(
+                this,
+                timestamp ?? DorotiFrameClock.Now,
+                requestedEpoch,
+                transaction
+            );
         }
         catch (Exception exception)
         {
-            transaction.TryComplete(DorotiFrameTerminal.failed,
-                $"exact frame dispatch failed: {exception.Message}");
+            transaction.TryComplete(
+                DorotiFrameTerminal.failed,
+                $"exact frame dispatch failed: {exception.Message}"
+            );
             throw;
         }
         return transaction;
@@ -835,24 +1048,36 @@ public sealed class DorotiView : IDisposable
     public static Task<DorotiFrameTransactionSnapshot> WaitForExactFrameAsync(
         DorotiFrameTransaction transaction,
         TimeSpan timeout,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(transaction);
-        if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
-        return transaction.Completion.WaitAsync(timeout, DartAsyncRuntime.timeProvider, cancellationToken);
+        if (timeout <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(timeout));
+        }
+
+        return transaction.Completion.WaitAsync(
+            timeout,
+            DartAsyncRuntime.timeProvider,
+            cancellationToken
+        );
     }
 
     public async ValueTask<ReadOnlyMemory<byte>?> SendPlatformMessageAsync(
         string channel,
         ReadOnlyMemory<byte>? data,
         DartUiInvocation invocation,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        return await _capabilities.Require<IPlatformMessageHostCapability>(
+        return await _capabilities
+            .Require<IPlatformMessageHostCapability>(
                 viewId,
                 DorotiCapabilityIds.PlatformMessaging,
-                invocation)
+                invocation
+            )
             .SendAsync(channel, data, cancellationToken)
             .ConfigureAwait(false);
     }
@@ -864,8 +1089,8 @@ public sealed class DorotiView : IDisposable
         return _capabilities.Require<TCapability>(viewId, id, invocation);
     }
 
-    public void SubmitScene(Scene scene, DartUiInvocation invocation)
-        => SubmitScene(scene, null, invocation);
+    public void SubmitScene(Scene scene, DartUiInvocation invocation) =>
+        SubmitScene(scene, null, invocation);
 
     private void SubmitScene(Scene scene, Size? rootPhysicalSize, DartUiInvocation invocation)
     {
@@ -877,7 +1102,10 @@ public sealed class DorotiView : IDisposable
                 DorotiCapabilityIds.GraphicsScene,
                 viewId,
                 invocation,
-                scene.debugDisposed ? "the scene is disposed" : $"scene belongs to view {scene.viewId}");
+                scene.debugDisposed
+                    ? "the scene is disposed"
+                    : $"scene belongs to view {scene.viewId}"
+            );
         }
         var token = _activeBuildToken.Value;
         if (token is not null)
@@ -890,11 +1118,13 @@ public sealed class DorotiView : IDisposable
                 : ToPhysicalDimension(rootPhysicalSize.height, nameof(rootPhysicalSize));
             token = token.WithRootPhysicalSize(width, height);
         }
-        _capabilities.Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, invocation)
+        _capabilities
+            .Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, invocation)
             .Submit(viewId, new(scene, token, _activeFrameTransaction.Value), invocation);
     }
 
-    public void render(Scene scene) => SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
+    public void render(Scene scene) =>
+        SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
 
     public void render(Scene scene, Size size)
     {
@@ -906,32 +1136,54 @@ public sealed class DorotiView : IDisposable
     private static int ToPhysicalDimension(double value, string parameterName)
     {
         if (!double.IsFinite(value) || value < 0)
+        {
             throw new ArgumentOutOfRangeException(parameterName);
+        }
+
         return checked((int)Math.Round(value));
     }
 
     public Paragraph LayoutParagraph(ParagraphRequest request, DartUiInvocation invocation) =>
-        _capabilities.Require<IParagraphHostCapability>(viewId, DorotiCapabilityIds.GraphicsText, invocation)
+        _capabilities
+            .Require<IParagraphHostCapability>(viewId, DorotiCapabilityIds.GraphicsText, invocation)
             .Layout(request, invocation);
 
     public ValueTask<Image> DecodeImageAsync(
         ReadOnlyMemory<byte> bytes,
         DartUiInvocation invocation,
-        CancellationToken cancellationToken = default) =>
-        _capabilities.Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
+        CancellationToken cancellationToken = default
+    ) =>
+        _capabilities
+            .Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
             .DecodeAsync(bytes, invocation, cancellationToken);
 
-    public ValueTask<Image> DecodeSizedImageAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
-        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
-        _capabilities.Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
+    public ValueTask<Image> DecodeSizedImageAsync(
+        ReadOnlyMemory<byte> bytes,
+        Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    ) =>
+        _capabilities
+            .Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
             .DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
 
     public void UpdateSemantics(SemanticsUpdate update, DartUiInvocation invocation) =>
-        _capabilities.Require<ISemanticsHostCapability>(viewId, DorotiCapabilityIds.AccessibilitySemantics, invocation)
+        _capabilities
+            .Require<ISemanticsHostCapability>(
+                viewId,
+                DorotiCapabilityIds.AccessibilitySemantics,
+                invocation
+            )
             .Update(update with { viewDevicePixelRatio = devicePixelRatio }, invocation);
 
     internal void SetSemanticsTreeEnabled(bool enabled, DartUiInvocation invocation) =>
-        _capabilities.Require<ISemanticsHostCapability>(viewId, DorotiCapabilityIds.AccessibilitySemantics, invocation)
+        _capabilities
+            .Require<ISemanticsHostCapability>(
+                viewId,
+                DorotiCapabilityIds.AccessibilitySemantics,
+                invocation
+            )
             .SetEnabled(enabled, invocation);
 
     public void updateSemantics(SemanticsUpdate update) =>
@@ -983,13 +1235,23 @@ public sealed class DorotiView : IDisposable
 
     private void HandleMetricsChanged(ViewMetrics metrics)
     {
-        if (_disposed || metrics.generation < _metrics.generation) return;
+        if (_disposed || metrics.generation < _metrics.generation)
+        {
+            return;
+        }
+
         metrics.Validate();
         var previous = _metrics;
         if (metrics.displayFeatures.SequenceEqual(previous.displayFeatures))
+        {
             metrics = metrics.ReuseDisplayFeatures(previous);
+        }
+
         Volatile.Write(ref _metrics, metrics);
-        if (!previous.HasSameEnvironment(metrics)) _dispatcher.DispatchMetrics(this);
+        if (!previous.HasSameEnvironment(metrics))
+        {
+            _dispatcher.DispatchMetrics(this);
+        }
     }
 
     private void HandleLifecycleChanged(AppLifecycleState state)
@@ -1014,7 +1276,8 @@ public sealed class DorotiView : IDisposable
         DisposeCore(closeHost: false);
     }
 
-    private void HandlePointerData(PointerDataPacket packet) => _dispatcher.DispatchPointer(this, packet);
+    private void HandlePointerData(PointerDataPacket packet) =>
+        _dispatcher.DispatchPointer(this, packet);
 
     private void HandleKeyData(KeyData data) => _dispatcher.DispatchKey(this, data);
 
@@ -1022,25 +1285,39 @@ public sealed class DorotiView : IDisposable
 
     private void HandlePlatformConfigurationChanged(PlatformConfiguration configuration)
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         var previous = _environmentConfiguration;
         _environmentConfiguration = configuration.Snapshot();
-        if (previous?.HasSameValues(_environmentConfiguration) == true) return;
+        if (previous?.HasSameValues(_environmentConfiguration) == true)
+        {
+            return;
+        }
+
         _dispatcher.DispatchPlatformConfiguration(this, _environmentConfiguration, previous);
     }
 
-    private void HandleSemanticsAction(SemanticsActionEvent action) => _dispatcher.DispatchSemanticsAction(this, action);
+    private void HandleSemanticsAction(SemanticsActionEvent action) =>
+        _dispatcher.DispatchSemanticsAction(this, action);
 
     private sealed class SceneBuildScope(
         DorotiView owner,
         DorotiSceneBuildToken? previous,
-        DorotiFrameTransaction? previousTransaction) : IDisposable
+        DorotiFrameTransaction? previousTransaction
+    ) : IDisposable
     {
         private bool _disposed;
 
         public void Dispose()
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _disposed = true;
             owner._activeBuildToken.Value = previous;
             owner._activeFrameTransaction.Value = previousTransaction;
@@ -1052,5 +1329,6 @@ public sealed class SemanticsBinding
 {
     public static SemanticsBinding instance { get; } = new();
 
-    public bool disableAnimations => PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
+    public bool disableAnimations =>
+        PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
 }

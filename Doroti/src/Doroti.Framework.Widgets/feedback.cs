@@ -13,18 +13,18 @@ public abstract class Feedback
         {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
-                {
-                    await SystemSound.play(SystemSoundType.click);
-                    return;
-                }
+            {
+                await SystemSound.play(SystemSoundType.click);
+                return;
+            }
             case TargetPlatform.iOS:
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
-                {
-                    await Future.value();
-                    return;
-                }
+            {
+                await Future.value();
+                return;
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -51,19 +51,25 @@ public abstract class Feedback
         {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
-                {
-                    return HapticFeedback.vibrate();
-                }
+            {
+                return HapticFeedback.vibrate();
+            }
             case TargetPlatform.iOS:
-                {
-                    return DartAsyncRuntime.wait(new List<Future> { SystemSound.play(SystemSoundType.click), HapticFeedback.heavyImpact() });
-                }
+            {
+                return DartAsyncRuntime.wait(
+                    new List<Future>
+                    {
+                        SystemSound.play(SystemSoundType.click),
+                        HapticFeedback.heavyImpact(),
+                    }
+                );
+            }
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
-                {
-                    return Future.value();
-                }
+            {
+                return Future.value();
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -83,6 +89,4 @@ public abstract class Feedback
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

@@ -103,4 +103,3 @@ public static partial class ConstantsLibrary
 {
     public static double kPrecisePointerScaleSlop = kPrecisePointerHitSlop;
 }
-

@@ -14,7 +14,8 @@ public class PreferredSize : StatelessWidget, PreferredSizeWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Size preferredSize { get; private set; } = default!;
 
-    public PreferredSize(Key? key = null, Size preferredSize = default!, Widget child = default!) : base(key: key)
+    public PreferredSize(Key? key = null, Size preferredSize = default!, Widget child = default!)
+        : base(key: key)
     {
         this.preferredSize = preferredSize;
         this.child = child;
@@ -22,4 +23,3 @@ public class PreferredSize : StatelessWidget, PreferredSizeWidget
 
     public override Widget build(BuildContext context) => child;
 }
-

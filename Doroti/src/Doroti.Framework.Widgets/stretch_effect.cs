@@ -11,7 +11,13 @@ public class StretchEffect : StatelessWidget
     public virtual Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public StretchEffect(Key? key = null, double stretchStrength = 0.0, Axis axis = default!, Widget child = default!) : base(key: key)
+    public StretchEffect(
+        Key? key = null,
+        double stretchStrength = 0.0,
+        Axis axis = default!,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -41,7 +47,11 @@ public class StretchEffect : StatelessWidget
     {
         if (ImageFilter.isShaderFilterSupported)
         {
-            return new _StretchOverscrollEffect__stretch_effect(stretchStrength: stretchStrength, axis: axis, child: child);
+            return new _StretchOverscrollEffect__stretch_effect(
+                stretchStrength: stretchStrength,
+                axis: axis,
+                child: child
+            );
         }
         TextDirection textDirection = Directionality.of(context);
         var x = 1.0;
@@ -49,20 +59,24 @@ public class StretchEffect : StatelessWidget
         switch (axis)
         {
             case Axis.horizontal:
-                {
-                    x += stretchStrength.abs();
-                    break;
-                }
+            {
+                x += stretchStrength.abs();
+                break;
+            }
             case Axis.vertical:
-                {
-                    y += stretchStrength.abs();
-                    break;
-                }
+            {
+                y += stretchStrength.abs();
+                break;
+            }
         }
-        return new Transform(alignment: _getAlignment(textDirection), transform: Matrix4.diagonal3Values(x, y, 1.0), filterQuality: (stretchStrength == 0L) ? null : FilterQuality.medium, child: child);
+        return new Transform(
+            alignment: _getAlignment(textDirection),
+            transform: Matrix4.diagonal3Values(x, y, 1.0),
+            filterQuality: (stretchStrength == 0L) ? null : FilterQuality.medium,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
@@ -71,7 +85,11 @@ internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
     public virtual Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _StretchOverscrollEffect__stretch_effect(double stretchStrength = 0.0, Axis axis = default!, Widget child = default!)
+    internal _StretchOverscrollEffect__stretch_effect(
+        double stretchStrength = 0.0,
+        Axis axis = default!,
+        Widget child = default!
+    )
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -79,10 +97,14 @@ internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
         System.Diagnostics.Debug.Assert((stretchStrength >= -1.0) && (stretchStrength <= 1.0));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StretchOverscrollEffectState__stretch_effect());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _StretchOverscrollEffectState__stretch_effect()
+        );
 }
 
-internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOverscrollEffect__stretch_effect>
+internal class _StretchOverscrollEffectState__stretch_effect
+    : State<_StretchOverscrollEffect__stretch_effect>
 {
     internal virtual FragmentShader? _fragmentShader { get; set; } = default;
     public const double maxStretchIntensity = 1.0;
@@ -101,13 +123,16 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
         _StretchEffectShader__stretch_effect.initializeShader(() =>
         {
             if (mounted)
+            {
                 setState(() => { });
+            }
         });
     }
 
     public override Widget build(BuildContext context)
     {
-        bool isShaderNeeded = widget.stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance;
+        bool isShaderNeeded =
+            widget.stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance;
         ImageFilter imageFilterLocal = default!;
         if (isShaderNeeded && _StretchEffectShader__stretch_effect._initialized)
         {
@@ -133,24 +158,44 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
             _fragmentShader = null;
             imageFilterLocal = _emptyFilter;
         }
-        return new ImageFiltered(imageFilter: imageFilterLocal, enabled: isShaderNeeded, child: new CustomPaint(painter: isShaderNeeded ? new _StretchEffectPainter__stretch_effect() : null, child: widget.child));
+        return new ImageFiltered(
+            imageFilter: imageFilterLocal,
+            enabled: isShaderNeeded,
+            child: new CustomPaint(
+                painter: isShaderNeeded ? new _StretchEffectPainter__stretch_effect() : null,
+                child: widget.child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _StretchEffectPainter__stretch_effect : CustomPainter
 {
     public override void paint(Canvas canvas, Size size)
     {
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Color.fromARGB(1L, 0L, 0L, 0L);
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))();
-        canvas.drawPoints(PointMode.points, new List<Offset> { Offset.zero, new Offset(size.width - 1L, 0), new Offset(0, size.height - 1L), new Offset(size.width - 1L, size.height - 1L) }, paintLocal);
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = Color.fromARGB(1L, 0L, 0L, 0L);
+                    __cascade.style = PaintingStyle.fill;
+                    return __cascade;
+                }
+            )
+        )();
+        canvas.drawPoints(
+            PointMode.points,
+            new List<Offset>
+            {
+                Offset.zero,
+                new Offset(size.width - 1L, 0),
+                new Offset(0, size.height - 1L),
+                new Offset(size.width - 1L, size.height - 1L),
+            },
+            paintLocal
+        );
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate) => false;
@@ -162,9 +207,7 @@ internal class _StretchEffectShader__stretch_effect
     internal static bool _initialized = false;
     internal static FragmentProgram? _program = default;
 
-    public static void initializeShader(
-        Action? onReady = null,
-        Action<Exception>? onError = null)
+    public static void initializeShader(Action? onReady = null, Action<Exception>? onError = null)
     {
         if (_initialized && _program is not null)
         {
@@ -181,7 +224,7 @@ internal class _StretchEffectShader__stretch_effect
                 _initialized = true;
                 onReady?.Invoke();
             },
-            onError);
+            onError
+        );
     }
-
 }

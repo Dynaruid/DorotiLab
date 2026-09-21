@@ -9,9 +9,7 @@ public delegate bool UntilPredicate(long offset, bool forward);
 
 public abstract class TextBoundary
 {
-    protected TextBoundary()
-    {
-    }
+    protected TextBoundary() { }
 
     public virtual long? getLeadingTextBoundaryAt(long position)
     {
@@ -38,7 +36,6 @@ public abstract class TextBoundary
         return new TextRange(start: start, end: end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CharacterBoundary : TextBoundary
@@ -56,7 +53,10 @@ public class CharacterBoundary : TextBoundary
         {
             return null;
         }
-        long graphemeStart = new CharacterRange(_text, Math.Min(position, _text.Length)).stringBeforeLength;
+        long graphemeStart = new CharacterRange(
+            _text,
+            Math.Min(position, _text.Length)
+        ).stringBeforeLength;
         DartRuntimePrimitives.Assert(() => new CharacterRange(_text, graphemeStart).Count == 0);
         return graphemeStart;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -70,7 +70,9 @@ public class CharacterBoundary : TextBoundary
         }
         var rangeAtPosition = new CharacterRange(_text, Math.Max(0L, position + 1L));
         long nextBoundary = rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length;
-        DartRuntimePrimitives.Assert(() => (nextBoundary == _text.Length) || (new CharacterRange(_text, nextBoundary).Count == 0));
+        DartRuntimePrimitives.Assert(() =>
+            (nextBoundary == _text.Length) || (new CharacterRange(_text, nextBoundary).Count == 0)
+        );
         return nextBoundary;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -89,10 +91,17 @@ public class CharacterBoundary : TextBoundary
             }
         }
         var rangeAtPosition = new CharacterRange(_text, position);
-        return (rangeAtPosition.Count != 0) ? new TextRange(start: rangeAtPosition.stringBeforeLength, end: rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length) : new TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1L);
+        return (rangeAtPosition.Count != 0)
+            ? new TextRange(
+                start: rangeAtPosition.stringBeforeLength,
+                end: rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length
+            )
+            : new TextRange(
+                start: rangeAtPosition.stringBeforeLength,
+                end: getTrailingTextBoundaryAt(position) ?? -1L
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class LineBoundary : TextBoundary
@@ -104,7 +113,8 @@ public class LineBoundary : TextBoundary
         this._textLayout = _textLayout;
     }
 
-    public override TextRange getTextBoundaryAt(long position) => _textLayout.getLineAtOffset(new TextPosition(offset: Math.Max(position, 0L)));
+    public override TextRange getTextBoundaryAt(long position) =>
+        _textLayout.getLineAtOffset(new TextPosition(offset: Math.Max(position, 0L)));
 }
 
 public class ParagraphBoundary : TextBoundary
@@ -131,7 +141,11 @@ public class ParagraphBoundary : TextBoundary
             return 0L;
         }
         var index = position;
-        if ((index > 1L) && (_text.codeUnitAt(index) == 10L) && (_text.codeUnitAt(index - 1L) == 13L))
+        if (
+            (index > 1L)
+            && (_text.codeUnitAt(index) == 10L)
+            && (_text.codeUnitAt(index - 1L) == 13L)
+        )
         {
             index -= 2L;
         }
@@ -173,10 +187,15 @@ public class ParagraphBoundary : TextBoundary
                 return index;
             }
         }
-        return ((index < (_text.Length - 1L)) && (_text.codeUnitAt(index) == 13L) && (_text.codeUnitAt(index + 1L) == 10L)) ? (index + 2L) : (index + 1L);
+        return (
+            (index < (_text.Length - 1L))
+            && (_text.codeUnitAt(index) == 13L)
+            && (_text.codeUnitAt(index + 1L) == 10L)
+        )
+            ? (index + 2L)
+            : (index + 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class DocumentBoundary : TextBoundary
@@ -189,6 +208,7 @@ public class DocumentBoundary : TextBoundary
     }
 
     public override long? getLeadingTextBoundaryAt(long position) => (position < 0L) ? null : 0L;
-    public override long? getTrailingTextBoundaryAt(long position) => (position >= _text.Length) ? null : _text.Length;
-}
 
+    public override long? getTrailingTextBoundaryAt(long position) =>
+        (position >= _text.Length) ? null : _text.Length;
+}

@@ -12,14 +12,23 @@ public static class DisplayListChecksum
     {
         if (buffer.Length < DisplayListFormat.HeaderSize)
         {
-            throw new ArgumentException("A DisplayList checksum requires a complete header.", nameof(buffer));
+            throw new ArgumentException(
+                "A DisplayList checksum requires a complete header.",
+                nameof(buffer)
+            );
         }
 
         var crc = uint.MaxValue;
         Append(ref crc, buffer[..DisplayListFormat.ChecksumOffset]);
         for (var index = 0; index < DisplayListFormat.ChecksumSize; index++)
+        {
             crc = Tables[0][(byte)crc] ^ (crc >> 8);
-        Append(ref crc, buffer[(DisplayListFormat.ChecksumOffset + DisplayListFormat.ChecksumSize)..]);
+        }
+
+        Append(
+            ref crc,
+            buffer[(DisplayListFormat.ChecksumOffset + DisplayListFormat.ChecksumSize)..]
+        );
 
         return ~crc;
     }
@@ -31,18 +40,20 @@ public static class DisplayListChecksum
         {
             crc ^= BinaryPrimitives.ReadUInt32LittleEndian(buffer);
             crc =
-                Tables[7][(byte)crc] ^
-                Tables[6][(byte)(crc >> 8)] ^
-                Tables[5][(byte)(crc >> 16)] ^
-                Tables[4][(byte)(crc >> 24)] ^
-                Tables[3][buffer[4]] ^
-                Tables[2][buffer[5]] ^
-                Tables[1][buffer[6]] ^
-                table0[buffer[7]];
+                Tables[7][(byte)crc]
+                ^ Tables[6][(byte)(crc >> 8)]
+                ^ Tables[5][(byte)(crc >> 16)]
+                ^ Tables[4][(byte)(crc >> 24)]
+                ^ Tables[3][buffer[4]]
+                ^ Tables[2][buffer[5]]
+                ^ Tables[1][buffer[6]]
+                ^ table0[buffer[7]];
             buffer = buffer[8..];
         }
         foreach (var value in buffer)
+        {
             crc = table0[(byte)(crc ^ value)] ^ (crc >> 8);
+        }
     }
 
     private static uint[][] CreateTables()
@@ -53,7 +64,10 @@ public static class DisplayListChecksum
         {
             var value = index;
             for (var bit = 0; bit < 8; bit++)
+            {
                 value = (value & 1) == 0 ? value >> 1 : (value >> 1) ^ Polynomial;
+            }
+
             tables[0][index] = value;
         }
         for (var slice = 1; slice < tables.Length; slice++)
@@ -76,7 +90,11 @@ internal sealed class DisplayListBinaryWriter
 
     internal DisplayListBinaryWriter(int initialCapacity = 256)
     {
-        if (initialCapacity < 0) throw new ArgumentOutOfRangeException(nameof(initialCapacity));
+        if (initialCapacity < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(initialCapacity));
+        }
+
         _buffer = new byte[initialCapacity];
     }
 
@@ -109,7 +127,10 @@ internal sealed class DisplayListBinaryWriter
     internal void PatchUInt32(int offset, uint value)
     {
         if (offset < 0 || offset > _length - sizeof(uint))
+        {
             throw new ArgumentOutOfRangeException(nameof(offset));
+        }
+
         BinaryPrimitives.WriteUInt32LittleEndian(_buffer.AsSpan(offset, sizeof(uint)), value);
     }
 
@@ -146,9 +167,17 @@ internal sealed class DisplayListBinaryWriter
 
     private void EnsureCapacity(int additionalLength)
     {
-        if (additionalLength < 0) throw new ArgumentOutOfRangeException(nameof(additionalLength));
+        if (additionalLength < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(additionalLength));
+        }
+
         var required = checked(_length + additionalLength);
-        if (required <= _buffer.Length) return;
+        if (required <= _buffer.Length)
+        {
+            return;
+        }
+
         var doubled = _buffer.Length == 0 ? 256 : checked(_buffer.Length * 2);
         Array.Resize(ref _buffer, Math.Max(required, doubled));
     }
@@ -184,7 +213,11 @@ internal ref struct DisplayListBinaryReader
         {
             0 => false,
             1 => true,
-            _ => throw Error(DisplayListFailureCode.InvalidValue, offset, "Boolean values must be encoded as 0 or 1."),
+            _ => throw Error(
+                DisplayListFailureCode.InvalidValue,
+                offset,
+                "Boolean values must be encoded as 0 or 1."
+            ),
         };
     }
 
@@ -229,13 +262,18 @@ internal ref struct DisplayListBinaryReader
             throw Error(
                 DisplayListFailureCode.NonCanonicalEncoding,
                 offset,
-                "Negative zero is not a canonical DisplayList float encoding.");
+                "Negative zero is not a canonical DisplayList float encoding."
+            );
         }
 
         var value = BitConverter.Int32BitsToSingle(bits);
         if (!float.IsFinite(value))
         {
-            throw Error(DisplayListFailureCode.InvalidValue, offset, "DisplayList floats must be finite.");
+            throw Error(
+                DisplayListFailureCode.InvalidValue,
+                offset,
+                "DisplayList floats must be finite."
+            );
         }
 
         return value;
@@ -267,8 +305,8 @@ internal ref struct DisplayListBinaryReader
     internal readonly DisplayListFormatException Error(
         DisplayListFailureCode code,
         int offset,
-        string message) =>
-        new(code, offset, message);
+        string message
+    ) => new(code, offset, message);
 
     private readonly void Ensure(int length)
     {
@@ -277,7 +315,8 @@ internal ref struct DisplayListBinaryReader
             throw Error(
                 DisplayListFailureCode.BoundsExceeded,
                 AbsoluteOffset,
-                $"The DisplayList read of {length} bytes exceeds the current section bounds.");
+                $"The DisplayList read of {length} bytes exceeds the current section bounds."
+            );
         }
     }
 }
@@ -285,7 +324,8 @@ internal ref struct DisplayListBinaryReader
 internal sealed class DisplayListFormatException(
     DisplayListFailureCode code,
     int offset,
-    string message) : Exception(message)
+    string message
+) : Exception(message)
 {
     internal DisplayListFailureCode Code { get; } = code;
 

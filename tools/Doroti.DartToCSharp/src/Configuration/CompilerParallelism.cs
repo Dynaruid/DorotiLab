@@ -26,21 +26,33 @@ public static class CompilerParallelism
         return Math.Max(1, Environment.ProcessorCount);
     }
 
-    public static int ResolveAnalyzerWorkers(int? requested = null, int? compatibilityParallelism = null) =>
-        1;
+    public static int ResolveAnalyzerWorkers(
+        int? requested = null,
+        int? compatibilityParallelism = null
+    ) => 1;
 
-    public static int ResolveLoweringParallelism(int? requested = null, int? compatibilityParallelism = null) =>
+    public static int ResolveLoweringParallelism(
+        int? requested = null,
+        int? compatibilityParallelism = null
+    ) =>
         ResolveNamed(
             requested,
             LoweringParallelismEnvironmentVariableName,
             compatibilityParallelism is > 0
                 ? Math.Min(compatibilityParallelism.Value, 4)
-                : Math.Min(Math.Max(1, Environment.ProcessorCount), 4));
+                : Math.Min(Math.Max(1, Environment.ProcessorCount), 4)
+        );
 
     private static int ResolveNamed(int? requested, string environmentVariable, int defaultValue)
     {
-        if (requested is > 0) return requested.Value;
+        if (requested is > 0)
+        {
+            return requested.Value;
+        }
+
         var fromEnvironment = Environment.GetEnvironmentVariable(environmentVariable);
-        return int.TryParse(fromEnvironment, out var parsed) && parsed > 0 ? parsed : Math.Max(1, defaultValue);
+        return int.TryParse(fromEnvironment, out var parsed) && parsed > 0
+            ? parsed
+            : Math.Max(1, defaultValue);
     }
 }

@@ -10,7 +10,7 @@ public enum RenderAnimatedSizeState
     start,
     stable,
     changed,
-    unstable
+    unstable,
 }
 
 public class RenderAnimatedSize : RenderAligningShiftedBox
@@ -25,9 +25,21 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     internal virtual TickerProvider _vsync { get; set; } = default!;
     internal virtual Action? _onEnd { get; set; } = default;
     internal virtual Size _currentSize { get; set; } = default!;
-    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
+    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } =
+        new LayerHandle<ClipRectLayer>();
 
-    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection, child: child)
+    public RenderAnimatedSize(
+        TickerProvider vsync,
+        Duration duration,
+        Duration? reverseDuration = null,
+        Curve curve = default!,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null,
+        RenderBox? child = null,
+        Clip clipBehavior = Clip.hardEdge,
+        Action? onEnd = null
+    )
+        : base(alignment: alignment ?? Alignment.center, textDirection: textDirection, child: child)
     {
         Curve __curve = curve ?? Curves.linear;
         _vsync = vsync;
@@ -36,10 +48,14 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         _controller = new AnimationController(
             duration: duration,
             reverseDuration: reverseDuration,
-            vsync: vsync);
+            vsync: vsync
+        );
         _controller.addListener(() =>
         {
-            if (_controller.value != _lastValue) markNeedsLayout();
+            if (_controller.value != _lastValue)
+            {
+                markNeedsLayout();
+            }
         });
         _animation = new CurvedAnimation(parent: _controller, curve: __curve);
     }
@@ -50,10 +66,10 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             AnimationController? controller = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    controller = _controller;
-                    return true;
-                });
+            {
+                controller = _controller;
+                return true;
+            });
             return controller;
         }
     }
@@ -63,10 +79,10 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             CurvedAnimation? animation = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    animation = _animation;
-                    return true;
-                });
+            {
+                animation = _animation;
+                return true;
+            });
             return animation;
         }
     }
@@ -152,6 +168,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
             _onEnd = __value;
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -159,15 +176,15 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             case RenderAnimatedSizeState.start:
             case RenderAnimatedSizeState.stable:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case RenderAnimatedSizeState.changed:
             case RenderAnimatedSizeState.unstable:
-                {
-                    markNeedsLayout();
-                    break;
-                }
+            {
+                markNeedsLayout();
+                break;
+            }
         }
         _controller.addStatusListener(_animationStatusListener);
     }
@@ -181,11 +198,9 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual Size? _animatedSize
     {
-        get
-        {
-            return _sizeTween.evaluate(_animation);
-        }
+        get { return _sizeTween.evaluate(_animation); }
     }
+
     public override void performLayout()
     {
         _lastValue = _controller.value;
@@ -203,29 +218,34 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         switch (_state)
         {
             case RenderAnimatedSizeState.start:
-                {
-                    _layoutStart();
-                    break;
-                }
+            {
+                _layoutStart();
+                break;
+            }
             case RenderAnimatedSizeState.stable:
-                {
-                    _layoutStable();
-                    break;
-                }
+            {
+                _layoutStable();
+                break;
+            }
             case RenderAnimatedSizeState.changed:
-                {
-                    _layoutChanged();
-                    break;
-                }
+            {
+                _layoutChanged();
+                break;
+            }
             case RenderAnimatedSizeState.unstable:
-                {
-                    _layoutUnstable();
-                    break;
-                }
+            {
+                _layoutUnstable();
+                break;
+            }
         }
-        size = _currentSize = constraintsLocal.constrain(DartRuntimePrimitives.RequireValue(_animatedSize));
+        size = _currentSize = constraintsLocal.constrain(
+            DartRuntimePrimitives.RequireValue(_animatedSize)
+        );
         alignChild();
-        if ((size.width < DartRuntimePrimitives.RequireValue(_sizeTween.end).width) || (size.height < DartRuntimePrimitives.RequireValue(_sizeTween.end).height))
+        if (
+            (size.width < DartRuntimePrimitives.RequireValue(_sizeTween.end).width)
+            || (size.height < DartRuntimePrimitives.RequireValue(_sizeTween.end).height)
+        )
         {
             _hasVisualOverflow = true;
         }
@@ -241,33 +261,33 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         switch (_state)
         {
             case RenderAnimatedSizeState.start:
-                {
-                    return constraints.constrain(childSize);
-                }
+            {
+                return constraints.constrain(childSize);
+            }
             case RenderAnimatedSizeState.stable:
+            {
+                if (!Equals(_sizeTween.end, childSize))
                 {
-                    if (!Equals(_sizeTween.end, childSize))
-                    {
-                        return constraints.constrain(_currentSize);
-                    }
-                    else
-                    {
-                        if (_controller.value == _controller.upperBound)
-                        {
-                            return constraints.constrain(childSize);
-                        }
-                    }
-                    break;
+                    return constraints.constrain(_currentSize);
                 }
-            case RenderAnimatedSizeState.unstable:
-            case RenderAnimatedSizeState.changed:
+                else
                 {
-                    if (!Equals(_sizeTween.end, childSize))
+                    if (_controller.value == _controller.upperBound)
                     {
                         return constraints.constrain(childSize);
                     }
-                    break;
                 }
+                break;
+            }
+            case RenderAnimatedSizeState.unstable:
+            case RenderAnimatedSizeState.changed:
+            {
+                if (!Equals(_sizeTween.end, childSize))
+                {
+                    return constraints.constrain(childSize);
+                }
+                break;
+            }
         }
         return constraints.constrain(DartRuntimePrimitives.RequireValue(_animatedSize));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -355,7 +375,14 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         if ((child is not null) && _hasVisualOverflow && (!Equals(clipBehavior, Clip.none)))
         {
             Rect rect = Offset.zero & size;
-            _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, rect, base.paint, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
+            _clipRectLayer.layer = context.pushClipRect(
+                needsCompositing,
+                offset,
+                rect,
+                base.paint,
+                clipBehavior: clipBehavior,
+                oldLayer: _clipRectLayer.layer
+            );
         }
         else
         {
@@ -390,5 +417,4 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         _animation.dispose();
         base.dispose();
     }
-
 }

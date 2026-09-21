@@ -14,7 +14,6 @@ public abstract class MergeableMaterialItem
     {
         this.key = key;
     }
-
 }
 
 public class MaterialSlice : MergeableMaterialItem
@@ -22,7 +21,8 @@ public class MaterialSlice : MergeableMaterialItem
     public virtual Widget child { get; private set; } = default!;
     public virtual Color? color { get; private set; }
 
-    public MaterialSlice(LocalKey key, Widget child, Color? color = null) : base(key)
+    public MaterialSlice(LocalKey key, Widget child, Color? color = null)
+        : base(key)
     {
         this.child = child;
         this.color = color;
@@ -33,14 +33,14 @@ public class MaterialSlice : MergeableMaterialItem
         return $"MergeableSlice(key: {key}, child: {child}, color: {color})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class MaterialGap : MergeableMaterialItem
 {
     public virtual double size { get; private set; } = default!;
 
-    public MaterialGap(LocalKey key, double size = 16.0) : base(key)
+    public MaterialGap(LocalKey key, double size = 16.0)
+        : base(key)
     {
         this.size = size;
     }
@@ -50,7 +50,6 @@ public class MaterialGap : MergeableMaterialItem
         return $"MaterialGap(key: {key}, child: {size})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class MergeableMaterial : StatefulWidget
@@ -61,7 +60,15 @@ public class MergeableMaterial : StatefulWidget
     public virtual bool hasDividers { get; private set; } = default!;
     public virtual Color? dividerColor { get; private set; }
 
-    public MergeableMaterial(Key? key = null, Axis mainAxis = Axis.vertical, double elevation = 2, bool hasDividers = false, List<MergeableMaterialItem> children = default!, Color? dividerColor = null) : base(key: key)
+    public MergeableMaterial(
+        Key? key = null,
+        Axis mainAxis = Axis.vertical,
+        double elevation = 2,
+        bool hasDividers = false,
+        List<MergeableMaterialItem> children = default!,
+        Color? dividerColor = null
+    )
+        : base(key: key)
     {
         List<MergeableMaterialItem> __children = children ?? new List<MergeableMaterialItem>();
         this.mainAxis = mainAxis;
@@ -78,7 +85,10 @@ public class MergeableMaterial : StatefulWidget
         properties.add(new DoubleProperty("elevation", elevation));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MergeableMaterialState__mergeable_material());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _MergeableMaterialState__mergeable_material()
+        );
 }
 
 internal class _AnimationTuple__mergeable_material
@@ -89,37 +99,53 @@ internal class _AnimationTuple__mergeable_material
     public virtual CurvedAnimation gapAnimation { get; private set; } = default!;
     public virtual double gapStart { get; set; } = 0.0;
 
-    internal _AnimationTuple__mergeable_material(AnimationController controller, CurvedAnimation startAnimation, CurvedAnimation endAnimation, CurvedAnimation gapAnimation)
+    internal _AnimationTuple__mergeable_material(
+        AnimationController controller,
+        CurvedAnimation startAnimation,
+        CurvedAnimation endAnimation,
+        CurvedAnimation gapAnimation
+    )
     {
         this.controller = controller;
         this.startAnimation = startAnimation;
         this.endAnimation = endAnimation;
         this.gapAnimation = gapAnimation;
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_AnimationTuple", this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_AnimationTuple", this)
+        );
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         controller.dispose();
         startAnimation.dispose();
         endAnimation.dispose();
         gapAnimation.dispose();
     }
-
 }
 
-internal class _MergeableMaterialState__mergeable_material : State<MergeableMaterial>, TickerProviderStateMixin<MergeableMaterial>
+internal class _MergeableMaterialState__mergeable_material
+    : State<MergeableMaterial>,
+        TickerProviderStateMixin<MergeableMaterial>
 {
     internal virtual List<MergeableMaterialItem> _children { get; set; } = default!;
-    internal virtual DartMap<LocalKey, _AnimationTuple__mergeable_material?> _animationTuples { get; private set; } = new DartMap<LocalKey, _AnimationTuple__mergeable_material?>();
+    internal virtual DartMap<LocalKey, _AnimationTuple__mergeable_material?> _animationTuples
+    {
+        get;
+        private set;
+    } = new DartMap<LocalKey, _AnimationTuple__mergeable_material?>();
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _children = new List<MergeableMaterialItem>(DartRuntimePrimitives.ConvertEnumerable<MergeableMaterialItem>(widget.children));
+        _children = new List<MergeableMaterialItem>(
+            DartRuntimePrimitives.ConvertEnumerable<MergeableMaterialItem>(widget.children)
+        );
         for (var i = 0L; i < checked(_children.Count); i += 1L)
         {
             MergeableMaterialItem child = _children[(int)i];
@@ -135,12 +161,29 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
 
     internal virtual void _initGap(MaterialGap gap)
     {
-        var controllerLocal = new AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-        var startAnimationLocal = new CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
-        var endAnimationLocal = new CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
-        var gapAnimationLocal = new CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
+        var controllerLocal = new AnimationController(
+            duration: ThemeLibrary.kThemeAnimationDuration,
+            vsync: this
+        );
+        var startAnimationLocal = new CurvedAnimation(
+            parent: controllerLocal,
+            curve: Curves.fastOutSlowIn
+        );
+        var endAnimationLocal = new CurvedAnimation(
+            parent: controllerLocal,
+            curve: Curves.fastOutSlowIn
+        );
+        var gapAnimationLocal = new CurvedAnimation(
+            parent: controllerLocal,
+            curve: Curves.fastOutSlowIn
+        );
         controllerLocal.addListener(_handleTick);
-        _animationTuples[gap.key] = new _AnimationTuple__mergeable_material(controller: controllerLocal, startAnimation: startAnimationLocal, endAnimation: endAnimationLocal, gapAnimation: gapAnimationLocal);
+        _animationTuples[gap.key] = new _AnimationTuple__mergeable_material(
+            controller: controllerLocal,
+            startAnimation: startAnimationLocal,
+            endAnimation: endAnimationLocal,
+            gapAnimation: gapAnimationLocal
+        );
     }
 
     public override void dispose()
@@ -154,19 +197,37 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
             }
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -174,16 +235,17 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
 
     internal virtual void _handleTick()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     internal virtual bool _debugHasConsecutiveGaps(List<MergeableMaterialItem> children)
     {
         for (var i = 0L; i < (checked(widget.children.Count) - 1L); i += 1L)
         {
-            if ((widget.children[(int)i] is MaterialGap) && (widget.children[(int)(i + 1L)] is MaterialGap))
+            if (
+                (widget.children[(int)i] is MaterialGap)
+                && (widget.children[(int)(i + 1L)] is MaterialGap)
+            )
             {
                 return true;
             }
@@ -234,7 +296,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
     {
         if ((index < (checked(_children.Count) - 1L)) && (_children[(int)index] is MaterialGap))
         {
-            return Equals(_animationTuples.GetValueOrDefault(_children[(int)index].key)!.controller.status, AnimationStatus.reverse);
+            return Equals(
+                _animationTuples.GetValueOrDefault(_children[(int)index].key)!.controller.status,
+                AnimationStatus.reverse
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -244,7 +309,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
     {
         for (long j = checked(_children.Count) - 1L; j >= 0L; j -= 1L)
         {
-            if ((_children[(int)j] is MaterialGap) && _animationTuples.GetValueOrDefault(_children[(int)j].key)!.controller.isDismissed)
+            if (
+                (_children[(int)j] is MaterialGap)
+                && _animationTuples.GetValueOrDefault(_children[(int)j].key)!.controller.isDismissed
+            )
             {
                 _removeChild(j);
             }
@@ -265,7 +333,9 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
         _removeEmptyGaps();
         while ((i < checked(newChildren.Count)) && (j < checked(_children.Count)))
         {
-            if (newOnly.Contains(newChildren[(int)i].key) || oldOnly.Contains(_children[(int)j].key))
+            if (
+                newOnly.Contains(newChildren[(int)i].key) || oldOnly.Contains(_children[(int)j].key)
+            )
             {
                 var startNew = i;
                 var startOld = j;
@@ -281,7 +351,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                 long oldLength = j - startOld;
                 if (newLength > 0L)
                 {
-                    if ((oldLength > 1L) || ((oldLength == 1L) && (_children[(int)startOld] is MaterialSlice)))
+                    if (
+                        (oldLength > 1L)
+                        || ((oldLength == 1L) && (_children[(int)startOld] is MaterialSlice))
+                    )
                     {
                         if ((newLength == 1L) && (newChildren[(int)startNew] is MaterialGap))
                         {
@@ -299,13 +372,21 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                                 j -= 1L;
                             }
                             _insertChild(startOld, newChildren[(int)startNew]);
-                            DartRuntimePrimitives.Ignore(((Func<_AnimationTuple__mergeable_material>)(() =>
-{
-    var __cascade = _animationTuples.GetValueOrDefault(newChildren[(int)startNew].key)!;
-    __cascade.gapStart = gapSizeSum;
-    __cascade.controller.forward();
-    return __cascade;
-}))());
+                            DartRuntimePrimitives.Ignore(
+                                (
+                                    (Func<_AnimationTuple__mergeable_material>)(
+                                        () =>
+                                        {
+                                            var __cascade = _animationTuples.GetValueOrDefault(
+                                                newChildren[(int)startNew].key
+                                            )!;
+                                            __cascade.gapStart = gapSizeSum;
+                                            __cascade.controller.forward();
+                                            return __cascade;
+                                        }
+                                    )
+                                )()
+                            );
                             j += 1L;
                         }
                         else
@@ -316,7 +397,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                             }
                             for (var kLocal = 0L; kLocal < newLength; kLocal += 1L)
                             {
-                                _insertChild(startOld + kLocal, newChildren[(int)(startNew + kLocal)]);
+                                _insertChild(
+                                    startOld + kLocal,
+                                    newChildren[(int)(startNew + kLocal)]
+                                );
                             }
                             j += newLength - oldLength;
                         }
@@ -325,9 +409,18 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                     {
                         if (oldLength == 1L)
                         {
-                            if ((newLength == 1L) && (newChildren[(int)startNew] is MaterialGap) && Equals(_children[(int)startOld].key, newChildren[(int)startNew].key))
+                            if (
+                                (newLength == 1L)
+                                && (newChildren[(int)startNew] is MaterialGap)
+                                && Equals(
+                                    _children[(int)startOld].key,
+                                    newChildren[(int)startNew].key
+                                )
+                            )
                             {
-                                _animationTuples.GetValueOrDefault(newChildren[(int)startNew].key)!.controller.forward();
+                                _animationTuples
+                                    .GetValueOrDefault(newChildren[(int)startNew].key)!
+                                    .controller.forward();
                             }
                             else
                             {
@@ -335,7 +428,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                                 _removeChild(startOld);
                                 for (var kAlternate = 0L; kAlternate < newLength; kAlternate += 1L)
                                 {
-                                    _insertChild(startOld + kAlternate, newChildren[(int)(startNew + kAlternate)]);
+                                    _insertChild(
+                                        startOld + kAlternate,
+                                        newChildren[(int)(startNew + kAlternate)]
+                                    );
                                 }
                                 j += newLength - 1L;
                                 var gapSizeSumLocal = 0.0;
@@ -344,24 +440,41 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                                     MergeableMaterialItem newChild = newChildren[(int)kNested];
                                     if (newChild is MaterialGap)
                                     {
-                                        MaterialGap newChild__11812__as11859 = (MaterialGap)newChild;
+                                        MaterialGap newChild__11812__as11859 =
+                                            (MaterialGap)newChild;
                                         gapSizeSumLocal += newChild__11812__as11859.size;
                                     }
                                 }
                                 for (var kCurrent = startNew; kCurrent < i; kCurrent += 1L)
                                 {
-                                    MergeableMaterialItem newChildLocal = newChildren[(int)kCurrent];
+                                    MergeableMaterialItem newChildLocal = newChildren[
+                                        (int)kCurrent
+                                    ];
                                     if (newChildLocal is MaterialGap)
                                     {
-                                        MaterialGap newChild__12196__as12243 = (MaterialGap)newChildLocal;
-                                        _animationTuples[newChild__12196__as12243.key]!.gapStart = gapSize * newChild__12196__as12243.size / gapSizeSumLocal;
-                                        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _animationTuples.GetValueOrDefault(newChild__12196__as12243.key)!.controller;
-    __cascade.value = 0.0;
-    __cascade.forward();
-    return __cascade;
-}))());
+                                        MaterialGap newChild__12196__as12243 =
+                                            (MaterialGap)newChildLocal;
+                                        _animationTuples[newChild__12196__as12243.key]!.gapStart =
+                                            gapSize
+                                            * newChild__12196__as12243.size
+                                            / gapSizeSumLocal;
+                                        DartRuntimePrimitives.Ignore(
+                                            (
+                                                (Func<AnimationController>)(
+                                                    () =>
+                                                    {
+                                                        var __cascade = _animationTuples
+                                                            .GetValueOrDefault(
+                                                                newChild__12196__as12243.key
+                                                            )!
+                                                            .controller;
+                                                        __cascade.value = 0.0;
+                                                        __cascade.forward();
+                                                        return __cascade;
+                                                    }
+                                                )
+                                            )()
+                                        );
                                     }
                                 }
                             }
@@ -370,12 +483,17 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                         {
                             for (var kNext = 0L; kNext < newLength; kNext += 1L)
                             {
-                                MergeableMaterialItem newChildAlternate = newChildren[(int)(startNew + kNext)];
+                                MergeableMaterialItem newChildAlternate = newChildren[
+                                    (int)(startNew + kNext)
+                                ];
                                 _insertChild(startOld + kNext, newChildAlternate);
                                 if (newChildAlternate is MaterialGap)
                                 {
-                                    MaterialGap newChild__12685__as12795 = (MaterialGap)newChildAlternate;
-                                    _animationTuples.GetValueOrDefault(newChild__12685__as12795.key)!.controller.forward();
+                                    MaterialGap newChild__12685__as12795 =
+                                        (MaterialGap)newChildAlternate;
+                                    _animationTuples
+                                        .GetValueOrDefault(newChild__12685__as12795.key)!
+                                        .controller.forward();
                                 }
                             }
                             j += newLength;
@@ -384,7 +502,10 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                 }
                 else
                 {
-                    if ((oldLength > 1L) || ((oldLength == 1L) && (_children[(int)startOld] is MaterialSlice)))
+                    if (
+                        (oldLength > 1L)
+                        || ((oldLength == 1L) && (_children[(int)startOld] is MaterialSlice))
+                    )
                     {
                         var gapSizeSumAlternate = 0.0;
                         while (startOld < j)
@@ -400,16 +521,27 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                         }
                         if (gapSizeSumAlternate != 0.0)
                         {
-                            var gapLocal = new MaterialGap(key: new UniqueKey(), size: gapSizeSumAlternate);
+                            var gapLocal = new MaterialGap(
+                                key: new UniqueKey(),
+                                size: gapSizeSumAlternate
+                            );
                             _insertChild(startOld, gapLocal);
                             _animationTuples[gapLocal.key]!.gapStart = 0.0;
-                            DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _animationTuples.GetValueOrDefault(gapLocal.key)!.controller;
-    __cascade.value = 1.0;
-    __cascade.reverse();
-    return __cascade;
-}))());
+                            DartRuntimePrimitives.Ignore(
+                                (
+                                    (Func<AnimationController>)(
+                                        () =>
+                                        {
+                                            var __cascade = _animationTuples
+                                                .GetValueOrDefault(gapLocal.key)!
+                                                .controller;
+                                            __cascade.value = 1.0;
+                                            __cascade.reverse();
+                                            return __cascade;
+                                        }
+                                    )
+                                )()
+                            );
                             j += 1L;
                         }
                     }
@@ -419,14 +551,16 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                         {
                             var gapAlternate = ((MaterialGap?)_children[(int)startOld])!;
                             _animationTuples[gapAlternate.key]!.gapStart = 0.0;
-                            _animationTuples.GetValueOrDefault(gapAlternate.key)!.controller.reverse();
+                            _animationTuples
+                                .GetValueOrDefault(gapAlternate.key)!
+                                .controller.reverse();
                         }
                     }
                 }
             }
             else
             {
-                if (_children[(int)j] is MaterialGap == newChildren[(int)i] is MaterialGap)
+                if ((_children[(int)j] is MaterialGap) == (newChildren[(int)i] is MaterialGap))
                 {
                     _children[(int)j] = newChildren[(int)i];
                     i += 1L;
@@ -450,7 +584,9 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
             if (newChildNested is MaterialGap)
             {
                 MaterialGap newChild__14719__as14790 = (MaterialGap)newChildNested;
-                _animationTuples.GetValueOrDefault(newChild__14719__as14790.key)!.controller.forward();
+                _animationTuples
+                    .GetValueOrDefault(newChild__14719__as14790.key)!
+                    .controller.forward();
             }
             i += 1L;
             j += 1L;
@@ -459,27 +595,69 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
 
     internal virtual BorderRadius _borderRadius(long index, bool start, bool end)
     {
-        DartRuntimePrimitives.Assert(() => Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topRight));
-        DartRuntimePrimitives.Assert(() => Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomLeft));
-        DartRuntimePrimitives.Assert(() => Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomRight));
-        Radius cardRadius = MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft;
+        DartRuntimePrimitives.Assert(() =>
+            Equals(
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft,
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topRight
+            )
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Equals(
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft,
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomLeft
+            )
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Equals(
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft,
+                MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomRight
+            )
+        );
+        Radius cardRadius = MaterialLibrary
+            .kMaterialEdges.GetValueOrDefault(MaterialType.card)!
+            .topLeft;
         Radius startRadius = Radius.zero;
         Radius endRadius = Radius.zero;
         if ((index > 0L) && (_children[(int)(index - 1L)] is MaterialGap))
         {
-            startRadius = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(Radius.zero, cardRadius, _animationTuples.GetValueOrDefault(_children[(int)(index - 1L)].key)!.startAnimation.value));
+            startRadius = DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.Radius.lerp(
+                    Radius.zero,
+                    cardRadius,
+                    _animationTuples
+                        .GetValueOrDefault(_children[(int)(index - 1L)].key)!
+                        .startAnimation.value
+                )
+            );
         }
-        if ((index < (checked(_children.Count) - 2L)) && (_children[(int)(index + 1L)] is MaterialGap))
+        if (
+            (index < (checked(_children.Count) - 2L))
+            && (_children[(int)(index + 1L)] is MaterialGap)
+        )
         {
-            endRadius = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(Radius.zero, cardRadius, _animationTuples.GetValueOrDefault(_children[(int)(index + 1L)].key)!.endAnimation.value));
+            endRadius = DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.Radius.lerp(
+                    Radius.zero,
+                    cardRadius,
+                    _animationTuples
+                        .GetValueOrDefault(_children[(int)(index + 1L)].key)!
+                        .endAnimation.value
+                )
+            );
         }
         if (Equals(widget.mainAxis, Axis.vertical))
         {
-            return BorderRadius.CreateVertical(top: start ? cardRadius : startRadius, bottom: end ? cardRadius : endRadius);
+            return BorderRadius.CreateVertical(
+                top: start ? cardRadius : startRadius,
+                bottom: end ? cardRadius : endRadius
+            );
         }
         else
         {
-            return BorderRadius.CreateHorizontal(left: start ? cardRadius : startRadius, right: end ? cardRadius : endRadius);
+            return BorderRadius.CreateHorizontal(
+                left: start ? cardRadius : startRadius,
+                right: end ? cardRadius : endRadius
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -487,7 +665,13 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
     internal virtual double _getGapSize(long index)
     {
         var gap = ((MaterialGap?)_children[(int)index])!;
-        return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(_animationTuples.GetValueOrDefault(gap.key)!.gapStart, gap.size, _animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value));
+        return DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.lerpDouble(
+                _animationTuples.GetValueOrDefault(gap.key)!.gapStart,
+                gap.size,
+                _animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -518,7 +702,17 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                 DartRuntimePrimitives.Assert(() => Enumerable.Any(slices));
                 widgets.Add(new ListBody(mainAxis: widget.mainAxis, children: slices));
                 slices = new List<Widget>();
-                widgets.Add(widget.mainAxis switch { Axis.horizontal => new SizedBox(width: _getGapSize(i)), Axis.vertical => new SizedBox(height: _getGapSize(i)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                widgets.Add(
+                    widget.mainAxis switch
+                    {
+                        Axis.horizontal => new SizedBox(width: _getGapSize(i)),
+                        Axis.vertical => new SizedBox(height: _getGapSize(i)),
+                        _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            ),
+                    }
+                );
             }
             else
             {
@@ -528,26 +722,60 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
                 {
                     bool hasTopDivider = _willNeedDivider(i - 1L);
                     bool hasBottomDivider = _willNeedDivider(i + 1L);
-                    BorderSide divider = Divider.createBorderSide(context, width: 0.5, color: widget.dividerColor);
+                    BorderSide divider = Divider.createBorderSide(
+                        context,
+                        width: 0.5,
+                        color: widget.dividerColor
+                    );
                     Border borderLocal = default!;
                     if (i == 0L)
                     {
-                        borderLocal = new Border(bottom: hasBottomDivider ? divider : BorderSide.none);
+                        borderLocal = new Border(
+                            bottom: hasBottomDivider ? divider : BorderSide.none
+                        );
                     }
                     else
                     {
                         if (i == (checked(_children.Count) - 1L))
                         {
-                            borderLocal = new Border(top: hasTopDivider ? divider : BorderSide.none);
+                            borderLocal = new Border(
+                                top: hasTopDivider ? divider : BorderSide.none
+                            );
                         }
                         else
                         {
-                            borderLocal = new Border(top: hasTopDivider ? divider : BorderSide.none, bottom: hasBottomDivider ? divider : BorderSide.none);
+                            borderLocal = new Border(
+                                top: hasTopDivider ? divider : BorderSide.none,
+                                bottom: hasBottomDivider ? divider : BorderSide.none
+                            );
                         }
                     }
-                    childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedContainer(key: new _MergeableMaterialSliceKey__mergeable_material(_children[(int)i].key), decoration: new BoxDecoration(border: borderLocal), duration: ThemeLibrary.kThemeAnimationDuration, curve: Curves.fastOutSlowIn, child: childLocal));
+                    childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new AnimatedContainer(
+                            key: new _MergeableMaterialSliceKey__mergeable_material(
+                                _children[(int)i].key
+                            ),
+                            decoration: new BoxDecoration(border: borderLocal),
+                            duration: ThemeLibrary.kThemeAnimationDuration,
+                            curve: Curves.fastOutSlowIn,
+                            child: childLocal
+                        )
+                    );
                 }
-                slices.Add(new Container(decoration: new BoxDecoration(color: ((MaterialSlice?)_children[(int)i])!.color ?? Theme.of(context).cardColor, borderRadius: _borderRadius(i, i == 0L, i == (checked(_children.Count) - 1L))), child: new Material(type: MaterialType.transparency, child: childLocal)));
+                slices.Add(
+                    new Container(
+                        decoration: new BoxDecoration(
+                            color: ((MaterialSlice?)_children[(int)i])!.color
+                                ?? Theme.of(context).cardColor,
+                            borderRadius: _borderRadius(
+                                i,
+                                i == 0L,
+                                i == (checked(_children.Count) - 1L)
+                            )
+                        ),
+                        child: new Material(type: MaterialType.transparency, child: childLocal)
+                    )
+                );
             }
         }
         if (Enumerable.Any(slices))
@@ -555,7 +783,12 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
             widgets.Add(new ListBody(mainAxis: widget.mainAxis, children: slices));
             slices = new List<Widget>();
         }
-        return new _MergeableMaterialListBody__mergeable_material(mainAxis: widget.mainAxis, elevation: widget.elevation, items: _children, children: widgets);
+        return new _MergeableMaterialListBody__mergeable_material(
+            mainAxis: widget.mainAxis,
+            elevation: widget.elevation,
+            items: _children,
+            children: widgets
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -568,13 +801,23 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -623,9 +866,17 @@ internal class _MergeableMaterialState__mergeable_material : State<MergeableMate
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _MergeableMaterialSliceKey__mergeable_material : GlobalKey<IState>
@@ -640,17 +891,23 @@ internal class _MergeableMaterialSliceKey__mergeable_material : GlobalKey<IState
     public override bool Equals(object? other)
     {
         var __other = other as _MergeableMaterialSliceKey__mergeable_material;
-        if (__other is null) return false;
-        return (__other is _MergeableMaterialSliceKey__mergeable_material) && Equals(__other.value, value);
+        if (__other is null)
+        {
+            return false;
+        }
+
+        return (__other is _MergeableMaterialSliceKey__mergeable_material)
+            && Equals(__other.value, value);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(value.GetHashCode());
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(value.GetHashCode());
+
     public override string ToString()
     {
         return $"_MergeableMaterialSliceKey({value})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MergeableMaterialListBody__mergeable_material : ListBody
@@ -658,7 +915,13 @@ internal class _MergeableMaterialListBody__mergeable_material : ListBody
     public virtual List<MergeableMaterialItem> items { get; private set; } = default!;
     public virtual double elevation { get; private set; } = default!;
 
-    internal _MergeableMaterialListBody__mergeable_material(List<Widget> children, Axis mainAxis = Axis.vertical, List<MergeableMaterialItem> items = default!, double elevation = default!) : base(children: children, mainAxis: mainAxis)
+    internal _MergeableMaterialListBody__mergeable_material(
+        List<Widget> children,
+        Axis mainAxis = Axis.vertical,
+        List<MergeableMaterialItem> items = default!,
+        double elevation = default!
+    )
+        : base(children: children, mainAxis: mainAxis)
     {
         this.items = items;
         this.elevation = elevation;
@@ -667,36 +930,54 @@ internal class _MergeableMaterialListBody__mergeable_material : ListBody
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual AxisDirection _getDirection(BuildContext context)
     {
-        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, mainAxis, false);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(
+            context,
+            mainAxis,
+            false
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderMergeableMaterialListBody__mergeable_material(axisDirection: _getDirection(context), elevation: elevation);
+        return new _RenderMergeableMaterialListBody__mergeable_material(
+            axisDirection: _getDirection(context),
+            elevation: elevation
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderListBody)renderObject;
-        var materialRenderListBody = ((_RenderMergeableMaterialListBody__mergeable_material?)__renderObject)!;
-        DartRuntimePrimitives.Ignore(((Func<_RenderMergeableMaterialListBody__mergeable_material>)(() =>
-{
-    var __cascade = materialRenderListBody;
-    __cascade.axisDirection = _getDirection(context);
-    __cascade.elevation = elevation;
-    return __cascade;
-}))());
+        var materialRenderListBody = (
+            (_RenderMergeableMaterialListBody__mergeable_material?)__renderObject
+        )!;
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderMergeableMaterialListBody__mergeable_material>)(
+                    () =>
+                    {
+                        var __cascade = materialRenderListBody;
+                        __cascade.axisDirection = _getDirection(context);
+                        __cascade.elevation = elevation;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 internal class _RenderMergeableMaterialListBody__mergeable_material : RenderListBody
 {
     internal virtual double _elevation { get; set; } = default!;
 
-    internal _RenderMergeableMaterialListBody__mergeable_material(AxisDirection axisDirection = AxisDirection.down, double elevation = 0.0) : base(axisDirection: axisDirection)
+    internal _RenderMergeableMaterialListBody__mergeable_material(
+        AxisDirection axisDirection = AxisDirection.down,
+        double elevation = 0.0
+    )
+        : base(axisDirection: axisDirection)
     {
         _elevation = elevation;
     }
@@ -715,16 +996,30 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : RenderList
             markNeedsPaint();
         }
     }
+
     internal virtual void _paintShadows(Canvas canvas, Rect rect)
     {
         if (elevation != 0L)
         {
-            canvas.drawShadow(((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRRect(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.toRRect(rect));
-    return __cascade;
-}))(), Colors.black, elevation, true);
+            canvas.drawShadow(
+                (
+                    (Func<Path>)(
+                        () =>
+                        {
+                            var __cascade = new Path();
+                            __cascade.addRRect(
+                                MaterialLibrary
+                                    .kMaterialEdges.GetValueOrDefault(MaterialType.card)!
+                                    .toRRect(rect)
+                            );
+                            return __cascade;
+                        }
+                    )
+                )(),
+                Colors.black,
+                elevation,
+                true
+            );
         }
     }
 
@@ -735,7 +1030,7 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : RenderList
         while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)child.parentData!)!;
-            Rect rect = childParentData.offset + offset & child.size;
+            Rect rect = (childParentData.offset + offset) & child.size;
             if ((checked(index) & 1L) == 0L)
             {
                 _paintShadows(context.canvas, rect);
@@ -745,5 +1040,4 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : RenderList
         }
         defaultPaint(context, offset);
     }
-
 }

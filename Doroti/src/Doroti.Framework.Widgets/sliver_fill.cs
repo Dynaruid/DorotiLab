@@ -12,7 +12,14 @@ public class SliverFillViewport : StatelessWidget
     public virtual SliverChildDelegate @delegate { get; private set; } = default!;
     public virtual bool allowImplicitScrolling { get; private set; } = default!;
 
-    public SliverFillViewport(Key? key = null, SliverChildDelegate @delegate = default!, double viewportFraction = 1.0, bool padEnds = true, bool allowImplicitScrolling = true) : base(key: key)
+    public SliverFillViewport(
+        Key? key = null,
+        SliverChildDelegate @delegate = default!,
+        double viewportFraction = 1.0,
+        bool padEnds = true,
+        bool allowImplicitScrolling = true
+    )
+        : base(key: key)
     {
         this.@delegate = @delegate;
         this.viewportFraction = viewportFraction;
@@ -23,10 +30,18 @@ public class SliverFillViewport : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new _SliverFractionalPadding__sliver_fill(viewportFraction: padEnds ? (Dart_uiLibrary.clampDouble(1L - viewportFraction, 0, 1) / 2L) : 0, sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(viewportFraction: viewportFraction, allowImplicitScrolling: allowImplicitScrolling, @delegate: @delegate));
+        return new _SliverFractionalPadding__sliver_fill(
+            viewportFraction: padEnds
+                ? (Dart_uiLibrary.clampDouble(1L - viewportFraction, 0, 1) / 2L)
+                : 0,
+            sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(
+                viewportFraction: viewportFraction,
+                allowImplicitScrolling: allowImplicitScrolling,
+                @delegate: @delegate
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiBoxAdaptorWidget
@@ -34,7 +49,12 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
     public virtual double viewportFraction { get; private set; } = default!;
     public virtual bool allowImplicitScrolling { get; private set; } = default!;
 
-    internal _SliverFillViewportRenderObjectWidget__sliver_fill(SliverChildDelegate @delegate, double viewportFraction = 1.0, bool allowImplicitScrolling = true) : base(@delegate: @delegate)
+    internal _SliverFillViewportRenderObjectWidget__sliver_fill(
+        SliverChildDelegate @delegate,
+        double viewportFraction = 1.0,
+        bool allowImplicitScrolling = true
+    )
+        : base(@delegate: @delegate)
     {
         this.viewportFraction = viewportFraction;
         this.allowImplicitScrolling = allowImplicitScrolling;
@@ -44,7 +64,11 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
     public override RenderObject createRenderObject(BuildContext context)
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
-        return new RenderSliverFillViewport(childManager: element, viewportFraction: viewportFraction, allowImplicitScrolling: allowImplicitScrolling);
+        return new RenderSliverFillViewport(
+            childManager: element,
+            viewportFraction: viewportFraction,
+            allowImplicitScrolling: allowImplicitScrolling
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -54,27 +78,33 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
         __renderObject.viewportFraction = viewportFraction;
         __renderObject.allowImplicitScrolling = allowImplicitScrolling;
     }
-
 }
 
 internal class _SliverFractionalPadding__sliver_fill : SingleChildRenderObjectWidget
 {
     public virtual double viewportFraction { get; private set; } = default!;
 
-    internal _SliverFractionalPadding__sliver_fill(double viewportFraction = 0, Widget? sliver = null) : base(child: sliver)
+    internal _SliverFractionalPadding__sliver_fill(
+        double viewportFraction = 0,
+        Widget? sliver = null
+    )
+        : base(child: sliver)
     {
         this.viewportFraction = viewportFraction;
         System.Diagnostics.Debug.Assert(viewportFraction >= 0L);
         System.Diagnostics.Debug.Assert(viewportFraction <= 0.5);
     }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new _RenderSliverFractionalPadding__sliver_fill(viewportFraction: viewportFraction));
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(
+            new _RenderSliverFractionalPadding__sliver_fill(viewportFraction: viewportFraction)
+        );
+
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverFractionalPadding__sliver_fill)renderObject;
         __renderObject.viewportFraction = viewportFraction;
     }
-
 }
 
 public class _RenderSliverFractionalPadding__sliver_fill : RenderSliverEdgeInsetsPadding
@@ -105,6 +135,7 @@ public class _RenderSliverFractionalPadding__sliver_fill : RenderSliverEdgeInset
         }
     }
     public override EdgeInsets? resolvedPadding => _resolvedPadding;
+
     internal virtual void _markNeedsResolution()
     {
         _resolvedPadding = null;
@@ -119,7 +150,12 @@ public class _RenderSliverFractionalPadding__sliver_fill : RenderSliverEdgeInset
         }
         double paddingValue = constraints.viewportMainAxisExtent * viewportFraction;
         _lastResolvedConstraints = constraints;
-        _resolvedPadding = constraints.axis switch { Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue), Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        _resolvedPadding = constraints.axis switch
+        {
+            Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue),
+            Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         return;
     }
 
@@ -128,7 +164,6 @@ public class _RenderSliverFractionalPadding__sliver_fill : RenderSliverEdgeInset
         _resolve();
         base.performLayout();
     }
-
 }
 
 public class SliverFillRemaining : StatelessWidget
@@ -137,7 +172,13 @@ public class SliverFillRemaining : StatelessWidget
     public virtual bool hasScrollBody { get; private set; } = default!;
     public virtual bool fillOverscroll { get; private set; } = default!;
 
-    public SliverFillRemaining(Key? key = null, Widget? child = null, bool hasScrollBody = true, bool fillOverscroll = false) : base(key: key)
+    public SliverFillRemaining(
+        Key? key = null,
+        Widget? child = null,
+        bool hasScrollBody = true,
+        bool fillOverscroll = false
+    )
+        : base(key: key)
     {
         this.child = child;
         this.hasScrollBody = hasScrollBody;
@@ -169,33 +210,35 @@ public class SliverFillRemaining : StatelessWidget
         }
         properties.add(new IterableProperty<string>("mode", flags.Cast<string>()));
     }
-
 }
 
 internal class _SliverFillRemainingWithScrollable__sliver_fill : SingleChildRenderObjectWidget
 {
-    internal _SliverFillRemainingWithScrollable__sliver_fill(Widget? child = null) : base(child: child)
-    {
-    }
+    internal _SliverFillRemainingWithScrollable__sliver_fill(Widget? child = null)
+        : base(child: child) { }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new RenderSliverFillRemainingWithScrollable());
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(
+            new RenderSliverFillRemainingWithScrollable()
+        );
 }
 
 internal class _SliverFillRemainingWithoutScrollable__sliver_fill : SingleChildRenderObjectWidget
 {
-    internal _SliverFillRemainingWithoutScrollable__sliver_fill(Widget? child = null) : base(child: child)
-    {
-    }
+    internal _SliverFillRemainingWithoutScrollable__sliver_fill(Widget? child = null)
+        : base(child: child) { }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new RenderSliverFillRemaining());
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(new RenderSliverFillRemaining());
 }
 
 internal class _SliverFillRemainingAndOverscroll__sliver_fill : SingleChildRenderObjectWidget
 {
-    internal _SliverFillRemainingAndOverscroll__sliver_fill(Widget? child = null) : base(child: child)
-    {
-    }
+    internal _SliverFillRemainingAndOverscroll__sliver_fill(Widget? child = null)
+        : base(child: child) { }
 
-    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new RenderSliverFillRemainingAndOverscroll());
+    public override RenderObject createRenderObject(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<RenderObject>(
+            new RenderSliverFillRemainingAndOverscroll()
+        );
 }
-

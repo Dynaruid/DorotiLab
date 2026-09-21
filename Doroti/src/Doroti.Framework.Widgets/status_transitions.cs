@@ -8,13 +8,18 @@ public abstract class StatusTransitionWidget : StatefulWidget
 {
     public virtual Animation<double> animation { get; private set; } = default!;
 
-    protected StatusTransitionWidget(Key? key = null, Animation<double> animation = default!) : base(key: key)
+    protected StatusTransitionWidget(Key? key = null, Animation<double> animation = default!)
+        : base(key: key)
     {
         this.animation = animation;
     }
 
     public abstract Widget build(BuildContext context);
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StatusTransitionState__status_transitions());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _StatusTransitionState__status_transitions()
+        );
 }
 
 internal class _StatusTransitionState__status_transitions : State<StatusTransitionWidget>
@@ -43,9 +48,7 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
 
     internal virtual void _animationStatusChanged(AnimationStatus status)
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     public override Widget build(BuildContext context)
@@ -53,6 +56,4 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
         return widget.build(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

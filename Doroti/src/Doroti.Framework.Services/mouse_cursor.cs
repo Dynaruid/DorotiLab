@@ -8,7 +8,8 @@ namespace Doroti.Framework.Services;
 public class MouseCursorManager
 {
     public virtual MouseCursor fallbackMouseCursor { get; private set; } = default!;
-    internal virtual DartMap<long, MouseCursorSession> _lastSession { get; private set; } = new DartMap<long, MouseCursorSession>();
+    internal virtual DartMap<long, MouseCursorSession> _lastSession { get; private set; } =
+        new DartMap<long, MouseCursorSession>();
 
     public MouseCursorManager(MouseCursor fallbackMouseCursor)
     {
@@ -20,15 +21,19 @@ public class MouseCursorManager
     {
         MouseCursor? result = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                result = _lastSession.GetValueOrDefault(device)?.cursor;
-                return true;
-            });
+        {
+            result = _lastSession.GetValueOrDefault(device)?.cursor;
+            return true;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleDeviceCursorUpdate(long device, IPointerEvent? triggeringEvent, IEnumerable<MouseCursor> cursorCandidates)
+    public virtual void handleDeviceCursorUpdate(
+        long device,
+        IPointerEvent? triggeringEvent,
+        IEnumerable<MouseCursor> cursorCandidates
+    )
     {
         if (triggeringEvent is IPointerRemovedEvent)
         {
@@ -36,7 +41,8 @@ public class MouseCursorManager
             return;
         }
         MouseCursorSession? lastSession = _lastSession.GetValueOrDefault(device);
-        MouseCursor nextCursor = _DeferringMouseCursor.firstNonDeferred(cursorCandidates) ?? fallbackMouseCursor;
+        MouseCursor nextCursor =
+            _DeferringMouseCursor.firstNonDeferred(cursorCandidates) ?? fallbackMouseCursor;
         DartRuntimePrimitives.Assert(() => nextCursor is not _DeferringMouseCursor);
         if (Equals(lastSession?.cursor, nextCursor))
         {
@@ -47,7 +53,6 @@ public class MouseCursorManager
         lastSession?.dispose();
         _ = nextSession.activate();
     }
-
 }
 
 public abstract class MouseCursorSession
@@ -70,32 +75,31 @@ public abstract class MouseCursor : Diagnosticable
     public static MouseCursor defer = new _DeferringMouseCursor();
     public static MouseCursor uncontrolled = new _NoopMouseCursor();
 
-    protected MouseCursor()
-    {
-    }
+    protected MouseCursor() { }
 
     public abstract MouseCursorSession createSession(long device);
     public abstract string debugDescription { get; }
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string debugDescription = this.debugDescription;
-        if (FoundationRuntimePorts.EnumIndex(minLevel) >= FoundationRuntimePorts.EnumIndex(DiagnosticLevel.info))
+        if (
+            FoundationRuntimePorts.EnumIndex(minLevel)
+            >= FoundationRuntimePorts.EnumIndex(DiagnosticLevel.info)
+        )
         {
             return debugDescription;
         }
         return GetType().ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DeferringMouseCursor : MouseCursor
 {
-    internal _DeferringMouseCursor()
-    {
-    }
+    internal _DeferringMouseCursor() { }
 
     public override MouseCursorSession createSession(long device)
     {
@@ -105,6 +109,7 @@ internal class _DeferringMouseCursor : MouseCursor
     }
 
     public override string debugDescription => "defer";
+
     public static MouseCursor? firstNonDeferred(IEnumerable<MouseCursor> cursors)
     {
         foreach (var cursor in cursors)
@@ -117,69 +122,70 @@ internal class _DeferringMouseCursor : MouseCursor
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _NoopMouseCursorSession : MouseCursorSession
 {
-    internal _NoopMouseCursorSession(_NoopMouseCursor cursor, long device) : base(cursor: cursor, device: device)
-    {
-    }
+    internal _NoopMouseCursorSession(_NoopMouseCursor cursor, long device)
+        : base(cursor: cursor, device: device) { }
 
-    public async override Future activate()
-    {
-    }
+    public override async Future activate() { }
 
-    public override void dispose()
-    {
-    }
-
+    public override void dispose() { }
 }
 
 internal class _NoopMouseCursor : MouseCursor
 {
-    internal _NoopMouseCursor()
-    {
-    }
+    internal _NoopMouseCursor() { }
 
-    public override MouseCursorSession createSession(long device) => new _NoopMouseCursorSession(this, device);
+    public override MouseCursorSession createSession(long device) =>
+        new _NoopMouseCursorSession(this, device);
+
     public override string debugDescription => "uncontrolled";
 }
 
 internal class _SystemMouseCursorSession : MouseCursorSession
 {
-    internal _SystemMouseCursorSession(SystemMouseCursor cursor, long device) : base(cursor: cursor, device: device)
-    {
-    }
+    internal _SystemMouseCursorSession(SystemMouseCursor cursor, long device)
+        : base(cursor: cursor, device: device) { }
 
     public override MouseCursor cursor => ((SystemMouseCursor?)base.cursor)!;
+
     public override Future activate()
     {
         const string elementId = "package:flutter/services.dart#MouseCursor.activateSystemCursor";
         var dispatcher = PlatformDispatcher.instance;
-        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+        var view =
+            dispatcher.implicitView
+            ?? dispatcher.views.FirstOrDefault()
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformServices,
                 null,
                 DartUiInvocation.Managed(elementId),
-                "mouse cursor activation requires an attached DorotiView");
+                "mouse cursor activation requires an attached DorotiView"
+            );
         var cursorName = ((SystemMouseCursor)cursor).kind;
-        if (!Enum.TryParse<DorotiMouseCursorKind>(cursorName, ignoreCase: false, out var cursorKind) ||
-            !Enum.IsDefined(cursorKind))
+        if (
+            !Enum.TryParse<DorotiMouseCursorKind>(cursorName, ignoreCase: false, out var cursorKind)
+            || !Enum.IsDefined(cursorKind)
+        )
         {
-            throw new ArgumentOutOfRangeException(nameof(cursor), cursorName, "Unknown system mouse cursor kind.");
+            throw new ArgumentOutOfRangeException(
+                nameof(cursor),
+                cursorName,
+                "Unknown system mouse cursor kind."
+            );
         }
         view.RequireCapability<IPlatformServicesHostCapability>(
-            DorotiCapabilityIds.PlatformServices,
-            DartUiInvocation.Managed(elementId)).SetCursor(cursorKind);
+                DorotiCapabilityIds.PlatformServices,
+                DartUiInvocation.Managed(elementId)
+            )
+            .SetCursor(cursorKind);
         return Future.value();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void dispose()
-    {
-    }
-
+    public override void dispose() { }
 }
 
 public class SystemMouseCursor : MouseCursor
@@ -191,12 +197,20 @@ public class SystemMouseCursor : MouseCursor
         this.kind = kind;
     }
 
-    public override string debugDescription => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor")}({kind})";
-    public override MouseCursorSession createSession(long device) => new _SystemMouseCursorSession(this, device);
+    public override string debugDescription =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor")}({kind})";
+
+    public override MouseCursorSession createSession(long device) =>
+        new _SystemMouseCursorSession(this, device);
+
     public override bool Equals(object? other)
     {
         var __other = other as SystemMouseCursor;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(__other.GetType(), GetType()))
         {
             return false;
@@ -205,12 +219,12 @@ public class SystemMouseCursor : MouseCursor
     }
 
     public override int GetHashCode() => kind.GetHashCode();
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.Add(new DiagnosticsProperty<string>("kind", kind, level: DiagnosticLevel.debug));
     }
-
 }
 
 public abstract class SystemMouseCursors
@@ -235,10 +249,16 @@ public abstract class SystemMouseCursors
     public static SystemMouseCursor copy = new SystemMouseCursor(kind: "copy");
     public static SystemMouseCursor disappearing = new SystemMouseCursor(kind: "disappearing");
     public static SystemMouseCursor allScroll = new SystemMouseCursor(kind: "allScroll");
-    public static SystemMouseCursor resizeLeftRight = new SystemMouseCursor(kind: "resizeLeftRight");
+    public static SystemMouseCursor resizeLeftRight = new SystemMouseCursor(
+        kind: "resizeLeftRight"
+    );
     public static SystemMouseCursor resizeUpDown = new SystemMouseCursor(kind: "resizeUpDown");
-    public static SystemMouseCursor resizeUpLeftDownRight = new SystemMouseCursor(kind: "resizeUpLeftDownRight");
-    public static SystemMouseCursor resizeUpRightDownLeft = new SystemMouseCursor(kind: "resizeUpRightDownLeft");
+    public static SystemMouseCursor resizeUpLeftDownRight = new SystemMouseCursor(
+        kind: "resizeUpLeftDownRight"
+    );
+    public static SystemMouseCursor resizeUpRightDownLeft = new SystemMouseCursor(
+        kind: "resizeUpRightDownLeft"
+    );
     public static SystemMouseCursor resizeUp = new SystemMouseCursor(kind: "resizeUp");
     public static SystemMouseCursor resizeDown = new SystemMouseCursor(kind: "resizeDown");
     public static SystemMouseCursor resizeLeft = new SystemMouseCursor(kind: "resizeLeft");
@@ -246,10 +266,11 @@ public abstract class SystemMouseCursors
     public static SystemMouseCursor resizeUpLeft = new SystemMouseCursor(kind: "resizeUpLeft");
     public static SystemMouseCursor resizeUpRight = new SystemMouseCursor(kind: "resizeUpRight");
     public static SystemMouseCursor resizeDownLeft = new SystemMouseCursor(kind: "resizeDownLeft");
-    public static SystemMouseCursor resizeDownRight = new SystemMouseCursor(kind: "resizeDownRight");
+    public static SystemMouseCursor resizeDownRight = new SystemMouseCursor(
+        kind: "resizeDownRight"
+    );
     public static SystemMouseCursor resizeColumn = new SystemMouseCursor(kind: "resizeColumn");
     public static SystemMouseCursor resizeRow = new SystemMouseCursor(kind: "resizeRow");
     public static SystemMouseCursor zoomIn = new SystemMouseCursor(kind: "zoomIn");
     public static SystemMouseCursor zoomOut = new SystemMouseCursor(kind: "zoomOut");
-
 }

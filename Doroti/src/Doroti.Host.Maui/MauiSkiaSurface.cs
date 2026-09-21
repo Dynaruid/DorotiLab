@@ -1,10 +1,11 @@
-#if IOS && !MACCATALYST
-using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
-#endif
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
 using SkiaSharp;
+#if IOS && !MACCATALYST
+using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
+#endif
+
 #if IOS || MACCATALYST
 using CoreGraphics;
 using Foundation;
@@ -25,7 +26,8 @@ internal sealed class MauiSkiaPaintContext(
     double density,
     long surfaceGeneration,
     string nativeViewType,
-    string graphicsBackend)
+    string graphicsBackend
+)
 {
     internal SKSurface Surface { get; } = surface;
     internal object? ContextIdentity { get; } = contextIdentity;
@@ -59,6 +61,7 @@ internal interface IMauiSkiaSurface : IDisposable
     event Action<bool>? FocusChanged;
     event Action<DorotiResizeEpoch?>? SizeChanged;
     void InvalidateSurface();
+
     // The caller already owns the current display pulse. Platforms may draw
     // immediately instead of scheduling a second pulse.
     void InvalidateSurfaceFromVsync() => InvalidateSurface();
@@ -72,10 +75,11 @@ internal interface IMauiGraphiteSurface
     event Action? GpuResourcesReleasing;
 }
 
-#if !MACOS && !WINDOWS
+#if ANDROID || IOS || MACCATALYST
 internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #if WINDOWS
-    , IMauiSynchronousResizeSurface
+        ,
+        IMauiSynchronousResizeSurface
 #endif
 {
     private readonly SKGLView _view;
@@ -119,7 +123,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #endif
         _nativeInput = MauiNativeInput.Attach(_view, textInput, viewId, data => Key?.Invoke(data));
 #if ANDROID
-        if (_view is not DorotiGraphiteView) _fallbackPointers = new(_view, data => Pointer?.Invoke(data));
+        if (_view is not DorotiGraphiteView)
+        {
+            _fallbackPointers = new(_view, data => Pointer?.Invoke(data));
+        }
 #endif
 #if IOS || MACCATALYST
         _trackpadInput = new(_view, data => Pointer?.Invoke(data));
@@ -152,20 +159,29 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     public event Action<bool>? FocusChanged;
     public event Action<DorotiResizeEpoch?>? SizeChanged;
     public event Action? GpuResourcesReleasing;
+
     private void HandleGraphiteRelease() => GpuResourcesReleasing?.Invoke();
+
     private void HandleNativePointer(MauiSurfacePointerData data) => Pointer?.Invoke(data);
-    private void HandleGraphiteCompleted(MauiPaintCompletion completion, bool replay) => PresentCompleted?.Invoke(completion, replay);
-    private void HandleGraphiteFailed(MauiPaintCompletion? completion, Exception exception) => PaintFailed?.Invoke(completion, exception);
+
+    private void HandleGraphiteCompleted(MauiPaintCompletion completion, bool replay) =>
+        PresentCompleted?.Invoke(completion, replay);
+
+    private void HandleGraphiteFailed(MauiPaintCompletion? completion, Exception exception) =>
+        PaintFailed?.Invoke(completion, exception);
+
     private void HandleGraphitePaint(MauiSkiaPaintContext context)
     {
         PublishDrawableMetrics(context.PixelWidth, context.PixelHeight, context.Density);
         Paint?.Invoke(context);
     }
+
 #if WINDOWS
     public event Action<MauiSynchronousResize>? SynchronousResize;
 #endif
 
     public void InvalidateSurface() => _view.InvalidateSurface();
+
     public void InvalidateSurfaceFromVsync()
     {
 #if ANDROID
@@ -177,17 +193,29 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #endif
         InvalidateSurface();
     }
+
     public void RequestFocus(bool focused)
     {
 #if ANDROID
         // Framework focus activation also runs when a native PlatformView's
         // FocusNode becomes primary. Preserve its already-focused descendant.
-        if (focused && _view.Handler?.PlatformView is DorotiAndroidViewContainer { HasFocus: true }) return;
+        if (focused && _view.Handler?.PlatformView is DorotiAndroidViewContainer { HasFocus: true })
+        {
+            return;
+        }
 #endif
-        if (focused) _view.Focus();
-        else _view.Unfocus();
+        if (focused)
+        {
+            _view.Focus();
+        }
+        else
+        {
+            _view.Unfocus();
+        }
     }
+
     public void SetCursor(DorotiMouseCursorKind cursor) => MauiNativeInput.SetCursor(_view, cursor);
+
     public MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current)
     {
 #if WINDOWS
@@ -202,35 +230,57 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         _ = sender;
         if (args.Surface is null || _view.GRContext is null)
         {
-            PaintFailed?.Invoke(null, new InvalidOperationException(
-                "Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext."));
+            PaintFailed?.Invoke(
+                null,
+                new InvalidOperationException(
+                    "Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext."
+                )
+            );
             return;
         }
         try
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
-            var density = MauiViewEnvironment.ValidScale(Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
+            var density = MauiViewEnvironment.ValidScale(
+                Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density
+            );
 #if MACCATALYST || IOS
             // DeviceDisplay describes the main monitor, which need not own
             // this window. Match the scale used by the Metal drawable and
             // SKTouchHandler's conversion from UIKit points to pixels.
             if (_view.Handler?.PlatformView is UIView nativeView)
+            {
                 density = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
+            }
 #endif
 #if MACCATALYST || IOS || ANDROID
 #if ANDROID
             if (_view.Handler?.PlatformView is Android.Views.View androidView)
-                density = MauiViewEnvironment.ValidScale(androidView.Resources?.DisplayMetrics?.Density ?? density);
+            {
+                density = MauiViewEnvironment.ValidScale(
+                    androidView.Resources?.DisplayMetrics?.Density ?? density
+                );
+            }
 #endif
             PublishDrawableMetrics(
-                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density);
+                args.BackendRenderTarget.Width,
+                args.BackendRenderTarget.Height,
+                density
+            );
 #endif
 #if WINDOWS
             _resizeContinuity.ObserveCurrentEgl(
-                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+                args.BackendRenderTarget.Width,
+                args.BackendRenderTarget.Height
+            );
 #endif
-            var context = new MauiSkiaPaintContext(args.Surface, _view.GRContext,
-                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density, 0,
+            var context = new MauiSkiaPaintContext(
+                args.Surface,
+                _view.GRContext,
+                args.BackendRenderTarget.Width,
+                args.BackendRenderTarget.Height,
+                density,
+                0,
                 nativeType,
 #if WINDOWS
                 "WinUI3/SKSwapChainPanel/ANGLE-DirectX-Skia"
@@ -245,18 +295,28 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             var rasterStarted = DorotiFrameClock.Now;
 #if WINDOWS
             _resizeContinuity.RecordRasterStart(
-                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+                args.BackendRenderTarget.Width,
+                args.BackendRenderTarget.Height
+            );
 #endif
             Paint?.Invoke(context);
 #if WINDOWS
             _resizeContinuity.RecordRasterEnd(
-                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height,
-                DorotiFrameClock.Now - rasterStarted);
+                args.BackendRenderTarget.Width,
+                args.BackendRenderTarget.Height,
+                DorotiFrameClock.Now - rasterStarted
+            );
 #endif
-            if (context.Completion is not { } completion) return;
+            if (context.Completion is not { } completion)
+            {
+                return;
+            }
 #if WINDOWS
             if (!_resizeContinuity.CaptureSynchronousCompletion(completion))
-                Dispatcher.DispatchDelayed(TimeSpan.Zero, () => PresentCompleted?.Invoke(completion, false));
+                Dispatcher.DispatchDelayed(
+                    TimeSpan.Zero,
+                    () => PresentCompleted?.Invoke(completion, false)
+                );
 #else
             PresentCompleted?.Invoke(completion, false);
 #endif
@@ -280,12 +340,14 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             SKTouchAction.WheelChanged => PointerChange.hover,
             _ => args.InContact ? PointerChange.move : PointerChange.hover,
         };
-        var buttons = args.InContact ? args.MouseButton switch
-        {
-            SKMouseButton.Right => 2,
-            SKMouseButton.Middle => 4,
-            _ => 1,
-        } : 0;
+        var buttons = args.InContact
+            ? args.MouseButton switch
+            {
+                SKMouseButton.Right => 2,
+                SKMouseButton.Middle => 4,
+                _ => 1,
+            }
+            : 0;
         var kind = args.DeviceType switch
         {
             SKTouchDeviceType.Mouse => PointerDeviceKind.mouse,
@@ -293,11 +355,23 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             SKTouchDeviceType.Touch => PointerDeviceKind.touch,
             _ => PointerDeviceKind.unknown,
         };
-        Pointer?.Invoke(new(DorotiFrameClock.Now, change, kind,
-            checked((ulong)Math.Max(0, args.Id)), args.Location.X, args.Location.Y, buttons,
-            0, args.ActionType == SKTouchAction.WheelChanged ? -args.WheelDelta : 0,
-            args.ActionType == SKTouchAction.WheelChanged ? PointerSignalKind.scroll : PointerSignalKind.none,
-            args.Pressure));
+        Pointer?.Invoke(
+            new(
+                DorotiFrameClock.Now,
+                change,
+                kind,
+                checked((ulong)Math.Max(0, args.Id)),
+                args.Location.X,
+                args.Location.Y,
+                buttons,
+                0,
+                args.ActionType == SKTouchAction.WheelChanged ? -args.WheelDelta : 0,
+                args.ActionType == SKTouchAction.WheelChanged
+                    ? PointerSignalKind.scroll
+                    : PointerSignalKind.none,
+                args.Pressure
+            )
+        );
         args.Handled = true;
     }
 
@@ -327,13 +401,19 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         // Do not also start MTKView's display-link loop: its independent paint
         // can present between the window-origin and drawable-size commits when
         // the bottom edge is moving, producing a one-frame vertical jump.
-        Dispatcher.DispatchDelayed(MacCatalystResizeQuiescence, () =>
-        {
-            if (_disposed || pulse != _macCatalystResizePulse) return;
-            // Retain one final invalidation after live resize so a drawable
-            // that was temporarily unavailable is retried at the settled size.
-            _view.InvalidateSurface();
-        });
+        Dispatcher.DispatchDelayed(
+            MacCatalystResizeQuiescence,
+            () =>
+            {
+                if (_disposed || pulse != _macCatalystResizePulse)
+                {
+                    return;
+                }
+                // Retain one final invalidation after live resize so a drawable
+                // that was temporarily unavailable is retried at the settled size.
+                _view.InvalidateSurface();
+            }
+        );
     }
 
 #endif
@@ -341,17 +421,26 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #if MACCATALYST || IOS || ANDROID
     private void PublishDrawableMetrics(int pixelWidth, int pixelHeight, double density)
     {
-        if (pixelWidth <= 0 || pixelHeight <= 0) return;
+        if (pixelWidth <= 0 || pixelHeight <= 0)
+        {
+            return;
+        }
+
         var logicalWidth = pixelWidth / density;
         var logicalHeight = pixelHeight / density;
         var previousGeneration = _resizeTargets.Latest?.Generation;
         var target = _resizeTargets.Publish(logicalWidth, logicalHeight, density);
-        if (target.Generation != previousGeneration) SizeChanged?.Invoke(target);
+        if (target.Generation != previousGeneration)
+        {
+            SizeChanged?.Invoke(target);
+        }
     }
 #endif
 
     private void HandleFocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(true);
-    private void HandleUnfocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(false);
+
+    private void HandleUnfocused(object? sender, FocusEventArgs args) =>
+        FocusChanged?.Invoke(false);
 
 #if WINDOWS
     private void PrepareSynchronousResize(MauiSynchronousResize resize) =>
@@ -360,15 +449,30 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     private void CompleteSynchronousPresent(MauiPaintCompletion completion) =>
         PresentCompleted?.Invoke(completion, false);
 
-    public void RecordResizePhase(string phase, DorotiResizeEpoch epoch, TimeSpan? duration = null,
-        string? terminal = null, string? detail = null) =>
-        _resizeContinuity.Record(phase, epoch, "maui-host-adapter", duration,
-            terminal: terminal, detail: detail);
+    public void RecordResizePhase(
+        string phase,
+        DorotiResizeEpoch epoch,
+        TimeSpan? duration = null,
+        string? terminal = null,
+        string? detail = null
+    ) =>
+        _resizeContinuity.Record(
+            phase,
+            epoch,
+            "maui-host-adapter",
+            duration,
+            terminal: terminal,
+            detail: detail
+        );
 #endif
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
 #if IOS || MACCATALYST
         _trackpadInput.Dispose();
@@ -419,7 +523,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 
         internal MacCatalystNativeSubscription(
             SKGLView view,
-            Action<MauiSurfacePointerData> dispatch)
+            Action<MauiSurfacePointerData> dispatch
+        )
         {
             _view = view;
             _dispatch = dispatch;
@@ -437,7 +542,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         private void AttachCurrent()
         {
             DetachCurrent();
-            if (_view.Handler?.PlatformView is not UIView nativeView) return;
+            if (_view.Handler?.PlatformView is not UIView nativeView)
+            {
+                return;
+            }
 
             _nativeView = nativeView;
             // UIKit's default scale-to-fill behavior stretches the last Metal
@@ -451,14 +559,23 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 // reintroduces a one-frame stretched raster.
                 metalView.AutoResizeDrawable = false;
                 metalView.PreferredFramesPerSecond = Math.Max(
-                    60, UIKit.UIScreen.MainScreen.MaximumFramesPerSecond);
+                    60,
+                    UIKit.UIScreen.MainScreen.MaximumFramesPerSecond
+                );
             }
             _gestureDelegate = new MacCatalystGestureDelegate();
             _pointerRecognizer = new MacCatalystPointerRecognizer(data =>
             {
-                if (data.Kind == PointerDeviceKind.mouse) _mouseButtons = data.Buttons;
+                if (data.Kind == PointerDeviceKind.mouse)
+                {
+                    _mouseButtons = data.Buttons;
+                }
+
                 _dispatch(data);
-            }) { Delegate = _gestureDelegate };
+            })
+            {
+                Delegate = _gestureDelegate,
+            };
             nativeView.AddGestureRecognizer(_pointerRecognizer);
             // In the Mac idiom, UIKit routes secondary clicks through the
             // context-menu interaction rather than the raw primary touch stream.
@@ -467,20 +584,38 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             _contextMenuDelegate = new MacCatalystContextMenuDelegate(location =>
             {
                 var scale = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
-                var down = new MauiSurfacePointerData(DorotiFrameClock.Now, PointerChange.down,
-                    PointerDeviceKind.mouse, 1, location.X * scale, location.Y * scale,
-                    2, 0, 0, PointerSignalKind.none, 0);
+                var down = new MauiSurfacePointerData(
+                    DorotiFrameClock.Now,
+                    PointerChange.down,
+                    PointerDeviceKind.mouse,
+                    1,
+                    location.X * scale,
+                    location.Y * scale,
+                    2,
+                    0,
+                    0,
+                    PointerSignalKind.none,
+                    0
+                );
                 _dispatch(down);
                 _dispatch(down with { Change = PointerChange.up, Buttons = 0 });
                 if (Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1")
-                    Console.WriteLine("[MacCatalyst pointer] context click: down buttons=2, up buttons=0");
+                {
+                    Console.WriteLine(
+                        "[MacCatalyst pointer] context click: down buttons=2, up buttons=0"
+                    );
+                }
             });
             _contextMenuInteraction = new UIContextMenuInteraction(_contextMenuDelegate);
             nativeView.AddInteraction(_contextMenuInteraction);
             _hoverRecognizer = new UIHoverGestureRecognizer(recognizer =>
             {
                 // Hover callbacks during a drag must not clear the pressed mask.
-                if (_mouseButtons != 0) return;
+                if (_mouseButtons != 0)
+                {
+                    return;
+                }
+
                 var location = recognizer.LocationInView(nativeView);
                 var scale = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
                 var change = recognizer.State switch
@@ -489,23 +624,49 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                     UIKit.UIGestureRecognizerState.Ended => PointerChange.remove,
                     _ => PointerChange.hover,
                 };
-                _dispatch(new(DorotiFrameClock.Now, change, PointerDeviceKind.mouse, 1,
-                    location.X * scale, location.Y * scale, 0, 0, 0, PointerSignalKind.none, 0));
-            }) { Delegate = _gestureDelegate };
+                _dispatch(
+                    new(
+                        DorotiFrameClock.Now,
+                        change,
+                        PointerDeviceKind.mouse,
+                        1,
+                        location.X * scale,
+                        location.Y * scale,
+                        0,
+                        0,
+                        0,
+                        PointerSignalKind.none,
+                        0
+                    )
+                );
+            })
+            {
+                Delegate = _gestureDelegate,
+            };
             nativeView.AddGestureRecognizer(_hoverRecognizer);
         }
 
         private void DetachCurrent()
         {
             _mouseButtons = 0;
-            foreach (var gesture in new UIGestureRecognizer?[] { _pointerRecognizer, _hoverRecognizer })
+            foreach (
+                var gesture in new UIGestureRecognizer?[] { _pointerRecognizer, _hoverRecognizer }
+            )
             {
-                if (gesture is null) continue;
+                if (gesture is null)
+                {
+                    continue;
+                }
+
                 _nativeView?.RemoveGestureRecognizer(gesture);
                 gesture.Dispose();
             }
             _pointerRecognizer = null;
-            if (_contextMenuInteraction is not null) _nativeView?.RemoveInteraction(_contextMenuInteraction);
+            if (_contextMenuInteraction is not null)
+            {
+                _nativeView?.RemoveInteraction(_contextMenuInteraction);
+            }
+
             _contextMenuInteraction?.Dispose();
             _contextMenuInteraction = null;
             _contextMenuDelegate?.Dispose();
@@ -520,7 +681,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             : UIContextMenuInteractionDelegate
         {
             public override UIContextMenuConfiguration? GetConfigurationForMenu(
-                UIContextMenuInteraction interaction, CGPoint location)
+                UIContextMenuInteraction interaction,
+                CGPoint location
+            )
             {
                 show(location);
                 return null;
@@ -530,7 +693,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         private sealed class MacCatalystPointerRecognizer : UIGestureRecognizer
         {
             private readonly Action<MauiSurfacePointerData> _dispatch;
-            private static readonly bool TraceInput = Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1";
+            private static readonly bool TraceInput =
+                Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1";
             private readonly HashSet<nint> _mouseTouches = [];
             private readonly HashSet<nint> _secondaryTouches = [];
             private bool _controlClick;
@@ -548,16 +712,19 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 base.TouchesBegan(touches, evt);
                 Send(touches, evt, PointerChange.down);
             }
+
             public override void TouchesMoved(NSSet touches, UIEvent evt)
             {
                 base.TouchesMoved(touches, evt);
                 Send(touches, evt, PointerChange.move);
             }
+
             public override void TouchesEnded(NSSet touches, UIEvent evt)
             {
                 base.TouchesEnded(touches, evt);
                 Send(touches, evt, PointerChange.up);
             }
+
             public override void TouchesCancelled(NSSet touches, UIEvent evt)
             {
                 base.TouchesCancelled(touches, evt);
@@ -566,34 +733,89 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 
             private void Send(NSSet touches, UIEvent evt, PointerChange change)
             {
-                if (View is not { } view) return;
+                if (View is not { } view)
+                {
+                    return;
+                }
+
                 var scale = MauiViewEnvironment.ValidScale((double)view.ContentScaleFactor);
                 foreach (var touch in touches.Cast<UITouch>())
                 {
                     var handle = (nint)touch.Handle;
                     // The context-menu interaction owns this sequence even on
                     // UIKit versions that also expose it as raw touches.
-                    if (change == PointerChange.down && (evt.ButtonMask & UIKit.UIEventButtonMask.Secondary) != 0)
+                    if (
+                        change == PointerChange.down
+                        && (evt.ButtonMask & UIKit.UIEventButtonMask.Secondary) != 0
+                    )
+                    {
                         _secondaryTouches.Add(handle);
+                    }
+
                     if (_secondaryTouches.Contains(handle))
                     {
-                        if (change is PointerChange.up or PointerChange.cancel) _secondaryTouches.Remove(handle);
+                        if (change is PointerChange.up or PointerChange.cancel)
+                        {
+                            _secondaryTouches.Remove(handle);
+                        }
+
                         continue;
                     }
-                    var mouse = touch.Type == UIKit.UITouchType.IndirectPointer || evt.ButtonMask != 0 || _mouseTouches.Contains(handle);
-                    if (mouse && change == PointerChange.down) _mouseTouches.Add(handle);
-                    var kind = mouse ? PointerDeviceKind.mouse : touch.Type == UIKit.UITouchType.Stylus
-                        ? PointerDeviceKind.stylus : PointerDeviceKind.touch;
+                    var mouse =
+                        touch.Type == UIKit.UITouchType.IndirectPointer
+                        || evt.ButtonMask != 0
+                        || _mouseTouches.Contains(handle);
+                    if (mouse && change == PointerChange.down)
+                    {
+                        _mouseTouches.Add(handle);
+                    }
+
+                    var kind =
+                        mouse ? PointerDeviceKind.mouse
+                        : touch.Type == UIKit.UITouchType.Stylus ? PointerDeviceKind.stylus
+                        : PointerDeviceKind.touch;
                     var buttons = mouse ? (int)evt.ButtonMask : 1;
                     if (change == PointerChange.down)
-                        _controlClick = mouse && (buttons & 1) != 0 && (evt.ModifierFlags & UIKit.UIKeyModifierFlags.Control) != 0;
-                    if (_controlClick) buttons = (buttons & ~1) | 2;
-                    if (change is PointerChange.up or PointerChange.cancel) buttons = 0;
+                    {
+                        _controlClick =
+                            mouse
+                            && (buttons & 1) != 0
+                            && (evt.ModifierFlags & UIKit.UIKeyModifierFlags.Control) != 0;
+                    }
+
+                    if (_controlClick)
+                    {
+                        buttons = (buttons & ~1) | 2;
+                    }
+
+                    if (change is PointerChange.up or PointerChange.cancel)
+                    {
+                        buttons = 0;
+                    }
+
                     var location = touch.LocationInView(view);
-                    if (TraceInput) Console.WriteLine($"[MacCatalyst pointer] {change} native={touch.Type} mask={evt.ButtonMask} kind={kind} buttons={buttons}");
-                    _dispatch(new(TimeSpan.FromSeconds(touch.Timestamp), change, kind,
-                        mouse ? 1UL : unchecked((ulong)(nint)touch.Handle), location.X * scale, location.Y * scale,
-                        buttons, 0, 0, PointerSignalKind.none, (double)touch.Force));
+                    if (TraceInput)
+                    {
+                        Console.WriteLine(
+                            $"[MacCatalyst pointer] {change} native={touch.Type} mask={evt.ButtonMask} kind={kind} buttons={buttons}"
+                        );
+                    }
+
+                    _dispatch(
+                        new(
+                            TimeSpan.FromSeconds(touch.Timestamp),
+                            change,
+                            kind,
+                            mouse ? 1UL : unchecked((ulong)(nint)touch.Handle),
+                            location.X * scale,
+                            location.Y * scale,
+                            buttons,
+                            0,
+                            0,
+                            PointerSignalKind.none,
+                            (double)touch.Force
+                        )
+                    );
                     if (change is PointerChange.up or PointerChange.cancel)
                     {
                         _controlClick = false;
@@ -613,7 +835,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         {
             public override bool ShouldRecognizeSimultaneously(
                 UIGestureRecognizer gestureRecognizer,
-                UIGestureRecognizer otherGestureRecognizer)
+                UIGestureRecognizer otherGestureRecognizer
+            )
             {
                 _ = gestureRecognizer;
                 _ = otherGestureRecognizer;

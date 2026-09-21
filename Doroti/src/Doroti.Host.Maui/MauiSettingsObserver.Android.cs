@@ -11,10 +11,15 @@ internal sealed class MauiSettingsObserver : ContentObserver
     private Handler? _handler;
     private Action? _changed;
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicConstructors, typeof(MauiSettingsObserver))]
-    internal MauiSettingsObserver(Action changed) : this(new Handler(Looper.MainLooper!), changed) { }
+    [DynamicDependency(
+        DynamicallyAccessedMemberTypes.NonPublicConstructors,
+        typeof(MauiSettingsObserver)
+    )]
+    internal MauiSettingsObserver(Action changed)
+        : this(new Handler(Looper.MainLooper!), changed) { }
 
-    private MauiSettingsObserver(Handler handler, Action changed) : base(handler)
+    private MauiSettingsObserver(Handler handler, Action changed)
+        : base(handler)
     {
         _handler = handler;
         _changed = changed;
@@ -23,7 +28,8 @@ internal sealed class MauiSettingsObserver : ContentObserver
     // Unregistering does not retract notifications already dispatched by Android.
     // A late Java callback may recreate the managed peer after Dispose; it must
     // be inert and must not retain or refresh the detached view environment.
-    private MauiSettingsObserver(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
+    private MauiSettingsObserver(IntPtr handle, JniHandleOwnership ownership)
+        : base(handle, ownership) { }
 
     public override void OnChange(bool selfChange) => _changed?.Invoke();
 

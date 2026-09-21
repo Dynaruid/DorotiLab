@@ -21,14 +21,16 @@ public sealed record SelectionManifest(
     string? SourceLicense = null,
     string? AnalysisMode = null,
     string? FrameworkMilestone = null,
-    ApplicationCompilation? Application = null);
+    ApplicationCompilation? Application = null
+);
 
 public sealed record SelectionInput(
     string Path,
     string[] Symbols,
     string? Library = null,
     string EmissionMode = "generate",
-    string[]? BoundarySymbols = null);
+    string[]? BoundarySymbols = null
+);
 
 public sealed record ApplicationCompilation(
     string ResourceManifest,
@@ -36,4 +38,5 @@ public sealed record ApplicationCompilation(
     string TargetRid,
     string[] FrameworkPackages,
     string HostBootstrapPackage = "Doroti.Hosting",
-    Dictionary<string, bool>? Conditions = null);
+    Dictionary<string, bool>? Conditions = null
+);

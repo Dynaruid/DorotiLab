@@ -8,7 +8,10 @@ using Color = Doroti.Ui.Color;
 
 namespace Doroti.Host.Maui;
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, WriteIndented = true)]
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    WriteIndented = true
+)]
 [JsonSerializable(typeof(MauiHostDiagnostics))]
 internal sealed partial class MauiEvidenceJsonContext : JsonSerializerContext;
 
@@ -37,21 +40,40 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private bool _closeReady;
 #endif
 
-    public DorotiMauiSurface(
-        DorotiApplicationDescriptor application,
-        ulong viewId = 1)
+    public DorotiMauiSurface(DorotiApplicationDescriptor application, ulong viewId = 1)
     {
         SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None;
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
-        var startupColor = ResolveBackgroundColor(Application.Current?.RequestedTheme ?? AppTheme.Unspecified);
+        var startupColor = ResolveBackgroundColor(
+            Application.Current?.RequestedTheme ?? AppTheme.Unspecified
+        );
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
-            (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
-        _semanticsLayer = new AbsoluteLayout { SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None, InputTransparent = true, CascadeInputTransparent = false };
-        #if IOS && !MACCATALYST
-        _textInput = new(CreateHiddenInput<DorotiUIKitEntry>, CreateHiddenInput<DorotiUIKitEditor>, this, attachOnDemand: true);
+            (float)startupColor.r,
+            (float)startupColor.g,
+            (float)startupColor.b,
+            (float)startupColor.a
+        );
+        _semanticsLayer = new AbsoluteLayout
+        {
+            SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
+            InputTransparent = true,
+            CascadeInputTransparent = false,
+        };
+#if IOS && !MACCATALYST
+        _textInput = new(
+            CreateHiddenInput<DorotiUIKitEntry>,
+            CreateHiddenInput<DorotiUIKitEditor>,
+            this,
+            attachOnDemand: true
+        );
 #else
-        _textInput = new(CreateHiddenInput<Entry>, CreateHiddenInput<Editor>, this, attachOnDemand: true);
+        _textInput = new(
+            CreateHiddenInput<Entry>,
+            CreateHiddenInput<Editor>,
+            this,
+            attachOnDemand: true
+        );
 #endif
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId)
@@ -75,33 +97,43 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         Loaded += HandleLoaded;
         Unloaded += HandleUnloaded;
         if (Application.Current is { } currentApplication)
+        {
             currentApplication.RequestedThemeChanged += HandleRequestedThemeChanged;
+        }
     }
 
-    public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
-        _viewId, "src/App.cs",
+#if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
+    public MauiHostDiagnostics? Diagnostics =>
+        _host?.CaptureDiagnostics(
+            _viewId,
+            "src/App.cs",
 #if WINDOWS
-        "windows/App.xaml.cs"
+            "windows/App.xaml.cs"
 #elif MACCATALYST
         "obj/Doroti.Generated/DorotiBootstrap.g.cs -> macos/AppDelegate.cs"
 #elif IOS
-        "obj/Doroti.Generated/DorotiBootstrap.g.cs -> ios/AppDelegate.cs"
+            "obj/Doroti.Generated/DorotiBootstrap.g.cs -> ios/AppDelegate.cs"
 #elif ANDROID
-        RuntimeInformation.ProcessArchitecture == Architecture.X64
-            ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
-            : "obj/android-arm64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
+            RuntimeInformation.ProcessArchitecture == Architecture.X64
+                ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
+                : "obj/android-arm64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
 #elif MACOS
-        "obj/Doroti.Generated/DorotiBootstrap.g.cs -> macos/AppKitDelegate.cs"
+            "obj/Doroti.Generated/DorotiBootstrap.g.cs -> macos/AppKitDelegate.cs"
+#endif
+        );
 #else
 #error Doroti.Host.Maui requires an explicit bootstrap source.
 #endif
-        );
 
     private void HandleHandlerChanged(object? sender, EventArgs args)
     {
         _ = sender;
         _ = args;
-        if (Handler is null || _attached || _disposed) return;
+        if (Handler is null || _attached || _disposed)
+        {
+            return;
+        }
+
         try
         {
             _session = new(_application.EntrypointFactory());
@@ -113,11 +145,16 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if ANDROID
             var androidPlatformViews = _renderSurface.Element is DorotiGraphiteView androidGraphite
-                ? androidGraphite.PlatformViews = new AndroidPlatformViewHost(androidGraphite, _textInput) : null;
+                ? androidGraphite.PlatformViews = new AndroidPlatformViewHost(
+                    androidGraphite,
+                    _textInput
+                )
+                : null;
 #endif
 #if IOS && !MACCATALYST
             var uiKitPlatformViews = _renderSurface.Element is DorotiGraphiteView uiKitGraphite
-                ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput) : null;
+                ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput)
+                : null;
 #endif
             _boundary = DorotiApplicationBoundary.Load(
                 _application.ManifestAssembly,
@@ -125,24 +162,39 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _application.LaunchContext.RuntimeIdentifier,
                 _application.NativePluginHandlers
 #if MACOS
-                , appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
+                ,
+                appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
 #if ANDROID
-                , androidPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
+                ,
+                androidPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
 #if IOS && !MACCATALYST
-                , uiKitPlatformViews?.CreateFactories()
+                ,
+                uiKitPlatformViews?.CreateFactories()
 #endif
-                );
+            );
             IMauiSemanticsBridge semantics =
 #if ANDROID
-                DorotiGraphiteView.Enabled ? new MauiAndroidSemanticsBridge(_renderSurface.Element) :
+            DorotiGraphiteView.Enabled
+                ? new MauiAndroidSemanticsBridge(_renderSurface.Element)
+                :
 #endif
                 new MauiSemanticsBridge(_semanticsLayer);
-            _host.CreateView(_session, _viewId, _renderSurface, _application.ViewConfiguration,
-                semantics, _boundary, _textInput);
+            _host.CreateView(
+                _session,
+                _viewId,
+                _renderSurface,
+                _application.ViewConfiguration,
+                semantics,
+                _boundary,
+                _textInput
+            );
             using (var dispatcherScope = _session.dispatcher.EnterScope())
+            {
                 _session.dispatcher.setSemanticsTreeEnabled(true);
+            }
+
             _attached = true;
         }
         catch (Exception exception)
@@ -154,7 +206,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void PaintGpuSurface(MauiSkiaPaintContext paint)
     {
-        if (!_attached || _host is null) return;
+        if (!_attached || _host is null)
+        {
+            return;
+        }
+
         try
         {
             try
@@ -163,8 +219,12 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 if (!paint.SkipRaster)
                 {
                     paint.Completion = _host.PaintSkiaSurface(
-                        _viewId, paint.Surface, paint.PixelWidth, paint.PixelHeight,
-                        out var shouldPresent);
+                        _viewId,
+                        paint.Surface,
+                        paint.PixelWidth,
+                        paint.PixelHeight,
+                        out var shouldPresent
+                    );
                     paint.SkipPresent = !shouldPresent;
                 }
             }
@@ -183,11 +243,18 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void CompleteNativePaint(MauiPaintCompletion completion, bool stale)
     {
-        if (_disposed || _host is null) return;
+        if (_disposed || _host is null)
+        {
+            return;
+        }
+
         if (stale)
         {
-            _host.SupersedePaint(_viewId, completion,
-                "Native output was superseded by a newer surface or viewport generation.");
+            _host.SupersedePaint(
+                _viewId,
+                completion,
+                "Native output was superseded by a newer surface or viewport generation."
+            );
             ScheduleEvidenceWrite();
             return;
         }
@@ -198,16 +265,27 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private void HandlePaintFailure(MauiPaintCompletion? completion, Exception exception)
     {
         if (completion is { } value && _host is not null)
+        {
             _host.FailPaint(_viewId, value, exception.Message);
+        }
+
         WriteFailure(exception);
         ScheduleEvidenceWrite();
     }
 
     private void ScheduleEvidenceWrite()
     {
-        if (!EvidenceEnabled()) return;
+        if (!EvidenceEnabled())
+        {
+            return;
+        }
+
         var generation = Interlocked.Increment(ref _evidenceWriteGeneration);
-        if (Interlocked.CompareExchange(ref _evidenceWritePending, 1, 0) != 0) return;
+        if (Interlocked.CompareExchange(ref _evidenceWritePending, 1, 0) != 0)
+        {
+            return;
+        }
+
         _ = Task.Run(() =>
         {
             try
@@ -217,7 +295,14 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 {
                     Thread.Sleep(EvidenceWriteQuiescence);
                     var latestGeneration = Interlocked.Read(ref _evidenceWriteGeneration);
-                    if (latestGeneration == generation || Stopwatch.GetElapsedTime(started) >= EvidenceWriteInterval) break;
+                    if (
+                        latestGeneration == generation
+                        || Stopwatch.GetElapsedTime(started) >= EvidenceWriteInterval
+                    )
+                    {
+                        break;
+                    }
+
                     generation = latestGeneration;
                 }
                 WriteEvidence();
@@ -230,7 +315,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             {
                 Interlocked.Exchange(ref _evidenceWritePending, 0);
                 if (Interlocked.Read(ref _evidenceWriteGeneration) != generation)
+                {
                     ScheduleEvidenceWrite();
+                }
             }
         });
     }
@@ -238,32 +325,49 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private void WriteEvidence()
     {
         var diagnostics = Diagnostics;
-        if (diagnostics is null) return;
+        if (diagnostics is null)
+        {
+            return;
+        }
+
         var evidencePath = ResolveEvidencePath();
-        var shouldRequestReplay = diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
+        var shouldRequestReplay =
+            diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
         var timestamp = Stopwatch.GetTimestamp();
         var lastWrite = Interlocked.Read(ref _lastEvidenceWriteTimestamp);
         var lastReplay = Interlocked.Read(ref _lastEvidenceReplayed);
         var firstEvidence = lastWrite == 0;
         var firstReplay = diagnostics.Frame.Replayed > 0 && lastReplay == 0;
-        var intervalElapsed = !firstEvidence &&
-                              Stopwatch.GetElapsedTime(lastWrite, timestamp) >= EvidenceWriteInterval;
+        var intervalElapsed =
+            !firstEvidence
+            && Stopwatch.GetElapsedTime(lastWrite, timestamp) >= EvidenceWriteInterval;
 
         // Evidence collection is coalesced onto one background writer. JSON serialization and
         // file I/O must never occupy the native paint callback while an interaction is active.
         if (firstEvidence || firstReplay || intervalElapsed)
         {
-            var json = JsonSerializer.Serialize(diagnostics, MauiEvidenceJsonContext.Default.MauiHostDiagnostics);
+            var json = JsonSerializer.Serialize(
+                diagnostics,
+                MauiEvidenceJsonContext.Default.MauiHostDiagnostics
+            );
             var path = evidencePath;
 #if ANDROID
-            path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
-                ?? throw new InvalidOperationException("Android external cache directory is unavailable."), "doroti-maui-evidence.json");
+            path = System.IO.Path.Combine(
+                Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
+                    ?? throw new InvalidOperationException(
+                        "Android external cache directory is unavailable."
+                    ),
+                "doroti-maui-evidence.json"
+            );
 #endif
             TryWriteText(path, json);
             Interlocked.Exchange(ref _lastEvidenceWriteTimestamp, timestamp);
             Interlocked.Exchange(ref _lastEvidenceReplayed, diagnostics.Frame.Replayed);
 #if MACOS
-            if (firstReplay) TryExitAfterEvidence();
+            if (firstReplay)
+            {
+                TryExitAfterEvidence();
+            }
 #endif
         }
 
@@ -277,8 +381,15 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private static void TryExitAfterEvidence()
     {
         var bridgePath = Environment.GetEnvironmentVariable("DOROTI_NATIVE_BRIDGE_EVIDENCE");
-        if (string.Equals(Environment.GetEnvironmentVariable("DOROTI_EXIT_AFTER_EVIDENCE"), "1", StringComparison.Ordinal) &&
-            !string.IsNullOrWhiteSpace(bridgePath) && File.Exists(bridgePath))
+        if (
+            string.Equals(
+                Environment.GetEnvironmentVariable("DOROTI_EXIT_AFTER_EVIDENCE"),
+                "1",
+                StringComparison.Ordinal
+            )
+            && !string.IsNullOrWhiteSpace(bridgePath)
+            && File.Exists(bridgePath)
+        )
         {
             Environment.Exit(0);
         }
@@ -290,8 +401,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         var path = ResolveEvidencePath();
 #if ANDROID
         Android.Util.Log.Error("DorotiMauiFailure", exception.ToString());
-        path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
-            ?? throw new InvalidOperationException("Android external cache directory is unavailable."), "doroti-maui-evidence.exception.txt");
+        path = System.IO.Path.Combine(
+            Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
+                ?? throw new InvalidOperationException(
+                    "Android external cache directory is unavailable."
+                ),
+            "doroti-maui-evidence.exception.txt"
+        );
 #endif
         TryWriteText(
 #if ANDROID
@@ -306,19 +422,27 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
         return path == "1"
-            ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "doroti-maui-evidence.json")
+            ? System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "doroti-maui-evidence.json"
+            )
             : path;
     }
 
     private static bool EvidenceEnabled()
     {
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE"))) return true;
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE")))
+        {
+            return true;
+        }
 #if ANDROID
         return string.Equals(
-            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE"),
+            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(
+                "DOROTI_MAUI_EVIDENCE"
+            ),
             "1",
-            StringComparison.Ordinal);
+            StringComparison.Ordinal
+        );
 #else
         return false;
 #endif
@@ -326,11 +450,19 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private static void TryWriteText(string? path, string contents)
     {
-        if (string.IsNullOrWhiteSpace(path)) return;
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
         try
         {
             var directory = System.IO.Path.GetDirectoryName(path);
-            if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             File.WriteAllText(path, contents);
         }
         catch (Exception)
@@ -341,7 +473,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         _renderSurface.Paint -= PaintGpuSurface;
         _renderSurface.PresentCompleted -= CompleteNativePaint;
@@ -350,9 +486,16 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         Loaded -= HandleLoaded;
         Unloaded -= HandleUnloaded;
         if (Application.Current is { } currentApplication)
+        {
             currentApplication.RequestedThemeChanged -= HandleRequestedThemeChanged;
+        }
+
         DetachWindow();
-        if (_host is null) _renderSurface.Dispose();
+        if (_host is null)
+        {
+            _renderSurface.Dispose();
+        }
+
         _host?.Dispose();
         _session?.Dispose();
         _boundary?.Dispose();
@@ -362,7 +505,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _textInput.Dispose();
     }
 
-    private static T CreateHiddenInput<T>() where T : InputView, new()
+    private static T CreateHiddenInput<T>()
+        where T : InputView, new()
     {
         var input = new T
         {
@@ -385,9 +529,16 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
 #if IOS
         // This switch is process-wide, so only the standalone Doroti application owns it.
-        if (Application.Current is DorotiMauiApplication) Microsoft.Maui.Platform.KeyboardAutoManagerScroll.Disconnect();
+        if (Application.Current is DorotiMauiApplication)
+        {
+            Microsoft.Maui.Platform.KeyboardAutoManagerScroll.Disconnect();
+        }
 #endif
-        if (Window is not { } window || ReferenceEquals(window, _window)) return;
+        if (Window is not { } window || ReferenceEquals(window, _window))
+        {
+            return;
+        }
+
         DetachWindow();
         _window = window;
         window.Activated += HandleActivated;
@@ -396,8 +547,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         window.Stopped += HandleStopped;
         window.Destroying += HandleDestroying;
 #if WINDOWS
-        if (window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow &&
-            WindowsCompositionSurfaceFeature.GraphiteEnabled)
+        if (
+            window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow
+            && WindowsCompositionSurfaceFeature.GraphiteEnabled
+        )
         {
             _closingWindow = nativeWindow;
             nativeWindow.AppWindow.Closing += HandleNativeClosing;
@@ -440,6 +593,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
         _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
     }
+
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args)
     {
 #if MACOS
@@ -447,30 +601,47 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #else
         var color = ResolveBackgroundColor(args.RequestedTheme);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
-            (float)color.r, (float)color.g, (float)color.b, (float)color.a);
+            (float)color.r,
+            (float)color.g,
+            (float)color.b,
+            (float)color.a
+        );
 #endif
     }
 
     private Color ResolveBackgroundColor(AppTheme theme) =>
         theme == AppTheme.Dark
-            ? _application.ViewConfiguration.darkBackgroundColor ??
-              _application.ViewConfiguration.backgroundColor ?? new Color(0xff141218L)
+            ? _application.ViewConfiguration.darkBackgroundColor
+                ?? _application.ViewConfiguration.backgroundColor
+                ?? new Color(0xff141218L)
             : _application.ViewConfiguration.backgroundColor ?? new Color(0xfffffbfeL);
 
 #if WINDOWS
     private async void HandleNativeClosing(
         Microsoft.UI.Windowing.AppWindow sender,
-        Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
+        Microsoft.UI.Windowing.AppWindowClosingEventArgs args
+    )
     {
-        if (_closeReady) return;
+        if (_closeReady)
+        {
+            return;
+        }
+
         args.Cancel = true;
-        if (_closeStarted) return;
+        if (_closeStarted)
+        {
+            return;
+        }
+
         _closeStarted = true;
         var retirement = ((DorotiWindowsDxgiSurface)_renderSurface).PrepareForCloseAsync();
         sender.Hide();
         try
         {
-            try { await retirement.WaitAsync(TimeSpan.FromSeconds(5)); }
+            try
+            {
+                await retirement.WaitAsync(TimeSpan.FromSeconds(5));
+            }
             catch (TimeoutException exception)
             {
                 WriteFailure(exception); // Faulted hold; retain this generation until actual completion.
@@ -500,7 +671,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void DetachWindow()
     {
-        if (_window is null) return;
+        if (_window is null)
+        {
+            return;
+        }
+
         _window.Activated -= HandleActivated;
         _window.Deactivated -= HandleDeactivated;
         _window.Resumed -= HandleResumed;
@@ -508,7 +683,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _window.Destroying -= HandleDestroying;
 #if WINDOWS
         if (_closingWindow is { } nativeWindow)
+        {
             nativeWindow.AppWindow.Closing -= HandleNativeClosing;
+        }
+
         _closingWindow = null;
 #endif
         _window = null;

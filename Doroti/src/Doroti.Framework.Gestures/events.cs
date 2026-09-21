@@ -9,6 +9,7 @@ public static partial class EventsLibrary
 {
     public static long kPrimaryButton = 1L;
 }
+
 public static partial class EventsLibrary
 {
     public static long kSecondaryButton = 2L;
@@ -66,12 +67,14 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long nthMouseButton(long number) => kPrimaryMouseButton << (int)(number - 1L) & BitfieldLibrary.kMaxUnsignedSMI;
+    public static long nthMouseButton(long number) =>
+        (kPrimaryMouseButton << (int)(number - 1L)) & BitfieldLibrary.kMaxUnsignedSMI;
 }
 
 public static partial class EventsLibrary
 {
-    public static long nthStylusButton(long number) => kPrimaryStylusButton << (int)(number - 1L) & BitfieldLibrary.kMaxUnsignedSMI;
+    public static long nthStylusButton(long number) =>
+        (kPrimaryStylusButton << (int)(number - 1L)) & BitfieldLibrary.kMaxUnsignedSMI;
 }
 
 public static partial class EventsLibrary
@@ -81,7 +84,8 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static bool isSingleButton(long buttons) => (buttons != 0L) && smallestButton(buttons) == buttons;
+    public static bool isSingleButton(long buttons) =>
+        (buttons != 0L) && smallestButton(buttons) == buttons;
 }
 
 public abstract class PointerEvent : IPointerEvent, Diagnosticable
@@ -113,10 +117,39 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
     public virtual bool synthesized { get; private set; } = default!;
     public virtual Matrix4? transform { get; private set; }
     public virtual PointerEvent? original { get; private set; }
-    public PointerEvent() : this(viewId: 0) { }
 
+    public PointerEvent()
+        : this(viewId: 0) { }
 
-    protected PointerEvent(long viewId = 0, long embedderId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool down = false, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long platformData = 0, bool synthesized = false, Matrix4? transform = null, PointerEvent? original = null)
+    protected PointerEvent(
+        long viewId = 0,
+        long embedderId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        Offset delta = default,
+        long buttons = 0,
+        bool down = false,
+        bool obscured = false,
+        double pressure = 1.0,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long platformData = 0,
+        bool synthesized = false,
+        Matrix4? transform = null,
+        PointerEvent? original = null
+    )
     {
         this.viewId = viewId;
         this.embedderId = embedderId;
@@ -151,46 +184,99 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
     public virtual Offset localDelta => delta;
     public virtual double distanceMin => 0.0;
     public abstract PointerEvent transformed(Matrix4? transform);
-    public abstract PointerEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public abstract PointerEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
+
     public static Offset transformPosition(Matrix4? transform, Offset position)
     {
         if (transform is null)
         {
             return DartRuntimePrimitives.RequireValue(position);
         }
-        var position3 = new Vector3(DartRuntimePrimitives.RequireValue(position).dx, DartRuntimePrimitives.RequireValue(position).dy, 0.0);
+        var position3 = new Vector3(
+            DartRuntimePrimitives.RequireValue(position).dx,
+            DartRuntimePrimitives.RequireValue(position).dy,
+            0.0
+        );
         Vector3 transformed3 = transform.perspectiveTransform(position3);
         return new Offset(transformed3.x, transformed3.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Offset transformDeltaViaPositions(Offset untransformedEndPosition, Offset? transformedEndPosition = null, Offset untransformedDelta = default!, Matrix4? transform = default!)
+    public static Offset transformDeltaViaPositions(
+        Offset untransformedEndPosition,
+        Offset? transformedEndPosition = null,
+        Offset untransformedDelta = default!,
+        Matrix4? transform = default!
+    )
     {
         if (transform is null)
         {
             return untransformedDelta;
         }
         transformedEndPosition ??= transformPosition(transform, untransformedEndPosition);
-        Offset transformedStartPosition = transformPosition(transform, untransformedEndPosition - untransformedDelta);
-        return DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition;
+        Offset transformedStartPosition = transformPosition(
+            transform,
+            untransformedEndPosition - untransformedDelta
+        );
+        return DartRuntimePrimitives.RequireValue(transformedEndPosition)
+            - transformedStartPosition;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Matrix4 removePerspectiveTransform(Matrix4 transform)
     {
         var vector = new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0));
-        return ((Func<Matrix4>)(() =>
-{
-    var __cascade = transform.clone();
-    __cascade.setColumn(2L, vector);
-    __cascade.setRow(2L, vector);
-    return __cascade;
-}))();
+        return (
+            (Func<Matrix4>)(
+                () =>
+                {
+                    var __cascade = transform.clone();
+                    __cascade.setColumn(2L, vector);
+                    __cascade.setRow(2L, vector);
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null) =>
-        ((Diagnosticable)this).toDiagnosticsNode(name, style);
+    public DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    ) => ((Diagnosticable)this).toDiagnosticsNode(name, style);
+
     public virtual string toStringShort() => ((Diagnosticable)this).toStringShort();
 }
 
@@ -200,11 +286,12 @@ public interface _PointerEventDescription__events
     public string toStringFull();
 }
 
-internal abstract class _AbstractPointerEvent__events : PointerEvent
-{
-}
+internal abstract class _AbstractPointerEvent__events : PointerEvent { }
 
-internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent__events, Diagnosticable, _PointerEventDescription__events
+internal abstract class _TransformedPointerEvent__events
+    : _AbstractPointerEvent__events,
+        Diagnosticable,
+        _PointerEventDescription__events
 {
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
@@ -228,7 +315,12 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -263,37 +355,183 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
     public override long platformData => original.platformData;
     public override bool synthesized => original.synthesized;
     public override long viewId => original.viewId;
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -301,22 +539,90 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface _CopyPointerAddedEvent__events
 {
-    public PointerAddedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerAddedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerAddedEvent__events
+public class PointerAddedEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerAddedEvent__events
 {
-    public PointerAddedEvent() : this(viewId: 0) { }
+    public PointerAddedEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerAddedEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, pressure: 0.0)
-    {
-    }
+    public PointerAddedEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            embedderId: embedderId,
+            pressure: 0.0
+        ) { }
 
     public override PointerAddedEvent transformed(Matrix4? transform)
     {
@@ -324,7 +630,10 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
         {
             return this;
         }
-        return new _TransformedPointerAddedEvent__events(((PointerAddedEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerAddedEvent__events(
+            ((PointerAddedEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -332,33 +641,178 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -367,20 +821,75 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerAddedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerAddedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerAddedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerAddedEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyPointerAddedEvent__events
+internal class _TransformedPointerAddedEvent__events
+    : PointerAddedEvent,
+        _CopyPointerAddedEvent__events
 {
     private PointerAddedEvent __field_original = default!;
-    public override PointerAddedEvent original { get => __field_original; }
+    public override PointerAddedEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -403,7 +912,12 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -416,10 +930,60 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         __field_transform = transform;
     }
 
-    public override PointerAddedEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerAddedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerAddedEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerAddedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerAddedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerAddedEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -453,17 +1017,82 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
 
 public interface _CopyPointerRemovedEvent__events
 {
-    public PointerRemovedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerRemovedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerRemovedEvent__events
+public class PointerRemovedEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerRemovedEvent__events
 {
-    public PointerRemovedEvent() : this(viewId: 0) { }
+    public PointerRemovedEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerRemovedEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, PointerRemovedEvent? original = null, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, radiusMin: radiusMin, radiusMax: radiusMax, original: original, embedderId: embedderId, pressure: 0.0)
-    {
-    }
+    public PointerRemovedEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distanceMax = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        PointerRemovedEvent? original = null,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distanceMax: distanceMax,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            original: original,
+            embedderId: embedderId,
+            pressure: 0.0
+        ) { }
 
     public override PointerRemovedEvent transformed(Matrix4? transform)
     {
@@ -471,7 +1100,10 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
         {
             return this;
         }
-        return new _TransformedPointerRemovedEvent__events(((PointerRemovedEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerRemovedEvent__events(
+            ((PointerRemovedEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -479,33 +1111,178 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -514,20 +1291,72 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerRemovedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerRemovedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerRemovedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerRemovedEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _CopyPointerRemovedEvent__events
+internal class _TransformedPointerRemovedEvent__events
+    : PointerRemovedEvent,
+        _CopyPointerRemovedEvent__events
 {
     private PointerRemovedEvent __field_original = default!;
-    public override PointerRemovedEvent original { get => __field_original; }
+    public override PointerRemovedEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -550,23 +1379,78 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    internal _TransformedPointerRemovedEvent__events(PointerRemovedEvent original, Matrix4 transform)
+    internal _TransformedPointerRemovedEvent__events(
+        PointerRemovedEvent original,
+        Matrix4 transform
+    )
     {
         __field_original = original;
         __field_transform = transform;
     }
 
-    public override PointerRemovedEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerRemovedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerRemovedEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerRemovedEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerRemovedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerRemovedEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -600,17 +1484,99 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
 
 public interface _CopyPointerHoverEvent__events
 {
-    public PointerHoverEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerHoverEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerHoverEvent__events
+public class PointerHoverEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerHoverEvent__events
 {
-    public PointerHoverEvent() : this(viewId: 0) { }
+    public PointerHoverEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerHoverEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.touch, long pointer = 0, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, pointer: pointer, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, synthesized: synthesized, embedderId: embedderId, down: false, pressure: 0.0)
-    {
-    }
+    public PointerHoverEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long pointer = 0,
+        long device = 0,
+        Offset position = default,
+        Offset delta = default,
+        long buttons = 0,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        bool synthesized = false,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            kind: kind,
+            pointer: pointer,
+            device: device,
+            position: position,
+            delta: delta,
+            buttons: buttons,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            synthesized: synthesized,
+            embedderId: embedderId,
+            down: false,
+            pressure: 0.0
+        ) { }
 
     public override PointerHoverEvent transformed(Matrix4? transform)
     {
@@ -618,7 +1584,10 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
         {
             return this;
         }
-        return new _TransformedPointerHoverEvent__events(((PointerHoverEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerHoverEvent__events(
+            ((PointerHoverEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -626,33 +1595,178 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -661,20 +1775,81 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerHoverEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerHoverEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerHoverEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerHoverEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyPointerHoverEvent__events
+internal class _TransformedPointerHoverEvent__events
+    : PointerHoverEvent,
+        _CopyPointerHoverEvent__events
 {
     private PointerHoverEvent __field_original = default!;
-    public override PointerHoverEvent original { get => __field_original; }
+    public override PointerHoverEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -697,7 +1872,12 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -710,10 +1890,66 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         __field_transform = transform;
     }
 
-    public override PointerHoverEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerHoverEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerHoverEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerHoverEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerHoverEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerHoverEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -747,20 +1983,131 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
 
 public interface _CopyPointerEnterEvent__events
 {
-    public PointerEnterEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerEnterEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerEnterEvent__events
+public class PointerEnterEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerEnterEvent__events
 {
-    public PointerEnterEvent() : this(viewId: 0) { }
+    public PointerEnterEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerEnterEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool down = false, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, down: down, synthesized: synthesized, embedderId: embedderId, pressure: 0.0)
+    public PointerEnterEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        Offset delta = default,
+        long buttons = 0,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        bool down = false,
+        bool synthesized = false,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            delta: delta,
+            buttons: buttons,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            down: down,
+            synthesized: synthesized,
+            embedderId: embedderId,
+            pressure: 0.0
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
-    public static PointerEnterEvent CreateFromMouseEvent(PointerEvent @event) => new PointerEnterEvent(viewId: @event.viewId, timeStamp: @event.timeStamp, pointer: @event.pointer, kind: @event.kind, device: @event.device, position: @event.position, delta: @event.delta, buttons: @event.buttons, obscured: @event.obscured, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distance: @event.distance, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, down: @event.down, synthesized: @event.synthesized).transformed(@event.transform);
+    public static PointerEnterEvent CreateFromMouseEvent(PointerEvent @event) =>
+        new PointerEnterEvent(
+            viewId: @event.viewId,
+            timeStamp: @event.timeStamp,
+            pointer: @event.pointer,
+            kind: @event.kind,
+            device: @event.device,
+            position: @event.position,
+            delta: @event.delta,
+            buttons: @event.buttons,
+            obscured: @event.obscured,
+            pressureMin: @event.pressureMin,
+            pressureMax: @event.pressureMax,
+            distance: @event.distance,
+            distanceMax: @event.distanceMax,
+            size: @event.size,
+            radiusMajor: @event.radiusMajor,
+            radiusMinor: @event.radiusMinor,
+            radiusMin: @event.radiusMin,
+            radiusMax: @event.radiusMax,
+            orientation: @event.orientation,
+            tilt: @event.tilt,
+            down: @event.down,
+            synthesized: @event.synthesized
+        ).transformed(@event.transform);
 
     public override PointerEnterEvent transformed(Matrix4? transform)
     {
@@ -768,7 +2115,10 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
         {
             return this;
         }
-        return new _TransformedPointerEnterEvent__events(((PointerEnterEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerEnterEvent__events(
+            ((PointerEnterEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -776,33 +2126,178 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -811,34 +2306,97 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerEnterEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerEnterEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerEnterEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerEnterEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static implicit operator Ui.PointerEnterEvent(PointerEnterEvent value) => new()
-    {
-        pointer = value.pointer,
-        embedderId = value.embedderId,
-        platformData = value.platformData,
-        timeStamp = value.timeStamp,
-        position = value.position,
-        kind = value.kind,
-        orientation = value.orientation,
-        pressure = value.pressure,
-        size = value.size,
-        radiusMajor = value.radiusMajor,
-        radiusMinor = value.radiusMinor,
-    };
+    public static implicit operator Ui.PointerEnterEvent(PointerEnterEvent value) =>
+        new()
+        {
+            pointer = value.pointer,
+            embedderId = value.embedderId,
+            platformData = value.platformData,
+            timeStamp = value.timeStamp,
+            position = value.position,
+            kind = value.kind,
+            orientation = value.orientation,
+            pressure = value.pressure,
+            size = value.size,
+            radiusMajor = value.radiusMajor,
+            radiusMinor = value.radiusMinor,
+        };
 }
 
-internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyPointerEnterEvent__events
+internal class _TransformedPointerEnterEvent__events
+    : PointerEnterEvent,
+        _CopyPointerEnterEvent__events
 {
     private PointerEnterEvent __field_original = default!;
-    public override PointerEnterEvent original { get => __field_original; }
+    public override PointerEnterEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -861,7 +2419,12 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -874,10 +2437,66 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         __field_transform = transform;
     }
 
-    public override PointerEnterEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerEnterEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerEnterEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerEnterEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerEnterEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerEnterEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -911,20 +2530,131 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
 
 public interface _CopyPointerExitEvent__events
 {
-    public PointerExitEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerExitEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerExitEvent__events
+public class PointerExitEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerExitEvent__events
 {
-    public PointerExitEvent() : this(viewId: 0) { }
+    public PointerExitEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerExitEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.touch, long pointer = 0, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool down = false, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, pointer: pointer, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, down: down, synthesized: synthesized, embedderId: embedderId, pressure: 0.0)
+    public PointerExitEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long pointer = 0,
+        long device = 0,
+        Offset position = default,
+        Offset delta = default,
+        long buttons = 0,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        bool down = false,
+        bool synthesized = false,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            kind: kind,
+            pointer: pointer,
+            device: device,
+            position: position,
+            delta: delta,
+            buttons: buttons,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            down: down,
+            synthesized: synthesized,
+            embedderId: embedderId,
+            pressure: 0.0
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
-    public static PointerExitEvent CreateFromMouseEvent(PointerEvent @event) => new PointerExitEvent(viewId: @event.viewId, timeStamp: @event.timeStamp, pointer: @event.pointer, kind: @event.kind, device: @event.device, position: @event.position, delta: @event.delta, buttons: @event.buttons, obscured: @event.obscured, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distance: @event.distance, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, down: @event.down, synthesized: @event.synthesized).transformed(@event.transform);
+    public static PointerExitEvent CreateFromMouseEvent(PointerEvent @event) =>
+        new PointerExitEvent(
+            viewId: @event.viewId,
+            timeStamp: @event.timeStamp,
+            pointer: @event.pointer,
+            kind: @event.kind,
+            device: @event.device,
+            position: @event.position,
+            delta: @event.delta,
+            buttons: @event.buttons,
+            obscured: @event.obscured,
+            pressureMin: @event.pressureMin,
+            pressureMax: @event.pressureMax,
+            distance: @event.distance,
+            distanceMax: @event.distanceMax,
+            size: @event.size,
+            radiusMajor: @event.radiusMajor,
+            radiusMinor: @event.radiusMinor,
+            radiusMin: @event.radiusMin,
+            radiusMax: @event.radiusMax,
+            orientation: @event.orientation,
+            tilt: @event.tilt,
+            down: @event.down,
+            synthesized: @event.synthesized
+        ).transformed(@event.transform);
 
     public override PointerExitEvent transformed(Matrix4? transform)
     {
@@ -932,7 +2662,10 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
         {
             return this;
         }
-        return new _TransformedPointerExitEvent__events(((PointerExitEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerExitEvent__events(
+            ((PointerExitEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -940,33 +2673,178 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -975,34 +2853,97 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerExitEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerExitEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerExitEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerExitEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static implicit operator Ui.PointerExitEvent(PointerExitEvent value) => new()
-    {
-        pointer = value.pointer,
-        embedderId = value.embedderId,
-        platformData = value.platformData,
-        timeStamp = value.timeStamp,
-        position = value.position,
-        kind = value.kind,
-        orientation = value.orientation,
-        pressure = value.pressure,
-        size = value.size,
-        radiusMajor = value.radiusMajor,
-        radiusMinor = value.radiusMinor,
-    };
+    public static implicit operator Ui.PointerExitEvent(PointerExitEvent value) =>
+        new()
+        {
+            pointer = value.pointer,
+            embedderId = value.embedderId,
+            platformData = value.platformData,
+            timeStamp = value.timeStamp,
+            position = value.position,
+            kind = value.kind,
+            orientation = value.orientation,
+            pressure = value.pressure,
+            size = value.size,
+            radiusMajor = value.radiusMajor,
+            radiusMinor = value.radiusMinor,
+        };
 }
 
-internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPointerExitEvent__events
+internal class _TransformedPointerExitEvent__events
+    : PointerExitEvent,
+        _CopyPointerExitEvent__events
 {
     private PointerExitEvent __field_original = default!;
-    public override PointerExitEvent original { get => __field_original; }
+    public override PointerExitEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1025,7 +2966,12 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1038,10 +2984,66 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         __field_transform = transform;
     }
 
-    public override PointerExitEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerExitEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerExitEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerExitEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerExitEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerExitEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1075,17 +3077,99 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
 
 public interface _CopyPointerDownEvent__events
 {
-    public PointerDownEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerDownEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerDownEvent__events
+public class PointerDownEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerDownEvent__events
 {
-    public PointerDownEvent() : this(viewId: 0) { }
+    public PointerDownEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerDownEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long? buttons = null, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons ?? EventsLibrary.kPrimaryButton, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: true, distance: 0.0)
+    public PointerDownEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        long? buttons = null,
+        bool obscured = false,
+        double pressure = 1.0,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            buttons: buttons ?? EventsLibrary.kPrimaryButton,
+            obscured: obscured,
+            pressure: pressure,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            embedderId: embedderId,
+            down: true,
+            distance: 0.0
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
     public override PointerDownEvent transformed(Matrix4? transform)
@@ -1094,7 +3178,10 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
         {
             return this;
         }
-        return new _TransformedPointerDownEvent__events(((PointerDownEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerDownEvent__events(
+            ((PointerDownEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1102,33 +3189,183 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", DartRuntimePrimitives.RequireValue(buttons), defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "buttons",
+                DartRuntimePrimitives.RequireValue(buttons),
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -1137,20 +3374,80 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerDownEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerDownEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerDownEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerDownEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPointerDownEvent__events
+internal class _TransformedPointerDownEvent__events
+    : PointerDownEvent,
+        _CopyPointerDownEvent__events
 {
     private PointerDownEvent __field_original = default!;
-    public override PointerDownEvent original { get => __field_original; }
+    public override PointerDownEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1173,7 +3470,12 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1186,10 +3488,65 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         __field_transform = transform;
     }
 
-    public override PointerDownEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerDownEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerDownEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerDownEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerDownEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerDownEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1223,17 +3580,105 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
 
 public interface _CopyPointerMoveEvent__events
 {
-    public PointerMoveEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerMoveEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerMoveEvent__events
+public class PointerMoveEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerMoveEvent__events
 {
-    public PointerMoveEvent() : this(viewId: 0) { }
+    public PointerMoveEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerMoveEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long? buttons = null, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long platformData = 0, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, delta: delta, buttons: buttons ?? EventsLibrary.kPrimaryButton, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, platformData: platformData, synthesized: synthesized, embedderId: embedderId, down: true, distance: 0.0)
+    public PointerMoveEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        Offset delta = default,
+        long? buttons = null,
+        bool obscured = false,
+        double pressure = 1.0,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long platformData = 0,
+        bool synthesized = false,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            delta: delta,
+            buttons: buttons ?? EventsLibrary.kPrimaryButton,
+            obscured: obscured,
+            pressure: pressure,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            platformData: platformData,
+            synthesized: synthesized,
+            embedderId: embedderId,
+            down: true,
+            distance: 0.0
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
     public override PointerMoveEvent transformed(Matrix4? transform)
@@ -1242,7 +3687,10 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
         {
             return this;
         }
-        return new _TransformedPointerMoveEvent__events(((PointerMoveEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerMoveEvent__events(
+            ((PointerMoveEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1250,33 +3698,183 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", DartRuntimePrimitives.RequireValue(buttons), defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "buttons",
+                DartRuntimePrimitives.RequireValue(buttons),
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -1285,20 +3883,82 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerMoveEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerMoveEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerMoveEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerMoveEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPointerMoveEvent__events
+internal class _TransformedPointerMoveEvent__events
+    : PointerMoveEvent,
+        _CopyPointerMoveEvent__events
 {
     private PointerMoveEvent __field_original = default!;
-    public override PointerMoveEvent original { get => __field_original; }
+    public override PointerMoveEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1321,7 +3981,12 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1334,10 +3999,67 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         __field_transform = transform;
     }
 
-    public override PointerMoveEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerMoveEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerMoveEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerMoveEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerMoveEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerMoveEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            delta: delta ?? this.delta,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            synthesized: synthesized ?? this.synthesized,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1371,17 +4093,100 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
 
 public interface _CopyPointerUpEvent__events
 {
-    public PointerUpEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerUpEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerUpEvent__events
+public class PointerUpEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerUpEvent__events
 {
-    public PointerUpEvent() : this(viewId: 0) { }
+    public PointerUpEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerUpEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long buttons = 0, bool obscured = false, double pressure = 0.0, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: false)
+    public PointerUpEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        long buttons = 0,
+        bool obscured = false,
+        double pressure = 0.0,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            buttons: buttons,
+            obscured: obscured,
+            pressure: pressure,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            embedderId: embedderId,
+            down: false
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
     public override PointerUpEvent transformed(Matrix4? transform)
@@ -1390,7 +4195,10 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
         {
             return this;
         }
-        return new _TransformedPointerUpEvent__events(((PointerUpEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerUpEvent__events(
+            ((PointerUpEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1398,33 +4206,178 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -1433,20 +4386,79 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerUpEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerUpEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerUpEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerUpEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointerUpEvent__events
 {
     private PointerUpEvent __field_original = default!;
-    public override PointerUpEvent original { get => __field_original; }
+    public override PointerUpEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1469,7 +4481,12 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1482,10 +4499,66 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         __field_transform = transform;
     }
 
-    public override PointerUpEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerUpEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerUpEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerUpEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerUpEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerUpEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressure: pressure ?? this.pressure,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1519,15 +4592,26 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
 
 public abstract class PointerSignalEvent : PointerEvent, _RespondablePointerEvent__events
 {
+    protected PointerSignalEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.mouse,
+        long device = 0,
+        Offset position = default,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            embedderId: embedderId
+        ) { }
 
-    protected PointerSignalEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, embedderId: embedderId)
-    {
-    }
-
-    public virtual void respond(bool allowPlatformDefault)
-    {
-    }
-
+    public virtual void respond(bool allowPlatformDefault) { }
 }
 
 public delegate void RespondPointerEventCallback(bool allowPlatformDefault);
@@ -1540,17 +4624,70 @@ public interface _RespondablePointerEvent__events
 public interface _CopyPointerScrollEvent__events
 {
     public Offset scrollDelta { get; }
-    public PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerScrollEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__events, _CopyPointerScrollEvent__events
+public class PointerScrollEvent
+    : PointerSignalEvent,
+        _PointerEventDescription__events,
+        _CopyPointerScrollEvent__events
 {
     public virtual Offset scrollDelta { get; private set; } = default!;
     internal virtual Action<bool>? _onRespond { get; private set; }
-    public PointerScrollEvent() : this(viewId: 0) { }
 
+    public PointerScrollEvent()
+        : this(viewId: 0) { }
 
-    public PointerScrollEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, Offset scrollDelta = default, long embedderId = 0, Action<bool>? onRespond = null) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
+    public PointerScrollEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        PointerDeviceKind kind = PointerDeviceKind.mouse,
+        long device = 0,
+        Offset position = default,
+        Offset scrollDelta = default,
+        long embedderId = 0,
+        Action<bool>? onRespond = null
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            kind: kind,
+            device: device,
+            position: position,
+            embedderId: embedderId
+        )
     {
         this.scrollDelta = scrollDelta;
         _onRespond = onRespond;
@@ -1562,7 +4699,10 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
         {
             return this;
         }
-        return new _TransformedPointerScrollEvent__events(((PointerScrollEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerScrollEvent__events(
+            ((PointerScrollEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1570,33 +4710,178 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<Offset>("scrollDelta", scrollDelta));
     }
 
@@ -1611,20 +4896,68 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerScrollEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScrollEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, scrollDelta: scrollDelta, embedderId: embedderId ?? this.embedderId, onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond).transformed(transform);
+        return new PointerScrollEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            scrollDelta: scrollDelta,
+            embedderId: embedderId ?? this.embedderId,
+            onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _CopyPointerScrollEvent__events
+internal class _TransformedPointerScrollEvent__events
+    : PointerScrollEvent,
+        _CopyPointerScrollEvent__events
 {
     private PointerScrollEvent __field_original = default!;
-    public override PointerScrollEvent original { get => __field_original; }
+    public override PointerScrollEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1647,7 +4980,12 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1661,7 +4999,10 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
     }
 
     public override Offset scrollDelta => original.scrollDelta;
-    public override PointerScrollEvent transformed(Matrix4? transform) => original.transformed(transform);
+
+    public override PointerScrollEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -1669,14 +5010,56 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
     }
 
     internal override Action<bool>? _onRespond => original._onRespond;
+
     public override void respond(bool allowPlatformDefault)
     {
         original.respond(allowPlatformDefault: allowPlatformDefault);
     }
 
-    public override PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerScrollEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScrollEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, scrollDelta: scrollDelta, embedderId: embedderId ?? this.embedderId, onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond).transformed(transform);
+        return new PointerScrollEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            scrollDelta: scrollDelta,
+            embedderId: embedderId ?? this.embedderId,
+            onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1710,17 +5093,65 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
 
 public interface _CopyPointerScrollInertiaCancelEvent__events
 {
-    public PointerScrollInertiaCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerScrollInertiaCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEventDescription__events, _CopyPointerScrollInertiaCancelEvent__events
+public class PointerScrollInertiaCancelEvent
+    : PointerSignalEvent,
+        _PointerEventDescription__events,
+        _CopyPointerScrollInertiaCancelEvent__events
 {
-    public PointerScrollInertiaCancelEvent() : this(viewId: 0) { }
+    public PointerScrollInertiaCancelEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerScrollInertiaCancelEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
-    {
-    }
+    public PointerScrollInertiaCancelEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        PointerDeviceKind kind = PointerDeviceKind.mouse,
+        long device = 0,
+        Offset position = default,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            kind: kind,
+            device: device,
+            position: position,
+            embedderId: embedderId
+        ) { }
 
     public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform)
     {
@@ -1728,7 +5159,10 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
         {
             return this;
         }
-        return new _TransformedPointerScrollInertiaCancelEvent__events(((PointerScrollInertiaCancelEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerScrollInertiaCancelEvent__events(
+            ((PointerScrollInertiaCancelEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1736,33 +5170,178 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -1771,20 +5350,67 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerScrollInertiaCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerScrollInertiaCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScrollInertiaCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerScrollInertiaCancelEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScrollInertiaCancelEvent, _CopyPointerScrollInertiaCancelEvent__events, _RespondablePointerEvent__events
+internal class _TransformedPointerScrollInertiaCancelEvent__events
+    : PointerScrollInertiaCancelEvent,
+        _CopyPointerScrollInertiaCancelEvent__events,
+        _RespondablePointerEvent__events
 {
     private PointerScrollInertiaCancelEvent __field_original = default!;
-    public override PointerScrollInertiaCancelEvent original { get => __field_original; }
+    public override PointerScrollInertiaCancelEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1807,29 +5433,76 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    internal _TransformedPointerScrollInertiaCancelEvent__events(PointerScrollInertiaCancelEvent original, Matrix4 transform)
+    internal _TransformedPointerScrollInertiaCancelEvent__events(
+        PointerScrollInertiaCancelEvent original,
+        Matrix4 transform
+    )
     {
         __field_original = original;
         __field_transform = transform;
     }
 
-    public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerScrollInertiaCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerScrollInertiaCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScrollInertiaCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerScrollInertiaCancelEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void respond(bool allowPlatformDefault)
-    {
-    }
+    public override void respond(bool allowPlatformDefault) { }
 
     public override long embedderId => original.embedderId;
     public override Duration timeStamp => original.timeStamp;
@@ -1862,16 +5535,68 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
 public interface _CopyPointerScaleEvent__events
 {
     public double scale { get; }
-    public PointerScaleEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerScaleEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__events, _CopyPointerScaleEvent__events
+public class PointerScaleEvent
+    : PointerSignalEvent,
+        _PointerEventDescription__events,
+        _CopyPointerScaleEvent__events
 {
     public virtual double scale { get; private set; } = default!;
-    public PointerScaleEvent() : this(viewId: 0) { }
 
+    public PointerScaleEvent()
+        : this(viewId: 0) { }
 
-    public PointerScaleEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, long embedderId = 0, double scale = 1.0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
+    public PointerScaleEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        PointerDeviceKind kind = PointerDeviceKind.mouse,
+        long device = 0,
+        Offset position = default,
+        long embedderId = 0,
+        double scale = 1.0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            kind: kind,
+            device: device,
+            position: position,
+            embedderId: embedderId
+        )
     {
         this.scale = scale;
     }
@@ -1882,7 +5607,10 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
         {
             return this;
         }
-        return new _TransformedPointerScaleEvent__events(((PointerScaleEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerScaleEvent__events(
+            ((PointerScaleEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1890,33 +5618,178 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -1925,20 +5798,68 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerScaleEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerScaleEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScaleEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, scale: scale ?? this.scale).transformed(transform);
+        return new PointerScaleEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId,
+            scale: scale ?? this.scale
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyPointerScaleEvent__events, _RespondablePointerEvent__events
+internal class _TransformedPointerScaleEvent__events
+    : PointerScaleEvent,
+        _CopyPointerScaleEvent__events,
+        _RespondablePointerEvent__events
 {
     private PointerScaleEvent __field_original = default!;
-    public override PointerScaleEvent original { get => __field_original; }
+    public override PointerScaleEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -1961,7 +5882,12 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1975,16 +5901,57 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
     }
 
     public override double scale => original.scale;
-    public override PointerScaleEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerScaleEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+
+    public override PointerScaleEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerScaleEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerScaleEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, scale: scale ?? this.scale).transformed(transform);
+        return new PointerScaleEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId,
+            scale: scale ?? this.scale
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void respond(bool allowPlatformDefault)
-    {
-    }
+    public override void respond(bool allowPlatformDefault) { }
 
     public override long embedderId => original.embedderId;
     public override Duration timeStamp => original.timeStamp;
@@ -2016,17 +5983,68 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
 
 public interface _CopyPointerPanZoomStartEvent__events
 {
-    public PointerPanZoomStartEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerPanZoomStartEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerPanZoomStartEvent__events
+public class PointerPanZoomStartEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerPanZoomStartEvent__events
 {
-    public PointerPanZoomStartEvent() : this(viewId: 0) { }
+    public PointerPanZoomStartEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerPanZoomStartEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
-    {
-    }
+    public PointerPanZoomStartEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long device = 0,
+        long pointer = 0,
+        Offset position = default,
+        long embedderId = 0,
+        bool synthesized = false
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            device: device,
+            pointer: pointer,
+            position: position,
+            embedderId: embedderId,
+            synthesized: synthesized,
+            kind: PointerDeviceKind.trackpad
+        ) { }
 
     public override PointerPanZoomStartEvent transformed(Matrix4? transform)
     {
@@ -2034,7 +6052,10 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
         {
             return this;
         }
-        return new _TransformedPointerPanZoomStartEvent__events(((PointerPanZoomStartEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerPanZoomStartEvent__events(
+            ((PointerPanZoomStartEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2042,33 +6063,178 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -2077,21 +6243,68 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerPanZoomStartEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerPanZoomStartEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomStartEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomStartEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStartEvent, _CopyPointerPanZoomStartEvent__events
+internal class _TransformedPointerPanZoomStartEvent__events
+    : PointerPanZoomStartEvent,
+        _CopyPointerPanZoomStartEvent__events
 {
     private PointerPanZoomStartEvent __field_original = default!;
-    public override PointerPanZoomStartEvent original { get => __field_original; }
+    public override PointerPanZoomStartEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -2114,24 +6327,74 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    internal _TransformedPointerPanZoomStartEvent__events(PointerPanZoomStartEvent original, Matrix4 transform)
+    internal _TransformedPointerPanZoomStartEvent__events(
+        PointerPanZoomStartEvent original,
+        Matrix4 transform
+    )
     {
         __field_original = original;
         __field_transform = transform;
     }
 
-    public override PointerPanZoomStartEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerPanZoomStartEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerPanZoomStartEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerPanZoomStartEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomStartEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomStartEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2171,19 +6434,77 @@ public interface _CopyPointerPanZoomUpdateEvent__events
     public Offset localPanDelta { get; }
     public double scale { get; }
     public double rotation { get; }
-    public PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerPanZoomUpdateEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerPanZoomUpdateEvent__events
+public class PointerPanZoomUpdateEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerPanZoomUpdateEvent__events
 {
     public virtual Offset pan { get; private set; } = default!;
     public virtual Offset panDelta { get; private set; } = default!;
     public virtual double scale { get; private set; } = default!;
     public virtual double rotation { get; private set; } = default!;
-    public PointerPanZoomUpdateEvent() : this(viewId: 0) { }
 
+    public PointerPanZoomUpdateEvent()
+        : this(viewId: 0) { }
 
-    public PointerPanZoomUpdateEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, Offset pan = default, Offset panDelta = default, double scale = 1.0, double rotation = 0.0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
+    public PointerPanZoomUpdateEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long device = 0,
+        long pointer = 0,
+        Offset position = default,
+        long embedderId = 0,
+        Offset pan = default,
+        Offset panDelta = default,
+        double scale = 1.0,
+        double rotation = 0.0,
+        bool synthesized = false
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            device: device,
+            pointer: pointer,
+            position: position,
+            embedderId: embedderId,
+            synthesized: synthesized,
+            kind: PointerDeviceKind.trackpad
+        )
     {
         this.pan = pan;
         this.panDelta = panDelta;
@@ -2193,13 +6514,17 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
 
     public virtual Offset localPan => pan;
     public virtual Offset localPanDelta => panDelta;
+
     public override PointerPanZoomUpdateEvent transformed(Matrix4? transform)
     {
         if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerPanZoomUpdateEvent__events(((PointerPanZoomUpdateEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerPanZoomUpdateEvent__events(
+            ((PointerPanZoomUpdateEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2207,33 +6532,178 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -2242,16 +6712,61 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerPanZoomUpdateEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomUpdateEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, pan: pan ?? this.pan, panDelta: panDelta ?? this.panDelta, scale: scale ?? this.scale, rotation: rotation ?? this.rotation).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomUpdateEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId,
+            pan: pan ?? this.pan,
+            panDelta: panDelta ?? this.panDelta,
+            scale: scale ?? this.scale,
+            rotation: rotation ?? this.rotation
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpdateEvent, _CopyPointerPanZoomUpdateEvent__events
+internal class _TransformedPointerPanZoomUpdateEvent__events
+    : PointerPanZoomUpdateEvent,
+        _CopyPointerPanZoomUpdateEvent__events
 {
     private bool __late_localPan_initialized;
     private Offset __late_localPan = default!;
@@ -2275,16 +6790,27 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPanDelta_initialized)
             {
-                __late_localPanDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: panDelta, untransformedEndPosition: pan, transformedEndPosition: localPan);
+                __late_localPanDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: panDelta,
+                    untransformedEndPosition: pan,
+                    transformedEndPosition: localPan
+                );
                 __late_localPanDelta_initialized = true;
             }
             return __late_localPanDelta;
         }
     }
     private PointerPanZoomUpdateEvent __field_original = default!;
-    public override PointerPanZoomUpdateEvent original { get => __field_original; }
+    public override PointerPanZoomUpdateEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -2307,14 +6833,22 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    internal _TransformedPointerPanZoomUpdateEvent__events(PointerPanZoomUpdateEvent original, Matrix4 transform)
+    internal _TransformedPointerPanZoomUpdateEvent__events(
+        PointerPanZoomUpdateEvent original,
+        Matrix4 transform
+    )
     {
         __field_original = original;
         __field_transform = transform;
@@ -2324,11 +6858,58 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
     public override Offset panDelta => original.panDelta;
     public override double scale => original.scale;
     public override double rotation => original.rotation;
-    public override PointerPanZoomUpdateEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+
+    public override PointerPanZoomUpdateEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerPanZoomUpdateEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomUpdateEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, pan: pan ?? this.pan, panDelta: panDelta ?? this.panDelta, scale: scale ?? this.scale, rotation: rotation ?? this.rotation).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomUpdateEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId,
+            pan: pan ?? this.pan,
+            panDelta: panDelta ?? this.panDelta,
+            scale: scale ?? this.scale,
+            rotation: rotation ?? this.rotation
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2362,17 +6943,68 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
 
 public interface _CopyPointerPanZoomEndEvent__events
 {
-    public PointerPanZoomEndEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerPanZoomEndEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerPanZoomEndEvent__events
+public class PointerPanZoomEndEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerPanZoomEndEvent__events
 {
-    public PointerPanZoomEndEvent() : this(viewId: 0) { }
+    public PointerPanZoomEndEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerPanZoomEndEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
-    {
-    }
+    public PointerPanZoomEndEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long device = 0,
+        long pointer = 0,
+        Offset position = default,
+        long embedderId = 0,
+        bool synthesized = false
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            device: device,
+            pointer: pointer,
+            position: position,
+            embedderId: embedderId,
+            synthesized: synthesized,
+            kind: PointerDeviceKind.trackpad
+        ) { }
 
     public override PointerPanZoomEndEvent transformed(Matrix4? transform)
     {
@@ -2380,7 +7012,10 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
         {
             return this;
         }
-        return new _TransformedPointerPanZoomEndEvent__events(((PointerPanZoomEndEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerPanZoomEndEvent__events(
+            ((PointerPanZoomEndEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2388,33 +7023,178 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -2423,21 +7203,68 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerPanZoomEndEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerPanZoomEndEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomEndEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomEndEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEvent, _CopyPointerPanZoomEndEvent__events
+internal class _TransformedPointerPanZoomEndEvent__events
+    : PointerPanZoomEndEvent,
+        _CopyPointerPanZoomEndEvent__events
 {
     private PointerPanZoomEndEvent __field_original = default!;
-    public override PointerPanZoomEndEvent original { get => __field_original; }
+    public override PointerPanZoomEndEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -2460,24 +7287,74 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    internal _TransformedPointerPanZoomEndEvent__events(PointerPanZoomEndEvent original, Matrix4 transform)
+    internal _TransformedPointerPanZoomEndEvent__events(
+        PointerPanZoomEndEvent original,
+        Matrix4 transform
+    )
     {
         __field_original = original;
         __field_transform = transform;
     }
 
-    public override PointerPanZoomEndEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerPanZoomEndEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerPanZoomEndEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerPanZoomEndEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
-        return new PointerPanZoomEndEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        DartRuntimePrimitives.Assert(() =>
+            (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
+        return new PointerPanZoomEndEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2511,17 +7388,99 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
 
 public interface _CopyPointerCancelEvent__events
 {
-    public PointerCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
+    public PointerCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    );
 }
 
-public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerCancelEvent__events
+public class PointerCancelEvent
+    : PointerEvent,
+        _PointerEventDescription__events,
+        _CopyPointerCancelEvent__events
 {
-    public PointerCancelEvent() : this(viewId: 0) { }
+    public PointerCancelEvent()
+        : this(viewId: 0) { }
 
-
-    public PointerCancelEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: false, pressure: 0.0)
+    public PointerCancelEvent(
+        long viewId = 0,
+        Duration timeStamp = default,
+        long pointer = 0,
+        PointerDeviceKind kind = PointerDeviceKind.touch,
+        long device = 0,
+        Offset position = default,
+        long buttons = 0,
+        bool obscured = false,
+        double pressureMin = 1.0,
+        double pressureMax = 1.0,
+        double distance = 0.0,
+        double distanceMax = 0.0,
+        double size = 0.0,
+        double radiusMajor = 0.0,
+        double radiusMinor = 0.0,
+        double radiusMin = 0.0,
+        double radiusMax = 0.0,
+        double orientation = 0.0,
+        double tilt = 0.0,
+        long embedderId = 0
+    )
+        : base(
+            viewId: viewId,
+            timeStamp: timeStamp,
+            pointer: pointer,
+            kind: kind,
+            device: device,
+            position: position,
+            buttons: buttons,
+            obscured: obscured,
+            pressureMin: pressureMin,
+            pressureMax: pressureMax,
+            distance: distance,
+            distanceMax: distanceMax,
+            size: size,
+            radiusMajor: radiusMajor,
+            radiusMinor: radiusMinor,
+            radiusMin: radiusMin,
+            radiusMax: radiusMax,
+            orientation: orientation,
+            tilt: tilt,
+            embedderId: embedderId,
+            down: false,
+            pressure: 0.0
+        )
     {
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)
+        );
     }
 
     public override PointerCancelEvent transformed(Matrix4? transform)
@@ -2530,7 +7489,10 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
         {
             return this;
         }
-        return new _TransformedPointerCancelEvent__events(((PointerCancelEvent?)(object?)original)! ?? this, transform);
+        return new _TransformedPointerCancelEvent__events(
+            ((PointerCancelEvent?)(object?)original)! ?? this,
+            transform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2538,33 +7500,178 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("position", position));
-        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localPosition",
+                localPosition,
+                defaultValue: position,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "delta",
+                delta,
+                defaultValue: Offset.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "localDelta",
+                localDelta,
+                defaultValue: delta,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Duration>(
+                "timeStamp",
+                timeStamp,
+                defaultValue: Duration.zero,
+                level: DiagnosticLevel.debug
+            )
+        );
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressure", pressure, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMin", pressureMin, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("pressureMax", pressureMax, defaultValue: 1.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distance", distance, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMin", distanceMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("distanceMax", distanceMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMajor", radiusMajor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMinor", radiusMinor, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMin", radiusMin, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("radiusMax", radiusMax, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("orientation", orientation, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("platformData", platformData, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("obscured", value: obscured, ifTrue: "obscured", level: DiagnosticLevel.debug));
-        properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
+        properties.add(
+            new DoubleProperty(
+                "pressure",
+                pressure,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMin",
+                pressureMin,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "pressureMax",
+                pressureMax,
+                defaultValue: 1.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distance",
+                distance,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMin",
+                distanceMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "distanceMax",
+                distanceMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("size", size, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMajor",
+                radiusMajor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMinor",
+                radiusMinor,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMin",
+                radiusMin,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "radiusMax",
+                radiusMax,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "orientation",
+                orientation,
+                defaultValue: 0.0,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new DoubleProperty("tilt", tilt, defaultValue: 0.0, level: DiagnosticLevel.debug)
+        );
+        properties.add(
+            new IntProperty(
+                "platformData",
+                platformData,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "obscured",
+                value: obscured,
+                ifTrue: "obscured",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "synthesized",
+                value: synthesized,
+                ifTrue: "synthesized",
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty(
+                "embedderId",
+                embedderId,
+                defaultValue: 0L,
+                level: DiagnosticLevel.debug
+            )
+        );
+        properties.add(
+            new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug)
+        );
     }
 
     public virtual string toStringFull()
@@ -2573,12 +7680,64 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PointerCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerCancelEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class EventsLibrary
@@ -2588,17 +7747,17 @@ public static partial class EventsLibrary
         switch (kind)
         {
             case PointerDeviceKind.mouse:
-                {
-                    return ConstantsLibrary.kPrecisePointerHitSlop;
-                }
+            {
+                return ConstantsLibrary.kPrecisePointerHitSlop;
+            }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
-                {
-                    return settings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
-                }
+            {
+                return settings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2611,17 +7770,17 @@ public static partial class EventsLibrary
         switch (kind)
         {
             case PointerDeviceKind.mouse:
-                {
-                    return ConstantsLibrary.kPrecisePointerPanSlop;
-                }
+            {
+                return ConstantsLibrary.kPrecisePointerPanSlop;
+            }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
-                {
-                    return settings?.panSlop ?? ConstantsLibrary.kPanSlop;
-                }
+            {
+                return settings?.panSlop ?? ConstantsLibrary.kPanSlop;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2634,28 +7793,36 @@ public static partial class EventsLibrary
         switch (kind)
         {
             case PointerDeviceKind.mouse:
-                {
-                    return ConstantsLibrary.kPrecisePointerScaleSlop;
-                }
+            {
+                return ConstantsLibrary.kPrecisePointerScaleSlop;
+            }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
-                {
-                    return ConstantsLibrary.kScaleSlop;
-                }
+            {
+                return ConstantsLibrary.kScaleSlop;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _CopyPointerCancelEvent__events
+internal class _TransformedPointerCancelEvent__events
+    : PointerCancelEvent,
+        _CopyPointerCancelEvent__events
 {
     private PointerCancelEvent __field_original = default!;
-    public override PointerCancelEvent original { get => __field_original; }
+    public override PointerCancelEvent original
+    {
+        get => __field_original;
+    }
     private Matrix4 __field_transform = default!;
-    public override Matrix4 transform { get => __field_transform; }
+    public override Matrix4 transform
+    {
+        get => __field_transform;
+    }
     private bool __late_localPosition_initialized;
     private Offset __late_localPosition = default!;
     public override Offset localPosition
@@ -2678,7 +7845,12 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
+                __late_localDelta = transformDeltaViaPositions(
+                    transform: transform,
+                    untransformedDelta: delta,
+                    untransformedEndPosition: position,
+                    transformedEndPosition: localPosition
+                );
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2691,10 +7863,65 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         __field_transform = transform;
     }
 
-    public override PointerCancelEvent transformed(Matrix4? transform) => original.transformed(transform);
-    public override PointerCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
+    public override PointerCancelEvent transformed(Matrix4? transform) =>
+        original.transformed(transform);
+
+    public override PointerCancelEvent copyWith(
+        long? viewId = null,
+        Duration? timeStamp = null,
+        long? pointer = null,
+        PointerDeviceKind? kind = null,
+        long? device = null,
+        Offset? position = null,
+        Offset? delta = null,
+        long? buttons = null,
+        bool? obscured = null,
+        double? pressure = null,
+        double? pressureMin = null,
+        double? pressureMax = null,
+        double? distance = null,
+        double? distanceMax = null,
+        double? size = null,
+        double? radiusMajor = null,
+        double? radiusMinor = null,
+        double? radiusMin = null,
+        double? radiusMax = null,
+        double? orientation = null,
+        double? tilt = null,
+        bool? synthesized = null,
+        long? embedderId = null,
+        Offset? pan = null,
+        Offset? localPan = null,
+        Offset? panDelta = null,
+        Offset? localPanDelta = null,
+        double? scale = null,
+        double? rotation = null,
+        Action<bool>? onRespond = null,
+        Offset? localPosition = null
+    )
     {
-        return new PointerCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
+        return new PointerCancelEvent(
+            viewId: viewId ?? this.viewId,
+            timeStamp: timeStamp ?? this.timeStamp,
+            pointer: pointer ?? this.pointer,
+            kind: kind ?? this.kind,
+            device: device ?? this.device,
+            position: position ?? this.position,
+            buttons: buttons ?? this.buttons,
+            obscured: obscured ?? this.obscured,
+            pressureMin: pressureMin ?? this.pressureMin,
+            pressureMax: pressureMax ?? this.pressureMax,
+            distance: distance ?? this.distance,
+            distanceMax: distanceMax ?? this.distanceMax,
+            size: size ?? this.size,
+            radiusMajor: radiusMajor ?? this.radiusMajor,
+            radiusMinor: radiusMinor ?? this.radiusMinor,
+            radiusMin: radiusMin ?? this.radiusMin,
+            radiusMax: radiusMax ?? this.radiusMax,
+            orientation: orientation ?? this.orientation,
+            tilt: tilt ?? this.tilt,
+            embedderId: embedderId ?? this.embedderId
+        ).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

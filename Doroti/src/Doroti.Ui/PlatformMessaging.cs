@@ -6,14 +6,16 @@ public delegate void PlatformMessageResponseCallback(ReadOnlyMemory<byte>? data)
 
 public delegate ValueTask<ReadOnlyMemory<byte>?> PlatformMessageHandler(
     ReadOnlyMemory<byte>? data,
-    CancellationToken cancellationToken);
+    CancellationToken cancellationToken
+);
 
 public interface IPlatformMessageHostCapability
 {
     ValueTask<ReadOnlyMemory<byte>?> SendAsync(
         string channel,
         ReadOnlyMemory<byte>? data,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
     void SetMessageHandler(string channel, PlatformMessageHandler? handler);
 }
@@ -84,7 +86,8 @@ public readonly record struct DorotiTextSelection(int baseOffset, int extentOffs
 public readonly record struct DorotiTextEditingState(
     string text,
     DorotiTextSelection selection,
-    DorotiTextSelection? composingRange);
+    DorotiTextSelection? composingRange
+);
 
 public enum DorotiTextInputAction
 {
@@ -138,7 +141,8 @@ public readonly record struct DorotiTextInputConfiguration(
     bool autocorrect,
     bool enableSuggestions,
     string? actionLabel = null,
-    bool enableInteractiveSelection = true);
+    bool enableInteractiveSelection = true
+);
 
 /// <summary>
 /// Host-neutral text metrics for the native editing endpoint. Visual text is
@@ -153,12 +157,21 @@ public readonly record struct DorotiTextInputStyle(
     TextAlign textAlign,
     double? letterSpacing,
     double? wordSpacing,
-    double? lineHeight);
+    double? lineHeight
+);
 
-public enum DorotiFloatingCursorPhase { start, update, end }
+public enum DorotiFloatingCursorPhase
+{
+    start,
+    update,
+    end,
+}
 
 /// <summary>Logical pixel displacement from the native keyboard drag origin.</summary>
-public readonly record struct DorotiFloatingCursorEvent(DorotiFloatingCursorPhase phase, Offset offset);
+public readonly record struct DorotiFloatingCursorEvent(
+    DorotiFloatingCursorPhase phase,
+    Offset offset
+);
 
 /// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
@@ -186,36 +199,26 @@ public interface ITextInputHostCapability
 
     void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState);
 
-    void UpdateConfiguration(DorotiTextInputConfiguration configuration)
-    {
-    }
+    void UpdateConfiguration(DorotiTextInputConfiguration configuration) { }
 
     void UpdateState(DorotiTextEditingState state);
 
-    void SetStyle(DorotiTextInputStyle style)
-    {
-    }
+    void SetStyle(DorotiTextInputStyle style) { }
 
     /// <summary>
     /// Places the native editing endpoint over the framework editable. Browser
     /// hosts use this geometry so native text services, including the browser
     /// context menu, operate on the same text and selection as EditableText.
     /// </summary>
-    void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform)
-    {
-    }
+    void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform) { }
 
     void SetCaretRect(Rect logicalRect);
 
     /// <summary>Requests that the native text input UI become visible for the attached client.</summary>
-    void ShowTextInput()
-    {
-    }
+    void ShowTextInput() { }
 
     /// <summary>Hides native text input UI without changing the framework focus owner.</summary>
-    void HideTextInput()
-    {
-    }
+    void HideTextInput() { }
 
     void ClearClient();
 }
@@ -227,6 +230,7 @@ public sealed class RootIsolateToken
     public Guid Value { get; }
 
     public static RootIsolateToken Create() => new(Guid.NewGuid());
+
     public static RootIsolateToken instance { get; } = Create();
 }
 
@@ -234,26 +238,35 @@ public sealed class RootIsolateToken
 public sealed class ChannelBuffers
 {
     private readonly DorotiView _view;
-    private readonly Dictionary<string, Func<ByteData?, Action<ByteData?>, Future>> _listeners = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Func<ByteData?, Action<ByteData?>, Future>> _listeners =
+        new(StringComparer.Ordinal);
 
-    public ChannelBuffers(DorotiView view) => _view = view ?? throw new ArgumentNullException(nameof(view));
+    public ChannelBuffers(DorotiView view) =>
+        _view = view ?? throw new ArgumentNullException(nameof(view));
 
     public ValueTask<ReadOnlyMemory<byte>?> push(
         string channel,
         ReadOnlyMemory<byte>? data,
         DartUiInvocation invocation,
-        CancellationToken cancellationToken = default) =>
-        _view.SendPlatformMessageAsync(channel, data, invocation, cancellationToken);
+        CancellationToken cancellationToken = default
+    ) => _view.SendPlatformMessageAsync(channel, data, invocation, cancellationToken);
 
     public Future push(string channel, ByteData? data, Action<ByteData?> callback)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(channel);
         ArgumentNullException.ThrowIfNull(callback);
         if (!_listeners.TryGetValue(channel, out var listener))
-            return Future.error(new DorotiCapabilityException(
-                DorotiCapabilityIds.PlatformMessaging, _view.viewId,
-                DartUiInvocation.Managed($"dart:ui#ChannelBuffers.push({channel})"),
-                "no framework listener is registered for the channel"));
+        {
+            return Future.error(
+                new DorotiCapabilityException(
+                    DorotiCapabilityIds.PlatformMessaging,
+                    _view.viewId,
+                    DartUiInvocation.Managed($"dart:ui#ChannelBuffers.push({channel})"),
+                    "no framework listener is registered for the channel"
+                )
+            );
+        }
+
         return listener(data, callback);
     }
 
@@ -285,10 +298,8 @@ public static class Dart_uiLibrary
 
     public static class SemanticsHitTestBehavior
     {
-        public static Ui.SemanticsHitTestBehavior defer =>
-            Ui.SemanticsHitTestBehavior.defer;
-        public static Ui.SemanticsHitTestBehavior opaque =>
-            Ui.SemanticsHitTestBehavior.opaque;
+        public static Ui.SemanticsHitTestBehavior defer => Ui.SemanticsHitTestBehavior.defer;
+        public static Ui.SemanticsHitTestBehavior opaque => Ui.SemanticsHitTestBehavior.opaque;
         public static Ui.SemanticsHitTestBehavior transparent =>
             Ui.SemanticsHitTestBehavior.transparent;
     }
@@ -307,40 +318,55 @@ public static class Dart_uiLibrary
         Ui.ImmutableBuffer buffer,
         long? targetWidth = null,
         long? targetHeight = null,
-        bool allowUpscaling = false) =>
-        Future<Codec>.fromTask(DecodeImageCodecAsync(
-            buffer,
-            (width, height) => new TargetImageSize(targetWidth, targetHeight),
-            allowUpscaling,
-            "dart:ui#instantiateImageCodecFromBuffer"));
+        bool allowUpscaling = false
+    ) =>
+        Future<Codec>.fromTask(
+            DecodeImageCodecAsync(
+                buffer,
+                (width, height) => new TargetImageSize(targetWidth, targetHeight),
+                allowUpscaling,
+                "dart:ui#instantiateImageCodecFromBuffer"
+            )
+        );
 
     public static Future<Codec> instantiateImageCodecWithSize(
         Ui.ImmutableBuffer buffer,
-        Func<long, long, TargetImageSize>? getTargetSize = null) =>
-        Future<Codec>.fromTask(DecodeImageCodecAsync(
-            buffer,
-            (width, height) => getTargetSize?.Invoke(width, height),
-            allowUpscaling: true,
-            "dart:ui#instantiateImageCodecWithSize"));
+        Func<long, long, TargetImageSize>? getTargetSize = null
+    ) =>
+        Future<Codec>.fromTask(
+            DecodeImageCodecAsync(
+                buffer,
+                (width, height) => getTargetSize?.Invoke(width, height),
+                allowUpscaling: true,
+                "dart:ui#instantiateImageCodecWithSize"
+            )
+        );
 
     private static async Task<Codec> DecodeImageCodecAsync(
         Ui.ImmutableBuffer buffer,
         Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
-        string elementId)
+        string elementId
+    )
     {
         ArgumentNullException.ThrowIfNull(buffer);
         var dispatcher = Ui.PlatformDispatcher.instance;
-        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+        var view =
+            dispatcher.implicitView
+            ?? dispatcher.views.FirstOrDefault()
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.GraphicsImage,
                 null,
                 DartUiInvocation.Managed(elementId),
-                "image decoding requires an attached DorotiView");
-        var image = await view.DecodeSizedImageAsync(buffer.asMemory(), targetSize, allowUpscaling, DartUiInvocation.Managed(elementId));
-        return new Codec([
-            new FrameInfo(image, Duration.zero),
-        ]);
+                "image decoding requires an attached DorotiView"
+            );
+        var image = await view.DecodeSizedImageAsync(
+            buffer.asMemory(),
+            targetSize,
+            allowUpscaling,
+            DartUiInvocation.Managed(elementId)
+        );
+        return new Codec([new FrameInfo(image, Duration.zero)]);
     }
 
     public static double? lerpDouble(double? a, double? b, double t)
@@ -352,7 +378,8 @@ public static class Dart_uiLibrary
         return (a ?? 0) + (((b ?? 0) - (a ?? 0)) * t);
     }
 
-    public static double clampDouble(double value, double min, double max) => Math.Clamp(value, min, max);
+    public static double clampDouble(double value, double min, double max) =>
+        Math.Clamp(value, min, max);
 
     public static double? clampDouble(double? value, double min, double max) =>
         value is null ? null : Math.Clamp(value.Value, min, max);
@@ -362,36 +389,49 @@ public static class Dart_uiLibrary
         public static long getAlphaFromOpacity(double opacity) =>
             (long)Math.Round(Math.Clamp(opacity, 0.0, 1.0) * 255.0);
 
-        public static Ui.Color? lerp(
-            Ui.Color? a,
-            Ui.Color? b,
-            double t)
+        public static Ui.Color? lerp(Ui.Color? a, Ui.Color? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a ?? new Ui.Color(0U);
             var right = b ?? new Ui.Color(0U);
             return Ui.Color.fromARGB(
                 LerpChannel(left.alpha, right.alpha, t),
                 LerpChannel(left.red, right.red, t),
                 LerpChannel(left.green, right.green, t),
-                LerpChannel(left.blue, right.blue, t));
+                LerpChannel(left.blue, right.blue, t)
+            );
         }
 
-        public static Ui.Color alphaBlend(
-            Ui.Color foreground,
-            Ui.Color background)
+        public static Ui.Color alphaBlend(Ui.Color foreground, Ui.Color background)
         {
             var foregroundAlpha = foreground.alpha / 255.0;
             var backgroundAlpha = background.alpha / 255.0;
-            var outputAlpha = foregroundAlpha + backgroundAlpha * (1.0 - foregroundAlpha);
-            if (outputAlpha <= 0) return Ui.Color.fromARGB(0, 0, 0, 0);
-            long Blend(int foregroundChannel, int backgroundChannel) => checked((long)Math.Round(
-                (foregroundChannel * foregroundAlpha + backgroundChannel * backgroundAlpha * (1.0 - foregroundAlpha)) / outputAlpha));
+            var outputAlpha = foregroundAlpha + (backgroundAlpha * (1.0 - foregroundAlpha));
+            if (outputAlpha <= 0)
+            {
+                return Ui.Color.fromARGB(0, 0, 0, 0);
+            }
+
+            long Blend(int foregroundChannel, int backgroundChannel) =>
+                checked(
+                    (long)
+                        Math.Round(
+                            (
+                                (foregroundChannel * foregroundAlpha)
+                                + (backgroundChannel * backgroundAlpha * (1.0 - foregroundAlpha))
+                            ) / outputAlpha
+                        )
+                );
             return Ui.Color.fromARGB(
                 checked((long)Math.Round(outputAlpha * 255.0)),
                 Blend(foreground.red, background.red),
                 Blend(foreground.green, background.green),
-                Blend(foreground.blue, background.blue));
+                Blend(foreground.blue, background.blue)
+            );
         }
 
         private static long LerpChannel(int left, int right, double t) =>
@@ -402,7 +442,11 @@ public static class Dart_uiLibrary
     {
         public static Ui.Offset? lerp(Ui.Offset? a, Ui.Offset? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a ?? Ui.Offset.zero;
             var right = b ?? Ui.Offset.zero;
             return new(left.dx + ((right.dx - left.dx) * t), left.dy + ((right.dy - left.dy) * t));
@@ -413,7 +457,11 @@ public static class Dart_uiLibrary
     {
         public static Ui.Radius? lerp(Ui.Radius? a, Ui.Radius? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a ?? Ui.Radius.zero;
             var right = b ?? Ui.Radius.zero;
             return new(left.x + ((right.x - left.x) * t), left.y + ((right.y - left.y) * t));
@@ -422,10 +470,7 @@ public static class Dart_uiLibrary
 
     public static class Path
     {
-        public static Ui.Path combine(
-            PathOperation operation,
-            Ui.Path path1,
-            Ui.Path path2)
+        public static Ui.Path combine(PathOperation operation, Ui.Path path1, Ui.Path path2)
         {
             var result = new Ui.Path();
             result.addPath(path1, Ui.Offset.zero);
@@ -438,7 +483,11 @@ public static class Dart_uiLibrary
     {
         public static Ui.FontWeight? lerp(Ui.FontWeight? a, Ui.FontWeight? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a?.value ?? 0;
             var right = b?.value ?? 0;
             return new((int)Math.Round(left + ((right - left) * t)));
@@ -450,17 +499,19 @@ public static class Dart_uiLibrary
         public static List<Ui.Shadow>? lerpList(
             IReadOnlyList<Ui.Shadow>? a,
             IReadOnlyList<Ui.Shadow>? b,
-            double t) => (t < 0.5 ? a : b)?.ToList();
+            double t
+        ) => (t < 0.5 ? a : b)?.ToList();
     }
 
     public static class FontVariation
     {
-        public static Ui.FontVariation? lerp(
-            Ui.FontVariation? a,
-            Ui.FontVariation? b,
-            double t)
+        public static Ui.FontVariation? lerp(Ui.FontVariation? a, Ui.FontVariation? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var axis = a?.axis ?? b!.axis;
             var left = a?.value ?? 0;
             var right = b?.value ?? 0;
@@ -482,9 +533,12 @@ public static class Dart_uiLibrary
     {
         public const Ui.BoxHeightStyle tight = Ui.BoxHeightStyle.tight;
         public const Ui.BoxHeightStyle max = Ui.BoxHeightStyle.max;
-        public const Ui.BoxHeightStyle includeLineSpacingMiddle = Ui.BoxHeightStyle.includeLineSpacingMiddle;
-        public const Ui.BoxHeightStyle includeLineSpacingTop = Ui.BoxHeightStyle.includeLineSpacingTop;
-        public const Ui.BoxHeightStyle includeLineSpacingBottom = Ui.BoxHeightStyle.includeLineSpacingBottom;
+        public const Ui.BoxHeightStyle includeLineSpacingMiddle =
+            Ui.BoxHeightStyle.includeLineSpacingMiddle;
+        public const Ui.BoxHeightStyle includeLineSpacingTop =
+            Ui.BoxHeightStyle.includeLineSpacingTop;
+        public const Ui.BoxHeightStyle includeLineSpacingBottom =
+            Ui.BoxHeightStyle.includeLineSpacingBottom;
         public const Ui.BoxHeightStyle strut = Ui.BoxHeightStyle.strut;
     }
 
@@ -504,51 +558,72 @@ public static class Dart_uiLibrary
 
     public static class Size
     {
-        public static Ui.Size? lerp(
-            Ui.Size? a,
-            Ui.Size? b,
-            double t)
+        public static Ui.Size? lerp(Ui.Size? a, Ui.Size? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a ?? Ui.Size.zero;
             var right = b ?? Ui.Size.zero;
-            return new(left.width + ((right.width - left.width) * t), left.height + ((right.height - left.height) * t));
+            return new(
+                left.width + ((right.width - left.width) * t),
+                left.height + ((right.height - left.height) * t)
+            );
         }
     }
 
     public static class Rect
     {
-        public static Ui.Rect? lerp(
-            Ui.Rect? a,
-            Ui.Rect? b,
-            double t)
+        public static Ui.Rect? lerp(Ui.Rect? a, Ui.Rect? b, double t)
         {
-            if (a is null && b is null) return null;
+            if (a is null && b is null)
+            {
+                return null;
+            }
+
             var left = a ?? Ui.Rect.zero;
             var right = b ?? Ui.Rect.zero;
             return new(
                 left.left + ((right.left - left.left) * t),
                 left.top + ((right.top - left.top) * t),
                 left.right + ((right.right - left.right) * t),
-                left.bottom + ((right.bottom - left.bottom) * t));
+                left.bottom + ((right.bottom - left.bottom) * t)
+            );
         }
     }
 
     public static ChannelBuffers channelBuffers => Ui.PlatformDispatcher.instance.channelBuffers;
 
-    public static async Future loadFontFromList(
-        Uint8List list,
-        string? fontFamily = null)
+    public static async Future loadFontFromList(Uint8List list, string? fontFamily = null)
     {
         ArgumentNullException.ThrowIfNull(list);
         var dispatcher = PlatformDispatcher.instance;
-        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsFont, null, DartUiInvocation.Managed("loadFontFromList"), "font loading requires an attached view");
-        await view.RequireCapability<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, DartUiInvocation.Managed("loadFontFromList"))
+        var view =
+            dispatcher.implicitView
+            ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(
+                DorotiCapabilityIds.GraphicsFont,
+                null,
+                DartUiInvocation.Managed("loadFontFromList"),
+                "font loading requires an attached view"
+            );
+        await view.RequireCapability<IFontHostCapability>(
+                DorotiCapabilityIds.GraphicsFont,
+                DartUiInvocation.Managed("loadFontFromList")
+            )
             .RegisterFontAsync(new ByteData(list).asMemory(), fontFamily);
-        var notification = dispatcher.channelBuffers.NotifyFramework("flutter/system",
-            new ByteData(new Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))));
-        if (notification is not null) await notification;
+        var notification = dispatcher.channelBuffers.NotifyFramework(
+            "flutter/system",
+            new ByteData(
+                new Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))
+            )
+        );
+        if (notification is not null)
+        {
+            await notification;
+        }
     }
 
     public static class RootIsolateToken
@@ -581,7 +656,8 @@ public static class Dart_uiLibrary
     {
         public const Ui.PointerSignalKind none = Ui.PointerSignalKind.none;
         public const Ui.PointerSignalKind scroll = Ui.PointerSignalKind.scroll;
-        public const Ui.PointerSignalKind scrollInertiaCancel = Ui.PointerSignalKind.scrollInertiaCancel;
+        public const Ui.PointerSignalKind scrollInertiaCancel =
+            Ui.PointerSignalKind.scrollInertiaCancel;
         public const Ui.PointerSignalKind scale = Ui.PointerSignalKind.scale;
         public const Ui.PointerSignalKind unknown = Ui.PointerSignalKind.unknown;
     }
@@ -590,8 +666,10 @@ public static class Dart_uiLibrary
     {
         public static Future<Ui.ImmutableBuffer> fromUint8List(Uint8List bytes) =>
             Ui.ImmutableBuffer.fromUint8List(bytes);
+
         public static Future<Ui.ImmutableBuffer> fromAsset(string key) =>
             Ui.ImmutableBuffer.fromAsset(key);
+
         public static Future<Ui.ImmutableBuffer> fromFilePath(string path) =>
             Ui.ImmutableBuffer.fromFilePath(path);
     }
@@ -644,7 +722,8 @@ public sealed class PlatformMessage
         ulong viewId,
         string channel,
         ReadOnlyMemory<byte>? data,
-        PlatformMessageResponseCallback? responseCallback)
+        PlatformMessageResponseCallback? responseCallback
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(channel);
         this.viewId = viewId;
@@ -664,7 +743,9 @@ public sealed class PlatformMessage
         var callback = Interlocked.Exchange(ref _responseCallback, null);
         if (callback is null)
         {
-            throw new InvalidOperationException("A platform message response may complete exactly once.");
+            throw new InvalidOperationException(
+                "A platform message response may complete exactly once."
+            );
         }
         callback(response);
     }

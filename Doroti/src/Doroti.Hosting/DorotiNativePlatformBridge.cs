@@ -19,19 +19,29 @@ public static class DorotiNativePlatformBridgeContract
 public sealed record DorotiNativePlatformInfo(
     string Platform,
     string OsVersion,
-    string BridgeVersion)
+    string BridgeVersion
+)
 {
     public static DorotiNativePlatformInfo Parse(string json)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(json);
-        var value = JsonSerializer.Deserialize(json, NativePlatformJsonContext.Default.DorotiNativePlatformInfo)
-            ?? throw new InvalidDataException("The native platform bridge returned an empty platformInfo payload.");
-        if (string.IsNullOrWhiteSpace(value.Platform) ||
-            string.IsNullOrWhiteSpace(value.OsVersion) ||
-            value.BridgeVersion != DorotiNativePlatformBridgeContract.BridgeVersion)
+        var value =
+            JsonSerializer.Deserialize(
+                json,
+                NativePlatformJsonContext.Default.DorotiNativePlatformInfo
+            )
+            ?? throw new InvalidDataException(
+                "The native platform bridge returned an empty platformInfo payload."
+            );
+        if (
+            string.IsNullOrWhiteSpace(value.Platform)
+            || string.IsNullOrWhiteSpace(value.OsVersion)
+            || value.BridgeVersion != DorotiNativePlatformBridgeContract.BridgeVersion
+        )
         {
             throw new InvalidDataException(
-                $"The native platform bridge returned an incompatible platformInfo payload: '{json}'.");
+                $"The native platform bridge returned an incompatible platformInfo payload: '{json}'."
+            );
         }
         return value;
     }
@@ -45,7 +55,8 @@ public interface IDorotiNativePlatformBridge : IDorotiNativePluginHandler
 
     ValueTask<string> EchoOnUiThreadAsync(
         string value,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 }
 
 public abstract class DorotiNativePlatformBridgeBase : IDorotiNativePlatformBridge
@@ -60,20 +71,36 @@ public abstract class DorotiNativePlatformBridgeBase : IDorotiNativePlatformBrid
 
     public abstract ValueTask<string> EchoOnUiThreadAsync(
         string value,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
     public async ValueTask<ReadOnlyMemory<byte>?> HandleAsync(
         string channel,
         string codec,
         ReadOnlyMemory<byte>? message,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         if (channel != DorotiNativePlatformBridgeContract.Channel)
-            throw new ArgumentException($"Unsupported native platform bridge channel: {channel}", nameof(channel));
+        {
+            throw new ArgumentException(
+                $"Unsupported native platform bridge channel: {channel}",
+                nameof(channel)
+            );
+        }
+
         if (codec != "json")
-            throw new ArgumentException($"Unsupported native platform bridge codec: {codec}", nameof(codec));
+        {
+            throw new ArgumentException(
+                $"Unsupported native platform bridge codec: {codec}",
+                nameof(codec)
+            );
+        }
+
         if (message is null)
+        {
             throw new ArgumentNullException(nameof(message));
+        }
 
         using var request = JsonDocument.Parse(message.Value);
         var method = request.RootElement.GetProperty("method").GetString();
@@ -82,15 +109,27 @@ public abstract class DorotiNativePlatformBridgeBase : IDorotiNativePlatformBrid
             "platformInfo" => PlatformInfo(),
             "echo" => Echo(request.RootElement.GetProperty("value").GetString() ?? string.Empty),
             "echoOnUiThread" => await EchoOnUiThreadAsync(
-                request.RootElement.GetProperty("value").GetString() ?? string.Empty,
-                cancellationToken).ConfigureAwait(false),
-            _ => throw new MissingMethodException($"Unsupported native platform bridge method: {method}"),
+                    request.RootElement.GetProperty("value").GetString() ?? string.Empty,
+                    cancellationToken
+                )
+                .ConfigureAwait(false),
+            _ => throw new MissingMethodException(
+                $"Unsupported native platform bridge method: {method}"
+            ),
         };
         return response switch
         {
-            DorotiNativePlatformInfo info => JsonSerializer.SerializeToUtf8Bytes(info, NativePlatformJsonContext.Default.DorotiNativePlatformInfo),
-            string value => JsonSerializer.SerializeToUtf8Bytes(value, NativePlatformJsonContext.Default.String),
-            _ => throw new InvalidOperationException("Unsupported native platform bridge response type."),
+            DorotiNativePlatformInfo info => JsonSerializer.SerializeToUtf8Bytes(
+                info,
+                NativePlatformJsonContext.Default.DorotiNativePlatformInfo
+            ),
+            string value => JsonSerializer.SerializeToUtf8Bytes(
+                value,
+                NativePlatformJsonContext.Default.String
+            ),
+            _ => throw new InvalidOperationException(
+                "Unsupported native platform bridge response type."
+            ),
         };
     }
 }

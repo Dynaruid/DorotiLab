@@ -1,8 +1,9 @@
+using Doroti.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 #if IOS && !MACCATALYST
 using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
 #endif
-using Doroti.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+
 #if MACOS
 using Microsoft.Maui.Platforms.MacOS.Essentials;
 using Microsoft.Maui.Platforms.MacOS.Hosting;
@@ -22,7 +23,8 @@ public static class DorotiMauiApplicationBuilderExtensions
 {
     public static MauiAppBuilder UseDorotiApplication<TStartup>(
         this MauiAppBuilder builder,
-        DorotiLaunchContext launchContext)
+        DorotiLaunchContext launchContext
+    )
         where TStartup : IDorotiApplicationStartup, new()
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -31,10 +33,17 @@ public static class DorotiMauiApplicationBuilderExtensions
         if (DorotiGraphiteView.Enabled)
         {
             var info = Android.App.Application.Context.ApplicationInfo!;
-            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(
+                info.SourceDir!,
+                info.NativeLibraryDir!,
+                info.SplitSourceDirs
+            );
         }
 #elif WINDOWS
-        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled)
+        {
+            WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
+        }
 #endif
         var descriptor = DorotiApplicationFactory.Create<TStartup>(launchContext);
         return builder.UseDorotiApplication(descriptor);
@@ -42,7 +51,8 @@ public static class DorotiMauiApplicationBuilderExtensions
 
     public static MauiAppBuilder UseDorotiApplication(
         this MauiAppBuilder builder,
-        DorotiApplicationDescriptor descriptor)
+        DorotiApplicationDescriptor descriptor
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(descriptor);
@@ -50,18 +60,27 @@ public static class DorotiMauiApplicationBuilderExtensions
         if (DorotiGraphiteView.Enabled)
         {
             var info = Android.App.Application.Context.ApplicationInfo!;
-            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(
+                info.SourceDir!,
+                info.NativeLibraryDir!,
+                info.SplitSourceDirs
+            );
         }
 #elif WINDOWS
-        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled)
+        {
+            WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
+        }
 #endif
         builder
 #if MACOS
             .UseMauiAppMacOS<DorotiMauiApplication>()
             .AddMacOSEssentials()
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>()
-                    .AddHandler<DorotiMauiSurface, DorotiMacOSLayoutHandler>());
+                handlers
+                    .AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>()
+                    .AddHandler<DorotiMauiSurface, DorotiMacOSLayoutHandler>()
+            );
 #else
             .UseMauiApp<DorotiMauiApplication>()
 #if !IOS || MACCATALYST
@@ -69,22 +88,28 @@ public static class DorotiMauiApplicationBuilderExtensions
 #endif
 #if WINDOWS
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>());
+                handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>()
+            );
 #elif MACCATALYST
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>()
-                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
+                handlers
+                    .AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>()
+                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>()
+            );
 #elif IOS
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
+                handlers
+                    .AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
                     .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
                     .AddHandler<SKGLView, DorotiIosMetalViewHandler>()
-                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
+                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>()
+            );
 #elif ANDROID
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<DorotiGraphiteView, DorotiAndroidVulkanViewHandler>());
+                handlers.AddHandler<DorotiGraphiteView, DorotiAndroidVulkanViewHandler>()
+            );
 #else
-            ;
+        ;
 #endif
 #endif
         builder.Services.AddSingleton(descriptor);
@@ -98,15 +123,17 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     {
         _ = activationState;
         var title = descriptor.ViewConfiguration.title;
-        var window = new Window(new ContentPage
-        {
+        var window = new Window(
+            new ContentPage
+            {
 #if MACOS
-            BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
+                BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
 #endif
-            SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
-            Title = title,
-            Content = new DorotiMauiSurface(descriptor),
-        })
+                SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
+                Title = title,
+                Content = new DorotiMauiSurface(descriptor),
+            }
+        )
         {
             Title = title,
         };

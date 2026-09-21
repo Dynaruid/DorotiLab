@@ -6,17 +6,26 @@ try
     if (firstCommand is "cache-status" or "cache-prune")
     {
         var cacheCommand = firstCommand;
-        var cacheDirectory = ReadOption(args, "--cache-dir")
-            ?? throw new ArgumentException("cache-status/cache-prune requires --cache-dir <directory>.");
+        var cacheDirectory =
+            ReadOption(args, "--cache-dir")
+            ?? throw new ArgumentException(
+                "cache-status/cache-prune requires --cache-dir <directory>."
+            );
         if (cacheCommand == "cache-prune")
         {
-            var maximumBytes = ReadLong(args, "--max-bytes") ?? 2L * 1024 * 1024 * 1024;
+            var maximumBytes = ReadLong(args, "--max-bytes") ?? (2L * 1024 * 1024 * 1024);
             var maximumAgeDays = ReadLong(args, "--max-age-days") ?? 30;
-            var removed = AnalyzerCacheStore.Prune(cacheDirectory, maximumBytes, TimeSpan.FromDays(maximumAgeDays));
+            var removed = AnalyzerCacheStore.Prune(
+                cacheDirectory,
+                maximumBytes,
+                TimeSpan.FromDays(maximumAgeDays)
+            );
             Console.WriteLine($"Analyzer cache prune: removed={removed}");
         }
         var status = AnalyzerCacheStore.ReadStatus(cacheDirectory);
-        Console.WriteLine($"Analyzer cache: entries={status.EntryCount}; bytes={status.Bytes}; oldest={status.OldestWriteUtc:O}; newest={status.NewestWriteUtc:O}");
+        Console.WriteLine(
+            $"Analyzer cache: entries={status.EntryCount}; bytes={status.Bytes}; oldest={status.OldestWriteUtc:O}; newest={status.NewestWriteUtc:O}"
+        );
         return 0;
     }
     var root = FindDorotiRoot(Environment.CurrentDirectory);
@@ -24,27 +33,43 @@ try
     if (port is not null)
     {
         var portCache = ReadOption(args, "--cache-dir");
-        var portWorkspaceRoot = ReadOption(args, "--workspace-root") ?? DefaultPortWorkspaceRoot(root);
+        var portWorkspaceRoot =
+            ReadOption(args, "--workspace-root") ?? DefaultPortWorkspaceRoot(root);
         var command = args.Length > 0 ? args[0] : string.Empty;
         if (command == "compile")
         {
             if (ReadOption(args, "--output") is not null)
             {
-                throw new ArgumentException("Port compilation publishes only below --workspace-root; --output is not supported.");
+                throw new ArgumentException(
+                    "Port compilation publishes only below --workspace-root; --output is not supported."
+                );
             }
             var workspace = new PortCompiler().Compile(port, portWorkspaceRoot, portCache);
-            Console.WriteLine($"Doroti port compile: {(workspace.Report.Success ? "PASS" : "REVIEW REQUIRED")} ({workspace.Report.Outputs.Length} file(s), {workspace.Report.Diagnostics.Length} diagnostic(s))");
+            Console.WriteLine(
+                $"Doroti port compile: {(workspace.Report.Success ? "PASS" : "REVIEW REQUIRED")} ({workspace.Report.Outputs.Length} file(s), {workspace.Report.Diagnostics.Length} diagnostic(s))"
+            );
             Console.WriteLine($"Workspace: {workspace.Path}");
             Console.WriteLine($"Generated base: {workspace.GeneratedBasePath}");
-            Console.WriteLine($"Effective project: {Path.Combine(workspace.Path, workspace.Ownership.EffectiveProject)}");
+            Console.WriteLine(
+                $"Effective project: {Path.Combine(workspace.Path, workspace.Ownership.EffectiveProject)}"
+            );
             Console.WriteLine($"Port state: {Path.Combine(workspace.Path, "port-state.json")}");
             return workspace.Report.Success ? 0 : 2;
         }
         if (command == "adopt")
         {
             var symbol = ReadRequiredOption(args, "--symbol");
-            var reviewOutput = ReadOption(args, "--output") ?? Path.Combine(DefaultReviewRoot(root), "adopt", SafeName(symbol));
-            var bundle = new PortAdoption().Create(port, portWorkspaceRoot, symbol, reviewOutput, portCache, ReadOptionValue(args, "--library"));
+            var reviewOutput =
+                ReadOption(args, "--output")
+                ?? Path.Combine(DefaultReviewRoot(root), "adopt", SafeName(symbol));
+            var bundle = new PortAdoption().Create(
+                port,
+                portWorkspaceRoot,
+                symbol,
+                reviewOutput,
+                portCache,
+                ReadOptionValue(args, "--library")
+            );
             Console.WriteLine("Doroti adoption review: PASS (product source unchanged)");
             Console.WriteLine($"Review bundle: {bundle.Path}");
             return 0;
@@ -52,17 +77,34 @@ try
         if (command == "rebase")
         {
             var revision = ReadRequiredOption(args, "--source-revision");
-            var previous = ReadOption(args, "--previous-workspace") ?? PortRebaser.FindPreviousWorkspace(portWorkspaceRoot, port);
-            var reviewOutput = ReadOption(args, "--output") ?? Path.Combine(DefaultReviewRoot(root), "rebase", $"{Path.GetFileName(previous)}-{SafeName(revision)}");
-            var bundle = new PortRebaser().Create(previous, port, revision, reviewOutput, portCache);
-            Console.WriteLine($"Doroti port rebase: {(bundle.Report.HasBlockingChanges ? "REVIEW REQUIRED" : "PASS")}");
+            var previous =
+                ReadOption(args, "--previous-workspace")
+                ?? PortRebaser.FindPreviousWorkspace(portWorkspaceRoot, port);
+            var reviewOutput =
+                ReadOption(args, "--output")
+                ?? Path.Combine(
+                    DefaultReviewRoot(root),
+                    "rebase",
+                    $"{Path.GetFileName(previous)}-{SafeName(revision)}"
+                );
+            var bundle = new PortRebaser().Create(
+                previous,
+                port,
+                revision,
+                reviewOutput,
+                portCache
+            );
+            Console.WriteLine(
+                $"Doroti port rebase: {(bundle.Report.HasBlockingChanges ? "REVIEW REQUIRED" : "PASS")}"
+            );
             Console.WriteLine($"Review bundle: {bundle.Path}");
             return bundle.Report.HasBlockingChanges ? 2 : 0;
         }
         throw new ArgumentException("Port manifests support 'compile', 'adopt', or 'rebase'.");
     }
 
-    var manifest = ReadOption(args, "--manifest") ?? Path.Combine(root, "migration", "selections", "r1.json");
+    var manifest =
+        ReadOption(args, "--manifest") ?? Path.Combine(root, "migration", "selections", "r1.json");
     var cache = ReadOption(args, "--cache-dir");
     var workspaceRoot = ReadOption(args, "--workspace-root");
     var output = ReadOption(args, "--output");
@@ -94,7 +136,8 @@ try
             dumpOptions,
             telemetryPath,
             analyzerWorkers,
-            loweringParallelism);
+            loweringParallelism
+        );
         output = workspace.Path;
         report = workspace.Report;
     }
@@ -109,13 +152,15 @@ try
             dumpOptions,
             telemetryPath,
             analyzerWorkers,
-            loweringParallelism);
+            loweringParallelism
+        );
     }
     Console.WriteLine(
-        $"Dart to C# draft: {(report.Success ? "PASS" : "REVIEW REQUIRED")} " +
-        $"({report.Outputs.Length} file(s), {report.Diagnostics.Length} diagnostic(s)); workspace={output}; " +
-        $"analyzer-workers={CompilerParallelism.ResolveAnalyzerWorkers(analyzerWorkers, parallelism)}; " +
-        $"lowering-parallelism={CompilerParallelism.ResolveLoweringParallelism(loweringParallelism, parallelism)}");
+        $"Dart to C# draft: {(report.Success ? "PASS" : "REVIEW REQUIRED")} "
+            + $"({report.Outputs.Length} file(s), {report.Diagnostics.Length} diagnostic(s)); workspace={output}; "
+            + $"analyzer-workers={CompilerParallelism.ResolveAnalyzerWorkers(analyzerWorkers, parallelism)}; "
+            + $"lowering-parallelism={CompilerParallelism.ResolveLoweringParallelism(loweringParallelism, parallelism)}"
+    );
     return report.Success ? 0 : 2;
 }
 catch (Exception exception)
@@ -127,7 +172,9 @@ catch (Exception exception)
 static string? ReadOption(string[] arguments, string name)
 {
     var index = Array.IndexOf(arguments, name);
-    return index >= 0 && index + 1 < arguments.Length ? Path.GetFullPath(arguments[index + 1]) : null;
+    return index >= 0 && index + 1 < arguments.Length
+        ? Path.GetFullPath(arguments[index + 1])
+        : null;
 }
 
 static string? ReadOptionValue(string[] arguments, string name)
@@ -155,7 +202,11 @@ static int? ReadParallelism(string[] arguments)
 static int? ReadPositiveInteger(string[] arguments, string name)
 {
     var raw = ReadOptionValue(arguments, name);
-    if (raw is null) return null;
+    if (raw is null)
+    {
+        return null;
+    }
+
     if (!int.TryParse(raw, out var value) || value < 1)
     {
         throw new ArgumentException($"{name} must be a positive integer.");
@@ -166,7 +217,11 @@ static int? ReadPositiveInteger(string[] arguments, string name)
 static long? ReadLong(string[] arguments, string name)
 {
     var raw = ReadOptionValue(arguments, name);
-    if (raw is null) return null;
+    if (raw is null)
+    {
+        return null;
+    }
+
     if (!long.TryParse(raw, out var value) || value < 0)
     {
         throw new ArgumentException($"{name} must be a non-negative integer.");
@@ -182,7 +237,12 @@ static CompilerDumpStage ReadDumpStages(string[] arguments)
         return CompilerDumpStage.All;
     }
     var stages = CompilerDumpStage.None;
-    foreach (var value in raw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+    foreach (
+        var value in raw.Split(
+            ',',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+        )
+    )
     {
         stages |= value.ToLowerInvariant() switch
         {
@@ -200,11 +260,16 @@ static CompilerDumpStage ReadDumpStages(string[] arguments)
 }
 
 static string ReadRequiredOption(string[] arguments, string name) =>
-    ReadOptionValue(arguments, name) ?? throw new ArgumentException($"Missing required option {name}.");
+    ReadOptionValue(arguments, name)
+    ?? throw new ArgumentException($"Missing required option {name}.");
 
 static string FindDorotiRoot(string startDirectory)
 {
-    for (var directory = new DirectoryInfo(Path.GetFullPath(startDirectory)); directory is not null; directory = directory.Parent)
+    for (
+        var directory = new DirectoryInfo(Path.GetFullPath(startDirectory));
+        directory is not null;
+        directory = directory.Parent
+    )
     {
         if (File.Exists(Path.Combine(directory.FullName, "Doroti.slnx")))
         {
@@ -218,7 +283,9 @@ static string FindDorotiRoot(string startDirectory)
         }
     }
 
-    throw new DirectoryNotFoundException($"Could not find the Doroti workspace from {startDirectory}.");
+    throw new DirectoryNotFoundException(
+        $"Could not find the Doroti workspace from {startDirectory}."
+    );
 }
 
 static string DefaultPortWorkspaceRoot(string dorotiRoot)
@@ -235,5 +302,9 @@ static string DefaultReviewRoot(string dorotiRoot)
     return Path.Combine(Path.GetDirectoryName(workspaceRoot)!, "reviews");
 }
 
-static string SafeName(string value) => string.Concat(value.Select(character =>
-    char.IsLetterOrDigit(character) || character is '-' or '_' or '.' ? character : '_'));
+static string SafeName(string value) =>
+    string.Concat(
+        value.Select(character =>
+            char.IsLetterOrDigit(character) || character is '-' or '_' or '.' ? character : '_'
+        )
+    );

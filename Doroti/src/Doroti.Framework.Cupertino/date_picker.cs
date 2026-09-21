@@ -81,35 +81,59 @@ public static partial class Date_pickerLibrary
     internal static TextStyle _themeTextStyle(BuildContext context, bool isValid = true)
     {
         TextStyle style = CupertinoTheme.of(context).textTheme.dateTimePickerTextStyle;
-        return isValid ? style.copyWith(color: CupertinoDynamicColor.maybeResolve(style.color, context)) : style.copyWith(color: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context));
+        return isValid
+            ? style.copyWith(color: CupertinoDynamicColor.maybeResolve(style.color, context))
+            : style.copyWith(
+                color: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static void _animateColumnControllerToItem(FixedExtentScrollController controller, long targetItem)
+    internal static void _animateColumnControllerToItem(
+        FixedExtentScrollController controller,
+        long targetItem
+    )
     {
-        DartRuntimePrimitives.Ignore(controller.animateToItem(targetItem, curve: Curves.easeInOut, duration: Duration.Create(milliseconds: 200L)));
+        DartRuntimePrimitives.Ignore(
+            controller.animateToItem(
+                targetItem,
+                curve: Curves.easeInOut,
+                duration: Duration.Create(milliseconds: 200L)
+            )
+        );
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static Widget _startSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(capEndEdge: false);
+    internal static Widget _startSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(
+        capEndEdge: false
+    );
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static Widget _centerSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false, capEndEdge: false);
+    internal static Widget _centerSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(
+        capStartEdge: false,
+        capEndEdge: false
+    );
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static Widget _endSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false);
+    internal static Widget _endSelectionOverlay = new CupertinoPickerDefaultSelectionOverlay(
+        capStartEdge: false
+    );
 }
 
-public delegate Widget? SelectionOverlayBuilder(BuildContext context, long columnCount, long selectedIndex);
+public delegate Widget? SelectionOverlayBuilder(
+    BuildContext context,
+    long columnCount,
+    long selectedIndex
+);
 
 internal class _DatePickerLayoutDelegate__date_picker : MultiChildLayoutDelegate
 {
@@ -117,7 +141,11 @@ internal class _DatePickerLayoutDelegate__date_picker : MultiChildLayoutDelegate
     public virtual long textDirectionFactor { get; private set; } = default!;
     public virtual double maxWidth { get; private set; } = default!;
 
-    internal _DatePickerLayoutDelegate__date_picker(List<double> columnWidths, long textDirectionFactor, double maxWidth)
+    internal _DatePickerLayoutDelegate__date_picker(
+        List<double> columnWidths,
+        long textDirectionFactor,
+        double maxWidth
+    )
     {
         this.columnWidths = columnWidths;
         this.textDirectionFactor = textDirectionFactor;
@@ -134,21 +162,36 @@ internal class _DatePickerLayoutDelegate__date_picker : MultiChildLayoutDelegate
         }
         for (var iLocal = 0L; iLocal < checked(columnWidths.Count); iLocal++)
         {
-            long index = (textDirectionFactor == 1L) ? iLocal : (checked(columnWidths.Count) - iLocal - 1L);
-            double childWidth = columnWidths[(int)index] + (Date_pickerLibrary._kDatePickerPadSize * 2L);
+            long index =
+                (textDirectionFactor == 1L) ? iLocal : (checked(columnWidths.Count) - iLocal - 1L);
+            double childWidth =
+                columnWidths[(int)index] + (Date_pickerLibrary._kDatePickerPadSize * 2L);
             if ((index == 0L) || (index == (checked(columnWidths.Count) - 1L)))
             {
                 childWidth += remainingWidth / 2L;
             }
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (childWidth < 0L)
                 {
-                    if (childWidth < 0L)
-                    {
-                        FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create("Insufficient horizontal space to render the " + "CupertinoDatePicker because the parent is too narrow at " + $"{size.width}px.\n" + $"An additional {-remainingWidth}px is needed to avoid " + "overlapping columns.")));
-                    }
-                    return true;
-                });
-            layoutChild(index, BoxConstraints.CreateTight(new Size(Math.Max(0.0, childWidth), size.height)));
+                    FlutterError.reportError(
+                        new FlutterErrorDetails(
+                            exception: FlutterError.Create(
+                                "Insufficient horizontal space to render the "
+                                    + "CupertinoDatePicker because the parent is too narrow at "
+                                    + $"{size.width}px.\n"
+                                    + $"An additional {-remainingWidth}px is needed to avoid "
+                                    + "overlapping columns."
+                            )
+                        )
+                    );
+                }
+                return true;
+            });
+            layoutChild(
+                index,
+                BoxConstraints.CreateTight(new Size(Math.Max(0.0, childWidth), size.height))
+            );
             positionChild(index, new Offset(currentHorizontalOffset, 0.0));
             currentHorizontalOffset += childWidth;
         }
@@ -157,10 +200,10 @@ internal class _DatePickerLayoutDelegate__date_picker : MultiChildLayoutDelegate
     public override bool shouldRelayout(MultiChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_DatePickerLayoutDelegate__date_picker)oldDelegate;
-        return (!Equals(columnWidths, __oldDelegate.columnWidths)) || (textDirectionFactor != __oldDelegate.textDirectionFactor);
+        return (!Equals(columnWidths, __oldDelegate.columnWidths))
+            || (textDirectionFactor != __oldDelegate.textDirectionFactor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum CupertinoDatePickerMode
@@ -168,7 +211,7 @@ public enum CupertinoDatePickerMode
     time,
     date,
     dateAndTime,
-    monthYear
+    monthYear,
 }
 
 internal enum _PickerColumnType__date_picker
@@ -180,7 +223,7 @@ internal enum _PickerColumnType__date_picker
     hour,
     minute,
     dayPeriod,
-    timeSeparator
+    timeSeparator,
 }
 
 public class CupertinoDatePicker : StatefulWidget
@@ -203,7 +246,27 @@ public class CupertinoDatePicker : StatefulWidget
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoDatePicker(Key? key = null, CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime, Action<DateTime> onDateTimeChanged = default!, DateTime? initialDateTime = null, DateTime? minimumDate = null, DateTime? maximumDate = null, long minimumYear = 1, long? maximumYear = null, long minuteInterval = 1, bool use24hFormat = false, DatePickerDateOrder? dateOrder = null, Color? backgroundColor = null, bool showDayOfWeek = false, bool showTimeSeparator = false, double? itemExtent = null, SelectionOverlayBuilder? selectionOverlayBuilder = null, Func<DateTime, bool>? selectableDayPredicate = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate) : base(key: key)
+    public CupertinoDatePicker(
+        Key? key = null,
+        CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime,
+        Action<DateTime> onDateTimeChanged = default!,
+        DateTime? initialDateTime = null,
+        DateTime? minimumDate = null,
+        DateTime? maximumDate = null,
+        long minimumYear = 1,
+        long? maximumYear = null,
+        long minuteInterval = 1,
+        bool use24hFormat = false,
+        DatePickerDateOrder? dateOrder = null,
+        Color? backgroundColor = null,
+        bool showDayOfWeek = false,
+        bool showTimeSeparator = false,
+        double? itemExtent = null,
+        SelectionOverlayBuilder? selectionOverlayBuilder = null,
+        Func<DateTime, bool>? selectableDayPredicate = null,
+        ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate
+    )
+        : base(key: key)
     {
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;
         this.mode = mode;
@@ -225,115 +288,225 @@ public class CupertinoDatePicker : StatefulWidget
         this.initialDateTime = initialDateTime ?? new DateTime();
         System.Diagnostics.Debug.Assert(__itemExtent > 0L);
         System.Diagnostics.Debug.Assert((minuteInterval > 0L) && ((60L % minuteInterval) == 0L));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.dateAndTime)) || (minimumDate is null) || !(initialDateTime ?? new DateTime()).isBefore(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(minimumDate))));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.dateAndTime)) || (maximumDate is null) || !(initialDateTime ?? new DateTime()).isAfter(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(maximumDate))));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.date)) && (!Equals(mode, CupertinoDatePickerMode.monthYear)) || (minimumYear >= 1L) && ((initialDateTime ?? new DateTime()).Year >= minimumYear));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.date)) && (!Equals(mode, CupertinoDatePickerMode.monthYear)) || (maximumYear is null) || ((initialDateTime ?? new DateTime()).Year <= DartRuntimePrimitives.RequireValue(maximumYear)));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.date)) && (!Equals(mode, CupertinoDatePickerMode.monthYear)) || (minimumDate is null) || !DartRuntimePrimitives.RequireValue(minimumDate).isAfter(initialDateTime ?? new DateTime()));
-        System.Diagnostics.Debug.Assert((!Equals(mode, CupertinoDatePickerMode.date)) && (!Equals(mode, CupertinoDatePickerMode.monthYear)) || (maximumDate is null) || !DartRuntimePrimitives.RequireValue(maximumDate).isBefore(initialDateTime ?? new DateTime()));
-        System.Diagnostics.Debug.Assert(Equals(mode, CupertinoDatePickerMode.date) || !showDayOfWeek);
-        System.Diagnostics.Debug.Assert(((initialDateTime ?? new DateTime()).Minute % minuteInterval) == 0L);
-        System.Diagnostics.Debug.Assert(!showTimeSeparator || Equals(mode, CupertinoDatePickerMode.dateAndTime) || Equals(mode, CupertinoDatePickerMode.time));
-        System.Diagnostics.Debug.Assert((selectableDayPredicate is null) || (initialDateTime is null) || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDateTime)));
+        System.Diagnostics.Debug.Assert(
+            (!Equals(mode, CupertinoDatePickerMode.dateAndTime))
+                || (minimumDate is null)
+                || !(initialDateTime ?? new DateTime()).isBefore(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(minimumDate)
+                    )
+                )
+        );
+        System.Diagnostics.Debug.Assert(
+            (!Equals(mode, CupertinoDatePickerMode.dateAndTime))
+                || (maximumDate is null)
+                || !(initialDateTime ?? new DateTime()).isAfter(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(maximumDate)
+                    )
+                )
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (!Equals(mode, CupertinoDatePickerMode.date))
+                && (!Equals(mode, CupertinoDatePickerMode.monthYear))
+            ) || ((minimumYear >= 1L) && ((initialDateTime ?? new DateTime()).Year >= minimumYear))
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (!Equals(mode, CupertinoDatePickerMode.date))
+                && (!Equals(mode, CupertinoDatePickerMode.monthYear))
+            )
+                || (maximumYear is null)
+                || (
+                    (initialDateTime ?? new DateTime()).Year
+                    <= DartRuntimePrimitives.RequireValue(maximumYear)
+                )
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (!Equals(mode, CupertinoDatePickerMode.date))
+                && (!Equals(mode, CupertinoDatePickerMode.monthYear))
+            )
+                || (minimumDate is null)
+                || !DartRuntimePrimitives
+                    .RequireValue(minimumDate)
+                    .isAfter(initialDateTime ?? new DateTime())
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                (!Equals(mode, CupertinoDatePickerMode.date))
+                && (!Equals(mode, CupertinoDatePickerMode.monthYear))
+            )
+                || (maximumDate is null)
+                || !DartRuntimePrimitives
+                    .RequireValue(maximumDate)
+                    .isBefore(initialDateTime ?? new DateTime())
+        );
+        System.Diagnostics.Debug.Assert(
+            Equals(mode, CupertinoDatePickerMode.date) || !showDayOfWeek
+        );
+        System.Diagnostics.Debug.Assert(
+            ((initialDateTime ?? new DateTime()).Minute % minuteInterval) == 0L
+        );
+        System.Diagnostics.Debug.Assert(
+            !showTimeSeparator
+                || Equals(mode, CupertinoDatePickerMode.dateAndTime)
+                || Equals(mode, CupertinoDatePickerMode.time)
+        );
+        System.Diagnostics.Debug.Assert(
+            (selectableDayPredicate is null)
+                || (initialDateTime is null)
+                || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDateTime))
+        );
     }
 
     public override IState createState()
     {
-        return mode switch { CupertinoDatePickerMode.time => DartRuntimePrimitives.ConvertValue<State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.dateAndTime => DartRuntimePrimitives.ConvertValue<State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.date => DartRuntimePrimitives.ConvertValue<State<CupertinoDatePicker>>(new _CupertinoDatePickerDateState__date_picker(dateOrder: dateOrder)), CupertinoDatePickerMode.monthYear => DartRuntimePrimitives.ConvertValue<State<CupertinoDatePicker>>(new _CupertinoDatePickerMonthYearState__date_picker(dateOrder: dateOrder)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return mode switch
+        {
+            CupertinoDatePickerMode.time => DartRuntimePrimitives.ConvertValue<
+                State<CupertinoDatePicker>
+            >(new _CupertinoDatePickerDateTimeState__date_picker()),
+            CupertinoDatePickerMode.dateAndTime => DartRuntimePrimitives.ConvertValue<
+                State<CupertinoDatePicker>
+            >(new _CupertinoDatePickerDateTimeState__date_picker()),
+            CupertinoDatePickerMode.date => DartRuntimePrimitives.ConvertValue<
+                State<CupertinoDatePicker>
+            >(new _CupertinoDatePickerDateState__date_picker(dateOrder: dateOrder)),
+            CupertinoDatePickerMode.monthYear => DartRuntimePrimitives.ConvertValue<
+                State<CupertinoDatePicker>
+            >(new _CupertinoDatePickerMonthYearState__date_picker(dateOrder: dateOrder)),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static double _getColumnWidth(_PickerColumnType__date_picker columnType, CupertinoLocalizations localizations, BuildContext context, bool showDayOfWeek, bool standaloneMonth = false)
+    internal static double _getColumnWidth(
+        _PickerColumnType__date_picker columnType,
+        CupertinoLocalizations localizations,
+        BuildContext context,
+        bool showDayOfWeek,
+        bool standaloneMonth = false
+    )
     {
         var longTexts = new List<string>();
         switch (columnType)
         {
             case _PickerColumnType__date_picker.date:
+            {
+                for (var i = 1L; i <= 12L; i++)
                 {
-                    for (var i = 1L; i <= 12L; i++)
-                    {
-                        string dateLocal = localizations.datePickerMediumDate(DartRuntimePrimitives.CreateDateTime(2018L, i, 25L));
-                        longTexts.Add(dateLocal);
-                    }
-                    break;
+                    string dateLocal = localizations.datePickerMediumDate(
+                        DartRuntimePrimitives.CreateDateTime(2018L, i, 25L)
+                    );
+                    longTexts.Add(dateLocal);
                 }
+                break;
+            }
             case _PickerColumnType__date_picker.hour:
+            {
+                for (var iLocal = 0L; iLocal < 24L; iLocal++)
                 {
-                    for (var iLocal = 0L; iLocal < 24L; iLocal++)
-                    {
-                        string hourLocal = localizations.datePickerHour(iLocal);
-                        longTexts.Add(hourLocal);
-                    }
-                    break;
+                    string hourLocal = localizations.datePickerHour(iLocal);
+                    longTexts.Add(hourLocal);
                 }
+                break;
+            }
             case _PickerColumnType__date_picker.minute:
+            {
+                for (var iAlternate = 0L; iAlternate < 60L; iAlternate++)
                 {
-                    for (var iAlternate = 0L; iAlternate < 60L; iAlternate++)
-                    {
-                        string minuteLocal = localizations.datePickerMinute(iAlternate);
-                        longTexts.Add(minuteLocal);
-                    }
-                    break;
+                    string minuteLocal = localizations.datePickerMinute(iAlternate);
+                    longTexts.Add(minuteLocal);
                 }
+                break;
+            }
             case _PickerColumnType__date_picker.dayPeriod:
-                {
-                    longTexts.Add(localizations.anteMeridiemAbbreviation);
-                    longTexts.Add(localizations.postMeridiemAbbreviation);
-                    break;
-                }
+            {
+                longTexts.Add(localizations.anteMeridiemAbbreviation);
+                longTexts.Add(localizations.postMeridiemAbbreviation);
+                break;
+            }
             case _PickerColumnType__date_picker.dayOfMonth:
+            {
+                var longestDayOfMonth = 1L;
+                for (var iNested = 1L; iNested <= 31L; iNested++)
                 {
-                    var longestDayOfMonth = 1L;
-                    for (var iNested = 1L; iNested <= 31L; iNested++)
-                    {
-                        string dayOfMonthLocal = localizations.datePickerDayOfMonth(iNested);
-                        longTexts.Add(dayOfMonthLocal);
-                        longestDayOfMonth = iNested;
-                    }
-                    if (showDayOfWeek)
-                    {
-                        for (var wd = 1L; wd < 7L; wd++)
-                        {
-                            string dayOfMonthAlternate = localizations.datePickerDayOfMonth(longestDayOfMonth, wd);
-                            longTexts.Add(dayOfMonthAlternate);
-                        }
-                    }
-                    break;
+                    string dayOfMonthLocal = localizations.datePickerDayOfMonth(iNested);
+                    longTexts.Add(dayOfMonthLocal);
+                    longestDayOfMonth = iNested;
                 }
+                if (showDayOfWeek)
+                {
+                    for (var wd = 1L; wd < 7L; wd++)
+                    {
+                        string dayOfMonthAlternate = localizations.datePickerDayOfMonth(
+                            longestDayOfMonth,
+                            wd
+                        );
+                        longTexts.Add(dayOfMonthAlternate);
+                    }
+                }
+                break;
+            }
             case _PickerColumnType__date_picker.month:
+            {
+                for (var iCurrent = 1L; iCurrent <= 12L; iCurrent++)
                 {
-                    for (var iCurrent = 1L; iCurrent <= 12L; iCurrent++)
-                    {
-                        string monthLocal = standaloneMonth ? localizations.datePickerStandaloneMonth(iCurrent) : localizations.datePickerMonth(iCurrent);
-                        longTexts.Add(monthLocal);
-                    }
-                    break;
+                    string monthLocal = standaloneMonth
+                        ? localizations.datePickerStandaloneMonth(iCurrent)
+                        : localizations.datePickerMonth(iCurrent);
+                    longTexts.Add(monthLocal);
                 }
+                break;
+            }
             case _PickerColumnType__date_picker.year:
-                {
-                    longTexts.Add(localizations.datePickerYear(2018L));
-                    break;
-                }
+            {
+                longTexts.Add(localizations.datePickerYear(2018L));
+                break;
+            }
             case _PickerColumnType__date_picker.timeSeparator:
-                {
-                    longTexts.Add(":");
-                    break;
-                }
+            {
+                longTexts.Add(":");
+                break;
+            }
         }
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(longTexts) && longTexts.All((text) => text.Length != 0), () => (object?)"column type is not appropriate");
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(longTexts) && longTexts.All((text) => text.Length != 0),
+            () => (object?)"column type is not appropriate"
+        );
         return getColumnWidth(texts: longTexts, context: context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double getColumnWidth(List<string> texts, BuildContext context, TextStyle? textStyle = null)
+    public static double getColumnWidth(
+        List<string> texts,
+        BuildContext context,
+        TextStyle? textStyle = null
+    )
     {
-        return texts.map((text) => TextPainter.computeMaxIntrinsicWidth(text: new TextSpan(style: textStyle ?? Date_pickerLibrary._themeTextStyle(context), text: text), textDirection: Directionality.of(context))).reduce(Dart_mathLibrary.max);
+        return texts
+            .map(
+                (text) =>
+                    TextPainter.computeMaxIntrinsicWidth(
+                        text: new TextSpan(
+                            style: textStyle ?? Date_pickerLibrary._themeTextStyle(context),
+                            text: text
+                        ),
+                        textDirection: Directionality.of(context)
+                    )
+            )
+            .reduce(Dart_mathLibrary.max);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal delegate Widget _ColumnBuilder__date_picker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay);
+internal delegate Widget _ColumnBuilder__date_picker(
+    double offAxisFraction,
+    Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+    Widget? selectionOverlay
+);
 
 internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoDatePicker>
 {
@@ -353,7 +526,8 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     public virtual bool isHourPickerScrolling { get; set; } = false;
     public virtual bool isMinutePickerScrolling { get; set; } = false;
     public virtual bool isMeridiemPickerScrolling { get; set; } = false;
-    public virtual DartMap<long, double> estimatedColumnWidths { get; private set; } = new DartMap<long, double>();
+    public virtual DartMap<long, double> estimatedColumnWidths { get; private set; } =
+        new DartMap<long, double>();
 
     public virtual long selectedDayFromInitial
     {
@@ -362,27 +536,32 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
             switch (widget.mode)
             {
                 case CupertinoDatePickerMode.dateAndTime:
-                    {
-                        return dateController.hasClients ? dateController.selectedItem : 0L;
-                    }
+                {
+                    return dateController.hasClients ? dateController.selectedItem : 0L;
+                }
                 case CupertinoDatePickerMode.time:
-                    {
-                        return 0L;
-                    }
+                {
+                    return 0L;
+                }
                 case CupertinoDatePickerMode.date:
                 case CupertinoDatePickerMode.monthYear:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"{GetType()} is only meant for dateAndTime mode or time mode");
+            DartRuntimePrimitives.Assert(
+                () => false,
+                () => (object?)$"{GetType()} is only meant for dateAndTime mode or time mode"
+            );
             return 0L;
         }
     }
     public virtual long selectedHour => _selectedHour(selectedAmPm, _selectedHourIndex);
-    internal virtual long _selectedHourIndex => hourController.hasClients ? (hourController.selectedItem % 24L) : initialDateTime.Hour;
+    internal virtual long _selectedHourIndex =>
+        hourController.hasClients ? (hourController.selectedItem % 24L) : initialDateTime.Hour;
+
     internal virtual long _selectedHour(long selectedAmPm, long selectedHour)
     {
         return _isHourRegionFlipped(selectedAmPm) ? ((selectedHour + 12L) % 24L) : selectedHour;
@@ -393,18 +572,27 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     {
         get
         {
-            return minuteController.hasClients ? (minuteController.selectedItem * widget.minuteInterval % 60L) : initialDateTime.Minute;
+            return minuteController.hasClients
+                ? (minuteController.selectedItem * widget.minuteInterval % 60L)
+                : initialDateTime.Minute;
         }
     }
     public virtual bool isHourRegionFlipped => _isHourRegionFlipped(selectedAmPm);
-    internal virtual bool _isHourRegionFlipped(long selectedAmPm) => DartRuntimePrimitives.ConvertValue<bool>(selectedAmPm != meridiemRegion);
+
+    internal virtual bool _isHourRegionFlipped(long selectedAmPm) =>
+        DartRuntimePrimitives.ConvertValue<bool>(selectedAmPm != meridiemRegion);
+
     public virtual bool isScrolling
     {
         get
         {
-            return isDatePickerScrolling || isHourPickerScrolling || isMinutePickerScrolling || isMeridiemPickerScrolling;
+            return isDatePickerScrolling
+                || isHourPickerScrolling
+                || isMinutePickerScrolling
+                || isMeridiemPickerScrolling;
         }
     }
+
     public override void initState()
     {
         base.initState();
@@ -413,7 +601,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         meridiemRegion = selectedAmPm;
         meridiemController = new FixedExtentScrollController(initialItem: selectedAmPm);
         hourController = new FixedExtentScrollController(initialItem: initialDateTime.Hour);
-        minuteController = new FixedExtentScrollController(initialItem: checked(initialDateTime.Minute / widget.minuteInterval));
+        minuteController = new FixedExtentScrollController(
+            initialItem: checked(initialDateTime.Minute / widget.minuteInterval)
+        );
         dateController = new FixedExtentScrollController();
         PaintingBinding.instance.systemFonts.addListener(_handleSystemFontsChange);
     }
@@ -439,7 +629,10 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     public override void didUpdateWidget(CupertinoDatePicker oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        DartRuntimePrimitives.Assert(() => Equals(oldWidget.mode, widget.mode), () => (object?)$"The {GetType()}'s mode cannot change once it's built.");
+        DartRuntimePrimitives.Assert(
+            () => Equals(oldWidget.mode, widget.mode),
+            () => (object?)$"The {GetType()}'s mode cannot change once it's built."
+        );
         if (!widget.use24hFormat && oldWidget.use24hFormat)
         {
             meridiemController.dispose();
@@ -452,15 +645,31 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         base.didChangeDependencies();
         textDirectionFactor = Equals(Directionality.of(context), TextDirection.ltr) ? 1L : -1L;
         localizations = CupertinoLocalizations.of(context);
-        alignCenterLeft = (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
-        alignCenterRight = (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
+        alignCenterLeft =
+            (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
+        alignCenterRight =
+            (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
         estimatedColumnWidths.Clear();
     }
 
     internal virtual double _getEstimatedColumnWidth(_PickerColumnType__date_picker columnType)
     {
-        estimatedColumnWidths.putIfAbsent(FoundationRuntimePorts.EnumIndex(columnType), () => CupertinoDatePicker._getColumnWidth(columnType, localizations, context, widget.showDayOfWeek));
-        return DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(columnType)));
+        estimatedColumnWidths.putIfAbsent(
+            FoundationRuntimePorts.EnumIndex(columnType),
+            () =>
+                CupertinoDatePicker._getColumnWidth(
+                    columnType,
+                    localizations,
+                    context,
+                    widget.showDayOfWeek
+                )
+        );
+        return DartRuntimePrimitives.RequireValue(
+            DartCollectionRuntime.NullableMapValue<double>(
+                estimatedColumnWidths,
+                FoundationRuntimePorts.EnumIndex(columnType)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -468,12 +677,21 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     {
         get
         {
-            return DartRuntimePrimitives.CreateDateTime(initialDateTime.Year, initialDateTime.Month, initialDateTime.Day + selectedDayFromInitial, selectedHour, selectedMinute);
+            return DartRuntimePrimitives.CreateDateTime(
+                initialDateTime.Year,
+                initialDateTime.Month,
+                initialDateTime.Day + selectedDayFromInitial,
+                selectedHour,
+                selectedMinute
+            );
         }
     }
+
     internal virtual void _onSelectedItemChange(long index)
     {
-        bool isDateInvalid = (widget.minimumDate?.isAfter(selectedDateTime) ?? false) || (widget.maximumDate?.isBefore(selectedDateTime) ?? false);
+        bool isDateInvalid =
+            (widget.minimumDate?.isAfter(selectedDateTime) ?? false)
+            || (widget.maximumDate?.isBefore(selectedDateTime) ?? false);
         if (isDateInvalid)
         {
             return;
@@ -490,181 +708,390 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
 
     internal virtual bool _isSelectableDate(DateTime date)
     {
-        return widget.selectableDayPredicate is null ? true : widget.selectableDayPredicate.Invoke(date);
+        return widget.selectableDayPredicate is null
+            ? true
+            : widget.selectableDayPredicate.Invoke(date);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildMediumDatePicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildMediumDatePicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isDatePickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isDatePickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isDatePickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: CupertinoPicker.CreateBuilder(scrollController: dateController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            _onSelectedItemChange(index);
-        }, itemBuilder: (context, index) =>
-        {
-            var rangeStart = DartRuntimePrimitives.CreateDateTime(initialDateTime.Year, initialDateTime.Month, initialDateTime.Day + index);
-            var rangeEnd = DartRuntimePrimitives.CreateDateTime(initialDateTime.Year, initialDateTime.Month, initialDateTime.Day + index + 1L);
-            var now = new DateTime();
-            if (widget.minimumDate?.isBefore(rangeEnd) == false)
-            {
-                return null;
-            }
-            if (widget.maximumDate?.isAfter(rangeStart) == false)
-            {
-                return null;
-            }
-            string dateText = Equals(rangeStart, DartRuntimePrimitives.CreateDateTime(now.Year, now.Month, now.Day)) ? localizations.todayLabel : localizations.datePickerMediumDate(rangeStart);
-            bool isDisabled = !_isSelectableDate(rangeStart);
-            Widget childLocal = itemPositioningBuilder(context, new Text(dateText, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled)));
-            return isDisabled ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, selectionOverlay: selectionOverlay));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isDatePickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: CupertinoPicker.CreateBuilder(
+                scrollController: dateController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    _onSelectedItemChange(index);
+                },
+                itemBuilder: (context, index) =>
+                {
+                    var rangeStart = DartRuntimePrimitives.CreateDateTime(
+                        initialDateTime.Year,
+                        initialDateTime.Month,
+                        initialDateTime.Day + index
+                    );
+                    var rangeEnd = DartRuntimePrimitives.CreateDateTime(
+                        initialDateTime.Year,
+                        initialDateTime.Month,
+                        initialDateTime.Day + index + 1L
+                    );
+                    var now = new DateTime();
+                    if (widget.minimumDate?.isBefore(rangeEnd) == false)
+                    {
+                        return null;
+                    }
+                    if (widget.maximumDate?.isAfter(rangeStart) == false)
+                    {
+                        return null;
+                    }
+                    string dateText = Equals(
+                        rangeStart,
+                        DartRuntimePrimitives.CreateDateTime(now.Year, now.Month, now.Day)
+                    )
+                        ? localizations.todayLabel
+                        : localizations.datePickerMediumDate(rangeStart);
+                    bool isDisabled = !_isSelectableDate(rangeStart);
+                    Widget childLocal = itemPositioningBuilder(
+                        context,
+                        new Text(
+                            dateText,
+                            style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled)
+                        )
+                    );
+                    return isDisabled ? new ExcludeSemantics(child: childLocal) : childLocal;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                selectionOverlay: selectionOverlay
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isValidHour(long meridiemIndex, long hourIndex)
     {
-        var rangeStart = DartRuntimePrimitives.CreateDateTime(initialDateTime.Year, initialDateTime.Month, initialDateTime.Day + selectedDayFromInitial, _selectedHour(meridiemIndex, hourIndex));
+        var rangeStart = DartRuntimePrimitives.CreateDateTime(
+            initialDateTime.Year,
+            initialDateTime.Month,
+            initialDateTime.Day + selectedDayFromInitial,
+            _selectedHour(meridiemIndex, hourIndex)
+        );
         DateTime rangeEnd = rangeStart.add(Duration.Create(hours: 1L));
-        return (widget.minimumDate?.isBefore(rangeEnd) ?? true) && !(widget.maximumDate?.isBefore(rangeStart) ?? false);
+        return (widget.minimumDate?.isBefore(rangeEnd) ?? true)
+            && !(widget.maximumDate?.isBefore(rangeStart) ?? false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildHourPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildHourPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isHourPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isHourPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isHourPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: hourController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            var regionChanged = meridiemRegion != checked(index / 12L);
-            bool debugIsFlipped = isHourRegionFlipped;
-            if (regionChanged)
-            {
-                meridiemRegion = checked(index / 12L);
-                selectedAmPm = 1L - selectedAmPm;
-            }
-            if (!widget.use24hFormat && regionChanged)
-            {
-                DartRuntimePrimitives.Ignore(meridiemController.animateToItem(selectedAmPm, duration: Duration.Create(milliseconds: 300L), curve: Curves.easeOut));
-            }
-            else
-            {
-                _onSelectedItemChange(index);
-            }
-            DartRuntimePrimitives.Assert(() => debugIsFlipped == isHourRegionFlipped);
-        }, looping: true, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)24L)), (index) =>
-        {
-            long hour = isHourRegionFlipped ? ((index + 12L) % 24L) : index;
-            long displayHour = widget.use24hFormat ? hour : (((hour + 11L) % 12L) + 1L);
-            bool isDisabled = !_isValidHour(selectedAmPm, index);
-            Widget childLocal = itemPositioningBuilder(context, new Text(localizations.datePickerHour(displayHour), semanticsLabel: localizations.datePickerHourSemanticsLabel(displayHour), style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled)));
-            return isDisabled ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
-
-    internal virtual Widget _buildMinutePicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
-    {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
-            {
-                isMinutePickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                else
                 {
-                    isMinutePickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    if (notification is ScrollEndNotification)
+                    {
+                        isHourPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: minuteController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: _onSelectedItemChange, looping: true, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked(60L / widget.minuteInterval))), (index) =>
-        {
-            long minute = index * widget.minuteInterval;
-            var date = DartRuntimePrimitives.CreateDateTime(initialDateTime.Year, initialDateTime.Month, initialDateTime.Day + selectedDayFromInitial, selectedHour, minute);
-            bool isInvalidMinute = (widget.minimumDate?.isAfter(date) ?? false) || (widget.maximumDate?.isBefore(date) ?? false);
-            Widget childLocal = itemPositioningBuilder(context, new Text(localizations.datePickerMinute(minute), semanticsLabel: localizations.datePickerMinuteSemanticsLabel(minute), style: Date_pickerLibrary._themeTextStyle(context, isValid: !isInvalidMinute)));
-            return isInvalidMinute ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
-
-    internal virtual Widget _buildAmPmPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
-    {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
-            {
-                isMeridiemPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: hourController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
                 {
-                    isMeridiemPickerScrolling = false;
-                    _pickerDidStopScrolling();
-                }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: meridiemController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedAmPm = index;
-            DartRuntimePrimitives.Assert(() => (selectedAmPm == 0L) || (selectedAmPm == 1L));
-            _onSelectedItemChange(index);
-        }, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)2L)), (index) =>
-        {
-            bool isDisabled = !_isValidHour(index, _selectedHourIndex);
-            Widget childLocal = itemPositioningBuilder(context, new Text((index == 0L) ? localizations.anteMeridiemAbbreviation : localizations.postMeridiemAbbreviation, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled)));
-            return isDisabled ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+                    var regionChanged = meridiemRegion != checked(index / 12L);
+                    bool debugIsFlipped = isHourRegionFlipped;
+                    if (regionChanged)
+                    {
+                        meridiemRegion = checked(index / 12L);
+                        selectedAmPm = 1L - selectedAmPm;
+                    }
+                    if (!widget.use24hFormat && regionChanged)
+                    {
+                        DartRuntimePrimitives.Ignore(
+                            meridiemController.animateToItem(
+                                selectedAmPm,
+                                duration: Duration.Create(milliseconds: 300L),
+                                curve: Curves.easeOut
+                            )
+                        );
+                    }
+                    else
+                    {
+                        _onSelectedItemChange(index);
+                    }
+                    DartRuntimePrimitives.Assert(() => debugIsFlipped == isHourRegionFlipped);
+                },
+                looping: true,
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)24L)),
+                        (index) =>
+                        {
+                            long hour = isHourRegionFlipped ? ((index + 12L) % 24L) : index;
+                            long displayHour = widget.use24hFormat
+                                ? hour
+                                : (((hour + 11L) % 12L) + 1L);
+                            bool isDisabled = !_isValidHour(selectedAmPm, index);
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    localizations.datePickerHour(displayHour),
+                                    semanticsLabel: localizations.datePickerHourSemanticsLabel(
+                                        displayHour
+                                    ),
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isDisabled
+                                    )
+                                )
+                            );
+                            return isDisabled
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildTimeSeparatorWidget(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildMinutePicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new ExcludeSemantics(child: new CupertinoPicker(offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, onSelectedItemChanged: (index) =>
-        {
-        }, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)1L)), (index) =>
-        {
-            return itemPositioningBuilder(context, new Text(":", style: Date_pickerLibrary._themeTextStyle(context)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
+            {
+                if (notification is ScrollStartNotification)
+                {
+                    isMinutePickerScrolling = true;
+                }
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isMinutePickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: minuteController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: _onSelectedItemChange,
+                looping: true,
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)checked(60L / widget.minuteInterval))),
+                        (index) =>
+                        {
+                            long minute = index * widget.minuteInterval;
+                            var date = DartRuntimePrimitives.CreateDateTime(
+                                initialDateTime.Year,
+                                initialDateTime.Month,
+                                initialDateTime.Day + selectedDayFromInitial,
+                                selectedHour,
+                                minute
+                            );
+                            bool isInvalidMinute =
+                                (widget.minimumDate?.isAfter(date) ?? false)
+                                || (widget.maximumDate?.isBefore(date) ?? false);
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    localizations.datePickerMinute(minute),
+                                    semanticsLabel: localizations.datePickerMinuteSemanticsLabel(
+                                        minute
+                                    ),
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isInvalidMinute
+                                    )
+                                )
+                            );
+                            return isInvalidMinute
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal virtual Widget _buildAmPmPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
+    {
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
+            {
+                if (notification is ScrollStartNotification)
+                {
+                    isMeridiemPickerScrolling = true;
+                }
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isMeridiemPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: meridiemController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedAmPm = index;
+                    DartRuntimePrimitives.Assert(() =>
+                        (selectedAmPm == 0L) || (selectedAmPm == 1L)
+                    );
+                    _onSelectedItemChange(index);
+                },
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)2L)),
+                        (index) =>
+                        {
+                            bool isDisabled = !_isValidHour(index, _selectedHourIndex);
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    (index == 0L)
+                                        ? localizations.anteMeridiemAbbreviation
+                                        : localizations.postMeridiemAbbreviation,
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isDisabled
+                                    )
+                                )
+                            );
+                            return isDisabled
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal virtual Widget _buildTimeSeparatorWidget(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
+    {
+        return new ExcludeSemantics(
+            child: new CupertinoPicker(
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                onSelectedItemChanged: (index) => { },
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)1L)),
+                        (index) =>
+                        {
+                            return itemPositioningBuilder(
+                                context,
+                                new Text(":", style: Date_pickerLibrary._themeTextStyle(context))
+                            );
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -674,15 +1101,18 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         {
             var daysThreshold = 1L;
             DateTime targetDate = selectedDateTime.add(Duration.Create(days: daysThreshold));
-            _scrollToDate(targetDate, selectedDateTime, false, focusedIndex: dateController.selectedItem + daysThreshold);
+            _scrollToDate(
+                targetDate,
+                selectedDateTime,
+                false,
+                focusedIndex: dateController.selectedItem + daysThreshold
+            );
         }
     }
 
     internal virtual void _pickerDidStopScrolling()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
         if (isScrolling)
         {
             return;
@@ -693,89 +1123,151 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         _scrollToFirstSelectableDate();
         if (minCheck || maxCheck)
         {
-            DateTime targetDate = minCheck ? DartRuntimePrimitives.RequireValue(widget.minimumDate) : DartRuntimePrimitives.RequireValue(widget.maximumDate);
+            DateTime targetDate = minCheck
+                ? DartRuntimePrimitives.RequireValue(widget.minimumDate)
+                : DartRuntimePrimitives.RequireValue(widget.maximumDate);
             _scrollToDate(targetDate, selectedDate, minCheck);
         }
     }
 
-    internal virtual void _scrollToDate(DateTime newDate, DateTime fromDate, bool minCheck, long? focusedIndex = null)
+    internal virtual void _scrollToDate(
+        DateTime newDate,
+        DateTime fromDate,
+        bool minCheck,
+        long? focusedIndex = null
+    )
     {
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-        {
-            if ((fromDate.Year != newDate.Year) || (fromDate.Month != newDate.Month) || (fromDate.Day != newDate.Day))
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (timestamp) =>
             {
-                Date_pickerLibrary._animateColumnControllerToItem(dateController, focusedIndex ?? selectedDayFromInitial);
-            }
-            if (fromDate.Hour != newDate.Hour)
-            {
-                bool needsMeridiemChange = !widget.use24hFormat && (checked(fromDate.Hour / 12L) != checked(newDate.Hour / 12L));
-                if (needsMeridiemChange)
+                if (
+                    (fromDate.Year != newDate.Year)
+                    || (fromDate.Month != newDate.Month)
+                    || (fromDate.Day != newDate.Day)
+                )
                 {
-                    Date_pickerLibrary._animateColumnControllerToItem(meridiemController, 1L - meridiemController.selectedItem);
-                    long newItem = (checked(hourController.selectedItem / 12L) * 12L) + ((hourController.selectedItem + newDate.Hour - fromDate.Hour) % 12L);
-                    Date_pickerLibrary._animateColumnControllerToItem(hourController, newItem);
+                    Date_pickerLibrary._animateColumnControllerToItem(
+                        dateController,
+                        focusedIndex ?? selectedDayFromInitial
+                    );
                 }
-                else
+                if (fromDate.Hour != newDate.Hour)
                 {
-                    Date_pickerLibrary._animateColumnControllerToItem(hourController, hourController.selectedItem + newDate.Hour - fromDate.Hour);
+                    bool needsMeridiemChange =
+                        !widget.use24hFormat
+                        && (checked(fromDate.Hour / 12L) != checked(newDate.Hour / 12L));
+                    if (needsMeridiemChange)
+                    {
+                        Date_pickerLibrary._animateColumnControllerToItem(
+                            meridiemController,
+                            1L - meridiemController.selectedItem
+                        );
+                        long newItem =
+                            (checked(hourController.selectedItem / 12L) * 12L)
+                            + ((hourController.selectedItem + newDate.Hour - fromDate.Hour) % 12L);
+                        Date_pickerLibrary._animateColumnControllerToItem(hourController, newItem);
+                    }
+                    else
+                    {
+                        Date_pickerLibrary._animateColumnControllerToItem(
+                            hourController,
+                            hourController.selectedItem + newDate.Hour - fromDate.Hour
+                        );
+                    }
                 }
-            }
-            if (fromDate.Minute != newDate.Minute)
-            {
-                double positionDouble = newDate.Minute / widget.minuteInterval;
-                long position = minCheck ? positionDouble.ceil() : positionDouble.floor();
-                Date_pickerLibrary._animateColumnControllerToItem(minuteController, position);
-            }
-        }, debugLabel: "DatePicker.scrollToDate");
+                if (fromDate.Minute != newDate.Minute)
+                {
+                    double positionDouble = newDate.Minute / widget.minuteInterval;
+                    long position = minCheck ? positionDouble.ceil() : positionDouble.floor();
+                    Date_pickerLibrary._animateColumnControllerToItem(minuteController, position);
+                }
+            },
+            debugLabel: "DatePicker.scrollToDate"
+        );
     }
 
     public override Widget build(BuildContext context)
     {
-        var columnWidthsLocal = new List<double> { _getEstimatedColumnWidth(_PickerColumnType__date_picker.hour), _getEstimatedColumnWidth(_PickerColumnType__date_picker.minute) };
-        var pickerBuilders = Equals(Directionality.of(context), TextDirection.rtl) ? new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildMinutePicker, _buildHourPicker } : new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildHourPicker, _buildMinutePicker };
+        var columnWidthsLocal = new List<double>
+        {
+            _getEstimatedColumnWidth(_PickerColumnType__date_picker.hour),
+            _getEstimatedColumnWidth(_PickerColumnType__date_picker.minute),
+        };
+        var pickerBuilders = Equals(Directionality.of(context), TextDirection.rtl)
+            ? new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>
+            {
+                _buildMinutePicker,
+                _buildHourPicker,
+            }
+            : new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>
+            {
+                _buildHourPicker,
+                _buildMinutePicker,
+            };
         if (widget.showTimeSeparator)
         {
-            columnWidthsLocal.Insert(checked((int)1L), _getEstimatedColumnWidth(_PickerColumnType__date_picker.timeSeparator));
+            columnWidthsLocal.Insert(
+                checked((int)1L),
+                _getEstimatedColumnWidth(_PickerColumnType__date_picker.timeSeparator)
+            );
             pickerBuilders.Insert(checked((int)1L), _buildTimeSeparatorWidget);
         }
         if (!widget.use24hFormat)
         {
             switch (localizations.datePickerDateTimeOrder)
             {
-                case var __constant47363 when Equals(__constant47363, DatePickerDateTimeOrder.date_time_dayPeriod):
-                case var __constant47421 when Equals(__constant47421, DatePickerDateTimeOrder.time_dayPeriod_date):
-                    {
-                        pickerBuilders.Add(_buildAmPmPicker);
-                        columnWidthsLocal.Add(_getEstimatedColumnWidth(_PickerColumnType__date_picker.dayPeriod));
-                        break;
-                    }
-                case var __constant47610 when Equals(__constant47610, DatePickerDateTimeOrder.date_dayPeriod_time):
-                case var __constant47668 when Equals(__constant47668, DatePickerDateTimeOrder.dayPeriod_time_date):
-                    {
-                        pickerBuilders.Insert(checked((int)0L), _buildAmPmPicker);
-                        columnWidthsLocal.Insert(checked((int)0L), _getEstimatedColumnWidth(_PickerColumnType__date_picker.dayPeriod));
-                        break;
-                    }
+                case var __constant47363
+                    when Equals(__constant47363, DatePickerDateTimeOrder.date_time_dayPeriod):
+                case var __constant47421
+                    when Equals(__constant47421, DatePickerDateTimeOrder.time_dayPeriod_date):
+                {
+                    pickerBuilders.Add(_buildAmPmPicker);
+                    columnWidthsLocal.Add(
+                        _getEstimatedColumnWidth(_PickerColumnType__date_picker.dayPeriod)
+                    );
+                    break;
+                }
+                case var __constant47610
+                    when Equals(__constant47610, DatePickerDateTimeOrder.date_dayPeriod_time):
+                case var __constant47668
+                    when Equals(__constant47668, DatePickerDateTimeOrder.dayPeriod_time_date):
+                {
+                    pickerBuilders.Insert(checked((int)0L), _buildAmPmPicker);
+                    columnWidthsLocal.Insert(
+                        checked((int)0L),
+                        _getEstimatedColumnWidth(_PickerColumnType__date_picker.dayPeriod)
+                    );
+                    break;
+                }
             }
         }
         if (Equals(widget.mode, CupertinoDatePickerMode.dateAndTime))
         {
             switch (localizations.datePickerDateTimeOrder)
             {
-                case var __constant48071 when Equals(__constant48071, DatePickerDateTimeOrder.time_dayPeriod_date):
-                case var __constant48129 when Equals(__constant48129, DatePickerDateTimeOrder.dayPeriod_time_date):
-                    {
-                        pickerBuilders.Add(_buildMediumDatePicker);
-                        columnWidthsLocal.Add(_getEstimatedColumnWidth(_PickerColumnType__date_picker.date));
-                        break;
-                    }
-                case var __constant48319 when Equals(__constant48319, DatePickerDateTimeOrder.date_time_dayPeriod):
-                case var __constant48377 when Equals(__constant48377, DatePickerDateTimeOrder.date_dayPeriod_time):
-                    {
-                        pickerBuilders.Insert(checked((int)0L), _buildMediumDatePicker);
-                        columnWidthsLocal.Insert(checked((int)0L), _getEstimatedColumnWidth(_PickerColumnType__date_picker.date));
-                        break;
-                    }
+                case var __constant48071
+                    when Equals(__constant48071, DatePickerDateTimeOrder.time_dayPeriod_date):
+                case var __constant48129
+                    when Equals(__constant48129, DatePickerDateTimeOrder.dayPeriod_time_date):
+                {
+                    pickerBuilders.Add(_buildMediumDatePicker);
+                    columnWidthsLocal.Add(
+                        _getEstimatedColumnWidth(_PickerColumnType__date_picker.date)
+                    );
+                    break;
+                }
+                case var __constant48319
+                    when Equals(__constant48319, DatePickerDateTimeOrder.date_time_dayPeriod):
+                case var __constant48377
+                    when Equals(__constant48377, DatePickerDateTimeOrder.date_dayPeriod_time):
+                {
+                    pickerBuilders.Insert(checked((int)0L), _buildMediumDatePicker);
+                    columnWidthsLocal.Insert(
+                        checked((int)0L),
+                        _getEstimatedColumnWidth(_PickerColumnType__date_picker.date)
+                    );
+                    break;
+                }
             }
         }
         var pickers = new List<Widget>();
@@ -787,7 +1279,11 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
             Widget? selectionOverlay = Date_pickerLibrary._centerSelectionOverlay;
             if (widget.selectionOverlayBuilder is not null)
             {
-                selectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: i, columnCount: checked(columnWidthsLocal.Count));
+                selectionOverlay = widget.selectionOverlayBuilder!(
+                    context,
+                    selectedIndex: i,
+                    columnCount: checked(columnWidthsLocal.Count)
+                );
             }
             else
             {
@@ -823,19 +1319,56 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
             {
                 paddingLocal = paddingLocal.flipped;
             }
-            totalColumnWidths += width + 2L * Date_pickerLibrary._kDatePickerPadSize;
-            pickers.Add(new LayoutId(id: i, child: pickerBuilders[(int)i](offAxisFraction, (context, child) =>
-            {
-                Widget constrained = new ConstrainedBox(constraints: new BoxConstraints(maxWidth: width + Date_pickerLibrary._kDatePickerPadSize), child: child);
-                return new Padding(padding: paddingLocal, child: new Align(alignment: lastColumn ? alignCenterLeft : alignCenterRight, child: (firstColumn || lastColumn) ? constrained : child));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, selectionOverlay)));
+            totalColumnWidths += width + (2L * Date_pickerLibrary._kDatePickerPadSize);
+            pickers.Add(
+                new LayoutId(
+                    id: i,
+                    child: pickerBuilders[(int)i]
+                        (
+                            offAxisFraction,
+                            (context, child) =>
+                            {
+                                Widget constrained = new ConstrainedBox(
+                                    constraints: new BoxConstraints(
+                                        maxWidth: width + Date_pickerLibrary._kDatePickerPadSize
+                                    ),
+                                    child: child
+                                );
+                                return new Padding(
+                                    padding: paddingLocal,
+                                    child: new Align(
+                                        alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+                                        child: (firstColumn || lastColumn) ? constrained : child
+                                    )
+                                );
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            },
+                            selectionOverlay
+                        )
+                )
+            );
         }
-        double maxPickerWidth = (totalColumnWidths > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths : Date_pickerLibrary._kPickerWidth;
-        return MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidthsLocal, textDirectionFactor: textDirectionFactor, maxWidth: maxPickerWidth), children: pickers)));
+        double maxPickerWidth =
+            (totalColumnWidths > Date_pickerLibrary._kPickerWidth)
+                ? totalColumnWidths
+                : Date_pickerLibrary._kPickerWidth;
+        return MediaQuery.withNoTextScaling(
+            child: DefaultTextStyle.merge(
+                style: Date_pickerLibrary._kDefaultPickerTextStyle,
+                child: new CustomMultiChildLayout(
+                    @delegate: new _DatePickerLayoutDelegate__date_picker(
+                        columnWidths: columnWidthsLocal,
+                        textDirectionFactor: textDirectionFactor,
+                        maxWidth: maxPickerWidth
+                    ),
+                    children: pickers
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDatePicker>
@@ -854,14 +1387,19 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
     public virtual bool isDayPickerScrolling { get; set; } = false;
     public virtual bool isMonthPickerScrolling { get; set; } = false;
     public virtual bool isYearPickerScrolling { get; set; } = false;
-    public virtual DartMap<long, double> estimatedColumnWidths { get; set; } = new DartMap<long, double>();
+    public virtual DartMap<long, double> estimatedColumnWidths { get; set; } =
+        new DartMap<long, double>();
 
     internal _CupertinoDatePickerDateState__date_picker(DatePickerDateOrder? dateOrder)
     {
         this.dateOrder = dateOrder;
     }
 
-    public virtual bool isScrolling => DartRuntimePrimitives.ConvertValue<bool>(isDayPickerScrolling || isMonthPickerScrolling || isYearPickerScrolling);
+    public virtual bool isScrolling =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            isDayPickerScrolling || isMonthPickerScrolling || isYearPickerScrolling
+        );
+
     public override void initState()
     {
         base.initState();
@@ -896,134 +1434,335 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
         base.didChangeDependencies();
         textDirectionFactor = Equals(Directionality.of(context), TextDirection.ltr) ? 1L : -1L;
         localizations = CupertinoLocalizations.of(context);
-        alignCenterLeft = (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
-        alignCenterRight = (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
+        alignCenterLeft =
+            (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
+        alignCenterRight =
+            (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
         _refreshEstimatedColumnWidths();
     }
 
     internal virtual void _refreshEstimatedColumnWidths()
     {
-        estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.dayOfMonth, localizations, context, widget.showDayOfWeek);
-        estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.month, localizations, context, widget.showDayOfWeek);
-        estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.year, localizations, context, widget.showDayOfWeek);
+        estimatedColumnWidths[
+            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth)
+        ] = CupertinoDatePicker._getColumnWidth(
+            _PickerColumnType__date_picker.dayOfMonth,
+            localizations,
+            context,
+            widget.showDayOfWeek
+        );
+        estimatedColumnWidths[
+            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+        ] = CupertinoDatePicker._getColumnWidth(
+            _PickerColumnType__date_picker.month,
+            localizations,
+            context,
+            widget.showDayOfWeek
+        );
+        estimatedColumnWidths[
+            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+        ] = CupertinoDatePicker._getColumnWidth(
+            _PickerColumnType__date_picker.year,
+            localizations,
+            context,
+            widget.showDayOfWeek
+        );
     }
 
-    internal virtual DateTime _lastDayInMonth(long year, long month) => DartRuntimePrimitives.CreateDateTime(year, month + 1L, 0L);
-    internal virtual Widget _buildDayPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual DateTime _lastDayInMonth(long year, long month) =>
+        DartRuntimePrimitives.CreateDateTime(year, month + 1L, 0L);
+
+    internal virtual Widget _buildDayPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
         long daysInCurrentMonth = _lastDayInMonth(selectedYear, selectedMonth).Day;
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isDayPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isDayPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isDayPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: dayController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedDay = index + 1L;
-            if (_isCurrentDateValid)
-            {
-                widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay));
-            }
-        }, looping: true, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)31L)), (index) =>
-        {
-            long day = index + 1L;
-            long? dayOfWeek = widget.showDayOfWeek ? DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, day).DayOfWeek.ToDartWeekday() : null;
-            bool isInvalidDay = day > daysInCurrentMonth || (widget.minimumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.minimumDate).Month == selectedMonth) && (DartRuntimePrimitives.RequireValue(widget.minimumDate).Day > day) || (widget.maximumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.maximumDate).Month == selectedMonth) && (DartRuntimePrimitives.RequireValue(widget.maximumDate).Day < day);
-            Widget childLocal = itemPositioningBuilder(context, new Text(localizations.datePickerDayOfMonth(day, dayOfWeek), style: Date_pickerLibrary._themeTextStyle(context, isValid: !isInvalidDay)));
-            return isInvalidDay ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isDayPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: dayController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedDay = index + 1L;
+                    if (_isCurrentDateValid)
+                    {
+                        widget.onDateTimeChanged(
+                            DartRuntimePrimitives.CreateDateTime(
+                                selectedYear,
+                                selectedMonth,
+                                selectedDay
+                            )
+                        );
+                    }
+                },
+                looping: true,
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)31L)),
+                        (index) =>
+                        {
+                            long day = index + 1L;
+                            long? dayOfWeek = widget.showDayOfWeek
+                                ? DartRuntimePrimitives
+                                    .CreateDateTime(selectedYear, selectedMonth, day)
+                                    .DayOfWeek.ToDartWeekday()
+                                : null;
+                            bool isInvalidDay =
+                                day > daysInCurrentMonth
+                                || (
+                                    (widget.minimumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
+                                        == selectedMonth
+                                    )
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Day
+                                        > day
+                                    )
+                                )
+                                || (
+                                    (widget.maximumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
+                                        == selectedMonth
+                                    )
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Day
+                                        < day
+                                    )
+                                );
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    localizations.datePickerDayOfMonth(day, dayOfWeek),
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isInvalidDay
+                                    )
+                                )
+                            );
+                            return isInvalidDay
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildMonthPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildMonthPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isMonthPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isMonthPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isMonthPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: monthController, offAxisFraction: offAxisFraction, itemExtent: widget.itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedMonth = index + 1L;
-            if (_isCurrentDateValid)
-            {
-                widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay));
-            }
-        }, looping: true, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)12L)), (index) =>
-        {
-            long month = index + 1L;
-            bool isInvalidMonth = (widget.minimumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.minimumDate).Month > month) || (widget.maximumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.maximumDate).Month < month);
-            string monthName = Equals(widget.mode, CupertinoDatePickerMode.monthYear) ? localizations.datePickerStandaloneMonth(month) : localizations.datePickerMonth(month);
-            Widget childLocal = itemPositioningBuilder(context, new Text(monthName, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isInvalidMonth)));
-            return isInvalidMonth ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isMonthPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: monthController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: widget.itemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedMonth = index + 1L;
+                    if (_isCurrentDateValid)
+                    {
+                        widget.onDateTimeChanged(
+                            DartRuntimePrimitives.CreateDateTime(
+                                selectedYear,
+                                selectedMonth,
+                                selectedDay
+                            )
+                        );
+                    }
+                },
+                looping: true,
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)12L)),
+                        (index) =>
+                        {
+                            long month = index + 1L;
+                            bool isInvalidMonth =
+                                (
+                                    (widget.minimumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
+                                        > month
+                                    )
+                                )
+                                || (
+                                    (widget.maximumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
+                                        < month
+                                    )
+                                );
+                            string monthName = Equals(
+                                widget.mode,
+                                CupertinoDatePickerMode.monthYear
+                            )
+                                ? localizations.datePickerStandaloneMonth(month)
+                                : localizations.datePickerMonth(month);
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    monthName,
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isInvalidMonth
+                                    )
+                                )
+                            );
+                            return isInvalidMonth
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildYearPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildYearPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isYearPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isYearPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isYearPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: CupertinoPicker.CreateBuilder(scrollController: yearController, itemExtent: widget.itemExtent, offAxisFraction: offAxisFraction, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedYear = index;
-            if (_isCurrentDateValid)
-            {
-                widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay));
-            }
-        }, itemBuilder: (context, year) =>
-        {
-            if (year < widget.minimumYear)
-            {
-                return null;
-            }
-            if ((widget.maximumYear is not null) && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear)))
-            {
-                return null;
-            }
-            bool isValidYear = ((widget.minimumDate is null) || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)) && ((widget.maximumDate is null) || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year));
-            Widget childLocal = itemPositioningBuilder(context, new Text(localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear)));
-            return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, selectionOverlay: selectionOverlay));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isYearPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: CupertinoPicker.CreateBuilder(
+                scrollController: yearController,
+                itemExtent: widget.itemExtent,
+                offAxisFraction: offAxisFraction,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedYear = index;
+                    if (_isCurrentDateValid)
+                    {
+                        widget.onDateTimeChanged(
+                            DartRuntimePrimitives.CreateDateTime(
+                                selectedYear,
+                                selectedMonth,
+                                selectedDay
+                            )
+                        );
+                    }
+                },
+                itemBuilder: (context, year) =>
+                {
+                    if (year < widget.minimumYear)
+                    {
+                        return null;
+                    }
+                    if (
+                        (widget.maximumYear is not null)
+                        && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear))
+                    )
+                    {
+                        return null;
+                    }
+                    bool isValidYear =
+                        (
+                            (widget.minimumDate is null)
+                            || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)
+                        )
+                        && (
+                            (widget.maximumDate is null)
+                            || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year)
+                        );
+                    Widget childLocal = itemPositioningBuilder(
+                        context,
+                        new Text(
+                            localizations.datePickerYear(year),
+                            style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear)
+                        )
+                    );
+                    return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                selectionOverlay: selectionOverlay
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1031,29 +1770,46 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
     {
         get
         {
-            var minSelectedDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay);
-            var maxSelectedDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay + 1L);
+            var minSelectedDate = DartRuntimePrimitives.CreateDateTime(
+                selectedYear,
+                selectedMonth,
+                selectedDay
+            );
+            var maxSelectedDate = DartRuntimePrimitives.CreateDateTime(
+                selectedYear,
+                selectedMonth,
+                selectedDay + 1L
+            );
             bool minCheck = widget.minimumDate?.isBefore(maxSelectedDate) ?? true;
             bool maxCheck = widget.maximumDate?.isBefore(minSelectedDate) ?? false;
             return minCheck && !maxCheck && (minSelectedDate.Day == selectedDay);
         }
     }
+
     internal virtual void _pickerDidStopScrolling()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
         if (isScrolling)
         {
             return;
         }
-        var minSelectDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay);
-        var maxSelectDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, selectedDay + 1L);
+        var minSelectDate = DartRuntimePrimitives.CreateDateTime(
+            selectedYear,
+            selectedMonth,
+            selectedDay
+        );
+        var maxSelectDate = DartRuntimePrimitives.CreateDateTime(
+            selectedYear,
+            selectedMonth,
+            selectedDay + 1L
+        );
         bool minCheck = widget.minimumDate?.isBefore(maxSelectDate) ?? true;
         bool maxCheck = widget.maximumDate?.isBefore(minSelectDate) ?? false;
         if (!minCheck || maxCheck)
         {
-            DateTime targetDate = minCheck ? DartRuntimePrimitives.RequireValue(widget.maximumDate) : DartRuntimePrimitives.RequireValue(widget.minimumDate);
+            DateTime targetDate = minCheck
+                ? DartRuntimePrimitives.RequireValue(widget.maximumDate)
+                : DartRuntimePrimitives.RequireValue(widget.minimumDate);
             _scrollToDate(targetDate);
             return;
         }
@@ -1066,54 +1822,181 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
 
     internal virtual void _scrollToDate(DateTime newDate)
     {
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-        {
-            if (selectedYear != newDate.Year)
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (timestamp) =>
             {
-                Date_pickerLibrary._animateColumnControllerToItem(yearController, newDate.Year);
-            }
-            if (selectedMonth != newDate.Month)
-            {
-                Date_pickerLibrary._animateColumnControllerToItem(monthController, newDate.Month - 1L);
-            }
-            if (selectedDay != newDate.Day)
-            {
-                Date_pickerLibrary._animateColumnControllerToItem(dayController, newDate.Day - 1L);
-            }
-        }, debugLabel: "DatePicker.scrollToDate");
+                if (selectedYear != newDate.Year)
+                {
+                    Date_pickerLibrary._animateColumnControllerToItem(yearController, newDate.Year);
+                }
+                if (selectedMonth != newDate.Month)
+                {
+                    Date_pickerLibrary._animateColumnControllerToItem(
+                        monthController,
+                        newDate.Month - 1L
+                    );
+                }
+                if (selectedDay != newDate.Day)
+                {
+                    Date_pickerLibrary._animateColumnControllerToItem(
+                        dayController,
+                        newDate.Day - 1L
+                    );
+                }
+            },
+            debugLabel: "DatePicker.scrollToDate"
+        );
     }
 
     public override Widget build(BuildContext context)
     {
-        var pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>();
+        var pickerBuilders =
+            new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>();
         var columnWidthsLocal = new List<double>();
-        DatePickerDateOrder datePickerDateOrderLocal = dateOrder ?? localizations.datePickerDateOrder;
+        DatePickerDateOrder datePickerDateOrderLocal =
+            dateOrder ?? localizations.datePickerDateOrder;
         switch (datePickerDateOrderLocal)
         {
             case var __constant63400 when Equals(__constant63400, DatePickerDateOrder.mdy):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildMonthPicker, _buildDayPicker, _buildYearPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
-                    break;
-                }
+                    _buildMonthPicker,
+                    _buildDayPicker,
+                    _buildYearPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(
+                                _PickerColumnType__date_picker.dayOfMonth
+                            )
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                };
+                break;
+            }
             case var __constant63776 when Equals(__constant63776, DatePickerDateOrder.dmy):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildDayPicker, _buildMonthPicker, _buildYearPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
-                    break;
-                }
+                    _buildDayPicker,
+                    _buildMonthPicker,
+                    _buildYearPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(
+                                _PickerColumnType__date_picker.dayOfMonth
+                            )
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                };
+                break;
+            }
             case var __constant64152 when Equals(__constant64152, DatePickerDateOrder.ymd):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildYearPicker, _buildMonthPicker, _buildDayPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))) };
-                    break;
-                }
+                    _buildYearPicker,
+                    _buildMonthPicker,
+                    _buildDayPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(
+                                _PickerColumnType__date_picker.dayOfMonth
+                            )
+                        )
+                    ),
+                };
+                break;
+            }
             case var __constant64528 when Equals(__constant64528, DatePickerDateOrder.ydm):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildYearPicker, _buildDayPicker, _buildMonthPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))) };
-                    break;
-                }
+                    _buildYearPicker,
+                    _buildDayPicker,
+                    _buildMonthPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(
+                                _PickerColumnType__date_picker.dayOfMonth
+                            )
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                };
+                break;
+            }
         }
         var pickers = new List<Widget>();
         double totalColumnWidths = 4L * Date_pickerLibrary._kDatePickerPadSize;
@@ -1129,7 +2012,11 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
             Widget? selectionOverlay = Date_pickerLibrary._centerSelectionOverlay;
             if (widget.selectionOverlayBuilder is not null)
             {
-                selectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: i, columnCount: checked(columnWidthsLocal.Count));
+                selectionOverlay = widget.selectionOverlayBuilder!(
+                    context,
+                    selectedIndex: i,
+                    columnCount: checked(columnWidthsLocal.Count)
+                );
             }
             else
             {
@@ -1145,18 +2032,59 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     }
                 }
             }
-            totalColumnWidths += widthLocal + 2L * Date_pickerLibrary._kDatePickerPadSize;
-            pickers.Add(new LayoutId(id: i, child: pickerBuilders[(int)i](offAxisFraction, (context, child) =>
-            {
-                return new Padding(padding: firstColumn ? EdgeInsets.zero : paddingLocal, child: new Align(alignment: lastColumn ? alignCenterLeft : alignCenterRight, child: new SizedBox(width: widthLocal + Date_pickerLibrary._kDatePickerPadSize, child: new Align(alignment: firstColumn ? alignCenterLeft : alignCenterRight, child: child))));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, selectionOverlay)));
+            totalColumnWidths += widthLocal + (2L * Date_pickerLibrary._kDatePickerPadSize);
+            pickers.Add(
+                new LayoutId(
+                    id: i,
+                    child: pickerBuilders[(int)i]
+                        (
+                            offAxisFraction,
+                            (context, child) =>
+                            {
+                                return new Padding(
+                                    padding: firstColumn ? EdgeInsets.zero : paddingLocal,
+                                    child: new Align(
+                                        alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+                                        child: new SizedBox(
+                                            width: widthLocal
+                                                + Date_pickerLibrary._kDatePickerPadSize,
+                                            child: new Align(
+                                                alignment: firstColumn
+                                                    ? alignCenterLeft
+                                                    : alignCenterRight,
+                                                child: child
+                                            )
+                                        )
+                                    )
+                                );
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            },
+                            selectionOverlay
+                        )
+                )
+            );
         }
-        double maxPickerWidth = (totalColumnWidths > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths : Date_pickerLibrary._kPickerWidth;
-        return MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidthsLocal, textDirectionFactor: textDirectionFactor, maxWidth: maxPickerWidth), children: pickers)));
+        double maxPickerWidth =
+            (totalColumnWidths > Date_pickerLibrary._kPickerWidth)
+                ? totalColumnWidths
+                : Date_pickerLibrary._kPickerWidth;
+        return MediaQuery.withNoTextScaling(
+            child: DefaultTextStyle.merge(
+                style: Date_pickerLibrary._kDefaultPickerTextStyle,
+                child: new CustomMultiChildLayout(
+                    @delegate: new _DatePickerLayoutDelegate__date_picker(
+                        columnWidths: columnWidthsLocal,
+                        textDirectionFactor: textDirectionFactor,
+                        maxWidth: maxPickerWidth
+                    ),
+                    children: pickers
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CupertinoDatePickerMonthYearState__date_picker : State<CupertinoDatePicker>
@@ -1172,14 +2100,17 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
     public virtual FixedExtentScrollController yearController { get; set; } = default!;
     public virtual bool isMonthPickerScrolling { get; set; } = false;
     public virtual bool isYearPickerScrolling { get; set; } = false;
-    public virtual DartMap<long, double> estimatedColumnWidths { get; set; } = new DartMap<long, double>();
+    public virtual DartMap<long, double> estimatedColumnWidths { get; set; } =
+        new DartMap<long, double>();
 
     internal _CupertinoDatePickerMonthYearState__date_picker(DatePickerDateOrder? dateOrder)
     {
         this.dateOrder = dateOrder;
     }
 
-    public virtual bool isScrolling => DartRuntimePrimitives.ConvertValue<bool>(isMonthPickerScrolling || isYearPickerScrolling);
+    public virtual bool isScrolling =>
+        DartRuntimePrimitives.ConvertValue<bool>(isMonthPickerScrolling || isYearPickerScrolling);
+
     public override void initState()
     {
         base.initState();
@@ -1211,94 +2142,207 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
         base.didChangeDependencies();
         textDirectionFactor = Equals(Directionality.of(context), TextDirection.ltr) ? 1L : -1L;
         localizations = CupertinoLocalizations.of(context);
-        alignCenterLeft = (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
-        alignCenterRight = (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
+        alignCenterLeft =
+            (textDirectionFactor == 1L) ? Alignment.centerLeft : Alignment.centerRight;
+        alignCenterRight =
+            (textDirectionFactor == 1L) ? Alignment.centerRight : Alignment.centerLeft;
         _refreshEstimatedColumnWidths();
     }
 
     internal virtual void _refreshEstimatedColumnWidths()
     {
-        estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.month, localizations, context, false, standaloneMonth: Equals(widget.mode, CupertinoDatePickerMode.monthYear));
-        estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.year, localizations, context, false);
+        estimatedColumnWidths[
+            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+        ] = CupertinoDatePicker._getColumnWidth(
+            _PickerColumnType__date_picker.month,
+            localizations,
+            context,
+            false,
+            standaloneMonth: Equals(widget.mode, CupertinoDatePickerMode.monthYear)
+        );
+        estimatedColumnWidths[
+            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+        ] = CupertinoDatePicker._getColumnWidth(
+            _PickerColumnType__date_picker.year,
+            localizations,
+            context,
+            false
+        );
     }
 
-    internal virtual Widget _buildMonthPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildMonthPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isMonthPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isMonthPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isMonthPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new CupertinoPicker(scrollController: monthController, offAxisFraction: offAxisFraction, itemExtent: Date_pickerLibrary._kItemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedMonth = index + 1L;
-            if (_isCurrentDateValid)
-            {
-                widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth));
-            }
-        }, looping: true, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)12L)), (index) =>
-        {
-            long month = index + 1L;
-            bool isInvalidMonth = (widget.minimumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.minimumDate).Month > month) || (widget.maximumDate?.Year == selectedYear) && (DartRuntimePrimitives.RequireValue(widget.maximumDate).Month < month);
-            string monthName = Equals(widget.mode, CupertinoDatePickerMode.monthYear) ? localizations.datePickerStandaloneMonth(month) : localizations.datePickerMonth(month);
-            Widget childLocal = itemPositioningBuilder(context, new Text(monthName, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isInvalidMonth)));
-            return isInvalidMonth ? new ExcludeSemantics(child: childLocal) : childLocal;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isMonthPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new CupertinoPicker(
+                scrollController: monthController,
+                offAxisFraction: offAxisFraction,
+                itemExtent: Date_pickerLibrary._kItemExtent,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                squeeze: Date_pickerLibrary._kSqueeze,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedMonth = index + 1L;
+                    if (_isCurrentDateValid)
+                    {
+                        widget.onDateTimeChanged(
+                            DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth)
+                        );
+                    }
+                },
+                looping: true,
+                selectionOverlay: selectionOverlay,
+                children: new List<Widget>(
+                    Enumerable.Select(
+                        Enumerable.Range(0, checked((int)12L)),
+                        (index) =>
+                        {
+                            long month = index + 1L;
+                            bool isInvalidMonth =
+                                (
+                                    (widget.minimumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
+                                        > month
+                                    )
+                                )
+                                || (
+                                    (widget.maximumDate?.Year == selectedYear)
+                                    && (
+                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
+                                        < month
+                                    )
+                                );
+                            string monthName = Equals(
+                                widget.mode,
+                                CupertinoDatePickerMode.monthYear
+                            )
+                                ? localizations.datePickerStandaloneMonth(month)
+                                : localizations.datePickerMonth(month);
+                            Widget childLocal = itemPositioningBuilder(
+                                context,
+                                new Text(
+                                    monthName,
+                                    style: Date_pickerLibrary._themeTextStyle(
+                                        context,
+                                        isValid: !isInvalidMonth
+                                    )
+                                )
+                            );
+                            return isInvalidMonth
+                                ? new ExcludeSemantics(child: childLocal)
+                                : childLocal;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildYearPicker(double offAxisFraction, Func<BuildContext, Widget?, Widget> itemPositioningBuilder, Widget? selectionOverlay)
+    internal virtual Widget _buildYearPicker(
+        double offAxisFraction,
+        Func<BuildContext, Widget?, Widget> itemPositioningBuilder,
+        Widget? selectionOverlay
+    )
     {
-        return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
-        {
-            if (notification is ScrollStartNotification)
+        return new NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
             {
-                isYearPickerScrolling = true;
-            }
-            else
-            {
-                if (notification is ScrollEndNotification)
+                if (notification is ScrollStartNotification)
                 {
-                    isYearPickerScrolling = false;
-                    _pickerDidStopScrolling();
+                    isYearPickerScrolling = true;
                 }
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: CupertinoPicker.CreateBuilder(scrollController: yearController, itemExtent: Date_pickerLibrary._kItemExtent, offAxisFraction: offAxisFraction, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: widget.backgroundColor, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            selectedYear = index;
-            if (_isCurrentDateValid)
-            {
-                widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth));
-            }
-        }, itemBuilder: (context, year) =>
-        {
-            if (year < widget.minimumYear)
-            {
-                return null;
-            }
-            if ((widget.maximumYear is not null) && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear)))
-            {
-                return null;
-            }
-            bool isValidYear = ((widget.minimumDate is null) || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)) && ((widget.maximumDate is null) || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year));
-            Widget childLocal = itemPositioningBuilder(context, new Text(localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear)));
-            return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, selectionOverlay: selectionOverlay));
+                else
+                {
+                    if (notification is ScrollEndNotification)
+                    {
+                        isYearPickerScrolling = false;
+                        _pickerDidStopScrolling();
+                    }
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: CupertinoPicker.CreateBuilder(
+                scrollController: yearController,
+                itemExtent: Date_pickerLibrary._kItemExtent,
+                offAxisFraction: offAxisFraction,
+                useMagnifier: Date_pickerLibrary._kUseMagnifier,
+                magnification: Date_pickerLibrary._kMagnification,
+                backgroundColor: widget.backgroundColor,
+                changeReportingBehavior: widget.changeReportingBehavior,
+                onSelectedItemChanged: (index) =>
+                {
+                    selectedYear = index;
+                    if (_isCurrentDateValid)
+                    {
+                        widget.onDateTimeChanged(
+                            DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth)
+                        );
+                    }
+                },
+                itemBuilder: (context, year) =>
+                {
+                    if (year < widget.minimumYear)
+                    {
+                        return null;
+                    }
+                    if (
+                        (widget.maximumYear is not null)
+                        && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear))
+                    )
+                    {
+                        return null;
+                    }
+                    bool isValidYear =
+                        (
+                            (widget.minimumDate is null)
+                            || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)
+                        )
+                        && (
+                            (widget.maximumDate is null)
+                            || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year)
+                        );
+                    Widget childLocal = itemPositioningBuilder(
+                        context,
+                        new Text(
+                            localizations.datePickerYear(year),
+                            style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear)
+                        )
+                    );
+                    return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                selectionOverlay: selectionOverlay
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1307,28 +2351,37 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
         get
         {
             var minSelectedDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth);
-            var maxSelectedDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, widget.initialDateTime.Day + 1L);
+            var maxSelectedDate = DartRuntimePrimitives.CreateDateTime(
+                selectedYear,
+                selectedMonth,
+                widget.initialDateTime.Day + 1L
+            );
             bool minCheck = widget.minimumDate?.isBefore(maxSelectedDate) ?? true;
             bool maxCheck = widget.maximumDate?.isBefore(minSelectedDate) ?? false;
             return minCheck && !maxCheck;
         }
     }
+
     internal virtual void _pickerDidStopScrolling()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
         if (isScrolling)
         {
             return;
         }
         var minSelectDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth);
-        var maxSelectDate = DartRuntimePrimitives.CreateDateTime(selectedYear, selectedMonth, widget.initialDateTime.Day + 1L);
+        var maxSelectDate = DartRuntimePrimitives.CreateDateTime(
+            selectedYear,
+            selectedMonth,
+            widget.initialDateTime.Day + 1L
+        );
         bool minCheck = widget.minimumDate?.isBefore(maxSelectDate) ?? true;
         bool maxCheck = widget.maximumDate?.isBefore(minSelectDate) ?? false;
         if (!minCheck || maxCheck)
         {
-            DateTime targetDate = minCheck ? DartRuntimePrimitives.RequireValue(widget.maximumDate) : DartRuntimePrimitives.RequireValue(widget.minimumDate);
+            DateTime targetDate = minCheck
+                ? DartRuntimePrimitives.RequireValue(widget.maximumDate)
+                : DartRuntimePrimitives.RequireValue(widget.minimumDate);
             _scrollToDate(targetDate);
             return;
         }
@@ -1336,40 +2389,88 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
 
     internal virtual void _scrollToDate(DateTime newDate)
     {
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timestamp) =>
-        {
-            if (selectedYear != newDate.Year)
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (timestamp) =>
             {
-                Date_pickerLibrary._animateColumnControllerToItem(yearController, newDate.Year);
-            }
-            if (selectedMonth != newDate.Month)
-            {
-                Date_pickerLibrary._animateColumnControllerToItem(monthController, newDate.Month - 1L);
-            }
-        }, debugLabel: "DatePicker.scrollToDate");
+                if (selectedYear != newDate.Year)
+                {
+                    Date_pickerLibrary._animateColumnControllerToItem(yearController, newDate.Year);
+                }
+                if (selectedMonth != newDate.Month)
+                {
+                    Date_pickerLibrary._animateColumnControllerToItem(
+                        monthController,
+                        newDate.Month - 1L
+                    );
+                }
+            },
+            debugLabel: "DatePicker.scrollToDate"
+        );
     }
 
     public override Widget build(BuildContext context)
     {
-        var pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>();
+        var pickerBuilders =
+            new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>>();
         var columnWidthsLocal = new List<double>();
-        DatePickerDateOrder datePickerDateOrderLocal = dateOrder ?? localizations.datePickerDateOrder;
+        DatePickerDateOrder datePickerDateOrderLocal =
+            dateOrder ?? localizations.datePickerDateOrder;
         switch (datePickerDateOrderLocal)
         {
             case var __constant76081 when Equals(__constant76081, DatePickerDateOrder.mdy):
             case var __constant76117 when Equals(__constant76117, DatePickerDateOrder.dmy):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildMonthPicker, _buildYearPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
-                    break;
-                }
+                    _buildMonthPicker,
+                    _buildYearPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                };
+                break;
+            }
             case var __constant76406 when Equals(__constant76406, DatePickerDateOrder.ymd):
             case var __constant76442 when Equals(__constant76442, DatePickerDateOrder.ydm):
+            {
+                pickerBuilders = new List<
+                    Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>
+                >
                 {
-                    pickerBuilders = new List<Func<double, Func<BuildContext, Widget?, Widget>, Widget?, Widget>> { _buildYearPicker, _buildMonthPicker };
-                    columnWidthsLocal = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))) };
-                    break;
-                }
+                    _buildYearPicker,
+                    _buildMonthPicker,
+                };
+                columnWidthsLocal = new List<double>
+                {
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                    ),
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<double>(
+                            estimatedColumnWidths,
+                            FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                    ),
+                };
+                break;
+            }
         }
         var pickers = new List<Widget>();
         double totalColumnWidths = 3L * Date_pickerLibrary._kDatePickerPadSize;
@@ -1377,11 +2478,15 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
         {
             var (firstColumn, lastColumn) = (i == 0L, i == (checked(columnWidthsLocal.Count) - 1L));
             double offAxisFraction = textDirectionFactor * (firstColumn ? -0.3 : 0.5);
-            totalColumnWidths += widthLocal + 2L * Date_pickerLibrary._kDatePickerPadSize;
+            totalColumnWidths += widthLocal + (2L * Date_pickerLibrary._kDatePickerPadSize);
             Widget? selectionOverlay = Date_pickerLibrary._centerSelectionOverlay;
             if (widget.selectionOverlayBuilder is not null)
             {
-                selectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: i, columnCount: checked(columnWidthsLocal.Count));
+                selectionOverlay = widget.selectionOverlayBuilder!(
+                    context,
+                    selectedIndex: i,
+                    columnCount: checked(columnWidthsLocal.Count)
+                );
             }
             else
             {
@@ -1397,30 +2502,74 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                     }
                 }
             }
-            pickers.Add(new LayoutId(id: i, child: pickerBuilders[(int)i](offAxisFraction, (context, child) =>
-            {
-                Widget contents = new Align(alignment: lastColumn ? alignCenterLeft : alignCenterRight, child: new SizedBox(width: widthLocal + Date_pickerLibrary._kDatePickerPadSize, child: new Align(alignment: firstColumn ? alignCenterLeft : alignCenterRight, child: child)));
-                if (firstColumn)
-                {
-                    return contents;
-                }
-                var paddingLocal = EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
-                return new Padding(padding: (textDirectionFactor == -1L) ? paddingLocal.flipped : paddingLocal, child: contents);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, selectionOverlay)));
+            pickers.Add(
+                new LayoutId(
+                    id: i,
+                    child: pickerBuilders[(int)i]
+                        (
+                            offAxisFraction,
+                            (context, child) =>
+                            {
+                                Widget contents = new Align(
+                                    alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+                                    child: new SizedBox(
+                                        width: widthLocal + Date_pickerLibrary._kDatePickerPadSize,
+                                        child: new Align(
+                                            alignment: firstColumn
+                                                ? alignCenterLeft
+                                                : alignCenterRight,
+                                            child: child
+                                        )
+                                    )
+                                );
+                                if (firstColumn)
+                                {
+                                    return contents;
+                                }
+                                var paddingLocal = EdgeInsets.CreateOnly(
+                                    right: Date_pickerLibrary._kDatePickerPadSize
+                                );
+                                return new Padding(
+                                    padding: (textDirectionFactor == -1L)
+                                        ? paddingLocal.flipped
+                                        : paddingLocal,
+                                    child: contents
+                                );
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            },
+                            selectionOverlay
+                        )
+                )
+            );
         }
-        double maxPickerWidth = (totalColumnWidths > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths : Date_pickerLibrary._kPickerWidth;
-        return MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidthsLocal, textDirectionFactor: textDirectionFactor, maxWidth: maxPickerWidth), children: pickers)));
+        double maxPickerWidth =
+            (totalColumnWidths > Date_pickerLibrary._kPickerWidth)
+                ? totalColumnWidths
+                : Date_pickerLibrary._kPickerWidth;
+        return MediaQuery.withNoTextScaling(
+            child: DefaultTextStyle.merge(
+                style: Date_pickerLibrary._kDefaultPickerTextStyle,
+                child: new CustomMultiChildLayout(
+                    @delegate: new _DatePickerLayoutDelegate__date_picker(
+                        columnWidths: columnWidthsLocal,
+                        textDirectionFactor: textDirectionFactor,
+                        maxWidth: maxPickerWidth
+                    ),
+                    children: pickers
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum CupertinoTimerPickerMode
 {
     hm,
     ms,
-    hms
+    hms,
 }
 
 public class CupertinoTimerPicker : StatefulWidget
@@ -1436,7 +2585,20 @@ public class CupertinoTimerPicker : StatefulWidget
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoTimerPicker(Key? key = null, CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms, Duration initialTimerDuration = default, long minuteInterval = 1, long secondInterval = 1, AlignmentGeometry alignment = default!, Color? backgroundColor = null, double? itemExtent = null, Action<Duration> onTimerDurationChanged = default!, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, SelectionOverlayBuilder? selectionOverlayBuilder = null) : base(key: key)
+    public CupertinoTimerPicker(
+        Key? key = null,
+        CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms,
+        Duration initialTimerDuration = default,
+        long minuteInterval = 1,
+        long secondInterval = 1,
+        AlignmentGeometry alignment = default!,
+        Color? backgroundColor = null,
+        double? itemExtent = null,
+        Action<Duration> onTimerDurationChanged = default!,
+        ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate,
+        SelectionOverlayBuilder? selectionOverlayBuilder = null
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;
@@ -1459,7 +2621,8 @@ public class CupertinoTimerPicker : StatefulWidget
         System.Diagnostics.Debug.Assert(__itemExtent > 0L);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTimerPickerState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTimerPickerState__date_picker());
 }
 
 internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPicker>
@@ -1473,7 +2636,10 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     public virtual long? lastSelectedMinute { get; set; } = default;
     public virtual long? lastSelectedSecond { get; set; } = default;
     public virtual TextPainter textPainter { get; private set; } = new TextPainter();
-    public virtual List<string> numbers { get; private set; } = new List<string>(Enumerable.Select(Enumerable.Range(0, checked((int)10L)), (i) => $"{9L - i}"));
+    public virtual List<string> numbers { get; private set; } =
+        new List<string>(
+            Enumerable.Select(Enumerable.Range(0, checked((int)10L)), (i) => $"{9L - i}")
+        );
     public virtual double numberLabelWidth { get; set; } = default!;
     public virtual double numberLabelHeight { get; set; } = default!;
     public virtual double numberLabelBaseline { get; set; } = default!;
@@ -1486,7 +2652,14 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     internal virtual FixedExtentScrollController? _minuteScrollController { get; set; } = default;
     internal virtual FixedExtentScrollController? _secondScrollController { get; set; } = default;
 
-    public virtual long textDirectionFactor => textDirection switch { TextDirection.ltr => 1L, TextDirection.rtl => -1L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    public virtual long textDirectionFactor =>
+        textDirection switch
+        {
+            TextDirection.ltr => 1L,
+            TextDirection.rtl => -1L,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+
     public override void initState()
     {
         base.initState();
@@ -1524,7 +2697,10 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     public override void didUpdateWidget(CupertinoTimerPicker oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        DartRuntimePrimitives.Assert(() => Equals(oldWidget.mode, widget.mode), () => (object?)"The CupertinoTimerPicker's mode cannot change once it's built");
+        DartRuntimePrimitives.Assert(
+            () => Equals(oldWidget.mode, widget.mode),
+            () => (object?)"The CupertinoTimerPicker's mode cannot change once it's built"
+        );
     }
 
     public override void didChangeDependencies()
@@ -1538,12 +2714,17 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     internal virtual void _measureLabelMetrics()
     {
         textPainter.textDirection = textDirection;
-        TextStyle textStyle = _textStyleFrom(context, Date_pickerLibrary._kTimerPickerMagnification);
+        TextStyle textStyle = _textStyleFrom(
+            context,
+            Date_pickerLibrary._kTimerPickerMagnification
+        );
         double maxWidth = double.NegativeInfinity;
         string? widestNumber = default!;
         foreach (string input in numbers)
         {
-            textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(new TextSpan(text: input, style: textStyle));
+            textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(
+                new TextSpan(text: input, style: textStyle)
+            );
             textPainter.layout();
             if (textPainter.maxIntrinsicWidth > maxWidth)
             {
@@ -1551,19 +2732,30 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 widestNumber = input;
             }
         }
-        textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(new TextSpan(text: $"{widestNumber}{widestNumber}", style: textStyle));
+        textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(
+            new TextSpan(text: $"{widestNumber}{widestNumber}", style: textStyle)
+        );
         textPainter.layout();
         numberLabelWidth = textPainter.maxIntrinsicWidth;
         numberLabelHeight = textPainter.height;
         numberLabelBaseline = textPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
-        minuteLabelWidth = _measureLabelsMaxWidth(localizations.timerPickerMinuteLabels.Cast<string?>().ToList(), textStyle);
+        minuteLabelWidth = _measureLabelsMaxWidth(
+            localizations.timerPickerMinuteLabels.Cast<string?>().ToList(),
+            textStyle
+        );
         if (!Equals(widget.mode, CupertinoTimerPickerMode.ms))
         {
-            hourLabelWidth = _measureLabelsMaxWidth(localizations.timerPickerHourLabels.Cast<string?>().ToList(), textStyle);
+            hourLabelWidth = _measureLabelsMaxWidth(
+                localizations.timerPickerHourLabels.Cast<string?>().ToList(),
+                textStyle
+            );
         }
         if (!Equals(widget.mode, CupertinoTimerPickerMode.hm))
         {
-            secondLabelWidth = _measureLabelsMaxWidth(localizations.timerPickerSecondLabels.Cast<string?>().ToList(), textStyle);
+            secondLabelWidth = _measureLabelsMaxWidth(
+                localizations.timerPickerSecondLabels.Cast<string?>().ToList(),
+                textStyle
+            );
         }
     }
 
@@ -1577,7 +2769,9 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
             {
                 continue;
             }
-            textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(new TextSpan(text: label, style: style));
+            textPainter.text = DartRuntimePrimitives.ConvertValue<InlineSpan>(
+                new TextSpan(text: label, style: style)
+            );
             textPainter.layout();
             DartRuntimePrimitives.Ignore(textPainter.maxIntrinsicWidth);
             if (textPainter.maxIntrinsicWidth > maxWidth)
@@ -1591,233 +2785,675 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
 
     internal virtual Widget _buildLabel(string text, EdgeInsetsDirectional pickerPadding)
     {
-        var paddingLocal = EdgeInsetsDirectional.CreateOnly(start: numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize + pickerPadding.start);
-        return new IgnorePointer(child: new Padding(padding: paddingLocal.resolve(textDirection), child: new Align(alignment: AlignmentDirectional.centerStart.resolve(textDirection), child: new SizedBox(height: numberLabelHeight, child: new Baseline(baseline: numberLabelBaseline, baselineType: TextBaseline.alphabetic, child: new Text(text, style: new TextStyle(fontSize: Date_pickerLibrary._kTimerPickerLabelFontSize, fontWeight: FontWeight.w600), maxLines: 1L, softWrap: false))))));
+        var paddingLocal = EdgeInsetsDirectional.CreateOnly(
+            start: numberLabelWidth
+                + Date_pickerLibrary._kTimerPickerLabelPadSize
+                + pickerPadding.start
+        );
+        return new IgnorePointer(
+            child: new Padding(
+                padding: paddingLocal.resolve(textDirection),
+                child: new Align(
+                    alignment: AlignmentDirectional.centerStart.resolve(textDirection),
+                    child: new SizedBox(
+                        height: numberLabelHeight,
+                        child: new Baseline(
+                            baseline: numberLabelBaseline,
+                            baselineType: TextBaseline.alphabetic,
+                            child: new Text(
+                                text,
+                                style: new TextStyle(
+                                    fontSize: Date_pickerLibrary._kTimerPickerLabelFontSize,
+                                    fontWeight: FontWeight.w600
+                                ),
+                                maxLines: 1L,
+                                softWrap: false
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Widget _buildPickerNumberLabel(string text, EdgeInsetsDirectional padding)
     {
-        return new SizedBox(width: Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + padding.horizontal, child: new Padding(padding: padding.resolve(textDirection), child: new Align(alignment: AlignmentDirectional.centerStart.resolve(textDirection), child: new SizedBox(width: numberLabelWidth, child: new Align(alignment: AlignmentDirectional.centerEnd.resolve(textDirection), child: new Text(text, softWrap: false, maxLines: 1L, overflow: TextOverflow.visible))))));
+        return new SizedBox(
+            width: Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + padding.horizontal,
+            child: new Padding(
+                padding: padding.resolve(textDirection),
+                child: new Align(
+                    alignment: AlignmentDirectional.centerStart.resolve(textDirection),
+                    child: new SizedBox(
+                        width: numberLabelWidth,
+                        child: new Align(
+                            alignment: AlignmentDirectional.centerEnd.resolve(textDirection),
+                            child: new Text(
+                                text,
+                                softWrap: false,
+                                maxLines: 1L,
+                                overflow: TextOverflow.visible
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildHourPicker(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
+    internal virtual Widget _buildHourPicker(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
     {
-        _hourScrollController ??= new FixedExtentScrollController(initialItem: DartRuntimePrimitives.RequireValue(selectedHour));
-        return new CupertinoPicker(scrollController: _hourScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, 0L), itemExtent: widget.itemExtent, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            setState(() =>
+        _hourScrollController ??= new FixedExtentScrollController(
+            initialItem: DartRuntimePrimitives.RequireValue(selectedHour)
+        );
+        return new CupertinoPicker(
+            scrollController: _hourScrollController,
+            magnification: Date_pickerLibrary._kMagnification,
+            offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, 0L),
+            itemExtent: widget.itemExtent,
+            backgroundColor: widget.backgroundColor,
+            squeeze: Date_pickerLibrary._kSqueeze,
+            changeReportingBehavior: widget.changeReportingBehavior,
+            onSelectedItemChanged: (index) =>
             {
-                selectedHour = index;
-                widget.onTimerDurationChanged(Duration.Create(hours: DartRuntimePrimitives.RequireValue(selectedHour), minutes: selectedMinute, seconds: selectedSecond ?? 0L));
-            });
-        }, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)24L)), (index) =>
-        {
-            string labelLocal = localizations.timerPickerHourLabel(index) ?? "";
-            string semanticsLabel = (textDirectionFactor == 1L) ? (localizations.timerPickerHour(index) + labelLocal) : (labelLocal + localizations.timerPickerHour(index));
-            return new Widgets.Semantics(label: semanticsLabel, excludeSemantics: true, child: _buildPickerNumberLabel(localizations.timerPickerHour(index), additionalPadding));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+                setState(() =>
+                {
+                    selectedHour = index;
+                    widget.onTimerDurationChanged(
+                        Duration.Create(
+                            hours: DartRuntimePrimitives.RequireValue(selectedHour),
+                            minutes: selectedMinute,
+                            seconds: selectedSecond ?? 0L
+                        )
+                    );
+                });
+            },
+            selectionOverlay: selectionOverlay,
+            children: new List<Widget>(
+                Enumerable.Select(
+                    Enumerable.Range(0, checked((int)24L)),
+                    (index) =>
+                    {
+                        string labelLocal = localizations.timerPickerHourLabel(index) ?? "";
+                        string semanticsLabel =
+                            (textDirectionFactor == 1L)
+                                ? (localizations.timerPickerHour(index) + labelLocal)
+                                : (labelLocal + localizations.timerPickerHour(index));
+                        return new Widgets.Semantics(
+                            label: semanticsLabel,
+                            excludeSemantics: true,
+                            child: _buildPickerNumberLabel(
+                                localizations.timerPickerHour(index),
+                                additionalPadding
+                            )
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildHourColumn(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
+    internal virtual Widget _buildHourColumn(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
     {
-        additionalPadding = EdgeInsetsDirectional.CreateOnly(start: Math.Max(additionalPadding.start, 0), end: Math.Max(additionalPadding.end, 0));
-        return new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollEndNotification>(onNotification: (notification) => {
-setState(() => {
-lastSelectedHour = selectedHour;
-});
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}, child: _buildHourPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<Widget>(_buildLabel(localizations.timerPickerHourLabel(lastSelectedHour ?? DartRuntimePrimitives.RequireValue(selectedHour)) ?? "", additionalPadding)) });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
-
-    internal virtual Widget _buildMinutePicker(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
-    {
-        _minuteScrollController ??= new FixedExtentScrollController(initialItem: checked(selectedMinute / widget.minuteInterval));
-        return new CupertinoPicker(scrollController: _minuteScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, Equals(widget.mode, CupertinoTimerPickerMode.ms) ? 0L : 1L), itemExtent: widget.itemExtent, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            setState(() =>
+        additionalPadding = EdgeInsetsDirectional.CreateOnly(
+            start: Math.Max(additionalPadding.start, 0),
+            end: Math.Max(additionalPadding.end, 0)
+        );
+        return new Stack(
+            children: new List<Widget>
             {
-                selectedMinute = index * widget.minuteInterval;
-                widget.onTimerDurationChanged(Duration.Create(hours: selectedHour ?? 0L, minutes: selectedMinute, seconds: selectedSecond ?? 0L));
-            });
-        }, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked(60L / widget.minuteInterval))), (index) =>
-        {
-            long minute = index * widget.minuteInterval;
-            string labelLocal = localizations.timerPickerMinuteLabel(minute) ?? "";
-            string semanticsLabel = (textDirectionFactor == 1L) ? (localizations.timerPickerMinute(minute) + labelLocal) : (labelLocal + localizations.timerPickerMinute(minute));
-            return new Widgets.Semantics(label: semanticsLabel, excludeSemantics: true, child: _buildPickerNumberLabel(localizations.timerPickerMinute(minute), additionalPadding));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new NotificationListener<ScrollEndNotification>(
+                        onNotification: (notification) =>
+                        {
+                            setState(() =>
+                            {
+                                lastSelectedHour = selectedHour;
+                            });
+                            return false;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        },
+                        child: _buildHourPicker(additionalPadding, selectionOverlay)
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    _buildLabel(
+                        localizations.timerPickerHourLabel(
+                            lastSelectedHour ?? DartRuntimePrimitives.RequireValue(selectedHour)
+                        ) ?? "",
+                        additionalPadding
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildMinuteColumn(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
+    internal virtual Widget _buildMinutePicker(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
     {
-        additionalPadding = EdgeInsetsDirectional.CreateOnly(start: Math.Max(additionalPadding.start, 0), end: Math.Max(additionalPadding.end, 0));
-        return new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollEndNotification>(onNotification: (notification) => {
-setState(() => {
-lastSelectedMinute = selectedMinute;
-});
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}, child: _buildMinutePicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<Widget>(_buildLabel(localizations.timerPickerMinuteLabel(lastSelectedMinute ?? selectedMinute) ?? "", additionalPadding)) });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
-
-    internal virtual Widget _buildSecondPicker(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
-    {
-        _secondScrollController ??= new FixedExtentScrollController(initialItem: checked(DartRuntimePrimitives.RequireValue(selectedSecond) / widget.secondInterval));
-        return new CupertinoPicker(scrollController: _secondScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, Equals(widget.mode, CupertinoTimerPickerMode.ms) ? 1L : 2L), itemExtent: widget.itemExtent, backgroundColor: widget.backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: widget.changeReportingBehavior, onSelectedItemChanged: (index) =>
-        {
-            setState(() =>
+        _minuteScrollController ??= new FixedExtentScrollController(
+            initialItem: checked(selectedMinute / widget.minuteInterval)
+        );
+        return new CupertinoPicker(
+            scrollController: _minuteScrollController,
+            magnification: Date_pickerLibrary._kMagnification,
+            offAxisFraction: _calculateOffAxisFraction(
+                additionalPadding.start,
+                Equals(widget.mode, CupertinoTimerPickerMode.ms) ? 0L : 1L
+            ),
+            itemExtent: widget.itemExtent,
+            backgroundColor: widget.backgroundColor,
+            squeeze: Date_pickerLibrary._kSqueeze,
+            looping: true,
+            changeReportingBehavior: widget.changeReportingBehavior,
+            onSelectedItemChanged: (index) =>
             {
-                selectedSecond = index * widget.secondInterval;
-                widget.onTimerDurationChanged(Duration.Create(hours: selectedHour ?? 0L, minutes: selectedMinute, seconds: DartRuntimePrimitives.RequireValue(selectedSecond)));
-            });
-        }, selectionOverlay: selectionOverlay, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked(60L / widget.secondInterval))), (index) =>
-        {
-            long second = index * widget.secondInterval;
-            string labelLocal = localizations.timerPickerSecondLabel(second) ?? "";
-            string semanticsLabel = (textDirectionFactor == 1L) ? (localizations.timerPickerSecond(second) + labelLocal) : (labelLocal + localizations.timerPickerSecond(second));
-            return new Widgets.Semantics(label: semanticsLabel, excludeSemantics: true, child: _buildPickerNumberLabel(localizations.timerPickerSecond(second), additionalPadding));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+                setState(() =>
+                {
+                    selectedMinute = index * widget.minuteInterval;
+                    widget.onTimerDurationChanged(
+                        Duration.Create(
+                            hours: selectedHour ?? 0L,
+                            minutes: selectedMinute,
+                            seconds: selectedSecond ?? 0L
+                        )
+                    );
+                });
+            },
+            selectionOverlay: selectionOverlay,
+            children: new List<Widget>(
+                Enumerable.Select(
+                    Enumerable.Range(0, checked((int)checked(60L / widget.minuteInterval))),
+                    (index) =>
+                    {
+                        long minute = index * widget.minuteInterval;
+                        string labelLocal = localizations.timerPickerMinuteLabel(minute) ?? "";
+                        string semanticsLabel =
+                            (textDirectionFactor == 1L)
+                                ? (localizations.timerPickerMinute(minute) + labelLocal)
+                                : (labelLocal + localizations.timerPickerMinute(minute));
+                        return new Widgets.Semantics(
+                            label: semanticsLabel,
+                            excludeSemantics: true,
+                            child: _buildPickerNumberLabel(
+                                localizations.timerPickerMinute(minute),
+                                additionalPadding
+                            )
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildSecondColumn(EdgeInsetsDirectional additionalPadding, Widget? selectionOverlay)
+    internal virtual Widget _buildMinuteColumn(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
     {
-        additionalPadding = EdgeInsetsDirectional.CreateOnly(start: Math.Max(additionalPadding.start, 0), end: Math.Max(additionalPadding.end, 0));
-        return new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollEndNotification>(onNotification: (notification) => {
-setState(() => {
-lastSelectedSecond = selectedSecond;
-});
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}, child: _buildSecondPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<Widget>(_buildLabel(localizations.timerPickerSecondLabel(lastSelectedSecond ?? DartRuntimePrimitives.RequireValue(selectedSecond)) ?? "", additionalPadding)) });
+        additionalPadding = EdgeInsetsDirectional.CreateOnly(
+            start: Math.Max(additionalPadding.start, 0),
+            end: Math.Max(additionalPadding.end, 0)
+        );
+        return new Stack(
+            children: new List<Widget>
+            {
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new NotificationListener<ScrollEndNotification>(
+                        onNotification: (notification) =>
+                        {
+                            setState(() =>
+                            {
+                                lastSelectedMinute = selectedMinute;
+                            });
+                            return false;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        },
+                        child: _buildMinutePicker(additionalPadding, selectionOverlay)
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    _buildLabel(
+                        localizations.timerPickerMinuteLabel(lastSelectedMinute ?? selectedMinute)
+                            ?? "",
+                        additionalPadding
+                    )
+                ),
+            }
+        );
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal virtual Widget _buildSecondPicker(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
+    {
+        _secondScrollController ??= new FixedExtentScrollController(
+            initialItem: checked(
+                DartRuntimePrimitives.RequireValue(selectedSecond) / widget.secondInterval
+            )
+        );
+        return new CupertinoPicker(
+            scrollController: _secondScrollController,
+            magnification: Date_pickerLibrary._kMagnification,
+            offAxisFraction: _calculateOffAxisFraction(
+                additionalPadding.start,
+                Equals(widget.mode, CupertinoTimerPickerMode.ms) ? 1L : 2L
+            ),
+            itemExtent: widget.itemExtent,
+            backgroundColor: widget.backgroundColor,
+            squeeze: Date_pickerLibrary._kSqueeze,
+            looping: true,
+            changeReportingBehavior: widget.changeReportingBehavior,
+            onSelectedItemChanged: (index) =>
+            {
+                setState(() =>
+                {
+                    selectedSecond = index * widget.secondInterval;
+                    widget.onTimerDurationChanged(
+                        Duration.Create(
+                            hours: selectedHour ?? 0L,
+                            minutes: selectedMinute,
+                            seconds: DartRuntimePrimitives.RequireValue(selectedSecond)
+                        )
+                    );
+                });
+            },
+            selectionOverlay: selectionOverlay,
+            children: new List<Widget>(
+                Enumerable.Select(
+                    Enumerable.Range(0, checked((int)checked(60L / widget.secondInterval))),
+                    (index) =>
+                    {
+                        long second = index * widget.secondInterval;
+                        string labelLocal = localizations.timerPickerSecondLabel(second) ?? "";
+                        string semanticsLabel =
+                            (textDirectionFactor == 1L)
+                                ? (localizations.timerPickerSecond(second) + labelLocal)
+                                : (labelLocal + localizations.timerPickerSecond(second));
+                        return new Widgets.Semantics(
+                            label: semanticsLabel,
+                            excludeSemantics: true,
+                            child: _buildPickerNumberLabel(
+                                localizations.timerPickerSecond(second),
+                                additionalPadding
+                            )
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )
+        );
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal virtual Widget _buildSecondColumn(
+        EdgeInsetsDirectional additionalPadding,
+        Widget? selectionOverlay
+    )
+    {
+        additionalPadding = EdgeInsetsDirectional.CreateOnly(
+            start: Math.Max(additionalPadding.start, 0),
+            end: Math.Max(additionalPadding.end, 0)
+        );
+        return new Stack(
+            children: new List<Widget>
+            {
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new NotificationListener<ScrollEndNotification>(
+                        onNotification: (notification) =>
+                        {
+                            setState(() =>
+                            {
+                                lastSelectedSecond = selectedSecond;
+                            });
+                            return false;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        },
+                        child: _buildSecondPicker(additionalPadding, selectionOverlay)
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    _buildLabel(
+                        localizations.timerPickerSecondLabel(
+                            lastSelectedSecond ?? DartRuntimePrimitives.RequireValue(selectedSecond)
+                        ) ?? "",
+                        additionalPadding
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual TextStyle _textStyleFrom(BuildContext context, double magnification = 1.0)
     {
         TextStyle textStyle = CupertinoTheme.of(context).textTheme.pickerTextStyle;
-        return textStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(textStyle.color, context), fontSize: DartRuntimePrimitives.RequireValue(textStyle.fontSize) * magnification);
+        return textStyle.copyWith(
+            color: CupertinoDynamicColor.maybeResolve(textStyle.color, context),
+            fontSize: DartRuntimePrimitives.RequireValue(textStyle.fontSize) * magnification
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _calculateOffAxisFraction(double paddingStart, long position)
     {
-        double centerPoint = paddingStart + numberLabelWidth / 2L;
+        double centerPoint = paddingStart + (numberLabelWidth / 2L);
         double pickerColumnOffAxisFraction = 0.5 - (centerPoint / pickerColumnWidth);
-        double timerPickerOffAxisFraction = 0.5 - ((centerPoint + (pickerColumnWidth * position)) / totalWidth);
+        double timerPickerOffAxisFraction =
+            0.5 - ((centerPoint + (pickerColumnWidth * position)) / totalWidth);
         return (pickerColumnOffAxisFraction - timerPickerOffAxisFraction) * textDirectionFactor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return new LayoutBuilder(builder: (context, constraints) =>
-        {
-            List<Widget> columns = default!;
-            if (Equals(widget.mode, CupertinoTimerPickerMode.hms))
+        return new LayoutBuilder(
+            builder: (context, constraints) =>
             {
-                pickerColumnWidth = Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + Date_pickerLibrary._kTimerPickerHalfColumnPadding * 2L;
-                totalWidth = pickerColumnWidth * 3L;
-            }
-            else
-            {
-                totalWidth = Date_pickerLibrary._kPickerWidth;
-                pickerColumnWidth = totalWidth / 2L;
-            }
-            if (constraints.maxWidth < totalWidth)
-            {
-                totalWidth = constraints.maxWidth;
-                pickerColumnWidth = totalWidth / (Equals(widget.mode, CupertinoTimerPickerMode.hms) ? 3L : 2L);
-            }
-            double baseLabelContentWidth = numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize;
-            double minuteLabelContentWidth = baseLabelContentWidth + minuteLabelWidth;
-            switch (widget.mode)
-            {
-                case CupertinoTimerPickerMode.hm:
+                List<Widget> columns = default!;
+                if (Equals(widget.mode, CupertinoTimerPickerMode.hms))
+                {
+                    pickerColumnWidth =
+                        Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth
+                        + (Date_pickerLibrary._kTimerPickerHalfColumnPadding * 2L);
+                    totalWidth = pickerColumnWidth * 3L;
+                }
+                else
+                {
+                    totalWidth = Date_pickerLibrary._kPickerWidth;
+                    pickerColumnWidth = totalWidth / 2L;
+                }
+                if (constraints.maxWidth < totalWidth)
+                {
+                    totalWidth = constraints.maxWidth;
+                    pickerColumnWidth =
+                        totalWidth / (Equals(widget.mode, CupertinoTimerPickerMode.hms) ? 3L : 2L);
+                }
+                double baseLabelContentWidth =
+                    numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize;
+                double minuteLabelContentWidth = baseLabelContentWidth + minuteLabelWidth;
+                switch (widget.mode)
+                {
+                    case CupertinoTimerPickerMode.hm:
                     {
                         double hourLabelContentWidth = baseLabelContentWidth + hourLabelWidth;
-                        double hourColumnStartPadding = pickerColumnWidth - hourLabelContentWidth - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
-                        if (hourColumnStartPadding < Date_pickerLibrary._kTimerPickerMinHorizontalPadding)
+                        double hourColumnStartPadding =
+                            pickerColumnWidth
+                            - hourLabelContentWidth
+                            - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
+                        if (
+                            hourColumnStartPadding
+                            < Date_pickerLibrary._kTimerPickerMinHorizontalPadding
+                        )
                         {
-                            hourColumnStartPadding = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                            hourColumnStartPadding =
+                                Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
                         }
-                        double minuteColumnEndPadding = pickerColumnWidth - minuteLabelContentWidth - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
-                        if (minuteColumnEndPadding < Date_pickerLibrary._kTimerPickerMinHorizontalPadding)
+                        double minuteColumnEndPadding =
+                            pickerColumnWidth
+                            - minuteLabelContentWidth
+                            - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
+                        if (
+                            minuteColumnEndPadding
+                            < Date_pickerLibrary._kTimerPickerMinHorizontalPadding
+                        )
                         {
-                            minuteColumnEndPadding = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                            minuteColumnEndPadding =
+                                Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
                         }
                         Widget? hourSelectionOverlay = Date_pickerLibrary._startSelectionOverlay;
                         Widget? minuteSelectionOverlay = Date_pickerLibrary._endSelectionOverlay;
                         if (widget.selectionOverlayBuilder is not null)
                         {
-                            hourSelectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 2L);
-                            minuteSelectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 2L);
+                            hourSelectionOverlay = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 0L,
+                                columnCount: 2L
+                            );
+                            minuteSelectionOverlay = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 1L,
+                                columnCount: 2L
+                            );
                         }
-                        columns = new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(_buildHourColumn(EdgeInsetsDirectional.CreateOnly(start: hourColumnStartPadding, end: pickerColumnWidth - hourColumnStartPadding - hourLabelContentWidth), hourSelectionOverlay)), DartRuntimePrimitives.ConvertValue<Widget>(_buildMinuteColumn(EdgeInsetsDirectional.CreateOnly(start: pickerColumnWidth - minuteColumnEndPadding - minuteLabelContentWidth, end: minuteColumnEndPadding), minuteSelectionOverlay)) };
+                        columns = new List<Widget>
+                        {
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildHourColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: hourColumnStartPadding,
+                                        end: pickerColumnWidth
+                                            - hourColumnStartPadding
+                                            - hourLabelContentWidth
+                                    ),
+                                    hourSelectionOverlay
+                                )
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildMinuteColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: pickerColumnWidth
+                                            - minuteColumnEndPadding
+                                            - minuteLabelContentWidth,
+                                        end: minuteColumnEndPadding
+                                    ),
+                                    minuteSelectionOverlay
+                                )
+                            ),
+                        };
                         break;
                     }
-                case CupertinoTimerPickerMode.ms:
+                    case CupertinoTimerPickerMode.ms:
                     {
                         double secondLabelContentWidth = baseLabelContentWidth + secondLabelWidth;
-                        double secondColumnEndPadding = pickerColumnWidth - secondLabelContentWidth - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
-                        if (secondColumnEndPadding < Date_pickerLibrary._kTimerPickerMinHorizontalPadding)
+                        double secondColumnEndPadding =
+                            pickerColumnWidth
+                            - secondLabelContentWidth
+                            - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
+                        if (
+                            secondColumnEndPadding
+                            < Date_pickerLibrary._kTimerPickerMinHorizontalPadding
+                        )
                         {
-                            secondColumnEndPadding = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                            secondColumnEndPadding =
+                                Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
                         }
-                        double minuteColumnStartPadding = pickerColumnWidth - minuteLabelContentWidth - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
-                        if (minuteColumnStartPadding < Date_pickerLibrary._kTimerPickerMinHorizontalPadding)
+                        double minuteColumnStartPadding =
+                            pickerColumnWidth
+                            - minuteLabelContentWidth
+                            - Date_pickerLibrary._kTimerPickerHalfColumnPadding;
+                        if (
+                            minuteColumnStartPadding
+                            < Date_pickerLibrary._kTimerPickerMinHorizontalPadding
+                        )
                         {
-                            minuteColumnStartPadding = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                            minuteColumnStartPadding =
+                                Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
                         }
-                        Widget? minuteSelectionOverlayLocal = Date_pickerLibrary._startSelectionOverlay;
+                        Widget? minuteSelectionOverlayLocal =
+                            Date_pickerLibrary._startSelectionOverlay;
                         Widget? secondSelectionOverlay = Date_pickerLibrary._endSelectionOverlay;
                         if (widget.selectionOverlayBuilder is not null)
                         {
-                            minuteSelectionOverlayLocal = widget.selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 2L);
-                            secondSelectionOverlay = widget.selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 2L);
+                            minuteSelectionOverlayLocal = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 0L,
+                                columnCount: 2L
+                            );
+                            secondSelectionOverlay = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 1L,
+                                columnCount: 2L
+                            );
                         }
-                        columns = new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(_buildMinuteColumn(EdgeInsetsDirectional.CreateOnly(start: minuteColumnStartPadding, end: pickerColumnWidth - minuteColumnStartPadding - minuteLabelContentWidth), minuteSelectionOverlayLocal)), DartRuntimePrimitives.ConvertValue<Widget>(_buildSecondColumn(EdgeInsetsDirectional.CreateOnly(start: pickerColumnWidth - secondColumnEndPadding - minuteLabelContentWidth, end: secondColumnEndPadding), secondSelectionOverlay)) };
+                        columns = new List<Widget>
+                        {
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildMinuteColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: minuteColumnStartPadding,
+                                        end: pickerColumnWidth
+                                            - minuteColumnStartPadding
+                                            - minuteLabelContentWidth
+                                    ),
+                                    minuteSelectionOverlayLocal
+                                )
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildSecondColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: pickerColumnWidth
+                                            - secondColumnEndPadding
+                                            - minuteLabelContentWidth,
+                                        end: secondColumnEndPadding
+                                    ),
+                                    secondSelectionOverlay
+                                )
+                            ),
+                        };
                         break;
                     }
-                case CupertinoTimerPickerMode.hms:
+                    case CupertinoTimerPickerMode.hms:
                     {
-                        double hourColumnEndPadding = pickerColumnWidth - baseLabelContentWidth - hourLabelWidth - Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
-                        double minuteColumnPadding = (pickerColumnWidth - minuteLabelContentWidth) / 2L;
-                        double secondColumnStartPadding = pickerColumnWidth - baseLabelContentWidth - secondLabelWidth - Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
-                        Widget? hourSelectionOverlayLocal = Date_pickerLibrary._startSelectionOverlay;
-                        Widget? minuteSelectionOverlayAlternate = Date_pickerLibrary._centerSelectionOverlay;
-                        Widget? secondSelectionOverlayLocal = Date_pickerLibrary._endSelectionOverlay;
+                        double hourColumnEndPadding =
+                            pickerColumnWidth
+                            - baseLabelContentWidth
+                            - hourLabelWidth
+                            - Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                        double minuteColumnPadding =
+                            (pickerColumnWidth - minuteLabelContentWidth) / 2L;
+                        double secondColumnStartPadding =
+                            pickerColumnWidth
+                            - baseLabelContentWidth
+                            - secondLabelWidth
+                            - Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
+                        Widget? hourSelectionOverlayLocal =
+                            Date_pickerLibrary._startSelectionOverlay;
+                        Widget? minuteSelectionOverlayAlternate =
+                            Date_pickerLibrary._centerSelectionOverlay;
+                        Widget? secondSelectionOverlayLocal =
+                            Date_pickerLibrary._endSelectionOverlay;
                         if (widget.selectionOverlayBuilder is not null)
                         {
-                            hourSelectionOverlayLocal = widget.selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 3L);
-                            minuteSelectionOverlayAlternate = widget.selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 3L);
-                            secondSelectionOverlayLocal = widget.selectionOverlayBuilder!(context, selectedIndex: 2L, columnCount: 3L);
+                            hourSelectionOverlayLocal = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 0L,
+                                columnCount: 3L
+                            );
+                            minuteSelectionOverlayAlternate = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 1L,
+                                columnCount: 3L
+                            );
+                            secondSelectionOverlayLocal = widget.selectionOverlayBuilder!(
+                                context,
+                                selectedIndex: 2L,
+                                columnCount: 3L
+                            );
                         }
-                        columns = new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(_buildHourColumn(EdgeInsetsDirectional.CreateOnly(start: Date_pickerLibrary._kTimerPickerMinHorizontalPadding, end: Math.Max(hourColumnEndPadding, 0)), hourSelectionOverlayLocal)), DartRuntimePrimitives.ConvertValue<Widget>(_buildMinuteColumn(EdgeInsetsDirectional.CreateOnly(start: minuteColumnPadding, end: minuteColumnPadding), minuteSelectionOverlayAlternate)), DartRuntimePrimitives.ConvertValue<Widget>(_buildSecondColumn(EdgeInsetsDirectional.CreateOnly(start: Math.Max(secondColumnStartPadding, 0), end: Date_pickerLibrary._kTimerPickerMinHorizontalPadding), secondSelectionOverlayLocal)) };
+                        columns = new List<Widget>
+                        {
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildHourColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: Date_pickerLibrary._kTimerPickerMinHorizontalPadding,
+                                        end: Math.Max(hourColumnEndPadding, 0)
+                                    ),
+                                    hourSelectionOverlayLocal
+                                )
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildMinuteColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: minuteColumnPadding,
+                                        end: minuteColumnPadding
+                                    ),
+                                    minuteSelectionOverlayAlternate
+                                )
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                _buildSecondColumn(
+                                    EdgeInsetsDirectional.CreateOnly(
+                                        start: Math.Max(secondColumnStartPadding, 0),
+                                        end: Date_pickerLibrary._kTimerPickerMinHorizontalPadding
+                                    ),
+                                    secondSelectionOverlayLocal
+                                )
+                            ),
+                        };
                         break;
                     }
+                }
+                Widget contents = new SizedBox(
+                    width: totalWidth,
+                    height: Date_pickerLibrary._kPickerHeight,
+                    child: new DefaultTextStyle(
+                        style: _textStyleFrom(context),
+                        child: new Row(
+                            children: columns
+                                .map((child) => new Expanded(child: child))
+                                .ToList()
+                                .Cast<Widget>()
+                                .ToList()
+                        )
+                    )
+                );
+                Color? colorLocal = CupertinoDynamicColor.maybeResolve(
+                    widget.backgroundColor,
+                    context
+                );
+                if (colorLocal is not null)
+                {
+                    contents = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new ColoredBox(color: colorLocal, child: contents)
+                    );
+                }
+                CupertinoThemeData themeData = CupertinoTheme.of(context);
+                return MediaQuery.withNoTextScaling(
+                    child: new CupertinoTheme(
+                        data: themeData.copyWith(
+                            textTheme: themeData.textTheme.copyWith(
+                                pickerTextStyle: _textStyleFrom(
+                                    context,
+                                    Date_pickerLibrary._kTimerPickerMagnification
+                                )
+                            )
+                        ),
+                        child: new Align(alignment: widget.alignment, child: contents)
+                    )
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            Widget contents = new SizedBox(width: totalWidth, height: Date_pickerLibrary._kPickerHeight, child: new DefaultTextStyle(style: _textStyleFrom(context), child: new Row(children: columns.map((child) => new Expanded(child: child)).ToList().Cast<Widget>().ToList())));
-            Color? colorLocal = CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context);
-            if (colorLocal is not null)
-            {
-                contents = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: colorLocal, child: contents));
-            }
-            CupertinoThemeData themeData = CupertinoTheme.of(context);
-            return MediaQuery.withNoTextScaling(child: new CupertinoTheme(data: themeData.copyWith(textTheme: themeData.textTheme.copyWith(pickerTextStyle: _textStyleFrom(context, Date_pickerLibrary._kTimerPickerMagnification))), child: new Align(alignment: widget.alignment, child: contents)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

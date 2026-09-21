@@ -20,7 +20,8 @@ public sealed record BrowserTargetPackageManifest(
     string[] ResourceKinds,
     string[] SupportedPublishModes,
     string[] RequiredCapabilities,
-    string[] UnsupportedModes);
+    string[] UnsupportedModes
+);
 
 public sealed record BrowserTargetIdentity(
     string SchemaVersion,
@@ -29,7 +30,8 @@ public sealed record BrowserTargetIdentity(
     string GraphicsBackend,
     string PackageId,
     string PackageVersion,
-    string FlutterRevision);
+    string FlutterRevision
+);
 
 /// <summary>Package composition root for the required browser-wasm target.</summary>
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
@@ -41,10 +43,22 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     public BrowserWasmTarget(string? backendIdentity = null)
     {
         if (!OperatingSystem.IsBrowser())
-            throw new PlatformNotSupportedException("Doroti.Target.Web.browser-wasm requires a browser-wasm process.");
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Target.Web.browser-wasm requires a browser-wasm process."
+            );
+        }
+
         Manifest = LoadManifest();
-        Identity = new("doroti.target-identity/v1", Manifest.Rid, Manifest.Host,
-            Manifest.GraphicsBackend, Manifest.PackageId, Manifest.PackageVersion, Manifest.FlutterRevision);
+        Identity = new(
+            "doroti.target-identity/v1",
+            Manifest.Rid,
+            Manifest.Host,
+            Manifest.GraphicsBackend,
+            Manifest.PackageId,
+            Manifest.PackageVersion,
+            Manifest.FlutterRevision
+        );
         _host = new(backendIdentity ?? $"{Identity.Rid}/auto");
     }
 
@@ -64,7 +78,8 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
         ulong viewId,
         string canvasId,
         DorotiViewConfiguration configuration,
-        DorotiApplicationBoundary? application = null)
+        DorotiApplicationBoundary? application = null
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _host.CreateView(session, viewId, canvasId, configuration, application);
@@ -94,14 +109,20 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch target,
-        long requestId)
+        long requestId
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight, target, requestId);
     }
 
     public void CompleteSkiaSurfacePaint(
-        ulong viewId, long requestId, long generation, string terminal, string reason)
+        ulong viewId,
+        long requestId,
+        long generation,
+        string terminal,
+        string reason
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _host.CompleteSkiaSurfacePaint(viewId, requestId, generation, terminal, reason);
@@ -128,7 +149,8 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     public DorotiApplicationBoundary LoadApplicationBoundary(
         Assembly manifestAssembly,
         Assembly applicationAssembly,
-        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null)
+        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return DorotiApplicationBoundary.Load(
@@ -136,23 +158,29 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
             applicationAssembly,
             Rid,
             (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)),
-            BrowserFrameworkHost.PlatformViewFactories);
+            BrowserFrameworkHost.PlatformViewFactories
+        );
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         _host.Dispose();
     }
 
     private static BrowserTargetPackageManifest LoadManifest()
     {
-        using var stream = typeof(BrowserWasmTarget).Assembly.GetManifestResourceStream("Doroti.Target.Manifest")
+        using var stream =
+            typeof(BrowserWasmTarget).Assembly.GetManifestResourceStream("Doroti.Target.Manifest")
             ?? throw new InvalidDataException("The browser target package manifest is missing.");
-        return JsonSerializer.Deserialize<BrowserTargetPackageManifest>(stream, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException("The browser target package manifest is invalid.");
+        return JsonSerializer.Deserialize<BrowserTargetPackageManifest>(
+                stream,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            ) ?? throw new InvalidDataException("The browser target package manifest is invalid.");
     }
 }

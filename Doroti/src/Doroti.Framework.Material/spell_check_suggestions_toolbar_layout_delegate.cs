@@ -22,7 +22,12 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : SingleChildLayoutDeleg
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        return new Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width), ((anchor.dy + childSize.height) > size.height) ? (size.height - childSize.height) : anchor.dy);
+        return new Offset(
+            TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width),
+            ((anchor.dy + childSize.height) > size.height)
+                ? (size.height - childSize.height)
+                : anchor.dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -32,5 +37,4 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : SingleChildLayoutDeleg
         return !Equals(anchor, __oldDelegate.anchor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

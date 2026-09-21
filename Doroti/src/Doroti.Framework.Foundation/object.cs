@@ -9,11 +9,10 @@ public static partial class objectRuntimeTypeFunctions
     public static string objectRuntimeType(object? @object, string optimizedValue)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                optimizedValue = DartRuntimePrimitives.RuntimeTypeName(@object);
-                return true;
-            });
+        {
+            optimizedValue = DartRuntimePrimitives.RuntimeTypeName(@object);
+            return true;
+        });
         return optimizedValue;
     }
 }
-

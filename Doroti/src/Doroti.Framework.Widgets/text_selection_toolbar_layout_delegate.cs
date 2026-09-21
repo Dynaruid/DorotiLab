@@ -11,7 +11,11 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
     public virtual Offset anchorBelow { get; private set; } = default!;
     public virtual bool? fitsAbove { get; private set; }
 
-    public TextSelectionToolbarLayoutDelegate(Offset anchorAbove, Offset anchorBelow, bool? fitsAbove = null)
+    public TextSelectionToolbarLayoutDelegate(
+        Offset anchorAbove,
+        Offset anchorBelow,
+        bool? fitsAbove = null
+    )
     {
         this.anchorAbove = anchorAbove;
         this.anchorBelow = anchorBelow;
@@ -41,17 +45,24 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
     public override Offset getPositionForChild(Size size, Size childSize)
     {
         bool fitsAboveLocal = fitsAbove ?? (anchorAbove.dy >= childSize.height);
-        Offset anchor = DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? anchorAbove : anchorBelow;
-        return new Offset(centerOn(anchor.dx, childSize.width, size.width), DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? Math.Max(0.0, anchor.dy - childSize.height) : anchor.dy);
+        Offset anchor = DartRuntimePrimitives.RequireValue(fitsAboveLocal)
+            ? anchorAbove
+            : anchorBelow;
+        return new Offset(
+            centerOn(anchor.dx, childSize.width, size.width),
+            DartRuntimePrimitives.RequireValue(fitsAboveLocal)
+                ? Math.Max(0.0, anchor.dy - childSize.height)
+                : anchor.dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (TextSelectionToolbarLayoutDelegate)oldDelegate;
-        return (!Equals(anchorAbove, __oldDelegate.anchorAbove)) || (!Equals(anchorBelow, __oldDelegate.anchorBelow)) || (fitsAbove != __oldDelegate.fitsAbove);
+        return (!Equals(anchorAbove, __oldDelegate.anchorAbove))
+            || (!Equals(anchorBelow, __oldDelegate.anchorBelow))
+            || (fitsAbove != __oldDelegate.fitsAbove);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

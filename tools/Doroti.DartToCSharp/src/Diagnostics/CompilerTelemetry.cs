@@ -10,7 +10,8 @@ internal sealed record CompilerTelemetryPhase(
     long ElapsedMilliseconds,
     long AllocatedBytes,
     bool Success,
-    string? Failure);
+    string? Failure
+);
 
 internal sealed record CompilerTelemetryDocument(
     string SchemaVersion,
@@ -39,7 +40,8 @@ internal sealed record CompilerTelemetryDocument(
     bool PartialArtifactPublished,
     CompilerTelemetryPhase[] InvocationPhases,
     CompilerTelemetryPhase[] LibraryPhases,
-    string? Failure);
+    string? Failure
+);
 
 /// <summary>
 /// Thread-safe, invocation-owned performance telemetry. Top-level invocation phases are
@@ -73,7 +75,12 @@ internal sealed class CompilerProfiler : IDisposable
     private string _status = "running";
     private bool _partialArtifactPublished;
 
-    public CompilerProfiler(string manifest, string? telemetryPath, int analyzerWorkers, int loweringParallelism)
+    public CompilerProfiler(
+        string manifest,
+        string? telemetryPath,
+        int analyzerWorkers,
+        int loweringParallelism
+    )
     {
         _manifest = ArtifactFiles.NormalizePath(Path.GetFullPath(manifest));
         _telemetryPath = telemetryPath is null ? null : Path.GetFullPath(telemetryPath);
@@ -87,16 +94,22 @@ internal sealed class CompilerProfiler : IDisposable
     public int LoweringParallelism { get; }
     public int InputCount { get; set; }
 
-    public IDisposable MeasureInvocation(string name) => new PhaseScope(this, name, null, invocation: true);
+    public IDisposable MeasureInvocation(string name) =>
+        new PhaseScope(this, name, null, invocation: true);
 
-    public IDisposable MeasureLibrary(string name, string input) => new PhaseScope(this, name, input, invocation: false);
+    public IDisposable MeasureLibrary(string name, string input) =>
+        new PhaseScope(this, name, input, invocation: false);
 
     public void SetCompilerIdentity(string identity) => _compilerIdentity = identity;
 
     public void AddInputBytes(long value) => Interlocked.Add(ref _inputBytes, value);
+
     public void AddOutputBytes(long value) => Interlocked.Add(ref _outputBytes, value);
+
     public void RecordDartProcess() => Interlocked.Increment(ref _dartProcessCount);
-    public void RecordAnalysisContext(int count = 1) => Interlocked.Add(ref _analysisContextCount, count);
+
+    public void RecordAnalysisContext(int count = 1) =>
+        Interlocked.Add(ref _analysisContextCount, count);
 
     public void RecordCacheHit(long bytes)
     {
@@ -105,6 +118,7 @@ internal sealed class CompilerProfiler : IDisposable
     }
 
     public void RecordCacheMiss() => Interlocked.Increment(ref _cacheMisses);
+
     public void RecordCacheWrite(long bytes) => Interlocked.Add(ref _cacheWriteBytes, bytes);
 
     public IDisposable EnterWorkerQueue()
@@ -113,7 +127,11 @@ internal sealed class CompilerProfiler : IDisposable
         while (true)
         {
             var maximum = Volatile.Read(ref _maximumWorkerQueueDepth);
-            if (depth <= maximum || Interlocked.CompareExchange(ref _maximumWorkerQueueDepth, depth, maximum) == maximum)
+            if (
+                depth <= maximum
+                || Interlocked.CompareExchange(ref _maximumWorkerQueueDepth, depth, maximum)
+                    == maximum
+            )
             {
                 break;
             }
@@ -167,21 +185,24 @@ internal sealed class CompilerProfiler : IDisposable
             _partialArtifactPublished,
             invocationPhases,
             _libraryPhases.ToArray(),
-            _failure);
+            _failure
+        );
     }
 
     public void Dispose()
     {
-        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+        {
+            return;
+        }
+
         _elapsed.Stop();
         _samplingCancellation.Cancel();
         try
         {
             _samplingTask.GetAwaiter().GetResult();
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         _samplingCancellation.Dispose();
         if (_telemetryPath is not null)
         {
@@ -204,14 +225,24 @@ internal sealed class CompilerProfiler : IDisposable
         while (true)
         {
             var peak = Volatile.Read(ref _peakWorkingSetBytes);
-            if (workingSet <= peak || Interlocked.CompareExchange(ref _peakWorkingSetBytes, workingSet, peak) == peak)
+            if (
+                workingSet <= peak
+                || Interlocked.CompareExchange(ref _peakWorkingSetBytes, workingSet, peak) == peak
+            )
             {
                 return;
             }
         }
     }
 
-    private void FinishPhase(string name, string? input, bool invocation, long elapsedMilliseconds, long allocatedBytes, Exception? failure)
+    private void FinishPhase(
+        string name,
+        string? input,
+        bool invocation,
+        long elapsedMilliseconds,
+        long allocatedBytes,
+        Exception? failure
+    )
     {
         var phase = new CompilerTelemetryPhase(
             name,
@@ -219,11 +250,15 @@ internal sealed class CompilerProfiler : IDisposable
             elapsedMilliseconds,
             allocatedBytes,
             failure is null,
-            failure is null ? null : $"{failure.GetType().Name}: {failure.Message}");
+            failure is null ? null : $"{failure.GetType().Name}: {failure.Message}"
+        );
         if (invocation)
         {
             _invocationPhases.Enqueue(phase);
-            if (failure is null) _lastCompletedPhase = name;
+            if (failure is null)
+            {
+                _lastCompletedPhase = name;
+            }
         }
         else
         {
@@ -254,7 +289,11 @@ internal sealed class CompilerProfiler : IDisposable
 
         public void Dispose()
         {
-            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            {
+                return;
+            }
+
             _elapsed.Stop();
             _owner.FinishPhase(
                 _name,
@@ -262,16 +301,21 @@ internal sealed class CompilerProfiler : IDisposable
                 _invocation,
                 _elapsed.ElapsedMilliseconds,
                 Math.Max(0, GC.GetAllocatedBytesForCurrentThread() - _allocated),
-                _failure);
+                _failure
+            );
         }
     }
 
     private sealed class CallbackScope(Action callback) : IDisposable
     {
         private int _disposed;
+
         public void Dispose()
         {
-            if (Interlocked.Exchange(ref _disposed, 1) == 0) callback();
+            if (Interlocked.Exchange(ref _disposed, 1) == 0)
+            {
+                callback();
+            }
         }
     }
 }

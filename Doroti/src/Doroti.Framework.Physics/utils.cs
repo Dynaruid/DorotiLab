@@ -13,7 +13,12 @@ public static partial class UtilsLibrary
         {
             return a == b;
         }
-        return (DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b) - epsilon && DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b) + epsilon) || (DartRuntimePrimitives.RequireValue(a) == DartRuntimePrimitives.RequireValue(b));
+        return (
+                DartRuntimePrimitives.RequireValue(a)
+                    > DartRuntimePrimitives.RequireValue(b) - epsilon
+                && DartRuntimePrimitives.RequireValue(a)
+                    < DartRuntimePrimitives.RequireValue(b) + epsilon
+            ) || (DartRuntimePrimitives.RequireValue(a) == DartRuntimePrimitives.RequireValue(b));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -22,4 +27,3 @@ public static partial class UtilsLibrary
 {
     public static bool nearZero(double a, double epsilon) => nearEqual(a, 0.0, epsilon);
 }
-

@@ -34,15 +34,19 @@ public static partial class DebugLibrary
     public static bool debugAssertAllGesturesVarsUnset(string reason)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (
+                debugPrintHitTestResults
+                || debugPrintGestureArenaDiagnostics
+                || debugPrintRecognizerCallbacksTrace
+                || debugPrintResamplingMargin
+            )
             {
-                if (debugPrintHitTestResults || debugPrintGestureArenaDiagnostics || debugPrintRecognizerCallbacksTrace || debugPrintResamplingMargin)
-                {
-                    throw new FlutterError(reason);
-                }
-                return true;
-            });
+                throw new FlutterError(reason);
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

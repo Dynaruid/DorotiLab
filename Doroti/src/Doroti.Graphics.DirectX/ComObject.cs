@@ -4,7 +4,8 @@ using Silk.NET.Core.Native;
 namespace Doroti.Graphics.DirectX;
 
 /// <summary>A statically constructed owner of one COM reference; no reflection activation.</summary>
-public interface IComOwner<T> where T : ComObject
+public interface IComOwner<T>
+    where T : ComObject
 {
     static abstract Guid InterfaceId { get; }
     static abstract T Attach(nint pointer);
@@ -18,9 +19,14 @@ public interface IComOwner<T> where T : ComObject
 public abstract unsafe class ComObject : IDisposable
 {
     private nint _pointer;
+
     protected ComObject(nint pointer)
     {
-        if (pointer == 0) throw new ArgumentNullException(nameof(pointer));
+        if (pointer == 0)
+        {
+            throw new ArgumentNullException(nameof(pointer));
+        }
+
         _pointer = pointer;
     }
 
@@ -33,7 +39,8 @@ public abstract unsafe class ComObject : IDisposable
         }
     }
 
-    public T QueryInterface<T>() where T : ComObject, IComOwner<T>
+    public T QueryInterface<T>()
+        where T : ComObject, IComOwner<T>
     {
         using var lifetime = new ComScope(this);
         var iid = T.InterfaceId;
@@ -42,11 +49,16 @@ public abstract unsafe class ComObject : IDisposable
         return Adopt<T>(hr, result);
     }
 
-    internal static T Adopt<T>(int hr, void* pointer) where T : ComObject, IComOwner<T>
+    internal static T Adopt<T>(int hr, void* pointer)
+        where T : ComObject, IComOwner<T>
     {
         if (hr < 0)
         {
-            if (pointer != null) ((IUnknown*)pointer)->Release();
+            if (pointer != null)
+            {
+                ((IUnknown*)pointer)->Release();
+            }
+
             new HResult(hr).CheckError();
         }
         return T.Attach((nint)pointer);
@@ -61,7 +73,10 @@ public abstract unsafe class ComObject : IDisposable
     private void Release()
     {
         var pointer = Interlocked.Exchange(ref _pointer, 0);
-        if (pointer != 0) ((IUnknown*)pointer)->Release();
+        if (pointer != 0)
+        {
+            ((IUnknown*)pointer)->Release();
+        }
     }
 
     ~ComObject() => Release();
@@ -83,10 +98,16 @@ public readonly record struct HResult(int Code)
 {
     public bool Success => Code >= 0;
     public bool Failure => Code < 0;
+
     public void CheckError()
     {
-        if (Failure) throw new COMException($"DirectX call failed: 0x{Code:X8}", Code);
+        if (Failure)
+        {
+            throw new COMException($"DirectX call failed: 0x{Code:X8}", Code);
+        }
     }
+
     public static implicit operator HResult(int code) => new(code);
+
     public override string ToString() => $"0x{Code:X8}";
 }

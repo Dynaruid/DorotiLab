@@ -6,7 +6,8 @@ public class Spacer : StatelessWidget
 {
     public virtual long flex { get; private set; } = default!;
 
-    public Spacer(Key? key = null, long flex = 1) : base(key: key)
+    public Spacer(Key? key = null, long flex = 1)
+        : base(key: key)
     {
         this.flex = flex;
         System.Diagnostics.Debug.Assert(flex > 0L);
@@ -17,6 +18,4 @@ public class Spacer : StatelessWidget
         return new Expanded(flex: flex, child: SizedBox.CreateShrink());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

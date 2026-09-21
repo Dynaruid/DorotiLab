@@ -50,7 +50,8 @@ public sealed class BitField<T>
         }
     }
 
-    public void reset(bool value = false) => _bits = value ? (ulong)BitfieldLibrary.kMaxUnsignedSMI : 0;
+    public void reset(bool value = false) =>
+        _bits = value ? (ulong)BitfieldLibrary.kMaxUnsignedSMI : 0;
 
     private void ValidateIndex(int index)
     {

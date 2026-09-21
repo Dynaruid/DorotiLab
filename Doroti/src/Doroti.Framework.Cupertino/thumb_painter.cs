@@ -11,12 +11,21 @@ public static partial class Thumb_painterLibrary
 
 public static partial class Thumb_painterLibrary
 {
-    internal static List<BoxShadow> _kSwitchBoxShadows = new List<BoxShadow> { new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0), new BoxShadow(color: new Color(251658240L), offset: new Offset(0, 3), blurRadius: 1.0) };
+    internal static List<BoxShadow> _kSwitchBoxShadows = new List<BoxShadow>
+    {
+        new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0),
+        new BoxShadow(color: new Color(251658240L), offset: new Offset(0, 3), blurRadius: 1.0),
+    };
 }
 
 public static partial class Thumb_painterLibrary
 {
-    internal static List<BoxShadow> _kSliderBoxShadows = new List<BoxShadow> { new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0), new BoxShadow(color: new Color(687865856L), offset: new Offset(0, 1), blurRadius: 1.0), new BoxShadow(color: new Color(436207616L), offset: new Offset(0, 3), blurRadius: 1.0) };
+    internal static List<BoxShadow> _kSliderBoxShadows = new List<BoxShadow>
+    {
+        new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0),
+        new BoxShadow(color: new Color(687865856L), offset: new Offset(0, 1), blurRadius: 1.0),
+        new BoxShadow(color: new Color(436207616L), offset: new Offset(0, 3), blurRadius: 1.0),
+    };
 }
 
 public class CupertinoThumbPainter
@@ -34,7 +43,10 @@ public class CupertinoThumbPainter
         this.shadows = __shadows;
     }
 
-    public static CupertinoThumbPainter CreateSwitchThumb(Color color = default!, List<BoxShadow> shadows = default!)
+    public static CupertinoThumbPainter CreateSwitchThumb(
+        Color color = default!,
+        List<BoxShadow> shadows = default!
+    )
     {
         return new CupertinoThumbPainter(color: color, shadows: shadows);
     }
@@ -46,18 +58,31 @@ public class CupertinoThumbPainter
         {
             canvas.drawRRect(thumbShape.shift(shadow.offset), shadow.toPaint());
         }
-        canvas.drawRRect(thumbShape.inflate(0.5), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Thumb_painterLibrary._kThumbBorderColor;
-    return __cascade;
-}))());
-        canvas.drawRRect(thumbShape, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color;
-    return __cascade;
-}))());
+        canvas.drawRRect(
+            thumbShape.inflate(0.5),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = Thumb_painterLibrary._kThumbBorderColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
+        canvas.drawRRect(
+            thumbShape,
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = color;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }

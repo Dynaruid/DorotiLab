@@ -8,7 +8,9 @@ namespace Doroti.Framework.Material;
 
 public static partial class BannerLibrary
 {
-    internal static Duration _materialBannerTransitionDuration = Duration.Create(milliseconds: 250L);
+    internal static Duration _materialBannerTransitionDuration = Duration.Create(
+        milliseconds: 250L
+    );
 }
 
 public static partial class BannerLibrary
@@ -26,7 +28,7 @@ public enum MaterialBannerClosedReason
     dismiss,
     swipe,
     hide,
-    remove
+    remove,
 }
 
 public class MaterialBanner : StatefulWidget
@@ -49,7 +51,27 @@ public class MaterialBanner : StatefulWidget
     public virtual Animation<double>? animation { get; private set; }
     public virtual Action? onVisible { get; private set; }
 
-    public MaterialBanner(Key? key = null, Widget content = default!, TextStyle? contentTextStyle = null, List<Widget> actions = default!, double? elevation = null, Widget? leading = null, Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, EdgeInsetsGeometry? padding = null, EdgeInsetsGeometry? margin = null, EdgeInsetsGeometry? leadingPadding = null, bool forceActionsBelow = false, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.end, Animation<double>? animation = null, Action? onVisible = null, double minActionBarHeight = 52.0) : base(key: key)
+    public MaterialBanner(
+        Key? key = null,
+        Widget content = default!,
+        TextStyle? contentTextStyle = null,
+        List<Widget> actions = default!,
+        double? elevation = null,
+        Widget? leading = null,
+        Color? backgroundColor = null,
+        Color? surfaceTintColor = null,
+        Color? shadowColor = null,
+        Color? dividerColor = null,
+        EdgeInsetsGeometry? padding = null,
+        EdgeInsetsGeometry? margin = null,
+        EdgeInsetsGeometry? leadingPadding = null,
+        bool forceActionsBelow = false,
+        OverflowBarAlignment overflowAlignment = OverflowBarAlignment.end,
+        Animation<double>? animation = null,
+        Action? onVisible = null,
+        double minActionBarHeight = 52.0
+    )
+        : base(key: key)
     {
         this.content = content;
         this.contentTextStyle = contentTextStyle;
@@ -73,17 +95,44 @@ public class MaterialBanner : StatefulWidget
 
     public static AnimationController createAnimationController(Scheduler.TickerProvider vsync)
     {
-        return new AnimationController(duration: BannerLibrary._materialBannerTransitionDuration, debugLabel: "MaterialBanner", vsync: vsync);
+        return new AnimationController(
+            duration: BannerLibrary._materialBannerTransitionDuration,
+            debugLabel: "MaterialBanner",
+            vsync: vsync
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual MaterialBanner withAnimation(Animation<double> newAnimation, Key? fallbackKey = null)
+    public virtual MaterialBanner withAnimation(
+        Animation<double> newAnimation,
+        Key? fallbackKey = null
+    )
     {
-        return new MaterialBanner(key: key ?? fallbackKey, content: content, contentTextStyle: contentTextStyle, actions: actions, elevation: elevation, leading: leading, minActionBarHeight: minActionBarHeight, backgroundColor: backgroundColor, surfaceTintColor: surfaceTintColor, shadowColor: shadowColor, dividerColor: dividerColor, padding: padding, margin: margin, leadingPadding: leadingPadding, forceActionsBelow: forceActionsBelow, overflowAlignment: overflowAlignment, animation: newAnimation, onVisible: onVisible);
+        return new MaterialBanner(
+            key: key ?? fallbackKey,
+            content: content,
+            contentTextStyle: contentTextStyle,
+            actions: actions,
+            elevation: elevation,
+            leading: leading,
+            minActionBarHeight: minActionBarHeight,
+            backgroundColor: backgroundColor,
+            surfaceTintColor: surfaceTintColor,
+            shadowColor: shadowColor,
+            dividerColor: dividerColor,
+            padding: padding,
+            margin: margin,
+            leadingPadding: leadingPadding,
+            forceActionsBelow: forceActionsBelow,
+            overflowAlignment: overflowAlignment,
+            animation: newAnimation,
+            onVisible: onVisible
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialBannerState__banner());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MaterialBannerState__banner());
 }
 
 internal class _MaterialBannerState__banner : State<MaterialBanner>
@@ -116,8 +165,14 @@ internal class _MaterialBannerState__banner : State<MaterialBanner>
         _slideOutCurvedAnimation?.dispose();
         if (widget.animation is not null)
         {
-            _heightAnimation = new CurvedAnimation(parent: widget.animation!, curve: BannerLibrary._materialBannerHeightCurve);
-            _slideOutCurvedAnimation = new CurvedAnimation(parent: widget.animation!, curve: new Threshold(0.0));
+            _heightAnimation = new CurvedAnimation(
+                parent: widget.animation!,
+                curve: BannerLibrary._materialBannerHeightCurve
+            );
+            _slideOutCurvedAnimation = new CurvedAnimation(
+                parent: widget.animation!,
+                curve: new Threshold(0.0)
+            );
         }
         else
         {
@@ -155,27 +210,162 @@ internal class _MaterialBannerState__banner : State<MaterialBanner>
         MaterialBannerThemeData bannerTheme = MaterialBannerTheme.of(context);
         MaterialBannerThemeData defaults = new _BannerDefaultsM3__banner(context);
         bool isSingleRow = (checked(widget.actions.Count) == 1L) && !widget.forceActionsBelow;
-        EdgeInsetsGeometry paddingLocal = (widget.padding ?? bannerTheme.padding) ?? (isSingleRow ? EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 2.0) : EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 24.0, end: 16.0, bottom: 4.0));
-        EdgeInsetsGeometry leadingPaddingLocal = (widget.leadingPadding ?? bannerTheme.leadingPadding) ?? EdgeInsetsDirectional.CreateOnly(end: 16.0);
-        Widget actionsBar = new ConstrainedBox(constraints: new BoxConstraints(minHeight: widget.minActionBarHeight), child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8), child: new Align(alignment: AlignmentDirectional.centerEnd, child: new OverflowBar(overflowAlignment: widget.overflowAlignment, spacing: 8, children: widget.actions))));
+        EdgeInsetsGeometry paddingLocal =
+            (widget.padding ?? bannerTheme.padding)
+            ?? (
+                isSingleRow
+                    ? EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 2.0)
+                    : EdgeInsetsDirectional.CreateOnly(
+                        start: 16.0,
+                        top: 24.0,
+                        end: 16.0,
+                        bottom: 4.0
+                    )
+            );
+        EdgeInsetsGeometry leadingPaddingLocal =
+            (widget.leadingPadding ?? bannerTheme.leadingPadding)
+            ?? EdgeInsetsDirectional.CreateOnly(end: 16.0);
+        Widget actionsBar = new ConstrainedBox(
+            constraints: new BoxConstraints(minHeight: widget.minActionBarHeight),
+            child: new Padding(
+                padding: EdgeInsets.CreateSymmetric(horizontal: 8),
+                child: new Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: new OverflowBar(
+                        overflowAlignment: widget.overflowAlignment,
+                        spacing: 8,
+                        children: widget.actions
+                    )
+                )
+            )
+        );
         double elevationLocal = (widget.elevation ?? bannerTheme.elevation) ?? 0.0;
-        EdgeInsetsGeometry marginLocal = widget.margin ?? EdgeInsets.CreateOnly(bottom: (elevationLocal > 0L) ? 10.0 : 0.0);
-        Color backgroundColorLocal = (widget.backgroundColor ?? bannerTheme.backgroundColor) ?? defaults.backgroundColor!;
-        Color? surfaceTintColorLocal = (widget.surfaceTintColor ?? bannerTheme.surfaceTintColor) ?? defaults.surfaceTintColor;
+        EdgeInsetsGeometry marginLocal =
+            widget.margin ?? EdgeInsets.CreateOnly(bottom: (elevationLocal > 0L) ? 10.0 : 0.0);
+        Color backgroundColorLocal =
+            (widget.backgroundColor ?? bannerTheme.backgroundColor) ?? defaults.backgroundColor!;
+        Color? surfaceTintColorLocal =
+            (widget.surfaceTintColor ?? bannerTheme.surfaceTintColor) ?? defaults.surfaceTintColor;
         Color? shadowColorLocal = widget.shadowColor ?? bannerTheme.shadowColor;
-        Color? dividerColorLocal = (widget.dividerColor ?? bannerTheme.dividerColor) ?? defaults.dividerColor;
-        TextStyle? textStyle = (widget.contentTextStyle ?? bannerTheme.contentTextStyle) ?? defaults.contentTextStyle;
-        Widget materialBanner = new Padding(padding: marginLocal, child: new Material(elevation: elevationLocal, color: backgroundColorLocal, surfaceTintColor: surfaceTintColorLocal, shadowColor: shadowColorLocal, child: new Column(mainAxisSize: MainAxisSize.min, children: ((Func<List<Widget>>)(() => { var __collection14138 = new List<Widget>(); __collection14138.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: paddingLocal, child: new Row(children: ((Func<List<Widget>>)(() => { var __collection14253 = new List<Widget>(); if (widget.leading is not null) { __collection14253.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: leadingPaddingLocal, child: widget.leading))); } __collection14253.Add(DartRuntimePrimitives.ConvertValue<Widget>(MediaQuery.withClampedTextScaling(maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor, child: new Expanded(child: new DefaultTextStyle(style: textStyle!, child: widget.content))))); if (isSingleRow) { __collection14253.Add(DartRuntimePrimitives.ConvertValue<Widget>(MediaQuery.withClampedTextScaling(maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor, child: actionsBar))); } return __collection14253; }))())))); if (!isSingleRow) { __collection14138.Add(DartRuntimePrimitives.ConvertValue<Widget>(actionsBar)); } if (elevationLocal == 0L) { __collection14138.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Divider(height: 0, color: dividerColorLocal))); } return __collection14138; }))())));
+        Color? dividerColorLocal =
+            (widget.dividerColor ?? bannerTheme.dividerColor) ?? defaults.dividerColor;
+        TextStyle? textStyle =
+            (widget.contentTextStyle ?? bannerTheme.contentTextStyle) ?? defaults.contentTextStyle;
+        Widget materialBanner = new Padding(
+            padding: marginLocal,
+            child: new Material(
+                elevation: elevationLocal,
+                color: backgroundColorLocal,
+                surfaceTintColor: surfaceTintColorLocal,
+                shadowColor: shadowColorLocal,
+                child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: (
+                        (Func<List<Widget>>)(
+                            () =>
+                            {
+                                var __collection14138 = new List<Widget>();
+                                __collection14138.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new Padding(
+                                            padding: paddingLocal,
+                                            child: new Row(
+                                                children: (
+                                                    (Func<List<Widget>>)(
+                                                        () =>
+                                                        {
+                                                            var __collection14253 =
+                                                                new List<Widget>();
+                                                            if (widget.leading is not null)
+                                                            {
+                                                                __collection14253.Add(
+                                                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                        new Padding(
+                                                                            padding: leadingPaddingLocal,
+                                                                            child: widget.leading
+                                                                        )
+                                                                    )
+                                                                );
+                                                            }
+                                                            __collection14253.Add(
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    MediaQuery.withClampedTextScaling(
+                                                                        maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor,
+                                                                        child: new Expanded(
+                                                                            child: new DefaultTextStyle(
+                                                                                style: textStyle!,
+                                                                                child: widget.content
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            );
+                                                            if (isSingleRow)
+                                                            {
+                                                                __collection14253.Add(
+                                                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                        MediaQuery.withClampedTextScaling(
+                                                                            maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor,
+                                                                            child: actionsBar
+                                                                        )
+                                                                    )
+                                                                );
+                                                            }
+                                                            return __collection14253;
+                                                        }
+                                                    )
+                                                )()
+                                            )
+                                        )
+                                    )
+                                );
+                                if (!isSingleRow)
+                                {
+                                    __collection14138.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(actionsBar)
+                                    );
+                                }
+                                if (elevationLocal == 0L)
+                                {
+                                    __collection14138.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new Divider(height: 0, color: dividerColorLocal)
+                                        )
+                                    );
+                                }
+                                return __collection14138;
+                            }
+                        )
+                    )()
+                )
+            )
+        );
         if (widget.animation is null)
         {
             return materialBanner;
         }
-        materialBanner = DartRuntimePrimitives.ConvertValue<Widget>(new SafeArea(child: materialBanner));
-        Animation<Offset> slideOutAnimation = new Tween<Offset>(begin: new Offset(0.0, -1.0), end: Offset.zero).animate(_slideOutCurvedAnimation!);
-        materialBanner = DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(container: true, liveRegion: true, onDismiss: () =>
-        {
-            ScaffoldMessenger.of(context).removeCurrentMaterialBanner(reason: MaterialBannerClosedReason.dismiss);
-        }, child: accessibleNavigation ? materialBanner : new SlideTransition(position: slideOutAnimation, child: materialBanner)));
+        materialBanner = DartRuntimePrimitives.ConvertValue<Widget>(
+            new SafeArea(child: materialBanner)
+        );
+        Animation<Offset> slideOutAnimation = new Tween<Offset>(
+            begin: new Offset(0.0, -1.0),
+            end: Offset.zero
+        ).animate(_slideOutCurvedAnimation!);
+        materialBanner = DartRuntimePrimitives.ConvertValue<Widget>(
+            new Widgets.Semantics(
+                container: true,
+                liveRegion: true,
+                onDismiss: () =>
+                {
+                    ScaffoldMessenger
+                        .of(context)
+                        .removeCurrentMaterialBanner(reason: MaterialBannerClosedReason.dismiss);
+                },
+                child: accessibleNavigation
+                    ? materialBanner
+                    : new SlideTransition(position: slideOutAnimation, child: materialBanner)
+            )
+        );
         Widget materialBannerTransition = default!;
         if (accessibleNavigation)
         {
@@ -183,15 +373,29 @@ internal class _MaterialBannerState__banner : State<MaterialBanner>
         }
         else
         {
-            materialBannerTransition = DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedBuilder(animation: _heightAnimation!, builder: (context, child) =>
-            {
-                return new Align(alignment: AlignmentDirectional.bottomStart, heightFactor: _heightAnimation!.value, child: child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, child: materialBanner));
+            materialBannerTransition = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AnimatedBuilder(
+                    animation: _heightAnimation!,
+                    builder: (context, child) =>
+                    {
+                        return new Align(
+                            alignment: AlignmentDirectional.bottomStart,
+                            heightFactor: _heightAnimation!.value,
+                            child: child
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    },
+                    child: materialBanner
+                )
+            );
         }
-        return new Hero(tag: $"<MaterialBanner Hero tag - {widget.content}>", child: new ClipRect(child: materialBannerTransition));
+        return new Hero(
+            tag: $"<MaterialBanner Hero tag - {widget.content}>",
+            child: new ClipRect(child: materialBannerTransition)
+        );
     }
-
 }
 
 internal class _BannerDefaultsM3__banner : MaterialBannerThemeData
@@ -226,13 +430,17 @@ internal class _BannerDefaultsM3__banner : MaterialBannerThemeData
         }
     }
 
-    internal _BannerDefaultsM3__banner(BuildContext context) : base(elevation: 1.0)
+    internal _BannerDefaultsM3__banner(BuildContext context)
+        : base(elevation: 1.0)
     {
         this.context = context;
     }
 
-    public override Color? backgroundColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerLow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override Color? dividerColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
+    public override Color? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerLow);
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override Color? dividerColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
     public override TextStyle? contentTextStyle => _textTheme.bodyMedium;
 }

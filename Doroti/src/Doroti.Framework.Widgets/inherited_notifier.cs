@@ -4,11 +4,13 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
-public abstract class InheritedNotifier<T> : InheritedWidget where T : Listenable
+public abstract class InheritedNotifier<T> : InheritedWidget
+    where T : Listenable
 {
     public virtual T? notifier { get; private set; }
 
-    protected InheritedNotifier(Key? key = null, T? notifier = default, Widget child = default!) : base(key: key, child: child)
+    protected InheritedNotifier(Key? key = null, T? notifier = default, Widget child = default!)
+        : base(key: key, child: child)
     {
         this.notifier = notifier;
     }
@@ -20,17 +22,20 @@ public abstract class InheritedNotifier<T> : InheritedWidget where T : Listenabl
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override InheritedElement createElement() => DartRuntimePrimitives.ConvertValue<InheritedElement>(new _InheritedNotifierElement__inherited_notifier<T>(this));
+    public override InheritedElement createElement() =>
+        DartRuntimePrimitives.ConvertValue<InheritedElement>(
+            new _InheritedNotifierElement__inherited_notifier<T>(this)
+        );
 }
 
-internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedElement where T : Listenable
+internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedElement
+    where T : Listenable
 {
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual bool _dirty { get; set; } = false;
 
-    internal _InheritedNotifierElement__inherited_notifier(InheritedNotifier<T> widget) : base(widget)
-    {
-    }
+    internal _InheritedNotifierElement__inherited_notifier(InheritedNotifier<T> widget)
+        : base(widget) { }
 
     public override void update(Widget newWidget)
     {
@@ -73,6 +78,4 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
         ((InheritedNotifier<T>?)widget)!.notifier?.removeListener(_handleUpdate);
         base.unmount();
     }
-
 }
-

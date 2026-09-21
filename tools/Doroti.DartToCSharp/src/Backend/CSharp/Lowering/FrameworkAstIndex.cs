@@ -3,8 +3,9 @@ namespace Doroti.DartToCSharp;
 /// <summary>One full traversal per declaration; repeated root queries reuse immutable arrays.</summary>
 internal sealed class FrameworkAstIndex
 {
-    private readonly Dictionary<CoreAstNode, CoreAstNode[]> _declarationNodes =
-        new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<CoreAstNode, CoreAstNode[]> _declarationNodes = new(
+        ReferenceEqualityComparer.Instance
+    );
 
     public FrameworkAstIndex(IEnumerable<CoreResolvedDeclaration> declarations)
     {

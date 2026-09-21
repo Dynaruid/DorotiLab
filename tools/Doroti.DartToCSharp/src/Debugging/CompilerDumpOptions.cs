@@ -11,7 +11,10 @@ public enum CompilerDumpStage
     All = AnalyzerProtocol | DartIr | CoreIr | CSharpIr,
 }
 
-public sealed record CompilerDumpOptions(string Directory, CompilerDumpStage Stages = CompilerDumpStage.All);
+public sealed record CompilerDumpOptions(
+    string Directory,
+    CompilerDumpStage Stages = CompilerDumpStage.All
+);
 
 internal sealed record CompilerDumpInput(
     string Source,
@@ -21,4 +24,5 @@ internal sealed record CompilerDumpInput(
     CoreResolvedDeclaration[] CoreDeclarations,
     string? GeneratedFile,
     string? GeneratedCode,
-    SourceMapEntry[] Mappings);
+    SourceMapEntry[] Mappings
+);

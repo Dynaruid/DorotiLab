@@ -20,27 +20,41 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
         _rootFactory = rootFactory ?? throw new ArgumentNullException(nameof(rootFactory));
 
     /// <summary>Prepares resources in the attached view before creating its root widget.</summary>
-    public DorotiWidgetEntrypoint(Func<Widget> rootFactory, Func<Task> initialize) : this(rootFactory) =>
+    public DorotiWidgetEntrypoint(Func<Widget> rootFactory, Func<Task> initialize)
+        : this(rootFactory) =>
         _initialize = initialize ?? throw new ArgumentNullException(nameof(initialize));
 
-    public void Bootstrap(PlatformDispatcher dispatcher) => _binding = new WidgetsFlutterBinding(dispatcher);
+    public void Bootstrap(PlatformDispatcher dispatcher) =>
+        _binding = new WidgetsFlutterBinding(dispatcher);
 
     public void AttachView(DorotiView view)
     {
         ArgumentNullException.ThrowIfNull(view);
         if (_binding is null)
+        {
             throw new InvalidOperationException("The Doroti widget runtime is not bootstrapped.");
+        }
+
         if (_view is not null)
-            throw new InvalidOperationException("This Doroti widget entrypoint already owns a view.");
+        {
+            throw new InvalidOperationException(
+                "This Doroti widget entrypoint already owns a view."
+            );
+        }
 
         _view = view;
         var binding = _binding;
         var generation = ++_attachmentGeneration;
-        bool IsAttached() => ReferenceEquals(_view, view) &&
-            ReferenceEquals(_binding, binding) && _attachmentGeneration == generation;
+        bool IsAttached() =>
+            ReferenceEquals(_view, view)
+            && ReferenceEquals(_binding, binding)
+            && _attachmentGeneration == generation;
         void AttachRoot()
         {
-            if (IsAttached()) binding.attachRootWidget(binding.wrapWithDefaultView(_rootFactory()));
+            if (IsAttached())
+            {
+                binding.attachRootWidget(binding.wrapWithDefaultView(_rootFactory()));
+            }
         }
         async Task InitializeAsync()
         {
@@ -51,7 +65,10 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
                 // loop, including when there is no root producing frames yet.
                 DartAsyncRuntime.scheduleMicrotask(() =>
                 {
-                    if (!IsAttached()) return;
+                    if (!IsAttached())
+                    {
+                        return;
+                    }
                     // An idle microtask can run between native pointer events.
                     // Attach during a frame so layout completes before input
                     // can hit-test the newly created render tree.
@@ -63,17 +80,34 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
             {
                 DartAsyncRuntime.scheduleMicrotask(() =>
                 {
-                    if (IsAttached()) FlutterError.reportError(new FlutterErrorDetails(
-                        error, library: "Doroti widget bootstrap"));
+                    if (IsAttached())
+                    {
+                        FlutterError.reportError(
+                            new FlutterErrorDetails(error, library: "Doroti widget bootstrap")
+                        );
+                    }
                 });
             }
         }
-        binding.scheduleFrameCallback(timestamp =>
-        {
-            if (!IsAttached()) return;
-            if (_initialize is null) AttachRoot();
-            else _ = InitializeAsync();
-        }, scheduleNewFrame: false);
+        binding.scheduleFrameCallback(
+            timestamp =>
+            {
+                if (!IsAttached())
+                {
+                    return;
+                }
+
+                if (_initialize is null)
+                {
+                    AttachRoot();
+                }
+                else
+                {
+                    _ = InitializeAsync();
+                }
+            },
+            scheduleNewFrame: false
+        );
         // Ordinary frames are disabled until a root exists. Bootstrap is the
         // entrypoint's responsibility, just as runApp owns Flutter's warm-up.
         binding.scheduleForcedFrame();

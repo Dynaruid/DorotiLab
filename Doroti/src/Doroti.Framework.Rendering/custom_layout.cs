@@ -24,29 +24,55 @@ public abstract class MultiChildLayoutDelegate
     }
 
     public virtual bool hasChild(object childId) => _idToChild!.ContainsKey(childId);
+
     public virtual Size layoutChild(object childId, BoxConstraints constraints)
     {
         RenderBox? child = _idToChild!.GetValueOrDefault(childId);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is null)
             {
-                if (child is null)
-                {
-                    throw new FlutterError($"The {this} custom multichild layout delegate tried to lay out a non-existent child.\n" + $"There is no child with the id \"{childId}\".");
-                }
-                if (!_debugChildrenNeedingLayout!.Remove(child))
-                {
-                    throw new FlutterError($"The {this} custom multichild layout delegate tried to lay out the child with id \"{childId}\" more than once.\n" + "Each child must be laid out exactly once.");
-                }
-                try
-                {
-                    DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid(isAppliedConstraint: true));
-                }
-                catch (AssertionError exception)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {this} custom multichild layout delegate provided invalid box constraints for the child with id \"{childId}\"."), new DiagnosticsProperty<AssertionError>("Exception", exception, showName: false), new ErrorDescription("The minimum width and height must be greater than or equal to zero.\n" + "The maximum width must be greater than or equal to the minimum width.\n" + "The maximum height must be greater than or equal to the minimum height.") });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    $"The {this} custom multichild layout delegate tried to lay out a non-existent child.\n"
+                        + $"There is no child with the id \"{childId}\"."
+                );
+            }
+            if (!_debugChildrenNeedingLayout!.Remove(child))
+            {
+                throw new FlutterError(
+                    $"The {this} custom multichild layout delegate tried to lay out the child with id \"{childId}\" more than once.\n"
+                        + "Each child must be laid out exactly once."
+                );
+            }
+            try
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    constraints.debugAssertIsValid(isAppliedConstraint: true)
+                );
+            }
+            catch (AssertionError exception)
+            {
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"The {this} custom multichild layout delegate provided invalid box constraints for the child with id \"{childId}\"."
+                        ),
+                        new DiagnosticsProperty<AssertionError>(
+                            "Exception",
+                            exception,
+                            showName: false
+                        ),
+                        new ErrorDescription(
+                            "The minimum width and height must be greater than or equal to zero.\n"
+                                + "The maximum width must be greater than or equal to the minimum width.\n"
+                                + "The maximum height must be greater than or equal to the minimum height."
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         child!.layout(constraints, parentUsesSize: true);
         return child.size;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -56,13 +82,16 @@ public abstract class MultiChildLayoutDelegate
     {
         RenderBox? child = _idToChild!.GetValueOrDefault(childId);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is null)
             {
-                if (child is null)
-                {
-                    throw new FlutterError($"The {this} custom multichild layout delegate tried to position out a non-existent child:\n" + $"There is no child with the id \"{childId}\".");
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    $"The {this} custom multichild layout delegate tried to position out a non-existent child:\n"
+                        + $"There is no child with the id \"{childId}\"."
+                );
+            }
+            return true;
+        });
         var childParentData = ((MultiChildLayoutParentData?)(object?)child!.parentData!)!;
         childParentData.offset = offset;
     }
@@ -79,11 +108,11 @@ public abstract class MultiChildLayoutDelegate
         DartMap<object, RenderBox>? previousIdToChild = _idToChild;
         HashSet<RenderBox>? debugPreviousChildrenNeedingLayout = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                debugPreviousChildrenNeedingLayout = _debugChildrenNeedingLayout;
-                _debugChildrenNeedingLayout = new HashSet<RenderBox>();
-                return true;
-            });
+        {
+            debugPreviousChildrenNeedingLayout = _debugChildrenNeedingLayout;
+            _debugChildrenNeedingLayout = new HashSet<RenderBox>();
+            return true;
+        });
         try
         {
             _idToChild = new DartMap<object, RenderBox>().cast<object, RenderBox>();
@@ -92,56 +121,86 @@ public abstract class MultiChildLayoutDelegate
             {
                 var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
                 DartRuntimePrimitives.Assert(() =>
+                {
+                    if (childParentData.id is null)
                     {
-                        if (childParentData.id is null)
-                        {
-                            throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Every child of a RenderCustomMultiChildLayoutBox must have an ID in its parent data."), child!.describeForError("The following child has no ID") });
-                        }
-                        return true;
-                    });
+                        throw new FlutterError(
+                            new List<DiagnosticsNode>
+                            {
+                                new ErrorSummary(
+                                    "Every child of a RenderCustomMultiChildLayoutBox must have an ID in its parent data."
+                                ),
+                                child!.describeForError("The following child has no ID"),
+                            }
+                        );
+                    }
+                    return true;
+                });
                 _idToChild![childParentData.id!] = child;
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        _debugChildrenNeedingLayout!.Add(child!);
-                        return true;
-                    });
+                {
+                    _debugChildrenNeedingLayout!.Add(child!);
+                    return true;
+                });
                 child = childParentData.nextSibling;
             }
             performLayout(size);
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (checked((long)_debugChildrenNeedingLayout!.Count) != 0)
                 {
-                    if (checked((long)_debugChildrenNeedingLayout!.Count) != 0)
-                    {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Each child must be laid out exactly once."), new DiagnosticsBlock(name: $"The {this} custom multichild layout delegate forgot " + "to lay out the following " + $"{((checked(_debugChildrenNeedingLayout!.Count) > 1L) ? "children" : "child__9287")}", children: _debugChildrenNeedingLayout!.map(_debugDescribeChild).ToList()) });
-                    }
-                    return true;
-                });
+                    throw new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary("Each child must be laid out exactly once."),
+                            new DiagnosticsBlock(
+                                name: $"The {this} custom multichild layout delegate forgot "
+                                    + "to lay out the following "
+                                    + $"{((checked(_debugChildrenNeedingLayout!.Count) > 1L) ? "children" : "child__9287")}",
+                                children: _debugChildrenNeedingLayout!
+                                    .map(_debugDescribeChild)
+                                    .ToList()
+                            ),
+                        }
+                    );
+                }
+                return true;
+            });
         }
         finally
         {
             _idToChild = previousIdToChild;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    _debugChildrenNeedingLayout = debugPreviousChildrenNeedingLayout;
-                    return true;
-                });
+            {
+                _debugChildrenNeedingLayout = debugPreviousChildrenNeedingLayout;
+                return true;
+            });
         }
     }
 
     public virtual Size getSize(BoxConstraints constraints) => constraints.biggest;
+
     public abstract void performLayout(Size size);
     public abstract bool shouldRelayout(MultiChildLayoutDelegate oldDelegate);
-    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "MultiChildLayoutDelegate");
+
+    public override string ToString() =>
+        objectRuntimeTypeFunctions.objectRuntimeType(this, "MultiChildLayoutDelegate");
 }
 
-public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>, RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData>
+public class RenderCustomMultiChildLayoutBox
+    : RenderBox,
+        ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData>
 {
     internal virtual MultiChildLayoutDelegate _delegate { get; set; } = default!;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderCustomMultiChildLayoutBox(List<RenderBox>? children = null, MultiChildLayoutDelegate @delegate = default!)
+    public RenderCustomMultiChildLayoutBox(
+        List<RenderBox>? children = null,
+        MultiChildLayoutDelegate @delegate = default!
+    )
     {
         _delegate = @delegate;
     }
@@ -166,7 +225,14 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
                 return;
             }
             MultiChildLayoutDelegate oldDelegate = _delegate;
-            if ((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRelayout(oldDelegate))
+            if (
+                (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newDelegate),
+                        DartRuntimePrimitives.RuntimeType(oldDelegate)
+                    )
+                ) || newDelegate.shouldRelayout(oldDelegate)
+            )
             {
                 markNeedsLayout();
             }
@@ -178,6 +244,7 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -305,16 +372,44 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
     }
 
     public virtual long childCount => _childCount;
+
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -331,7 +426,9 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
             childParentData.nextSibling = _firstChild;
             if (_firstChild is not null)
             {
-                var firstChildParentData = ((MultiChildLayoutParentData?)(object?)_firstChild!.parentData!)!;
+                var firstChildParentData = (
+                    (MultiChildLayoutParentData?)(object?)_firstChild!.parentData!
+                )!;
                 firstChildParentData.previousSibling = child;
             }
             _firstChild = child;
@@ -341,8 +438,12 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         {
             DartRuntimePrimitives.Assert(() => _firstChild is not null);
             DartRuntimePrimitives.Assert(() => _lastChild is not null);
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimatePreviousSiblingOf(after, equals: _firstChild)
+            );
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimateNextSiblingOf(after, equals: _lastChild)
+            );
             var afterParentData = ((MultiChildLayoutParentData?)(object?)after.parentData!)!;
             if (afterParentData.nextSibling is null)
             {
@@ -355,8 +456,13 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((MultiChildLayoutParentData?)(object?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((MultiChildLayoutParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = (
+                    (MultiChildLayoutParentData?)
+                        (object?)childParentData.previousSibling!.parentData!
+                )!;
+                var childNextSiblingParentData = (
+                    (MultiChildLayoutParentData?)(object?)childParentData.nextSibling!.parentData!
+                )!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
                 DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
@@ -389,7 +495,9 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() =>
+            _debugUltimatePreviousSiblingOf(child, equals: _firstChild)
+        );
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
         DartRuntimePrimitives.Assert(() => _childCount >= 0L);
         if (childParentData.previousSibling is null)
@@ -399,7 +507,9 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         }
         else
         {
-            var childPreviousSiblingParentData = ((MultiChildLayoutParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = (
+                (MultiChildLayoutParentData?)(object?)childParentData.previousSibling!.parentData!
+            )!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if (childParentData.nextSibling is null)
@@ -409,7 +519,9 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         }
         else
         {
-            var childNextSiblingParentData = ((MultiChildLayoutParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = (
+                (MultiChildLayoutParentData?)(object?)childParentData.nextSibling!.parentData!
+            )!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -480,6 +592,7 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
 
     public virtual RenderBox? firstChild => _firstChild;
     public virtual RenderBox? lastChild => _lastChild;
+
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
@@ -530,7 +643,8 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
             if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
+                    + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -546,7 +660,9 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         while (child is not null)
         {
             var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
-            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
+            BaselineOffset candidate = new BaselineOffset(
+                child.getDistanceToActualBaseline(baseline)
+            ).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -565,11 +681,17 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
                 child = childParentData.previousSibling;
                 continue;
             }
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
-            {
-                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
-                return child!.hitTest(result, position: transformed);
-            });
+            bool isHit = result.addWithPaintOffset(
+                offset: childParentData.offset,
+                position: position,
+                hitTest: (result, transformed) =>
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(transformed, position - childParentData.offset)
+                    );
+                    return child!.hitTest(result, position: transformed);
+                }
+            );
             if (isHit)
             {
                 return true;
@@ -610,5 +732,4 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

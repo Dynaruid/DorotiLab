@@ -22,27 +22,55 @@ public class InkHighlight : InteractiveInkFeature
     internal virtual AnimationController _alphaController { get; set; } = default!;
     internal virtual bool _active { get; set; } = true;
 
-    public InkHighlight(MaterialInkController controller, RenderBox referenceBox, Color color, TextDirection textDirection, BoxShape shape = BoxShape.rectangle, double? radius = null, BorderRadius? borderRadius = null, ShapeBorder? customBorder = null, Func<Rect>? rectCallback = null, Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
+    public InkHighlight(
+        MaterialInkController controller,
+        RenderBox referenceBox,
+        Color color,
+        TextDirection textDirection,
+        BoxShape shape = BoxShape.rectangle,
+        double? radius = null,
+        BorderRadius? borderRadius = null,
+        ShapeBorder? customBorder = null,
+        Func<Rect>? rectCallback = null,
+        Action? onRemoved = null,
+        Duration? fadeDuration = null
+    )
+        : base(
+            controller: controller,
+            referenceBox: referenceBox,
+            color: color,
+            customBorder: customBorder,
+            onRemoved: onRemoved
+        )
     {
-        Duration __fadeDuration = fadeDuration ?? Ink_highlightLibrary._kDefaultHighlightFadeDuration;
+        Duration __fadeDuration =
+            fadeDuration ?? Ink_highlightLibrary._kDefaultHighlightFadeDuration;
         _shape = shape;
         _radius = radius;
         _borderRadius = borderRadius ?? BorderRadius.zero;
         _textDirection = textDirection;
         _rectCallback = rectCallback;
-        _alphaController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: this.controller.vsync);
-    __cascade.addListener(this.controller.markNeedsPaint);
-    __cascade.addStatusListener(_handleAlphaStatusChanged);
-    __cascade.forward();
-    return __cascade;
-}))();
+        _alphaController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: DartRuntimePrimitives.RequireValue(__fadeDuration),
+                        vsync: this.controller.vsync
+                    );
+                    __cascade.addListener(this.controller.markNeedsPaint);
+                    __cascade.addStatusListener(_handleAlphaStatusChanged);
+                    __cascade.forward();
+                    return __cascade;
+                }
+            )
+        )();
         _alpha = _alphaController.drive(new IntTween(begin: 0L, end: this.color.alpha));
         this.controller.addInkFeature(this);
     }
 
     public virtual bool active => _active;
+
     public virtual void activate()
     {
         _active = true;
@@ -79,37 +107,48 @@ public class InkHighlight : InteractiveInkFeature
         switch (_shape)
         {
             case BoxShape.circle:
-                {
-                    canvas.drawCircle(rect.center, _radius ?? Material.defaultSplashRadius, paint);
-                    break;
-                }
+            {
+                canvas.drawCircle(rect.center, _radius ?? Material.defaultSplashRadius, paint);
+                break;
+            }
             case BoxShape.rectangle:
+            {
+                if (!Equals(_borderRadius, BorderRadius.zero))
                 {
-                    if (!Equals(_borderRadius, BorderRadius.zero))
-                    {
-                        var clipRRect = RRect.fromRectAndCorners(rect, topLeft: _borderRadius.topLeft, topRight: _borderRadius.topRight, bottomLeft: _borderRadius.bottomLeft, bottomRight: _borderRadius.bottomRight);
-                        canvas.drawRRect(clipRRect, paint);
-                    }
-                    else
-                    {
-                        canvas.drawRect(rect, paint);
-                    }
-                    break;
+                    var clipRRect = RRect.fromRectAndCorners(
+                        rect,
+                        topLeft: _borderRadius.topLeft,
+                        topRight: _borderRadius.topRight,
+                        bottomLeft: _borderRadius.bottomLeft,
+                        bottomRight: _borderRadius.bottomRight
+                    );
+                    canvas.drawRRect(clipRRect, paint);
                 }
+                else
+                {
+                    canvas.drawRect(rect, paint);
+                }
+                break;
+            }
         }
         canvas.restore();
     }
 
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
-        var paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color.withAlpha(_alpha.value);
-    return __cascade;
-}))();
+        var paint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = color.withAlpha(_alpha.value);
+                    return __cascade;
+                }
+            )
+        )();
         Offset? originOffset = MatrixUtils.getAsTranslation(transform);
-        Rect rect = (_rectCallback is not null) ? _rectCallback() : (Offset.zero & referenceBox.size);
+        Rect rect =
+            (_rectCallback is not null) ? _rectCallback() : (Offset.zero & referenceBox.size);
         if (originOffset is null)
         {
             canvas.save();
@@ -119,8 +158,15 @@ public class InkHighlight : InteractiveInkFeature
         }
         else
         {
-            _paintHighlight(canvas, rect.shift(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset))), paint);
+            _paintHighlight(
+                canvas,
+                rect.shift(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(originOffset)
+                    )
+                ),
+                paint
+            );
         }
     }
-
 }

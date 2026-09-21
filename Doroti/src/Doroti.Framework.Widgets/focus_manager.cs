@@ -12,18 +12,27 @@ public static partial class Focus_managerLibrary
 
 public static partial class Focus_managerLibrary
 {
-    internal static bool _focusDebug(Func<string> messageFunc, Func<IEnumerable<object>>? detailsFunc = null)
+    internal static bool _focusDebug(
+        Func<string> messageFunc,
+        Func<IEnumerable<object>>? detailsFunc = null
+    )
     {
         if (Foundation.ConstantsLibrary.kReleaseMode)
         {
-            throw new InvalidOperationException("_focusDebug was called in Release mode. It should always be wrapped in " + "an assert. Always call _focusDebug like so:\n" + "  assert(_focusDebug(() => 'Blah $foo'));");
+            throw new InvalidOperationException(
+                "_focusDebug was called in Release mode. It should always be wrapped in "
+                    + "an assert. Always call _focusDebug like so:\n"
+                    + "  assert(_focusDebug(() => 'Blah $foo'));"
+            );
         }
         if (!debugFocusChanges)
         {
             return true;
         }
         PrintLibrary.debugPrint($"FOCUS: {messageFunc()}");
-        IEnumerable<object> details = detailsFunc is null ? new List<object>() : detailsFunc.Invoke();
+        IEnumerable<object> details = detailsFunc is null
+            ? new List<object>()
+            : detailsFunc.Invoke();
         if (Enumerable.Any(details))
         {
             foreach (var detail in details)
@@ -40,7 +49,7 @@ public enum KeyEventResult
 {
     handled,
     ignored,
-    skipRemainingHandlers
+    skipRemainingHandlers,
 }
 
 public static partial class Focus_managerLibrary
@@ -53,21 +62,23 @@ public static partial class Focus_managerLibrary
             switch (result)
             {
                 case KeyEventResult.handled:
-                    {
-                        return KeyEventResult.handled;
-                    }
+                {
+                    return KeyEventResult.handled;
+                }
                 case KeyEventResult.skipRemainingHandlers:
-                    {
-                        hasSkipRemainingHandlers = true;
-                        break;
-                    }
+                {
+                    hasSkipRemainingHandlers = true;
+                    break;
+                }
                 case KeyEventResult.ignored:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
             }
         }
-        return hasSkipRemainingHandlers ? KeyEventResult.skipRemainingHandlers : KeyEventResult.ignored;
+        return hasSkipRemainingHandlers
+            ? KeyEventResult.skipRemainingHandlers
+            : KeyEventResult.ignored;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -91,18 +102,30 @@ internal class _Autofocus__focus_manager
 
     public virtual void applyIfValid(FocusManager manager)
     {
-        bool shouldApply = ((scope.parent is not null) || DartRuntimePrimitives.Identical(scope, manager.rootScope)) && DartRuntimePrimitives.Identical(scope._manager, manager) && (scope.focusedChild is null) && autofocusNode.ancestors.contains(scope);
+        bool shouldApply =
+            (
+                (scope.parent is not null)
+                || DartRuntimePrimitives.Identical(scope, manager.rootScope)
+            )
+            && DartRuntimePrimitives.Identical(scope._manager, manager)
+            && (scope.focusedChild is null)
+            && autofocusNode.ancestors.contains(scope);
         if (shouldApply)
         {
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Applying autofocus: {autofocusNode}"));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() => $"Applying autofocus: {autofocusNode}")
+            );
             autofocusNode._doRequestFocus(findFirstFocus: true);
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Autofocus request discarded for node: {autofocusNode}."));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() =>
+                    $"Autofocus request discarded for node: {autofocusNode}."
+                )
+            );
         }
     }
-
 }
 
 public class FocusAttachment
@@ -114,21 +137,41 @@ public class FocusAttachment
         this._node = _node;
     }
 
-    public virtual bool isAttached => DartRuntimePrimitives.ConvertValue<bool>(Equals(_node._attachment, this));
+    public virtual bool isAttached =>
+        DartRuntimePrimitives.ConvertValue<bool>(Equals(_node._attachment, this));
+
     public virtual void detach()
     {
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => "Detaching node:", () => new List<object> { _node, $"With enclosing scope {_node.enclosingScope}" }));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(
+                () => "Detaching node:",
+                () => new List<object> { _node, $"With enclosing scope {_node.enclosingScope}" }
+            )
+        );
         if (isAttached)
         {
-            if (_node.hasPrimaryFocus || (_node._manager is not null) && Equals(_node._manager!._markedForFocus, _node))
+            if (
+                _node.hasPrimaryFocus
+                || ((_node._manager is not null) && Equals(_node._manager!._markedForFocus, _node))
+            )
             {
                 _node.unfocus(disposition: UnfocusDisposition.previouslyFocusedChild);
             }
             _node._manager?._markDetached(_node);
             _node._parent?._removeChild(_node);
             _node._attachment = null;
-            DartRuntimePrimitives.Assert(() => !_node.hasPrimaryFocus, () => (object?)$"Node {(object?)_node.debugLabel ?? (object?)_node} still has primary focus while being detached.");
-            DartRuntimePrimitives.Assert(() => !Equals(_node._manager?._markedForFocus, _node), () => (object?)$"Node {(object?)_node.debugLabel ?? (object?)_node} still marked for focus while being detached.");
+            DartRuntimePrimitives.Assert(
+                () => !_node.hasPrimaryFocus,
+                () =>
+                    (object?)
+                        $"Node {(object?)_node.debugLabel ?? (object?)_node} still has primary focus while being detached."
+            );
+            DartRuntimePrimitives.Assert(
+                () => !Equals(_node._manager?._markedForFocus, _node),
+                () =>
+                    (object?)
+                        $"Node {(object?)_node.debugLabel ?? (object?)_node} still marked for focus while being detached."
+            );
         }
         DartRuntimePrimitives.Assert(() => !isAttached);
     }
@@ -143,13 +186,12 @@ public class FocusAttachment
             parent._reparent(_node);
         }
     }
-
 }
 
 public enum UnfocusDisposition
 {
     scope,
-    previouslyFocusedChild
+    previouslyFocusedChild,
 }
 
 public class FocusNode : ChangeNotifier, DiagnosticableTree
@@ -172,7 +214,15 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     internal virtual FocusScopeNode? _enclosingScope { get; set; } = default;
     internal virtual bool _requestFocusWhenReparented { get; set; } = false;
 
-    public FocusNode(string? debugLabel = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, bool skipTraversal = false, bool canRequestFocus = true, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true)
+    public FocusNode(
+        string? debugLabel = null,
+        Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null,
+        Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null,
+        bool skipTraversal = false,
+        bool canRequestFocus = true,
+        bool descendantsAreFocusable = true,
+        bool descendantsAreTraversable = true
+    )
     {
         this.onKey = onKey;
         this.onKeyEvent = onKeyEvent;
@@ -226,8 +276,12 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             }
         }
     }
-    internal bool _isInKeptAliveSliver => KeptAliveSliverVisibility.IsHidden(context?.findRenderObject());
-    internal static bool _allowDescendantsToBeFocused(FocusNode ancestor) => ancestor.descendantsAreFocusable;
+    internal bool _isInKeptAliveSliver =>
+        KeptAliveSliverVisibility.IsHidden(context?.findRenderObject());
+
+    internal static bool _allowDescendantsToBeFocused(FocusNode ancestor) =>
+        ancestor.descendantsAreFocusable;
+
     public virtual bool descendantsAreFocusable
     {
         get => _descendantsAreFocusable;
@@ -261,7 +315,8 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     }
     public virtual BuildContext? context => _context;
     public virtual FocusNode? parent => _parent;
-    public virtual IEnumerable<FocusNode> children => DartRuntimePrimitives.ConvertValue<IEnumerable<FocusNode>>(_children);
+    public virtual IEnumerable<FocusNode> children =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<FocusNode>>(_children);
     public virtual IEnumerable<FocusNode> traversalChildren
     {
         get
@@ -280,11 +335,11 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    _debugLabel = __value;
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+            {
+                _debugLabel = __value;
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
         }
     }
     public virtual IEnumerable<FocusNode> descendants
@@ -333,10 +388,15 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             return _ancestors!;
         }
     }
-    public virtual bool hasFocus => DartRuntimePrimitives.ConvertValue<bool>(hasPrimaryFocus || (_manager?.primaryFocus?.ancestors.contains(this) ?? false));
-    public virtual bool hasPrimaryFocus => DartRuntimePrimitives.ConvertValue<bool>(Equals(_manager?.primaryFocus, this));
+    public virtual bool hasFocus =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            hasPrimaryFocus || (_manager?.primaryFocus?.ancestors.contains(this) ?? false)
+        );
+    public virtual bool hasPrimaryFocus =>
+        DartRuntimePrimitives.ConvertValue<bool>(Equals(_manager?.primaryFocus, this));
     public virtual FocusHighlightMode highlightMode => FocusManager.instance.highlightMode;
     public virtual FocusScopeNode? nearestScope => enclosingScope;
+
     internal virtual void _clearEnclosingScopeCache()
     {
         FocusScopeNode? cachedScope = _enclosingScope;
@@ -362,7 +422,12 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         get
         {
             FocusScopeNode? enclosingScope = _enclosingScope ??= parent?.nearestScope;
-            DartRuntimePrimitives.Assert(() => Equals(enclosingScope, parent?.nearestScope), () => (object?)$"{this} has invalid scope cache: {_enclosingScope} != {parent?.nearestScope}");
+            DartRuntimePrimitives.Assert(
+                () => Equals(enclosingScope, parent?.nearestScope),
+                () =>
+                    (object?)
+                        $"{this} has invalid scope cache: {_enclosingScope} != {parent?.nearestScope}"
+            );
             return enclosingScope;
         }
     }
@@ -371,22 +436,51 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => context is not null, () => (object?)"Tried to get the offset of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
+            DartRuntimePrimitives.Assert(
+                () => context is not null,
+                () =>
+                    (object?)
+                        "Tried to get the offset of a focus node that didn't have its context set yet.\n"
+                    + "The context needs to be set before trying to evaluate traversal policies. "
+                    + "Setting the context is typically done with the attach method."
+            );
             RenderObject @object = context!.findRenderObject()!;
-            return MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.topLeft);
+            return MatrixUtils.transformPoint(
+                @object.getTransformTo(null),
+                @object.semanticBounds.topLeft
+            );
         }
     }
     public virtual Rect rect
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => context is not null, () => (object?)"Tried to get the bounds of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
+            DartRuntimePrimitives.Assert(
+                () => context is not null,
+                () =>
+                    (object?)
+                        "Tried to get the bounds of a focus node that didn't have its context set yet.\n"
+                    + "The context needs to be set before trying to evaluate traversal policies. "
+                    + "Setting the context is typically done with the attach method."
+            );
             RenderObject @object = context!.findRenderObject()!;
-            Offset topLeftLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.topLeft);
-            Offset bottomRightLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.bottomRight);
-            return Rect.fromLTRB(topLeftLocal.dx, topLeftLocal.dy, bottomRightLocal.dx, bottomRightLocal.dy);
+            Offset topLeftLocal = MatrixUtils.transformPoint(
+                @object.getTransformTo(null),
+                @object.semanticBounds.topLeft
+            );
+            Offset bottomRightLocal = MatrixUtils.transformPoint(
+                @object.getTransformTo(null),
+                @object.semanticBounds.bottomRight
+            );
+            return Rect.fromLTRB(
+                topLeftLocal.dx,
+                topLeftLocal.dy,
+                bottomRightLocal.dx,
+                bottomRightLocal.dy
+            );
         }
     }
+
     public virtual void unfocus(UnfocusDisposition disposition = UnfocusDisposition.scope)
     {
         if (!hasFocus && ((_manager is null) || (!Equals(_manager!._markedForFocus, this))))
@@ -401,34 +495,44 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         switch (disposition)
         {
             case UnfocusDisposition.scope:
+            {
+                if (scopeLocal.canRequestFocus)
                 {
-                    if (scopeLocal.canRequestFocus)
-                    {
-                        scopeLocal._focusedChildren.Clear();
-                    }
-                    while (!scopeLocal!.canRequestFocus)
-                    {
-                        scopeLocal = scopeLocal.enclosingScope ?? _manager?.rootScope;
-                    }
-                    scopeLocal._doRequestFocus(findFirstFocus: false);
-                    break;
+                    scopeLocal._focusedChildren.Clear();
                 }
+                while (!scopeLocal!.canRequestFocus)
+                {
+                    scopeLocal = scopeLocal.enclosingScope ?? _manager?.rootScope;
+                }
+                scopeLocal._doRequestFocus(findFirstFocus: false);
+                break;
+            }
             case UnfocusDisposition.previouslyFocusedChild:
+            {
+                if (scopeLocal.canRequestFocus)
                 {
-                    if (scopeLocal.canRequestFocus)
-                    {
-                        scopeLocal._focusedChildren.Remove(this);
-                    }
-                    while (!scopeLocal!.canRequestFocus)
-                    {
-                        scopeLocal.enclosingScope?._focusedChildren.Remove(scopeLocal);
-                        scopeLocal = scopeLocal.enclosingScope ?? _manager?.rootScope;
-                    }
-                    scopeLocal._doRequestFocus(findFirstFocus: true);
-                    break;
+                    scopeLocal._focusedChildren.Remove(this);
                 }
+                while (!scopeLocal!.canRequestFocus)
+                {
+                    scopeLocal.enclosingScope?._focusedChildren.Remove(scopeLocal);
+                    scopeLocal = scopeLocal.enclosingScope ?? _manager?.rootScope;
+                }
+                scopeLocal._doRequestFocus(findFirstFocus: true);
+                break;
+            }
         }
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => "Unfocused node:", () => new List<object> { $"primary focus was {this}", $"next focus will be {_manager?._markedForFocus}" }));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(
+                () => "Unfocused node:",
+                () =>
+                    new List<object>
+                    {
+                        $"primary focus was {this}",
+                        $"next focus will be {_manager?._markedForFocus}",
+                    }
+            )
+        );
     }
 
     public virtual bool consumeKeyboardToken()
@@ -459,7 +563,10 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _removeChild(FocusNode node, bool removeScopeFocus = true)
     {
-        DartRuntimePrimitives.Assert(() => _children.Contains(node), () => (object?)"Tried to remove a node that wasn't a child.");
+        DartRuntimePrimitives.Assert(
+            () => _children.Contains(node),
+            () => (object?)"Tried to remove a node that wasn't a child."
+        );
         DartRuntimePrimitives.Assert(() => Equals(node._parent, this));
         DartRuntimePrimitives.Assert(() => Equals(node._manager, _manager));
         if (removeScopeFocus)
@@ -468,11 +575,23 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             if (nodeScope is not null)
             {
                 nodeScope._focusedChildren.Remove(node);
-                node.descendants.where((descendant) =>
-                {
-                    return Equals(descendant.enclosingScope, nodeScope);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                }).forEach((__arg0) => { _ = nodeScope._focusedChildren.Remove(DartRuntimePrimitives.ConvertValue<FocusScopeNode>(__arg0)); });
+                node.descendants.where(
+                        (descendant) =>
+                        {
+                            return Equals(descendant.enclosingScope, nodeScope);
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                    .forEach(
+                        (__arg0) =>
+                        {
+                            _ = nodeScope._focusedChildren.Remove(
+                                DartRuntimePrimitives.ConvertValue<FocusScopeNode>(__arg0)
+                            );
+                        }
+                    );
             }
         }
         node._parent = null;
@@ -483,7 +602,9 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             ancestor._descendants = null;
         }
         _descendants = null;
-        DartRuntimePrimitives.Assert(() => (_manager is null) || !_manager!.rootScope.descendants.contains(node));
+        DartRuntimePrimitives.Assert(() =>
+            (_manager is null) || !_manager!.rootScope.descendants.contains(node)
+        );
     }
 
     internal virtual void _updateManager(FocusManager? manager)
@@ -498,14 +619,30 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _reparent(FocusNode child)
     {
-        DartRuntimePrimitives.Assert(() => !Equals(child, this), () => (object?)"Tried to make a child into a parent of itself.");
+        DartRuntimePrimitives.Assert(
+            () => !Equals(child, this),
+            () => (object?)"Tried to make a child into a parent of itself."
+        );
         if (Equals(child._parent, this))
         {
-            DartRuntimePrimitives.Assert(() => _children.Contains(child), () => (object?)"Found a node that says it's a child, but doesn't appear in the child list.");
+            DartRuntimePrimitives.Assert(
+                () => _children.Contains(child),
+                () =>
+                    (object?)
+                        "Found a node that says it's a child, but doesn't appear in the child list."
+            );
             return;
         }
-        DartRuntimePrimitives.Assert(() => (_manager is null) || (!Equals(child, _manager!.rootScope)), () => (object?)"Reparenting the root node isn't allowed.");
-        DartRuntimePrimitives.Assert(() => !ancestors.contains(child), () => (object?)"The supplied child is already an ancestor of this node. Loops are not allowed.");
+        DartRuntimePrimitives.Assert(
+            () => (_manager is null) || (!Equals(child, _manager!.rootScope)),
+            () => (object?)"Reparenting the root node isn't allowed."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !ancestors.contains(child),
+            () =>
+                (object?)
+                    "The supplied child is already an ancestor of this node. Loops are not allowed."
+        );
         FocusScopeNode? oldScopeLocal = child.enclosingScope;
         bool hadFocus = child.hasFocus;
         child._parent?._removeChild(child, removeScopeFocus: !Equals(oldScopeLocal, nearestScope));
@@ -521,9 +658,15 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         {
             _manager?.primaryFocus?._setAsFocusedChildForScope();
         }
-        if ((oldScopeLocal is not null) && (child.context is not null) && (!Equals(child.enclosingScope, oldScopeLocal)))
+        if (
+            (oldScopeLocal is not null)
+            && (child.context is not null)
+            && (!Equals(child.enclosingScope, oldScopeLocal))
+        )
         {
-            FocusTraversalGroup.maybeOf(child.context!)?.changedScope(node: child, oldScope: oldScopeLocal);
+            FocusTraversalGroup
+                .maybeOf(child.context!)
+                ?.changedScope(node: child, oldScope: oldScopeLocal);
         }
         if (child._requestFocusWhenReparented)
         {
@@ -532,7 +675,11 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         }
     }
 
-    public virtual FocusAttachment attach(BuildContext? context, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null)
+    public virtual FocusAttachment attach(
+        BuildContext? context,
+        Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null,
+        Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null
+    )
     {
         _context = context;
         this.onKey = onKey ?? this.onKey;
@@ -569,7 +716,12 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             {
                 _reparent(node);
             }
-            DartRuntimePrimitives.Assert(() => node.ancestors.contains(this), () => (object?)"Focus was requested for a node that is not a descendant of the scope from which it was requested.");
+            DartRuntimePrimitives.Assert(
+                () => node.ancestors.contains(this),
+                () =>
+                    (object?)
+                        "Focus was requested for a node that is not a descendant of the scope from which it was requested."
+            );
             node._doRequestFocus(findFirstFocus: true);
             return;
         }
@@ -580,7 +732,11 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     {
         if (!canRequestFocus)
         {
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Node NOT requesting focus because canRequestFocus is false: {this}"));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() =>
+                    $"Node NOT requesting focus because canRequestFocus is false: {this}"
+                )
+            );
             return;
         }
         if (_parent is null)
@@ -589,12 +745,17 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             return;
         }
         _setAsFocusedChildForScope();
-        if (hasPrimaryFocus && ((_manager!._markedForFocus is null) || Equals(_manager!._markedForFocus, this)))
+        if (
+            hasPrimaryFocus
+            && ((_manager!._markedForFocus is null) || Equals(_manager!._markedForFocus, this))
+        )
         {
             return;
         }
         _hasKeyboardToken = true;
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Node requesting focus: {this}"));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() => $"Node requesting focus: {this}")
+        );
         _markNextFocus(this);
     }
 
@@ -603,8 +764,16 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         var scopeFocus = this;
         foreach (FocusScopeNode ancestor in ancestors.OfType<FocusScopeNode>())
         {
-            DartRuntimePrimitives.Assert(() => !Equals(scopeFocus, ancestor), () => (object?)"Somehow made a loop by setting focusedChild to its scope.");
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Setting {scopeFocus} as focused child for scope:", () => new List<object> { ancestor }));
+            DartRuntimePrimitives.Assert(
+                () => !Equals(scopeFocus, ancestor),
+                () => (object?)"Somehow made a loop by setting focusedChild to its scope."
+            );
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(
+                    () => $"Setting {scopeFocus} as focused child for scope:",
+                    () => new List<object> { ancestor }
+                )
+            );
             var focusedChildren = ancestor._focusedChildren;
             lock (focusedChildren)
             {
@@ -616,39 +785,88 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     }
 
     public virtual bool nextFocus() => FocusTraversalGroup.of(context!).next(this);
+
     public virtual bool previousFocus() => FocusTraversalGroup.of(context!).previous(this);
-    public virtual bool focusInDirection(TraversalDirection direction) => FocusTraversalGroup.of(context!).inDirection(this, direction);
+
+    public virtual bool focusInDirection(TraversalDirection direction) =>
+        FocusTraversalGroup.of(context!).inDirection(this, direction);
+
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new DiagnosticsProperty<BuildContext>("context", context, defaultValue: null));
-        properties.add(new FlagProperty("descendantsAreFocusable", value: descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
-        properties.add(new FlagProperty("descendantsAreTraversable", value: descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
-        properties.add(new FlagProperty("canRequestFocus", value: canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: true));
-        properties.add(new FlagProperty("hasFocus", value: hasFocus && !hasPrimaryFocus, ifTrue: "IN FOCUS PATH", defaultValue: false));
-        properties.add(new FlagProperty("hasPrimaryFocus", value: hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
+        properties.add(
+            new DiagnosticsProperty<BuildContext>("context", context, defaultValue: null)
+        );
+        properties.add(
+            new FlagProperty(
+                "descendantsAreFocusable",
+                value: descendantsAreFocusable,
+                ifFalse: "DESCENDANTS UNFOCUSABLE",
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "descendantsAreTraversable",
+                value: descendantsAreTraversable,
+                ifFalse: "DESCENDANTS UNTRAVERSABLE",
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "canRequestFocus",
+                value: canRequestFocus,
+                ifFalse: "NOT FOCUSABLE",
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "hasFocus",
+                value: hasFocus && !hasPrimaryFocus,
+                ifTrue: "IN FOCUS PATH",
+                defaultValue: false
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "hasPrimaryFocus",
+                value: hasPrimaryFocus,
+                ifTrue: "PRIMARY FOCUS",
+                defaultValue: false
+            )
+        );
     }
 
-    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
+    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() =>
+        debugDescribeChildren();
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
         var count = 1L;
-        return _children.map((child) =>
-        {
-            return ((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count++}");
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList();
+        return _children
+            .map(
+                (child) =>
+                {
+                    return ((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count++}");
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string toStringShort()
     {
         bool hasDebugLabel = (debugLabel is not null) && (debugLabel!.Length != 0);
-        var extraData = $"{(hasDebugLabel ? debugLabel : "")}" + $"{((hasFocus && hasDebugLabel) ? " " : "")}" + $"{((hasFocus && !hasPrimaryFocus) ? "[IN FOCUS PATH]" : "")}" + $"{(hasPrimaryFocus ? "[PRIMARY FOCUS]" : "")}";
+        var extraData =
+            $"{(hasDebugLabel ? debugLabel : "")}"
+            + $"{((hasFocus && hasDebugLabel) ? " " : "")}"
+            + $"{((hasFocus && !hasPrimaryFocus) ? "[IN FOCUS PATH]" : "")}"
+            + $"{(hasPrimaryFocus ? "[PRIMARY FOCUS]" : "")}";
         return $"{DiagnosticsLibrary.describeIdentity(this)}{((extraData.Length != 0) ? $"({extraData})" : "")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class FocusScopeNode : FocusNode
@@ -657,20 +875,46 @@ public class FocusScopeNode : FocusNode
     public virtual TraversalEdgeBehavior directionalTraversalEdgeBehavior { get; set; } = default!;
     internal virtual List<FocusNode> _focusedChildren { get; private set; } = new List<FocusNode>();
 
-    public FocusScopeNode(string? debugLabel = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, bool skipTraversal = false, bool canRequestFocus = true, TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop, TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop) : base(debugLabel: debugLabel, onKeyEvent: onKeyEvent, onKey: onKey, skipTraversal: skipTraversal, canRequestFocus: canRequestFocus, descendantsAreFocusable: true)
+    public FocusScopeNode(
+        string? debugLabel = null,
+        Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null,
+        Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null,
+        bool skipTraversal = false,
+        bool canRequestFocus = true,
+        TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop,
+        TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop
+    )
+        : base(
+            debugLabel: debugLabel,
+            onKeyEvent: onKeyEvent,
+            onKey: onKey,
+            skipTraversal: skipTraversal,
+            canRequestFocus: canRequestFocus,
+            descendantsAreFocusable: true
+        )
     {
         this.traversalEdgeBehavior = traversalEdgeBehavior;
         this.directionalTraversalEdgeBehavior = directionalTraversalEdgeBehavior;
     }
 
     public override FocusScopeNode? nearestScope => this;
-    public override bool descendantsAreFocusable => DartRuntimePrimitives.ConvertValue<bool>(_canRequestFocus && base.descendantsAreFocusable);
-    public virtual bool isFirstFocus => DartRuntimePrimitives.ConvertValue<bool>(Equals(enclosingScope!.focusedChild, this));
+    public override bool descendantsAreFocusable =>
+        DartRuntimePrimitives.ConvertValue<bool>(_canRequestFocus && base.descendantsAreFocusable);
+    public virtual bool isFirstFocus =>
+        DartRuntimePrimitives.ConvertValue<bool>(Equals(enclosingScope!.focusedChild, this));
     public virtual FocusNode? focusedChild
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => !Enumerable.Any(_focusedChildren) || Equals(_focusedChildren.Last().enclosingScope, this), () => (object?)$"{debugLabel}: Focused child does not have the same idea of its enclosing scope " + $"({_focusedChildren.LastOrDefault()?.enclosingScope}) as the scope does.");
+            DartRuntimePrimitives.Assert(
+                () =>
+                    !Enumerable.Any(_focusedChildren)
+                    || Equals(_focusedChildren.Last().enclosingScope, this),
+                () =>
+                    (object?)
+                        $"{debugLabel}: Focused child does not have the same idea of its enclosing scope "
+                    + $"({_focusedChildren.LastOrDefault()?.enclosingScope}) as the scope does."
+            );
             return _focusedChildren.LastOrDefault();
         }
     }
@@ -696,15 +940,29 @@ public class FocusScopeNode : FocusNode
             return base.traversalDescendants;
         }
     }
+
     public virtual void setFirstFocus(FocusScopeNode scope)
     {
-        DartRuntimePrimitives.Assert(() => !Equals(scope, this), () => (object?)"Unexpected self-reference in setFirstFocus.");
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Setting scope as first focus in {this} to node:", () => new List<object> { scope }));
+        DartRuntimePrimitives.Assert(
+            () => !Equals(scope, this),
+            () => (object?)"Unexpected self-reference in setFirstFocus."
+        );
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(
+                () => $"Setting scope as first focus in {this} to node:",
+                () => new List<object> { scope }
+            )
+        );
         if (scope._parent is null)
         {
             _reparent(scope);
         }
-        DartRuntimePrimitives.Assert(() => scope.ancestors.contains(this), () => (object?)$"{typeof(FocusScopeNode)} {scope} must be a child of {this} to set it as first focus.");
+        DartRuntimePrimitives.Assert(
+            () => scope.ancestors.contains(this),
+            () =>
+                (object?)
+                    $"{typeof(FocusScopeNode)} {scope} must be a child of {this} to set it as first focus."
+        );
         if (hasFocus)
         {
             scope._doRequestFocus(findFirstFocus: true);
@@ -722,8 +980,12 @@ public class FocusScopeNode : FocusNode
             _reparent(node);
         }
         DartRuntimePrimitives.Assert(() => _manager is not null);
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Autofocus scheduled for {node}: scope {this}"));
-        _manager?._pendingAutofocuses.Add(new _Autofocus__focus_manager(scope: this, autofocusNode: node));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() => $"Autofocus scheduled for {node}: scope {this}")
+        );
+        _manager?._pendingAutofocuses.Add(
+            new _Autofocus__focus_manager(scope: this, autofocusNode: node)
+        );
         _manager?._markNeedsUpdate();
     }
 
@@ -734,7 +996,13 @@ public class FocusScopeNode : FocusNode
 
     internal override void _doRequestFocus(bool findFirstFocus)
     {
-        while (Enumerable.Any(_focusedChildren) && (!_focusedChildren.Last().canRequestFocus || (_focusedChildren.Last().enclosingScope is null)))
+        while (
+            Enumerable.Any(_focusedChildren)
+            && (
+                !_focusedChildren.Last().canRequestFocus
+                || (_focusedChildren.Last().enclosingScope is null)
+            )
+        )
         {
             _focusedChildren.removeLast();
         }
@@ -758,53 +1026,77 @@ public class FocusScopeNode : FocusNode
         {
             return;
         }
-        List<string> childList = Enumerable.Reverse(_focusedChildren).map((child) =>
-        {
-            return ((Diagnosticable)child).toStringShort();
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList().ToList();
-        properties.add(new IterableProperty<string>("focusedChildren", childList.Cast<string>(), defaultValue: Enumerable.Empty<string>()));
-        properties.add(new DiagnosticsProperty<TraversalEdgeBehavior>("traversalEdgeBehavior", traversalEdgeBehavior, defaultValue: TraversalEdgeBehavior.closedLoop));
+        List<string> childList = Enumerable
+            .Reverse(_focusedChildren)
+            .map(
+                (child) =>
+                {
+                    return ((Diagnosticable)child).toStringShort();
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList()
+            .ToList();
+        properties.add(
+            new IterableProperty<string>(
+                "focusedChildren",
+                childList.Cast<string>(),
+                defaultValue: Enumerable.Empty<string>()
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<TraversalEdgeBehavior>(
+                "traversalEdgeBehavior",
+                traversalEdgeBehavior,
+                defaultValue: TraversalEdgeBehavior.closedLoop
+            )
+        );
     }
-
 }
 
 public enum FocusHighlightMode
 {
     touch,
-    traditional
+    traditional,
 }
 
 public enum FocusHighlightStrategy
 {
     automatic,
     alwaysTouch,
-    alwaysTraditional
+    alwaysTraditional,
 }
 
 internal class _AppLifecycleListener__focus_manager : WidgetsBindingObserver
 {
-    public virtual Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } = default!;
+    public virtual Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } =
+        default!;
 
     internal _AppLifecycleListener__focus_manager(Action<AppLifecycleState> onLifecycleStateChanged)
     {
         this.onLifecycleStateChanged = onLifecycleStateChanged;
     }
 
-    public virtual void didChangeAppLifecycleState(AppLifecycleState state) => onLifecycleStateChanged(state);
+    public virtual void didChangeAppLifecycleState(AppLifecycleState state) =>
+        onLifecycleStateChanged(state);
 }
 
 public class FocusManager : ChangeNotifier, DiagnosticableTree
 {
     private readonly object _focusUpdateGate = new();
-    internal virtual _HighlightModeManager__focus_manager _highlightManager { get; private set; } = new _HighlightModeManager__focus_manager();
-    public virtual FocusScopeNode rootScope { get; private set; } = new FocusScopeNode(debugLabel: "Root Focus Scope");
+    internal virtual _HighlightModeManager__focus_manager _highlightManager { get; private set; } =
+        new _HighlightModeManager__focus_manager();
+    public virtual FocusScopeNode rootScope { get; private set; } =
+        new FocusScopeNode(debugLabel: "Root Focus Scope");
     internal virtual FocusNode? _primaryFocus { get; set; } = default;
-    internal virtual HashSet<FocusNode> _dirtyNodes { get; private set; } = new HashSet<FocusNode>();
-    internal virtual _AppLifecycleListener__focus_manager? _appLifecycleListener { get; set; } = default;
+    internal virtual HashSet<FocusNode> _dirtyNodes { get; private set; } =
+        new HashSet<FocusNode>();
+    internal virtual _AppLifecycleListener__focus_manager? _appLifecycleListener { get; set; } =
+        default;
     internal virtual FocusNode? _suspendedNode { get; set; } = default;
     internal virtual FocusNode? _markedForFocus { get; set; } = default;
-    internal virtual List<_Autofocus__focus_manager> _pendingAutofocuses { get; private set; } = new List<_Autofocus__focus_manager>();
+    internal virtual List<_Autofocus__focus_manager> _pendingAutofocuses { get; private set; } =
+        new List<_Autofocus__focus_manager>();
     internal virtual bool _haveScheduledUpdate { get; set; } = false;
 
     public FocusManager()
@@ -812,8 +1104,27 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         rootScope._manager = this;
     }
 
-    internal virtual bool _respondToLifecycleChange => DartRuntimePrimitives.ConvertValue<bool>(Foundation.ConstantsLibrary.kIsWeb || (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => false, TargetPlatform.iOS => false, TargetPlatform.fuchsia => true, TargetPlatform.linux => true, TargetPlatform.windows => true, TargetPlatform.macOS => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+    internal virtual bool _respondToLifecycleChange =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            Foundation.ConstantsLibrary.kIsWeb
+                || (
+                    PlatformLibrary.defaultTargetPlatform switch
+                    {
+                        TargetPlatform.android => false,
+                        TargetPlatform.iOS => false,
+                        TargetPlatform.fuchsia => true,
+                        TargetPlatform.linux => true,
+                        TargetPlatform.windows => true,
+                        TargetPlatform.macOS => true,
+                        _ => throw new InvalidOperationException(
+                            "Non-exhaustive Dart switch value."
+                        ),
+                    }
+                )
+        );
+
     public virtual void registerGlobalHandlers() => _highlightManager.registerGlobalHandlers();
+
     public override void dispose()
     {
         if (_appLifecycleListener is not null)
@@ -840,8 +1151,13 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         }
     }
     public virtual FocusHighlightMode highlightMode => _highlightManager.highlightMode;
-    public virtual void addHighlightModeListener(Action<FocusHighlightMode> listener) => _highlightManager.addListener(listener);
-    public virtual void removeHighlightModeListener(Action<FocusHighlightMode> listener) => _highlightManager.removeListener(listener);
+
+    public virtual void addHighlightModeListener(Action<FocusHighlightMode> listener) =>
+        _highlightManager.addListener(listener);
+
+    public virtual void removeHighlightModeListener(Action<FocusHighlightMode> listener) =>
+        _highlightManager.removeListener(listener);
+
     public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.addEarlyKeyEventHandler(handler);
@@ -863,13 +1179,18 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
     }
 
     public virtual FocusNode? primaryFocus => _primaryFocus;
+
     internal virtual void _appLifecycleChange(AppLifecycleState state)
     {
         if (Equals(state, AppLifecycleState.resumed))
         {
             if (!Equals(_primaryFocus, rootScope))
             {
-                DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"focus changed while app was paused, ignoring {_suspendedNode}"));
+                DartRuntimePrimitives.Assert(() =>
+                    Focus_managerLibrary._focusDebug(() =>
+                        $"focus changed while app was paused, ignoring {_suspendedNode}"
+                    )
+                );
                 _suspendedNode = null;
             }
             else
@@ -878,7 +1199,11 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
                 {
                     if (_markedForFocus is null)
                     {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"requesting focus for {_suspendedNode}"));
+                        DartRuntimePrimitives.Assert(() =>
+                            Focus_managerLibrary._focusDebug(() =>
+                                $"requesting focus for {_suspendedNode}"
+                            )
+                        );
                         _suspendedNode!.requestFocus();
                         _suspendedNode = null;
                     }
@@ -894,7 +1219,9 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         {
             if (!Equals(_primaryFocus, rootScope))
             {
-                DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"suspending {_primaryFocus}"));
+                DartRuntimePrimitives.Assert(() =>
+                    Focus_managerLibrary._focusDebug(() => $"suspending {_primaryFocus}")
+                );
                 _markedForFocus = DartRuntimePrimitives.ConvertValue<FocusNode>(rootScope);
                 _suspendedNode = _primaryFocus;
                 applyFocusChangesIfNeeded();
@@ -904,7 +1231,9 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _markDetached(FocusNode node)
     {
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Node was detached: {node}"));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() => $"Node was detached: {node}")
+        );
         if (Equals(_primaryFocus, node))
         {
             _primaryFocus = null;
@@ -919,7 +1248,9 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
     internal virtual void _markPropertiesChanged(FocusNode node)
     {
         _markNeedsUpdate();
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Properties changed for node {node}."));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() => $"Properties changed for node {node}.")
+        );
         _dirtyNodes.Add(node);
     }
 
@@ -938,7 +1269,11 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _markNeedsUpdate()
     {
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Scheduling update, current focus is {_primaryFocus}, next focus will be {_markedForFocus}"));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() =>
+                $"Scheduling update, current focus is {_primaryFocus}, next focus will be {_markedForFocus}"
+            )
+        );
         if (_haveScheduledUpdate)
         {
             return;
@@ -951,7 +1286,16 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
     {
         lock (_focusUpdateGate)
         {
-            DartRuntimePrimitives.Assert(() => !Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks), () => (object?)"applyFocusChangesIfNeeded() should not be called during the build phase.");
+            DartRuntimePrimitives.Assert(
+                () =>
+                    !Equals(
+                        Scheduler.SchedulerBinding.instance.schedulerPhase,
+                        Scheduler.SchedulerPhase.persistentCallbacks
+                    ),
+                () =>
+                    (object?)
+                        "applyFocusChangesIfNeeded() should not be called during the build phase."
+            );
             _haveScheduledUpdate = false;
             FocusNode? previousFocus = _primaryFocus;
             foreach (_Autofocus__focus_manager autofocus in _pendingAutofocuses)
@@ -963,10 +1307,15 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
             {
                 _markedForFocus = DartRuntimePrimitives.ConvertValue<FocusNode>(rootScope);
             }
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Refreshing focus state. Next focus will be {_markedForFocus}"));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() =>
+                    $"Refreshing focus state. Next focus will be {_markedForFocus}"
+                )
+            );
             if ((_markedForFocus is not null) && (!Equals(_markedForFocus, _primaryFocus)))
             {
-                HashSet<FocusNode> previousPath = previousFocus?.ancestors.toSet() ?? new HashSet<FocusNode>();
+                HashSet<FocusNode> previousPath =
+                    previousFocus?.ancestors.toSet() ?? new HashSet<FocusNode>();
                 HashSet<FocusNode> nextPath = _markedForFocus!.ancestors.toSet();
                 _dirtyNodes.UnionWith(nextPath.difference(previousPath));
                 _dirtyNodes.UnionWith(previousPath.difference(nextPath));
@@ -976,7 +1325,11 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
             DartRuntimePrimitives.Assert(() => _markedForFocus is null);
             if (!Equals(previousFocus, _primaryFocus))
             {
-                DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Updating focus from {previousFocus} to {_primaryFocus}"));
+                DartRuntimePrimitives.Assert(() =>
+                    Focus_managerLibrary._focusDebug(() =>
+                        $"Updating focus from {previousFocus} to {_primaryFocus}"
+                    )
+                );
                 if (previousFocus is not null)
                 {
                     _dirtyNodes.Add(previousFocus);
@@ -990,21 +1343,26 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
             {
                 node?._notify();
             }
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Notified {checked((long)_dirtyNodes.Count)} dirty nodes:", () => _dirtyNodes));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(
+                    () => $"Notified {checked((long)_dirtyNodes.Count)} dirty nodes:",
+                    () => _dirtyNodes
+                )
+            );
             _dirtyNodes.Clear();
             if (!Equals(previousFocus, _primaryFocus))
             {
                 notifyListeners();
             }
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (Focus_managerLibrary.debugFocusChanges)
                 {
-                    if (Focus_managerLibrary.debugFocusChanges)
-                    {
-                        Focus_managerLibrary.debugDumpFocusTree();
-                    }
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+                    Focus_managerLibrary.debugDumpFocusTree();
+                }
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
         }
     }
 
@@ -1017,44 +1375,73 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         }
     }
 
-    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
+    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() =>
+        debugDescribeChildren();
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
-        return new List<DiagnosticsNode> { ((Diagnosticable)rootScope).toDiagnosticsNode(name: "rootScope") };
+        return new List<DiagnosticsNode>
+        {
+            ((Diagnosticable)rootScope).toDiagnosticsNode(name: "rootScope"),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new FlagProperty("haveScheduledUpdate", value: _haveScheduledUpdate, ifTrue: "UPDATE SCHEDULED"));
-        properties.add(new DiagnosticsProperty<FocusNode>("primaryFocus", primaryFocus, defaultValue: null));
-        properties.add(new DiagnosticsProperty<FocusNode>("nextFocus", _markedForFocus, defaultValue: null));
+        properties.add(
+            new FlagProperty(
+                "haveScheduledUpdate",
+                value: _haveScheduledUpdate,
+                ifTrue: "UPDATE SCHEDULED"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<FocusNode>("primaryFocus", primaryFocus, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<FocusNode>("nextFocus", _markedForFocus, defaultValue: null)
+        );
         var element = ((Element?)primaryFocus?.context)!;
         if (element is not null)
         {
-            properties.add(new DiagnosticsProperty<string>("primaryFocusCreator", element.debugGetCreatorChain(20L)));
+            properties.add(
+                new DiagnosticsProperty<string>(
+                    "primaryFocusCreator",
+                    element.debugGetCreatorChain(20L)
+                )
+            );
         }
     }
-
 }
 
 internal class _HighlightModeManager__focus_manager
 {
     internal virtual bool? _lastInteractionRequiresTraditionalHighlights { get; set; } = default;
     internal virtual FocusHighlightMode? _highlightMode { get; set; } = default;
-    internal virtual FocusHighlightStrategy _strategy { get; set; } = FocusHighlightStrategy.automatic;
-    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
-    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
-    internal virtual HashedObserverList<Action<FocusHighlightMode>> _listeners { get; set; } = new HashedObserverList<Action<FocusHighlightMode>>();
+    internal virtual FocusHighlightStrategy _strategy { get; set; } =
+        FocusHighlightStrategy.automatic;
+    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _earlyKeyEventHandlers
+    {
+        get;
+        private set;
+    } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
+    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _lateKeyEventHandlers
+    {
+        get;
+        private set;
+    } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
+    internal virtual HashedObserverList<Action<FocusHighlightMode>> _listeners { get; set; } =
+        new HashedObserverList<Action<FocusHighlightMode>>();
     internal const long _kAndroidSoftKeyboardFlag = 2L;
     internal static long _kAndroidVirtualKeyboardDeviceId = -1L;
 
-    internal _HighlightModeManager__focus_manager()
-    {
-    }
+    internal _HighlightModeManager__focus_manager() { }
 
-    public virtual FocusHighlightMode highlightMode => DartRuntimePrimitives.ConvertValue<FocusHighlightMode>(_highlightMode ?? _defaultModeForPlatform);
+    public virtual FocusHighlightMode highlightMode =>
+        DartRuntimePrimitives.ConvertValue<FocusHighlightMode>(
+            _highlightMode ?? _defaultModeForPlatform
+        );
     public virtual FocusHighlightStrategy strategy
     {
         get => _strategy;
@@ -1069,28 +1456,54 @@ internal class _HighlightModeManager__focus_manager
             updateMode();
         }
     }
-    public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.add(callback);
-    public virtual void removeEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.remove(callback);
-    public virtual void addLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.add(callback);
-    public virtual void removeLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.remove(callback);
-    public virtual void addListener(Action<FocusHighlightMode> listener) => _listeners.add(listener);
-    public virtual void removeListener(Action<FocusHighlightMode> listener) => _listeners.remove(listener);
+
+    public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) =>
+        _earlyKeyEventHandlers.add(callback);
+
+    public virtual void removeEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) =>
+        _earlyKeyEventHandlers.remove(callback);
+
+    public virtual void addLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) =>
+        _lateKeyEventHandlers.add(callback);
+
+    public virtual void removeLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) =>
+        _lateKeyEventHandlers.remove(callback);
+
+    public virtual void addListener(Action<FocusHighlightMode> listener) =>
+        _listeners.add(listener);
+
+    public virtual void removeListener(Action<FocusHighlightMode> listener) =>
+        _listeners.remove(listener);
+
     public virtual void registerGlobalHandlers()
     {
-        DartRuntimePrimitives.Assert(() => ServicesBinding.instance.keyEventManager.keyMessageHandler is null);
+        DartRuntimePrimitives.Assert(() =>
+            ServicesBinding.instance.keyEventManager.keyMessageHandler is null
+        );
         ServicesBinding.instance.keyEventManager.keyMessageHandler = handleKeyMessage;
         GestureBinding.instance.pointerRouter.addGlobalRoute(handlePointerEvent);
-        Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener(handleSemanticsAction);
+        Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener(
+            handleSemanticsAction
+        );
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        if (Equals(ServicesBinding.instance.keyEventManager.keyMessageHandler, (Func<KeyMessage, bool>)handleKeyMessage))
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
+        if (
+            Equals(
+                ServicesBinding.instance.keyEventManager.keyMessageHandler,
+                (Func<KeyMessage, bool>)handleKeyMessage
+            )
+        )
         {
             GestureBinding.instance.pointerRouter.removeGlobalRoute(handlePointerEvent);
             ServicesBinding.instance.keyEventManager.keyMessageHandler = null;
-            Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(handleSemanticsAction);
+            Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(
+                handleSemanticsAction
+            );
         }
         _listeners = new HashedObserverList<Action<FocusHighlightMode>>();
     }
@@ -1116,12 +1529,30 @@ internal class _HighlightModeManager__focus_manager
                 var stackLocal = new System.Diagnostics.StackTrace();
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<_HighlightModeManager__focus_manager>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) };
-                        return true;
-                        throw new InvalidOperationException("Dart closure completed without a value.");
-                    });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new ErrorDescription($"while dispatching notifications for {GetType()}"), informationCollector: (InformationCollector?)collector));
+                {
+                    collector = () =>
+                        new List<DiagnosticsNode>
+                        {
+                            new DiagnosticsProperty<_HighlightModeManager__focus_manager>(
+                                $"The {GetType()} sending notification was",
+                                this,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        };
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                });
+                FlutterError.reportError(
+                    new FlutterErrorDetails(
+                        exception: exceptionLocal,
+                        stack: stackLocal,
+                        library: "widgets library",
+                        context: new ErrorDescription(
+                            $"while dispatching notifications for {GetType()}"
+                        ),
+                        informationCollector: (InformationCollector?)collector
+                    )
+                );
             }
         }
     }
@@ -1133,14 +1564,14 @@ internal class _HighlightModeManager__focus_manager
             case PointerDeviceKind.touch:
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
+            {
+                if (_lastInteractionRequiresTraditionalHighlights != true)
                 {
-                    if (_lastInteractionRequiresTraditionalHighlights != true)
-                    {
-                        _lastInteractionRequiresTraditionalHighlights = true;
-                        updateMode();
-                    }
-                    break;
+                    _lastInteractionRequiresTraditionalHighlights = true;
+                    updateMode();
                 }
+                break;
+            }
             case PointerDeviceKind.mouse:
             case PointerDeviceKind.trackpad:
             case PointerDeviceKind.unknown:
@@ -1160,7 +1591,8 @@ internal class _HighlightModeManager__focus_manager
         {
             return false;
         }
-        return ((((RawKeyEventDataAndroid)dataLocal).flags & _kAndroidSoftKeyboardFlag) != 0L) || (((RawKeyEventDataAndroid)dataLocal).deviceId == _kAndroidVirtualKeyboardDeviceId);
+        return ((((RawKeyEventDataAndroid)dataLocal).flags & _kAndroidSoftKeyboardFlag) != 0L)
+            || (((RawKeyEventDataAndroid)dataLocal).deviceId == _kAndroidVirtualKeyboardDeviceId);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1175,10 +1607,16 @@ internal class _HighlightModeManager__focus_manager
                 updateMode();
             }
         }
-        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Received key event {message}"));
+        DartRuntimePrimitives.Assert(() =>
+            Focus_managerLibrary._focusDebug(() => $"Received key event {message}")
+        );
         if (FocusManager.instance.primaryFocus is null)
         {
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"No primary focus for key event, ignored: {message}"));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() =>
+                    $"No primary focus for key event, ignored: {message}"
+                )
+            );
             return false;
         }
         var handledLocal = false;
@@ -1192,25 +1630,35 @@ internal class _HighlightModeManager__focus_manager
                     results.Add(callback(@event));
                 }
             }
-            KeyEventResult result = Focus_managerLibrary.combineKeyEventResults(results.Cast<KeyEventResult>());
+            KeyEventResult result = Focus_managerLibrary.combineKeyEventResults(
+                results.Cast<KeyEventResult>()
+            );
             switch (result)
             {
                 case KeyEventResult.ignored:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case KeyEventResult.handled:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Key event {message} handled by early key event callback."));
-                        handledLocal = true;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Key event {message} handled by early key event callback."
+                        )
+                    );
+                    handledLocal = true;
+                    break;
+                }
                 case KeyEventResult.skipRemainingHandlers:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Key event {message} propagation stopped by early key event callback."));
-                        handledLocal = false;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Key event {message} propagation stopped by early key event callback."
+                        )
+                    );
+                    handledLocal = false;
+                    break;
+                }
             }
         }
         if (handledLocal)
@@ -1233,25 +1681,35 @@ internal class _HighlightModeManager__focus_manager
             {
                 resultsLocal.Add(node.onKey(node, message.rawEvent));
             }
-            KeyEventResult resultLocal = Focus_managerLibrary.combineKeyEventResults(resultsLocal.Cast<KeyEventResult>());
+            KeyEventResult resultLocal = Focus_managerLibrary.combineKeyEventResults(
+                resultsLocal.Cast<KeyEventResult>()
+            );
             switch (resultLocal)
             {
                 case KeyEventResult.ignored:
-                    {
-                        continue;
-                    }
+                {
+                    continue;
+                }
                 case KeyEventResult.handled:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Node {node} handled key event {message}."));
-                        handledLocal = true;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Node {node} handled key event {message}."
+                        )
+                    );
+                    handledLocal = true;
+                    break;
+                }
                 case KeyEventResult.skipRemainingHandlers:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Node {node} stopped key event propagation: {message}."));
-                        handledLocal = false;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Node {node} stopped key event propagation: {message}."
+                        )
+                    );
+                    handledLocal = false;
+                    break;
+                }
             }
             DartRuntimePrimitives.Assert(() => !Equals(resultLocal, KeyEventResult.ignored));
             break;
@@ -1266,30 +1724,44 @@ internal class _HighlightModeManager__focus_manager
                     resultsAlternate.Add(callback(@event));
                 }
             }
-            KeyEventResult resultAlternate = Focus_managerLibrary.combineKeyEventResults(resultsAlternate.Cast<KeyEventResult>());
+            KeyEventResult resultAlternate = Focus_managerLibrary.combineKeyEventResults(
+                resultsAlternate.Cast<KeyEventResult>()
+            );
             switch (resultAlternate)
             {
                 case KeyEventResult.ignored:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case KeyEventResult.handled:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Key event {message} handled by late key event callback."));
-                        handledLocal = true;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Key event {message} handled by late key event callback."
+                        )
+                    );
+                    handledLocal = true;
+                    break;
+                }
                 case KeyEventResult.skipRemainingHandlers:
-                    {
-                        DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Key event {message} propagation stopped by late key event callback."));
-                        handledLocal = false;
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Focus_managerLibrary._focusDebug(() =>
+                            $"Key event {message} propagation stopped by late key event callback."
+                        )
+                    );
+                    handledLocal = false;
+                    break;
+                }
             }
         }
         if (!handledLocal)
         {
-            DartRuntimePrimitives.Assert(() => Focus_managerLibrary._focusDebug(() => $"Key event not handled by focus system: {message}."));
+            DartRuntimePrimitives.Assert(() =>
+                Focus_managerLibrary._focusDebug(() =>
+                    $"Key event not handled by focus system: {message}."
+                )
+            );
         }
         return handledLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1297,7 +1769,11 @@ internal class _HighlightModeManager__focus_manager
 
     public virtual void handleSemanticsAction(SemanticsActionEvent semanticsActionEvent)
     {
-        if (Foundation.ConstantsLibrary.kIsWeb && Equals(semanticsActionEvent.type, SemanticsAction.focus) && (_lastInteractionRequiresTraditionalHighlights != true))
+        if (
+            Foundation.ConstantsLibrary.kIsWeb
+            && Equals(semanticsActionEvent.type, SemanticsAction.focus)
+            && (_lastInteractionRequiresTraditionalHighlights != true)
+        )
         {
             _lastInteractionRequiresTraditionalHighlights = true;
             updateMode();
@@ -1310,31 +1786,35 @@ internal class _HighlightModeManager__focus_manager
         switch (strategy)
         {
             case FocusHighlightStrategy.automatic:
+            {
+                if (_lastInteractionRequiresTraditionalHighlights is null)
                 {
-                    if (_lastInteractionRequiresTraditionalHighlights is null)
-                    {
-                        return;
-                    }
-                    if (DartRuntimePrimitives.RequireValue(_lastInteractionRequiresTraditionalHighlights))
-                    {
-                        newMode = FocusHighlightMode.touch;
-                    }
-                    else
-                    {
-                        newMode = FocusHighlightMode.traditional;
-                    }
-                    break;
+                    return;
                 }
-            case FocusHighlightStrategy.alwaysTouch:
+                if (
+                    DartRuntimePrimitives.RequireValue(
+                        _lastInteractionRequiresTraditionalHighlights
+                    )
+                )
                 {
                     newMode = FocusHighlightMode.touch;
-                    break;
                 }
-            case FocusHighlightStrategy.alwaysTraditional:
+                else
                 {
                     newMode = FocusHighlightMode.traditional;
-                    break;
                 }
+                break;
+            }
+            case FocusHighlightStrategy.alwaysTouch:
+            {
+                newMode = FocusHighlightMode.touch;
+                break;
+            }
+            case FocusHighlightStrategy.alwaysTraditional:
+            {
+                newMode = FocusHighlightMode.traditional;
+                break;
+            }
         }
         FocusHighlightMode oldMode = highlightMode;
         _highlightMode = newMode;
@@ -1353,19 +1833,19 @@ internal class _HighlightModeManager__focus_manager
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.iOS:
-                    {
-                        if (((RendererBinding)WidgetsBinding.instance).mouseTracker.mouseIsConnected)
-                        {
-                            return FocusHighlightMode.traditional;
-                        }
-                        return FocusHighlightMode.touch;
-                    }
-                case TargetPlatform.linux:
-                case TargetPlatform.macOS:
-                case TargetPlatform.windows:
+                {
+                    if (((RendererBinding)WidgetsBinding.instance).mouseTracker.mouseIsConnected)
                     {
                         return FocusHighlightMode.traditional;
                     }
+                    return FocusHighlightMode.touch;
+                }
+                case TargetPlatform.linux:
+                case TargetPlatform.macOS:
+                case TargetPlatform.windows:
+                {
+                    return FocusHighlightMode.traditional;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
@@ -1384,11 +1864,11 @@ public static partial class Focus_managerLibrary
     {
         string? result = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                result = ((DiagnosticableTree)FocusManager.instance).toStringDeep();
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            result = ((DiagnosticableTree)FocusManager.instance).toStringDeep();
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return result ?? "";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1399,10 +1879,10 @@ public static partial class Focus_managerLibrary
     public static void debugDumpFocusTree()
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                PrintLibrary.debugPrint(debugDescribeFocusTree());
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            PrintLibrary.debugPrint(debugDescribeFocusTree());
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
     }
 }

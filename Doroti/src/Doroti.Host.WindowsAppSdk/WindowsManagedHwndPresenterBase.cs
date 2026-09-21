@@ -9,8 +9,10 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract string DiagnosticCoverage { get; }
     internal virtual ulong NativeRequiredFeatures => 0;
     internal virtual bool UsesCompositionTopology => false;
-    internal virtual string VisibleOwner => UsesCompositionTopology ? "ContentIsland" : "child HWND";
-    internal virtual string TopologySlug => UsesCompositionTopology ? "content-island" : "cpp-child-hwnd";
+    internal virtual string VisibleOwner =>
+        UsesCompositionTopology ? "ContentIsland" : "child HWND";
+    internal virtual string TopologySlug =>
+        UsesCompositionTopology ? "content-island" : "cpp-child-hwnd";
     internal virtual bool InvalidatesRendererSurfaceResourcesOnResize => true;
     internal abstract int Width { get; set; }
     internal abstract int Height { get; set; }
@@ -29,21 +31,37 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract string AdapterDescription { get; set; }
 
     internal virtual void AttachWindow(nint topLevelWindow) =>
-        throw new NotSupportedException($"{GetType().Name} does not own a Composition window topology.");
+        throw new NotSupportedException(
+            $"{GetType().Name} does not own a Composition window topology."
+        );
+
     internal virtual void ResizeViewport(
-        int width, int height, double scale, uint sizingEdge, bool preGeometry) =>
-        throw new NotSupportedException($"{GetType().Name} does not own a Composition viewport.");
+        int width,
+        int height,
+        double scale,
+        uint sizingEdge,
+        bool preGeometry
+    ) => throw new NotSupportedException($"{GetType().Name} does not own a Composition viewport.");
+
     internal virtual void ReleaseCompositionResources() =>
         throw new NotSupportedException($"{GetType().Name} does not own Composition resources.");
+
     internal abstract bool EnsureTarget(nint childWindow, int width, int height);
     internal abstract void SealInitializationDebugBaseline();
     internal abstract void CaptureOperationalDebugMessages();
     internal abstract T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent);
+
     internal virtual bool PrepareForRendererGpuResourceRelease() => false;
+
     internal virtual bool TryAbandonGpuContextAfterRendererReleasePreflightFailure() => false;
-    internal virtual void ResetDeviceAfterRendererGpuResourceRelease(bool deviceLost) => ResetDevice();
+
+    internal virtual void ResetDeviceAfterRendererGpuResourceRelease(bool deviceLost) =>
+        ResetDevice();
+
     internal virtual void DisposeAfterRendererGpuResourceRelease(bool deviceLost) => Dispose();
+
     internal virtual void DisposeAfterRendererGpuResourceReleaseFailure() => Dispose();
+
     internal abstract void ResetDevice();
     public abstract void Dispose();
 }

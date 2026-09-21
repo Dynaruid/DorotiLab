@@ -241,12 +241,28 @@ internal static partial class WindowsNativeV1
         internal ulong ResizeEpoch;
         internal ulong Generation;
         internal uint SizingEdge;
-        internal int Left, Top, Right, Bottom;
-        internal uint Width, Height;
+        internal int Left,
+            Top,
+            Right,
+            Bottom;
+        internal uint Width,
+            Height;
         internal double Scale;
-        internal readonly MovingFrameKey ToKey(long inputSequence) => new(
-            ResizeEpoch, Generation, inputSequence, SizingEdge,
-            Left, Top, Right, Bottom, checked((int)Width), checked((int)Height), Scale);
+
+        internal readonly MovingFrameKey ToKey(long inputSequence) =>
+            new(
+                ResizeEpoch,
+                Generation,
+                inputSequence,
+                SizingEdge,
+                Left,
+                Top,
+                Right,
+                Bottom,
+                checked((int)Width),
+                checked((int)Height),
+                Scale
+            );
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -299,33 +315,60 @@ internal static partial class WindowsNativeV1
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SetDefaultDllDirectories(uint directoryFlags);
 
-    [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryExW", StringMarshalling = StringMarshalling.Utf16,
-        SetLastError = true)]
+    [LibraryImport(
+        "kernel32.dll",
+        EntryPoint = "LoadLibraryExW",
+        StringMarshalling = StringMarshalling.Utf16,
+        SetLastError = true
+    )]
     private static partial nint LoadLibraryEx(string fileName, nint file, uint flags);
 
-    [LibraryImport("Microsoft.WindowsAppRuntime.dll", EntryPoint = "WindowsAppRuntime_EnsureIsLoaded")]
+    [LibraryImport(
+        "Microsoft.WindowsAppRuntime.dll",
+        EntryPoint = "WindowsAppRuntime_EnsureIsLoaded"
+    )]
     private static partial int EnsureWindowsAppRuntimeLoaded();
 
     internal static void EnsureSelfContainedWindowsAppRuntime()
     {
-        if (_windowsAppRuntimePath is null) return;
-        Environment.SetEnvironmentVariable("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY", AppContext.BaseDirectory);
-        Environment.SetEnvironmentVariable("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY_PID",
-            Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        if (_windowsAppRuntimePath is null)
+        {
+            return;
+        }
+
+        Environment.SetEnvironmentVariable(
+            "MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY",
+            AppContext.BaseDirectory
+        );
+        Environment.SetEnvironmentVariable(
+            "MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY_PID",
+            Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        );
         var result = EnsureWindowsAppRuntimeLoaded();
-        if (result < 0) Marshal.ThrowExceptionForHR(result);
+        if (result < 0)
+        {
+            Marshal.ThrowExceptionForHR(result);
+        }
     }
 
-    internal static NativeHostProvenance ConfigureAppDirectoryLoading(string selectedPresenter = "AngleD3D11")
+    internal static NativeHostProvenance ConfigureAppDirectoryLoading(
+        string selectedPresenter = "AngleD3D11"
+    )
     {
         var auditHashes = string.Equals(
-            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_NATIVE_AUDIT"), "1", StringComparison.Ordinal);
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_NATIVE_AUDIT"),
+            "1",
+            StringComparison.Ordinal
+        );
         // The native host imports Windows/Composition libraries, not ANGLE.
         // A full deployment audit still verifies every shipped backend.
         var inspectAngle = selectedPresenter == "AngleD3D11" || auditHashes;
         var baseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
         var hostPath = Path.Combine(baseDirectory, $"{LibraryName}.dll");
-        var bootstrapPath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.Bootstrap.dll");
+        var bootstrapPath = Path.Combine(
+            baseDirectory,
+            "Microsoft.WindowsAppRuntime.Bootstrap.dll"
+        );
         var angleRuntimePath = Path.Combine(baseDirectory, "av_libglesv2.dll");
         var windowsAppRuntimePath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.dll");
         RequireNativeFile(hostPath, "native HwndExactCpp host");
@@ -341,8 +384,13 @@ internal static partial class WindowsNativeV1
         {
             _nativeHostPath = hostPath;
             _angleRuntimePath = angleRuntimePath;
-            _windowsAppRuntimePath = File.Exists(windowsAppRuntimePath) ? windowsAppRuntimePath : null;
-            NativeLibrary.SetDllImportResolver(typeof(WindowsNativeV1).Assembly, ResolveNativeLibrary);
+            _windowsAppRuntimePath = File.Exists(windowsAppRuntimePath)
+                ? windowsAppRuntimePath
+                : null;
+            NativeLibrary.SetDllImportResolver(
+                typeof(WindowsNativeV1).Assembly,
+                ResolveNativeLibrary
+            );
         }
         var host = new FileInfo(hostPath);
         var bootstrap = new FileInfo(bootstrapPath);
@@ -351,69 +399,138 @@ internal static partial class WindowsNativeV1
         var bootstrapHash = auditHashes ? Sha256(bootstrapPath) : null;
         var angleRuntimeHash = auditHashes ? Sha256(angleRuntimePath) : null;
         if (auditHashes)
+        {
             ValidateBuildProvenance(baseDirectory, hostHash!, bootstrapHash!, angleRuntimeHash!);
-        return new(baseDirectory, hostPath, host.Length, host.LastWriteTimeUtc.Ticks, hostHash,
-            bootstrapPath, bootstrap.Length, bootstrap.LastWriteTimeUtc.Ticks, bootstrapHash,
-            angleRuntimePath, inspectAngle ? angleRuntime.Length : 0,
-            inspectAngle ? angleRuntime.LastWriteTimeUtc.Ticks : 0, angleRuntimeHash,
+        }
+
+        return new(
+            baseDirectory,
+            hostPath,
+            host.Length,
+            host.LastWriteTimeUtc.Ticks,
+            hostHash,
+            bootstrapPath,
+            bootstrap.Length,
+            bootstrap.LastWriteTimeUtc.Ticks,
+            bootstrapHash,
+            angleRuntimePath,
+            inspectAngle ? angleRuntime.Length : 0,
+            inspectAngle ? angleRuntime.LastWriteTimeUtc.Ticks : 0,
+            angleRuntimeHash,
             auditHashes,
             "app-directory + DLL-load-directory + System32 + registered user directories; PATH/current-directory excluded",
-            selectedPresenter, inspectAngle);
+            selectedPresenter,
+            inspectAngle
+        );
     }
 
-    private static nint ResolveNativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    private static nint ResolveNativeLibrary(
+        string libraryName,
+        Assembly assembly,
+        DllImportSearchPath? searchPath
+    )
     {
         _ = assembly;
         _ = searchPath;
         var path = libraryName switch
         {
             var value when value.Equals(LibraryName, StringComparison.Ordinal) => _nativeHostPath,
-            var value when value.Equals("av_libglesv2.dll", StringComparison.OrdinalIgnoreCase) => _angleRuntimePath,
-            var value when value.Equals("Microsoft.WindowsAppRuntime.dll", StringComparison.OrdinalIgnoreCase) =>
-                _windowsAppRuntimePath,
+            var value when value.Equals("av_libglesv2.dll", StringComparison.OrdinalIgnoreCase) =>
+                _angleRuntimePath,
+            var value
+                when value.Equals(
+                    "Microsoft.WindowsAppRuntime.dll",
+                    StringComparison.OrdinalIgnoreCase
+                ) => _windowsAppRuntimePath,
             _ => null,
         };
-        if (path is null) return 0;
-        var handle = LoadLibraryEx(path, 0, LoadLibrarySearchDllLoadDir | LoadLibrarySearchSystem32);
-        if (handle != 0) return handle;
+        if (path is null)
+        {
+            return 0;
+        }
+
+        var handle = LoadLibraryEx(
+            path,
+            0,
+            LoadLibrarySearchDllLoadDir | LoadLibrarySearchSystem32
+        );
+        if (handle != 0)
+        {
+            return handle;
+        }
+
         var error = Marshal.GetLastPInvokeError();
         if (error == 193)
-            throw new BadImageFormatException($"The native HwndExactCpp host is not a win-x64 PE image: {path}");
+        {
+            throw new BadImageFormatException(
+                $"The native HwndExactCpp host is not a win-x64 PE image: {path}"
+            );
+        }
+
         throw new DllNotFoundException(
-            $"The native HwndExactCpp host or one of its app-directory dependencies failed to load: {path} (Win32={error}).");
+            $"The native HwndExactCpp host or one of its app-directory dependencies failed to load: {path} (Win32={error})."
+        );
     }
 
     internal static void RestrictProcessDllSearch()
     {
-        if (Interlocked.Exchange(ref _searchPolicyRestricted, 1) != 0) return;
-        var directories = LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs |
-                          LoadLibrarySearchSystem32;
+        if (Interlocked.Exchange(ref _searchPolicyRestricted, 1) != 0)
+        {
+            return;
+        }
+
+        var directories =
+            LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs | LoadLibrarySearchSystem32;
         if (!SetDefaultDllDirectories(directories))
+        {
             throw new InvalidOperationException(
-                $"Failed to restrict native DLL search directories (Win32={Marshal.GetLastPInvokeError()}).");
+                $"Failed to restrict native DLL search directories (Win32={Marshal.GetLastPInvokeError()})."
+            );
+        }
     }
 
     private static void RequireNativeFile(string path, string identity)
     {
         if (!File.Exists(path))
-            throw new DllNotFoundException($"Required {identity} is missing from the application directory: {path}");
+        {
+            throw new DllNotFoundException(
+                $"Required {identity} is missing from the application directory: {path}"
+            );
+        }
     }
 
     internal static void ValidateX64Pe(string path, string identity)
     {
         using var stream = File.OpenRead(path);
         Span<byte> header = stackalloc byte[64];
-        if (stream.Read(header) != header.Length || header[0] != (byte)'M' || header[1] != (byte)'Z')
+        if (
+            stream.Read(header) != header.Length
+            || header[0] != (byte)'M'
+            || header[1] != (byte)'Z'
+        )
+        {
             throw new BadImageFormatException($"The {identity} is not a PE image: {path}");
+        }
+
         var peOffset = BitConverter.ToInt32(header[0x3c..]);
         if (peOffset < 0 || peOffset > stream.Length - 6)
+        {
             throw new BadImageFormatException($"The {identity} has an invalid PE header: {path}");
+        }
+
         stream.Position = peOffset;
         Span<byte> signature = stackalloc byte[6];
-        if (stream.Read(signature) != signature.Length ||
-            signature[0] != (byte)'P' || signature[1] != (byte)'E' ||
-            signature[2] != 0 || signature[3] != 0 || BitConverter.ToUInt16(signature[4..]) != 0x8664)
+        if (
+            stream.Read(signature) != signature.Length
+            || signature[0] != (byte)'P'
+            || signature[1] != (byte)'E'
+            || signature[2] != 0
+            || signature[3] != 0
+            || BitConverter.ToUInt16(signature[4..]) != 0x8664
+        )
+        {
             throw new BadImageFormatException($"The {identity} is not a win-x64 PE image: {path}");
+        }
     }
 
     private static string Sha256(string path) =>
@@ -423,25 +540,53 @@ internal static partial class WindowsNativeV1
         string baseDirectory,
         string hostHash,
         string bootstrapHash,
-        string angleRuntimeHash)
+        string angleRuntimeHash
+    )
     {
         var path = Path.Combine(baseDirectory, "doroti-native-provenance.json");
         if (!File.Exists(path))
+        {
             throw new InvalidDataException($"Native provenance audit manifest is missing: {path}");
-        var manifest = JsonSerializer.Deserialize<NativeBuildProvenance>(File.ReadAllText(path),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+        }
+
+        var manifest =
+            JsonSerializer.Deserialize<NativeBuildProvenance>(
+                File.ReadAllText(path),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            )
             ?? throw new InvalidDataException($"Native provenance audit manifest is empty: {path}");
-        if (manifest.SchemaVersion != "doroti.windows.native-provenance/v1" ||
-            !string.Equals(manifest.NativeHostSha256, hostHash, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(manifest.BootstrapSha256, bootstrapHash, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(manifest.AngleRuntimeSha256, angleRuntimeHash, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("Native provenance audit hash does not match the build/publish manifest.");
+        if (
+            manifest.SchemaVersion != "doroti.windows.native-provenance/v1"
+            || !string.Equals(
+                manifest.NativeHostSha256,
+                hostHash,
+                StringComparison.OrdinalIgnoreCase
+            )
+            || !string.Equals(
+                manifest.BootstrapSha256,
+                bootstrapHash,
+                StringComparison.OrdinalIgnoreCase
+            )
+            || !string.Equals(
+                manifest.AngleRuntimeSha256,
+                angleRuntimeHash,
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            throw new InvalidDataException(
+                "Native provenance audit hash does not match the build/publish manifest."
+            );
+        }
     }
 
     internal static AbiLayout ValidateLayout()
     {
         if (GetAbiVersion() != AbiVersion)
+        {
             throw new InvalidOperationException("Native host ABI version mismatch.");
+        }
+
         var layout = new AbiLayout
         {
             AbiVersion = AbiVersion,
@@ -449,7 +594,9 @@ internal static partial class WindowsNativeV1
         };
         var status = GetAbiLayout(ref layout);
         if (status != Status.Ok)
+        {
             throw new InvalidOperationException($"Native ABI layout query failed: {status}.");
+        }
 
         AssertEqual("pointer size", checked((uint)IntPtr.Size), layout.PointerSize);
         AssertEqual("packing", 8, layout.Packing);
@@ -460,35 +607,97 @@ internal static partial class WindowsNativeV1
         AssertEqual("frame terminal size", SizeOf<FrameTerminal>(), layout.FrameTerminalSize);
         AssertEqual("configuration size", SizeOf<Configuration>(), layout.ConfigurationSize);
         AssertEqual("callbacks size", SizeOf<Callbacks>(), layout.CallbacksSize);
-        AssertEqual("metrics generation offset", OffsetOf<Metrics>(nameof(Metrics.Generation)), layout.MetricsGenerationOffset);
-        AssertEqual("host child HWND offset", OffsetOf<Host>(nameof(Host.ChildHwnd)), layout.HostChildHwndOffset);
-        AssertEqual("terminal kind offset", OffsetOf<FrameTerminal>(nameof(FrameTerminal.TerminalKind)), layout.TerminalKindOffset);
-        AssertEqual("callbacks render offset", OffsetOf<Callbacks>(nameof(Callbacks.Render)), layout.CallbacksRenderOffset);
+        AssertEqual(
+            "metrics generation offset",
+            OffsetOf<Metrics>(nameof(Metrics.Generation)),
+            layout.MetricsGenerationOffset
+        );
+        AssertEqual(
+            "host child HWND offset",
+            OffsetOf<Host>(nameof(Host.ChildHwnd)),
+            layout.HostChildHwndOffset
+        );
+        AssertEqual(
+            "terminal kind offset",
+            OffsetOf<FrameTerminal>(nameof(FrameTerminal.TerminalKind)),
+            layout.TerminalKindOffset
+        );
+        AssertEqual(
+            "callbacks render offset",
+            OffsetOf<Callbacks>(nameof(Callbacks.Render)),
+            layout.CallbacksRenderOffset
+        );
         AssertEqual("GPU pointer count", 0, layout.GpuPointerCount);
         AssertEqual("pointer packet size", SizeOf<Pointer>(), layout.PointerPacketSize);
         AssertEqual("key packet size", SizeOf<Key>(), layout.KeySize);
-        AssertEqual("callbacks pointer offset", OffsetOf<Callbacks>(nameof(Callbacks.Pointer)), layout.CallbacksPointerOffset);
-        AssertEqual("host set-cursor offset", OffsetOf<Host>(nameof(Host.SetCursor)), layout.HostSetCursorOffset);
-        AssertEqual("text configuration size", SizeOf<TextConfiguration>(), layout.TextConfigurationSize);
+        AssertEqual(
+            "callbacks pointer offset",
+            OffsetOf<Callbacks>(nameof(Callbacks.Pointer)),
+            layout.CallbacksPointerOffset
+        );
+        AssertEqual(
+            "host set-cursor offset",
+            OffsetOf<Host>(nameof(Host.SetCursor)),
+            layout.HostSetCursorOffset
+        );
+        AssertEqual(
+            "text configuration size",
+            SizeOf<TextConfiguration>(),
+            layout.TextConfigurationSize
+        );
         AssertEqual("text state size", SizeOf<TextState>(), layout.TextStateSize);
-        AssertEqual("host set-text-client offset", OffsetOf<Host>(nameof(Host.SetTextClient)), layout.HostSetTextClientOffset);
-        AssertEqual("callbacks text-editing offset", OffsetOf<Callbacks>(nameof(Callbacks.TextEditing)), layout.CallbacksTextEditingOffset);
-        AssertEqual("callbacks lifecycle offset", OffsetOf<Callbacks>(nameof(Callbacks.Lifecycle)), layout.CallbacksLifecycleOffset);
-        AssertEqual("host initial-platform-brightness offset", OffsetOf<Host>(nameof(Host.InitialPlatformBrightness)), layout.HostInitialPlatformBrightnessOffset);
-        AssertEqual("callbacks platform-brightness offset", OffsetOf<Callbacks>(nameof(Callbacks.PlatformBrightness)), layout.CallbacksPlatformBrightnessOffset);
-        AssertEqual("metrics view-insets offset", OffsetOf<Metrics>(nameof(Metrics.ViewInsets)), layout.MetricsViewInsetsOffset);
-        AssertEqual("metrics environment-generation offset", OffsetOf<Metrics>(nameof(Metrics.EnvironmentGeneration)), layout.MetricsEnvironmentGenerationOffset);
+        AssertEqual(
+            "host set-text-client offset",
+            OffsetOf<Host>(nameof(Host.SetTextClient)),
+            layout.HostSetTextClientOffset
+        );
+        AssertEqual(
+            "callbacks text-editing offset",
+            OffsetOf<Callbacks>(nameof(Callbacks.TextEditing)),
+            layout.CallbacksTextEditingOffset
+        );
+        AssertEqual(
+            "callbacks lifecycle offset",
+            OffsetOf<Callbacks>(nameof(Callbacks.Lifecycle)),
+            layout.CallbacksLifecycleOffset
+        );
+        AssertEqual(
+            "host initial-platform-brightness offset",
+            OffsetOf<Host>(nameof(Host.InitialPlatformBrightness)),
+            layout.HostInitialPlatformBrightnessOffset
+        );
+        AssertEqual(
+            "callbacks platform-brightness offset",
+            OffsetOf<Callbacks>(nameof(Callbacks.PlatformBrightness)),
+            layout.CallbacksPlatformBrightnessOffset
+        );
+        AssertEqual(
+            "metrics view-insets offset",
+            OffsetOf<Metrics>(nameof(Metrics.ViewInsets)),
+            layout.MetricsViewInsetsOffset
+        );
+        AssertEqual(
+            "metrics environment-generation offset",
+            OffsetOf<Metrics>(nameof(Metrics.EnvironmentGeneration)),
+            layout.MetricsEnvironmentGenerationOffset
+        );
         return layout;
     }
 
-    private static uint SizeOf<T>() where T : struct => checked((uint)Marshal.SizeOf<T>());
-    private static uint OffsetOf<T>(string field) where T : struct =>
-        checked((uint)Marshal.OffsetOf<T>(field).ToInt64());
+    private static uint SizeOf<T>()
+        where T : struct => checked((uint)Marshal.SizeOf<T>());
+
+    private static uint OffsetOf<T>(string field)
+        where T : struct => checked((uint)Marshal.OffsetOf<T>(field).ToInt64());
 
     private static void AssertEqual(string name, uint expected, uint actual)
     {
         if (expected != actual)
-            throw new InvalidOperationException($"Native ABI {name} mismatch: managed={expected}, native={actual}.");
+        {
+            throw new InvalidOperationException(
+                $"Native ABI {name} mismatch: managed={expected}, native={actual}."
+            );
+        }
     }
 }
 
@@ -496,7 +705,8 @@ internal sealed record NativeBuildProvenance(
     string SchemaVersion,
     string NativeHostSha256,
     string BootstrapSha256,
-    string AngleRuntimeSha256);
+    string AngleRuntimeSha256
+);
 
 internal sealed record NativeHostProvenance(
     string ApplicationDirectory,
@@ -515,4 +725,5 @@ internal sealed record NativeHostProvenance(
     bool FullHashAudit,
     string SearchPolicy,
     string SelectedPresenter,
-    bool AngleRuntimeInspected);
+    bool AngleRuntimeInspected
+);

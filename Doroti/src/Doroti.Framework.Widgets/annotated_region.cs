@@ -9,7 +9,13 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
     public virtual T value { get; private set; } = default!;
     public virtual bool sized { get; private set; } = default!;
 
-    public AnnotatedRegion(Key? key = null, Widget child = default!, T value = default!, bool sized = true) : base(key: key, child: child)
+    public AnnotatedRegion(
+        Key? key = null,
+        Widget child = default!,
+        T value = default!,
+        bool sized = true
+    )
+        : base(key: key, child: child)
     {
         this.value = value;
         this.sized = sized;
@@ -24,14 +30,18 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderAnnotatedRegion<T>)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderAnnotatedRegion<T>>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.value = value;
-    __cascade.sized = sized;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderAnnotatedRegion<T>>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.value = value;
+                        __cascade.sized = sized;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
-

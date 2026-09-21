@@ -10,14 +10,14 @@ public delegate T RecognizerCallback<T>();
 public enum DragStartBehavior
 {
     down,
-    start
+    start,
 }
 
 public enum MultitouchDragStrategy
 {
     latestPointer,
     averageBoundaryPointers,
-    sumAllPointers
+    sumAllPointers,
 }
 
 public delegate bool AllowedButtonsFilter(long buttons);
@@ -28,22 +28,37 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
     public virtual DeviceGestureSettings? gestureSettings { get; set; } = default;
     public virtual HashSet<PointerDeviceKind>? supportedDevices { get; set; } = default;
     public virtual Func<long, bool> allowedButtonsFilter { get; private set; } = default!;
-    internal virtual DartMap<long, _RecognizerEventData__recognizer> _pointerToEventData { get; private set; } = new DartMap<long, _RecognizerEventData__recognizer>();
-
-    protected GestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!)
+    internal virtual DartMap<long, _RecognizerEventData__recognizer> _pointerToEventData
     {
-        Func<long, bool> __allowedButtonsFilter = allowedButtonsFilter ?? _defaultButtonAcceptBehavior;
+        get;
+        private set;
+    } = new DartMap<long, _RecognizerEventData__recognizer>();
+
+    protected GestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!
+    )
+    {
+        Func<long, bool> __allowedButtonsFilter =
+            allowedButtonsFilter ?? _defaultButtonAcceptBehavior;
         this.debugOwner = debugOwner;
         this.supportedDevices = supportedDevices;
         this.allowedButtonsFilter = __allowedButtonsFilter;
     }
 
     public virtual void acceptGesture(long pointer) => throw new NotSupportedException();
+
     public virtual void rejectGesture(long pointer) => throw new NotSupportedException();
+
     internal static bool _defaultButtonAcceptBehavior(long buttons) => true;
+
     public virtual void addPointerPanZoom(PointerPanZoomStartEvent @event)
     {
-        _pointerToEventData[@event.pointer] = new _RecognizerEventData__recognizer(kind: @event.kind, buttons: @event.buttons);
+        _pointerToEventData[@event.pointer] = new _RecognizerEventData__recognizer(
+            kind: @event.kind,
+            buttons: @event.buttons
+        );
         if (isPointerPanZoomAllowed(@event))
         {
             addAllowedPointerPanZoom(@event);
@@ -54,13 +69,14 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
         }
     }
 
-    public virtual void addAllowedPointerPanZoom(PointerPanZoomStartEvent @event)
-    {
-    }
+    public virtual void addAllowedPointerPanZoom(PointerPanZoomStartEvent @event) { }
 
     public virtual void addPointer(PointerDownEvent @event)
     {
-        _pointerToEventData[@event.pointer] = new _RecognizerEventData__recognizer(kind: @event.kind, buttons: @event.buttons);
+        _pointerToEventData[@event.pointer] = new _RecognizerEventData__recognizer(
+            kind: @event.kind,
+            buttons: @event.buttons
+        );
         if (isPointerAllowed(@event))
         {
             addAllowedPointer(@event);
@@ -71,23 +87,18 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
         }
     }
 
-    public virtual void addAllowedPointer(PointerDownEvent @event)
-    {
-    }
+    public virtual void addAllowedPointer(PointerDownEvent @event) { }
 
-    public virtual void handleNonAllowedPointer(PointerDownEvent @event)
-    {
-    }
+    public virtual void handleNonAllowedPointer(PointerDownEvent @event) { }
 
     public virtual bool isPointerAllowed(PointerDownEvent @event)
     {
-        return ((supportedDevices is null) || supportedDevices!.Contains(@event.kind)) && allowedButtonsFilter(@event.buttons);
+        return ((supportedDevices is null) || supportedDevices!.Contains(@event.kind))
+            && allowedButtonsFilter(@event.buttons);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleNonAllowedPointerPanZoom(PointerPanZoomStartEvent @event)
-    {
-    }
+    public virtual void handleNonAllowedPointerPanZoom(PointerPanZoomStartEvent @event) { }
 
     public virtual bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
@@ -111,25 +122,36 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
     }
 
     public abstract string debugDescription { get; }
-    public virtual T? invokeCallback<T>(string name, Func<T> callback, Func<string>? debugReport = null)
+
+    public virtual T? invokeCallback<T>(
+        string name,
+        Func<T> callback,
+        Func<string>? debugReport = null
+    )
     {
         T? result = default!;
         try
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (DebugLibrary.debugPrintRecognizerCallbacksTrace)
                 {
-                    if (DebugLibrary.debugPrintRecognizerCallbacksTrace)
-                    {
-                        string? report = (debugReport is not null) ? debugReport() : null;
-                        var prefix = DebugLibrary.debugPrintGestureArenaDiagnostics ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ " : "";
-                        PrintLibrary.debugPrint($"{prefix}{this} calling {name} callback.{(((report is null ? (bool?)null : report.Length != 0) ?? false) ? $" {report}" : "")}");
-                    }
-                    return true;
-                });
+                    string? report = (debugReport is not null) ? debugReport() : null;
+                    var prefix = DebugLibrary.debugPrintGestureArenaDiagnostics
+                        ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ "
+                        : "";
+                    PrintLibrary.debugPrint(
+                        $"{prefix}{this} calling {name} callback.{(((report is null ? (bool?)null : report.Length != 0) ?? false) ? $" {report}" : "")}"
+                    );
+                }
+                return true;
+            });
             result = callback();
         }
         catch (Exception exceptionLocal)
@@ -137,11 +159,28 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
             var stackLocal = new System.Diagnostics.StackTrace();
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    collector = () => new List<DiagnosticsNode> { new StringProperty("Handler", name), new DiagnosticsProperty<GestureRecognizer>("Recognizer", this, style: DiagnosticsTreeStyle.errorProperty) };
-                    return true;
-                });
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture", context: new ErrorDescription("while handling a gesture"), informationCollector: collector));
+            {
+                collector = () =>
+                    new List<DiagnosticsNode>
+                    {
+                        new StringProperty("Handler", name),
+                        new DiagnosticsProperty<GestureRecognizer>(
+                            "Recognizer",
+                            this,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    };
+                return true;
+            });
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "gesture",
+                    context: new ErrorDescription("while handling a gesture"),
+                    informationCollector: collector
+                )
+            );
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -150,22 +189,42 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<object>("debugOwner", debugOwner, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<object>("debugOwner", debugOwner, defaultValue: null)
+        );
     }
 
-    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = null) =>
-        ((DiagnosticableTree)this).toStringDeep(prefixLineOne, prefixOtherLines, minLevel, wrapWidth);
+    public virtual string toStringDeep(
+        string prefixLineOne = "",
+        string? prefixOtherLines = null,
+        DiagnosticLevel minLevel = DiagnosticLevel.debug,
+        long? wrapWidth = null
+    ) =>
+        ((DiagnosticableTree)this).toStringDeep(
+            prefixLineOne,
+            prefixOtherLines,
+            minLevel,
+            wrapWidth
+        );
 }
 
 public abstract class OneSequenceGestureRecognizer : GestureRecognizer
 {
-    public virtual DartMap<long, GestureArenaEntry> _entries { get; private set; } = new DartMap<long, GestureArenaEntry>();
+    public virtual DartMap<long, GestureArenaEntry> _entries { get; private set; } =
+        new DartMap<long, GestureArenaEntry>();
     public virtual HashSet<long> _trackedPointers { get; private set; } = new HashSet<long>();
     internal virtual GestureArenaTeam? _team { get; set; } = default;
 
-    protected OneSequenceGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
-    {
-    }
+    protected OneSequenceGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior
+        ) { }
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
@@ -178,18 +237,18 @@ public abstract class OneSequenceGestureRecognizer : GestureRecognizer
     }
 
     public abstract void handleEvent(PointerEvent @event);
-    public override void acceptGesture(long pointer)
-    {
-    }
 
-    public override void rejectGesture(long pointer)
-    {
-    }
+    public override void acceptGesture(long pointer) { }
+
+    public override void rejectGesture(long pointer) { }
 
     public abstract void didStopTrackingLastPointer(long pointer);
+
     public virtual void resolve(GestureDisposition disposition)
     {
-        var localEntries = new List<GestureArenaEntry>(DartRuntimePrimitives.ConvertEnumerable<GestureArenaEntry>(_entries.Values));
+        var localEntries = new List<GestureArenaEntry>(
+            DartRuntimePrimitives.ConvertEnumerable<GestureArenaEntry>(_entries.Values)
+        );
         _entries.Clear();
         foreach (var entry in localEntries)
         {
@@ -232,6 +291,7 @@ public abstract class OneSequenceGestureRecognizer : GestureRecognizer
             _team = __value;
         }
     }
+
     public virtual GestureArenaEntry _addPointerToArena(long pointer)
     {
         return _team?.add(pointer, this) ?? GestureBinding.instance.gestureArena.add(pointer, this);
@@ -260,19 +320,22 @@ public abstract class OneSequenceGestureRecognizer : GestureRecognizer
 
     public virtual void stopTrackingIfPointerNoLongerDown(PointerEvent @event)
     {
-        if ((@event is PointerUpEvent) || (@event is PointerCancelEvent) || (@event is PointerPanZoomEndEvent))
+        if (
+            (@event is PointerUpEvent)
+            || (@event is PointerCancelEvent)
+            || (@event is PointerPanZoomEndEvent)
+        )
         {
             stopTrackingPointer(@event.pointer);
         }
     }
-
 }
 
 public enum GestureRecognizerState
 {
     ready,
     possible,
-    defunct
+    defunct,
 }
 
 public static partial class RecognizerLibrary
@@ -291,7 +354,19 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
     internal virtual bool _gestureAccepted { get; set; } = false;
     internal virtual Timer? _timer { get; set; } = default;
 
-    protected PrimaryPointerGestureRecognizer(Duration? deadline = null, double? preAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop, double? postAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
+    protected PrimaryPointerGestureRecognizer(
+        Duration? deadline = null,
+        double? preAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop,
+        double? postAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop,
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior
+        )
     {
         // Omission uses the device's touch slop; explicit null allows unlimited
         // movement. LongPress passes null after acceptance so dragging can
@@ -301,16 +376,32 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
         this.deadline = deadline;
         _preAcceptSlopTolerance = __preAcceptSlopTolerance;
         _postAcceptSlopTolerance = __postAcceptSlopTolerance;
-        System.Diagnostics.Debug.Assert((__preAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) || (__preAcceptSlopTolerance is null) || (__preAcceptSlopTolerance >= 0L));
-        System.Diagnostics.Debug.Assert((__postAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) || (__postAcceptSlopTolerance is null) || (__postAcceptSlopTolerance >= 0L));
+        System.Diagnostics.Debug.Assert(
+            (__preAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop)
+                || (__preAcceptSlopTolerance is null)
+                || (__preAcceptSlopTolerance >= 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (__postAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop)
+                || (__postAcceptSlopTolerance is null)
+                || (__postAcceptSlopTolerance >= 0L)
+        );
     }
 
-    public virtual double? preAcceptSlopTolerance => (_preAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) ? _defaultTouchSlop : _preAcceptSlopTolerance;
-    public virtual double? postAcceptSlopTolerance => (_postAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) ? _defaultTouchSlop : _postAcceptSlopTolerance;
-    internal virtual double _defaultTouchSlop => gestureSettings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
+    public virtual double? preAcceptSlopTolerance =>
+        (_preAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop)
+            ? _defaultTouchSlop
+            : _preAcceptSlopTolerance;
+    public virtual double? postAcceptSlopTolerance =>
+        (_postAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop)
+            ? _defaultTouchSlop
+            : _postAcceptSlopTolerance;
+    internal virtual double _defaultTouchSlop =>
+        gestureSettings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
     public virtual GestureRecognizerState state => _state;
     public virtual long? primaryPointer => _primaryPointer;
     public virtual OffsetPair? initialPosition => _initialPosition;
+
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
@@ -322,7 +413,10 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
             if (deadline is not null)
             {
                 Duration deadline__value27990 = DartRuntimePrimitives.RequireValue(deadline);
-                _timer = new Timer(DartRuntimePrimitives.RequireValue(deadline), () => didExceedDeadlineWithEvent(@event));
+                _timer = new Timer(
+                    DartRuntimePrimitives.RequireValue(deadline),
+                    () => didExceedDeadlineWithEvent(@event)
+                );
             }
         }
     }
@@ -340,9 +434,24 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
         DartRuntimePrimitives.Assert(() => !Equals(state, GestureRecognizerState.ready));
         if (Equals(state, GestureRecognizerState.possible) && (@event.pointer == primaryPointer))
         {
-            bool isPreAcceptSlopPastTolerance = !_gestureAccepted && (preAcceptSlopTolerance is not null) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(preAcceptSlopTolerance));
-            bool isPostAcceptSlopPastTolerance = _gestureAccepted && (postAcceptSlopTolerance is not null) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(postAcceptSlopTolerance));
-            if ((@event is PointerMoveEvent) && (isPreAcceptSlopPastTolerance || isPostAcceptSlopPastTolerance))
+            bool isPreAcceptSlopPastTolerance =
+                !_gestureAccepted
+                && (preAcceptSlopTolerance is not null)
+                && (
+                    _getGlobalDistance(@event)
+                    > DartRuntimePrimitives.RequireValue(preAcceptSlopTolerance)
+                );
+            bool isPostAcceptSlopPastTolerance =
+                _gestureAccepted
+                && (postAcceptSlopTolerance is not null)
+                && (
+                    _getGlobalDistance(@event)
+                    > DartRuntimePrimitives.RequireValue(postAcceptSlopTolerance)
+                );
+            if (
+                (@event is PointerMoveEvent)
+                && (isPreAcceptSlopPastTolerance || isPostAcceptSlopPastTolerance)
+            )
             {
                 PointerMoveEvent @event__as28834 = (PointerMoveEvent)@event;
                 resolve(GestureDisposition.rejected);
@@ -357,6 +466,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
     }
 
     public abstract void handlePrimaryPointer(PointerEvent @event);
+
     public virtual void didExceedDeadline()
     {
         DartRuntimePrimitives.Assert(() => deadline is null);
@@ -421,7 +531,6 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<GestureRecognizerState>("state", state));
     }
-
 }
 
 public class OffsetPair
@@ -464,7 +573,8 @@ public class OffsetPair
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OffsetPair")}(local: {local}, global: {global})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OffsetPair")}(local: {local}, global: {global})";
 }
 
 internal class _RecognizerEventData__recognizer
@@ -477,5 +587,4 @@ internal class _RecognizerEventData__recognizer
         this.kind = kind;
         this.buttons = buttons;
     }
-
 }

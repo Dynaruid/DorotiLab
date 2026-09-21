@@ -9,14 +9,20 @@ public delegate Tween<Rect?> CreateRectTween(Rect? begin, Rect? end);
 
 public delegate Widget HeroPlaceholderBuilder(BuildContext context, Size heroSize, Widget child);
 
-public delegate Widget HeroFlightShuttleBuilder(BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext);
+public delegate Widget HeroFlightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext
+);
 
 internal delegate void _OnFlightEnded__heroes(_HeroFlight__heroes flight);
 
 public enum HeroFlightDirection
 {
     push,
-    pop
+    pop,
 }
 
 public class Hero : StatefulWidget
@@ -24,13 +30,42 @@ public class Hero : StatefulWidget
     public virtual object tag { get; private set; } = default!;
     public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
     public virtual Widget child { get; private set; } = default!;
-    public virtual Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder { get; private set; }
-    public virtual Func<BuildContext, Size, Widget, Widget>? placeholderBuilder { get; private set; }
+    public virtual Func<
+        BuildContext,
+        Animation<double>,
+        HeroFlightDirection,
+        BuildContext,
+        BuildContext,
+        Widget
+    >? flightShuttleBuilder { get; private set; }
+    public virtual Func<BuildContext, Size, Widget, Widget>? placeholderBuilder
+    {
+        get;
+        private set;
+    }
     public virtual bool transitionOnUserGestures { get; private set; } = default!;
     public virtual Curve curve { get; private set; } = default!;
     public virtual Curve? reverseCurve { get; private set; }
 
-    public Hero(Key? key = null, object tag = default!, Func<Rect?, Rect?, Tween<Rect?>>? createRectTween = null, Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder = null, Func<BuildContext, Size, Widget, Widget>? placeholderBuilder = null, bool transitionOnUserGestures = false, Curve curve = default!, Curve? reverseCurve = null, Widget child = default!) : base(key: key)
+    public Hero(
+        Key? key = null,
+        object tag = default!,
+        Func<Rect?, Rect?, Tween<Rect?>>? createRectTween = null,
+        Func<
+            BuildContext,
+            Animation<double>,
+            HeroFlightDirection,
+            BuildContext,
+            BuildContext,
+            Widget
+        >? flightShuttleBuilder = null,
+        Func<BuildContext, Size, Widget, Widget>? placeholderBuilder = null,
+        bool transitionOnUserGestures = false,
+        Curve curve = default!,
+        Curve? reverseCurve = null,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         Curve __curve = curve ?? Curves.fastOutSlowIn;
         this.tag = tag;
@@ -43,20 +78,44 @@ public class Hero : StatefulWidget
         this.child = child;
     }
 
-    internal static DartMap<object, _HeroState__heroes> _allHeroesFor(BuildContext context, bool isUserGestureTransition, NavigatorState navigator)
+    internal static DartMap<object, _HeroState__heroes> _allHeroesFor(
+        BuildContext context,
+        bool isUserGestureTransition,
+        NavigatorState navigator
+    )
     {
         var result = new DartMap<object, _HeroState__heroes>();
         void inviteHero(StatefulElement hero, object tag)
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (result.ContainsKey(tag))
                 {
-                    if (result.ContainsKey(tag))
-                    {
-                        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("There are multiple heroes that share the same tag within a subtree."), new ErrorDescription("Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), " + "each Hero must have a unique non-null tag.\n" + $"In this case, multiple heroes had the following tag: {tag}"), new DiagnosticsProperty<StatefulElement>("Here is the subtree for one of the offending heroes", hero, linePrefix: "# ", style: DiagnosticsTreeStyle.dense) }));
-                    }
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+                    throw DartRuntimePrimitives.AsException(
+                        new FlutterError(
+                            new List<DiagnosticsNode>
+                            {
+                                new ErrorSummary(
+                                    "There are multiple heroes that share the same tag within a subtree."
+                                ),
+                                new ErrorDescription(
+                                    "Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), "
+                                        + "each Hero must have a unique non-null tag.\n"
+                                        + $"In this case, multiple heroes had the following tag: {tag}"
+                                ),
+                                new DiagnosticsProperty<StatefulElement>(
+                                    "Here is the subtree for one of the offending heroes",
+                                    hero,
+                                    linePrefix: "# ",
+                                    style: DiagnosticsTreeStyle.dense
+                                ),
+                            }
+                        )
+                    );
+                }
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
             var heroWidget = ((Hero?)hero.widget)!;
             var heroState = ((_HeroState__heroes?)hero.state)!;
             if (!isUserGestureTransition || heroWidget.transitionOnUserGestures)
@@ -105,13 +164,14 @@ public class Hero : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _HeroState__heroes());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _HeroState__heroes());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<object>("tag", tag));
     }
-
 }
 
 public class _HeroState__heroes : State<Hero>
@@ -141,28 +201,45 @@ public class _HeroState__heroes : State<Hero>
         _placeholderSize = null;
         if (mounted)
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => context.findAncestorWidgetOfExactType<Hero>() is null, () => (object?)"A Hero widget cannot be the descendant of another Hero widget.");
+        DartRuntimePrimitives.Assert(
+            () => context.findAncestorWidgetOfExactType<Hero>() is null,
+            () => (object?)"A Hero widget cannot be the descendant of another Hero widget."
+        );
         var showPlaceholder = _placeholderSize is not null;
         if (showPlaceholder && (widget.placeholderBuilder is not null))
         {
-            return widget.placeholderBuilder!(context, DartRuntimePrimitives.RequireValue(_placeholderSize), widget.child);
+            return widget.placeholderBuilder!(
+                context,
+                DartRuntimePrimitives.RequireValue(_placeholderSize),
+                widget.child
+            );
         }
         if (showPlaceholder && !_shouldIncludeChild)
         {
-            return new SizedBox(width: DartRuntimePrimitives.RequireValue(_placeholderSize).width, height: DartRuntimePrimitives.RequireValue(_placeholderSize).height);
+            return new SizedBox(
+                width: DartRuntimePrimitives.RequireValue(_placeholderSize).width,
+                height: DartRuntimePrimitives.RequireValue(_placeholderSize).height
+            );
         }
-        return new SizedBox(width: _placeholderSize?.width, height: _placeholderSize?.height, child: new Offstage(offstage: showPlaceholder, child: new TickerMode(enabled: !showPlaceholder, child: new KeyedSubtree(key: _key, child: widget.child))));
+        return new SizedBox(
+            width: _placeholderSize?.width,
+            height: _placeholderSize?.height,
+            child: new Offstage(
+                offstage: showPlaceholder,
+                child: new TickerMode(
+                    enabled: !showPlaceholder,
+                    child: new KeyedSubtree(key: _key, child: widget.child)
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _HeroFlightManifest__heroes
@@ -175,7 +252,14 @@ public class _HeroFlightManifest__heroes
     public virtual _HeroState__heroes fromHero { get; private set; } = default!;
     public virtual _HeroState__heroes toHero { get; private set; } = default!;
     public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
-    public virtual Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder { get; private set; } = default!;
+    public virtual Func<
+        BuildContext,
+        Animation<double>,
+        HeroFlightDirection,
+        BuildContext,
+        BuildContext,
+        Widget
+    > shuttleBuilder { get; private set; } = default!;
     public virtual bool isUserGestureTransition { get; private set; } = default!;
     public virtual bool isDiverted { get; private set; } = default!;
     internal virtual CurvedAnimation? _animation { get; set; } = default;
@@ -187,7 +271,10 @@ public class _HeroFlightManifest__heroes
         {
             if (!__late_fromHeroLocation_initialized)
             {
-                __late_fromHeroLocation = _boundingBoxFor(fromHero.context, fromRoute.subtreeContext);
+                __late_fromHeroLocation = _boundingBoxFor(
+                    fromHero.context,
+                    fromRoute.subtreeContext
+                );
                 __late_fromHeroLocation_initialized = true;
             }
             return __late_fromHeroLocation;
@@ -215,14 +302,34 @@ public class _HeroFlightManifest__heroes
         {
             if (!__late_isValid_initialized)
             {
-                __late_isValid = toHeroLocation.isFinite && (isDiverted || fromHeroLocation.isFinite);
+                __late_isValid =
+                    toHeroLocation.isFinite && (isDiverted || fromHeroLocation.isFinite);
                 __late_isValid_initialized = true;
             }
             return __late_isValid;
         }
     }
 
-    internal _HeroFlightManifest__heroes(HeroFlightDirection type, OverlayState overlay, Size navigatorSize, IPageRoute fromRoute, IPageRoute toRoute, _HeroState__heroes fromHero, _HeroState__heroes toHero, Func<Rect?, Rect?, Tween<Rect?>>? createRectTween, Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder, bool isUserGestureTransition, bool isDiverted)
+    internal _HeroFlightManifest__heroes(
+        HeroFlightDirection type,
+        OverlayState overlay,
+        Size navigatorSize,
+        IPageRoute fromRoute,
+        IPageRoute toRoute,
+        _HeroState__heroes fromHero,
+        _HeroState__heroes toHero,
+        Func<Rect?, Rect?, Tween<Rect?>>? createRectTween,
+        Func<
+            BuildContext,
+            Animation<double>,
+            HeroFlightDirection,
+            BuildContext,
+            BuildContext,
+            Widget
+        > shuttleBuilder,
+        bool isUserGestureTransition,
+        bool isDiverted
+    )
     {
         this.type = type;
         this.overlay = overlay;
@@ -249,27 +356,35 @@ public class _HeroFlightManifest__heroes
             switch (type)
             {
                 case HeroFlightDirection.push:
-                    {
-                        parentLocal = toRoute.animation!;
-                        curveLocal = toHero.widget.curve;
-                        reverseCurveLocal = toHero.widget.reverseCurve ?? curveLocal.flipped;
-                        break;
-                    }
+                {
+                    parentLocal = toRoute.animation!;
+                    curveLocal = toHero.widget.curve;
+                    reverseCurveLocal = toHero.widget.reverseCurve ?? curveLocal.flipped;
+                    break;
+                }
                 case HeroFlightDirection.pop:
-                    {
-                        parentLocal = fromRoute.animation!;
-                        curveLocal = fromHero.widget.curve;
-                        reverseCurveLocal = fromHero.widget.reverseCurve ?? curveLocal.flipped;
-                        break;
-                    }
+                {
+                    parentLocal = fromRoute.animation!;
+                    curveLocal = fromHero.widget.curve;
+                    reverseCurveLocal = fromHero.widget.reverseCurve ?? curveLocal.flipped;
+                    break;
+                }
             }
-            return _animation ??= new CurvedAnimation(parent: parentLocal, curve: curveLocal, reverseCurve: isDiverted ? null : reverseCurveLocal);
+            return _animation ??= new CurvedAnimation(
+                parent: parentLocal,
+                curve: curveLocal,
+                reverseCurve: isDiverted ? null : reverseCurveLocal
+            );
         }
     }
+
     public virtual Tween<Rect?> createHeroRectTween(Rect? begin, Rect? end)
     {
-        Func<Rect?, Rect?, Tween<Rect?>>? createRectTweenLocal = toHero.widget.createRectTween ?? createRectTween;
-        return createRectTweenLocal is null ? new RectTween(begin: begin, end: end) : createRectTweenLocal.Invoke(begin, end);
+        Func<Rect?, Rect?, Tween<Rect?>>? createRectTweenLocal =
+            toHero.widget.createRectTween ?? createRectTween;
+        return createRectTweenLocal is null
+            ? new RectTween(begin: begin, end: end)
+            : createRectTweenLocal.Invoke(begin, end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -278,13 +393,17 @@ public class _HeroFlightManifest__heroes
         DartRuntimePrimitives.Assert(() => ancestorContext is not null);
         var box = ((RenderBox?)context.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => box.hasSize && box.size.isFinite);
-        return MatrixUtils.transformRect(box.getTransformTo(ancestorContext?.findRenderObject()), Offset.zero & box.size);
+        return MatrixUtils.transformRect(
+            box.getTransformTo(ancestorContext?.findRenderObject()),
+            Offset.zero & box.size
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"_HeroFlightManifest({type} tag: {tag} from route: {fromRoute.settings} " + $"to route: {toRoute.settings} with hero: {fromHero} to {toHero}){(isValid ? "" : ", INVALID")}";
+        return $"_HeroFlightManifest({type} tag: {tag} from route: {fromRoute.settings} "
+            + $"to route: {toRoute.settings} with hero: {fromHero} to {toHero}){(isValid ? "" : ", INVALID")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,7 +411,6 @@ public class _HeroFlightManifest__heroes
     {
         _animation?.dispose();
     }
-
 }
 
 internal class _HeroFlight__heroes
@@ -300,7 +418,8 @@ internal class _HeroFlight__heroes
     public virtual Action<_HeroFlight__heroes> onFlightEnded { get; private set; } = default!;
     public virtual Tween<Rect?> heroRectTween { get; set; } = default!;
     public virtual Widget? shuttle { get; set; } = default;
-    internal virtual Animation<double> _heroOpacity { get; set; } = AnimationsLibrary.kAlwaysCompleteAnimation;
+    internal virtual Animation<double> _heroOpacity { get; set; } =
+        AnimationsLibrary.kAlwaysCompleteAnimation;
     internal virtual ProxyAnimation _proxyAnimation { get; set; } = new ProxyAnimation();
     internal virtual _HeroFlightManifest__heroes? _manifest { get; set; } = default;
     public virtual OverlayEntry? overlayEntry { get; set; } = default;
@@ -323,17 +442,38 @@ internal class _HeroFlight__heroes
             _manifest = __value;
         }
     }
+
     internal virtual Widget _buildOverlay(BuildContext context)
     {
-        shuttle ??= manifest.shuttleBuilder(context, manifest.animation, manifest.type, manifest.fromHero.context, manifest.toHero.context);
+        shuttle ??= manifest.shuttleBuilder(
+            context,
+            manifest.animation,
+            manifest.type,
+            manifest.fromHero.context,
+            manifest.toHero.context
+        );
         DartRuntimePrimitives.Assert(() => shuttle is not null);
-        return new AnimatedBuilder(animation: _proxyAnimation, child: shuttle, builder: (context, child) =>
-        {
-            Rect rect = DartRuntimePrimitives.RequireValue(heroRectTween.evaluate(_proxyAnimation));
-            var offsets = RelativeRect.CreateFromSize(rect, manifest.navigatorSize);
-            return new Positioned(top: offsets.top, right: offsets.right, bottom: offsets.bottom, left: offsets.left, child: new IgnorePointer(child: new FadeTransition(opacity: _heroOpacity, child: child)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return new AnimatedBuilder(
+            animation: _proxyAnimation,
+            child: shuttle,
+            builder: (context, child) =>
+            {
+                Rect rect = DartRuntimePrimitives.RequireValue(
+                    heroRectTween.evaluate(_proxyAnimation)
+                );
+                var offsets = RelativeRect.CreateFromSize(rect, manifest.navigatorSize);
+                return new Positioned(
+                    top: offsets.top,
+                    right: offsets.right,
+                    bottom: offsets.bottom,
+                    left: offsets.left,
+                    child: new IgnorePointer(
+                        child: new FadeTransition(opacity: _heroOpacity, child: child)
+                    )
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -346,7 +486,9 @@ internal class _HeroFlight__heroes
             overlayEntry!.remove();
             overlayEntry!.dispose();
             overlayEntry = null;
-            manifest.fromHero.endFlight(keepPlaceholder: AnimationStatusMembers.isCompleted(status));
+            manifest.fromHero.endFlight(
+                keepPlaceholder: AnimationStatusMembers.isCompleted(status)
+            );
             manifest.toHero.endFlight(keepPlaceholder: AnimationStatusMembers.isDismissed(status));
             onFlightEnded(this);
             _proxyAnimation.removeListener(onTick);
@@ -370,7 +512,9 @@ internal class _HeroFlight__heroes
             DartRuntimePrimitives.Assert(() => !navigatorLocal.userGestureInProgress);
             DartRuntimePrimitives.Assert(() => _scheduledPerformAnimationUpdate);
             _scheduledPerformAnimationUpdate = false;
-            navigatorLocal.userGestureInProgressNotifier.removeListener(delayedPerformAnimationUpdate);
+            navigatorLocal.userGestureInProgressNotifier.removeListener(
+                delayedPerformAnimationUpdate
+            );
             _performAnimationUpdate(_proxyAnimation.status);
         }
         DartRuntimePrimitives.Assert(() => navigatorLocal.userGestureInProgress);
@@ -380,7 +524,9 @@ internal class _HeroFlight__heroes
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         if (overlayEntry is not null)
         {
             overlayEntry!.remove();
@@ -395,68 +541,105 @@ internal class _HeroFlight__heroes
 
     public virtual void onTick()
     {
-        RenderBox? toHeroBox = (!_aborted && manifest.toHero.mounted) ? ((RenderBox?)manifest.toHero.context.findRenderObject())! : null;
-        Offset? toHeroOrigin = (Offset?)(object?)(((toHeroBox is not null) && toHeroBox.attached && toHeroBox.hasSize) ? toHeroBox.localToGlobal(Offset.zero, ancestor: ((RenderBox?)manifest.toRoute.subtreeContext?.findRenderObject())!) : null);
+        RenderBox? toHeroBox =
+            (!_aborted && manifest.toHero.mounted)
+                ? ((RenderBox?)manifest.toHero.context.findRenderObject())!
+                : null;
+        Offset? toHeroOrigin = (Offset?)
+            (object?)(
+                ((toHeroBox is not null) && toHeroBox.attached && toHeroBox.hasSize)
+                    ? toHeroBox.localToGlobal(
+                        Offset.zero,
+                        ancestor: ((RenderBox?)manifest.toRoute.subtreeContext?.findRenderObject())!
+                    )
+                    : null
+            );
         if ((toHeroOrigin is not null) && DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite)
         {
-            Offset toHeroOrigin__26130__value26392 = DartRuntimePrimitives.RequireValue(toHeroOrigin);
-            if (!Equals(DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392), DartRuntimePrimitives.RequireValue(heroRectTween.end).topLeft))
+            Offset toHeroOrigin__26130__value26392 = DartRuntimePrimitives.RequireValue(
+                toHeroOrigin
+            );
+            if (
+                !Equals(
+                    DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392),
+                    DartRuntimePrimitives.RequireValue(heroRectTween.end).topLeft
+                )
+            )
             {
-                Rect heroRectEnd = DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392) & DartRuntimePrimitives.RequireValue(heroRectTween.end).size;
-                heroRectTween = manifest.createHeroRectTween(begin: heroRectTween.begin, end: heroRectEnd);
+                Rect heroRectEnd =
+                    DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392)
+                    & DartRuntimePrimitives.RequireValue(heroRectTween.end).size;
+                heroRectTween = manifest.createHeroRectTween(
+                    begin: heroRectTween.begin,
+                    end: heroRectEnd
+                );
             }
         }
         else
         {
             if (_heroOpacity.isCompleted)
             {
-                _heroOpacity = _proxyAnimation.drive(_reverseTween.chain(new CurveTween(curve: new Interval(_proxyAnimation.value, 1.0))));
+                _heroOpacity = _proxyAnimation.drive(
+                    _reverseTween.chain(
+                        new CurveTween(curve: new Interval(_proxyAnimation.value, 1.0))
+                    )
+                );
             }
         }
-        _aborted = (toHeroOrigin is null) || !DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite;
+        _aborted =
+            (toHeroOrigin is null) || !DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite;
     }
 
     public virtual void start(_HeroFlightManifest__heroes initialManifest)
     {
         DartRuntimePrimitives.Assert(() => !_aborted);
         DartRuntimePrimitives.Assert(() =>
+        {
+            Animation<double> initial = initialManifest.animation;
+            HeroFlightDirection typeLocal = initialManifest.type;
+            switch (typeLocal)
             {
-                Animation<double> initial = initialManifest.animation;
-                HeroFlightDirection typeLocal = initialManifest.type;
-                switch (typeLocal)
+                case HeroFlightDirection.pop:
                 {
-                    case HeroFlightDirection.pop:
-                        {
-                            return initialManifest.isUserGestureTransition || Equals(initial.status, AnimationStatus.reverse);
-                        }
-                    case HeroFlightDirection.push:
-                        {
-                            return (initial.value == 0.0) && Equals(initial.status, AnimationStatus.forward);
-                        }
-                    default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    return initialManifest.isUserGestureTransition
+                        || Equals(initial.status, AnimationStatus.reverse);
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                case HeroFlightDirection.push:
+                {
+                    return (initial.value == 0.0)
+                        && Equals(initial.status, AnimationStatus.forward);
+                }
+                default:
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         manifest = initialManifest;
         bool shouldIncludeChildInPlaceholder = default!;
         switch (manifest.type)
         {
             case HeroFlightDirection.pop:
-                {
-                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(manifest.animation));
-                    shouldIncludeChildInPlaceholder = false;
-                    break;
-                }
+            {
+                _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                    new ReverseAnimation(manifest.animation)
+                );
+                shouldIncludeChildInPlaceholder = false;
+                break;
+            }
             case HeroFlightDirection.push:
-                {
-                    _proxyAnimation.parent = manifest.animation;
-                    shouldIncludeChildInPlaceholder = true;
-                    break;
-                }
+            {
+                _proxyAnimation.parent = manifest.animation;
+                shouldIncludeChildInPlaceholder = true;
+                break;
+            }
         }
-        heroRectTween = manifest.createHeroRectTween(begin: manifest.fromHeroLocation, end: manifest.toHeroLocation);
-        manifest.fromHero.startFlight(shouldIncludedChildInPlaceholder: shouldIncludeChildInPlaceholder);
+        heroRectTween = manifest.createHeroRectTween(
+            begin: manifest.fromHeroLocation,
+            end: manifest.toHeroLocation
+        );
+        manifest.fromHero.startFlight(
+            shouldIncludedChildInPlaceholder: shouldIncludeChildInPlaceholder
+        );
         manifest.toHero.startFlight();
         manifest.overlay.insert(overlayEntry = new OverlayEntry(builder: _buildOverlay));
         _proxyAnimation.addListener(onTick);
@@ -465,44 +648,73 @@ internal class _HeroFlight__heroes
     public virtual void divert(_HeroFlightManifest__heroes newManifest)
     {
         DartRuntimePrimitives.Assert(() => Equals(manifest.tag, newManifest.tag));
-        if (Equals(manifest.type, HeroFlightDirection.push) && Equals(newManifest.type, HeroFlightDirection.pop))
+        if (
+            Equals(manifest.type, HeroFlightDirection.push)
+            && Equals(newManifest.type, HeroFlightDirection.pop)
+        )
         {
-            DartRuntimePrimitives.Assert(() => Equals(newManifest.animation.status, AnimationStatus.reverse));
+            DartRuntimePrimitives.Assert(() =>
+                Equals(newManifest.animation.status, AnimationStatus.reverse)
+            );
             DartRuntimePrimitives.Assert(() => Equals(manifest.fromHero, newManifest.toHero));
             DartRuntimePrimitives.Assert(() => Equals(manifest.toHero, newManifest.fromHero));
             DartRuntimePrimitives.Assert(() => Equals(manifest.fromRoute, newManifest.toRoute));
             DartRuntimePrimitives.Assert(() => Equals(manifest.toRoute, newManifest.fromRoute));
-            _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(newManifest.animation));
-            heroRectTween = DartRuntimePrimitives.ConvertValue<Tween<Rect?>>(new ReverseTween<Rect?>(heroRectTween));
+            _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                new ReverseAnimation(newManifest.animation)
+            );
+            heroRectTween = DartRuntimePrimitives.ConvertValue<Tween<Rect?>>(
+                new ReverseTween<Rect?>(heroRectTween)
+            );
         }
         else
         {
-            if (Equals(manifest.type, HeroFlightDirection.pop) && Equals(newManifest.type, HeroFlightDirection.push))
+            if (
+                Equals(manifest.type, HeroFlightDirection.pop)
+                && Equals(newManifest.type, HeroFlightDirection.push)
+            )
             {
-                DartRuntimePrimitives.Assert(() => Equals(newManifest.animation.status, AnimationStatus.forward));
+                DartRuntimePrimitives.Assert(() =>
+                    Equals(newManifest.animation.status, AnimationStatus.forward)
+                );
                 DartRuntimePrimitives.Assert(() => Equals(manifest.toHero, newManifest.fromHero));
                 DartRuntimePrimitives.Assert(() => Equals(manifest.toRoute, newManifest.fromRoute));
-                _proxyAnimation.parent = newManifest.animation.drive(new Tween<double>(begin: manifest.animation.value, end: 1.0));
+                _proxyAnimation.parent = newManifest.animation.drive(
+                    new Tween<double>(begin: manifest.animation.value, end: 1.0)
+                );
                 if (!Equals(manifest.fromHero, newManifest.toHero))
                 {
                     manifest.fromHero.endFlight(keepPlaceholder: true);
                     newManifest.toHero.startFlight();
-                    heroRectTween = manifest.createHeroRectTween(begin: heroRectTween.end, end: newManifest.toHeroLocation);
+                    heroRectTween = manifest.createHeroRectTween(
+                        begin: heroRectTween.end,
+                        end: newManifest.toHeroLocation
+                    );
                 }
                 else
                 {
-                    heroRectTween = manifest.createHeroRectTween(begin: heroRectTween.end, end: heroRectTween.begin);
+                    heroRectTween = manifest.createHeroRectTween(
+                        begin: heroRectTween.end,
+                        end: heroRectTween.begin
+                    );
                 }
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => !Equals(manifest.fromHero, newManifest.fromHero));
+                DartRuntimePrimitives.Assert(() =>
+                    !Equals(manifest.fromHero, newManifest.fromHero)
+                );
                 DartRuntimePrimitives.Assert(() => !Equals(manifest.toHero, newManifest.toHero));
-                heroRectTween = manifest.createHeroRectTween(begin: heroRectTween.evaluate(_proxyAnimation), end: newManifest.toHeroLocation);
+                heroRectTween = manifest.createHeroRectTween(
+                    begin: heroRectTween.evaluate(_proxyAnimation),
+                    end: newManifest.toHeroLocation
+                );
                 shuttle = null;
                 if (Equals(newManifest.type, HeroFlightDirection.pop))
                 {
-                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(newManifest.animation));
+                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                        new ReverseAnimation(newManifest.animation)
+                    );
                 }
                 else
                 {
@@ -510,7 +722,12 @@ internal class _HeroFlight__heroes
                 }
                 manifest.fromHero.endFlight(keepPlaceholder: true);
                 manifest.toHero.endFlight(keepPlaceholder: true);
-                newManifest.fromHero.startFlight(shouldIncludedChildInPlaceholder: Equals(newManifest.type, HeroFlightDirection.push));
+                newManifest.fromHero.startFlight(
+                    shouldIncludedChildInPlaceholder: Equals(
+                        newManifest.type,
+                        HeroFlightDirection.push
+                    )
+                );
                 newManifest.toHero.startFlight();
                 overlayEntry!.markNeedsBuild();
             }
@@ -531,13 +748,13 @@ internal class _HeroFlight__heroes
         return $"HeroFlight(for: {tagLocal}, from: {@from}, to: {to} {_proxyAnimation.parent})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class HeroController : NavigatorObserver
 {
     public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
-    internal virtual DartMap<object, _HeroFlight__heroes> _flights { get; private set; } = new DartMap<object, _HeroFlight__heroes>();
+    internal virtual DartMap<object, _HeroFlight__heroes> _flights { get; private set; } =
+        new DartMap<object, _HeroFlight__heroes>();
 
     public HeroController(Func<Rect?, Rect?, Tween<Rect?>>? createRectTween = null)
     {
@@ -554,14 +771,22 @@ public class HeroController : NavigatorObserver
         }
         if (!navigator!.userGestureInProgress)
         {
-            _maybeStartHeroTransition(fromRouteValue: (object?)previousTopRoute, toRouteValue: (object?)topRoute, isUserGestureTransition: false);
+            _maybeStartHeroTransition(
+                fromRouteValue: (object?)previousTopRoute,
+                toRouteValue: (object?)topRoute,
+                isUserGestureTransition: false
+            );
         }
     }
 
     public override void didStartUserGesture(dynamic route, dynamic? previousRoute)
     {
         DartRuntimePrimitives.Assert(() => navigator is not null);
-        _maybeStartHeroTransition(fromRouteValue: (object?)route, toRouteValue: (object?)previousRoute, isUserGestureTransition: true);
+        _maybeStartHeroTransition(
+            fromRouteValue: (object?)route,
+            toRouteValue: (object?)previousRoute,
+            isUserGestureTransition: true
+        );
     }
 
     public override void didStopUserGesture()
@@ -572,19 +797,32 @@ public class HeroController : NavigatorObserver
         }
         bool isInvalidFlight(_HeroFlight__heroes flight)
         {
-            return flight.manifest.isUserGestureTransition && Equals(flight.manifest.type, HeroFlightDirection.pop) && flight._proxyAnimation.isDismissed;
+            return flight.manifest.isUserGestureTransition
+                && Equals(flight.manifest.type, HeroFlightDirection.pop)
+                && flight._proxyAnimation.isDismissed;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        List<_HeroFlight__heroes> invalidFlights = _flights.Values.where(isInvalidFlight).ToList().ToList();
+        List<_HeroFlight__heroes> invalidFlights = _flights
+            .Values.where(isInvalidFlight)
+            .ToList()
+            .ToList();
         foreach (var flightLocal in invalidFlights)
         {
             flightLocal._handleAnimationUpdate(AnimationStatus.dismissed);
         }
     }
 
-    internal virtual void _maybeStartHeroTransition(object? fromRouteValue, object? toRouteValue, bool isUserGestureTransition)
+    internal virtual void _maybeStartHeroTransition(
+        object? fromRouteValue,
+        object? toRouteValue,
+        bool isUserGestureTransition
+    )
     {
-        if (fromRouteValue is not IPageRoute fromRoute || toRouteValue is not IPageRoute toRoute || ReferenceEquals(toRoute, fromRoute))
+        if (
+            fromRouteValue is not IPageRoute fromRoute
+            || toRouteValue is not IPageRoute toRoute
+            || ReferenceEquals(toRoute, fromRoute)
+        )
         {
             return;
         }
@@ -595,65 +833,81 @@ public class HeroController : NavigatorObserver
         {
             case (true, _, _):
             case (_, AnimationStatus.reverse, _):
-                {
-                    flightType = HeroFlightDirection.pop;
-                    break;
-                }
+            {
+                flightType = HeroFlightDirection.pop;
+                break;
+            }
             case (_, _, AnimationStatus.forward):
-                {
-                    flightType = HeroFlightDirection.push;
-                    break;
-                }
+            {
+                flightType = HeroFlightDirection.push;
+                break;
+            }
             default:
-                {
-                    flightType = null;
-                    break;
-                }
+            {
+                flightType = null;
+                break;
+            }
         }
         if (flightType is not null)
         {
-            HeroFlightDirection flightType__36140__value36599 = DartRuntimePrimitives.RequireValue(flightType);
+            HeroFlightDirection flightType__36140__value36599 = DartRuntimePrimitives.RequireValue(
+                flightType
+            );
             switch (DartRuntimePrimitives.RequireValue(flightType__36140__value36599))
             {
                 case HeroFlightDirection.pop:
+                {
+                    if (fromRoute.animation!.value == 0.0)
                     {
-                        if (fromRoute.animation!.value == 0.0)
-                        {
-                            return;
-                        }
-                        break;
+                        return;
                     }
+                    break;
+                }
                 case HeroFlightDirection.push:
+                {
+                    if (toRoute.animation!.value == 1.0)
                     {
-                        if (toRoute.animation!.value == 1.0)
-                        {
-                            return;
-                        }
-                        break;
+                        return;
                     }
+                    break;
+                }
             }
         }
         var fromRouteRenderBox = ((RenderBox?)toRoute.subtreeContext?.findRenderObject())!;
-        bool hasValidSize = (fromRouteRenderBox?.hasSize ?? false) && fromRouteRenderBox!.size.isFinite;
-        if (isUserGestureTransition && Equals(flightType, HeroFlightDirection.pop) && toRoute.maintainState && hasValidSize)
+        bool hasValidSize =
+            (fromRouteRenderBox?.hasSize ?? false) && fromRouteRenderBox!.size.isFinite;
+        if (
+            isUserGestureTransition
+            && Equals(flightType, HeroFlightDirection.pop)
+            && toRoute.maintainState
+            && hasValidSize
+        )
         {
             _startHeroTransition(fromRoute, toRoute, flightType, isUserGestureTransition);
         }
         else
         {
             toRoute.offstage = toRoute.animation!.value == 0.0;
-            WidgetsBinding.instance.addPostFrameCallback((value) =>
-            {
-                if ((fromRoute.navigator is null) || (toRoute.navigator is null))
+            WidgetsBinding.instance.addPostFrameCallback(
+                (value) =>
                 {
-                    return;
-                }
-                _startHeroTransition(fromRoute, toRoute, flightType, isUserGestureTransition);
-            }, debugLabel: "HeroController.startTransition");
+                    if ((fromRoute.navigator is null) || (toRoute.navigator is null))
+                    {
+                        return;
+                    }
+                    _startHeroTransition(fromRoute, toRoute, flightType, isUserGestureTransition);
+                },
+                debugLabel: "HeroController.startTransition"
+            );
         }
     }
 
-    internal virtual void _startHeroTransition(IPageRoute from, IPageRoute to, HeroFlightDirection? flightType, bool isUserGestureTransition)
+    internal virtual void _startHeroTransition(
+        IPageRoute from,
+        IPageRoute to,
+        HeroFlightDirection? flightType,
+        bool isUserGestureTransition
+    )
     {
         to.offstage = false;
         NavigatorState? navigatorLocal = navigator;
@@ -665,21 +919,52 @@ public class HeroController : NavigatorObserver
         RenderObject? navigatorRenderObject = navigatorLocal.context.findRenderObject();
         if (navigatorRenderObject is not RenderBox)
         {
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Navigator {navigatorLocal} has an invalid RenderObject type {DartRuntimePrimitives.RuntimeType(navigatorRenderObject)}.");
+            DartRuntimePrimitives.Assert(
+                () => false,
+                () =>
+                    (object?)
+                        $"Navigator {navigatorLocal} has an invalid RenderObject type {DartRuntimePrimitives.RuntimeType(navigatorRenderObject)}."
+            );
             return;
         }
         DartRuntimePrimitives.Assert(() => ((RenderBox)navigatorRenderObject).hasSize);
         BuildContext? fromSubtreeContext = from.subtreeContext;
-        DartMap<object, _HeroState__heroes> fromHeroes = (fromSubtreeContext is not null) ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigatorLocal) : new DartMap<object, _HeroState__heroes>();
+        DartMap<object, _HeroState__heroes> fromHeroes =
+            (fromSubtreeContext is not null)
+                ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigatorLocal)
+                : new DartMap<object, _HeroState__heroes>();
         BuildContext? toSubtreeContext = to.subtreeContext;
-        DartMap<object, _HeroState__heroes> toHeroes = (toSubtreeContext is not null) ? Hero._allHeroesFor(toSubtreeContext, isUserGestureTransition, navigatorLocal) : new DartMap<object, _HeroState__heroes>();
+        DartMap<object, _HeroState__heroes> toHeroes =
+            (toSubtreeContext is not null)
+                ? Hero._allHeroesFor(toSubtreeContext, isUserGestureTransition, navigatorLocal)
+                : new DartMap<object, _HeroState__heroes>();
         foreach (MapEntry<object, _HeroState__heroes> fromHeroEntry in fromHeroes.entries)
         {
             object tag = fromHeroEntry.key;
             _HeroState__heroes fromHeroLocal = fromHeroEntry.value;
             _HeroState__heroes? toHeroLocal = toHeroes.GetValueOrDefault(tag);
             _HeroFlight__heroes? existingFlight = _flights.GetValueOrDefault(tag);
-            _HeroFlightManifest__heroes? manifest = ((toHeroLocal is null) || (flightType is null)) ? null : new _HeroFlightManifest__heroes(type: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(flightType)), overlay: overlayLocal, navigatorSize: ((RenderBox)navigatorRenderObject).size, fromRoute: from, toRoute: to, fromHero: fromHeroLocal, toHero: toHeroLocal, createRectTween: createRectTween, shuttleBuilder: (toHeroLocal.widget.flightShuttleBuilder ?? fromHeroLocal.widget.flightShuttleBuilder) ?? _defaultHeroFlightShuttleBuilder, isUserGestureTransition: isUserGestureTransition, isDiverted: existingFlight is not null);
+            _HeroFlightManifest__heroes? manifest =
+                ((toHeroLocal is null) || (flightType is null))
+                    ? null
+                    : new _HeroFlightManifest__heroes(
+                        type: DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(flightType)
+                        ),
+                        overlay: overlayLocal,
+                        navigatorSize: ((RenderBox)navigatorRenderObject).size,
+                        fromRoute: from,
+                        toRoute: to,
+                        fromHero: fromHeroLocal,
+                        toHero: toHeroLocal,
+                        createRectTween: createRectTween,
+                        shuttleBuilder: (
+                            toHeroLocal.widget.flightShuttleBuilder
+                            ?? fromHeroLocal.widget.flightShuttleBuilder
+                        ) ?? _defaultHeroFlightShuttleBuilder,
+                        isUserGestureTransition: isUserGestureTransition,
+                        isDiverted: existingFlight is not null
+                    );
             if ((manifest is not null) && manifest.isValid)
             {
                 toHeroes.remove(tag);
@@ -689,12 +974,16 @@ public class HeroController : NavigatorObserver
                 }
                 else
                 {
-                    _flights[tag] = ((Func<_HeroFlight__heroes>)(() =>
-{
-    var __cascade = new _HeroFlight__heroes(_handleFlightEnded);
-    __cascade.start(manifest);
-    return __cascade;
-}))();
+                    _flights[tag] = (
+                        (Func<_HeroFlight__heroes>)(
+                            () =>
+                            {
+                                var __cascade = new _HeroFlight__heroes(_handleFlightEnded);
+                                __cascade.start(manifest);
+                                return __cascade;
+                            }
+                        )
+                    )();
                 }
             }
             else
@@ -713,7 +1002,13 @@ public class HeroController : NavigatorObserver
         _flights.remove(flight.manifest.tag)?.dispose();
     }
 
-    internal virtual Widget _defaultHeroFlightShuttleBuilder(BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext)
+    internal virtual Widget _defaultHeroFlightShuttleBuilder(
+        BuildContext flightContext,
+        Animation<double> animation,
+        HeroFlightDirection flightDirection,
+        BuildContext fromHeroContext,
+        BuildContext toHeroContext
+    )
     {
         var toHero = ((Hero?)toHeroContext.widget)!;
         MediaQueryData? toMediaQueryData = MediaQuery.maybeOf(toHeroContext);
@@ -724,23 +1019,40 @@ public class HeroController : NavigatorObserver
         }
         EdgeInsets fromHeroPadding = fromMediaQueryData.padding;
         EdgeInsets toHeroPadding = toMediaQueryData.padding;
-        return new AnimatedBuilder(animation: animation, builder: (context, child) =>
-        {
-            return new MediaQuery(data: toMediaQueryData.copyWith(padding: Equals(flightDirection, HeroFlightDirection.push) ? new EdgeInsetsTween(begin: fromHeroPadding, end: toHeroPadding).evaluate(animation) : new EdgeInsetsTween(begin: toHeroPadding, end: fromHeroPadding).evaluate(animation)), child: toHero.child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return new AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) =>
+            {
+                return new MediaQuery(
+                    data: toMediaQueryData.copyWith(
+                        padding: Equals(flightDirection, HeroFlightDirection.push)
+                            ? new EdgeInsetsTween(
+                                begin: fromHeroPadding,
+                                end: toHeroPadding
+                            ).evaluate(animation)
+                            : new EdgeInsetsTween(
+                                begin: toHeroPadding,
+                                end: fromHeroPadding
+                            ).evaluate(animation)
+                    ),
+                    child: toHero.child
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         foreach (_HeroFlight__heroes flight in _flights.Values)
         {
             flight.dispose();
         }
     }
-
 }
 
 public class HeroMode : StatelessWidget
@@ -748,18 +1060,26 @@ public class HeroMode : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public HeroMode(Key? key = null, Widget child = default!, bool enabled = true) : base(key: key)
+    public HeroMode(Key? key = null, Widget child = default!, bool enabled = true)
+        : base(key: key)
     {
         this.child = child;
         this.enabled = enabled;
     }
 
     public override Widget build(BuildContext context) => child;
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("mode", value: enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
+        properties.add(
+            new FlagProperty(
+                "mode",
+                value: enabled,
+                ifTrue: "enabled",
+                ifFalse: "disabled",
+                showName: true
+            )
+        );
     }
-
 }
-

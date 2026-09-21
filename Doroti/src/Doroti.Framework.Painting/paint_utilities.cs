@@ -7,7 +7,14 @@ namespace Doroti.Framework.Painting;
 
 public static partial class Paint_utilitiesLibrary
 {
-    public static void paintZigZag(Canvas canvas, Paint paint, Offset start, Offset end, long zigs, double width)
+    public static void paintZigZag(
+        Canvas canvas,
+        Paint paint,
+        Offset start,
+        Offset end,
+        long zigs,
+        double width
+    )
     {
         DartRuntimePrimitives.Assert(() => true);
         DartRuntimePrimitives.Assert(() => zigs > 0L);
@@ -17,12 +24,16 @@ public static partial class Paint_utilitiesLibrary
         canvas.rotate(Dart_mathLibrary.atan2(end.dy, end.dx));
         double length = end.distance;
         double spacing = length / (zigs * 2.0);
-        var path = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.moveTo(0.0, 0.0);
-    return __cascade;
-}))();
+        var path = (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.moveTo(0.0, 0.0);
+                    return __cascade;
+                }
+            )
+        )();
         for (var index = 0L; index < zigs; index += 1L)
         {
             double x = ((index * 2.0) + 1.0) * spacing;
@@ -34,4 +45,3 @@ public static partial class Paint_utilitiesLibrary
         canvas.restore();
     }
 }
-

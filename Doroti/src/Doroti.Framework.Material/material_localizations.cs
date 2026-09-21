@@ -26,7 +26,12 @@ public abstract class MaterialLocalizations
     public abstract string aboutListTileTitle(string applicationName);
     public abstract string licensesPageTitle { get; }
     public abstract string licensesPackageDetailText(long licenseCount);
-    public abstract string pageRowsInfoTitle(long firstRow, long lastRow, long rowCount, bool rowCountIsApproximate);
+    public abstract string pageRowsInfoTitle(
+        long firstRow,
+        long lastRow,
+        long rowCount,
+        bool rowCountIsApproximate
+    );
     public abstract string rowsPerPageTitle { get; }
     public abstract string tabLabel(long tabIndex, long tabCount);
     public abstract string selectedRowCountTitle(long selectedRowCount);
@@ -167,39 +172,99 @@ public abstract class MaterialLocalizations
     public abstract string keyboardKeySelect { get; }
     public abstract string keyboardKeyShift { get; }
     public abstract string keyboardKeySpace { get; }
+
     public static MaterialLocalizations of(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         return Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _MaterialLocalizationsDelegate__material_localizations : LocalizationsDelegate<MaterialLocalizations>
+internal class _MaterialLocalizationsDelegate__material_localizations
+    : LocalizationsDelegate<MaterialLocalizations>
 {
-    internal _MaterialLocalizationsDelegate__material_localizations()
-    {
-    }
+    internal _MaterialLocalizationsDelegate__material_localizations() { }
 
-    public override bool isSupported(Locale locale) => DartRuntimePrimitives.ConvertValue<bool>(locale.languageCode == "en");
-    public override Future<MaterialLocalizations> load(Locale locale) => DefaultMaterialLocalizations.load(locale);
+    public override bool isSupported(Locale locale) =>
+        DartRuntimePrimitives.ConvertValue<bool>(locale.languageCode == "en");
+
+    public override Future<MaterialLocalizations> load(Locale locale) =>
+        DefaultMaterialLocalizations.load(locale);
+
     public override bool shouldReload(LocalizationsDelegate<MaterialLocalizations> old) => false;
+
     public override string ToString() => "DefaultMaterialLocalizations.delegate(en_US)";
 }
 
 public class DefaultMaterialLocalizations : MaterialLocalizations
 {
-    internal static List<string> _shortWeekdays = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    internal static List<string> _weekdays = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-    internal static List<string> _narrowWeekdays = new List<string> { "S", "M", "T", "W", "T", "F", "S" };
-    internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-    internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static LocalizationsDelegate<MaterialLocalizations> @delegate = new _MaterialLocalizationsDelegate__material_localizations();
-
-    public DefaultMaterialLocalizations()
+    internal static List<string> _shortWeekdays = new List<string>
     {
-    }
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun",
+    };
+    internal static List<string> _weekdays = new List<string>
+    {
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    };
+    internal static List<string> _narrowWeekdays = new List<string>
+    {
+        "S",
+        "M",
+        "T",
+        "W",
+        "T",
+        "F",
+        "S",
+    };
+    internal static List<string> _shortMonths = new List<string>
+    {
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    };
+    internal static List<string> _months = new List<string>
+    {
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    };
+    public static LocalizationsDelegate<MaterialLocalizations> @delegate =
+        new _MaterialLocalizationsDelegate__material_localizations();
+
+    public DefaultMaterialLocalizations() { }
 
     internal virtual long _getDaysInMonth(long year, long month)
     {
@@ -212,7 +277,21 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             }
             return 28L;
         }
-        var daysInMonth = new List<long> { 31L, -1L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L };
+        var daysInMonth = new List<long>
+        {
+            31L,
+            -1L,
+            31L,
+            30L,
+            31L,
+            30L,
+            31L,
+            31L,
+            30L,
+            31L,
+            30L,
+            31L,
+        };
         return daysInMonth[(int)(month - 1L)];
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -222,21 +301,25 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         TimeOfDayFormat format = timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat);
         switch (format)
         {
-            case var __constant29744 when Equals(__constant29744, TimeOfDayFormat.h_colon_mm_space_a):
-                {
-                    return formatDecimal((timeOfDay.hourOfPeriod == 0L) ? 12L : timeOfDay.hourOfPeriod);
-                }
+            case var __constant29744
+                when Equals(__constant29744, TimeOfDayFormat.h_colon_mm_space_a):
+            {
+                return formatDecimal((timeOfDay.hourOfPeriod == 0L) ? 12L : timeOfDay.hourOfPeriod);
+            }
             case var __constant29880 when Equals(__constant29880, TimeOfDayFormat.HH_colon_mm):
-                {
-                    return _formatTwoDigitZeroPad(timeOfDay.hour);
-                }
-            case var __constant29975 when Equals(__constant29975, TimeOfDayFormat.a_space_h_colon_mm):
+            {
+                return _formatTwoDigitZeroPad(timeOfDay.hour);
+            }
+            case var __constant29975
+                when Equals(__constant29975, TimeOfDayFormat.a_space_h_colon_mm):
             case var __constant30022 when Equals(__constant30022, TimeOfDayFormat.frenchCanadian):
             case var __constant30065 when Equals(__constant30065, TimeOfDayFormat.H_colon_mm):
             case var __constant30104 when Equals(__constant30104, TimeOfDayFormat.HH_dot_mm):
-                {
-                    throw DartRuntimePrimitives.AsException(new AssertionError($"{GetType()} does not support {format}."));
-                }
+            {
+                throw DartRuntimePrimitives.AsException(
+                    new AssertionError($"{GetType()} does not support {format}.")
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -262,6 +345,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     }
 
     public override string formatYear(DateTime date) => date.Year.ToString();
+
     public override string formatCompactDate(DateTime date)
     {
         string month = _formatTwoDigitZeroPad(date.Month);
@@ -325,18 +409,36 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             return null;
         }
         long? month = Dart_coreLibrary.tryParse(inputParts[(int)0L], radix: 10L);
-        if ((month is null) || (DartRuntimePrimitives.RequireValue(month) < 1L) || (DartRuntimePrimitives.RequireValue(month) > 12L))
+        if (
+            (month is null)
+            || (DartRuntimePrimitives.RequireValue(month) < 1L)
+            || (DartRuntimePrimitives.RequireValue(month) > 12L)
+        )
         {
             return null;
         }
         long? day = Dart_coreLibrary.tryParse(inputParts[(int)1L], radix: 10L);
-        if ((day is null) || (DartRuntimePrimitives.RequireValue(day) < 1L) || (DartRuntimePrimitives.RequireValue(day) > _getDaysInMonth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(year)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(month)))))
+        if (
+            (day is null)
+            || (DartRuntimePrimitives.RequireValue(day) < 1L)
+            || (
+                DartRuntimePrimitives.RequireValue(day)
+                > _getDaysInMonth(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(year)),
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(month))
+                )
+            )
+        )
         {
             return null;
         }
         try
         {
-            return DartRuntimePrimitives.CreateDateTime(DartRuntimePrimitives.RequireValue(year), DartRuntimePrimitives.RequireValue(month), DartRuntimePrimitives.RequireValue(day));
+            return DartRuntimePrimitives.CreateDateTime(
+                DartRuntimePrimitives.RequireValue(year),
+                DartRuntimePrimitives.RequireValue(month),
+                DartRuntimePrimitives.RequireValue(day)
+            );
         }
         catch (DartArgumentError)
         {
@@ -355,8 +457,13 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string dateInputLabel => "Enter Date";
     public override string dateRangeStartLabel => "Start Date";
     public override string dateRangeEndLabel => "End Date";
-    public override string dateRangeStartDateSemanticLabel(string formattedDate) => $"Start date {formattedDate}";
-    public override string dateRangeEndDateSemanticLabel(string formattedDate) => $"End date {formattedDate}";
+
+    public override string dateRangeStartDateSemanticLabel(string formattedDate) =>
+        $"Start date {formattedDate}";
+
+    public override string dateRangeEndDateSemanticLabel(string formattedDate) =>
+        $"End date {formattedDate}";
+
     public override string invalidDateFormatLabel => "Invalid format.";
     public override string invalidDateRangeLabel => "Invalid range.";
     public override string dateOutOfRangeLabel => "Out of range.";
@@ -372,9 +479,18 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string invalidTimeLabel => "Enter a valid time";
     public override string dialModeButtonLabel => "Switch to dial picker mode";
     public override string inputTimeModeButtonLabel => "Switch to text input mode";
+
     internal virtual string _formatDayPeriod(TimeOfDay timeOfDay)
     {
-        return timeOfDay.period switch { var __constant34816 when Equals(__constant34816, DayPeriod.am) => anteMeridiemAbbreviation, var __constant34864 when Equals(__constant34864, DayPeriod.pm) => postMeridiemAbbreviation, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return timeOfDay.period switch
+        {
+            var __constant34816 when Equals(__constant34816, DayPeriod.am) =>
+                anteMeridiemAbbreviation,
+            var __constant34864 when Equals(__constant34864, DayPeriod.pm) =>
+                postMeridiemAbbreviation,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -402,25 +518,39 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string formatTimeOfDay(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
     {
         var buffer = new StringBuffer();
-        DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
-{
-    var __cascade = buffer;
-    __cascade.write(formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat));
-    __cascade.write(":");
-    __cascade.write(formatMinute(timeOfDay));
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<StringBuffer>)(
+                    () =>
+                    {
+                        var __cascade = buffer;
+                        __cascade.write(
+                            formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat)
+                        );
+                        __cascade.write(":");
+                        __cascade.write(formatMinute(timeOfDay));
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         if (alwaysUse24HourFormat)
         {
             return $"{buffer}";
         }
-        DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
-{
-    var __cascade = buffer;
-    __cascade.write(" ");
-    __cascade.write(_formatDayPeriod(timeOfDay));
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<StringBuffer>)(
+                    () =>
+                    {
+                        var __cascade = buffer;
+                        __cascade.write(" ");
+                        __cascade.write(_formatDayPeriod(timeOfDay));
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         return $"{buffer}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -448,23 +578,41 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string selectedDateLabel => "Selected";
     public override string scrimLabel => "Scrim";
     public override string bottomSheetLabel => "Bottom Sheet";
-    public override string scrimOnTapHint(string modalRouteContentName) => $"Close {modalRouteContentName}";
+
+    public override string scrimOnTapHint(string modalRouteContentName) =>
+        $"Close {modalRouteContentName}";
+
     public override string aboutListTileTitle(string applicationName) => $"About {applicationName}";
+
     public override string licensesPageTitle => "Licenses";
+
     public override string licensesPackageDetailText(long licenseCount)
     {
         DartRuntimePrimitives.Assert(() => licenseCount >= 0L);
-        return licenseCount switch { 0L => "No licenses.", 1L => "1 license.", _ => $"{licenseCount} licenses." };
+        return licenseCount switch
+        {
+            0L => "No licenses.",
+            1L => "1 license.",
+            _ => $"{licenseCount} licenses.",
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string pageRowsInfoTitle(long firstRow, long lastRow, long rowCount, bool rowCountIsApproximate)
+    public override string pageRowsInfoTitle(
+        long firstRow,
+        long lastRow,
+        long rowCount,
+        bool rowCountIsApproximate
+    )
     {
-        return rowCountIsApproximate ? $"{firstRow}–{lastRow} of about {rowCount}" : $"{firstRow}–{lastRow} of {rowCount}";
+        return rowCountIsApproximate
+            ? $"{firstRow}–{lastRow} of about {rowCount}"
+            : $"{firstRow}–{lastRow} of {rowCount}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string rowsPerPageTitle => "Rows per page:";
+
     public override string tabLabel(long tabIndex, long tabCount)
     {
         DartRuntimePrimitives.Assert(() => tabIndex >= 1L);
@@ -475,7 +623,12 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string selectedRowCountTitle(long selectedRowCount)
     {
-        return selectedRowCount switch { 0L => "No items selected", 1L => "1 item selected", _ => $"{selectedRowCount} items selected" };
+        return selectedRowCount switch
+        {
+            0L => "No items selected",
+            1L => "1 item selected",
+            _ => $"{selectedRowCount} items selected",
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -499,9 +652,12 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string modalBarrierDismissLabel => "Dismiss";
     public override string menuDismissLabel => "Dismiss menu";
     public override ScriptCategory scriptCategory => ScriptCategory.englishLike;
+
     public override TimeOfDayFormat timeOfDayFormat(bool alwaysUse24HourFormat = false)
     {
-        return alwaysUse24HourFormat ? TimeOfDayFormat.HH_colon_mm : TimeOfDayFormat.h_colon_mm_space_a;
+        return alwaysUse24HourFormat
+            ? TimeOfDayFormat.HH_colon_mm
+            : TimeOfDayFormat.h_colon_mm_space_a;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -523,6 +679,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string expandedHint => "Collapsed";
     public override string collapsedHint => "Expanded";
     public override string refreshIndicatorSemanticLabel => "Refresh";
+
     public static Future<MaterialLocalizations> load(Locale locale)
     {
         return new SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations());
@@ -531,7 +688,12 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string remainingTextFieldCharacterCount(long remaining)
     {
-        return remaining switch { 0L => "No characters remaining", 1L => "1 character remaining", _ => $"{remaining} characters remaining" };
+        return remaining switch
+        {
+            0L => "No characters remaining",
+            1L => "1 character remaining",
+            _ => $"{remaining} characters remaining",
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

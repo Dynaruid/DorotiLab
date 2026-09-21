@@ -10,6 +10,10 @@ public static class WindowsMauiTarget
     public static void EnsureSupported()
     {
         if (!OperatingSystem.IsWindows() || !Environment.Is64BitProcess)
-            throw new PlatformNotSupportedException("Doroti.Target.Windows.Maui.win-x64 requires a Windows x64 process.");
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Target.Windows.Maui.win-x64 requires a Windows x64 process."
+            );
+        }
     }
 }

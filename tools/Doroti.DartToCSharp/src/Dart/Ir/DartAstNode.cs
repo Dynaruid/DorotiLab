@@ -12,7 +12,8 @@ internal sealed record DartAstNode(
     DartType? ResolvedType,
     SymbolId? ResolvedElement,
     IReadOnlyDictionary<string, string?> Properties,
-    DartAstNode[] Children)
+    DartAstNode[] Children
+)
 {
     // Compatibility accessors are intentionally confined to the active
     // strangler lowerer while construct-specific typed nodes are introduced.

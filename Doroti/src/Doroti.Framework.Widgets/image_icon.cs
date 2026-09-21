@@ -13,7 +13,15 @@ public class ImageIcon : StatelessWidget
     public virtual string? semanticLabel { get; private set; }
     public virtual bool useOriginalColors { get; private set; } = default!;
 
-    public ImageIcon(IImageProvider image, Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
+    public ImageIcon(
+        IImageProvider image,
+        Key? key = null,
+        double? size = null,
+        Color? color = null,
+        string? semanticLabel = null,
+        bool useOriginalColors = false
+    )
+        : base(key: key)
     {
         this.image = image;
         this.size = size;
@@ -29,26 +37,41 @@ public class ImageIcon : StatelessWidget
         double? iconSize = size ?? iconTheme.size;
         if (image is null)
         {
-            return new Semantics(label: semanticLabel, child: new SizedBox(width: iconSize, height: iconSize));
+            return new Semantics(
+                label: semanticLabel,
+                child: new SizedBox(width: iconSize, height: iconSize)
+            );
         }
         double? iconOpacity = iconTheme.opacity;
         Color iconColor = color ?? iconTheme.color!;
         if ((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0))
         {
             double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity);
-            iconColor = iconColor.withOpacity(iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432));
+            iconColor = iconColor.withOpacity(
+                iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)
+            );
         }
-        return new Semantics(label: semanticLabel, child: new Image(image: image!, width: iconSize, height: iconSize, color: useOriginalColors ? null : iconColor, fit: BoxFit.scaleDown, excludeFromSemantics: true));
+        return new Semantics(
+            label: semanticLabel,
+            child: new Image(
+                image: image!,
+                width: iconSize,
+                height: iconSize,
+                color: useOriginalColors ? null : iconColor,
+                fit: BoxFit.scaleDown,
+                excludeFromSemantics: true
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<object>("image", image, ifNull: "<empty>", showName: false));
+        properties.add(
+            new DiagnosticsProperty<object>("image", image, ifNull: "<empty>", showName: false)
+        );
         properties.add(new DoubleProperty("size", size, defaultValue: null));
         properties.add(new ColorProperty("color", color, defaultValue: null));
     }
-
 }
-

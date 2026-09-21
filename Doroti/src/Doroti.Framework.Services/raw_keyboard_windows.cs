@@ -30,7 +30,12 @@ public class RawKeyEventDataWindows : RawKeyEventData
     public static long modifierNumLock = 1L << (int)12L;
     public static long modifierScrollLock = 1L << (int)13L;
 
-    public RawKeyEventDataWindows(long keyCode = 0, long scanCode = 0, long characterCodePoint = 0, long modifiers = 0)
+    public RawKeyEventDataWindows(
+        long keyCode = 0,
+        long scanCode = 0,
+        long characterCodePoint = 0,
+        long modifiers = 0
+    )
     {
         this.keyCode = keyCode;
         this.scanCode = scanCode;
@@ -38,23 +43,30 @@ public class RawKeyEventDataWindows : RawKeyEventData
         this.modifiers = modifiers;
     }
 
-    public override string keyLabel => (characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint));
-    public override PhysicalKeyboardKey physicalKey => Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey(LogicalKeyboardKey.windowsPlane + scanCode);
+    public override string keyLabel =>
+        (characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint));
+    public override PhysicalKeyboardKey physicalKey =>
+        Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode)
+        ?? new PhysicalKeyboardKey(LogicalKeyboardKey.windowsPlane + scanCode);
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey =
+                Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
             if (numPadKey is not null)
             {
                 return numPadKey;
             }
             if ((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel))
             {
-                long keyId = LogicalKeyboardKey.unicodePlane | characterCodePoint & LogicalKeyboardKey.valueMask;
+                long keyId =
+                    LogicalKeyboardKey.unicodePlane
+                    | (characterCodePoint & LogicalKeyboardKey.valueMask);
                 return LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId);
             }
-            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey =
+                Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
             if (newKey is not null)
             {
                 return newKey;
@@ -62,7 +74,13 @@ public class RawKeyEventDataWindows : RawKeyEventData
             return new LogicalKeyboardKey(keyCode | LogicalKeyboardKey.windowsPlane);
         }
     }
-    internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
+
+    internal virtual bool _isLeftRightModifierPressed(
+        KeyboardSide side,
+        long anyMask,
+        long leftMask,
+        long rightMask
+    )
     {
         if ((modifiers & (leftMask | rightMask | anyMask)) == 0L)
         {
@@ -72,7 +90,18 @@ public class RawKeyEventDataWindows : RawKeyEventData
         {
             return true;
         }
-        return side switch { var __case4703 when Equals(__case4703, KeyboardSide.any) => true, var __case4735 when Equals(__case4735, KeyboardSide.all) => ((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L), var __case4818 when Equals(__case4818, KeyboardSide.left) => (modifiers & leftMask) != 0L, var __case4872 when Equals(__case4872, KeyboardSide.right) => (modifiers & rightMask) != 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return side switch
+        {
+            var __case4703 when Equals(__case4703, KeyboardSide.any) => true,
+            var __case4735 when Equals(__case4735, KeyboardSide.all) => (
+                (modifiers & leftMask) != 0L
+            ) && ((modifiers & rightMask) != 0L),
+            var __case4818 when Equals(__case4818, KeyboardSide.left) => (modifiers & leftMask)
+                != 0L,
+            var __case4872 when Equals(__case4872, KeyboardSide.right) => (modifiers & rightMask)
+                != 0L,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -82,46 +111,66 @@ public class RawKeyEventDataWindows : RawKeyEventData
         switch (key)
         {
             case var __case5083 when Equals(__case5083, ModifierKey.controlModifier):
-                {
-                    result = _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl);
-                    break;
-                }
+            {
+                result = _isLeftRightModifierPressed(
+                    side,
+                    modifierControl,
+                    modifierLeftControl,
+                    modifierRightControl
+                );
+                break;
+            }
             case var __case5286 when Equals(__case5286, ModifierKey.shiftModifier):
-                {
-                    result = _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift);
-                    break;
-                }
+            {
+                result = _isLeftRightModifierPressed(
+                    side,
+                    modifierShift,
+                    modifierLeftShift,
+                    modifierRightShift
+                );
+                break;
+            }
             case var __case5481 when Equals(__case5481, ModifierKey.altModifier):
-                {
-                    result = _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt);
-                    break;
-                }
+            {
+                result = _isLeftRightModifierPressed(
+                    side,
+                    modifierAlt,
+                    modifierLeftAlt,
+                    modifierRightAlt
+                );
+                break;
+            }
             case var __case5617 when Equals(__case5617, ModifierKey.metaModifier):
-                {
-                    result = _isLeftRightModifierPressed(side, modifierLeftMeta | modifierRightMeta, modifierLeftMeta, modifierRightMeta);
-                    break;
-                }
+            {
+                result = _isLeftRightModifierPressed(
+                    side,
+                    modifierLeftMeta | modifierRightMeta,
+                    modifierLeftMeta,
+                    modifierRightMeta
+                );
+                break;
+            }
             case var __case5900 when Equals(__case5900, ModifierKey.capsLockModifier):
-                {
-                    result = (modifiers & modifierCaps) != 0L;
-                    break;
-                }
+            {
+                result = (modifiers & modifierCaps) != 0L;
+                break;
+            }
             case var __case5989 when Equals(__case5989, ModifierKey.scrollLockModifier):
-                {
-                    result = (modifiers & modifierScrollLock) != 0L;
-                    break;
-                }
+            {
+                result = (modifiers & modifierScrollLock) != 0L;
+                break;
+            }
             case var __case6086 when Equals(__case6086, ModifierKey.numLockModifier):
-                {
-                    result = (modifiers & modifierNumLock) != 0L;
-                    break;
-                }
+            {
+                result = (modifiers & modifierNumLock) != 0L;
+                break;
+            }
             case var __case6271 when Equals(__case6271, ModifierKey.functionModifier):
             case var __case6312 when Equals(__case6312, ModifierKey.symbolModifier):
-                {
-                    result = false;
-                    break;
-                }
+            {
+                result = false;
+                break;
+            }
         }
         DartRuntimePrimitives.Assert(() => !result || (getModifierSide(key) is not null));
         return result;
@@ -146,7 +195,10 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 }
                 else
                 {
-                    if ((combined == combinedMask) || ((modifiers & (combinedMask | anyMask)) == anyMask))
+                    if (
+                        (combined == combinedMask)
+                        || ((modifiers & (combinedMask | anyMask)) == anyMask)
+                    )
                     {
                         return KeyboardSide.all;
                     }
@@ -158,29 +210,29 @@ public class RawKeyEventDataWindows : RawKeyEventData
         switch (key)
         {
             case var __case7385 when Equals(__case7385, ModifierKey.controlModifier):
-                {
-                    return findSide(modifierLeftControl, modifierRightControl, modifierControl);
-                }
+            {
+                return findSide(modifierLeftControl, modifierRightControl, modifierControl);
+            }
             case var __case7510 when Equals(__case7510, ModifierKey.shiftModifier):
-                {
-                    return findSide(modifierLeftShift, modifierRightShift, modifierShift);
-                }
+            {
+                return findSide(modifierLeftShift, modifierRightShift, modifierShift);
+            }
             case var __case7627 when Equals(__case7627, ModifierKey.altModifier):
-                {
-                    return findSide(modifierLeftAlt, modifierRightAlt, modifierAlt);
-                }
+            {
+                return findSide(modifierLeftAlt, modifierRightAlt, modifierAlt);
+            }
             case var __case7736 when Equals(__case7736, ModifierKey.metaModifier):
-                {
-                    return findSide(modifierLeftMeta, modifierRightMeta, 0L);
-                }
+            {
+                return findSide(modifierLeftMeta, modifierRightMeta, 0L);
+            }
             case var __case7838 when Equals(__case7838, ModifierKey.capsLockModifier):
             case var __case7879 when Equals(__case7879, ModifierKey.numLockModifier):
             case var __case7919 when Equals(__case7919, ModifierKey.scrollLockModifier):
             case var __case7962 when Equals(__case7962, ModifierKey.functionModifier):
             case var __case8003 when Equals(__case8003, ModifierKey.symbolModifier):
-                {
-                    return KeyboardSide.all;
-                }
+            {
+                return KeyboardSide.all;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -203,7 +255,11 @@ public class RawKeyEventDataWindows : RawKeyEventData
     public override bool Equals(object? other)
     {
         var __other = other as RawKeyEventDataWindows;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -212,9 +268,13 @@ public class RawKeyEventDataWindows : RawKeyEventData
         {
             return false;
         }
-        return (__other is RawKeyEventDataWindows) && (__other.keyCode == keyCode) && (__other.scanCode == scanCode) && (__other.characterCodePoint == characterCodePoint) && (__other.modifiers == modifiers);
+        return (__other is RawKeyEventDataWindows)
+            && (__other.keyCode == keyCode)
+            && (__other.scanCode == scanCode)
+            && (__other.characterCodePoint == characterCodePoint)
+            && (__other.modifiers == modifiers);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(keyCode, scanCode, characterCodePoint, modifiers);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(keyCode, scanCode, characterCodePoint, modifiers);
 }
-

@@ -17,14 +17,22 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
     private readonly object _gate = new();
     private readonly int _id = Interlocked.Increment(ref _nextId);
     private readonly int _ownerThreadId = Environment.CurrentManagedThreadId;
-    private readonly SynchronizationContext _context = SynchronizationContext.Current
-        ?? throw new InvalidOperationException("Browser timers require a JS owner synchronization context.");
+    private readonly SynchronizationContext _context =
+        SynchronizationContext.Current
+        ?? throw new InvalidOperationException(
+            "Browser timers require a JS owner synchronization context."
+        );
     private volatile bool _disposed;
     private static long _created;
     private static long _fired;
     private static long _crossThreadOperations;
 
-    public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+    public override ITimer CreateTimer(
+        TimerCallback callback,
+        object? state,
+        TimeSpan dueTime,
+        TimeSpan period
+    )
     {
         ArgumentNullException.ThrowIfNull(callback);
         ValidateTimeout(dueTime);
@@ -46,18 +54,28 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
         BrowserTimer[] owned;
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _disposed = true;
             owned = Timers.Values.Where(timer => ReferenceEquals(timer.Owner, this)).ToArray();
         }
-        foreach (var timer in owned) timer.Dispose();
+        foreach (var timer in owned)
+        {
+            timer.Dispose();
+        }
         // Also clears cancellation work already posted from another thread.
         OnOwner(() => CancelBrowserTimerOwner(_id));
     }
 
     private void OnOwner(Action action)
     {
-        if (Environment.CurrentManagedThreadId == _ownerThreadId) action();
+        if (Environment.CurrentManagedThreadId == _ownerThreadId)
+        {
+            action();
+        }
         else
         {
             Interlocked.Increment(ref _crossThreadOperations);
@@ -67,31 +85,52 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
 
     private static void ValidateTimeout(TimeSpan value)
     {
-        if (value != Timeout.InfiniteTimeSpan && (value < TimeSpan.Zero || value.TotalMilliseconds > uint.MaxValue - 1))
+        if (
+            value != Timeout.InfiniteTimeSpan
+            && (value < TimeSpan.Zero || value.TotalMilliseconds > uint.MaxValue - 1)
+        )
+        {
             throw new ArgumentOutOfRangeException(nameof(value));
+        }
     }
 
     [JSExport]
     public static void DispatchTimer(int id, int generation)
     {
-        if (Timers.TryGetValue(id, out var timer)) timer.Fire(generation);
+        if (Timers.TryGetValue(id, out var timer))
+        {
+            timer.Fire(generation);
+        }
     }
 
     [JSExport]
-    public static string CaptureDiagnostics() => JsonSerializer.Serialize(new {
-        backend = "browser-owner-timeout",
-        ownerThreadId = Environment.CurrentManagedThreadId,
-        liveTimers = Timers.Values.Count(timer => timer.Owner._ownerThreadId == Environment.CurrentManagedThreadId),
-        created = Interlocked.Read(ref _created),
-        fired = Interlocked.Read(ref _fired),
-        crossThreadOperations = Interlocked.Read(ref _crossThreadOperations),
-        systemTimerCount = Timer.ActiveCount,
-    });
+    public static string CaptureDiagnostics() =>
+        JsonSerializer.Serialize(
+            new
+            {
+                backend = "browser-owner-timeout",
+                ownerThreadId = Environment.CurrentManagedThreadId,
+                liveTimers = Timers.Values.Count(timer =>
+                    timer.Owner._ownerThreadId == Environment.CurrentManagedThreadId
+                ),
+                created = Interlocked.Read(ref _created),
+                fired = Interlocked.Read(ref _fired),
+                crossThreadOperations = Interlocked.Read(ref _crossThreadOperations),
+                systemTimerCount = Timer.ActiveCount,
+            }
+        );
 
     [JSImport("scheduleBrowserTimer", "doroti.web")]
-    private static partial void ScheduleBrowserTimer(int id, int owner, int generation, double delayMilliseconds);
+    private static partial void ScheduleBrowserTimer(
+        int id,
+        int owner,
+        int generation,
+        double delayMilliseconds
+    );
+
     [JSImport("cancelBrowserTimer", "doroti.web")]
     private static partial void CancelBrowserTimer(int id);
+
     [JSImport("cancelBrowserTimerOwner", "doroti.web")]
     private static partial void CancelBrowserTimerOwner(int owner);
 
@@ -126,11 +165,17 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
             int generation;
             lock (_gate)
             {
-                if (_disposed || Owner._disposed) return false;
+                if (_disposed || Owner._disposed)
+                {
+                    return false;
+                }
+
                 generation = ++_generation;
                 _period = period;
                 _armed = dueTime != Timeout.InfiniteTimeSpan;
-                _dueAt = _armed ? Owner.GetTimestamp() + (long)(dueTime.TotalSeconds * Owner.TimestampFrequency) : 0;
+                _dueAt = _armed
+                    ? Owner.GetTimestamp() + (long)(dueTime.TotalSeconds * Owner.TimestampFrequency)
+                    : 0;
             }
             Owner.OnOwner(() => Arm(generation));
             return true;
@@ -140,21 +185,41 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
         {
             lock (_gate)
             {
-                if (_disposed || Owner._disposed || _generation != generation) return;
+                if (_disposed || Owner._disposed || _generation != generation)
+                {
+                    return;
+                }
+
                 CancelBrowserTimer(Id);
                 if (_armed)
-                    ScheduleBrowserTimer(Id, Owner._id, generation, Math.Max(0,
-                        (_dueAt - Owner.GetTimestamp()) * 1000.0 / Owner.TimestampFrequency));
+                {
+                    ScheduleBrowserTimer(
+                        Id,
+                        Owner._id,
+                        generation,
+                        Math.Max(
+                            0,
+                            (_dueAt - Owner.GetTimestamp()) * 1000.0 / Owner.TimestampFrequency
+                        )
+                    );
+                }
             }
         }
 
         internal void Fire(int generation)
         {
             if (Environment.CurrentManagedThreadId != Owner._ownerThreadId)
+            {
                 throw new InvalidOperationException("Browser timer left its JS owner.");
+            }
+
             lock (_gate)
             {
-                if (_disposed || Owner._disposed || !_armed || _generation != generation) return;
+                if (_disposed || Owner._disposed || !_armed || _generation != generation)
+                {
+                    return;
+                }
+
                 var now = Owner.GetTimestamp();
                 if (now < _dueAt)
                 {
@@ -164,7 +229,11 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
                     return;
                 }
                 _armed = _period > TimeSpan.Zero;
-                if (_armed) _dueAt = now + (long)(_period.TotalSeconds * Owner.TimestampFrequency);
+                if (_armed)
+                {
+                    _dueAt = now + (long)(_period.TotalSeconds * Owner.TimestampFrequency);
+                }
+
                 _callbackRunning = true;
             }
             try
@@ -172,8 +241,13 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
                 Arm(generation);
                 Interlocked.Increment(ref _fired);
                 if (_executionContext is { } context)
+                {
                     ExecutionContext.Run(context.CreateCopy(), _ => _callback(_state), null);
-                else _callback(_state);
+                }
+                else
+                {
+                    _callback(_state);
+                }
             }
             finally
             {
@@ -189,7 +263,11 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
         {
             lock (_gate)
             {
-                if (_disposed) return;
+                if (_disposed)
+                {
+                    return;
+                }
+
                 _disposed = true;
                 _armed = false;
                 _generation++;
@@ -203,7 +281,11 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
             Dispose();
             lock (_gate)
             {
-                if (!_callbackRunning) return ValueTask.CompletedTask;
+                if (!_callbackRunning)
+                {
+                    return ValueTask.CompletedTask;
+                }
+
                 _callbackCompleted ??= new(TaskCreationOptions.RunContinuationsAsynchronously);
                 return new ValueTask(_callbackCompleted.Task);
             }

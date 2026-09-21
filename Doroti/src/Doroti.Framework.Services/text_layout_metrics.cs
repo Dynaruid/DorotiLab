@@ -36,13 +36,13 @@ public interface TextLayoutMetrics
             case var __case1623 when Equals(__case1623, 8239L):
             case var __case1667 when Equals(__case1667, 8287L):
             case var __case1715 when Equals(__case1715, 12288L):
-                {
-                    break;
-                }
+            {
+                break;
+            }
             default:
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -57,13 +57,13 @@ public interface TextLayoutMetrics
             case var __case2221 when Equals(__case2221, 133L):
             case var __case2250 when Equals(__case2250, 8232L):
             case var __case2287 when Equals(__case2287, 8233L):
-                {
-                    return true;
-                }
+            {
+                return true;
+            }
             default:
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
         }
     }
     public TextSelection getLineAtOffset(TextPosition position);
@@ -71,4 +71,3 @@ public interface TextLayoutMetrics
     public TextPosition getTextPositionAbove(TextPosition position);
     public TextPosition getTextPositionBelow(TextPosition position);
 }
-

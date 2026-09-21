@@ -6,7 +6,9 @@ namespace Doroti.Runtime;
 public sealed record Flow(long id)
 {
     public static Flow begin() => DartDeveloperTimeline.beginFlow();
+
     public static Flow step(long id) => DartDeveloperTimeline.step(id);
+
     public static Flow end(long id) => new(id);
 }
 
@@ -14,15 +16,25 @@ public sealed record Flow(long id)
 public sealed record CreationLocation(string file, long line, long column, string? name = null)
 {
     public static CreationLocation? of(object? value) => value as CreationLocation;
+
     public DartMap<string, object?> toJsonMap()
     {
-        var result = new DartMap<string, object?> { ["file"] = file, ["line"] = line, ["column"] = column };
-        if (name is not null) result["name"] = name;
+        var result = new DartMap<string, object?>
+        {
+            ["file"] = file,
+            ["line"] = line,
+            ["column"] = column,
+        };
+        if (name is not null)
+        {
+            result["name"] = name;
+        }
+
         return result;
     }
-    public override string ToString() => name is null
-        ? $"{file}:{line}:{column}"
-        : $"{name} ({file}:{line}:{column})";
+
+    public override string ToString() =>
+        name is null ? $"{file}:{line}:{column}" : $"{name} ({file}:{line}:{column})";
 }
 
 /// <summary>
@@ -73,14 +85,15 @@ public enum DartTimelineEventKind
 {
     begin,
     end,
-    instant
+    instant,
 }
 
 public readonly record struct DartTimelineEvent(
     string name,
     DartTimelineEventKind kind,
     long? flowId,
-    DateTimeOffset timestamp);
+    DateTimeOffset timestamp
+);
 
 /// <summary>A dart:developer TimelineTask with balanced start/finish validation.</summary>
 public sealed class TimelineTask
@@ -108,12 +121,18 @@ public sealed class TimelineTask
 /// <summary>Library-shaped adapters used by semantic lowering for dart:developer.</summary>
 public static class Dart_developerLibrary
 {
-    public static void postEvent(string eventKind, object? eventData, string? stream = null) { _ = eventKind; _ = eventData; _ = stream; }
+    public static void postEvent(string eventKind, object? eventData, string? stream = null)
+    {
+        _ = eventKind;
+        _ = eventData;
+        _ = stream;
+    }
+
     public static T inspect<T>(T value) => value;
+
     public static class Flow
     {
-        public static Runtime.Flow step(long id) =>
-            DartDeveloperTimeline.step(id);
+        public static Runtime.Flow step(long id) => DartDeveloperTimeline.step(id);
     }
 
     public static class Timeline
@@ -133,7 +152,9 @@ public static class Dart_developerLibrary
             var slices = ActiveSlices.Value;
             if (slices is null || slices.Count == 0)
             {
-                throw new InvalidOperationException("Timeline.finishSync requires a matching startSync.");
+                throw new InvalidOperationException(
+                    "Timeline.finishSync requires a matching startSync."
+                );
             }
             DartDeveloperTimeline.emit(slices.Pop(), DartTimelineEventKind.end);
         }
@@ -155,11 +176,15 @@ public static class Dart_developerLibrary
         public static void timeSync(string name, Action callback, Runtime.Flow? flow = null)
         {
             ArgumentNullException.ThrowIfNull(callback);
-            timeSync<object?>(name, () =>
-            {
-                callback();
-                return null;
-            }, flow);
+            timeSync<object?>(
+                name,
+                () =>
+                {
+                    callback();
+                    return null;
+                },
+                flow
+            );
         }
     }
 }

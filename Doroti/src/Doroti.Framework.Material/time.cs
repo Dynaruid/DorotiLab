@@ -8,7 +8,7 @@ namespace Doroti.Framework.Material;
 public enum DayPeriod
 {
     am,
-    pm
+    pm,
 }
 
 public class TimeOfDay : IComparable<TimeOfDay>
@@ -40,42 +40,69 @@ public class TimeOfDay : IComparable<TimeOfDay>
 
     public virtual TimeOfDay replacing(long? hour = null, long? minute = null)
     {
-        DartRuntimePrimitives.Assert(() => (hour is null) || (hour >= 0L) && (DartRuntimePrimitives.RequireValue(hour) < hoursPerDay));
-        DartRuntimePrimitives.Assert(() => (minute is null) || (minute >= 0L) && (DartRuntimePrimitives.RequireValue(minute) < minutesPerHour));
+        DartRuntimePrimitives.Assert(() =>
+            (hour is null)
+            || ((hour >= 0L) && (DartRuntimePrimitives.RequireValue(hour) < hoursPerDay))
+        );
+        DartRuntimePrimitives.Assert(() =>
+            (minute is null)
+            || ((minute >= 0L) && (DartRuntimePrimitives.RequireValue(minute) < minutesPerHour))
+        );
         return new TimeOfDay(hour: hour ?? this.hour, minute: minute ?? this.minute);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DayPeriod period => (hour < hoursPerPeriod) ? DayPeriod.am : DayPeriod.pm;
-    public virtual long hourOfPeriod => ((hour == 0L) || (hour == 12L)) ? 12L : (hour - periodOffset);
+    public virtual long hourOfPeriod =>
+        ((hour == 0L) || (hour == 12L)) ? 12L : (hour - periodOffset);
     public virtual long periodOffset => Equals(period, DayPeriod.am) ? 0L : hoursPerPeriod;
+
     public virtual string format(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        return localizations.formatTimeOfDay(this, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
+        return localizations.formatTimeOfDay(
+            this,
+            alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool isBefore(TimeOfDay other) => DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) < 0L);
-    public virtual bool isAfter(TimeOfDay other) => DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) > 0L);
-    public virtual bool isAtSameTimeAs(TimeOfDay other) => DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) == 0L);
+    public virtual bool isBefore(TimeOfDay other) =>
+        DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) < 0L);
+
+    public virtual bool isAfter(TimeOfDay other) =>
+        DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) > 0L);
+
+    public virtual bool isAtSameTimeAs(TimeOfDay other) =>
+        DartRuntimePrimitives.ConvertValue<bool>(compareTo(other) == 0L);
+
     public virtual long compareTo(TimeOfDay other)
     {
         long hourComparison = hour.CompareTo(DartRuntimePrimitives.RequireValue(other.hour));
-        return (hourComparison == 0L) ? minute.CompareTo(DartRuntimePrimitives.RequireValue(other.minute)) : hourComparison;
+        return (hourComparison == 0L)
+            ? minute.CompareTo(DartRuntimePrimitives.RequireValue(other.minute))
+            : hourComparison;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as TimeOfDay;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         return (__other is TimeOfDay) && (__other.hour == hour) && (__other.minute == minute);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(hour, minute));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(hour, minute));
+
     public override string ToString()
     {
         string addLeadingZeroIfNeeded(long value)
@@ -106,10 +133,15 @@ public class RestorableTimeOfDay : RestorableValue<TimeOfDay>
     }
 
     public override TimeOfDay createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(TimeOfDay? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(value.hour));
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(value.minute));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(value.hour)
+        );
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(value.minute)
+        );
         notifyListeners();
     }
 
@@ -130,17 +162,27 @@ public enum TimeOfDayFormat
     frenchCanadian,
     H_colon_mm,
     h_colon_mm_space_a,
-    a_space_h_colon_mm
+    a_space_h_colon_mm,
 }
 
 public enum HourFormat
 {
     HH,
     H,
-    h
+    h,
 }
 
 public static partial class TimeLibrary
 {
-    public static HourFormat hourFormat(TimeOfDayFormat of) => of switch { TimeOfDayFormat.h_colon_mm_space_a => HourFormat.h, TimeOfDayFormat.a_space_h_colon_mm => HourFormat.h, TimeOfDayFormat.H_colon_mm => HourFormat.H, TimeOfDayFormat.HH_dot_mm or TimeOfDayFormat.HH_colon_mm => HourFormat.HH, TimeOfDayFormat.frenchCanadian => HourFormat.HH, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    public static HourFormat hourFormat(TimeOfDayFormat of) =>
+        of switch
+        {
+            TimeOfDayFormat.h_colon_mm_space_a => HourFormat.h,
+            TimeOfDayFormat.a_space_h_colon_mm => HourFormat.h,
+            TimeOfDayFormat.H_colon_mm => HourFormat.H,
+            TimeOfDayFormat.HH_dot_mm or TimeOfDayFormat.HH_colon_mm => HourFormat.HH,
+            TimeOfDayFormat.frenchCanadian => HourFormat.HH,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
 }

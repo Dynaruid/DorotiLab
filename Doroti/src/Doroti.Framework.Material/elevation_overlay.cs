@@ -11,7 +11,10 @@ public abstract class ElevationOverlay
     {
         if ((surfaceTint is not null) && (!Equals(surfaceTint, Colors.transparent)))
         {
-            return Dart_uiLibrary.Color.alphaBlend(surfaceTint.withOpacity(_surfaceTintOpacityForElevation(elevation)), color);
+            return Dart_uiLibrary.Color.alphaBlend(
+                surfaceTint.withOpacity(_surfaceTintOpacityForElevation(elevation)),
+                color
+            );
         }
         return color;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -24,16 +27,30 @@ public abstract class ElevationOverlay
             return Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)0L].opacity;
         }
         var index = 0L;
-        while (elevation >= Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index].elevation)
+        while (
+            elevation
+            >= Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index].elevation
+        )
         {
-            if ((elevation == Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index].elevation) || ((index + 1L) == checked(Elevation_overlayLibrary._surfaceTintElevationOpacities.Count)))
+            if (
+                (
+                    elevation
+                    == Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index].elevation
+                )
+                || (
+                    (index + 1L)
+                    == checked(Elevation_overlayLibrary._surfaceTintElevationOpacities.Count)
+                )
+            )
             {
                 return Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index].opacity;
             }
             index += 1L;
         }
-        _ElevationOpacity__elevation_overlay lower = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index - 1L)];
-        _ElevationOpacity__elevation_overlay upper = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index];
+        _ElevationOpacity__elevation_overlay lower =
+            Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index - 1L)];
+        _ElevationOpacity__elevation_overlay upper =
+            Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index];
         double t = (elevation - lower.elevation) / (upper.elevation - lower.elevation);
         return lower.opacity + (t * (upper.opacity - lower.opacity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -42,7 +59,12 @@ public abstract class ElevationOverlay
     public static Color applyOverlay(BuildContext context, Color color, double elevation)
     {
         ThemeData theme = Theme.of(context);
-        if ((elevation > 0.0) && theme.applyElevationOverlayColor && Equals(theme.brightness, Brightness.dark) && Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0)))
+        if (
+            (elevation > 0.0)
+            && theme.applyElevationOverlayColor
+            && Equals(theme.brightness, Brightness.dark)
+            && Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0))
+        )
         {
             return colorWithOverlay(color, theme.colorScheme.onSurface, elevation);
         }
@@ -69,7 +91,6 @@ public abstract class ElevationOverlay
         return color.withOpacity(opacity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ElevationOpacity__elevation_overlay
@@ -82,10 +103,18 @@ internal class _ElevationOpacity__elevation_overlay
         this.elevation = elevation;
         this.opacity = opacity;
     }
-
 }
 
 public static partial class Elevation_overlayLibrary
 {
-    internal static List<_ElevationOpacity__elevation_overlay> _surfaceTintElevationOpacities = new List<_ElevationOpacity__elevation_overlay> { new _ElevationOpacity__elevation_overlay(0.0, 0.0), new _ElevationOpacity__elevation_overlay(1.0, 0.05), new _ElevationOpacity__elevation_overlay(3.0, 0.08), new _ElevationOpacity__elevation_overlay(6.0, 0.11), new _ElevationOpacity__elevation_overlay(8.0, 0.12), new _ElevationOpacity__elevation_overlay(12.0, 0.14) };
+    internal static List<_ElevationOpacity__elevation_overlay> _surfaceTintElevationOpacities =
+        new List<_ElevationOpacity__elevation_overlay>
+        {
+            new _ElevationOpacity__elevation_overlay(0.0, 0.0),
+            new _ElevationOpacity__elevation_overlay(1.0, 0.05),
+            new _ElevationOpacity__elevation_overlay(3.0, 0.08),
+            new _ElevationOpacity__elevation_overlay(6.0, 0.11),
+            new _ElevationOpacity__elevation_overlay(8.0, 0.12),
+            new _ElevationOpacity__elevation_overlay(12.0, 0.14),
+        };
 }

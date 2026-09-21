@@ -24,7 +24,12 @@ public unsafe partial class ID3D12Device
         }
     }
 
-    public ID3D12CommandQueue CreateCommandQueue(D12.CommandListType type, int priority = 0, D12.CommandQueueFlags flags = D12.CommandQueueFlags.None, uint nodeMask = 0)
+    public ID3D12CommandQueue CreateCommandQueue(
+        D12.CommandListType type,
+        int priority = 0,
+        D12.CommandQueueFlags flags = D12.CommandQueueFlags.None,
+        uint nodeMask = 0
+    )
     {
         using var lifetime = new ComScope(this);
         var desc = new D12.CommandQueueDesc(type, priority, flags, nodeMask);
@@ -43,13 +48,24 @@ public unsafe partial class ID3D12Device
         return Adopt<ID3D12CommandAllocator>(hr, pointer);
     }
 
-    public T CreateCommandList<T>(D12.CommandListType type, ID3D12CommandAllocator allocator, ComObject? initialState)
+    public T CreateCommandList<T>(
+        D12.CommandListType type,
+        ID3D12CommandAllocator allocator,
+        ComObject? initialState
+    )
         where T : ComObject, IComOwner<T>
     {
         using var lifetime = new ComScope(this, allocator, initialState);
         var iid = T.InterfaceId;
         void* pointer = null;
-        var hr = Native->CreateCommandList(0, type, allocator.Native, (D12.ID3D12PipelineState*)(initialState?.NativePointer ?? 0), &iid, &pointer);
+        var hr = Native->CreateCommandList(
+            0,
+            type,
+            allocator.Native,
+            (D12.ID3D12PipelineState*)(initialState?.NativePointer ?? 0),
+            &iid,
+            &pointer
+        );
         return Adopt<T>(hr, pointer);
     }
 
@@ -62,30 +78,60 @@ public unsafe partial class ID3D12Device
         return Adopt<ID3D12Fence>(hr, pointer);
     }
 
-    public ID3D12Resource CreateCommittedResource(D12.HeapType heap, D12.HeapFlags flags, ResourceDescription description, D12.ResourceStates state, D12.ClearValue? clearValue)
+    public ID3D12Resource CreateCommittedResource(
+        D12.HeapType heap,
+        D12.HeapFlags flags,
+        ResourceDescription description,
+        D12.ResourceStates state,
+        D12.ClearValue? clearValue
+    )
     {
         using var lifetime = new ComScope(this);
         var properties = new D12.HeapProperties
         {
             Type = heap,
             CreationNodeMask = 1,
-            VisibleNodeMask = 1
+            VisibleNodeMask = 1,
         };
         var desc = description.Native;
         var clear = clearValue.GetValueOrDefault();
         var iid = ID3D12Resource.InterfaceId;
         void* pointer = null;
-        var hr = Native->CreateCommittedResource(&properties, flags, &desc, state, clearValue.HasValue ? &clear : null, &iid, &pointer);
+        var hr = Native->CreateCommittedResource(
+            &properties,
+            flags,
+            &desc,
+            state,
+            clearValue.HasValue ? &clear : null,
+            &iid,
+            &pointer
+        );
         return Adopt<ID3D12Resource>(hr, pointer);
     }
 
-    public nint CreateSharedHandle(ID3D12Resource resource, SecurityAttributes? attributes, string? name)
+    public nint CreateSharedHandle(
+        ID3D12Resource resource,
+        SecurityAttributes? attributes,
+        string? name
+    )
     {
         using var lifetime = new ComScope(this, resource);
         var security = attributes.GetValueOrDefault();
         void* handle = null;
         fixed (char* text = name)
-            new HResult(Native->CreateSharedHandle((D12.ID3D12DeviceChild*)resource.NativePointer, attributes.HasValue ? &security : null, 0x10000000 /* GENERIC_ALL */, text, &handle)).CheckError();
+        {
+            new HResult(
+                Native->CreateSharedHandle(
+                    (D12.ID3D12DeviceChild*)resource.NativePointer,
+                    attributes.HasValue ? &security : null,
+                    0x10000000 /* GENERIC_ALL */
+                    ,
+                    text,
+                    &handle
+                )
+            ).CheckError();
+        }
+
         return (nint)handle;
     }
 }
@@ -124,19 +170,38 @@ public unsafe partial class ID3D12GraphicsCommandList
         using var lifetime = new ComScope(this);
         var native = new D12.ResourceBarrier[barriers.Length];
         for (var i = 0; i < barriers.Length; i++)
+        {
             native[i] = barriers[i].Native;
+        }
+
         fixed (D12.ResourceBarrier* pointer = native)
+        {
             Native->ResourceBarrier((uint)native.Length, pointer);
+        }
+
         GC.KeepAlive(barriers);
     }
 
-    public void ResourceBarrierTransition(ID3D12Resource resource, D12.ResourceStates before, D12.ResourceStates after)
+    public void ResourceBarrierTransition(
+        ID3D12Resource resource,
+        D12.ResourceStates before,
+        D12.ResourceStates after
+    )
     {
         using var lifetime = new ComScope(this, resource);
-        ResourceBarrier([Graphics.DirectX.ResourceBarrier.BarrierTransition(resource, before, after)]);
+        ResourceBarrier([
+            Graphics.DirectX.ResourceBarrier.BarrierTransition(resource, before, after),
+        ]);
     }
 
-    public void CopyTextureRegion(TextureCopyLocation destination, uint x, uint y, uint z, TextureCopyLocation source, D12.Box? sourceBox)
+    public void CopyTextureRegion(
+        TextureCopyLocation destination,
+        uint x,
+        uint y,
+        uint z,
+        TextureCopyLocation source,
+        D12.Box? sourceBox
+    )
     {
         using var lifetime = new ComScope(this);
         var dest = destination.Native;
@@ -189,7 +254,9 @@ public unsafe partial class ID3D12Fence
         finally
         {
             if (added)
+            {
                 safeHandle.DangerousRelease();
+            }
         }
     }
 }
@@ -227,7 +294,12 @@ public unsafe partial class ID3D12Debug
     }
 }
 
-public readonly record struct DebugMessage(D12.MessageSeverity Severity, D12.MessageID Id, string Description);
+public readonly record struct DebugMessage(
+    D12.MessageSeverity Severity,
+    D12.MessageID Id,
+    string Description
+);
+
 public unsafe partial class ID3D12InfoQueue
 {
     public ulong NumStoredMessages
@@ -255,7 +327,12 @@ public unsafe partial class ID3D12InfoQueue
         {
             var message = (D12.Message*)pointer;
             new HResult(Native->GetMessageA(index, message, &size)).CheckError();
-            return new(message->Severity, message->ID, System.Runtime.InteropServices.Marshal.PtrToStringAnsi((nint)message->PDescription) ?? "");
+            return new(
+                message->Severity,
+                message->ID,
+                System.Runtime.InteropServices.Marshal.PtrToStringAnsi((nint)message->PDescription)
+                    ?? ""
+            );
         }
     }
 }
@@ -268,8 +345,44 @@ public readonly struct ResourceDescription(D12.ResourceDesc native)
     public uint Height => native.Height;
     public DX.SampleDesc SampleDescription => native.SampleDesc;
 
-    public static ResourceDescription Texture2D(DX.Format format, uint width, uint height, ushort arraySize, ushort mipLevels, uint sampleCount, uint sampleQuality, D12.ResourceFlags flags) => new(new D12.ResourceDesc { Dimension = D12.ResourceDimension.Texture2D, Width = width, Height = height, DepthOrArraySize = arraySize, MipLevels = mipLevels, Format = format, SampleDesc = new(sampleCount, sampleQuality), Layout = D12.TextureLayout.LayoutUnknown, Flags = flags, });
-    public static ResourceDescription Buffer(ulong size) => new(new D12.ResourceDesc { Dimension = D12.ResourceDimension.Buffer, Width = size, Height = 1, DepthOrArraySize = 1, MipLevels = 1, SampleDesc = new(1, 0), Layout = D12.TextureLayout.LayoutRowMajor, });
+    public static ResourceDescription Texture2D(
+        DX.Format format,
+        uint width,
+        uint height,
+        ushort arraySize,
+        ushort mipLevels,
+        uint sampleCount,
+        uint sampleQuality,
+        D12.ResourceFlags flags
+    ) =>
+        new(
+            new D12.ResourceDesc
+            {
+                Dimension = D12.ResourceDimension.Texture2D,
+                Width = width,
+                Height = height,
+                DepthOrArraySize = arraySize,
+                MipLevels = mipLevels,
+                Format = format,
+                SampleDesc = new(sampleCount, sampleQuality),
+                Layout = D12.TextureLayout.LayoutUnknown,
+                Flags = flags,
+            }
+        );
+
+    public static ResourceDescription Buffer(ulong size) =>
+        new(
+            new D12.ResourceDesc
+            {
+                Dimension = D12.ResourceDimension.Buffer,
+                Width = size,
+                Height = 1,
+                DepthOrArraySize = 1,
+                MipLevels = 1,
+                SampleDesc = new(1, 0),
+                Layout = D12.TextureLayout.LayoutRowMajor,
+            }
+        );
 }
 
 public readonly unsafe struct ResourceBarrier
@@ -277,39 +390,48 @@ public readonly unsafe struct ResourceBarrier
     private readonly ID3D12Resource _resource;
     private readonly D12.ResourceStates _before;
     private readonly D12.ResourceStates _after;
-    private ResourceBarrier(ID3D12Resource resource, D12.ResourceStates before, D12.ResourceStates after) => (_resource, _before, _after) = (resource, before, after);
-    internal D12.ResourceBarrier Native => new()
-    {
-        Type = D12.ResourceBarrierType.Transition,
-        Anonymous = new D12.ResourceBarrierUnion
-        {
-            Transition = new D12.ResourceTransitionBarrier
-            {
-                PResource = _resource.Native,
-                Subresource = uint.MaxValue,
-                StateBefore = _before,
-                StateAfter = _after,
-            },
-        },
-    };
 
-    public static ResourceBarrier BarrierTransition(ID3D12Resource resource, D12.ResourceStates before, D12.ResourceStates after) => new(resource, before, after);
+    private ResourceBarrier(
+        ID3D12Resource resource,
+        D12.ResourceStates before,
+        D12.ResourceStates after
+    ) => (_resource, _before, _after) = (resource, before, after);
+
+    internal D12.ResourceBarrier Native =>
+        new()
+        {
+            Type = D12.ResourceBarrierType.Transition,
+            Anonymous = new D12.ResourceBarrierUnion
+            {
+                Transition = new D12.ResourceTransitionBarrier
+                {
+                    PResource = _resource.Native,
+                    Subresource = uint.MaxValue,
+                    StateBefore = _before,
+                    StateAfter = _after,
+                },
+            },
+        };
+
+    public static ResourceBarrier BarrierTransition(
+        ID3D12Resource resource,
+        D12.ResourceStates before,
+        D12.ResourceStates after
+    ) => new(resource, before, after);
 }
 
 public readonly unsafe struct TextureCopyLocation
 {
     private readonly ID3D12Resource _resource;
     private readonly D12.TextureCopyLocation _location;
+
     public TextureCopyLocation(ID3D12Resource resource, uint subresource)
     {
         _resource = resource;
         _location = new()
         {
             Type = D12.TextureCopyType.SubresourceIndex,
-            Anonymous = new D12.TextureCopyLocationUnion
-            {
-                SubresourceIndex = subresource
-            }
+            Anonymous = new D12.TextureCopyLocationUnion { SubresourceIndex = subresource },
         };
     }
 
@@ -319,10 +441,7 @@ public readonly unsafe struct TextureCopyLocation
         _location = new()
         {
             Type = D12.TextureCopyType.PlacedFootprint,
-            Anonymous = new D12.TextureCopyLocationUnion
-            {
-                PlacedFootprint = footprint
-            }
+            Anonymous = new D12.TextureCopyLocationUnion { PlacedFootprint = footprint },
         };
     }
 

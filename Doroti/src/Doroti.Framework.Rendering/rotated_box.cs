@@ -14,7 +14,8 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
 {
     internal virtual long _quarterTurns { get; set; } = default!;
     internal virtual Matrix4? _paintTransform { get; set; } = default;
-    internal virtual LayerHandle<TransformLayer> _transformLayer { get; private set; } = new LayerHandle<TransformLayer>();
+    internal virtual LayerHandle<TransformLayer> _transformLayer { get; private set; } =
+        new LayerHandle<TransformLayer>();
     public virtual RenderBox? _child { get; set; } = default;
 
     public RenderRotatedBox(long quarterTurns, RenderBox? child = null)
@@ -37,13 +38,16 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         }
     }
     internal virtual bool _isVertical => (checked(quarterTurns) & 1L) != 0L;
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (child is null)
         {
             return 0.0;
         }
-        return _isVertical ? child!.getMinIntrinsicHeight(height) : child!.getMinIntrinsicWidth(height);
+        return _isVertical
+            ? child!.getMinIntrinsicHeight(height)
+            : child!.getMinIntrinsicWidth(height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -53,7 +57,9 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             return 0.0;
         }
-        return _isVertical ? child!.getMaxIntrinsicHeight(height) : child!.getMaxIntrinsicWidth(height);
+        return _isVertical
+            ? child!.getMaxIntrinsicHeight(height)
+            : child!.getMaxIntrinsicWidth(height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -63,7 +69,9 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             return 0.0;
         }
-        return _isVertical ? child!.getMinIntrinsicWidth(width) : child!.getMinIntrinsicHeight(width);
+        return _isVertical
+            ? child!.getMinIntrinsicWidth(width)
+            : child!.getMinIntrinsicHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -73,7 +81,9 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             return 0.0;
         }
-        return _isVertical ? child!.getMaxIntrinsicWidth(width) : child!.getMaxIntrinsicHeight(width);
+        return _isVertical
+            ? child!.getMaxIntrinsicWidth(width)
+            : child!.getMaxIntrinsicHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -95,14 +105,25 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             child!.layout(_isVertical ? constraints.flipped : constraints, parentUsesSize: true);
             size = _isVertical ? new Size(child!.size.height, child!.size.width) : child!.size;
-            _paintTransform = ((Func<Matrix4>)(() =>
-{
-    var __cascade = Matrix4.identity();
-    __cascade.translateByDouble(size.width / 2.0, size.height / 2.0, 0, 1);
-    __cascade.rotateZ(Rotated_boxLibrary._kQuarterTurnsInRadians * (quarterTurns % 4L));
-    __cascade.translateByDouble(-child!.size.width / 2.0, -child!.size.height / 2.0, 0, 1);
-    return __cascade;
-}))();
+            _paintTransform = (
+                (Func<Matrix4>)(
+                    () =>
+                    {
+                        var __cascade = Matrix4.identity();
+                        __cascade.translateByDouble(size.width / 2.0, size.height / 2.0, 0, 1);
+                        __cascade.rotateZ(
+                            Rotated_boxLibrary._kQuarterTurnsInRadians * (quarterTurns % 4L)
+                        );
+                        __cascade.translateByDouble(
+                            -child!.size.width / 2.0,
+                            -child!.size.height / 2.0,
+                            0,
+                            1
+                        );
+                        return __cascade;
+                    }
+                )
+            )();
         }
         else
         {
@@ -112,15 +133,21 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        DartRuntimePrimitives.Assert(() => (_paintTransform is not null) || debugNeedsLayout || (child is null));
+        DartRuntimePrimitives.Assert(() =>
+            (_paintTransform is not null) || debugNeedsLayout || (child is null)
+        );
         if ((child is null) || (_paintTransform is null))
         {
             return false;
         }
-        return result.addWithPaintTransform(transform: _paintTransform, position: position, hitTest: (result, position) =>
-        {
-            return child!.hitTest(result, position: position);
-        });
+        return result.addWithPaintTransform(
+            transform: _paintTransform,
+            position: position,
+            hitTest: (result, position) =>
+            {
+                return child!.hitTest(result, position: position);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -133,7 +160,13 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
     {
         if (child is not null)
         {
-            _transformLayer.layer = context.pushTransform(needsCompositing, offset, _paintTransform!, _paintChild, oldLayer: _transformLayer.layer);
+            _transformLayer.layer = context.pushTransform(
+                needsCompositing,
+                offset,
+                _paintTransform!,
+                _paintChild,
+                oldLayer: _transformLayer.layer
+            );
         }
         else
         {
@@ -160,13 +193,40 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -188,6 +248,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -218,9 +279,12 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

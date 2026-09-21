@@ -3,11 +3,14 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Doroti.Runtime;
 
-public sealed class AssertionError(object? message = null) : Exception(message?.ToString() ?? "Assertion failed.");
+public sealed class AssertionError(object? message = null)
+    : Exception(message?.ToString() ?? "Assertion failed.");
 
-public sealed class NoSuchMethodError(object? message = null) : Exception(message?.ToString() ?? "No such method.");
+public sealed class NoSuchMethodError(object? message = null)
+    : Exception(message?.ToString() ?? "No such method.");
 
-public sealed class TypeError(object? message = null) : Exception(message?.ToString() ?? "Dart type error.");
+public sealed class TypeError(object? message = null)
+    : Exception(message?.ToString() ?? "Dart type error.");
 
 /// <summary>Describes a Future that completed without an explicit await.</summary>
 public sealed record DartFutureDiagnostic(string Operation, Exception Exception);
@@ -39,15 +42,23 @@ public static class DartRuntimePrimitives
         long minute = 0,
         long second = 0,
         long millisecond = 0,
-        long microsecond = 0) =>
+        long microsecond = 0
+    ) =>
         // Dart constructors normalize overflowing fields (for example month 13
         // and day 0). Keep that behavior within System.DateTime's supported range.
         new DateTime(checked((int)year), 1, 1, 0, 0, 0, DateTimeKind.Unspecified)
             .AddMonths(checked((int)(month - 1)))
-            .AddTicks(checked((day - 1) * TimeSpan.TicksPerDay
-                + hour * TimeSpan.TicksPerHour + minute * TimeSpan.TicksPerMinute
-                + second * TimeSpan.TicksPerSecond + millisecond * TimeSpan.TicksPerMillisecond
-                + microsecond * 10));
+            .AddTicks(
+                checked(
+                    ((day - 1) * TimeSpan.TicksPerDay)
+                    + (hour * TimeSpan.TicksPerHour)
+                    + (minute * TimeSpan.TicksPerMinute)
+                    + (second * TimeSpan.TicksPerSecond)
+                    + (millisecond * TimeSpan.TicksPerMillisecond)
+                    + (microsecond * 10)
+                )
+            );
+
     private sealed class DartNullRuntimeType;
 
     public static Exception AsException(object? value) =>
@@ -57,12 +68,21 @@ public static class DartRuntimePrimitives
     {
         foreach (var value in values)
         {
-            if (value is T typed) yield return typed;
-            else yield return (T)Convert.ChangeType(value!, Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T));
+            if (value is T typed)
+            {
+                yield return typed;
+            }
+            else
+            {
+                yield return (T)
+                    Convert.ChangeType(value!, Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T));
+            }
         }
     }
 
-    public static DartMap<TKey, TValue> ConvertMap<TKey, TValue>(System.Collections.IDictionary values)
+    public static DartMap<TKey, TValue> ConvertMap<TKey, TValue>(
+        System.Collections.IDictionary values
+    )
     {
         if (values is DartMap<TKey, TValue> alreadyTyped)
         {
@@ -71,8 +91,20 @@ public static class DartRuntimePrimitives
         var result = new DartMap<TKey, TValue>();
         foreach (System.Collections.DictionaryEntry entry in values)
         {
-            var key = entry.Key is TKey typedKey ? typedKey : (TKey)Convert.ChangeType(entry.Key!, Nullable.GetUnderlyingType(typeof(TKey)) ?? typeof(TKey));
-            var value = entry.Value is TValue typedValue ? typedValue : (TValue)Convert.ChangeType(entry.Value!, Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue));
+            var key = entry.Key is TKey typedKey
+                ? typedKey
+                : (TKey)
+                    Convert.ChangeType(
+                        entry.Key!,
+                        Nullable.GetUnderlyingType(typeof(TKey)) ?? typeof(TKey)
+                    );
+            var value = entry.Value is TValue typedValue
+                ? typedValue
+                : (TValue)
+                    Convert.ChangeType(
+                        entry.Value!,
+                        Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue)
+                    );
             result[key] = value;
         }
         return result;
@@ -92,7 +124,8 @@ public static class DartRuntimePrimitives
         var target = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
         if (target.IsEnum)
         {
-            return (T)Enum.ToObject(target, Convert.ChangeType(value, Enum.GetUnderlyingType(target))!);
+            return (T)
+                Enum.ToObject(target, Convert.ChangeType(value, Enum.GetUnderlyingType(target))!);
         }
         return (T)Convert.ChangeType(value, target);
     }
@@ -103,19 +136,23 @@ public static class DartRuntimePrimitives
     public static StackTrace StackTraceFrom(object? value) =>
         value is StackTrace stackTrace ? stackTrace : new StackTrace(true);
 
-    public static long MillisecondsSinceEpoch(DateTime value) => new DateTimeOffset(value).ToUnixTimeMilliseconds();
+    public static long MillisecondsSinceEpoch(DateTime value) =>
+        new DateTimeOffset(value).ToUnixTimeMilliseconds();
 
     public static long? MillisecondsSinceEpoch(DateTime? value) =>
         value is { } resolved ? new DateTimeOffset(resolved).ToUnixTimeMilliseconds() : null;
 
     /// <summary>Implements Dart's postfix null assertion for nullable value types.</summary>
-    public static T RequireValue<T>([NotNull] T? value) where T : struct =>
+    public static T RequireValue<T>([NotNull] T? value)
+        where T : struct =>
         value ?? throw new NullReferenceException("Dart null assertion failed.");
 
-    public static T RequireValue<T>(T value) where T : struct => value;
+    public static T RequireValue<T>(T value)
+        where T : struct => value;
 
     /// <summary>Implements Dart's postfix null assertion for reference types.</summary>
-    public static T RequireValue<T>([NotNull] T? value, bool referenceType = true) where T : class
+    public static T RequireValue<T>([NotNull] T? value, bool referenceType = true)
+        where T : class
     {
         _ = referenceType;
         return value ?? throw new NullReferenceException("Dart null assertion failed.");
@@ -126,7 +163,10 @@ public static class DartRuntimePrimitives
         value is null ? throw new NullReferenceException("Dart null assertion failed.") : value;
 
     /// <summary>Evaluates a Dart null-aware member access without applying <c>?.</c> to an unconstrained result type.</summary>
-    public static TResult? NullAware<TTarget, TResult>(TTarget? target, Func<TTarget, TResult> access)
+    public static TResult? NullAware<TTarget, TResult>(
+        TTarget? target,
+        Func<TTarget, TResult> access
+    )
         where TTarget : class
     {
         ArgumentNullException.ThrowIfNull(access);
@@ -224,21 +264,27 @@ public static class DartRuntimePrimitives
         }
         if (typeof(T) == typeof(double))
         {
-            var result = (double)(object)begin! + (((double)(object)end! - (double)(object)begin!) * t);
+            var result =
+                (double)(object)begin! + (((double)(object)end! - (double)(object)begin!) * t);
             return (T)(object)result;
         }
         if (typeof(T) == typeof(float))
         {
-            var result = (float)((float)(object)begin! + (((float)(object)end! - (float)(object)begin!) * (float)t));
+            var result = (float)(
+                (float)(object)begin! + (((float)(object)end! - (float)(object)begin!) * (float)t)
+            );
             return (T)(object)result;
         }
         if (typeof(T) == typeof(System.Numerics.Vector2))
         {
             var beginVector = (System.Numerics.Vector2)(object)begin!;
             var endVector = (System.Numerics.Vector2)(object)end!;
-            return (T)(object)System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
+            return (T)
+                (object)System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
         }
-        throw new TypeError($"Tween<{typeof(T).Name}> requires a typed IDartTweenValue<T> implementation.");
+        throw new TypeError(
+            $"Tween<{typeof(T).Name}> requires a typed IDartTweenValue<T> implementation."
+        );
     }
 
     /// <summary>Implements the runtime cast performed by Dart's <c>as T</c>.</summary>
@@ -261,11 +307,13 @@ public static class DartRuntimePrimitives
 
     public static T? LerpNullable<T>(T? a, T? b, double t, Func<T?, T?, double, T> lerp)
         where T : struct =>
-        EqualityComparer<T?>.Default.Equals(a, b) || t == 0 ? a : t == 1 ? b : lerp(a, b, t);
+        EqualityComparer<T?>.Default.Equals(a, b) || t == 0 ? a
+        : t == 1 ? b
+        : lerp(a, b, t);
 
     /// <summary>Implements Dart's postfix null assertion for reference types.</summary>
-    public static T RequireNotNull<T>(T? value) where T : class =>
-        value ?? throw new NullReferenceException("Dart null assertion failed.");
+    public static T RequireNotNull<T>(T? value)
+        where T : class => value ?? throw new NullReferenceException("Dart null assertion failed.");
 
     [Conditional("DEBUG")]
     public static void Assert(Func<bool> condition)
@@ -288,15 +336,17 @@ public static class DartRuntimePrimitives
         }
     }
 
-    public static string RuntimeTypeName(object? value) => value switch
-    {
-        null => "Null",
-        string => "String",
-        int => "int",
-        double => "double",
-        bool => "bool",
-        _ => value.GetType().Name,
-    };
+    public static string RuntimeTypeName(object? value) =>
+        value switch
+        {
+            null => "Null",
+            string => "String",
+            int => "int",
+            double => "double",
+            bool => "bool",
+            _ => value.GetType().Name,
+        };
 
-    public static Type RuntimeType(object? value) => value?.GetType() ?? typeof(DartNullRuntimeType);
+    public static Type RuntimeType(object? value) =>
+        value?.GetType() ?? typeof(DartNullRuntimeType);
 }

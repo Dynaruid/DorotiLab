@@ -8,12 +8,16 @@ public class AutomaticKeepAlive : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public AutomaticKeepAlive(Key? key = null, Widget child = default!) : base(key: key)
+    public AutomaticKeepAlive(Key? key = null, Widget child = default!)
+        : base(key: key)
     {
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AutomaticKeepAliveState__automatic_keep_alive());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _AutomaticKeepAliveState__automatic_keep_alive()
+        );
 }
 
 internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticKeepAlive>
@@ -36,7 +40,12 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
 
     internal virtual void _updateChild()
     {
-        _child = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<KeepAliveNotification>(onNotification: _addClient, child: widget.child));
+        _child = DartRuntimePrimitives.ConvertValue<Widget>(
+            new NotificationListener<KeepAliveNotification>(
+                onNotification: _addClient,
+                child: widget.child
+            )
+        );
     }
 
     public override void dispose()
@@ -68,16 +77,20 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
             }
             else
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                {
-                    if (!mounted)
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                    (timeStamp) =>
                     {
-                        return;
-                    }
-                    ParentDataElement<KeepAliveParentDataMixin>? childElementLocal = _getChildElement();
-                    DartRuntimePrimitives.Assert(() => childElementLocal is not null);
-                    _updateParentDataOfChild(childElementLocal!);
-                }, debugLabel: "AutomaticKeepAlive.updateParentData");
+                        if (!mounted)
+                        {
+                            return;
+                        }
+                        ParentDataElement<KeepAliveParentDataMixin>? childElementLocal =
+                            _getChildElement();
+                        DartRuntimePrimitives.Assert(() => childElementLocal is not null);
+                        _updateParentDataOfChild(childElementLocal!);
+                    },
+                    debugLabel: "AutomaticKeepAlive.updateParentData"
+                );
             }
         }
         return false;
@@ -89,18 +102,26 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
         DartRuntimePrimitives.Assert(() => mounted);
         var element = ((Element?)context)!;
         Element? childElement = default!;
-        element.visitChildren((child) =>
-        {
-            childElement = child;
-        });
-        DartRuntimePrimitives.Assert(() => (childElement is null) || (childElement is ParentDataElement<KeepAliveParentDataMixin>));
+        element.visitChildren(
+            (child) =>
+            {
+                childElement = child;
+            }
+        );
+        DartRuntimePrimitives.Assert(() =>
+            (childElement is null) || (childElement is ParentDataElement<KeepAliveParentDataMixin>)
+        );
         return ((ParentDataElement<KeepAliveParentDataMixin>?)childElement)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _updateParentDataOfChild(ParentDataElement<KeepAliveParentDataMixin> childElement)
+    internal virtual void _updateParentDataOfChild(
+        ParentDataElement<KeepAliveParentDataMixin> childElement
+    )
     {
-        childElement.applyWidgetOutOfTurn(((ParentDataWidget<KeepAliveParentDataMixin>?)build(context))!);
+        childElement.applyWidgetOutOfTurn(
+            ((ParentDataWidget<KeepAliveParentDataMixin>?)build(context))!
+        );
     }
 
     internal virtual Action _createCallback(Listenable handle)
@@ -109,19 +130,31 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
         return callback = () =>
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (!mounted)
                 {
-                    if (!mounted)
-                    {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create("AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n" + "Widgets should always trigger their KeepAliveNotification handle when they are " + "deactivated, so that they (or their handle) do not send spurious events later " + "when they are no longer in the tree."));
-                    }
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            "AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n"
+                                + "Widgets should always trigger their KeepAliveNotification handle when they are "
+                                + "deactivated, so that they (or their handle) do not send spurious events later "
+                                + "when they are no longer in the tree."
+                        )
+                    );
+                }
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
             _handles!.remove(handle);
             handle.removeListener(callback);
             if (!Enumerable.Any(_handles!))
             {
-                if (FoundationRuntimePorts.EnumIndex(Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(Scheduler.SchedulerPhase.persistentCallbacks))
+                if (
+                    FoundationRuntimePorts.EnumIndex(
+                        Scheduler.SchedulerBinding.instance.schedulerPhase
+                    )
+                    < FoundationRuntimePorts.EnumIndex(Scheduler.SchedulerPhase.persistentCallbacks)
+                )
                 {
                     setState(() =>
                     {
@@ -156,10 +189,20 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new FlagProperty("_keepingAlive", value: _keepingAlive, ifTrue: "keeping subtree alive"));
-        description.add(new DiagnosticsProperty<DartMap<Listenable, Action>>("handles", _handles, description: (_handles is not null) ? $"{checked((long)_handles!.Count)} active client{((checked(_handles!.Count) == 1L) ? "" : "s")}" : null, ifNull: "no notifications ever received"));
+        description.add(
+            new FlagProperty("_keepingAlive", value: _keepingAlive, ifTrue: "keeping subtree alive")
+        );
+        description.add(
+            new DiagnosticsProperty<DartMap<Listenable, Action>>(
+                "handles",
+                _handles,
+                description: (_handles is not null)
+                    ? $"{checked((long)_handles!.Count)} active client{((checked(_handles!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                ifNull: "no notifications ever received"
+            )
+        );
     }
-
 }
 
 public class KeepAliveNotification : Notification
@@ -170,7 +213,6 @@ public class KeepAliveNotification : Notification
     {
         this.handle = handle;
     }
-
 }
 
 public class KeepAliveHandle : ChangeNotifier
@@ -180,10 +222,10 @@ public class KeepAliveHandle : ChangeNotifier
         notifyListeners();
         base.dispose();
     }
-
 }
 
-public interface AutomaticKeepAliveClientMixin<T> where T : StatefulWidget
+public interface AutomaticKeepAliveClientMixin<T>
+    where T : StatefulWidget
 {
     KeepAliveHandle? _keepAliveHandle { get; set; }
 
@@ -198,15 +240,16 @@ public interface AutomaticKeepAliveClientMixin<T> where T : StatefulWidget
 
 internal class _NullWidget__automatic_keep_alive : StatelessWidget
 {
-    internal _NullWidget__automatic_keep_alive()
-    {
-    }
+    internal _NullWidget__automatic_keep_alive() { }
 
     public override Widget build(BuildContext context)
     {
-        throw DartRuntimePrimitives.AsException(FlutterError.Create("Widgets that mix AutomaticKeepAliveClientMixin into their State must " + "call super.build() but must ignore the return value of the superclass."));
+        throw DartRuntimePrimitives.AsException(
+            FlutterError.Create(
+                "Widgets that mix AutomaticKeepAliveClientMixin into their State must "
+                    + "call super.build() but must ignore the return value of the superclass."
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

@@ -7,13 +7,12 @@ namespace Doroti.Framework.Painting;
 
 public abstract class ShaderWarmUp
 {
-    protected ShaderWarmUp()
-    {
-    }
+    protected ShaderWarmUp() { }
 
     public virtual Size size => new Size(100.0, 100.0);
     public abstract Future warmUpOnCanvas(Canvas canvas);
-    public async virtual Future execute()
+
+    public virtual async Future execute()
     {
         var recorder = new PictureRecorder();
         var canvas = new Canvas(recorder);
@@ -23,12 +22,16 @@ public abstract class ShaderWarmUp
         TimelineTask? debugShaderWarmUpTask = default!;
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            debugShaderWarmUpTask = ((Func<TimelineTask>)(() =>
-{
-    var __cascade = new TimelineTask();
-    __cascade.start("Warm-up shader");
-    return __cascade;
-}))();
+            debugShaderWarmUpTask = (
+                (Func<TimelineTask>)(
+                    () =>
+                    {
+                        var __cascade = new TimelineTask();
+                        __cascade.start("Warm-up shader");
+                        return __cascade;
+                    }
+                )
+            )();
         }
         try
         {
@@ -45,6 +48,4 @@ public abstract class ShaderWarmUp
         }
         picture.dispose();
     }
-
 }
-

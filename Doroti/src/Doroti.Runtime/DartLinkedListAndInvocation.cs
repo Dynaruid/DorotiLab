@@ -2,8 +2,11 @@ namespace Doroti.Runtime;
 
 public sealed class Invocation
 {
-    public Invocation(object? memberName = null, IReadOnlyList<object?>? positionalArguments = null,
-        IReadOnlyDictionary<object, object?>? namedArguments = null)
+    public Invocation(
+        object? memberName = null,
+        IReadOnlyList<object?>? positionalArguments = null,
+        IReadOnlyDictionary<object, object?>? namedArguments = null
+    )
     {
         this.memberName = memberName;
         this.positionalArguments = positionalArguments ?? [];
@@ -19,19 +22,41 @@ public sealed class DeepCollectionEquality
 {
     public bool equals(object? left, object? right)
     {
-        if (ReferenceEquals(left, right)) return true;
-        if (left is null || right is null) return false;
-        if (left is System.Collections.IDictionary leftMap && right is System.Collections.IDictionary rightMap)
+        if (ReferenceEquals(left, right))
         {
-            if (leftMap.Count != rightMap.Count) return false;
+            return true;
+        }
+
+        if (left is null || right is null)
+        {
+            return false;
+        }
+
+        if (
+            left is System.Collections.IDictionary leftMap
+            && right is System.Collections.IDictionary rightMap
+        )
+        {
+            if (leftMap.Count != rightMap.Count)
+            {
+                return false;
+            }
+
             foreach (System.Collections.DictionaryEntry entry in leftMap)
             {
-                if (!rightMap.Contains(entry.Key) || !equals(entry.Value, rightMap[entry.Key])) return false;
+                if (!rightMap.Contains(entry.Key) || !equals(entry.Value, rightMap[entry.Key]))
+                {
+                    return false;
+                }
             }
             return true;
         }
-        if (left is System.Collections.IEnumerable leftItems && right is System.Collections.IEnumerable rightItems &&
-            left is not string && right is not string)
+        if (
+            left is System.Collections.IEnumerable leftItems
+            && right is System.Collections.IEnumerable rightItems
+            && left is not string
+            && right is not string
+        )
         {
             var leftEnumerator = leftItems.GetEnumerator();
             var rightEnumerator = rightItems.GetEnumerator();
@@ -39,9 +64,20 @@ public sealed class DeepCollectionEquality
             {
                 var hasLeft = leftEnumerator.MoveNext();
                 var hasRight = rightEnumerator.MoveNext();
-                if (hasLeft != hasRight) return false;
-                if (!hasLeft) return true;
-                if (!equals(leftEnumerator.Current, rightEnumerator.Current)) return false;
+                if (hasLeft != hasRight)
+                {
+                    return false;
+                }
+
+                if (!hasLeft)
+                {
+                    return true;
+                }
+
+                if (!equals(leftEnumerator.Current, rightEnumerator.Current))
+                {
+                    return false;
+                }
             }
         }
         return Equals(left, right);
@@ -49,7 +85,11 @@ public sealed class DeepCollectionEquality
 
     public int hash(object? value)
     {
-        if (value is null) return 0;
+        if (value is null)
+        {
+            return 0;
+        }
+
         if (value is System.Collections.IDictionary map)
         {
             var hash = new HashCode();
@@ -62,7 +102,11 @@ public sealed class DeepCollectionEquality
         if (value is System.Collections.IEnumerable items && value is not string)
         {
             var hash = new HashCode();
-            foreach (var item in items) hash.Add(hashCode(item));
+            foreach (var item in items)
+            {
+                hash.Add(hashCode(item));
+            }
+
             return hash.ToHashCode();
         }
         return value.GetHashCode();
@@ -71,7 +115,8 @@ public sealed class DeepCollectionEquality
     private int hashCode(object? value) => hash(value);
 }
 
-public abstract class DartLinkedListEntry<T> where T : DartLinkedListEntry<T>
+public abstract class DartLinkedListEntry<T>
+    where T : DartLinkedListEntry<T>
 {
     private DartLinkedList<T>? _list;
     public DartLinkedList<T>? list => _list;
@@ -82,7 +127,11 @@ public abstract class DartLinkedListEntry<T> where T : DartLinkedListEntry<T>
 
     public void insertAfter(T entry)
     {
-        if (_list is null) throw new InvalidOperationException("The entry is not linked.");
+        if (_list is null)
+        {
+            throw new InvalidOperationException("The entry is not linked.");
+        }
+
         _list.InsertAfter((T)this, entry);
     }
 
@@ -96,7 +145,8 @@ public abstract class DartLinkedListEntry<T> where T : DartLinkedListEntry<T>
     }
 }
 
-public sealed class DartLinkedList<T> : IEnumerable<T> where T : DartLinkedListEntry<T>
+public sealed class DartLinkedList<T> : IEnumerable<T>
+    where T : DartLinkedListEntry<T>
 {
     public T? first { get; private set; }
     public T? last { get; private set; }
@@ -106,9 +156,17 @@ public sealed class DartLinkedList<T> : IEnumerable<T> where T : DartLinkedListE
 
     public void addFirst(T entry)
     {
-        if (contains(entry)) throw new InvalidOperationException("The entry is already linked.");
+        if (contains(entry))
+        {
+            throw new InvalidOperationException("The entry is already linked.");
+        }
+
         entry.next = first;
-        if (first is not null) first.previous = entry;
+        if (first is not null)
+        {
+            first.previous = entry;
+        }
+
         first = entry;
         last ??= entry;
         entry.Attach(this);
@@ -116,36 +174,76 @@ public sealed class DartLinkedList<T> : IEnumerable<T> where T : DartLinkedListE
 
     public void add(T entry)
     {
-        if (last is null) addFirst(entry);
-        else InsertAfter(last, entry);
+        if (last is null)
+        {
+            addFirst(entry);
+        }
+        else
+        {
+            InsertAfter(last, entry);
+        }
     }
 
     internal void InsertAfter(T existing, T entry)
     {
-        if (contains(entry)) throw new InvalidOperationException("The entry is already linked.");
+        if (contains(entry))
+        {
+            throw new InvalidOperationException("The entry is already linked.");
+        }
+
         entry.previous = existing;
         entry.next = existing.next;
-        if (existing.next is not null) existing.next.previous = entry;
+        if (existing.next is not null)
+        {
+            existing.next.previous = entry;
+        }
+
         existing.next = entry;
-        if (ReferenceEquals(last, existing)) last = entry;
+        if (ReferenceEquals(last, existing))
+        {
+            last = entry;
+        }
+
         entry.Attach(this);
     }
 
     public bool remove(T entry)
     {
-        if (!contains(entry)) return false;
-        if (entry.previous is not null) entry.previous.next = entry.next;
-        else first = entry.next;
-        if (entry.next is not null) entry.next.previous = entry.previous;
-        else last = entry.previous;
+        if (!contains(entry))
+        {
+            return false;
+        }
+
+        if (entry.previous is not null)
+        {
+            entry.previous.next = entry.next;
+        }
+        else
+        {
+            first = entry.next;
+        }
+
+        if (entry.next is not null)
+        {
+            entry.next.previous = entry.previous;
+        }
+        else
+        {
+            last = entry.previous;
+        }
+
         entry.Detach();
         return true;
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        for (var current = first; current is not null; current = current.next) yield return current;
+        for (var current = first; current is not null; current = current.next)
+        {
+            yield return current;
+        }
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+        GetEnumerator();
 }

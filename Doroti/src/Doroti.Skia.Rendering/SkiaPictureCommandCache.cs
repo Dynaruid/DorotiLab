@@ -11,18 +11,27 @@ public sealed partial class SkiaSceneRenderer
     private const int MaxPictureCommandEntries = 128;
     private const int MaxRetainedPictureCommands = 32768;
     private const long MaxPictureCommandBytes = 4 * 1024 * 1024;
-    private readonly Dictionary<object, PictureCommandEntry> _pictureCommandCache =
-        new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<object, PictureCommandEntry> _pictureCommandCache = new(
+        ReferenceEqualityComparer.Instance
+    );
     private readonly LinkedList<object> _pictureCommandOrder = new();
     private int _pictureCommandCount;
     private long _pictureCommandBytes;
-    private long _pictureCommandHits, _pictureCommandRecordings;
+    private long _pictureCommandHits,
+        _pictureCommandRecordings;
 
     private void DrawRetainedPicture(SKCanvas canvas, ScenePicturePayload payload)
     {
         var commands = payload.Commands;
-        if (payload.WillChangeHint || commands.Count == 0 || commands.Count > MaxRetainedPictureCommands || HasBlurredPaint(commands) ||
-            payload.CanvasBounds is not { } bounds || !bounds.IsFinite || bounds.isEmpty)
+        if (
+            payload.WillChangeHint
+            || commands.Count == 0
+            || commands.Count > MaxRetainedPictureCommands
+            || HasBlurredPaint(commands)
+            || payload.CanvasBounds is not { } bounds
+            || !bounds.IsFinite
+            || bounds.isEmpty
+        )
         {
             DrawPicture(canvas, commands);
             return;
@@ -44,14 +53,23 @@ public sealed partial class SkiaSceneRenderer
             // DrawShadow maps into device space and resets the matrix; recording
             // it at identity would change shadow geometry at another transform.
             // Unbounded color/paint operations also need the real destination.
-            if (commands.Any(static command => command.Operation is "drawShadow" or "drawColor" or "drawPaint"))
+            if (
+                commands.Any(static command =>
+                    command.Operation is "drawShadow" or "drawColor" or "drawPaint"
+                )
+            )
             {
                 DrawPicture(canvas, commands);
                 return;
             }
-            while (_pictureCommandCache.Count >= MaxPictureCommandEntries ||
-                   _pictureCommandCount + commands.Count > MaxRetainedPictureCommands)
+            while (
+                _pictureCommandCache.Count >= MaxPictureCommandEntries
+                || _pictureCommandCount + commands.Count > MaxRetainedPictureCommands
+            )
+            {
                 RemovePictureCommands(_pictureCommandOrder.First!.Value);
+            }
+
             entry = new(_pictureCommandOrder.AddLast(commands), commands.Count, cullRect);
             _pictureCommandCache.Add(commands, entry);
             _pictureCommandCount += commands.Count;
@@ -71,12 +89,18 @@ public sealed partial class SkiaSceneRenderer
             _pictureCommandBytes += entry.Bytes;
             _pictureCommandRecordings++;
         }
-        else _pictureCommandHits++;
+        else
+        {
+            _pictureCommandHits++;
+        }
+
         canvas.DrawPicture(entry.Picture);
         // Evict only after drawing: an oversized current recording may itself
         // be the victim. Native command bytes exclude referenced image pixels.
         while (_pictureCommandBytes > MaxPictureCommandBytes)
+        {
             RemovePictureCommands(_pictureCommandOrder.First!.Value);
+        }
     }
 
     private void RemovePictureCommands(object key)
@@ -91,14 +115,22 @@ public sealed partial class SkiaSceneRenderer
 
     private void ClearPictureCommandCache()
     {
-        foreach (var entry in _pictureCommandCache.Values) entry.Picture?.Dispose();
+        foreach (var entry in _pictureCommandCache.Values)
+        {
+            entry.Picture?.Dispose();
+        }
+
         _pictureCommandCache.Clear();
         _pictureCommandOrder.Clear();
         _pictureCommandCount = 0;
         _pictureCommandBytes = 0;
     }
 
-    private sealed class PictureCommandEntry(LinkedListNode<object> node, int commandCount, SKRect bounds)
+    private sealed class PictureCommandEntry(
+        LinkedListNode<object> node,
+        int commandCount,
+        SKRect bounds
+    )
     {
         internal readonly LinkedListNode<object> Node = node;
         internal readonly int CommandCount = commandCount;
@@ -107,31 +139,46 @@ public sealed partial class SkiaSceneRenderer
         internal long Bytes;
     }
 
-    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, BlurPolicy> BlurPolicies = new();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<
+        object,
+        BlurPolicy
+    > BlurPolicies = new();
 
     // CanvasBounds describes the unfiltered geometry. Until filter outsets are
     // tracked through transforms, replay blurred pictures on the destination:
     // both a recording's cull rect and a raster cache can otherwise cut off halos.
     private static bool HasBlurredPaint(IReadOnlyList<PathCommand> commands) =>
-        BlurPolicies.GetValue(commands, static key => new(((IReadOnlyList<PathCommand>)key).Any(static command =>
-            (command.HostPayload switch
-            {
-                PaintSnapshot paint => paint,
-                CanvasSaveLayerPayload layer => layer.Paint,
-                CanvasPathPayload draw => draw.Paint,
-                CanvasRectPayload draw => draw.Paint,
-                CanvasRRectPayload draw => draw.Paint,
-                CanvasRSuperellipsePayload draw => draw.Paint,
-                CanvasDRRectPayload draw => draw.Paint,
-                CanvasImagePayload draw => draw.Paint,
-                CanvasImageNinePayload draw => draw.Paint,
-                CanvasCirclePayload draw => draw.Paint,
-                CanvasLinePayload draw => draw.Paint,
-                CanvasPointsPayload draw => draw.Paint,
-                CanvasOvalPayload draw => draw.Paint,
-                CanvasArcPayload draw => draw.Paint,
-                _ => null,
-            })?.MaskFilter is { sigma: > 0 }))).HasBlur;
+        BlurPolicies
+            .GetValue(
+                commands,
+                static key =>
+                    new(
+                        ((IReadOnlyList<PathCommand>)key).Any(static command =>
+                            (
+                                command.HostPayload switch
+                                {
+                                    PaintSnapshot paint => paint,
+                                    CanvasSaveLayerPayload layer => layer.Paint,
+                                    CanvasPathPayload draw => draw.Paint,
+                                    CanvasRectPayload draw => draw.Paint,
+                                    CanvasRRectPayload draw => draw.Paint,
+                                    CanvasRSuperellipsePayload draw => draw.Paint,
+                                    CanvasDRRectPayload draw => draw.Paint,
+                                    CanvasImagePayload draw => draw.Paint,
+                                    CanvasImageNinePayload draw => draw.Paint,
+                                    CanvasCirclePayload draw => draw.Paint,
+                                    CanvasLinePayload draw => draw.Paint,
+                                    CanvasPointsPayload draw => draw.Paint,
+                                    CanvasOvalPayload draw => draw.Paint,
+                                    CanvasArcPayload draw => draw.Paint,
+                                    _ => null,
+                                }
+                            )?.MaskFilter
+                                is { sigma: > 0 }
+                        )
+                    )
+            )
+            .HasBlur;
 
     private sealed record BlurPolicy(bool HasBlur);
 }

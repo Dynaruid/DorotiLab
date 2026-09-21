@@ -24,18 +24,31 @@ namespace Doroti.Host.Maui;
 
 internal static class WindowsCompositionSurfaceFeature
 {
-    internal static bool GraphiteEnabled => Environment.GetEnvironmentVariable("DOROTI_WINDOWS_MAUI_GRAPHITE") != "0";
+    internal static bool GraphiteEnabled =>
+        Environment.GetEnvironmentVariable("DOROTI_WINDOWS_MAUI_GRAPHITE") != "0";
     internal const string EnvironmentVariable = "DOROTI_WINDOWS_COMPOSITION_SURFACE";
 
-    internal static bool Enabled => GraphiteEnabled ||
-        string.Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), "1",
-            StringComparison.Ordinal);
+    internal static bool Enabled =>
+        GraphiteEnabled
+        || string.Equals(
+            Environment.GetEnvironmentVariable(EnvironmentVariable),
+            "1",
+            StringComparison.Ordinal
+        );
 
     internal static void ConfigureGraphiteLibrary()
     {
-        var manifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
-        if (string.IsNullOrWhiteSpace(manifest)) GraphiteNativeLibrary.Configure();
-        else GraphiteNativeLibrary.Configure(GraphiteNativeLibrary.ReadAssetManifest(manifest));
+        var manifest = Environment.GetEnvironmentVariable(
+            "DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST"
+        );
+        if (string.IsNullOrWhiteSpace(manifest))
+        {
+            GraphiteNativeLibrary.Configure();
+        }
+        else
+        {
+            GraphiteNativeLibrary.Configure(GraphiteNativeLibrary.ReadAssetManifest(manifest));
+        }
     }
 }
 
@@ -88,7 +101,8 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal WindowsCompositionSurfacePresenter(
         Compositor compositor,
         Action<Action> invokeOnUiThread,
-        Action frontSlotAvailable)
+        Action frontSlotAvailable
+    )
     {
         _compositor = compositor;
         _invokeOnUiThread = invokeOnUiThread;
@@ -111,27 +125,43 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal int CheckedOutResourceCount { get; private set; }
     internal int OpenDrawCount { get; private set; }
     internal string AdapterDescription => _adapterDescription;
-    internal object Context => (_graphite?.ContextIdentity) ?? _skiaContext ??
-        throw new InvalidOperationException("Composition Skia context is unavailable.");
-    internal SKSurface Surface => _graphiteSurface ?? _backingStore?.Surface ??
-        throw new InvalidOperationException("Composition D3D12 backing store is unavailable.");
+    internal object Context =>
+        (_graphite?.ContextIdentity)
+        ?? _skiaContext
+        ?? throw new InvalidOperationException("Composition Skia context is unavailable.");
+    internal SKSurface Surface =>
+        _graphiteSurface
+        ?? _backingStore?.Surface
+        ?? throw new InvalidOperationException("Composition D3D12 backing store is unavailable.");
 
-    internal void EnsureTarget(
-        DorotiWindowsDxgiHost host,
-        int width,
-        int height)
+    internal void EnsureTarget(DorotiWindowsDxgiHost host, int width, int height)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowAsyncCommitFailure();
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        if (width <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
+
         EnsureDeviceAndVisual(host);
         _graphite?.ReleaseD3D12Frame();
-        if (_graphite is not null && _backingStore is not null && (_backingStore.Width != width || _backingStore.Height != height))
+        if (
+            _graphite is not null
+            && _backingStore is not null
+            && (_backingStore.Width != width || _backingStore.Height != height)
+        )
         {
             // Dispose the imported image before releasing its D3D allocation.
-            _graphite.Dispose(); _graphite = null; _graphiteSurface = null;
-            _backingStore.Dispose(); _backingStore = null;
+            _graphite.Dispose();
+            _graphite = null;
+            _graphiteSurface = null;
+            _backingStore.Dispose();
+            _backingStore = null;
             CreateGraphite();
         }
         _backingStore ??= new WindowsD3D12BackingStore(_device12!, _skiaContext);
@@ -141,8 +171,14 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             if (SurfaceChanged)
             {
                 var handle = _device12!.CreateSharedHandle(_backingStore.Resource, null, null!);
-                try { _graphite.ImportD3D12Resource(handle, width, height); }
-                finally { CloseGraphiteHandle(handle); }
+                try
+                {
+                    _graphite.ImportD3D12Resource(handle, width, height);
+                }
+                finally
+                {
+                    CloseGraphiteHandle(handle);
+                }
             }
             _graphiteSurface = _graphite.BeginD3D12Frame();
         }
@@ -152,7 +188,12 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
 
     internal void Flush()
     {
-        if (_graphite is not null) { _graphite.FlushD3D12Frame(); _graphiteSurface = null; return; }
+        if (_graphite is not null)
+        {
+            _graphite.FlushD3D12Frame();
+            _graphiteSurface = null;
+            return;
+        }
         Surface.Canvas.Flush();
         _skiaContext!.Flush(Surface);
         _skiaContext.Submit(false);
@@ -163,16 +204,29 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         DorotiResizeEpoch target,
         Func<long> latestTargetGeneration,
         Action onCommitStarting,
-        out long observedTargetGeneration)
+        out long observedTargetGeneration
+    )
     {
         ArgumentNullException.ThrowIfNull(latestTargetGeneration);
         ArgumentNullException.ThrowIfNull(onCommitStarting);
         if (!ReferenceEquals(host, _attachedHost))
-            throw new InvalidOperationException("Composition presenter host changed before present.");
+        {
+            throw new InvalidOperationException(
+                "Composition presenter host changed before present."
+            );
+        }
+
         if (target.PhysicalWidth != Width || target.PhysicalHeight != Height)
+        {
             throw new InvalidOperationException("Composition source and target dimensions differ.");
+        }
+
         if (Math.Abs(target.DeviceScaleX - target.DeviceScaleY) > 0.0001)
-            throw new InvalidOperationException("Non-uniform Composition device scale is not supported.");
+        {
+            throw new InvalidOperationException(
+                "Non-uniform Composition device scale is not supported."
+            );
+        }
 
         ThrowAsyncCommitFailure();
         var slot = TryAcquireSlot();
@@ -194,7 +248,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         _invokeOnUiThread(() =>
         {
             observed = latestTargetGeneration();
-            if (observed != target.Generation) return;
+            if (observed != target.Generation)
+            {
+                return;
+            }
+
             long requestSerial;
             lock (_poolGate)
             {
@@ -214,9 +272,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             var reciprocalScale = (float)(1.0 / target.DeviceScaleX);
             _brush.Scale = new Vector2(reciprocalScale, reciprocalScale);
             _visual!.Offset = System.Numerics.Vector3.Zero;
-            _visual.Size = new Vector2(
-                (float)target.LogicalWidth,
-                (float)target.LogicalHeight);
+            _visual.Size = new Vector2((float)target.LogicalWidth, (float)target.LogicalHeight);
             _visual.Clip = _compositor.CreateInsetClip();
             onCommitStarting();
             var animation = _compositor.CreateScalarKeyFrameAnimation();
@@ -224,7 +280,8 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             animation.InsertKeyFrame(1, 1);
             var batch = _compositor.GetCommitBatch(CompositionBatchTypes.Animation);
             var batchCompletion = new TaskCompletionSource(
-                TaskCreationOptions.RunContinuationsAsynchronously);
+                TaskCreationOptions.RunContinuationsAsynchronously
+            );
             TypedEventHandler<object, CompositionBatchCompletedEventArgs>? handler = null;
             handler = (_, _) => batchCompletion.TrySetResult();
             batch.Completed += handler;
@@ -232,14 +289,18 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             var commitTask = _compositor.RequestCommitAsync().AsTask();
             CommitRequestCount++;
             if (Interlocked.Increment(ref _pendingCommitCount) == 1)
+            {
                 _noPendingCommits.Reset();
+            }
+
             _ = CompleteCommitAsync(
                 requestSerial,
                 commitTask,
                 batchCompletion.Task,
                 batch,
                 animation,
-                handler);
+                handler
+            );
             adopted = true;
         });
 
@@ -259,7 +320,8 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         Task batchTask,
         CompositionCommitBatch batch,
         ScalarKeyFrameAnimation animation,
-        TypedEventHandler<object, CompositionBatchCompletedEventArgs> handler)
+        TypedEventHandler<object, CompositionBatchCompletedEventArgs> handler
+    )
     {
         try
         {
@@ -278,13 +340,22 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 releasedSlot = ReleaseEligibleRetiredSlotsLocked();
             }
             if (releasedSlot && Interlocked.Exchange(ref _slotWaiter, 0) == 1)
+            {
                 _frontSlotAvailable();
+            }
+
             await batchTask.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-            lock (_poolGate) CommitBatchCompletionCount++;
+            lock (_poolGate)
+            {
+                CommitBatchCompletionCount++;
+            }
         }
         catch (Exception exception)
         {
-            lock (_poolGate) _asyncCommitFailure ??= exception;
+            lock (_poolGate)
+            {
+                _asyncCommitFailure ??= exception;
+            }
         }
         finally
         {
@@ -292,20 +363,35 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             {
                 void CleanupCompositionObjects()
                 {
-                    if (!_uiTeardown) _visual?.StopAnimation("Opacity");
+                    if (!_uiTeardown)
+                    {
+                        _visual?.StopAnimation("Opacity");
+                    }
+
                     batch.Completed -= handler;
                     animation.Dispose();
                     batch.Dispose();
                 }
-                if (_uiTeardown) CleanupCompositionObjects();
-                else _invokeOnUiThread(CleanupCompositionObjects);
+                if (_uiTeardown)
+                {
+                    CleanupCompositionObjects();
+                }
+                else
+                {
+                    _invokeOnUiThread(CleanupCompositionObjects);
+                }
             }
             catch (Exception exception)
             {
-                lock (_poolGate) _asyncCommitFailure ??= exception;
+                lock (_poolGate)
+                {
+                    _asyncCommitFailure ??= exception;
+                }
             }
             if (Interlocked.Decrement(ref _pendingCommitCount) == 0)
+            {
                 _noPendingCommits.Set();
+            }
         }
     }
 
@@ -325,20 +411,26 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             draw.TexturePointer = 0;
             destination12 = _on12!.UnwrapUnderlyingResource<ID3D12Resource>(texture11, _queue!);
             CheckedOutResourceCount++;
-            ValidateDestination(slot, draw.Offset, texture11.Description, destination12.Description);
+            ValidateDestination(
+                slot,
+                draw.Offset,
+                texture11.Description,
+                destination12.Description
+            );
 
             _copyAllocator!.Reset();
             _copyCommandList!.Reset(_copyAllocator);
-            _copyCommandList.ResourceBarrier(
-            [
+            _copyCommandList.ResourceBarrier([
                 ResourceBarrier.BarrierTransition(
                     _backingStore!.Resource,
                     _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget,
-                    ResourceStates.CopySource),
+                    ResourceStates.CopySource
+                ),
                 ResourceBarrier.BarrierTransition(
                     destination12,
                     ResourceStates.Common,
-                    ResourceStates.CopyDest),
+                    ResourceStates.CopyDest
+                ),
             ]);
             _copyCommandList.CopyTextureRegion(
                 new TextureCopyLocation(destination12, 0),
@@ -346,17 +438,19 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 checked((uint)draw.Offset.Y),
                 0,
                 new TextureCopyLocation(_backingStore.Resource, 0),
-                null);
-            _copyCommandList.ResourceBarrier(
-            [
+                null
+            );
+            _copyCommandList.ResourceBarrier([
                 ResourceBarrier.BarrierTransition(
                     _backingStore.Resource,
                     ResourceStates.CopySource,
-                    _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget),
+                    _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget
+                ),
                 ResourceBarrier.BarrierTransition(
                     destination12,
                     ResourceStates.CopyDest,
-                    ResourceStates.Common),
+                    ResourceStates.Common
+                ),
             ]);
             _copyCommandList.Close();
             _queue!.ExecuteCommandList(_copyCommandList);
@@ -377,14 +471,25 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             if (destination12 is not null && !returned)
             {
                 if (submitted)
-                    _on12!.ReturnUnderlyingResource(texture11!, [fenceValue], [_copyFence!]).CheckError();
+                {
+                    _on12!
+                        .ReturnUnderlyingResource(texture11!, [fenceValue], [_copyFence!])
+                        .CheckError();
+                }
                 else
+                {
                     _on12!.ReturnUnderlyingResource(texture11!, [], []).CheckError();
+                }
+
                 CheckedOutResourceCount--;
             }
             destination12?.Dispose();
             texture11?.Dispose();
-            if (draw.TexturePointer != 0) Marshal.Release(draw.TexturePointer);
+            if (draw.TexturePointer != 0)
+            {
+                Marshal.Release(draw.TexturePointer);
+            }
+
             if (!draw.Ended)
             {
                 WindowsCompositionInterop.EndDraw(draw);
@@ -398,19 +503,36 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         WindowsCompositionSurfaceSlot slot,
         WindowsCompositionNativePoint offset,
         Texture2DDescription description11,
-        ResourceDescription description12)
+        ResourceDescription description12
+    )
     {
-        if (description11.Format != Format.FormatR8G8B8A8Unorm ||
-            description12.Format != Format.FormatR8G8B8A8Unorm)
+        if (
+            description11.Format != Format.FormatR8G8B8A8Unorm
+            || description12.Format != Format.FormatR8G8B8A8Unorm
+        )
+        {
             throw new InvalidOperationException("Composition surface format mismatch.");
-        if (description11.SampleDescription.Count != 1 || description12.SampleDescription.Count != 1)
+        }
+
+        if (
+            description11.SampleDescription.Count != 1
+            || description12.SampleDescription.Count != 1
+        )
+        {
             throw new InvalidOperationException("Composition surface sample-count mismatch.");
-        if (offset.X < 0 || offset.Y < 0 ||
-            description11.Width < offset.X + slot.Width ||
-            description11.Height < offset.Y + slot.Height ||
-            description12.Width != description11.Width ||
-            description12.Height != description11.Height)
+        }
+
+        if (
+            offset.X < 0
+            || offset.Y < 0
+            || description11.Width < offset.X + slot.Width
+            || description11.Height < offset.Y + slot.Height
+            || description12.Width != description11.Width
+            || description12.Height != description11.Height
+        )
+        {
             throw new InvalidOperationException("Composition BeginDraw geometry mismatch.");
+        }
     }
 
     private WindowsCompositionSurfaceSlot? TryAcquireSlot()
@@ -418,9 +540,18 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         lock (_poolGate)
         {
             var slot = _slots.FirstOrDefault(candidate =>
-                candidate.State == WindowsCompositionSurfaceSlotState.Free);
-            if (slot is not null) return slot;
-            if (_slots.Count >= MaximumSurfaceSlots) return null;
+                candidate.State == WindowsCompositionSurfaceSlotState.Free
+            );
+            if (slot is not null)
+            {
+                return slot;
+            }
+
+            if (_slots.Count >= MaximumSurfaceSlots)
+            {
+                return null;
+            }
+
             slot = new WindowsCompositionSurfaceSlot(_slots.Count);
             _slots.Add(slot);
             SurfacePoolHighWater = Math.Max(SurfacePoolHighWater, _slots.Count);
@@ -431,9 +562,12 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private bool ReleaseEligibleRetiredSlotsLocked()
     {
         var released = false;
-        foreach (var slot in _slots.Where(candidate =>
-                     candidate.State == WindowsCompositionSurfaceSlotState.Retired &&
-                     candidate.RetireAfterCommit <= _completedCommitSerial))
+        foreach (
+            var slot in _slots.Where(candidate =>
+                candidate.State == WindowsCompositionSurfaceSlotState.Retired
+                && candidate.RetireAfterCommit <= _completedCommitSerial
+            )
+        )
         {
             slot.Transition(WindowsCompositionSurfaceSlotState.Free);
             slot.RetireAfterCommit = 0;
@@ -446,9 +580,18 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private void ThrowAsyncCommitFailure()
     {
         Exception? failure;
-        lock (_poolGate) failure = _asyncCommitFailure;
+        lock (_poolGate)
+        {
+            failure = _asyncCommitFailure;
+        }
+
         if (failure is not null)
-            throw new InvalidOperationException("An asynchronous Composition commit failed.", failure);
+        {
+            throw new InvalidOperationException(
+                "An asynchronous Composition commit failed.",
+                failure
+            );
+        }
     }
 
     private void EnsureDeviceAndVisual(DorotiWindowsDxgiHost host)
@@ -457,39 +600,62 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         {
             _factory = CreateDXGIFactory2<IDXGIFactory6>(false);
             _adapter = _factory.EnumAdapterByGpuPreference<IDXGIAdapter1>(
-                0, GpuPreference.HighPerformance);
+                0,
+                GpuPreference.HighPerformance
+            );
             _adapterDescription = _adapter.Description1.Description;
             _device12 = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
             _queue = _device12.CreateCommandQueue(
-                CommandListType.Direct, 0, CommandQueueFlags.None, 0);
-            D3D11On12CreateDevice(
-                _device12,
-                DeviceCreationFlags.BgraSupport,
-                [FeatureLevel.Level110],
-                [_queue],
+                CommandListType.Direct,
                 0,
-                out _device11,
-                out _context11,
-                out var chosenFeatureLevel).CheckError();
+                CommandQueueFlags.None,
+                0
+            );
+            D3D11On12CreateDevice(
+                    _device12,
+                    DeviceCreationFlags.BgraSupport,
+                    [FeatureLevel.Level110],
+                    [_queue],
+                    0,
+                    out _device11,
+                    out _context11,
+                    out var chosenFeatureLevel
+                )
+                .CheckError();
             if (chosenFeatureLevel < FeatureLevel.Level110)
+            {
                 throw new InvalidOperationException($"D3D11On12 selected {chosenFeatureLevel}.");
+            }
+
             _on12 = _device11.QueryInterface<ID3D11On12Device2>();
-            _graphicsDevice = WindowsCompositionInterop.CreateGraphicsDevice(_compositor, _device11);
-            if (WindowsCompositionSurfaceFeature.GraphiteEnabled) CreateGraphite();
+            _graphicsDevice = WindowsCompositionInterop.CreateGraphicsDevice(
+                _compositor,
+                _device11
+            );
+            if (WindowsCompositionSurfaceFeature.GraphiteEnabled)
+            {
+                CreateGraphite();
+            }
             else
             {
-            _skiaBackend = new GRD3DBackendContext
-            {
-                Adapter = _adapter.NativePointer,
-                Device = _device12.NativePointer,
-                Queue = _queue.NativePointer,
-            };
-            _skiaContext = GRContext.CreateDirect3D(_skiaBackend) ??
-                throw new InvalidOperationException("Skia could not create the Composition D3D12 context.");
+                _skiaBackend = new GRD3DBackendContext
+                {
+                    Adapter = _adapter.NativePointer,
+                    Device = _device12.NativePointer,
+                    Queue = _queue.NativePointer,
+                };
+                _skiaContext =
+                    GRContext.CreateDirect3D(_skiaBackend)
+                    ?? throw new InvalidOperationException(
+                        "Skia could not create the Composition D3D12 context."
+                    );
             }
             _copyAllocator = _device12.CreateCommandAllocator(CommandListType.Direct);
             _copyCommandList = _device12.CreateCommandList<ID3D12GraphicsCommandList>(
-                CommandListType.Direct, _copyAllocator, null);
+                CommandListType.Direct,
+                _copyAllocator,
+                null
+            );
             _copyCommandList.Close();
             _copyFence = _device12.CreateFence(0, FenceFlags.None);
         }
@@ -510,7 +676,10 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _invokeOnUiThread(() =>
             {
                 if (_attachedHost is not null)
+                {
                     ElementCompositionPreview.SetElementChildVisual(_attachedHost, null);
+                }
+
                 ElementCompositionPreview.SetElementChildVisual(host, _visual);
                 _uiTeardown = false;
             });
@@ -521,14 +690,21 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private void CreateGraphite()
     {
         var luid = _adapter!.Description1.Luid;
-        var assetManifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
+        var assetManifest = Environment.GetEnvironmentVariable(
+            "DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST"
+        );
         var adapterLuid = System.Runtime.CompilerServices.Unsafe.As<Luid, long>(ref luid);
-        _graphite = string.IsNullOrWhiteSpace(assetManifest) ? GraphiteVulkanWindow.CreateD3D12(adapterLuid)
-            : GraphiteVulkanWindow.CreateD3D12(adapterLuid, GraphiteNativeLibrary.ReadAssetManifest(assetManifest));
+        _graphite = string.IsNullOrWhiteSpace(assetManifest)
+            ? GraphiteVulkanWindow.CreateD3D12(adapterLuid)
+            : GraphiteVulkanWindow.CreateD3D12(
+                adapterLuid,
+                GraphiteNativeLibrary.ReadAssetManifest(assetManifest)
+            );
         _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
     }
 
-    internal void TakeGraphiteShutdownOwnershipAfterThreadJoined() => _graphite?.TakeShutdownOwnershipAfterThreadJoined();
+    internal void TakeGraphiteShutdownOwnershipAfterThreadJoined() =>
+        _graphite?.TakeShutdownOwnershipAfterThreadJoined();
 
     [DllImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -536,7 +712,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
 
     internal void PrepareForUiTeardown(DorotiWindowsDxgiHost host)
     {
-        if (!ReferenceEquals(host, _attachedHost)) return;
+        if (!ReferenceEquals(host, _attachedHost))
+        {
+            return;
+        }
+
         ElementCompositionPreview.SetElementChildVisual(host, null);
         _attachedHost = null;
         _uiTeardown = true;
@@ -544,11 +724,17 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
 
     private void WaitForFence(ulong fenceValue)
     {
-        if (_copyFence!.CompletedValue >= fenceValue) return;
+        if (_copyFence!.CompletedValue >= fenceValue)
+        {
+            return;
+        }
+
         using var completion = new EventWaitHandle(false, EventResetMode.AutoReset);
         _copyFence.SetEventOnCompletion(fenceValue, completion).CheckError();
         if (!completion.WaitOne(TimeSpan.FromSeconds(5)))
+        {
             throw new TimeoutException($"Composition D3D12 fence {fenceValue} did not complete.");
+        }
     }
 
     internal async Task DrainForCloseAsync()
@@ -558,14 +744,24 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         lock (_poolGate)
         {
             if (_asyncCommitFailure is { } failure)
-                throw new InvalidOperationException("Composition completion was not confirmed; retaining the renderer.", failure);
+            {
+                throw new InvalidOperationException(
+                    "Composition completion was not confirmed; retaining the renderer.",
+                    failure
+                );
+            }
         }
     }
 
     internal void Reset()
     {
         if (!_noPendingCommits.Wait(TimeSpan.FromSeconds(5)))
-            throw new TimeoutException("Composition commits did not drain within five seconds during reset.");
+        {
+            throw new TimeoutException(
+                "Composition commits did not drain within five seconds during reset."
+            );
+        }
+
         _invokeOnUiThread(() =>
         {
             if (_attachedHost is not null)
@@ -573,7 +769,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 ElementCompositionPreview.SetElementChildVisual(_attachedHost, null);
                 _attachedHost = null;
             }
-            foreach (var slot in _slots) slot.Dispose();
+            foreach (var slot in _slots)
+            {
+                slot.Dispose();
+            }
+
             _slots.Clear();
             _visual?.Dispose();
             _visual = null;
@@ -583,7 +783,9 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _graphicsDevice = null;
         });
         _front = null;
-        _graphite?.Dispose(); _graphite = null; _graphiteSurface = null;
+        _graphite?.Dispose();
+        _graphite = null;
+        _graphiteSurface = null;
         _backingStore?.Dispose();
         _backingStore = null;
         _on12?.Dispose();
@@ -623,7 +825,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         Reset();
         _noPendingCommits.Dispose();
@@ -643,13 +849,17 @@ internal sealed class WindowsCompositionSurfaceSlot(int id) : IDisposable
     internal void Prepare(CompositionGraphicsDevice graphicsDevice, int width, int height)
     {
         if (State != WindowsCompositionSurfaceSlotState.Free)
+        {
             throw new InvalidOperationException($"Composition slot {Id} is not free.");
+        }
+
         if (Surface is null)
         {
             Surface = graphicsDevice.CreateDrawingSurface2(
                 new SizeInt32(width, height),
                 Microsoft.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized,
-                Microsoft.Graphics.DirectX.DirectXAlphaMode.Premultiplied);
+                Microsoft.Graphics.DirectX.DirectXAlphaMode.Premultiplied
+            );
         }
         else if (Width != width || Height != height)
         {
@@ -663,24 +873,49 @@ internal sealed class WindowsCompositionSurfaceSlot(int id) : IDisposable
     {
         var valid = (State, target) switch
         {
-            (WindowsCompositionSurfaceSlotState.Free, WindowsCompositionSurfaceSlotState.Drawing) => true,
-            (WindowsCompositionSurfaceSlotState.Drawing, WindowsCompositionSurfaceSlotState.GpuWorkQueued) => true,
-            (WindowsCompositionSurfaceSlotState.GpuWorkQueued, WindowsCompositionSurfaceSlotState.DrawEnded) => true,
-            (WindowsCompositionSurfaceSlotState.DrawEnded, WindowsCompositionSurfaceSlotState.PendingVisualCommit) => true,
-            (WindowsCompositionSurfaceSlotState.PendingVisualCommit, WindowsCompositionSurfaceSlotState.Front) => true,
-            (WindowsCompositionSurfaceSlotState.Front, WindowsCompositionSurfaceSlotState.Retired) => true,
-            (WindowsCompositionSurfaceSlotState.Retired, WindowsCompositionSurfaceSlotState.Free) => true,
+            (WindowsCompositionSurfaceSlotState.Free, WindowsCompositionSurfaceSlotState.Drawing) =>
+                true,
+            (
+                WindowsCompositionSurfaceSlotState.Drawing,
+                WindowsCompositionSurfaceSlotState.GpuWorkQueued
+            ) => true,
+            (
+                WindowsCompositionSurfaceSlotState.GpuWorkQueued,
+                WindowsCompositionSurfaceSlotState.DrawEnded
+            ) => true,
+            (
+                WindowsCompositionSurfaceSlotState.DrawEnded,
+                WindowsCompositionSurfaceSlotState.PendingVisualCommit
+            ) => true,
+            (
+                WindowsCompositionSurfaceSlotState.PendingVisualCommit,
+                WindowsCompositionSurfaceSlotState.Front
+            ) => true,
+            (
+                WindowsCompositionSurfaceSlotState.Front,
+                WindowsCompositionSurfaceSlotState.Retired
+            ) => true,
+            (WindowsCompositionSurfaceSlotState.Retired, WindowsCompositionSurfaceSlotState.Free) =>
+                true,
             _ => false,
         };
         if (!valid)
-            throw new InvalidOperationException($"Illegal Composition slot transition {State} -> {target} for {Id}.");
+        {
+            throw new InvalidOperationException(
+                $"Illegal Composition slot transition {State} -> {target} for {Id}."
+            );
+        }
+
         State = target;
     }
 
     internal void AbandonDrawEnded()
     {
         if (State != WindowsCompositionSurfaceSlotState.DrawEnded)
+        {
             throw new InvalidOperationException($"Composition slot {Id} cannot abandon {State}.");
+        }
+
         State = WindowsCompositionSurfaceSlotState.Free;
     }
 
@@ -705,12 +940,15 @@ internal enum WindowsCompositionSurfaceSlotState
 internal static class WindowsCompositionInterop
 {
     private static readonly Guid CompositorInteropIid = new("FAB19398-6D19-4D8A-B752-8F096C396069");
-    private static readonly Guid DrawingSurfaceInteropIid = new("2D6355C2-AD57-4EAE-92E4-4C3EFF65D578");
+    private static readonly Guid DrawingSurfaceInteropIid = new(
+        "2D6355C2-AD57-4EAE-92E4-4C3EFF65D578"
+    );
     private static readonly Guid Texture2DIid = new("6F15AAF2-D208-4E89-9AB4-489535D34F9C");
 
     internal static unsafe CompositionGraphicsDevice CreateGraphicsDevice(
         Compositor compositor,
-        ID3D11Device renderingDevice)
+        ID3D11Device renderingDevice
+    )
     {
         using var interop = ((WinRT.IWinRTObject)compositor).NativeObject.As(CompositorInteropIid);
         var thisPointer = interop.ThisPtr;
@@ -733,7 +971,14 @@ internal static class WindowsCompositionInterop
         var interop = ((WinRT.IWinRTObject)surface).NativeObject.As(DrawingSurfaceInteropIid);
         var thisPointer = interop.ThisPtr;
         var vtable = *(nint**)thisPointer;
-        var begin = (delegate* unmanaged[Stdcall]<nint, void*, Guid*, nint*, WindowsCompositionNativePoint*, int>)vtable[3];
+        var begin = (delegate* unmanaged[Stdcall]<
+            nint,
+            void*,
+            Guid*,
+            nint*,
+            WindowsCompositionNativePoint*,
+            int>)
+            vtable[3];
         nint texture = 0;
         WindowsCompositionNativePoint offset = default;
         var textureIid = Texture2DIid;
@@ -743,7 +988,11 @@ internal static class WindowsCompositionInterop
 
     internal static unsafe void EndDraw(WindowsCompositionActiveDraw draw)
     {
-        if (draw.Ended) return;
+        if (draw.Ended)
+        {
+            return;
+        }
+
         var thisPointer = draw.Interop.ThisPtr;
         var vtable = *(nint**)thisPointer;
         var end = (delegate* unmanaged[Stdcall]<nint, int>)vtable[4];
@@ -757,20 +1006,25 @@ internal static class WindowsCompositionInterop
         using var interop = ((WinRT.IWinRTObject)surface).NativeObject.As(DrawingSurfaceInteropIid);
         var thisPointer = interop.ThisPtr;
         var vtable = *(nint**)thisPointer;
-        var resize = (delegate* unmanaged[Stdcall]<nint, WindowsCompositionNativeSize, int>)vtable[5];
+        var resize = (delegate* unmanaged[Stdcall]<nint, WindowsCompositionNativeSize, int>)
+            vtable[5];
         Check(resize(thisPointer, new WindowsCompositionNativeSize(width, height)));
     }
 
     private static void Check(int hresult)
     {
-        if (hresult < 0) Marshal.ThrowExceptionForHR(hresult);
+        if (hresult < 0)
+        {
+            Marshal.ThrowExceptionForHR(hresult);
+        }
     }
 }
 
 internal sealed class WindowsCompositionActiveDraw(
     WinRT.IObjectReference interop,
     nint texturePointer,
-    WindowsCompositionNativePoint offset)
+    WindowsCompositionNativePoint offset
+)
 {
     internal WinRT.IObjectReference Interop { get; } = interop;
     internal nint TexturePointer { get; set; } = texturePointer;

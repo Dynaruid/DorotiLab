@@ -14,7 +14,16 @@ public class IndexedStack : StatelessWidget
     public virtual long? index { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
 
-    public IndexedStack(Key? key = null, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, StackFit sizing = StackFit.loose, long? index = 0, List<Widget> children = default!) : base(key: key)
+    public IndexedStack(
+        Key? key = null,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null,
+        Clip clipBehavior = Clip.hardEdge,
+        StackFit sizing = StackFit.loose,
+        long? index = 0,
+        List<Widget> children = default!
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.topStart;
         List<Widget> __children = children ?? new List<Widget>();
@@ -28,26 +37,64 @@ public class IndexedStack : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var wrappedChildren = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)children.Count))), (i) =>
-        {
-            var isSelected = i == index;
-            return new _VisibilityScope__indexed_stack(isVisible: isSelected, child: new ExcludeFocus(excluding: !isSelected, child: children[i]));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
-        return new _RawIndexedStack__indexed_stack(alignment: alignment, textDirection: textDirection, clipBehavior: clipBehavior, sizing: sizing, index: index, children: wrappedChildren);
+        var wrappedChildren = new List<Widget>(
+            Enumerable.Select(
+                Enumerable.Range(0, checked((int)checked((long)children.Count))),
+                (i) =>
+                {
+                    var isSelected = i == index;
+                    return new _VisibilityScope__indexed_stack(
+                        isVisible: isSelected,
+                        child: new ExcludeFocus(excluding: !isSelected, child: children[i])
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+        return new _RawIndexedStack__indexed_stack(
+            alignment: alignment,
+            textDirection: textDirection,
+            clipBehavior: clipBehavior,
+            sizing: sizing,
+            index: index,
+            children: wrappedChildren
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _RawIndexedStack__indexed_stack : Stack
 {
     public virtual long? index { get; private set; }
 
-    internal _RawIndexedStack__indexed_stack(AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, StackFit sizing = StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? AlignmentDirectional.topStart, textDirection: textDirection, clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
+    internal _RawIndexedStack__indexed_stack(
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null,
+        Clip clipBehavior = Clip.hardEdge,
+        StackFit sizing = StackFit.loose,
+        long? index = 0,
+        List<Widget> children = default!
+    )
+        : base(
+            alignment: alignment ?? AlignmentDirectional.topStart,
+            textDirection: textDirection,
+            clipBehavior: clipBehavior,
+            children: children ?? new List<Widget>(),
+            fit: sizing
+        )
     {
         this.index = index;
-        System.Diagnostics.Debug.Assert((index is null) || (DartRuntimePrimitives.RequireValue(index) == 0L) && (checked(this.children.Count) == 0L) || (index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked(this.children.Count)));
+        System.Diagnostics.Debug.Assert(
+            (index is null)
+                || (
+                    (DartRuntimePrimitives.RequireValue(index) == 0L)
+                    && (checked(this.children.Count) == 0L)
+                )
+                || (
+                    (index >= 0L)
+                    && (DartRuntimePrimitives.RequireValue(index) < checked(this.children.Count))
+                )
+        );
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -56,7 +103,16 @@ public class _RawIndexedStack__indexed_stack : Stack
         if ((alignment is AlignmentDirectional) && (textDirection is null))
         {
             AlignmentDirectional alignment__as4557 = (AlignmentDirectional)alignment;
-            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: Equals(alignment, AlignmentDirectional.topStart) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null, alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {GetType()}."));
+            DartRuntimePrimitives.Assert(() =>
+                DebugLibrary.debugCheckHasDirectionality(
+                    context,
+                    why: "to resolve the 'alignment' argument",
+                    hint: Equals(alignment, AlignmentDirectional.topStart)
+                        ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction."
+                        : null,
+                    alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {GetType()}."
+                )
+            );
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -65,7 +121,13 @@ public class _RawIndexedStack__indexed_stack : Stack
     public override RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
-        return new RenderIndexedStack(index: index, fit: fit, clipBehavior: clipBehavior, alignment: alignment, textDirection: textDirection ?? Directionality.maybeOf(context));
+        return new RenderIndexedStack(
+            index: index,
+            fit: fit,
+            clipBehavior: clipBehavior,
+            alignment: alignment,
+            textDirection: textDirection ?? Directionality.maybeOf(context)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -73,16 +135,22 @@ public class _RawIndexedStack__indexed_stack : Stack
     {
         var __renderObject = (RenderIndexedStack)renderObject;
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
-        DartRuntimePrimitives.Ignore(((Func<RenderIndexedStack>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.index = index;
-    __cascade.fit = fit;
-    __cascade.clipBehavior = clipBehavior;
-    __cascade.alignment = alignment;
-    __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderIndexedStack>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.index = index;
+                        __cascade.fit = fit;
+                        __cascade.clipBehavior = clipBehavior;
+                        __cascade.alignment = alignment;
+                        __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override MultiChildRenderObjectElement createElement()
@@ -90,26 +158,31 @@ public class _RawIndexedStack__indexed_stack : Stack
         return new _IndexedStackElement__indexed_stack(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectElement
 {
-    internal _IndexedStackElement__indexed_stack(_RawIndexedStack__indexed_stack widget) : base(widget)
-    {
-    }
+    internal _IndexedStackElement__indexed_stack(_RawIndexedStack__indexed_stack widget)
+        : base(widget) { }
 
-    public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)base.widget)!;
+    public override _RawIndexedStack__indexed_stack widget =>
+        ((_RawIndexedStack__indexed_stack?)base.widget)!;
+
     public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         long? indexLocal = widget.index;
         if ((indexLocal is not null) && Enumerable.Any(children))
         {
             long index__6279__value6418 = DartRuntimePrimitives.RequireValue(indexLocal);
-            visitor(children.elementAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__6279__value6418))));
+            visitor(
+                children.elementAt(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(index__6279__value6418)
+                    )
+                )
+            );
         }
     }
-
 }
 
 public class Visibility : StatelessWidget
@@ -124,7 +197,19 @@ public class Visibility : StatelessWidget
     public virtual bool maintainInteractivity { get; private set; } = default!;
     public virtual bool maintainFocusability { get; private set; } = default!;
 
-    public Visibility(Key? key = null, Widget child = default!, Widget replacement = default!, bool visible = true, bool maintainState = false, bool maintainAnimation = false, bool maintainSize = false, bool maintainSemantics = false, bool maintainInteractivity = false, bool maintainFocusability = false) : base(key: key)
+    public Visibility(
+        Key? key = null,
+        Widget child = default!,
+        Widget replacement = default!,
+        bool visible = true,
+        bool maintainState = false,
+        bool maintainAnimation = false,
+        bool maintainSize = false,
+        bool maintainSemantics = false,
+        bool maintainInteractivity = false,
+        bool maintainFocusability = false
+    )
+        : base(key: key)
     {
         Widget __replacement = replacement ?? SizedBox.CreateShrink();
         this.child = child;
@@ -143,9 +228,24 @@ public class Visibility : StatelessWidget
         System.Diagnostics.Debug.Assert(maintainState || !maintainFocusability);
     }
 
-    public static Visibility CreateMaintain(Key? key = null, Widget child = default!, bool visible = true)
+    public static Visibility CreateMaintain(
+        Key? key = null,
+        Widget child = default!,
+        bool visible = true
+    )
     {
-        var __instance = new Visibility(key, child, default!, visible, default!, default!, default!, default!, default!, default!);
+        var __instance = new Visibility(
+            key,
+            child,
+            default!,
+            visible,
+            default!,
+            default!,
+            default!,
+            default!,
+            default!,
+            default!
+        );
         __instance.child = child;
         __instance.visible = visible;
         __instance.maintainState = true;
@@ -162,18 +262,24 @@ public class Visibility : StatelessWidget
     {
         var isVisibleLocal = true;
         var ancestorContext = context;
-        InheritedElement? ancestor = ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
+        InheritedElement? ancestor =
+            ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         while (isVisibleLocal && (ancestor is not null))
         {
-            var scope = ((_VisibilityScope__indexed_stack?)context.dependOnInheritedElement(ancestor))!;
+            var scope = (
+                (_VisibilityScope__indexed_stack?)context.dependOnInheritedElement(ancestor)
+            )!;
             isVisibleLocal = scope.isVisible;
-            ancestor.visitAncestorElements((parent) =>
-            {
-                ancestorContext = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
-                return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-            ancestor = ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
+            ancestor.visitAncestorElements(
+                (parent) =>
+                {
+                    ancestorContext = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
+                    return false;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
+            ancestor =
+                ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         }
         return isVisibleLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -181,10 +287,22 @@ public class Visibility : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget result = new ExcludeFocus(excluding: !visible && !maintainFocusability, child: child);
+        Widget result = new ExcludeFocus(
+            excluding: !visible && !maintainFocusability,
+            child: child
+        );
         if (maintainSize)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: visible, maintainSemantics: maintainSemantics, child: new IgnorePointer(ignoring: !visible && !maintainInteractivity, child: result)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new _Visibility__indexed_stack(
+                    visible: visible,
+                    maintainSemantics: maintainSemantics,
+                    child: new IgnorePointer(
+                        ignoring: !visible && !maintainInteractivity,
+                        child: result
+                    )
+                )
+            );
         }
         else
         {
@@ -195,9 +313,13 @@ public class Visibility : StatelessWidget
             {
                 if (!maintainAnimation)
                 {
-                    result = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: visible, child: result));
+                    result = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new TickerMode(enabled: visible, child: result)
+                    );
                 }
-                result = DartRuntimePrimitives.ConvertValue<Widget>(new Offstage(offstage: !visible, child: result));
+                result = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Offstage(offstage: !visible, child: result)
+                );
             }
             else
             {
@@ -213,21 +335,45 @@ public class Visibility : StatelessWidget
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible"));
-        properties.add(new FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState"));
-        properties.add(new FlagProperty("maintainAnimation", value: maintainAnimation, ifFalse: "maintainAnimation"));
-        properties.add(new FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize"));
-        properties.add(new FlagProperty("maintainSemantics", value: maintainSemantics, ifFalse: "maintainSemantics"));
-        properties.add(new FlagProperty("maintainInteractivity", value: maintainInteractivity, ifFalse: "maintainInteractivity"));
+        properties.add(
+            new FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible")
+        );
+        properties.add(
+            new FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState")
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainAnimation",
+                value: maintainAnimation,
+                ifFalse: "maintainAnimation"
+            )
+        );
+        properties.add(
+            new FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize")
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainSemantics",
+                value: maintainSemantics,
+                ifFalse: "maintainSemantics"
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainInteractivity",
+                value: maintainInteractivity,
+                ifFalse: "maintainInteractivity"
+            )
+        );
     }
-
 }
 
 internal class _VisibilityScope__indexed_stack : InheritedWidget
 {
     public virtual bool isVisible { get; private set; } = default!;
 
-    internal _VisibilityScope__indexed_stack(bool isVisible, Widget child) : base(child: child)
+    internal _VisibilityScope__indexed_stack(bool isVisible, Widget child)
+        : base(child: child)
     {
         this.isVisible = isVisible;
     }
@@ -238,7 +384,6 @@ internal class _VisibilityScope__indexed_stack : InheritedWidget
         return isVisible != __old.isVisible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverVisibility : StatelessWidget
@@ -252,7 +397,18 @@ public class SliverVisibility : StatelessWidget
     public virtual bool maintainSemantics { get; private set; } = default!;
     public virtual bool maintainInteractivity { get; private set; } = default!;
 
-    public SliverVisibility(Key? key = null, Widget sliver = default!, Widget replacementSliver = default!, bool visible = true, bool maintainState = false, bool maintainAnimation = false, bool maintainSize = false, bool maintainSemantics = false, bool maintainInteractivity = false) : base(key: key)
+    public SliverVisibility(
+        Key? key = null,
+        Widget sliver = default!,
+        Widget replacementSliver = default!,
+        bool visible = true,
+        bool maintainState = false,
+        bool maintainAnimation = false,
+        bool maintainSize = false,
+        bool maintainSemantics = false,
+        bool maintainInteractivity = false
+    )
+        : base(key: key)
     {
         Widget __replacementSliver = replacementSliver ?? new SliverToBoxAdapter();
         this.sliver = sliver;
@@ -269,9 +425,24 @@ public class SliverVisibility : StatelessWidget
         System.Diagnostics.Debug.Assert(maintainSize || !maintainInteractivity);
     }
 
-    public static SliverVisibility CreateMaintain(Key? key = null, Widget sliver = default!, Widget replacementSliver = default!, bool visible = true)
+    public static SliverVisibility CreateMaintain(
+        Key? key = null,
+        Widget sliver = default!,
+        Widget replacementSliver = default!,
+        bool visible = true
+    )
     {
-        var __instance = new SliverVisibility(key, sliver, replacementSliver, visible, default!, default!, default!, default!, default!);
+        var __instance = new SliverVisibility(
+            key,
+            sliver,
+            replacementSliver,
+            visible,
+            default!,
+            default!,
+            default!,
+            default!,
+            default!
+        );
         Widget __replacementSliver = replacementSliver ?? new SliverToBoxAdapter();
         __instance.sliver = sliver;
         __instance.replacementSliver = __replacementSliver;
@@ -289,8 +460,17 @@ public class SliverVisibility : StatelessWidget
         if (maintainSize)
         {
             Widget result = sliver;
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: !visible && !maintainInteractivity, sliver: result));
-            return new _SliverVisibility__indexed_stack(visible: visible, maintainSemantics: maintainSemantics, sliver: result);
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new SliverIgnorePointer(
+                    ignoring: !visible && !maintainInteractivity,
+                    sliver: result
+                )
+            );
+            return new _SliverVisibility__indexed_stack(
+                visible: visible,
+                maintainSemantics: maintainSemantics,
+                sliver: result
+            );
         }
         DartRuntimePrimitives.Assert(() => !maintainInteractivity);
         DartRuntimePrimitives.Assert(() => !maintainSemantics);
@@ -300,7 +480,9 @@ public class SliverVisibility : StatelessWidget
             Widget resultLocal = sliver;
             if (!maintainAnimation)
             {
-                resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: visible, child: sliver));
+                resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new TickerMode(enabled: visible, child: sliver)
+                );
             }
             return new SliverOffstage(sliver: resultLocal, offstage: !visible);
         }
@@ -313,14 +495,37 @@ public class SliverVisibility : StatelessWidget
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible"));
-        properties.add(new FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState"));
-        properties.add(new FlagProperty("maintainAnimation", value: maintainAnimation, ifFalse: "maintainAnimation"));
-        properties.add(new FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize"));
-        properties.add(new FlagProperty("maintainSemantics", value: maintainSemantics, ifFalse: "maintainSemantics"));
-        properties.add(new FlagProperty("maintainInteractivity", value: maintainInteractivity, ifFalse: "maintainInteractivity"));
+        properties.add(
+            new FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible")
+        );
+        properties.add(
+            new FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState")
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainAnimation",
+                value: maintainAnimation,
+                ifFalse: "maintainAnimation"
+            )
+        );
+        properties.add(
+            new FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize")
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainSemantics",
+                value: maintainSemantics,
+                ifFalse: "maintainSemantics"
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "maintainInteractivity",
+                value: maintainInteractivity,
+                ifFalse: "maintainInteractivity"
+            )
+        );
     }
-
 }
 
 internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
@@ -328,7 +533,8 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
     public virtual bool visible { get; private set; } = default!;
     public virtual bool maintainSemantics { get; private set; } = default!;
 
-    internal _Visibility__indexed_stack(bool visible, bool maintainSemantics, Widget? child = null) : base(child: child)
+    internal _Visibility__indexed_stack(bool visible, bool maintainSemantics, Widget? child = null)
+        : base(child: child)
     {
         this.visible = visible;
         this.maintainSemantics = maintainSemantics;
@@ -343,15 +549,20 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderVisibility__indexed_stack)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderVisibility__indexed_stack>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.visible = visible;
-    __cascade.maintainSemantics = maintainSemantics;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderVisibility__indexed_stack>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.visible = visible;
+                        __cascade.maintainSemantics = maintainSemantics;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderVisibility__indexed_stack : RenderProxyBox
@@ -393,6 +604,7 @@ public class _RenderVisibility__indexed_stack : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (maintainSemantics || visible)
@@ -409,7 +621,6 @@ public class _RenderVisibility__indexed_stack : RenderProxyBox
         }
         base.paint(context, offset);
     }
-
 }
 
 internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
@@ -417,7 +628,12 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
     public virtual bool visible { get; private set; } = default!;
     public virtual bool maintainSemantics { get; private set; } = default!;
 
-    internal _SliverVisibility__indexed_stack(bool visible, bool maintainSemantics, Widget? sliver = null) : base(child: sliver)
+    internal _SliverVisibility__indexed_stack(
+        bool visible,
+        bool maintainSemantics,
+        Widget? sliver = null
+    )
+        : base(child: sliver)
     {
         this.visible = visible;
         this.maintainSemantics = maintainSemantics;
@@ -432,15 +648,20 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverVisibility__indexed_stack)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSliverVisibility__indexed_stack>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.visible = visible;
-    __cascade.maintainSemantics = maintainSemantics;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSliverVisibility__indexed_stack>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.visible = visible;
+                        __cascade.maintainSemantics = maintainSemantics;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderSliverVisibility__indexed_stack : RenderProxySliver
@@ -482,6 +703,7 @@ public class _RenderSliverVisibility__indexed_stack : RenderProxySliver
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (maintainSemantics || visible)
@@ -498,5 +720,4 @@ public class _RenderSliverVisibility__indexed_stack : RenderProxySliver
         }
         base.paint(context, offset);
     }
-
 }

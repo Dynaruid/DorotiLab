@@ -9,7 +9,11 @@ internal static class WindowsPointerMapping
     internal static PointerDeviceKind Kind(nint extraInfo)
     {
         var signature = unchecked((uint)extraInfo);
-        if ((signature & 0xffffff00u) != 0xff515700u) return PointerDeviceKind.mouse;
+        if ((signature & 0xffffff00u) != 0xff515700u)
+        {
+            return PointerDeviceKind.mouse;
+        }
+
         return (signature & 0x80u) != 0 ? PointerDeviceKind.touch : PointerDeviceKind.stylus;
     }
 }

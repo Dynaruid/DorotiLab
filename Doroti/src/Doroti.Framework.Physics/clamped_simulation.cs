@@ -13,7 +13,13 @@ public class ClampedSimulation : Simulation
     public virtual double dxMin { get; private set; } = default!;
     public virtual double dxMax { get; private set; } = default!;
 
-    public ClampedSimulation(Simulation simulation, double xMin = double.NegativeInfinity, double xMax = double.PositiveInfinity, double dxMin = double.NegativeInfinity, double dxMax = double.PositiveInfinity)
+    public ClampedSimulation(
+        Simulation simulation,
+        double xMin = double.NegativeInfinity,
+        double xMax = double.PositiveInfinity,
+        double dxMin = double.NegativeInfinity,
+        double dxMax = double.PositiveInfinity
+    )
     {
         this.simulation = simulation;
         this.xMin = xMin;
@@ -24,9 +30,14 @@ public class ClampedSimulation : Simulation
         System.Diagnostics.Debug.Assert(dxMax >= dxMin);
     }
 
-    public override double x(double time) => Dart_uiLibrary.clampDouble(simulation.x(time), xMin, xMax);
-    public override double dx(double time) => Dart_uiLibrary.clampDouble(simulation.dx(time), dxMin, dxMax);
-    public override bool isDone(double time) => simulation.isDone(time);
-    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ClampedSimulation")}(simulation: {simulation}, x: {xMin.toStringAsFixed(1L)}..{xMax.toStringAsFixed(1L)}, dx: {dxMin.toStringAsFixed(1L)}..{dxMax.toStringAsFixed(1L)})";
-}
+    public override double x(double time) =>
+        Dart_uiLibrary.clampDouble(simulation.x(time), xMin, xMax);
 
+    public override double dx(double time) =>
+        Dart_uiLibrary.clampDouble(simulation.dx(time), dxMin, dxMax);
+
+    public override bool isDone(double time) => simulation.isDone(time);
+
+    public override string ToString() =>
+        $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ClampedSimulation")}(simulation: {simulation}, x: {xMin.toStringAsFixed(1L)}..{xMax.toStringAsFixed(1L)}, dx: {dxMin.toStringAsFixed(1L)}..{dxMax.toStringAsFixed(1L)})";
+}

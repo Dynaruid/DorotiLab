@@ -7,15 +7,20 @@ using SkiaSharp;
 internal static unsafe class GpuContract
 {
     private static Exception? _failure;
+
     internal static void Run(string library)
     {
         var module = NativeLibrary.Load(library);
         // Qt plugins/QML type registrations can retain code until process exit.
-        var run = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<QtQuickNative.Gpu*, int>, int>)
+        var run = (delegate* unmanaged[Cdecl]<
+            delegate* unmanaged[Cdecl]<QtQuickNative.Gpu*, int>,
+            int>)
             NativeLibrary.GetExport(module, "doroti_test_gpu");
         var result = run(&Validate);
-        if (_failure is not null) throw _failure;
-        if (result != 0) throw new InvalidOperationException($"Qt GPU contract failed: {result}");
+        if (_failure is not null)
+            throw _failure;
+        if (result != 0)
+            throw new InvalidOperationException($"Qt GPU contract failed: {result}");
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -24,24 +29,43 @@ internal static unsafe class GpuContract
         try
         {
             var d = *descriptor;
-            using var gpu = new GraphiteVulkanQuick(d.Instance, d.Physical, d.Device, d.Queue, d.Family, d.ApiVersion);
+            using var gpu = new GraphiteVulkanQuick(
+                d.Instance,
+                d.Physical,
+                d.Device,
+                d.Queue,
+                d.Family,
+                d.ApiVersion
+            );
             gpu.Begin(64, 64).Canvas.Clear(SKColors.Red);
             var front = gpu.Image(0);
-            gpu.Complete(); gpu.MarkPublished();
+            gpu.Complete();
+            gpu.MarkPublished();
             for (var i = 0; i < 10; i++)
             {
                 gpu.Begin(64, 64).Canvas.Clear(SKColors.Blue);
-                if (gpu.Image(0) == front) throw new InvalidOperationException("Staging overwrote a published P image.");
+                if (gpu.Image(0) == front)
+                    throw new InvalidOperationException("Staging overwrote a published P image.");
                 gpu.Complete(); // Simulate native commit rejection AFTER successful copy.
                 gpu.Cancel();
                 gpu.Begin(65, 67).Canvas.Clear(SKColors.Green);
-                if (gpu.Image(0) == front) throw new InvalidOperationException("Superseded resize reused the published image.");
+                if (gpu.Image(0) == front)
+                    throw new InvalidOperationException(
+                        "Superseded resize reused the published image."
+                    );
                 gpu.Cancel(); // Recording cancelled without any submission.
                 gpu.Begin(64, 64).Canvas.Clear(SKColors.Red);
-                if (gpu.Image(0) == front) throw new InvalidOperationException("Cancelled resize lost its published generation.");
-                gpu.Complete(); gpu.MarkPublished(); front = gpu.Image(0);
+                if (gpu.Image(0) == front)
+                    throw new InvalidOperationException(
+                        "Cancelled resize lost its published generation."
+                    );
+                gpu.Complete();
+                gpu.MarkPublished();
+                front = gpu.Image(0);
                 if (gpu.ReservedBytes > 1024 * 1024 || gpu.RetiringLayers > 2)
-                    throw new InvalidOperationException("Repeated cancellation retained unbounded banks.");
+                    throw new InvalidOperationException(
+                        "Repeated cancellation retained unbounded banks."
+                    );
             }
             try
             {
@@ -50,11 +74,20 @@ internal static unsafe class GpuContract
             }
             catch (NotSupportedException) { }
             gpu.Begin(64, 64);
-            if (gpu.Image(0) == front) throw new InvalidOperationException("Budget rejection released the published bank.");
+            if (gpu.Image(0) == front)
+                throw new InvalidOperationException(
+                    "Budget rejection released the published bank."
+                );
             gpu.Cancel();
-            Console.WriteLine($"PASS: 10 Qt GPU submit/rejected-commit/cancelled-resize cycles; bytes={gpu.ReservedBytes}, retiring={gpu.RetiringLayers}");
+            Console.WriteLine(
+                $"PASS: 10 Qt GPU submit/rejected-commit/cancelled-resize cycles; bytes={gpu.ReservedBytes}, retiring={gpu.RetiringLayers}"
+            );
             return 0;
         }
-        catch (Exception error) { _failure = error; return 1; }
+        catch (Exception error)
+        {
+            _failure = error;
+            return 1;
+        }
     }
 }

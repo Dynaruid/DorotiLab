@@ -79,7 +79,8 @@ public sealed record DorotiFrameTraceEntry(
     long FrameworkFrameNumber = 0,
     long CausalFrameId = 0,
     long ContextGeneration = 0,
-    long RecordedAtMicroseconds = 0);
+    long RecordedAtMicroseconds = 0
+);
 
 /// <summary>
 /// Small ring buffer deliberately shared by framework dispatch and host raster.
@@ -88,12 +89,14 @@ public sealed record DorotiFrameTraceEntry(
 public sealed class DorotiFrameTrace
 {
     private const long ActiveMetricsWindowMicroseconds = 100_000;
+
     // A 256-entry trace retained less than two seconds on a high-refresh-rate
     // scroll because each frame contributes several framework/host phases. It
     // routinely evicted the input and scroll-start entries before the terminal
     // present could be inspected. Keep enough metadata for a complete gesture.
     private const int Capacity = 8192;
     private readonly object _gate = new();
+
     // Recording is a hot path (several entries per frame). Keep values in one
     // fixed ring so diagnostics do not allocate a managed object for every
     // phase. Public trace-entry objects are materialized only on Snapshot().
@@ -107,6 +110,7 @@ public sealed class DorotiFrameTrace
     private long _lastMetricsTimestampMicroseconds;
     private readonly HashSet<long> _activeScrollPositions = [];
     private long _lastScrollUpdateArrivalMicroseconds;
+
     // Opt-in diagnostic wall-work clock. TimestampMicroseconds remains the
     // historical causally clamped host clock and must not time phase work.
     public bool MeasureRecordingTime { get; set; }
@@ -116,9 +120,15 @@ public sealed class DorotiFrameTrace
         get
         {
             var now = DorotiFrameClock.Now.Ticks / 10;
-            lock (_gate) return _activeScrollPositions.Count != 0 ||
-                (_lastScrollUpdateArrivalMicroseconds > 0 &&
-                 now - _lastScrollUpdateArrivalMicroseconds <= ActiveMetricsWindowMicroseconds);
+            lock (_gate)
+            {
+                return _activeScrollPositions.Count != 0
+                    || (
+                        _lastScrollUpdateArrivalMicroseconds > 0
+                        && now - _lastScrollUpdateArrivalMicroseconds
+                            <= ActiveMetricsWindowMicroseconds
+                    );
+            }
         }
     }
 
@@ -135,10 +145,11 @@ public sealed class DorotiFrameTrace
             var nowMicroseconds = DorotiFrameClock.Now.Ticks / 10;
             lock (_gate)
             {
-                return _previousMetricsTimestampMicroseconds > 0 &&
-                    _lastMetricsTimestampMicroseconds - _previousMetricsTimestampMicroseconds <=
-                        ActiveMetricsWindowMicroseconds &&
-                    nowMicroseconds - _lastMetricsTimestampMicroseconds <= ActiveMetricsWindowMicroseconds;
+                return _previousMetricsTimestampMicroseconds > 0
+                    && _lastMetricsTimestampMicroseconds - _previousMetricsTimestampMicroseconds
+                        <= ActiveMetricsWindowMicroseconds
+                    && nowMicroseconds - _lastMetricsTimestampMicroseconds
+                        <= ActiveMetricsWindowMicroseconds;
             }
         }
     }
@@ -164,21 +175,24 @@ public sealed class DorotiFrameTrace
         long metricsGeneration = 0,
         long frameworkFrameNumber = 0,
         long causalFrameId = 0,
-        long contextGeneration = 0)
+        long contextGeneration = 0
+    )
     {
         // Activity windows must use this runtime's monotonic arrival clock.
         // Trace timestamps are clamped forward across host/browser clock
         // domains and can therefore be ahead of DorotiFrameClock.Now; using
         // the clamped value here can make an activity appear active forever.
-        var metricsArrivalMicroseconds = phase == DorotiFramePhase.metrics
-            ? DorotiFrameClock.Now.Ticks / 10
-            : 0;
+        var metricsArrivalMicroseconds =
+            phase == DorotiFramePhase.metrics ? DorotiFrameClock.Now.Ticks / 10 : 0;
         lock (_gate)
         {
             var timestampMicroseconds = Math.Max(_lastTimestampMicroseconds, timestamp.Ticks / 10);
             _lastTimestampMicroseconds = timestampMicroseconds;
             if (phase == DorotiFramePhase.input && inputSequence > 0)
+            {
                 _lastInputSequence = inputSequence;
+            }
+
             if (phase == DorotiFramePhase.metrics)
             {
                 _previousMetricsTimestampMicroseconds = _lastMetricsTimestampMicroseconds;
@@ -194,7 +208,7 @@ public sealed class DorotiFrameTrace
                 sceneSequence,
                 surfaceGeneration,
                 reason,
-                Math.Max(0, queueLatency?.Ticks / 10 ?? 0),
+                Math.Max(0, (queueLatency?.Ticks / 10) ?? 0),
                 scrollPositionId,
                 scrollOffset,
                 scrollDelta,
@@ -208,11 +222,22 @@ public sealed class DorotiFrameTrace
                 frameworkFrameNumber,
                 causalFrameId,
                 contextGeneration,
-                MeasureRecordingTime ? DorotiFrameClock.Now.Ticks / 10 : 0);
+                MeasureRecordingTime ? DorotiFrameClock.Now.Ticks / 10 : 0
+            );
             _nextEntryIndex = (_nextEntryIndex + 1) % Capacity;
-            if (_entryCount < Capacity) _entryCount++;
-            FrameworkWorkCounters.Record(_nextSequence, viewId, phase, resizeTargetGeneration,
-                frameworkFrameNumber, sceneSequence);
+            if (_entryCount < Capacity)
+            {
+                _entryCount++;
+            }
+
+            FrameworkWorkCounters.Record(
+                _nextSequence,
+                viewId,
+                phase,
+                resizeTargetGeneration,
+                frameworkFrameNumber,
+                sceneSequence
+            );
         }
     }
 
@@ -224,11 +249,24 @@ public sealed class DorotiFrameTrace
         double? scrollDelta,
         string scrollActivity,
         double? scrollMinExtent = null,
-        double? scrollMaxExtent = null)
+        double? scrollMaxExtent = null
+    )
     {
-        if (phase is not (DorotiFramePhase.scrollStart or
-            DorotiFramePhase.scrollUpdate or DorotiFramePhase.scrollEnd))
-            throw new ArgumentOutOfRangeException(nameof(phase), phase, "A scroll phase is required.");
+        if (
+            phase
+            is not (
+                DorotiFramePhase.scrollStart
+                or DorotiFramePhase.scrollUpdate
+                or DorotiFramePhase.scrollEnd
+            )
+        )
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(phase),
+                phase,
+                "A scroll phase is required."
+            );
+        }
 
         long inputSequence;
         lock (_gate)
@@ -238,39 +276,76 @@ public sealed class DorotiFrameTrace
             // the quiet interval active across those events, using arrival time
             // rather than the causally clamped host trace timestamp.
             if (phase == DorotiFramePhase.scrollUpdate && scrollDelta is not (null or 0))
+            {
                 _lastScrollUpdateArrivalMicroseconds = DorotiFrameClock.Now.Ticks / 10;
-            if (phase == DorotiFramePhase.scrollStart) _activeScrollPositions.Add(scrollPositionId);
-            else if (phase == DorotiFramePhase.scrollEnd) _activeScrollPositions.Remove(scrollPositionId);
+            }
+
+            if (phase == DorotiFramePhase.scrollStart)
+            {
+                _activeScrollPositions.Add(scrollPositionId);
+            }
+            else if (phase == DorotiFramePhase.scrollEnd)
+            {
+                _activeScrollPositions.Remove(scrollPositionId);
+            }
         }
-        Record(phase, viewId, DorotiFrameClock.Now, inputSequence,
-            scrollPositionId: scrollPositionId, scrollOffset: scrollOffset,
-            scrollDelta: scrollDelta, scrollActivity: scrollActivity,
-            scrollMinExtent: scrollMinExtent, scrollMaxExtent: scrollMaxExtent);
+        Record(
+            phase,
+            viewId,
+            DorotiFrameClock.Now,
+            inputSequence,
+            scrollPositionId: scrollPositionId,
+            scrollOffset: scrollOffset,
+            scrollDelta: scrollDelta,
+            scrollActivity: scrollActivity,
+            scrollMinExtent: scrollMinExtent,
+            scrollMaxExtent: scrollMaxExtent
+        );
     }
 
-    public void RecordTicker(
-        DorotiFramePhase phase,
-        long tickerId,
-        string tickerLabel)
+    public void RecordTicker(DorotiFramePhase phase, long tickerId, string tickerLabel)
     {
         if (phase is not (DorotiFramePhase.animationStart or DorotiFramePhase.animationEnd))
-            throw new ArgumentOutOfRangeException(nameof(phase), phase, "An animation phase is required.");
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(phase),
+                phase,
+                "An animation phase is required."
+            );
+        }
 
         long inputSequence;
-        lock (_gate) inputSequence = _lastInputSequence;
-        Record(phase, 0, DorotiFrameClock.Now, inputSequence,
-            tickerId: tickerId, tickerLabel: tickerLabel);
+        lock (_gate)
+        {
+            inputSequence = _lastInputSequence;
+        }
+
+        Record(
+            phase,
+            0,
+            DorotiFrameClock.Now,
+            inputSequence,
+            tickerId: tickerId,
+            tickerLabel: tickerLabel
+        );
     }
 
     public IReadOnlyList<DorotiFrameTraceEntry> Snapshot()
     {
         lock (_gate)
         {
-            if (_entries is null) return Array.Empty<DorotiFrameTraceEntry>();
+            if (_entries is null)
+            {
+                return Array.Empty<DorotiFrameTraceEntry>();
+            }
+
             var snapshot = new DorotiFrameTraceEntry[_entryCount];
             var firstIndex = _entryCount == Capacity ? _nextEntryIndex : 0;
             for (var index = 0; index < _entryCount; index++)
+            {
                 snapshot[index] = _entries[(firstIndex + index) % Capacity].ToEntry();
+            }
+
             return snapshot;
         }
     }
@@ -298,31 +373,34 @@ public sealed class DorotiFrameTrace
         long FrameworkFrameNumber,
         long CausalFrameId,
         long ContextGeneration,
-        long RecordedAtMicroseconds)
+        long RecordedAtMicroseconds
+    )
     {
-        internal DorotiFrameTraceEntry ToEntry() => new(
-            Sequence,
-            TimestampMicroseconds,
-            Phase,
-            ViewId,
-            InputSequence,
-            SceneSequence,
-            SurfaceGeneration,
-            Reason,
-            QueueLatencyMicroseconds,
-            ScrollPositionId,
-            ScrollOffset,
-            ScrollDelta,
-            ScrollActivity,
-            ScrollMinExtent,
-            ScrollMaxExtent,
-            TickerId,
-            TickerLabel,
-            ResizeTargetGeneration,
-            MetricsGeneration,
-            FrameworkFrameNumber,
-            CausalFrameId,
-            ContextGeneration,
-            RecordedAtMicroseconds);
+        internal DorotiFrameTraceEntry ToEntry() =>
+            new(
+                Sequence,
+                TimestampMicroseconds,
+                Phase,
+                ViewId,
+                InputSequence,
+                SceneSequence,
+                SurfaceGeneration,
+                Reason,
+                QueueLatencyMicroseconds,
+                ScrollPositionId,
+                ScrollOffset,
+                ScrollDelta,
+                ScrollActivity,
+                ScrollMinExtent,
+                ScrollMaxExtent,
+                TickerId,
+                TickerLabel,
+                ResizeTargetGeneration,
+                MetricsGeneration,
+                FrameworkFrameNumber,
+                CausalFrameId,
+                ContextGeneration,
+                RecordedAtMicroseconds
+            );
     }
 }

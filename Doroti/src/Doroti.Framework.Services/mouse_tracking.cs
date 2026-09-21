@@ -26,7 +26,9 @@ public sealed class MouseTrackerCallback<TEvent> : IMouseTrackerCallback
     {
         if (@event is not TEvent typedEvent)
         {
-            throw new InvalidCastException($"Mouse tracker callback expected {typeof(TEvent).FullName}.");
+            throw new InvalidCastException(
+                $"Mouse tracker callback expected {typeof(TEvent).FullName}."
+            );
         }
 
         _callback(typedEvent);
@@ -48,10 +50,17 @@ public class MouseTrackerAnnotation : Diagnosticable, IMouseTrackerAnnotation
     public virtual MouseCursor cursor { get; private set; } = default!;
     public virtual bool validForMouseTracker { get; private set; } = default!;
 
-    public MouseTrackerAnnotation(Action<PointerEnterEvent>? onEnter = null, Action<PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true)
+    public MouseTrackerAnnotation(
+        Action<PointerEnterEvent>? onEnter = null,
+        Action<PointerExitEvent>? onExit = null,
+        MouseCursor cursor = default!,
+        bool validForMouseTracker = true
+    )
     {
         MouseCursor __cursor = cursor ?? MouseCursor.defer;
-        this.onEnter = onEnter is null ? null : new MouseTrackerCallback<PointerEnterEvent>(onEnter);
+        this.onEnter = onEnter is null
+            ? null
+            : new MouseTrackerCallback<PointerEnterEvent>(onEnter);
         this.onExit = onExit is null ? null : new MouseTrackerCallback<PointerExitEvent>(onExit);
         this.cursor = __cursor;
         this.validForMouseTracker = validForMouseTracker;
@@ -60,8 +69,19 @@ public class MouseTrackerAnnotation : Diagnosticable, IMouseTrackerAnnotation
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<IMouseTrackerCallback?>("callbacks", new DartMap<string, IMouseTrackerCallback?> { ["enter"] = onEnter, ["exit"] = onExit }, ifEmpty: "<none>"));
-        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer));
+        properties.add(
+            new FlagsSummary<IMouseTrackerCallback?>(
+                "callbacks",
+                new DartMap<string, IMouseTrackerCallback?>
+                {
+                    ["enter"] = onEnter,
+                    ["exit"] = onExit,
+                },
+                ifEmpty: "<none>"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer)
+        );
     }
-
 }

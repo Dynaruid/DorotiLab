@@ -14,7 +14,8 @@ public sealed class DartCompiler
         CompilerDumpOptions? dumpOptions = null,
         string? telemetryPath = null,
         int? analyzerWorkers = null,
-        int? loweringParallelism = null) =>
+        int? loweringParallelism = null
+    ) =>
         ArtifactPublisher.CompileAndPublish(
             manifestPath,
             outputDirectory,
@@ -23,7 +24,8 @@ public sealed class DartCompiler
             dumpOptions,
             telemetryPath,
             analyzerWorkers,
-            loweringParallelism);
+            loweringParallelism
+        );
 
     public CompilerWorkspace CompileToWorkspace(
         string manifestPath,
@@ -33,7 +35,8 @@ public sealed class DartCompiler
         CompilerDumpOptions? dumpOptions = null,
         string? telemetryPath = null,
         int? analyzerWorkers = null,
-        int? loweringParallelism = null)
+        int? loweringParallelism = null
+    )
     {
         var workspaceId = ComputeWorkspaceId(manifestPath);
         var path = Path.Combine(Path.GetFullPath(workspaceRoot), workspaceId);
@@ -45,14 +48,18 @@ public sealed class DartCompiler
             dumpOptions,
             telemetryPath,
             analyzerWorkers,
-            loweringParallelism);
+            loweringParallelism
+        );
         if (report.Identity.WorkspaceId != workspaceId)
         {
-            throw new InvalidDataException("Compiler workspace identity changed during generation.");
+            throw new InvalidDataException(
+                "Compiler workspace identity changed during generation."
+            );
         }
 
         return new(path, report);
     }
 
-    public string ComputeWorkspaceId(string manifestPath) => WorkspaceFingerprint.Compute(manifestPath);
+    public string ComputeWorkspaceId(string manifestPath) =>
+        WorkspaceFingerprint.Compute(manifestPath);
 }

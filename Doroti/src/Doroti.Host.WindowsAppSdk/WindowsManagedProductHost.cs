@@ -7,22 +7,24 @@ using Doroti.Ui;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed unsafe class WindowsManagedProductHost :
-    IViewHostCapability,
-    IFrameHostCapability,
-    ILatestMetricsFrameHostCapability,
-    IInputHostCapability,
-    IViewFocusRequestCapability,
-    IPlatformServicesHostCapability,
-    IUrlLauncherHostCapability,
-    IPlatformEnvironmentHostCapability,
-    ITextInputHostCapability,
-    ISkiaSceneRendererHost
+internal sealed unsafe class WindowsManagedProductHost
+    : IViewHostCapability,
+        IFrameHostCapability,
+        ILatestMetricsFrameHostCapability,
+        IInputHostCapability,
+        IViewFocusRequestCapability,
+        IPlatformServicesHostCapability,
+        IUrlLauncherHostCapability,
+        IPlatformEnvironmentHostCapability,
+        ITextInputHostCapability,
+        ISkiaSceneRendererHost
 {
     private readonly object _gate = new();
     private readonly object _nativeGate = new();
     private readonly WindowsNativeV1.Host _native;
-    private readonly WindowsManagedResizeCoordinator _coordinator = new(TimeSpan.FromMilliseconds(100));
+    private readonly WindowsManagedResizeCoordinator _coordinator = new(
+        TimeSpan.FromMilliseconds(100)
+    );
     private readonly HashSet<long> _resizeTerminalGenerations = [];
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
     private readonly Queue<Action> _pendingInput = [];
@@ -37,25 +39,59 @@ internal sealed unsafe class WindowsManagedProductHost :
     private readonly Hosting.WindowsPrecisionTrackpad _trackpad;
     private readonly Hosting.WindowsNativePointerInput _nativePointers;
 
-    internal WindowsManagedProductHost(in WindowsNativeV1.Host native, int logicalWidth, int logicalHeight)
+    internal WindowsManagedProductHost(
+        in WindowsNativeV1.Host native,
+        int logicalWidth,
+        int logicalHeight
+    )
     {
-        if (native.AbiVersion != WindowsNativeV1.AbiVersion ||
-            native.StructSize < sizeof(WindowsNativeV1.Host) ||
-            native.HostContext == 0 || native.TopLevelHwnd == 0 || native.ChildHwnd == 0 ||
-            native.OpaqueChildHwnd == 0 || native.TaskHwnd == 0 ||
-            native.RequestFrame == 0 || native.RequestResize == 0 || native.RequestClose == 0 || native.RequestShow == 0 ||
-            native.RequestOpaqueFallback == 0 ||
-            native.SetCompositionChild == 0 ||
-            native.SetCursor == 0 || native.SetClipboard == 0 || native.RequestClipboard == 0 ||
-            native.SetTextClient == 0 || native.UpdateTextState == 0 || native.SetCaretRect == 0 ||
-            native.ClearTextClient == 0 || native.UpdateSemantics == 0 || native.ClearSemantics == 0 ||
-            !Enum.IsDefined((Brightness)native.InitialPlatformBrightness))
+        if (
+            native.AbiVersion != WindowsNativeV1.AbiVersion
+            || native.StructSize < sizeof(WindowsNativeV1.Host)
+            || native.HostContext == 0
+            || native.TopLevelHwnd == 0
+            || native.ChildHwnd == 0
+            || native.OpaqueChildHwnd == 0
+            || native.TaskHwnd == 0
+            || native.RequestFrame == 0
+            || native.RequestResize == 0
+            || native.RequestClose == 0
+            || native.RequestShow == 0
+            || native.RequestOpaqueFallback == 0
+            || native.SetCompositionChild == 0
+            || native.SetCursor == 0
+            || native.SetClipboard == 0
+            || native.RequestClipboard == 0
+            || native.SetTextClient == 0
+            || native.UpdateTextState == 0
+            || native.SetCaretRect == 0
+            || native.ClearTextClient == 0
+            || native.UpdateSemantics == 0
+            || native.ClearSemantics == 0
+            || !Enum.IsDefined((Brightness)native.InitialPlatformBrightness)
+        )
+        {
             throw new InvalidDataException("The native product host table is invalid.");
+        }
+
         _native = native;
-        Metrics = new(new Size(logicalWidth, logicalHeight), 1, ViewPadding.zero,
-            ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
-        Configuration = new(ResolveLocales(), (Brightness)native.InitialPlatformBrightness,
-            false, false, HostOperatingSystem.windows);
+        Metrics = new(
+            new Size(logicalWidth, logicalHeight),
+            1,
+            ViewPadding.zero,
+            ViewPadding.zero,
+            ViewPadding.zero,
+            AppLifecycleState.resumed,
+            0,
+            0
+        );
+        Configuration = new(
+            ResolveLocales(),
+            (Brightness)native.InitialPlatformBrightness,
+            false,
+            false,
+            HostOperatingSystem.windows
+        );
         void DispatchNativePacket(PointerDataPacket packet)
         {
             var sequence = Interlocked.Increment(ref _inputSequence);
@@ -72,18 +108,29 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal nint ChildHwnd => _native.ChildHwnd;
     internal nint TopLevelHwnd => _native.TopLevelHwnd;
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
+
     internal bool IsLatestResizeGeneration(ulong generation) =>
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
+
     internal bool IsInputSequenceCurrent(long inputSequence) => inputSequence >= InputSequence;
-    public ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+
+    public ValueTask<UrlLaunchResult> LaunchUrlAsync(
+        string absoluteUrl,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
-            using var process = Process.Start(new ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
+            using var process = Process.Start(
+                new ProcessStartInfo(absoluteUrl) { UseShellExecute = true }
+            );
             return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.opened));
         }
-        catch (Exception error) { return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message)); }
+        catch (Exception error)
+        {
+            return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message));
+        }
     }
 
     private long _resizeGeneration;
@@ -93,24 +140,33 @@ internal sealed unsafe class WindowsManagedProductHost :
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
-    public DorotiResizeEpoch ResizeTarget => new(
-        _resizeGeneration,
-        Metrics.logicalSize.width,
-        Metrics.logicalSize.height,
-        checked((int)Math.Round(Metrics.physicalSize.width)),
-        checked((int)Math.Round(Metrics.physicalSize.height)),
-        Metrics.devicePixelRatio,
-        DorotiFrameClock.Now.Ticks / 10);
+    public DorotiResizeEpoch ResizeTarget =>
+        new(
+            _resizeGeneration,
+            Metrics.logicalSize.width,
+            Metrics.logicalSize.height,
+            checked((int)Math.Round(Metrics.physicalSize.width)),
+            checked((int)Math.Round(Metrics.physicalSize.height)),
+            Metrics.devicePixelRatio,
+            DorotiFrameClock.Now.Ticks / 10
+        );
     public DorotiViewEpoch ViewEpoch
     {
         get
         {
             var target = ResizeTarget;
-            return new(1, target.Generation, Metrics.generation,
-                target.LogicalWidth, target.LogicalHeight,
-                target.PhysicalWidth, target.PhysicalHeight,
-                target.DeviceScaleX, target.DeviceScaleY,
-                target.TimestampMicroseconds);
+            return new(
+                1,
+                target.Generation,
+                Metrics.generation,
+                target.LogicalWidth,
+                target.LogicalHeight,
+                target.PhysicalWidth,
+                target.PhysicalHeight,
+                target.DeviceScaleX,
+                target.DeviceScaleY,
+                target.TimestampMicroseconds
+            );
         }
     }
 
@@ -130,44 +186,107 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal void ApplyMetrics(in WindowsNativeV1.Metrics metrics)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (metrics.AbiVersion != WindowsNativeV1.AbiVersion ||
-            metrics.StructSize < sizeof(WindowsNativeV1.Metrics) || metrics.ViewId != 1 ||
-            metrics.Generation == 0 || metrics.WidthPx == 0 || metrics.HeightPx == 0 ||
-            !double.IsFinite(metrics.Scale) || metrics.Scale <= 0)
+        if (
+            metrics.AbiVersion != WindowsNativeV1.AbiVersion
+            || metrics.StructSize < sizeof(WindowsNativeV1.Metrics)
+            || metrics.ViewId != 1
+            || metrics.Generation == 0
+            || metrics.WidthPx == 0
+            || metrics.HeightPx == 0
+            || !double.IsFinite(metrics.Scale)
+            || metrics.Scale <= 0
+        )
+        {
             throw new InvalidDataException("Native product metrics are invalid.");
-        if ((long)metrics.Generation < _resizeGeneration || (long)metrics.EnvironmentGeneration < _environmentGeneration) return;
+        }
+
+        if (
+            (long)metrics.Generation < _resizeGeneration
+            || (long)metrics.EnvironmentGeneration < _environmentGeneration
+        )
+        {
+            return;
+        }
+
         if ((long)metrics.Generation > _resizeGeneration)
         {
-            var target = _coordinator.Publish(1, checked((int)metrics.WidthPx), checked((int)metrics.HeightPx),
-                metrics.Scale, 0, checked((long)metrics.Generation));
+            var target = _coordinator.Publish(
+                1,
+                checked((int)metrics.WidthPx),
+                checked((int)metrics.HeightPx),
+                metrics.Scale,
+                0,
+                checked((long)metrics.Generation)
+            );
             if (target.Generation != checked((long)metrics.Generation))
+            {
                 throw new InvalidDataException("Native and managed resize generations diverged.");
+            }
         }
-        else if (metrics.WidthPx != Metrics.physicalSize.width || metrics.HeightPx != Metrics.physicalSize.height ||
-                 metrics.Scale != Metrics.devicePixelRatio)
-            throw new InvalidDataException("An environment event changed geometry without a resize generation.");
-        var next = new ViewMetrics(new Size(metrics.WidthPx, metrics.HeightPx), metrics.Scale,
-            metrics.ViewPadding, metrics.ViewInsets, metrics.SystemGestureInsets, AppLifecycleState.resumed,
-            ++_metricsGeneration, checked((long)metrics.Generation));
+        else if (
+            metrics.WidthPx != Metrics.physicalSize.width
+            || metrics.HeightPx != Metrics.physicalSize.height
+            || metrics.Scale != Metrics.devicePixelRatio
+        )
+        {
+            throw new InvalidDataException(
+                "An environment event changed geometry without a resize generation."
+            );
+        }
+
+        var next = new ViewMetrics(
+            new Size(metrics.WidthPx, metrics.HeightPx),
+            metrics.Scale,
+            metrics.ViewPadding,
+            metrics.ViewInsets,
+            metrics.SystemGestureInsets,
+            AppLifecycleState.resumed,
+            ++_metricsGeneration,
+            checked((long)metrics.Generation)
+        );
         _resizeGeneration = checked((long)metrics.Generation);
         _environmentGeneration = checked((long)metrics.EnvironmentGeneration);
-        var configuration = Configuration with { locales = ResolveLocales(), textScaleFactor = metrics.TextScaleFactor > 0 ? metrics.TextScaleFactor : 1,
+        var configuration = Configuration with
+        {
+            locales = ResolveLocales(),
+            textScaleFactor = metrics.TextScaleFactor > 0 ? metrics.TextScaleFactor : 1,
             alwaysUse24HourFormat = metrics.AlwaysUse24Hour != 0,
-            accessibilityFeatures = new(false, false, (metrics.AccessibilityFlags & 1) != 0, false,
-                (metrics.AccessibilityFlags & 2) != 0, false, false) };
+            accessibilityFeatures = new(
+                false,
+                false,
+                (metrics.AccessibilityFlags & 1) != 0,
+                false,
+                (metrics.AccessibilityFlags & 2) != 0,
+                false,
+                false
+            ),
+        };
         Metrics = next.Validate();
-        if (!configuration.HasSameValues(Configuration)) { Configuration = configuration; ConfigurationChanged?.Invoke(configuration); }
+        if (!configuration.HasSameValues(Configuration))
+        {
+            Configuration = configuration;
+            ConfigurationChanged?.Invoke(configuration);
+        }
         MetricsChanged?.Invoke(next);
     }
 
     internal bool BeginFrame(in WindowsNativeV1.FrameRequest request)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (request.AbiVersion != WindowsNativeV1.AbiVersion ||
-            request.StructSize < sizeof(WindowsNativeV1.FrameRequest) || request.ViewId != 1 ||
-            !_coordinator.ValidateExact(checked((long)request.Generation),
-                checked((int)request.WidthPx), checked((int)request.HeightPx)))
+        if (
+            request.AbiVersion != WindowsNativeV1.AbiVersion
+            || request.StructSize < sizeof(WindowsNativeV1.FrameRequest)
+            || request.ViewId != 1
+            || !_coordinator.ValidateExact(
+                checked((long)request.Generation),
+                checked((int)request.WidthPx),
+                checked((int)request.HeightPx)
+            )
+        )
+        {
             throw new InvalidDataException("Native frame request failed exact admission.");
+        }
+
         Action<TimeSpan, DorotiViewEpoch>? callback;
         while (true)
         {
@@ -188,7 +307,10 @@ internal sealed unsafe class WindowsManagedProductHost :
                     break;
                 }
             }
-            foreach (var dispatch in input) dispatch();
+            foreach (var dispatch in input)
+            {
+                dispatch();
+            }
         }
         callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
         return callback is not null;
@@ -196,44 +318,93 @@ internal sealed unsafe class WindowsManagedProductHost :
 
     internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)
     {
-        if (terminal.AbiVersion != WindowsNativeV1.AbiVersion ||
-            terminal.StructSize < sizeof(WindowsNativeV1.FrameTerminal) || terminal.ViewId != 1)
+        if (
+            terminal.AbiVersion != WindowsNativeV1.AbiVersion
+            || terminal.StructSize < sizeof(WindowsNativeV1.FrameTerminal)
+            || terminal.ViewId != 1
+        )
+        {
             throw new InvalidDataException("Native frame terminal is invalid.");
+        }
+
         var kind = (WindowsNativeV1.FrameTerminalKind)terminal.TerminalKind switch
         {
             WindowsNativeV1.FrameTerminalKind.Presented => WindowsResizeTerminal.Presented,
             WindowsNativeV1.FrameTerminalKind.Superseded => WindowsResizeTerminal.Superseded,
             WindowsNativeV1.FrameTerminalKind.Failed => WindowsResizeTerminal.Failed,
-            _ => throw new InvalidDataException($"Unknown native terminal {terminal.TerminalKind}."),
+            _ => throw new InvalidDataException(
+                $"Unknown native terminal {terminal.TerminalKind}."
+            ),
         };
         var generation = checked((long)terminal.Generation);
         lock (_gate)
         {
-            if (!_resizeTerminalGenerations.Add(generation)) return;
+            if (!_resizeTerminalGenerations.Add(generation))
+            {
+                return;
+            }
         }
-        if (_coordinator.IsComplete(generation)) return;
-        if (!_coordinator.TryComplete(
-                generation, kind, $"native causal frame {terminal.CausalFrameId}", enforceLatest: false))
-            throw new InvalidDataException($"Resize generation {terminal.Generation} received an invalid terminal.");
+        if (_coordinator.IsComplete(generation))
+        {
+            return;
+        }
+
+        if (
+            !_coordinator.TryComplete(
+                generation,
+                kind,
+                $"native causal frame {terminal.CausalFrameId}",
+                enforceLatest: false
+            )
+        )
+        {
+            throw new InvalidDataException(
+                $"Resize generation {terminal.Generation} received an invalid terminal."
+            );
+        }
     }
 
     internal void ApplyPointer(in WindowsNativeV1.Pointer value)
     {
-        if (value.AbiVersion != WindowsNativeV1.AbiVersion || value.StructSize < sizeof(WindowsNativeV1.Pointer) ||
-            value.ViewId != 1 || !Enum.IsDefined((PointerChange)value.Change) ||
-            !Enum.IsDefined((PointerDeviceKind)value.Kind) || !Enum.IsDefined((PointerSignalKind)value.SignalKind) ||
-            value.Device < 0)
+        if (
+            value.AbiVersion != WindowsNativeV1.AbiVersion
+            || value.StructSize < sizeof(WindowsNativeV1.Pointer)
+            || value.ViewId != 1
+            || !Enum.IsDefined((PointerChange)value.Change)
+            || !Enum.IsDefined((PointerDeviceKind)value.Kind)
+            || !Enum.IsDefined((PointerSignalKind)value.SignalKind)
+            || value.Device < 0
+        )
+        {
             throw new InvalidDataException("Native pointer packet is invalid.");
+        }
+
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
-        var packet = new PointerDataPacket((PointerData[])[
-            new(1, timestamp, (PointerChange)value.Change, (PointerDeviceKind)value.Kind,
-                checked((ulong)value.Device), value.PhysicalX, value.PhysicalY,
-                value.PhysicalDeltaX, value.PhysicalDeltaY, value.Buttons,
-                value.ScrollDeltaX, value.ScrollDeltaY, (PointerSignalKind)value.SignalKind,
-                value.PointerIdentifier, pressure: value.Pressure, tilt: value.Tilt,
-                platformData: value.PlatformData)
-        ]);
+        var packet = new PointerDataPacket(
+            (PointerData[])
+                [
+                    new(
+                        1,
+                        timestamp,
+                        (PointerChange)value.Change,
+                        (PointerDeviceKind)value.Kind,
+                        checked((ulong)value.Device),
+                        value.PhysicalX,
+                        value.PhysicalY,
+                        value.PhysicalDeltaX,
+                        value.PhysicalDeltaY,
+                        value.Buttons,
+                        value.ScrollDeltaX,
+                        value.ScrollDeltaY,
+                        (PointerSignalKind)value.SignalKind,
+                        value.PointerIdentifier,
+                        pressure: value.Pressure,
+                        tilt: value.Tilt,
+                        platformData: value.PlatformData
+                    ),
+                ]
+        );
         EnqueueInput(() =>
         {
             PointerData?.Invoke(packet);
@@ -243,9 +414,16 @@ internal sealed unsafe class WindowsManagedProductHost :
 
     internal void ApplyKey(in WindowsNativeV1.Key value, string character)
     {
-        if (value.AbiVersion != WindowsNativeV1.AbiVersion || value.StructSize < sizeof(WindowsNativeV1.Key) ||
-            value.ViewId != 1 || !Enum.IsDefined((KeyEventType)value.Type))
+        if (
+            value.AbiVersion != WindowsNativeV1.AbiVersion
+            || value.StructSize < sizeof(WindowsNativeV1.Key)
+            || value.ViewId != 1
+            || !Enum.IsDefined((KeyEventType)value.Type)
+        )
+        {
             throw new InvalidDataException("Native key packet is invalid.");
+        }
+
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
         var type = (KeyEventType)value.Type;
@@ -253,12 +431,27 @@ internal sealed unsafe class WindowsManagedProductHost :
         var logical = WindowsKeyMap.Logical(value.Physical, value.Logical, character);
         if (type == KeyEventType.up)
         {
-            if (_pressedLogicalKeys.Remove(physical, out var pressedLogical)) logical = pressedLogical;
+            if (_pressedLogicalKeys.Remove(physical, out var pressedLogical))
+            {
+                logical = pressedLogical;
+            }
         }
-        else _pressedLogicalKeys[physical] = logical;
-        var key = new KeyData(1, timestamp, type,
-            physical, logical, false,
-            value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character) ? null : character);
+        else
+        {
+            _pressedLogicalKeys[physical] = logical;
+        }
+
+        var key = new KeyData(
+            1,
+            timestamp,
+            type,
+            physical,
+            logical,
+            false,
+            value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character)
+                ? null
+                : character
+        );
         EnqueueInput(() =>
         {
             KeyData?.Invoke(key);
@@ -275,10 +468,21 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal void ApplyLifecycle(uint value)
     {
         if (!Enum.IsDefined((AppLifecycleState)value))
+        {
             throw new InvalidDataException($"Native lifecycle state {value} is invalid.");
+        }
+
         var lifecycle = (AppLifecycleState)value;
-        if (lifecycle == AppLifecycleState.detached) _nativeActive = false;
-        if (Metrics.lifecycleState == lifecycle) return;
+        if (lifecycle == AppLifecycleState.detached)
+        {
+            _nativeActive = false;
+        }
+
+        if (Metrics.lifecycleState == lifecycle)
+        {
+            return;
+        }
+
         Metrics = Metrics with { lifecycleState = lifecycle };
         LifecycleChanged?.Invoke(lifecycle);
     }
@@ -286,9 +490,16 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal void ApplyPlatformBrightness(uint value)
     {
         if (!Enum.IsDefined((Brightness)value))
+        {
             throw new InvalidDataException($"Native platform brightness {value} is invalid.");
+        }
+
         var brightness = (Brightness)value;
-        if (Configuration.platformBrightness == brightness) return;
+        if (Configuration.platformBrightness == brightness)
+        {
+            return;
+        }
+
         Configuration = Configuration with { platformBrightness = brightness };
         ConfigurationChanged?.Invoke(Configuration);
     }
@@ -296,33 +507,65 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal void CompleteClipboard(ulong requestId, string text)
     {
         TaskCompletionSource<string?>? completion;
-        lock (_gate) _clipboardRequests.Remove(requestId, out completion);
+        lock (_gate)
+        {
+            _clipboardRequests.Remove(requestId, out completion);
+        }
+
         completion?.TrySetResult(text);
     }
 
-    internal void ApplyTextEditing(string text, int selectionBase, int selectionExtent,
-        int composingBase, int composingExtent)
+    internal void ApplyTextEditing(
+        string text,
+        int selectionBase,
+        int selectionExtent,
+        int composingBase,
+        int composingExtent
+    )
     {
-        if (selectionBase < 0 || selectionBase > text.Length || selectionExtent < 0 || selectionExtent > text.Length ||
-            !((composingBase == -1 && composingExtent == -1) ||
-              (composingBase >= 0 && composingBase <= text.Length && composingExtent >= 0 && composingExtent <= text.Length)))
+        if (
+            selectionBase < 0
+            || selectionBase > text.Length
+            || selectionExtent < 0
+            || selectionExtent > text.Length
+            || !(
+                (composingBase == -1 && composingExtent == -1)
+                || (
+                    composingBase >= 0
+                    && composingBase <= text.Length
+                    && composingExtent >= 0
+                    && composingExtent <= text.Length
+                )
+            )
+        )
+        {
             throw new InvalidDataException("Native text editing ranges are invalid.");
-        DorotiTextSelection? composing = composingBase >= 0 ? new(composingBase, composingExtent) : null;
-        EnqueueInput(() => EditingStateChanged?.Invoke(
-            new(text, new(selectionBase, selectionExtent), composing)));
+        }
+
+        DorotiTextSelection? composing =
+            composingBase >= 0 ? new(composingBase, composingExtent) : null;
+        EnqueueInput(() =>
+            EditingStateChanged?.Invoke(new(text, new(selectionBase, selectionExtent), composing))
+        );
     }
 
     internal void ApplyTextAction(uint action)
     {
         if (!Enum.IsDefined((DorotiTextInputAction)action))
+        {
             throw new InvalidDataException($"Native text action {action} is invalid.");
+        }
+
         EnqueueInput(() => ActionPerformed?.Invoke((DorotiTextInputAction)action));
     }
 
     internal void ApplySemanticsAction(long nodeId, long action, string argumentsJson)
     {
         if (nodeId is < int.MinValue or > int.MaxValue || action == 0)
+        {
             throw new InvalidDataException("Native semantics action is invalid.");
+        }
+
         object? arguments = null;
         if (!string.IsNullOrWhiteSpace(argumentsJson) && argumentsJson != "null")
         {
@@ -334,20 +577,31 @@ internal sealed unsafe class WindowsManagedProductHost :
     }
 
     public void Show() => Invoke(_native.RequestShow);
+
     public void Close()
     {
-        if (!_disposed && _nativeActive) Invoke(_native.RequestClose);
+        if (!_disposed && _nativeActive)
+        {
+            Invoke(_native.RequestClose);
+        }
     }
 
     public void Resize(Size logicalSize)
     {
         ArgumentNullException.ThrowIfNull(logicalSize);
-        if (!logicalSize.IsFinite || logicalSize.IsEmpty) throw new ArgumentOutOfRangeException(nameof(logicalSize));
+        if (!logicalSize.IsFinite || logicalSize.IsEmpty)
+        {
+            throw new ArgumentOutOfRangeException(nameof(logicalSize));
+        }
+
         var width = checked((uint)Math.Round(logicalSize.width * Metrics.devicePixelRatio));
         var height = checked((uint)Math.Round(logicalSize.height * Metrics.devicePixelRatio));
         var resize = (delegate* unmanaged[Cdecl]<nint, uint, uint, uint>)_native.RequestResize;
         var status = resize(_native.HostContext, width, height);
-        if (status != 0) throw new InvalidOperationException($"Native resize request failed: {status}.");
+        if (status != 0)
+        {
+            throw new InvalidOperationException($"Native resize request failed: {status}.");
+        }
     }
 
     public void ScheduleFrame(Action<TimeSpan> callback)
@@ -362,12 +616,19 @@ internal sealed unsafe class WindowsManagedProductHost :
         ScheduleFrame(expectedEpoch, (timestamp, _) => callback(timestamp));
     }
 
-    public void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan, DorotiViewEpoch> callback)
+    public void ScheduleFrame(
+        DorotiViewEpoch expectedEpoch,
+        Action<TimeSpan, DorotiViewEpoch> callback
+    )
     {
         ArgumentNullException.ThrowIfNull(expectedEpoch);
         ArgumentNullException.ThrowIfNull(callback);
         ObjectDisposedException.ThrowIf(_disposed, this);
-        lock (_gate) _pendingFrame = callback;
+        lock (_gate)
+        {
+            _pendingFrame = callback;
+        }
+
         RequestInvalidate();
     }
 
@@ -378,7 +639,10 @@ internal sealed unsafe class WindowsManagedProductHost :
         // gate; a plain bool check leaves a check/call destruction race.
         lock (_nativeGate)
         {
-            if (!_disposed && _nativeActive) Invoke(_native.RequestFrame);
+            if (!_disposed && _nativeActive)
+            {
+                Invoke(_native.RequestFrame);
+            }
         }
     }
 
@@ -392,10 +656,16 @@ internal sealed unsafe class WindowsManagedProductHost :
     {
         var function = (delegate* unmanaged[Cdecl]<nint, uint, uint>)_native.SetCursor;
         var status = function(_native.HostContext, (uint)cursor);
-        if (status != 0) throw new InvalidOperationException($"Native cursor request failed: {status}.");
+        if (status != 0)
+        {
+            throw new InvalidOperationException($"Native cursor request failed: {status}.");
+        }
     }
 
-    public ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
+    public ValueTask SetClipboardTextAsync(
+        string text,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(text);
         cancellationToken.ThrowIfCancellationRequested();
@@ -411,9 +681,13 @@ internal sealed unsafe class WindowsManagedProductHost :
                 Data = (nint)data,
                 ByteLength = checked((ulong)bytes.Length),
             };
-            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)_native.SetClipboard;
+            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)
+                _native.SetClipboard;
             var status = function(_native.HostContext, value);
-            if (status != 0) throw new InvalidOperationException($"Native clipboard write failed: {status}.");
+            if (status != 0)
+            {
+                throw new InvalidOperationException($"Native clipboard write failed: {status}.");
+            }
         }
         return ValueTask.CompletedTask;
     }
@@ -421,7 +695,9 @@ internal sealed unsafe class WindowsManagedProductHost :
     public ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var completion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var completion = new TaskCompletionSource<string?>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
         ulong requestId;
         lock (_gate)
         {
@@ -432,13 +708,20 @@ internal sealed unsafe class WindowsManagedProductHost :
         var status = function(_native.HostContext, requestId);
         if (status != 0)
         {
-            lock (_gate) _clipboardRequests.Remove(requestId);
+            lock (_gate)
+            {
+                _clipboardRequests.Remove(requestId);
+            }
+
             throw new InvalidOperationException($"Native clipboard read failed: {status}.");
         }
         return new(completion.Task);
     }
 
-    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
+    public void SetClient(
+        DorotiTextInputConfiguration configuration,
+        DorotiTextEditingState initialState
+    )
     {
         ValidateTextState(initialState);
         var native = new WindowsNativeV1.TextConfiguration
@@ -448,45 +731,78 @@ internal sealed unsafe class WindowsManagedProductHost :
             InputType = (uint)configuration.inputType,
             InputAction = (uint)configuration.inputAction,
             Capitalization = (uint)configuration.textCapitalization,
-            Flags = (configuration.readOnly ? 1u : 0u) |
-                    (configuration.obscureText ? 2u : 0u) |
-                    (configuration.autocorrect ? 4u : 0u) |
-                    (configuration.enableSuggestions ? 8u : 0u),
+            Flags =
+                (configuration.readOnly ? 1u : 0u)
+                | (configuration.obscureText ? 2u : 0u)
+                | (configuration.autocorrect ? 4u : 0u)
+                | (configuration.enableSuggestions ? 8u : 0u),
         };
         var bytes = Encoding.UTF8.GetBytes(initialState.text);
         fixed (byte* data = bytes)
         {
             var state = CreateTextState(initialState, data, bytes.Length);
-            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextConfiguration*, WindowsNativeV1.TextState*, uint>)_native.SetTextClient;
+            var function = (delegate* unmanaged[Cdecl]<
+                nint,
+                WindowsNativeV1.TextConfiguration*,
+                WindowsNativeV1.TextState*,
+                uint>)
+                _native.SetTextClient;
             var status = function(_native.HostContext, &native, &state);
-            if (status != 0) throw new InvalidOperationException($"Native text set-client failed: {status}.");
+            if (status != 0)
+            {
+                throw new InvalidOperationException($"Native text set-client failed: {status}.");
+            }
         }
     }
 
     public void UpdateState(DorotiTextEditingState state) =>
-        InvokeTextState(state, (WindowsNativeV1.TextState* native) =>
-        {
-            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, uint>)_native.UpdateTextState;
-            return function(_native.HostContext, native);
-        }, "update-state");
+        InvokeTextState(
+            state,
+            (WindowsNativeV1.TextState* native) =>
+            {
+                var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, uint>)
+                    _native.UpdateTextState;
+                return function(_native.HostContext, native);
+            },
+            "update-state"
+        );
 
     public void SetCaretRect(Rect logicalRect)
     {
-        if (!logicalRect.IsFinite) throw new ArgumentOutOfRangeException(nameof(logicalRect));
-        var function = (delegate* unmanaged[Cdecl]<nint, double, double, double, double, uint>)_native.SetCaretRect;
-        var status = function(_native.HostContext, logicalRect.left, logicalRect.top,
-            logicalRect.width, logicalRect.height);
-        if (status != 0) throw new InvalidOperationException($"Native text caret request failed: {status}.");
+        if (!logicalRect.IsFinite)
+        {
+            throw new ArgumentOutOfRangeException(nameof(logicalRect));
+        }
+
+        var function = (delegate* unmanaged[Cdecl]<nint, double, double, double, double, uint>)
+            _native.SetCaretRect;
+        var status = function(
+            _native.HostContext,
+            logicalRect.left,
+            logicalRect.top,
+            logicalRect.width,
+            logicalRect.height
+        );
+        if (status != 0)
+        {
+            throw new InvalidOperationException($"Native text caret request failed: {status}.");
+        }
     }
 
     public void ClearClient()
     {
-        if (!_disposed && _nativeActive) Invoke(_native.ClearTextClient);
+        if (!_disposed && _nativeActive)
+        {
+            Invoke(_native.ClearTextClient);
+        }
     }
 
     internal void MarkNativeStopped()
     {
-        lock (_nativeGate) _nativeActive = false;
+        lock (_nativeGate)
+        {
+            _nativeActive = false;
+        }
     }
 
     public void UpdateSemantics(SemanticsUpdate update)
@@ -494,59 +810,92 @@ internal sealed unsafe class WindowsManagedProductHost :
         ArgumentNullException.ThrowIfNull(update);
         var nodes = update.nodes.Select(node => new
         {
-            node.id, node.label, node.value, role = node.role.ToString(),
-            actions = (long)node.actions, children = node.children,
-            node.identifier, node.hint, node.tooltip, node.headingLevel, node.linkUrl,
-            node.increasedValue, node.decreasedValue,
+            node.id,
+            node.label,
+            node.value,
+            role = node.role.ToString(),
+            actions = (long)node.actions,
+            children = node.children,
+            node.identifier,
+            node.hint,
+            node.tooltip,
+            node.headingLevel,
+            node.linkUrl,
+            node.increasedValue,
+            node.decreasedValue,
             validationResult = node.validationResult.ToString(),
-            node.minValue, node.maxValue, node.scrollPosition, node.scrollExtentMin, node.scrollExtentMax,
-            flags = node.flags is null ? null : new
-            {
-                enabled = node.flags.isEnabled.toBoolOrNull() ?? true,
-                focused = node.flags.isFocused.toBoolOrNull() ?? false,
-                focusable = node.flags.isFocused != Tristate.none,
-                button = node.flags.isButton,
-                textField = node.flags.isTextField,
-                hidden = node.flags.isHidden,
-                slider = node.flags.isSlider,
-                readOnly = node.flags.isReadOnly,
-                @checked = node.flags.isChecked.ToString(),
-                selected = node.flags.isSelected.toBoolOrNull(),
-                toggled = node.flags.isToggled.toBoolOrNull(),
-                expanded = node.flags.isExpanded.toBoolOrNull(),
-                required = node.flags.isRequired.toBoolOrNull(),
-                mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
-                header = node.flags.isHeader,
-                image = node.flags.isImage,
-                liveRegion = node.flags.isLiveRegion,
-                link = node.flags.isLink,
-                obscured = node.flags.isObscured,
-            },
-            node.textSelectionBase, node.textSelectionExtent,
+            node.minValue,
+            node.maxValue,
+            node.scrollPosition,
+            node.scrollExtentMin,
+            node.scrollExtentMax,
+            flags = node.flags is null
+                ? null
+                : new
+                {
+                    enabled = node.flags.isEnabled.toBoolOrNull() ?? true,
+                    focused = node.flags.isFocused.toBoolOrNull() ?? false,
+                    focusable = node.flags.isFocused != Tristate.none,
+                    button = node.flags.isButton,
+                    textField = node.flags.isTextField,
+                    hidden = node.flags.isHidden,
+                    slider = node.flags.isSlider,
+                    readOnly = node.flags.isReadOnly,
+                    @checked = node.flags.isChecked.ToString(),
+                    selected = node.flags.isSelected.toBoolOrNull(),
+                    toggled = node.flags.isToggled.toBoolOrNull(),
+                    expanded = node.flags.isExpanded.toBoolOrNull(),
+                    required = node.flags.isRequired.toBoolOrNull(),
+                    mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
+                    header = node.flags.isHeader,
+                    image = node.flags.isImage,
+                    liveRegion = node.flags.isLiveRegion,
+                    link = node.flags.isLink,
+                    obscured = node.flags.isObscured,
+                },
+            node.textSelectionBase,
+            node.textSelectionExtent,
             rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
         });
-        InvokeUtf8(_native.UpdateSemantics,
+        InvokeUtf8(
+            _native.UpdateSemantics,
             JsonSerializer.Serialize(new { generation = update.generation, nodes }),
-            "semantics-update");
+            "semantics-update"
+        );
     }
 
     public void ClearSemantics()
     {
-        if (!_disposed && _nativeActive) Invoke(_native.ClearSemantics);
+        if (!_disposed && _nativeActive)
+        {
+            Invoke(_native.ClearSemantics);
+        }
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         _trackpad.Dispose();
         _nativePointers.Dispose();
         _coordinator.Close();
-        lock (_gate) _pendingFrame = null;
+        lock (_gate)
+        {
+            _pendingFrame = null;
+        }
+
         lock (_gate)
         {
             _pendingInput.Clear();
-            foreach (var request in _clipboardRequests.Values) request.TrySetCanceled();
+            foreach (var request in _clipboardRequests.Values)
+            {
+                request.TrySetCanceled();
+            }
+
             _clipboardRequests.Clear();
         }
         GC.KeepAlive(MetricsChanged);
@@ -568,12 +917,19 @@ internal sealed unsafe class WindowsManagedProductHost :
     {
         var function = (delegate* unmanaged[Cdecl]<nint, uint>)callback;
         var status = function(_native.HostContext);
-        if (status != 0) throw new InvalidOperationException($"Native host task request failed: {status}.");
+        if (status != 0)
+        {
+            throw new InvalidOperationException($"Native host task request failed: {status}.");
+        }
     }
 
     private delegate uint TextStateCall(WindowsNativeV1.TextState* state);
 
-    private static void InvokeTextState(DorotiTextEditingState state, TextStateCall call, string operation)
+    private static void InvokeTextState(
+        DorotiTextEditingState state,
+        TextStateCall call,
+        string operation
+    )
     {
         ValidateTextState(state);
         var bytes = Encoding.UTF8.GetBytes(state.text);
@@ -581,35 +937,56 @@ internal sealed unsafe class WindowsManagedProductHost :
         {
             var native = CreateTextState(state, data, bytes.Length);
             var status = call(&native);
-            if (status != 0) throw new InvalidOperationException($"Native text {operation} failed: {status}.");
+            if (status != 0)
+            {
+                throw new InvalidOperationException($"Native text {operation} failed: {status}.");
+            }
         }
     }
 
     private static WindowsNativeV1.TextState CreateTextState(
-        DorotiTextEditingState state, byte* data, int byteLength) => new()
-    {
-        AbiVersion = WindowsNativeV1.AbiVersion,
-        StructSize = checked((uint)sizeof(WindowsNativeV1.TextState)),
-        Text = new WindowsNativeV1.Utf8
+        DorotiTextEditingState state,
+        byte* data,
+        int byteLength
+    ) =>
+        new()
         {
             AbiVersion = WindowsNativeV1.AbiVersion,
-            StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
-            Data = (nint)data,
-            ByteLength = checked((ulong)byteLength),
-        },
-        SelectionBase = state.selection.baseOffset,
-        SelectionExtent = state.selection.extentOffset,
-        ComposingBase = state.composingRange?.baseOffset ?? -1,
-        ComposingExtent = state.composingRange?.extentOffset ?? -1,
-    };
+            StructSize = checked((uint)sizeof(WindowsNativeV1.TextState)),
+            Text = new WindowsNativeV1.Utf8
+            {
+                AbiVersion = WindowsNativeV1.AbiVersion,
+                StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
+                Data = (nint)data,
+                ByteLength = checked((ulong)byteLength),
+            },
+            SelectionBase = state.selection.baseOffset,
+            SelectionExtent = state.selection.extentOffset,
+            ComposingBase = state.composingRange?.baseOffset ?? -1,
+            ComposingExtent = state.composingRange?.extentOffset ?? -1,
+        };
 
     private static void ValidateTextState(DorotiTextEditingState state)
     {
         ArgumentNullException.ThrowIfNull(state.text);
         // Flutter represents an attached controller with no current selection as (-1, -1).
-        ValidateSelection(state.selection, state.text.Length, nameof(state.selection), allowAbsent: true);
-        if (state.composingRange is not { } composing) return;
-        ValidateSelection(composing, state.text.Length, nameof(state.composingRange), allowAbsent: false);
+        ValidateSelection(
+            state.selection,
+            state.text.Length,
+            nameof(state.selection),
+            allowAbsent: true
+        );
+        if (state.composingRange is not { } composing)
+        {
+            return;
+        }
+
+        ValidateSelection(
+            composing,
+            state.text.Length,
+            nameof(state.composingRange),
+            allowAbsent: false
+        );
     }
 
     private void InvokeUtf8(nint callback, string text, string operation)
@@ -626,16 +1003,31 @@ internal sealed unsafe class WindowsManagedProductHost :
             };
             var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)callback;
             var status = function(_native.HostContext, value);
-            if (status != 0) throw new InvalidOperationException($"Native {operation} failed: {status}.");
+            if (status != 0)
+            {
+                throw new InvalidOperationException($"Native {operation} failed: {status}.");
+            }
         }
     }
 
     private static void ValidateSelection(
-        DorotiTextSelection selection, int length, string name, bool allowAbsent)
+        DorotiTextSelection selection,
+        int length,
+        string name,
+        bool allowAbsent
+    )
     {
-        if (allowAbsent && selection is { baseOffset: -1, extentOffset: -1 }) return;
-        if (selection.baseOffset < 0 || selection.baseOffset > length ||
-            selection.extentOffset < 0 || selection.extentOffset > length)
+        if (allowAbsent && selection is { baseOffset: -1, extentOffset: -1 })
+        {
+            return;
+        }
+
+        if (
+            selection.baseOffset < 0
+            || selection.baseOffset > length
+            || selection.extentOffset < 0
+            || selection.extentOffset > length
+        )
         {
             throw new ArgumentOutOfRangeException(name);
         }
@@ -645,21 +1037,38 @@ internal sealed unsafe class WindowsManagedProductHost :
 
     private void EnqueueInput(Action dispatch)
     {
-        lock (_gate) _pendingInput.Enqueue(dispatch);
+        lock (_gate)
+        {
+            _pendingInput.Enqueue(dispatch);
+        }
+
         RequestInvalidate();
     }
 
     private static IReadOnlyList<Locale> ResolveLocales()
     {
         var languages = Windows.System.UserProfile.GlobalizationPreferences.Languages;
-        if (languages.Count > 0) return languages.Select(tag =>
+        if (languages.Count > 0)
         {
-            var pieces = tag.Split('-');
-            return new Locale(pieces[0], pieces.Skip(1).FirstOrDefault(p => p.Length is 2 or 3),
-                pieces.Skip(1).FirstOrDefault(p => p.Length == 4));
-        }).ToArray();
-        var parts = CultureInfo.CurrentUICulture.Name.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        return (Locale[])[new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
+            return languages
+                .Select(tag =>
+                {
+                    var pieces = tag.Split('-');
+                    return new Locale(
+                        pieces[0],
+                        pieces.Skip(1).FirstOrDefault(p => p.Length is 2 or 3),
+                        pieces.Skip(1).FirstOrDefault(p => p.Length == 4)
+                    );
+                })
+                .ToArray();
+        }
+
+        var parts = CultureInfo.CurrentUICulture.Name.Split(
+            '-',
+            StringSplitOptions.RemoveEmptyEntries
+        );
+        return (Locale[])
+            [new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
     }
 
     private TimeSpan MapTimestamp(long qpc)

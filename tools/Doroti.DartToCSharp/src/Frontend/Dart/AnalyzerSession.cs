@@ -9,14 +9,16 @@ internal sealed record AnalyzerBatchCompletion(
     string SchemaVersion,
     int AnalysisContextCount,
     long ContextSetupMicroseconds,
-    AnalyzerBatchCompletionItem[] Items);
+    AnalyzerBatchCompletionItem[] Items
+);
 
 internal sealed record AnalyzerBatchCompletionItem(
     int Ordinal,
     string OutputPath,
     long OutputBytes,
     long ElapsedMicroseconds,
-    string DependenciesPath);
+    string DependenciesPath
+);
 
 internal sealed record AnalyzerDependencyFingerprint(string Path, string Sha256);
 
@@ -28,11 +30,16 @@ internal sealed class AnalyzerSession(string analyzerRoot, CompilerProfiler prof
         string? cacheDirectory,
         bool syntaxOnly,
         bool useFrameworkPackageConfig,
-        string? applicationPackageConfig = null)
+        string? applicationPackageConfig = null
+    )
     {
-        var packageConfigPath = applicationPackageConfig ?? (useFrameworkPackageConfig
-            ? Path.Combine(analyzerRoot, "flutter_package_config.json")
-            : null);
+        var packageConfigPath =
+            applicationPackageConfig
+            ?? (
+                useFrameworkPackageConfig
+                    ? Path.Combine(analyzerRoot, "flutter_package_config.json")
+                    : null
+            );
         AnalyzerSessionIdentity identity;
         using (profiler.MeasureLibrary("analyzer-session-identity", $"{inputs.Count} input(s)"))
         {
@@ -60,11 +67,17 @@ internal sealed class AnalyzerSession(string analyzerRoot, CompilerProfiler prof
                 misses.Add((input, cacheKey));
             }
         }
-        if (misses.Count == 0) return results;
+        if (misses.Count == 0)
+        {
+            return results;
+        }
 
         var dorotiRoot = RepositoryLocalStorage.FindDorotiRoot(analyzerRoot);
         var localRoot = RepositoryLocalStorage.ResolveRoot(dorotiRoot);
-        var sessionDirectory = RepositoryLocalStorage.CreateTemporaryDirectory(dorotiRoot, "analyzer-session");
+        var sessionDirectory = RepositoryLocalStorage.CreateTemporaryDirectory(
+            dorotiRoot,
+            "analyzer-session"
+        );
         try
         {
             var requestPath = Path.Combine(sessionDirectory, "request.json");
@@ -73,39 +86,67 @@ internal sealed class AnalyzerSession(string analyzerRoot, CompilerProfiler prof
                 schemaVersion = "doroti.dart-analyzer-batch/v1",
                 syntaxOnly,
                 packagesPath = packageConfigPath,
-                items = misses.Select((item, index) => new
-                {
-                    ordinal = index,
-                    path = item.Input.PhysicalPath,
-                    outputPath = Path.Combine(sessionDirectory, $"item-{index:D5}.json"),
-                }).ToArray(),
+                items = misses
+                    .Select(
+                        (item, index) =>
+                            new
+                            {
+                                ordinal = index,
+                                path = item.Input.PhysicalPath,
+                                outputPath = Path.Combine(
+                                    sessionDirectory,
+                                    $"item-{index:D5}.json"
+                                ),
+                            }
+                    )
+                    .ToArray(),
             };
             ArtifactFiles.WriteJson(requestPath, request);
             profiler.RecordDartProcess();
             ProcessResult process;
-            using (profiler.MeasureLibrary("dart-batch-startup-resolve-extract-json", $"{misses.Count} input(s)"))
+            using (
+                profiler.MeasureLibrary(
+                    "dart-batch-startup-resolve-extract-json",
+                    $"{misses.Count} input(s)"
+                )
+            )
             {
                 process = ProcessRunner.Run(
                     "dart",
                     ["run", "entrypoints/extract_batch.dart", requestPath],
                     analyzerRoot,
-                    new Dictionary<string, string?> { [RepositoryLocalStorage.EnvironmentVariable] = localRoot });
+                    new Dictionary<string, string?>
+                    {
+                        [RepositoryLocalStorage.EnvironmentVariable] = localRoot,
+                    }
+                );
             }
             process.EnsureSuccess("Dart analyzer batch");
-            var completion = JsonSerializer.Deserialize<AnalyzerBatchCompletion>(
-                process.StandardOutput,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? throw new InvalidDataException("Dart analyzer batch returned an empty completion record.");
-            if (completion.SchemaVersion != "doroti.dart-analyzer-batch-completion/v1" || completion.Items.Length != misses.Count)
+            var completion =
+                JsonSerializer.Deserialize<AnalyzerBatchCompletion>(
+                    process.StandardOutput,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                )
+                ?? throw new InvalidDataException(
+                    "Dart analyzer batch returned an empty completion record."
+                );
+            if (
+                completion.SchemaVersion != "doroti.dart-analyzer-batch-completion/v1"
+                || completion.Items.Length != misses.Count
+            )
             {
-                throw new InvalidDataException("Dart analyzer batch completion record is incomplete or unsupported.");
+                throw new InvalidDataException(
+                    "Dart analyzer batch completion record is incomplete or unsupported."
+                );
             }
             profiler.RecordAnalysisContext(completion.AnalysisContextCount);
             foreach (var completionItem in completion.Items.OrderBy(item => item.Ordinal))
             {
                 var miss = misses[completionItem.Ordinal];
                 var payload = File.ReadAllText(completionItem.OutputPath);
-                var dependencies = ArtifactFiles.ReadJson<AnalyzerDependencyFingerprint[]>(completionItem.DependenciesPath);
+                var dependencies = ArtifactFiles.ReadJson<AnalyzerDependencyFingerprint[]>(
+                    completionItem.DependenciesPath
+                );
                 results[miss.Input.Ordinal] = payload;
                 cacheStore?.Write(miss.CacheKey, payload, dependencies);
             }

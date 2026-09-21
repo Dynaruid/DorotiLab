@@ -18,6 +18,7 @@ public class Priority
     }
 
     public virtual long value => _value;
+
     public virtual Priority op_Add(long offset)
     {
         if (offset.abs() > kMaxOffset)
@@ -30,4 +31,3 @@ public class Priority
 
     public virtual Priority op_Subtract(long offset) => op_Add(-offset);
 }
-

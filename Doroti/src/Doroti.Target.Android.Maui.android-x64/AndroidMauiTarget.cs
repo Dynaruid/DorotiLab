@@ -11,7 +11,14 @@ public static class AndroidMauiTarget
 
     public static void EnsureSupported()
     {
-        if (!OperatingSystem.IsAndroid() || RuntimeInformation.ProcessArchitecture != Architecture.X64)
-            throw new PlatformNotSupportedException("Doroti.Target.Android.Maui.android-x64 requires an Android x64 process.");
+        if (
+            !OperatingSystem.IsAndroid()
+            || RuntimeInformation.ProcessArchitecture != Architecture.X64
+        )
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Target.Android.Maui.android-x64 requires an Android x64 process."
+            );
+        }
     }
 }

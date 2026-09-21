@@ -2,7 +2,8 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/foundation/observer_list.dart
 namespace Doroti.Framework.Foundation;
 
-public class ObserverList<T> : IEnumerable<T> where T : notnull
+public class ObserverList<T> : IEnumerable<T>
+    where T : notnull
 {
     private List<T> _list { get; } = new List<T>();
     private bool _isDirty = false;
@@ -47,19 +48,23 @@ public class ObserverList<T> : IEnumerable<T> where T : notnull
     }
 
     public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+
     public int Count => _list.Count;
     public T single => _list.Single();
     public bool isEmpty => _list.Count == 0;
     public bool isNotEmpty => _list.Count != 0;
+
     public List<T> toList(bool growable = true)
     {
         return _list.ToList();
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+        GetEnumerator();
 }
 
-public class HashedObserverList<T> : IEnumerable<T> where T : notnull
+public class HashedObserverList<T> : IEnumerable<T>
+    where T : notnull
 {
     private Dictionary<T, int?> _map { get; } = new Dictionary<T, int?>();
 
@@ -87,20 +92,35 @@ public class HashedObserverList<T> : IEnumerable<T> where T : notnull
     }
 
     public void clear() => _map.Clear();
+
     public bool contains(T element) => _map.ContainsKey(element);
+
     public IEnumerator<T> GetEnumerator() => _map.Keys.GetEnumerator();
+
     public bool isEmpty => _map.Count == 0;
     public bool isNotEmpty => _map.Count != 0;
+
     public List<T> toList(bool growable = true)
     {
         IEnumerator<T> iterator = _map.Keys.GetEnumerator();
-        return new List<T>(Enumerable.Select(Enumerable.Range(0, _map.Count), (_) => ((Func<IEnumerator<T>>)(() =>
-{
-    var __cascade = GetEnumerator();
-    __cascade.MoveNext();
-    return __cascade;
-}))().Current));
+        return new List<T>(
+            Enumerable.Select(
+                Enumerable.Range(0, _map.Count),
+                (_) =>
+                    (
+                        (Func<IEnumerator<T>>)(
+                            () =>
+                            {
+                                var __cascade = GetEnumerator();
+                                __cascade.MoveNext();
+                                return __cascade;
+                            }
+                        )
+                    )().Current
+            )
+        );
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+        GetEnumerator();
 }

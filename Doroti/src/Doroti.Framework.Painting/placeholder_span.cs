@@ -11,13 +11,22 @@ public abstract class PlaceholderSpan : InlineSpan
     public virtual PlaceholderAlignment alignment { get; private set; } = default!;
     public virtual TextBaseline? baseline { get; private set; }
 
-    protected PlaceholderSpan(PlaceholderAlignment alignment = PlaceholderAlignment.bottom, TextBaseline? baseline = null, TextStyle? style = null) : base(style: style)
+    protected PlaceholderSpan(
+        PlaceholderAlignment alignment = PlaceholderAlignment.bottom,
+        TextBaseline? baseline = null,
+        TextStyle? style = null
+    )
+        : base(style: style)
     {
         this.alignment = alignment;
         this.baseline = baseline;
     }
 
-    public override void computeToPlainText(StringBuffer buffer, bool includeSemanticsLabels = true, bool includePlaceholders = true)
+    public override void computeToPlainText(
+        StringBuffer buffer,
+        bool includeSemanticsLabels = true,
+        bool includePlaceholders = true
+    )
     {
         if (includePlaceholders)
         {
@@ -25,7 +34,11 @@ public abstract class PlaceholderSpan : InlineSpan
         }
     }
 
-    public override void computeSemanticsInformation(List<InlineSpanSemanticsInformation> collector, Locale? inheritedLocale = null, bool inheritedSpellOut = false)
+    public override void computeSemanticsInformation(
+        List<InlineSpanSemanticsInformation> collector,
+        Locale? inheritedLocale = null,
+        bool inheritedSpellOut = false
+    )
     {
         collector.Add(InlineSpanSemanticsInformation.placeholder);
     }
@@ -33,7 +46,9 @@ public abstract class PlaceholderSpan : InlineSpan
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<PlaceholderAlignment>("alignment", alignment, defaultValue: null));
+        properties.add(
+            new EnumProperty<PlaceholderAlignment>("alignment", alignment, defaultValue: null)
+        );
         properties.add(new EnumProperty<TextBaseline>("baseline", baseline, defaultValue: null));
     }
 
@@ -43,6 +58,4 @@ public abstract class PlaceholderSpan : InlineSpan
         return base.debugAssertIsValid();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

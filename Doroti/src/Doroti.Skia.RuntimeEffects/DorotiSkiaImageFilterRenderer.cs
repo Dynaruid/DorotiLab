@@ -11,38 +11,69 @@ internal static class DorotiSkiaImageFilterRenderer
     private const long MaxCacheableImagePixels = 4L * 1024 * 1024;
     private const long MaxCachedImagePixels = 16L * 1024 * 1024;
     private static readonly object PoolGate = new();
-    private static readonly Dictionary<(string Backend, long ContextGeneration, object? Owner), SurfacePool> SurfacePools = [];
+    private static readonly Dictionary<
+        (string Backend, long ContextGeneration, object? Owner),
+        SurfacePool
+    > SurfacePools = [];
     private static long _surfacesCreated;
     private static long _surfaceReuses;
     private static long _imageCacheHits;
     private static long _imageCacheMisses;
 
-    internal static (long Created, long Reused, long Active, long CacheHits, long CacheMisses) Diagnostics
+    internal static (
+        long Created,
+        long Reused,
+        long Active,
+        long CacheHits,
+        long CacheMisses
+    ) Diagnostics
     {
         get
         {
             lock (PoolGate)
-                return (Interlocked.Read(ref _surfacesCreated), Interlocked.Read(ref _surfaceReuses),
+            {
+                return (
+                    Interlocked.Read(ref _surfacesCreated),
+                    Interlocked.Read(ref _surfaceReuses),
                     SurfacePools.Values.Sum(pool => (long)pool.ActiveCount),
-                    Interlocked.Read(ref _imageCacheHits), Interlocked.Read(ref _imageCacheMisses));
+                    Interlocked.Read(ref _imageCacheHits),
+                    Interlocked.Read(ref _imageCacheMisses)
+                );
+            }
         }
     }
 
-    internal static void BeginFrame(string backend, long contextGeneration, object? contextOwner = null)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(backend);
-        lock (PoolGate)
-            GetOrCreatePool(backend, contextGeneration, contextOwner).BeginFrame();
-    }
-
-    internal static void InvalidateContext(string backend, long currentContextGeneration, object? contextOwner = null)
+    internal static void BeginFrame(
+        string backend,
+        long contextGeneration,
+        object? contextOwner = null
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(backend);
         lock (PoolGate)
         {
-            foreach (var key in SurfacePools.Keys.Where(key =>
-                         ReferenceEquals(key.Owner, contextOwner) && string.Equals(key.Backend, backend, StringComparison.Ordinal) &&
-                         key.ContextGeneration != currentContextGeneration).ToArray())
+            GetOrCreatePool(backend, contextGeneration, contextOwner).BeginFrame();
+        }
+    }
+
+    internal static void InvalidateContext(
+        string backend,
+        long currentContextGeneration,
+        object? contextOwner = null
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(backend);
+        lock (PoolGate)
+        {
+            foreach (
+                var key in SurfacePools
+                    .Keys.Where(key =>
+                        ReferenceEquals(key.Owner, contextOwner)
+                        && string.Equals(key.Backend, backend, StringComparison.Ordinal)
+                        && key.ContextGeneration != currentContextGeneration
+                    )
+                    .ToArray()
+            )
             {
                 SurfacePools.Remove(key, out var pool);
                 pool?.Dispose();
@@ -50,21 +81,37 @@ internal static class DorotiSkiaImageFilterRenderer
         }
     }
 
-    internal static void ReleaseContext(string backend, long contextGeneration, object? contextOwner = null)
+    internal static void ReleaseContext(
+        string backend,
+        long contextGeneration,
+        object? contextOwner = null
+    )
     {
         lock (PoolGate)
         {
-            if (!SurfacePools.Remove((backend, contextGeneration, contextOwner), out var pool)) return;
+            if (!SurfacePools.Remove((backend, contextGeneration, contextOwner), out var pool))
+            {
+                return;
+            }
+
             pool.Dispose();
         }
     }
 
-    internal static void InvalidateSurface(string backend, long contextGeneration, object? contextOwner = null)
+    internal static void InvalidateSurface(
+        string backend,
+        long contextGeneration,
+        object? contextOwner = null
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(backend);
         lock (PoolGate)
         {
-            if (!SurfacePools.Remove((backend, contextGeneration, contextOwner), out var pool)) return;
+            if (!SurfacePools.Remove((backend, contextGeneration, contextOwner), out var pool))
+            {
+                return;
+            }
+
             pool.Dispose();
         }
     }
@@ -83,7 +130,9 @@ internal static class DorotiSkiaImageFilterRenderer
         long contextGeneration,
         object? cacheKey,
         long cacheGeneration,
-        out bool cacheHit, object? contextOwner = null)
+        out bool cacheHit,
+        object? contextOwner = null
+    )
     {
         cacheHit = false;
         ArgumentNullException.ThrowIfNull(target);
@@ -91,76 +140,197 @@ internal static class DorotiSkiaImageFilterRenderer
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         ArgumentNullException.ThrowIfNull(drawChild);
         if (pixelWidth <= 0 || pixelHeight <= 0)
-            throw new ArgumentOutOfRangeException(nameof(pixelWidth), "The GPU filter target must have positive dimensions.");
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(pixelWidth),
+                "The GPU filter target must have positive dimensions."
+            );
+        }
+
         if (!SkiaGpuSurfaces.IsGpu(target))
+        {
             throw new NotSupportedException(
-                "Doroti ImageFilter.shader requires the active Skia GPU recording context; software capture is forbidden.");
+                "Doroti ImageFilter.shader requires the active Skia GPU recording context; software capture is forbidden."
+            );
+        }
 
         var offsetBounds = new SKRect(
             childBounds.Left + childOffset.X,
             childBounds.Top + childOffset.Y,
             childBounds.Right + childOffset.X,
-            childBounds.Bottom + childOffset.Y);
+            childBounds.Bottom + childOffset.Y
+        );
         var mappedBounds = target.TotalMatrix.MapRect(offsetBounds);
-        if (!IsFinite(mappedBounds)) return false;
+        if (!IsFinite(mappedBounds))
+        {
+            return false;
+        }
+
         var clip = target.DeviceClipBounds;
         // Intersect in wide coordinates before converting to device integers.
         // A huge but finite child can cover a small viewport without requiring
         // a huge allocation or overflowing an integer conversion.
         var visibleLeft = Math.Max(0, Math.Max(clip.Left, Math.Floor(mappedBounds.Left)));
         var visibleTop = Math.Max(0, Math.Max(clip.Top, Math.Floor(mappedBounds.Top)));
-        var visibleRight = Math.Min(pixelWidth, Math.Min(clip.Right, Math.Ceiling(mappedBounds.Right)));
-        var visibleBottom = Math.Min(pixelHeight, Math.Min(clip.Bottom, Math.Ceiling(mappedBounds.Bottom)));
-        if (visibleRight <= visibleLeft || visibleBottom <= visibleTop) return false;
+        var visibleRight = Math.Min(
+            pixelWidth,
+            Math.Min(clip.Right, Math.Ceiling(mappedBounds.Right))
+        );
+        var visibleBottom = Math.Min(
+            pixelHeight,
+            Math.Min(clip.Bottom, Math.Ceiling(mappedBounds.Bottom))
+        );
+        if (visibleRight <= visibleLeft || visibleBottom <= visibleTop)
+        {
+            return false;
+        }
 
         var matrix = target.TotalMatrix;
         var cacheLeft = MathF.Floor(mappedBounds.Left);
         var cacheTop = MathF.Floor(mappedBounds.Top);
         var widthExtent = Math.Ceiling(mappedBounds.Right) - cacheLeft;
         var heightExtent = Math.Ceiling(mappedBounds.Bottom) - cacheTop;
-        var cacheWidth = widthExtent > 0 && widthExtent <= MaxCacheableImagePixels ? (int)widthExtent : 0;
-        var cacheHeight = heightExtent > 0 && heightExtent <= MaxCacheableImagePixels ? (int)heightExtent : 0;
+        var cacheWidth =
+            widthExtent > 0 && widthExtent <= MaxCacheableImagePixels ? (int)widthExtent : 0;
+        var cacheHeight =
+            heightExtent > 0 && heightExtent <= MaxCacheableImagePixels ? (int)heightExtent : 0;
         var cachePixels = (long)cacheWidth * cacheHeight;
-        var canCache = cacheKey is not null && cacheWidth > 0 && cacheHeight > 0 &&
-                       cachePixels <= MaxCacheableImagePixels &&
-                       matrix.Persp0 == 0 && matrix.Persp1 == 0 && matrix.Persp2 == 1;
+        var canCache =
+            cacheKey is not null
+            && cacheWidth > 0
+            && cacheHeight > 0
+            && cachePixels <= MaxCacheableImagePixels
+            && matrix.Persp0 == 0
+            && matrix.Persp1 == 0
+            && matrix.Persp2 == 1;
         using var properties = target.Surface?.SurfaceProperties;
-        var signature = TransformSignature.From(matrix, mappedBounds.Left - cacheLeft, mappedBounds.Top - cacheTop,
-            properties?.Flags ?? SKSurfacePropsFlags.None, properties?.PixelGeometry ?? SKPixelGeometry.Unknown);
-        if (canCache && TryDrawCached(
-                target, backend, contextGeneration, cacheKey!, cacheWidth, cacheHeight,
-                signature, cacheGeneration, cacheLeft, cacheTop, contextOwner))
+        var signature = TransformSignature.From(
+            matrix,
+            mappedBounds.Left - cacheLeft,
+            mappedBounds.Top - cacheTop,
+            properties?.Flags ?? SKSurfacePropsFlags.None,
+            properties?.PixelGeometry ?? SKPixelGeometry.Unknown
+        );
+        if (
+            canCache
+            && TryDrawCached(
+                target,
+                backend,
+                contextGeneration,
+                cacheKey!,
+                cacheWidth,
+                cacheHeight,
+                signature,
+                cacheGeneration,
+                cacheLeft,
+                cacheTop,
+                contextOwner
+            )
+        )
         {
             cacheHit = true;
             return true;
         }
 
-        if (canCache) Interlocked.Increment(ref _imageCacheMisses);
-        if (canCache && ShouldPromote(backend, contextGeneration, contextOwner, cacheKey!,
-                cacheWidth, cacheHeight, signature, cacheGeneration))
+        if (canCache)
         {
-            var cacheLease = RentSurface(target, backend, contextGeneration, cacheWidth, cacheHeight, contextOwner, properties);
+            Interlocked.Increment(ref _imageCacheMisses);
+        }
+
+        if (
+            canCache
+            && ShouldPromote(
+                backend,
+                contextGeneration,
+                contextOwner,
+                cacheKey!,
+                cacheWidth,
+                cacheHeight,
+                signature,
+                cacheGeneration
+            )
+        )
+        {
+            var cacheLease = RentSurface(
+                target,
+                backend,
+                contextGeneration,
+                cacheWidth,
+                cacheHeight,
+                contextOwner,
+                properties
+            );
             try
             {
-                RenderChild(cacheLease.Surface, cacheLeft, cacheTop,
-                    matrix, childOffset, drawChild, cacheWidth, cacheHeight);
-                using var inputImage = cacheLease.Surface.Snapshot(new SKRectI(0, 0, cacheWidth, cacheHeight))
-                    ?? throw new InvalidOperationException("Doroti ImageFilter.shader could not snapshot its GPU input surface.");
+                RenderChild(
+                    cacheLease.Surface,
+                    cacheLeft,
+                    cacheTop,
+                    matrix,
+                    childOffset,
+                    drawChild,
+                    cacheWidth,
+                    cacheHeight
+                );
+                using var inputImage =
+                    cacheLease.Surface.Snapshot(new SKRectI(0, 0, cacheWidth, cacheHeight))
+                    ?? throw new InvalidOperationException(
+                        "Doroti ImageFilter.shader could not snapshot its GPU input surface."
+                    );
                 using var runtimeShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
-                    shader, inputImage, inputSampling, imageShaderFactory, backend, contextGeneration, contextOwner);
-                using var outputSurface = CreateSurface(target, cacheWidth, cacheHeight, properties);
-                using (var paint = new SKPaint { Shader = runtimeShader, BlendMode = SKBlendMode.SrcOver })
+                    shader,
+                    inputImage,
+                    inputSampling,
+                    imageShaderFactory,
+                    backend,
+                    contextGeneration,
+                    contextOwner
+                );
+                using var outputSurface = CreateSurface(
+                    target,
+                    cacheWidth,
+                    cacheHeight,
+                    properties
+                );
+                using (
+                    var paint = new SKPaint
+                    {
+                        Shader = runtimeShader,
+                        BlendMode = SKBlendMode.SrcOver,
+                    }
+                )
+                {
                     outputSurface.Canvas.DrawRect(SKRect.Create(cacheWidth, cacheHeight), paint);
+                }
+
                 outputSurface.Canvas.Flush();
-                var outputImage = outputSurface.Snapshot()
-                    ?? throw new InvalidOperationException("Doroti ImageFilter.shader could not snapshot its cached output.");
-                StoreAndDrawCached(target, backend, contextGeneration, cacheKey!, cacheWidth,
-                    cacheHeight, signature, cacheGeneration, cacheLeft, cacheTop, outputImage, contextOwner);
+                var outputImage =
+                    outputSurface.Snapshot()
+                    ?? throw new InvalidOperationException(
+                        "Doroti ImageFilter.shader could not snapshot its cached output."
+                    );
+                StoreAndDrawCached(
+                    target,
+                    backend,
+                    contextGeneration,
+                    cacheKey!,
+                    cacheWidth,
+                    cacheHeight,
+                    signature,
+                    cacheGeneration,
+                    cacheLeft,
+                    cacheTop,
+                    outputImage,
+                    contextOwner
+                );
                 return true;
             }
             finally
             {
-                if (cacheLease.IsTemporary) cacheLease.Surface.Dispose();
+                if (cacheLease.IsTemporary)
+                {
+                    cacheLease.Surface.Dispose();
+                }
             }
         }
 
@@ -171,21 +341,38 @@ internal static class DorotiSkiaImageFilterRenderer
         var top = canCache ? cacheTop : (float)visibleTop;
         var width = canCache ? cacheWidth : checked((int)visibleRight - (int)visibleLeft);
         var height = canCache ? cacheHeight : checked((int)visibleBottom - (int)visibleTop);
-        var lease = RentSurface(target, backend, contextGeneration, width, height, contextOwner, properties);
+        var lease = RentSurface(
+            target,
+            backend,
+            contextGeneration,
+            width,
+            height,
+            contextOwner,
+            properties
+        );
         try
         {
             RenderChild(lease.Surface, left, top, matrix, childOffset, drawChild, width, height);
 
-            using var inputImage = lease.Surface.Snapshot(new SKRectI(0, 0, width, height))
-                ?? throw new InvalidOperationException("Doroti ImageFilter.shader could not snapshot its GPU input surface.");
+            using var inputImage =
+                lease.Surface.Snapshot(new SKRectI(0, 0, width, height))
+                ?? throw new InvalidOperationException(
+                    "Doroti ImageFilter.shader could not snapshot its GPU input surface."
+                );
             using var runtimeShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
                 shader,
                 inputImage,
                 inputSampling,
                 imageShaderFactory,
                 backend,
-                contextGeneration, contextOwner);
-            using var paint = new SKPaint { Shader = runtimeShader, BlendMode = SKBlendMode.SrcOver };
+                contextGeneration,
+                contextOwner
+            );
+            using var paint = new SKPaint
+            {
+                Shader = runtimeShader,
+                BlendMode = SKBlendMode.SrcOver,
+            };
             target.Save();
             target.ResetMatrix();
             target.Translate(left, top);
@@ -195,7 +382,10 @@ internal static class DorotiSkiaImageFilterRenderer
         }
         finally
         {
-            if (lease.IsTemporary) lease.Surface.Dispose();
+            if (lease.IsTemporary)
+            {
+                lease.Surface.Dispose();
+            }
         }
     }
 
@@ -207,7 +397,8 @@ internal static class DorotiSkiaImageFilterRenderer
         SKPoint childOffset,
         Action<SKCanvas, int, int> drawChild,
         int width,
-        int height)
+        int height
+    )
     {
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.Transparent);
@@ -220,7 +411,10 @@ internal static class DorotiSkiaImageFilterRenderer
             canvas.Translate(childOffset.X, childOffset.Y);
             drawChild(canvas, width, height);
         }
-        finally { canvas.RestoreToCount(saveCount); }
+        finally
+        {
+            canvas.RestoreToCount(saveCount);
+        }
         canvas.Flush();
     }
 
@@ -234,14 +428,21 @@ internal static class DorotiSkiaImageFilterRenderer
         TransformSignature signature,
         long generation,
         float left,
-        float top, object? contextOwner)
+        float top,
+        object? contextOwner
+    )
     {
         lock (PoolGate)
         {
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
-            if (!pool.Images.TryGetValue(cacheKey, out var cached) || cached.Width != width ||
-                cached.Height != height || cached.Transform != signature ||
-                cached.Generation != generation || cached.Recording?.IsDiscarded == true)
+            if (
+                !pool.Images.TryGetValue(cacheKey, out var cached)
+                || cached.Width != width
+                || cached.Height != height
+                || cached.Transform != signature
+                || cached.Generation != generation
+                || cached.Recording?.IsDiscarded == true
+            )
             {
                 if (cached is not null)
                 {
@@ -257,8 +458,16 @@ internal static class DorotiSkiaImageFilterRenderer
         }
     }
 
-    private static bool ShouldPromote(string backend, long contextGeneration, object? contextOwner,
-        object key, int width, int height, TransformSignature signature, long generation)
+    private static bool ShouldPromote(
+        string backend,
+        long contextGeneration,
+        object? contextOwner,
+        object key,
+        int width,
+        int height,
+        TransformSignature signature,
+        long generation
+    )
     {
         lock (PoolGate)
         {
@@ -266,8 +475,17 @@ internal static class DorotiSkiaImageFilterRenderer
             // Preserve immediate caching for a first use. Once invalidated by
             // movement/content, require stability instead of rebuilding pixels
             // on every fractional scroll step.
-            if (!pool.Warmups.TryGetValue(key, out var warmup)) return true;
-            if (warmup.Width != width || warmup.Height != height || warmup.Transform != signature || warmup.Generation != generation)
+            if (!pool.Warmups.TryGetValue(key, out var warmup))
+            {
+                return true;
+            }
+
+            if (
+                warmup.Width != width
+                || warmup.Height != height
+                || warmup.Transform != signature
+                || warmup.Generation != generation
+            )
             {
                 pool.TrackUnstable(key, width, height, signature, generation);
                 return false;
@@ -292,14 +510,28 @@ internal static class DorotiSkiaImageFilterRenderer
         long generation,
         float left,
         float top,
-        SKImage image, object? contextOwner)
+        SKImage image,
+        object? contextOwner
+    )
     {
         lock (PoolGate)
         {
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
-            if (pool.Images.Remove(cacheKey, out var replaced)) pool.DisposeImage(replaced);
+            if (pool.Images.Remove(cacheKey, out var replaced))
+            {
+                pool.DisposeImage(replaced);
+            }
+
             pool.Warmups.Remove(cacheKey);
-            var cached = new CachedImage(image, width, height, signature, generation, ++pool.UseSequence, SkiaGpuSurfaces.RecordingFor(target));
+            var cached = new CachedImage(
+                image,
+                width,
+                height,
+                signature,
+                generation,
+                ++pool.UseSequence,
+                SkiaGpuSurfaces.RecordingFor(target)
+            );
             pool.Images.Add(cacheKey, cached);
             pool.CachedPixels += cached.Pixels;
             DrawImage(target, image, left, top);
@@ -316,32 +548,47 @@ internal static class DorotiSkiaImageFilterRenderer
     }
 
     private static bool IsFinite(SKRect rect) =>
-        float.IsFinite(rect.Left) && float.IsFinite(rect.Top) &&
-        float.IsFinite(rect.Right) && float.IsFinite(rect.Bottom);
+        float.IsFinite(rect.Left)
+        && float.IsFinite(rect.Top)
+        && float.IsFinite(rect.Right)
+        && float.IsFinite(rect.Bottom);
 
     private static SurfaceLease RentSurface(
         SKCanvas context,
         string backend,
         long contextGeneration,
         int width,
-        int height, object? contextOwner, SKSurfaceProperties? properties)
+        int height,
+        object? contextOwner,
+        SKSurfaceProperties? properties
+    )
     {
         lock (PoolGate)
         {
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
             var slot = pool.NextSlot++;
             if (slot >= MaxPooledSurfacesPerFrame)
+            {
                 return new(CreateSurface(context, width, height, properties), true);
+            }
 
-            while (pool.Surfaces.Count <= slot) pool.Surfaces.Add(null);
+            while (pool.Surfaces.Count <= slot)
+            {
+                pool.Surfaces.Add(null);
+            }
+
             var surface = pool.Surfaces[slot];
             // GPU snapshots are the implicit texture passed to the runtime
             // effect. Keep that texture exact-sized: reusing a larger pooled
             // surface after a shrink asks the backend for a subset snapshot,
             // which is not reliable for the D3D12 render target path and can
             // return null during rapid small-window layout changes.
-            if (surface is null || !SameSurfacePolicy(surface, properties) || surface.Canvas.DeviceClipBounds.Width != width ||
-                surface.Canvas.DeviceClipBounds.Height != height)
+            if (
+                surface is null
+                || !SameSurfacePolicy(surface, properties)
+                || surface.Canvas.DeviceClipBounds.Width != width
+                || surface.Canvas.DeviceClipBounds.Height != height
+            )
             {
                 surface?.Dispose();
                 surface = CreateSurface(context, width, height, properties);
@@ -358,25 +605,39 @@ internal static class DorotiSkiaImageFilterRenderer
     private static bool SameSurfacePolicy(SKSurface surface, SKSurfaceProperties? properties)
     {
         using var existing = surface.SurfaceProperties;
-        return existing.Flags == (properties?.Flags ?? SKSurfacePropsFlags.None) &&
-            existing.PixelGeometry == (properties?.PixelGeometry ?? SKPixelGeometry.Unknown);
+        return existing.Flags == (properties?.Flags ?? SKSurfacePropsFlags.None)
+            && existing.PixelGeometry == (properties?.PixelGeometry ?? SKPixelGeometry.Unknown);
     }
 
-    private static SKSurface CreateSurface(SKCanvas context, int width, int height, SKSurfaceProperties? properties)
+    private static SKSurface CreateSurface(
+        SKCanvas context,
+        int width,
+        int height,
+        SKSurfaceProperties? properties
+    )
     {
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        var surface = SkiaGpuSurfaces.CreateCompatible(context, info, properties)
+        var surface =
+            SkiaGpuSurfaces.CreateCompatible(context, info, properties)
             ?? throw new InvalidOperationException(
-                $"Doroti ImageFilter.shader could not allocate a {width}x{height} GPU input surface.");
+                $"Doroti ImageFilter.shader could not allocate a {width}x{height} GPU input surface."
+            );
         Interlocked.Increment(ref _surfacesCreated);
         return surface;
     }
 
-    private static SurfacePool GetOrCreatePool(string backend, long contextGeneration, object? contextOwner)
+    private static SurfacePool GetOrCreatePool(
+        string backend,
+        long contextGeneration,
+        object? contextOwner
+    )
     {
         var key = (backend, contextGeneration, contextOwner);
         if (!SurfacePools.TryGetValue(key, out var pool))
+        {
             SurfacePools.Add(key, pool = new SurfacePool());
+        }
+
         return pool;
     }
 
@@ -393,12 +654,29 @@ internal static class DorotiSkiaImageFilterRenderer
         float PhaseX,
         float PhaseY,
         SKSurfacePropsFlags SurfaceFlags,
-        SKPixelGeometry PixelGeometry)
+        SKPixelGeometry PixelGeometry
+    )
     {
-        internal static TransformSignature From(SKMatrix matrix, float phaseX, float phaseY,
-            SKSurfacePropsFlags surfaceFlags, SKPixelGeometry pixelGeometry) => new(
-            matrix.ScaleX, matrix.SkewX, matrix.SkewY, matrix.ScaleY,
-            matrix.Persp0, matrix.Persp1, matrix.Persp2, phaseX, phaseY, surfaceFlags, pixelGeometry);
+        internal static TransformSignature From(
+            SKMatrix matrix,
+            float phaseX,
+            float phaseY,
+            SKSurfacePropsFlags surfaceFlags,
+            SKPixelGeometry pixelGeometry
+        ) =>
+            new(
+                matrix.ScaleX,
+                matrix.SkewX,
+                matrix.SkewY,
+                matrix.ScaleY,
+                matrix.Persp0,
+                matrix.Persp1,
+                matrix.Persp2,
+                phaseX,
+                phaseY,
+                surfaceFlags,
+                pixelGeometry
+            );
     }
 
     private sealed class CachedImage(
@@ -407,7 +685,9 @@ internal static class DorotiSkiaImageFilterRenderer
         int height,
         TransformSignature transform,
         long generation,
-        long lastUsedSequence, SkiaGpuSurfaces.Recording? recording)
+        long lastUsedSequence,
+        SkiaGpuSurfaces.Recording? recording
+    )
     {
         internal SkiaGpuSurfaces.Recording? Recording { get; } = recording;
         internal SKImage Image { get; } = image;
@@ -444,16 +724,29 @@ internal static class DorotiSkiaImageFilterRenderer
             DisposeImage(image);
         }
 
-        internal void TrackUnstable(object key, int width, int height, TransformSignature transform, long generation)
+        internal void TrackUnstable(
+            object key,
+            int width,
+            int height,
+            TransformSignature transform,
+            long generation
+        )
         {
             if (!Warmups.TryGetValue(key, out var warmup))
             {
                 if (Warmups.Count >= MaxCachedImages * 2)
+                {
                     Warmups.Remove(Warmups.MinBy(pair => pair.Value.LastFrame).Key);
+                }
+
                 Warmups.Add(key, warmup = new());
             }
-            warmup.Width = width; warmup.Height = height; warmup.Transform = transform;
-            warmup.Generation = generation; warmup.Uses = 1; warmup.LastFrame = FrameNumber;
+            warmup.Width = width;
+            warmup.Height = height;
+            warmup.Transform = transform;
+            warmup.Generation = generation;
+            warmup.Uses = 1;
+            warmup.LastFrame = FrameNumber;
         }
 
         internal void DisposeImage(CachedImage image)
@@ -467,16 +760,28 @@ internal static class DorotiSkiaImageFilterRenderer
             while (Images.Count > MaxCachedImages || CachedPixels > MaxCachedImagePixels)
             {
                 var oldest = Images.MinBy(pair => pair.Value.LastUsedSequence);
-                if (oldest.Key is null) break;
+                if (oldest.Key is null)
+                {
+                    break;
+                }
+
                 RemoveImage(oldest.Key, oldest.Value);
             }
         }
 
         public void Dispose()
         {
-            foreach (var surface in Surfaces) surface?.Dispose();
+            foreach (var surface in Surfaces)
+            {
+                surface?.Dispose();
+            }
+
             Surfaces.Clear();
-            foreach (var image in Images.Values) image.Image.Dispose();
+            foreach (var image in Images.Values)
+            {
+                image.Image.Dispose();
+            }
+
             Images.Clear();
             Warmups.Clear();
             CachedPixels = 0;
@@ -485,8 +790,11 @@ internal static class DorotiSkiaImageFilterRenderer
 
     private sealed class CacheWarmup
     {
-        internal int Width, Height, Uses;
+        internal int Width,
+            Height,
+            Uses;
         internal TransformSignature Transform;
-        internal long Generation, LastFrame;
+        internal long Generation,
+            LastFrame;
     }
 }

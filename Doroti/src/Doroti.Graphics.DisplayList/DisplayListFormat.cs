@@ -108,14 +108,16 @@ public enum DisplayListSceneTerminalKind
 public readonly record struct DisplayResourceReference(
     DisplayResourceKind Kind,
     ulong Id,
-    uint Version);
+    uint Version
+);
 
 public readonly record struct DisplayResourceFingerprint(ulong Low, ulong High);
 
 public sealed record DisplayResourceDescriptor(
     DisplayResourceReference Reference,
     DisplayResourceFingerprint Fingerprint,
-    DisplayResourceFlags Flags = DisplayResourceFlags.Recoverable);
+    DisplayResourceFlags Flags = DisplayResourceFlags.Recoverable
+);
 
 public readonly record struct DisplayListSceneMetadata(
     ulong ViewId,
@@ -128,7 +130,8 @@ public readonly record struct DisplayListSceneMetadata(
     float LogicalHeight,
     uint PhysicalWidth,
     uint PhysicalHeight,
-    float DevicePixelRatio);
+    float DevicePixelRatio
+);
 
 public readonly record struct DisplayListWireHeader(
     uint ByteLength,
@@ -139,7 +142,8 @@ public readonly record struct DisplayListWireHeader(
     uint StringTableByteLength,
     uint CommandByteLength,
     uint ResourceTableByteLength,
-    uint Checksum);
+    uint Checksum
+);
 
 public sealed class DisplayListDocument
 {
@@ -147,7 +151,8 @@ public sealed class DisplayListDocument
         DisplayListSceneMetadata scene,
         IEnumerable<DisplayResourceDescriptor>? resources,
         IEnumerable<DisplayListCommand>? commands,
-        DisplayListFlags flags = DisplayListFlags.ChecksumPresent)
+        DisplayListFlags flags = DisplayListFlags.ChecksumPresent
+    )
     {
         Scene = scene;
         Resources = new ReadOnlyCollection<DisplayResourceDescriptor>((resources ?? []).ToArray());
@@ -168,7 +173,8 @@ public readonly record struct DisplayListSceneTerminal(
     ulong SceneSequence,
     DisplayListSceneTerminalKind Kind,
     DisplayListFailureCode? FailureCode,
-    string? Detail)
+    string? Detail
+)
 {
     public static DisplayListSceneTerminal Submitted(ulong sequence, string? detail = null) =>
         new(sequence, DisplayListSceneTerminalKind.Submitted, null, detail);
@@ -179,22 +185,24 @@ public readonly record struct DisplayListSceneTerminal(
     public static DisplayListSceneTerminal Failed(
         ulong sequence,
         DisplayListFailureCode code,
-        string detail) =>
-        new(sequence, DisplayListSceneTerminalKind.Failed, code, detail);
+        string detail
+    ) => new(sequence, DisplayListSceneTerminalKind.Failed, code, detail);
 }
 
 public sealed record DisplayListFailure(
     DisplayListFailureCode Code,
     int Offset,
     string Message,
-    DisplayListSceneTerminal Terminal);
+    DisplayListSceneTerminal Terminal
+);
 
 public sealed class DisplayListDecodeResult
 {
     private DisplayListDecodeResult(
         DisplayListDocument? document,
         DisplayListWireHeader? header,
-        DisplayListFailure? failure)
+        DisplayListFailure? failure
+    )
     {
         Document = document;
         Header = header;
@@ -211,8 +219,8 @@ public sealed class DisplayListDecodeResult
 
     internal static DisplayListDecodeResult Success(
         DisplayListDocument document,
-        DisplayListWireHeader header) =>
-        new(document, header, null);
+        DisplayListWireHeader header
+    ) => new(document, header, null);
 
     internal static DisplayListDecodeResult Failed(DisplayListFailure failure) =>
         new(null, null, failure);

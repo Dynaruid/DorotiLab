@@ -60,7 +60,8 @@ public static partial class CollectionsLibrary
 
 public static partial class CollectionsLibrary
 {
-    public static bool mapEquals<T, U>(IReadOnlyDictionary<T, U>? a, IReadOnlyDictionary<T, U>? b) where T : notnull
+    public static bool mapEquals<T, U>(IReadOnlyDictionary<T, U>? a, IReadOnlyDictionary<T, U>? b)
+        where T : notnull
     {
         if (a is null)
         {
@@ -76,7 +77,13 @@ public static partial class CollectionsLibrary
         }
         foreach (T key in a.Keys)
         {
-            if (!b.ContainsKey(key) || !EqualityComparer<U>.Default.Equals(b.GetValueOrDefault(key), a.GetValueOrDefault(key)))
+            if (
+                !b.ContainsKey(key)
+                || !EqualityComparer<U>.Default.Equals(
+                    b.GetValueOrDefault(key),
+                    a.GetValueOrDefault(key)
+                )
+            )
             {
                 return false;
             }
@@ -93,7 +100,7 @@ public static partial class CollectionsLibrary
         int max = sortedList.Count;
         while (min < max)
         {
-            int mid = min + (max - min >> 1);
+            int mid = min + ((max - min) >> 1);
             T element = sortedList[mid];
             int comp = Comparer<T>.Default.Compare(element, value);
             if (comp == 0)
@@ -120,9 +127,18 @@ public static partial class CollectionsLibrary
 
 public static partial class CollectionsLibrary
 {
-    public static void mergeSort<T>(List<T> list, int start = 0, int end = -1, Func<T, T, long>? compare = null)
+    public static void mergeSort<T>(
+        List<T> list,
+        int start = 0,
+        int end = -1,
+        Func<T, T, long>? compare = null
+    )
     {
-        if (end == -1) end = list.Count;
+        if (end == -1)
+        {
+            end = list.Count;
+        }
+
         compare ??= _defaultCompare<T>();
         int length = end - start;
         if (length < 2)
@@ -134,7 +150,7 @@ public static partial class CollectionsLibrary
             _insertionSort(list, compare, start, end);
             return;
         }
-        int middle = start + (end - start >> 1);
+        int middle = start + ((end - start) >> 1);
         int firstLength = middle - start;
         int secondLength = end - middle;
         var scratchSpace = new List<T>(Enumerable.Repeat(list[start], secondLength));
@@ -155,10 +171,19 @@ public static partial class CollectionsLibrary
 
 public static partial class CollectionsLibrary
 {
-    public static void _insertionSort<T>(List<T> list, Func<T, T, long>? compare = null, int start = 0, int end = -1)
+    public static void _insertionSort<T>(
+        List<T> list,
+        Func<T, T, long>? compare = null,
+        int start = 0,
+        int end = -1
+    )
     {
         compare ??= _defaultCompare<T>();
-        if (end == -1) end = list.Count;
+        if (end == -1)
+        {
+            end = list.Count;
+        }
+
         for (int pos = start + 1; pos < end; pos++)
         {
             var min = start;
@@ -166,7 +191,7 @@ public static partial class CollectionsLibrary
             T element = list[pos];
             while (min < max)
             {
-                int mid = min + (max - min >> 1);
+                int mid = min + ((max - min) >> 1);
                 long comparison = compare(element, list[mid]);
                 if (comparison < 0)
                 {
@@ -188,7 +213,14 @@ public static partial class CollectionsLibrary
 
 public static partial class CollectionsLibrary
 {
-    public static void _movingInsertionSort<T>(List<T> list, Func<T, T, long> compare, int start, int end, List<T> target, int targetOffset)
+    public static void _movingInsertionSort<T>(
+        List<T> list,
+        Func<T, T, long> compare,
+        int start,
+        int end,
+        List<T> target,
+        int targetOffset
+    )
     {
         int length = end - start;
         if (length == 0)
@@ -203,7 +235,7 @@ public static partial class CollectionsLibrary
             int max = targetOffset + i;
             while (min < max)
             {
-                int mid = min + (max - min >> 1);
+                int mid = min + ((max - min) >> 1);
                 if (compare(element, target[mid]) < 0)
                 {
                     max = mid;
@@ -224,7 +256,14 @@ public static partial class CollectionsLibrary
 
 public static partial class CollectionsLibrary
 {
-    public static void _mergeSort<T>(List<T> list, Func<T, T, long> compare, int start, int end, List<T> target, int targetOffset)
+    public static void _mergeSort<T>(
+        List<T> list,
+        Func<T, T, long> compare,
+        int start,
+        int end,
+        List<T> target,
+        int targetOffset
+    )
     {
         int length = end - start;
         if (length < _kMergeSortLimit)
@@ -238,13 +277,33 @@ public static partial class CollectionsLibrary
         int targetMiddle = targetOffset + firstLength;
         _mergeSort(list, compare, middle, end, target, targetMiddle);
         _mergeSort(list, compare, start, middle, list, middle);
-        _merge(compare, list, middle, middle + firstLength, target, targetMiddle, targetMiddle + secondLength, target, targetOffset);
+        _merge(
+            compare,
+            list,
+            middle,
+            middle + firstLength,
+            target,
+            targetMiddle,
+            targetMiddle + secondLength,
+            target,
+            targetOffset
+        );
     }
 }
 
 public static partial class CollectionsLibrary
 {
-    public static void _merge<T>(Func<T, T, long> compare, List<T> firstList, int firstStart, int firstEnd, List<T> secondList, int secondStart, int secondEnd, List<T> target, int targetOffset)
+    public static void _merge<T>(
+        Func<T, T, long> compare,
+        List<T> firstList,
+        int firstStart,
+        int firstEnd,
+        List<T> secondList,
+        int secondStart,
+        int secondEnd,
+        List<T> target,
+        int targetOffset
+    )
     {
         DartRuntimePrimitives.Assert(() => firstStart < firstEnd);
         DartRuntimePrimitives.Assert(() => secondStart < secondEnd);

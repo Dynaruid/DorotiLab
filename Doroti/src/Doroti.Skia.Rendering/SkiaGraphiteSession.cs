@@ -30,9 +30,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         MaxFrames = maxFrames;
         try
         {
-            _recorder = context.CreateRecorder(RecorderBudgetBytes,
-                (recorder, image, mipmapped) => _images.FindOrCreate(recorder, image, mipmapped)!)
-                ?? throw new InvalidOperationException("Graphite recorder creation failed.");
+            _recorder =
+                context.CreateRecorder(
+                    RecorderBudgetBytes,
+                    (recorder, image, mipmapped) =>
+                        _images.FindOrCreate(recorder, image, mipmapped)!
+                ) ?? throw new InvalidOperationException("Graphite recorder creation failed.");
         }
         catch
         {
@@ -44,11 +47,38 @@ public sealed partial class SkiaGraphiteSession : IDisposable
 
     public long Generation { get; }
     public (long Uploads, long Hits, long Discarded) ImageCacheDiagnostics
-    { get { CheckOwner(); return (_images.Uploads, _images.Hits, _images.Discarded); } }
+    {
+        get
+        {
+            CheckOwner();
+            return (_images.Uploads, _images.Hits, _images.Discarded);
+        }
+    }
     public int MaxFrames { get; }
-    public bool IsDeviceLost { get { CheckOwner(); return _hostReportedVulkanDeviceLost || _context.IsDeviceLost; } }
-    public bool IsFaulted { get { CheckOwner(); return _faulted; } }
-    public int OutstandingFrames { get { CheckOwner(); return _frames.Count; } }
+    public bool IsDeviceLost
+    {
+        get
+        {
+            CheckOwner();
+            return _hostReportedVulkanDeviceLost || _context.IsDeviceLost;
+        }
+    }
+    public bool IsFaulted
+    {
+        get
+        {
+            CheckOwner();
+            return _faulted;
+        }
+    }
+    public int OutstandingFrames
+    {
+        get
+        {
+            CheckOwner();
+            return _frames.Count;
+        }
+    }
     public bool CanBeginFrame
     {
         get
@@ -58,16 +88,32 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         }
     }
 
-    public static SkiaGraphiteSession CreateMetal(nint device, nint queue, long generation, int maxFrames = 3)
+    public static SkiaGraphiteSession CreateMetal(
+        nint device,
+        nint queue,
+        long generation,
+        int maxFrames = 3
+    )
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(generation, 1);
         ArgumentOutOfRangeException.ThrowIfLessThan(maxFrames, 1);
         if (!SKGraphiteContext.IsBackendAvailable(SKGraphiteBackend.Metal))
-            throw new PlatformNotSupportedException("Loaded Skia native asset has no Graphite/Metal backend.");
-        using var backend = new SKGraphiteMtlBackendContext { MtlDevice = device, MtlQueue = queue };
-        var context = SKGraphiteContext.CreateMetal(backend,
-            new SKGraphiteContextOptions { GpuBudgetInBytes = ContextBudgetBytes })
-            ?? throw new InvalidOperationException("Graphite/Metal context creation failed.");
+        {
+            throw new PlatformNotSupportedException(
+                "Loaded Skia native asset has no Graphite/Metal backend."
+            );
+        }
+
+        using var backend = new SKGraphiteMtlBackendContext
+        {
+            MtlDevice = device,
+            MtlQueue = queue,
+        };
+        var context =
+            SKGraphiteContext.CreateMetal(
+                backend,
+                new SKGraphiteContextOptions { GpuBudgetInBytes = ContextBudgetBytes }
+            ) ?? throw new InvalidOperationException("Graphite/Metal context creation failed.");
         return new(context, generation, maxFrames);
     }
 
@@ -75,42 +121,80 @@ public sealed partial class SkiaGraphiteSession : IDisposable
     public Frame BeginMetalFrame(int width, int height, nint texture)
     {
         CheckOwner();
-        if (_vulkanOwner is not null) throw new InvalidOperationException("A Vulkan session cannot wrap a Metal texture.");
-        if (!CanBeginFrame) throw new InvalidOperationException("Graphite session is stopping, faulted or at its frame limit.");
+        if (_vulkanOwner is not null)
+        {
+            throw new InvalidOperationException("A Vulkan session cannot wrap a Metal texture.");
+        }
+
+        if (!CanBeginFrame)
+        {
+            throw new InvalidOperationException(
+                "Graphite session is stopping, faulted or at its frame limit."
+            );
+        }
+
         if (_context.IsDeviceLost)
         {
             _faulted = true;
             throw new InvalidOperationException("Graphite/Metal device lost.");
         }
         _context.CheckAsyncWorkCompletion();
-        var backend = SKGraphiteBackendTexture.CreateMetal(width, height, texture)
+        var backend =
+            SKGraphiteBackendTexture.CreateMetal(width, height, texture)
             ?? throw new InvalidOperationException("Graphite Metal texture wrapping failed.");
         try
         {
-            var surface = SKSurface.Create(_recorder, backend, SKColorType.Bgra8888)
-                ?? throw new InvalidOperationException("Graphite Metal output surface creation failed.");
+            var surface =
+                SKSurface.Create(_recorder, backend, SKColorType.Bgra8888)
+                ?? throw new InvalidOperationException(
+                    "Graphite Metal output surface creation failed."
+                );
             var frame = new Frame(this, backend, SkiaGpuSurfaces.Register(surface, _recorder));
             _frames.Add(frame);
             _recordingFrame = frame;
             return frame;
         }
-        catch { backend.Dispose(); throw; }
+        catch
+        {
+            backend.Dispose();
+            throw;
+        }
     }
 
-    public void StopAcceptingFrames() { CheckOwner(); _stopping = true; }
+    public void StopAcceptingFrames()
+    {
+        CheckOwner();
+        _stopping = true;
+    }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         CheckOwner();
         _stopping = true;
         if (_frames.Count != 0 || _pendingReadbacks != 0 || _vulkanTargets.Count != 0)
-            throw new InvalidOperationException("Host must complete GPU work and return all Graphite frames and Vulkan targets before disposal.");
+        {
+            throw new InvalidOperationException(
+                "Host must complete GPU work and return all Graphite frames and Vulkan targets before disposal."
+            );
+        }
+
         _context.CheckAsyncWorkCompletion();
         _images.Dispose();
         _recorder.Dispose();
-        if (_vulkanOwner is not null) _vulkanOwner.Dispose();
-        else _context.Dispose();
+        if (_vulkanOwner is not null)
+        {
+            _vulkanOwner.Dispose();
+        }
+        else
+        {
+            _context.Dispose();
+        }
+
         _disposed = true;
     }
 
@@ -118,7 +202,11 @@ public sealed partial class SkiaGraphiteSession : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_ownerThread != Environment.CurrentManagedThreadId)
-            throw new InvalidOperationException("Graphite session accessed outside its render owner thread.");
+        {
+            throw new InvalidOperationException(
+                "Graphite session accessed outside its render owner thread."
+            );
+        }
     }
 
     public sealed class Frame
@@ -135,7 +223,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         private bool _readbackPending;
         private readonly VulkanTarget? _vulkanTarget;
 
-        internal Frame(SkiaGraphiteSession session, SKGraphiteBackendTexture backend, SKSurface surface, VulkanTarget? vulkanTarget = null)
+        internal Frame(
+            SkiaGraphiteSession session,
+            SKGraphiteBackendTexture backend,
+            SKSurface surface,
+            VulkanTarget? vulkanTarget = null
+        )
         {
             _session = session;
             _backend = backend;
@@ -149,7 +242,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             {
                 _session.CheckOwner();
                 if (_returned || _submissionAttempted)
-                    throw new InvalidOperationException("Graphite output is only writable while its frame is recording.");
+                {
+                    throw new InvalidOperationException(
+                        "Graphite output is only writable while its frame is recording."
+                    );
+                }
+
                 return _surface;
             }
         }
@@ -160,9 +258,23 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         {
             _session.CheckOwner();
             if (_returned || _submissionAttempted || _readback is not null)
-                throw new InvalidOperationException("Readback must be requested once before frame submission.");
-            if (info.Width != _backend.Dimensions.Width || info.Height != _backend.Dimensions.Height)
-                throw new ArgumentException("Readback dimensions must match the complete output texture.", nameof(info));
+            {
+                throw new InvalidOperationException(
+                    "Readback must be requested once before frame submission."
+                );
+            }
+
+            if (
+                info.Width != _backend.Dimensions.Width
+                || info.Height != _backend.Dimensions.Height
+            )
+            {
+                throw new ArgumentException(
+                    "Readback dimensions must match the complete output texture.",
+                    nameof(info)
+                );
+            }
+
             _readbackInfo = info;
             _readbackSurface = _surface;
             _readback = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -175,11 +287,26 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         {
             _session.CheckOwner();
             if (_returned || _submissionAttempted || _readback is not null)
-                throw new InvalidOperationException("Readback must be requested once before frame submission.");
-            if (SkiaGpuSurfaces.RecorderFor(surface.Canvas) != _session._recorder ||
-                info.Width <= 0 || info.Height <= 0 || surface.Canvas.DeviceClipBounds.Width != info.Width ||
-                surface.Canvas.DeviceClipBounds.Height != info.Height)
-                throw new ArgumentException("Readback must match a surface owned by this frame's recorder.", nameof(surface));
+            {
+                throw new InvalidOperationException(
+                    "Readback must be requested once before frame submission."
+                );
+            }
+
+            if (
+                SkiaGpuSurfaces.RecorderFor(surface.Canvas) != _session._recorder
+                || info.Width <= 0
+                || info.Height <= 0
+                || surface.Canvas.DeviceClipBounds.Width != info.Width
+                || surface.Canvas.DeviceClipBounds.Height != info.Height
+            )
+            {
+                throw new ArgumentException(
+                    "Readback must match a surface owned by this frame's recorder.",
+                    nameof(surface)
+                );
+            }
+
             _readbackSurface = surface;
             _readbackInfo = info;
             _readback = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -191,30 +318,57 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         /// <summary>Binary Vulkan semaphores remain owned by the host until GPU consumption.</summary>
         public void SubmitVulkan(ReadOnlySpan<ulong> waits, ReadOnlySpan<ulong> signals)
         {
-            if (_vulkanTarget is null) throw new InvalidOperationException("This is not a Vulkan frame.");
+            if (_vulkanTarget is null)
+            {
+                throw new InvalidOperationException("This is not a Vulkan frame.");
+            }
+
             SubmitCore(waits, signals);
         }
 
         private void SubmitCore(ReadOnlySpan<ulong> waits, ReadOnlySpan<ulong> signals)
         {
             _session.CheckOwner();
-            if (_returned || _submissionAttempted || !ReferenceEquals(_session._recordingFrame, this))
-                throw new InvalidOperationException("Graphite frame is not available for recording submission.");
+            if (
+                _returned
+                || _submissionAttempted
+                || !ReferenceEquals(_session._recordingFrame, this)
+            )
+            {
+                throw new InvalidOperationException(
+                    "Graphite frame is not available for recording submission."
+                );
+            }
+
             _submissionAttempted = true;
             try
             {
-                _recording = _session._recorder.Snap()
+                _recording =
+                    _session._recorder.Snap()
                     ?? throw new InvalidOperationException("Graphite Snap failed.");
                 if (_vulkanTarget is not null)
                 {
-                    if (!_session._vulkanOwner!.Insert(_session._context.Handle, _recording.Handle, waits, signals))
+                    if (
+                        !_session._vulkanOwner!.Insert(
+                            _session._context.Handle,
+                            _recording.Handle,
+                            waits,
+                            signals
+                        )
+                    )
+                    {
                         throw new InvalidOperationException("Graphite Vulkan recording rejected.");
+                    }
                 }
                 else
                 {
                     var status = _session._context.InsertRecording(_recording);
                     if (status != SKGraphiteInsertStatus.Success)
-                        throw new InvalidOperationException($"Graphite recording rejected: {status}.");
+                    {
+                        throw new InvalidOperationException(
+                            $"Graphite recording rejected: {status}."
+                        );
+                    }
                 }
                 if (_readbackInfo is { } info)
                 {
@@ -222,25 +376,53 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                     _readbackPending = true;
                     try
                     {
-                        _session._context.RequestReadPixels(_readbackSurface!, info, new SKRectI(0, 0, info.Width, info.Height),
-                            SKImageRescaleGamma.Src, SKImageRescaleMode.Nearest, result =>
+                        _session._context.RequestReadPixels(
+                            _readbackSurface!,
+                            info,
+                            new SKRectI(0, 0, info.Width, info.Height),
+                            SKImageRescaleGamma.Src,
+                            SKImageRescaleMode.Nearest,
+                            result =>
                             {
                                 // Never propagate application exceptions across the native callback.
                                 try
                                 {
-                                    if (result is null) throw new InvalidOperationException("Graphite asynchronous readback failed.");
+                                    if (result is null)
+                                    {
+                                        throw new InvalidOperationException(
+                                            "Graphite asynchronous readback failed."
+                                        );
+                                    }
                                     // ToArray strips transfer-buffer row padding. Its stride is
                                     // the requested packed image stride, not GetPlaneRowBytes.
-                                    _readback!.TrySetResult(new(info, info.RowBytes, result.ToArray(0)));
+                                    _readback!.TrySetResult(
+                                        new(info, info.RowBytes, result.ToArray(0))
+                                    );
                                 }
-                                catch (Exception exception) { _readback!.TrySetException(exception); }
-                                finally { _session._pendingReadbacks--; _readbackPending = false; }
-                            });
+                                catch (Exception exception)
+                                {
+                                    _readback!.TrySetException(exception);
+                                }
+                                finally
+                                {
+                                    _session._pendingReadbacks--;
+                                    _readbackPending = false;
+                                }
+                            }
+                        );
                     }
-                    catch { _session._pendingReadbacks--; _readbackPending = false; throw; }
+                    catch
+                    {
+                        _session._pendingReadbacks--;
+                        _readbackPending = false;
+                        throw;
+                    }
                 }
                 if (!_session._context.Submit(new SKGraphiteSubmitInfo { Sync = false }))
+                {
                     throw new InvalidOperationException("Graphite Submit failed.");
+                }
+
                 _session._vulkanOwner?.CheckHostState();
                 _session._images.Commit();
                 SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: false);
@@ -251,7 +433,10 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 _readback?.TrySetException(exception);
                 throw;
             }
-            finally { _session._recordingFrame = null; }
+            finally
+            {
+                _session._recordingFrame = null;
+            }
         }
 
         /// <summary>
@@ -263,10 +448,20 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         {
             _session.CheckOwner();
             if (_returned || !_submissionAttempted)
-                throw new InvalidOperationException("Graphite frame has no outstanding submission.");
+            {
+                throw new InvalidOperationException(
+                    "Graphite frame has no outstanding submission."
+                );
+            }
+
             _session._context.CheckAsyncWorkCompletion();
             if (_readbackPending)
-                throw new InvalidOperationException("Graphite readback callback has not completed; retain this frame and poll again.");
+            {
+                throw new InvalidOperationException(
+                    "Graphite readback callback has not completed; retain this frame and poll again."
+                );
+            }
+
             Release();
         }
 
@@ -275,7 +470,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         {
             _session.CheckOwner();
             if (_returned || _submissionAttempted)
-                throw new InvalidOperationException("A submitted Graphite frame requires host GPU completion.");
+            {
+                throw new InvalidOperationException(
+                    "A submitted Graphite frame requires host GPU completion."
+                );
+            }
+
             using var discarded = _session._recorder.Snap();
             // Uploads belong to the discarded recording. A cached texture is
             // not usable merely because its allocation survived that recording.
@@ -293,7 +493,11 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 _surface.Dispose();
                 _backend.Dispose();
             }
-            else _vulkanTarget.ActiveFrame = null;
+            else
+            {
+                _vulkanTarget.ActiveFrame = null;
+            }
+
             _recording?.Dispose();
             _session._frames.Remove(this);
             _returned = true;

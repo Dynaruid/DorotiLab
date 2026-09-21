@@ -23,7 +23,8 @@ public readonly record struct SkiaPaintCompletion(
     long SurfaceGeneration,
     bool IsNewFrame,
     DorotiFrameDescriptor Descriptor,
-    long CausalFrameId = 0);
+    long CausalFrameId = 0
+);
 
 /// <summary>
 /// Immutable receipt emitted only after a Skia paint completion has crossed
@@ -41,7 +42,8 @@ public readonly record struct SkiaFrameReceipt(
     TimeSpan Timestamp,
     bool IsNewFrame,
     SkiaPaintDisposition Disposition,
-    string Reason)
+    string Reason
+)
 {
     public bool HasCausalFrameId => CausalFrameId > 0;
 }
@@ -58,9 +60,11 @@ public readonly record struct SkiaPaintResult(
     SkiaPaintDisposition Disposition,
     SkiaPaintCompletion? Completion,
     DorotiFrameDescriptor? Descriptor,
-    DorotiFrameMatchResult? MatchResult = null)
+    DorotiFrameMatchResult? MatchResult = null
+)
 {
-    public bool ShouldPresent => Disposition is SkiaPaintDisposition.exact or SkiaPaintDisposition.replay;
+    public bool ShouldPresent =>
+        Disposition is SkiaPaintDisposition.exact or SkiaPaintDisposition.replay;
 }
 
 public sealed record SkiaFrameDiagnostics(
@@ -90,9 +94,21 @@ public sealed record SkiaFrameDiagnostics(
     long SceneAccepted,
     long CausalPaintAttempts,
     DorotiFrameTerminalLedgerSnapshot TerminalLedger,
-    SkiaWorkDiagnostics? Work = null);
+    SkiaWorkDiagnostics? Work = null
+);
 
-public sealed record SkiaWorkDiagnostics(long PromotionCount, long PromotionMicroseconds,
-    long PromotionMaximumMicroseconds, long ParagraphCount, long ParagraphMicroseconds,
-    int WarmupEntries, long RasterPixels, int TextEntries,
-    long CommandCacheHits = 0, long CommandRecordings = 0, int CommandEntries = 0, int RetainedCommands = 0, long CommandBytes = 0);
+public sealed record SkiaWorkDiagnostics(
+    long PromotionCount,
+    long PromotionMicroseconds,
+    long PromotionMaximumMicroseconds,
+    long ParagraphCount,
+    long ParagraphMicroseconds,
+    int WarmupEntries,
+    long RasterPixels,
+    int TextEntries,
+    long CommandCacheHits = 0,
+    long CommandRecordings = 0,
+    int CommandEntries = 0,
+    int RetainedCommands = 0,
+    long CommandBytes = 0
+);

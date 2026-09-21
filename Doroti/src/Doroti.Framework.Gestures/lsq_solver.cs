@@ -28,14 +28,8 @@ public class _Vector__lsq_solver
 
     public double this[long i]
     {
-        get
-        {
-            return _elements[(int)(i + _offset)];
-        }
-        set
-        {
-            _elements[(int)(i + _offset)] = value;
-        }
+        get { return _elements[(int)(i + _offset)]; }
+        set { _elements[(int)(i + _offset)] = value; }
     }
 
     public virtual double op_Multiply(_Vector__lsq_solver a)
@@ -64,12 +58,14 @@ internal class _Matrix__lsq_solver
     }
 
     public virtual double get(long row, long col) => _elements[(int)((row * _columns) + col)];
+
     public virtual void set(long row, long col, double value)
     {
         _elements[(int)((row * _columns) + col)] = value;
     }
 
-    public virtual _Vector__lsq_solver getRow(long row) => _Vector__lsq_solver.CreateFromVOL(_elements, row * _columns, _columns);
+    public virtual _Vector__lsq_solver getRow(long row) =>
+        _Vector__lsq_solver.CreateFromVOL(_elements, row * _columns, _columns);
 }
 
 public class PolynomialFit
@@ -84,11 +80,13 @@ public class PolynomialFit
 
     public override string ToString()
     {
-        var coefficientString = coefficients.map((c) => c.toStringAsPrecision(3L)).ToList().ToString();
+        var coefficientString = coefficients
+            .map((c) => c.toStringAsPrecision(3L))
+            .ToList()
+            .ToString();
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit")}({coefficientString}, confidence: {confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class LeastSquaresSolver
@@ -152,7 +150,11 @@ public class LeastSquaresSolver
             }
             for (var iAlternate = 0L; iAlternate < n; iAlternate += 1L)
             {
-                r.set(j, iAlternate, (iAlternate < j) ? 0.0 : q.getRow(j).op_Multiply(a.getRow(iAlternate)));
+                r.set(
+                    j,
+                    iAlternate,
+                    (iAlternate < j) ? 0.0 : q.getRow(j).op_Multiply(a.getRow(iAlternate))
+                );
             }
         }
         var wy = new _Vector__lsq_solver(m);
@@ -165,7 +167,8 @@ public class LeastSquaresSolver
             result.coefficients[(int)iNested] = q.getRow(iNested).op_Multiply(wy);
             for (long jLocal = n - 1L; jLocal > iNested; jLocal -= 1L)
             {
-                result.coefficients[(int)iNested] -= r.get(iNested, jLocal) * result.coefficients[(int)jLocal];
+                result.coefficients[(int)iNested] -=
+                    r.get(iNested, jLocal) * result.coefficients[(int)jLocal];
             }
             result.coefficients[(int)iNested] /= r.get(iNested, iNested);
         }
@@ -190,10 +193,11 @@ public class LeastSquaresSolver
             double v = y[(int)hCandidate] - yMean;
             sumSquaredTotal += w[(int)hCandidate] * w[(int)hCandidate] * v * v;
         }
-        result.confidence = (sumSquaredTotal <= Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - sumSquaredError / sumSquaredTotal);
+        result.confidence =
+            (sumSquaredTotal <= Foundation.ConstantsLibrary.precisionErrorTolerance)
+                ? 1.0
+                : (1.0 - (sumSquaredError / sumSquaredTotal));
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

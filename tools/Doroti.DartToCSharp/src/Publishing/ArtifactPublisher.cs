@@ -10,34 +10,59 @@ internal static class ArtifactPublisher
         CompilerDumpOptions? dumpOptions = null,
         string? telemetryPath = null,
         int? analyzerWorkers = null,
-        int? loweringParallelism = null)
+        int? loweringParallelism = null
+    )
     {
         var target = Path.GetFullPath(outputDirectory);
-        var parent = Path.GetDirectoryName(target)
-            ?? throw new InvalidDataException($"Generated output must have a parent directory: {target}");
+        var parent =
+            Path.GetDirectoryName(target)
+            ?? throw new InvalidDataException(
+                $"Generated output must have a parent directory: {target}"
+            );
         if (Path.GetPathRoot(target) == target)
         {
-            throw new InvalidDataException("A filesystem root cannot be used as a generated workspace.");
+            throw new InvalidDataException(
+                "A filesystem root cannot be used as a generated workspace."
+            );
         }
         if (telemetryPath is not null)
         {
             var resolvedTelemetry = Path.GetFullPath(telemetryPath);
-            var outputPrefix = target.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            if (string.Equals(resolvedTelemetry, target, StringComparison.OrdinalIgnoreCase) ||
-                resolvedTelemetry.StartsWith(outputPrefix, StringComparison.OrdinalIgnoreCase))
+            var outputPrefix =
+                target.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+            if (
+                string.Equals(resolvedTelemetry, target, StringComparison.OrdinalIgnoreCase)
+                || resolvedTelemetry.StartsWith(outputPrefix, StringComparison.OrdinalIgnoreCase)
+            )
             {
-                throw new InvalidDataException("--telemetry must be outside the compiler-owned generated workspace.");
+                throw new InvalidDataException(
+                    "--telemetry must be outside the compiler-owned generated workspace."
+                );
             }
         }
 
         Directory.CreateDirectory(parent);
-        var name = Path.GetFileName(target.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        var name = Path.GetFileName(
+            target.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        );
         var token = Guid.NewGuid().ToString("N");
         var staging = Path.Combine(parent, $".{name}.doroti-staging-{token}");
         var backup = Path.Combine(parent, $".{name}.doroti-backup-{token}");
-        var resolvedAnalyzerWorkers = CompilerParallelism.ResolveAnalyzerWorkers(analyzerWorkers, maxDegreeOfParallelism);
-        var resolvedLoweringParallelism = CompilerParallelism.ResolveLoweringParallelism(loweringParallelism, maxDegreeOfParallelism);
-        using var profiler = new CompilerProfiler(manifestPath, telemetryPath, resolvedAnalyzerWorkers, resolvedLoweringParallelism);
+        var resolvedAnalyzerWorkers = CompilerParallelism.ResolveAnalyzerWorkers(
+            analyzerWorkers,
+            maxDegreeOfParallelism
+        );
+        var resolvedLoweringParallelism = CompilerParallelism.ResolveLoweringParallelism(
+            loweringParallelism,
+            maxDegreeOfParallelism
+        );
+        using var profiler = new CompilerProfiler(
+            manifestPath,
+            telemetryPath,
+            resolvedAnalyzerWorkers,
+            resolvedLoweringParallelism
+        );
         ConverterReport report;
         var published = false;
         try
@@ -51,7 +76,8 @@ internal static class ArtifactPublisher
                 dumpOptions,
                 profiler,
                 resolvedAnalyzerWorkers,
-                resolvedLoweringParallelism);
+                resolvedLoweringParallelism
+            );
             PublishDirectory(staging, target, backup);
             published = true;
             profiler.Complete();
@@ -104,9 +130,17 @@ internal static class ArtifactPublisher
         }
 
         var resolvedParent = Path.GetFullPath(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        if (!string.Equals(resolvedParent, Path.GetFullPath(expectedParent), StringComparison.OrdinalIgnoreCase))
+        if (
+            !string.Equals(
+                resolvedParent,
+                Path.GetFullPath(expectedParent),
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
         {
-            throw new InvalidDataException($"Refusing to clean generated directory outside its expected parent: {path}");
+            throw new InvalidDataException(
+                $"Refusing to clean generated directory outside its expected parent: {path}"
+            );
         }
 
         for (var attempt = 0; ; attempt++)

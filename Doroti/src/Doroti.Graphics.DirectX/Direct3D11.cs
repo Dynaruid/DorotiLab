@@ -42,12 +42,29 @@ public unsafe partial class ID3D11DeviceContext
         Native->Flush();
     }
 
-    public void UpdateSubresource(uint[] data, ID3D11Texture2D texture, uint subresource, uint rowPitch, uint depthPitch, D11.Box? box)
+    public void UpdateSubresource(
+        uint[] data,
+        ID3D11Texture2D texture,
+        uint subresource,
+        uint rowPitch,
+        uint depthPitch,
+        D11.Box? box
+    )
     {
         using var lifetime = new ComScope(this, texture);
         var region = box.GetValueOrDefault();
         fixed (uint* pointer = data)
-            Native->UpdateSubresource((D11.ID3D11Resource*)texture.NativePointer, subresource, box.HasValue ? &region : null, pointer, rowPitch, depthPitch);
+        {
+            Native->UpdateSubresource(
+                (D11.ID3D11Resource*)texture.NativePointer,
+                subresource,
+                box.HasValue ? &region : null,
+                pointer,
+                rowPitch,
+                depthPitch
+            );
+        }
+
         GC.KeepAlive(texture);
     }
 }
@@ -60,20 +77,40 @@ public unsafe partial class ID3D11On12Device2
         using var lifetime = new ComScope(this, texture, queue);
         var iid = T.InterfaceId;
         void* pointer = null;
-        var hr = Native->UnwrapUnderlyingResource((D11.ID3D11Resource*)texture.NativePointer, queue.Native, &iid, &pointer);
+        var hr = Native->UnwrapUnderlyingResource(
+            (D11.ID3D11Resource*)texture.NativePointer,
+            queue.Native,
+            &iid,
+            &pointer
+        );
         return Adopt<T>(hr, pointer);
     }
 
-    public HResult ReturnUnderlyingResource(ID3D11Texture2D texture, ulong[] values, ID3D12Fence[] fences)
+    public HResult ReturnUnderlyingResource(
+        ID3D11Texture2D texture,
+        ulong[] values,
+        ID3D12Fence[] fences
+    )
     {
         using var lifetime = new ComScope(this, texture, fences);
         if (values.Length != fences.Length)
+        {
             throw new ArgumentException("Each fence requires a value.");
+        }
+
         var pointers = fences.Select(fence => fence.NativePointer).ToArray();
         int hr;
         fixed (ulong* valuePointer = values)
         fixed (nint* fencePointer = pointers)
-            hr = Native->ReturnUnderlyingResource((D11.ID3D11Resource*)texture.NativePointer, (uint)fences.Length, valuePointer, (D12.ID3D12Fence**)fencePointer);
+        {
+            hr = Native->ReturnUnderlyingResource(
+                (D11.ID3D11Resource*)texture.NativePointer,
+                (uint)fences.Length,
+                valuePointer,
+                (D12.ID3D12Fence**)fencePointer
+            );
+        }
+
         GC.KeepAlive(fences);
         GC.KeepAlive(texture);
         return hr;

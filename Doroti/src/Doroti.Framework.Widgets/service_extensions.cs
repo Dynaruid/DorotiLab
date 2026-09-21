@@ -13,7 +13,7 @@ public enum WidgetsServiceExtensions
     profileWidgetBuilds,
     profileUserWidgetBuilds,
     debugAllowBanner,
-    accessibilityEvaluations
+    accessibilityEvaluations,
 }
 
 public enum WidgetInspectorServiceExtensions
@@ -49,6 +49,5 @@ public enum WidgetInspectorServiceExtensions
     getLayoutExplorerNode,
     setFlexFit,
     setFlexFactor,
-    setFlexProperties
+    setFlexProperties,
 }
-

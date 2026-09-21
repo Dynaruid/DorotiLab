@@ -9,7 +9,7 @@ public enum SnapshotMode
 {
     permissive,
     normal,
-    forced
+    forced,
 }
 
 public class SnapshotController : ChangeNotifier
@@ -49,7 +49,15 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
     public virtual bool autoresize { get; private set; } = default!;
     public virtual SnapshotPainter painter { get; private set; } = default!;
 
-    public SnapshotWidget(Key? key = null, SnapshotMode mode = SnapshotMode.normal, SnapshotPainter painter = default!, bool autoresize = false, SnapshotController controller = default!, Widget? child = default!) : base(key: key, child: child)
+    public SnapshotWidget(
+        Key? key = null,
+        SnapshotMode mode = SnapshotMode.normal,
+        SnapshotPainter painter = default!,
+        bool autoresize = false,
+        SnapshotController controller = default!,
+        Widget? child = default!
+    )
+        : base(key: key, child: child)
     {
         SnapshotPainter __painter = painter ?? new _DefaultSnapshotPainter__snapshot_widget();
         this.mode = mode;
@@ -61,25 +69,36 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         DebugLibrary.debugCheckHasMediaQuery(context);
-        return new _RenderSnapshotWidget__snapshot_widget(controller: controller, mode: mode, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), painter: painter, autoresize: autoresize);
+        return new _RenderSnapshotWidget__snapshot_widget(
+            controller: controller,
+            mode: mode,
+            devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
+            painter: painter,
+            autoresize: autoresize
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         DebugLibrary.debugCheckHasMediaQuery(context);
-        DartRuntimePrimitives.Ignore(((Func<_RenderSnapshotWidget__snapshot_widget>)(() =>
-{
-    var __cascade = ((_RenderSnapshotWidget__snapshot_widget?)renderObject)!;
-    __cascade.controller = controller;
-    __cascade.mode = mode;
-    __cascade.devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
-    __cascade.painter = painter;
-    __cascade.autoresize = autoresize;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSnapshotWidget__snapshot_widget>)(
+                    () =>
+                    {
+                        var __cascade = ((_RenderSnapshotWidget__snapshot_widget?)renderObject)!;
+                        __cascade.controller = controller;
+                        __cascade.mode = mode;
+                        __cascade.devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+                        __cascade.painter = painter;
+                        __cascade.autoresize = autoresize;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
@@ -94,7 +113,13 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
     internal virtual bool _disableSnapshotAttempt { get; set; } = false;
     internal virtual Size? _lastCachedSize { get; set; } = default;
 
-    internal _RenderSnapshotWidget__snapshot_widget(double devicePixelRatio, SnapshotController controller, SnapshotMode mode, SnapshotPainter painter, bool autoresize)
+    internal _RenderSnapshotWidget__snapshot_widget(
+        double devicePixelRatio,
+        SnapshotController controller,
+        SnapshotMode mode,
+        SnapshotPainter painter,
+        bool autoresize
+    )
     {
         _devicePixelRatio = devicePixelRatio;
         _controller = controller;
@@ -139,7 +164,14 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
             SnapshotPainter oldPainter = painter;
             oldPainter.removeListener(markNeedsPaint);
             _painter = __value;
-            if ((!Equals(DartRuntimePrimitives.RuntimeType(oldPainter), DartRuntimePrimitives.RuntimeType(painter))) || painter.shouldRepaint(oldPainter))
+            if (
+                (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(oldPainter),
+                        DartRuntimePrimitives.RuntimeType(painter)
+                    )
+                ) || painter.shouldRepaint(oldPainter)
+            )
             {
                 markNeedsPaint();
             }
@@ -200,6 +232,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
             markNeedsPaint();
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         controller.addListener(_onRasterValueChanged);
@@ -248,7 +281,11 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
             offsetLayer.dispose();
             if (Equals(mode, SnapshotMode.normal))
             {
-                throw DartRuntimePrimitives.AsException(FlutterError.Create("SnapshotWidget used with a child that contains a PlatformView."));
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "SnapshotWidget used with a child that contains a PlatformView."
+                    )
+                );
             }
             _disableSnapshotAttempt = true;
             return null;
@@ -293,64 +330,86 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
         }
         else
         {
-            painter.paintSnapshot(context, offset, size, _childRaster!, DartRuntimePrimitives.RequireValue(_childRasterSize), devicePixelRatio);
+            painter.paintSnapshot(
+                context,
+                offset,
+                size,
+                _childRaster!,
+                DartRuntimePrimitives.RequireValue(_childRasterSize),
+                devicePixelRatio
+            );
         }
     }
-
 }
 
 public abstract class SnapshotPainter : ChangeNotifier
 {
-    protected SnapshotPainter()
-    {
-    }
+    protected SnapshotPainter() { }
 
-    public abstract void paintSnapshot(PaintingContext context, Offset offset, Size size, Ui.Image image, Size sourceSize, double pixelRatio);
-    public abstract void paint(PaintingContext context, Offset offset, Size size, Action<PaintingContext, Offset> painter);
+    public abstract void paintSnapshot(
+        PaintingContext context,
+        Offset offset,
+        Size size,
+        Ui.Image image,
+        Size sourceSize,
+        double pixelRatio
+    );
+    public abstract void paint(
+        PaintingContext context,
+        Offset offset,
+        Size size,
+        Action<PaintingContext, Offset> painter
+    );
     public abstract bool shouldRepaint(SnapshotPainter oldPainter);
 }
 
 internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
 {
-    internal _DefaultSnapshotPainter__snapshot_widget()
-    {
-    }
+    internal _DefaultSnapshotPainter__snapshot_widget() { }
 
-    public override void addListener(Action listener)
-    {
-    }
+    public override void addListener(Action listener) { }
 
-    public override void dispose()
-    {
-    }
+    public override void dispose() { }
 
     public new virtual bool hasListeners => false;
-    public new virtual void notifyListeners()
-    {
-    }
 
-    public override void paint(PaintingContext context, Offset offset, Size size, Action<PaintingContext, Offset> painter)
+    public new virtual void notifyListeners() { }
+
+    public override void paint(
+        PaintingContext context,
+        Offset offset,
+        Size size,
+        Action<PaintingContext, Offset> painter
+    )
     {
         painter(context, offset);
     }
 
-    public override void paintSnapshot(PaintingContext context, Offset offset, Size size, Ui.Image image, Size sourceSize, double pixelRatio)
+    public override void paintSnapshot(
+        PaintingContext context,
+        Offset offset,
+        Size size,
+        Ui.Image image,
+        Size sourceSize,
+        double pixelRatio
+    )
     {
         var src = Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
         var dst = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
-        var paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.filterQuality = FilterQuality.medium;
-    return __cascade;
-}))();
+        var paint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.filterQuality = FilterQuality.medium;
+                    return __cascade;
+                }
+            )
+        )();
         context.canvas.drawImageRect(image, src, dst, paint);
     }
 
-    public override void removeListener(Action listener)
-    {
-    }
+    public override void removeListener(Action listener) { }
 
     public override bool shouldRepaint(SnapshotPainter oldPainter) => false;
 }
-

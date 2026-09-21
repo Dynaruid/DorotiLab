@@ -12,7 +12,17 @@ public class RawWebImageIo : StatelessWidget
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
     public virtual bool matchTextDirection { get; private set; } = default!;
 
-    public RawWebImageIo(Key? key = null, WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key)
+    public RawWebImageIo(
+        Key? key = null,
+        WebImageInfoIo image = default!,
+        string? debugImageLabel = null,
+        double? width = null,
+        double? height = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        bool matchTextDirection = false
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
@@ -26,9 +36,9 @@ public class RawWebImageIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        throw new NotSupportedException("It is impossible to instantiate a RawWebImage when not running on the web");
+        throw new NotSupportedException(
+            "It is impossible to instantiate a RawWebImage when not running on the web"
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

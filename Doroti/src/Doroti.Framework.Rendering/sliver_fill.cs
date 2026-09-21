@@ -9,7 +9,12 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
     internal virtual double _viewportFraction { get; set; } = default!;
     internal virtual bool _allowImplicitScrolling { get; set; } = default!;
 
-    public RenderSliverFillViewport(RenderSliverBoxChildManager childManager, double viewportFraction = 1.0, bool allowImplicitScrolling = true) : base(childManager: childManager)
+    public RenderSliverFillViewport(
+        RenderSliverBoxChildManager childManager,
+        double viewportFraction = 1.0,
+        bool allowImplicitScrolling = true
+    )
+        : base(childManager: childManager)
     {
         _viewportFraction = viewportFraction;
         _allowImplicitScrolling = allowImplicitScrolling;
@@ -45,6 +50,7 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (allowImplicitScrolling)
@@ -57,7 +63,9 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
         RenderBox? child = firstChild;
         while (child is not null)
         {
-            double childStart = DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!.layoutOffset);
+            double childStart = DartRuntimePrimitives.RequireValue(
+                ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!.layoutOffset
+            );
             if (childStart >= visibleEnd)
             {
                 break;
@@ -69,20 +77,23 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
             child = childAfter(child);
         }
     }
-
 }
 
 public class RenderSliverFillRemainingWithScrollable : RenderSliverSingleBoxAdapter
 {
-    public RenderSliverFillRemainingWithScrollable(RenderBox? child = null) : base(child: child)
-    {
-    }
+    public RenderSliverFillRemainingWithScrollable(RenderBox? child = null)
+        : base(child: child) { }
 
     public override void performLayout()
     {
         SliverConstraints constraintsLocal = constraints;
-        double extent = constraintsLocal.remainingPaintExtent - Math.Min(constraintsLocal.overlap, 0.0);
-        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: constraintsLocal.viewportMainAxisExtent);
+        double extent =
+            constraintsLocal.remainingPaintExtent - Math.Min(constraintsLocal.overlap, 0.0);
+        double cacheExtentLocal = calculateCacheOffset(
+            constraintsLocal,
+            from: 0.0,
+            to: constraintsLocal.viewportMainAxisExtent
+        );
         if (child is not null)
         {
             var maxExtentLocal = extent;
@@ -90,33 +101,46 @@ public class RenderSliverFillRemainingWithScrollable : RenderSliverSingleBoxAdap
             {
                 maxExtentLocal = cacheExtentLocal;
             }
-            child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal));
+            child!.layout(
+                constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal)
+            );
         }
         double paintedChildSize = calculatePaintOffset(constraintsLocal, from: 0.0, to: extent);
         DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
         DartRuntimePrimitives.Assert(() => paintedChildSize >= 0.0);
-        geometry = new SliverGeometry(scrollExtent: constraintsLocal.viewportMainAxisExtent, paintExtent: paintedChildSize, maxPaintExtent: paintedChildSize, hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent) || (constraintsLocal.scrollOffset > 0.0), cacheExtent: cacheExtentLocal);
+        geometry = new SliverGeometry(
+            scrollExtent: constraintsLocal.viewportMainAxisExtent,
+            paintExtent: paintedChildSize,
+            maxPaintExtent: paintedChildSize,
+            hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent)
+                || (constraintsLocal.scrollOffset > 0.0),
+            cacheExtent: cacheExtentLocal
+        );
         if (child is not null)
         {
             setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
-
 }
 
 public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
 {
-    public RenderSliverFillRemaining(RenderBox? child = null) : base(child: child)
-    {
-    }
+    public RenderSliverFillRemaining(RenderBox? child = null)
+        : base(child: child) { }
 
     public override void performLayout()
     {
         SliverConstraints constraintsLocal = constraints;
-        double extent = constraintsLocal.viewportMainAxisExtent - constraintsLocal.precedingScrollExtent;
+        double extent =
+            constraintsLocal.viewportMainAxisExtent - constraintsLocal.precedingScrollExtent;
         if (child is not null)
         {
-            double childExtent = constraintsLocal.axis switch { Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent), Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            double childExtent = constraintsLocal.axis switch
+            {
+                Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent),
+                Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             extent = Math.Max(extent, childExtent);
             child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: extent));
         }
@@ -125,44 +149,63 @@ public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
         DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
         DartRuntimePrimitives.Assert(() => paintedChildSize >= 0.0);
         double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: extent);
-        geometry = new SliverGeometry(scrollExtent: extent, paintExtent: paintedChildSize, maxPaintExtent: paintedChildSize, hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent) || (constraintsLocal.scrollOffset > 0.0), cacheExtent: cacheExtentLocal);
+        geometry = new SliverGeometry(
+            scrollExtent: extent,
+            paintExtent: paintedChildSize,
+            maxPaintExtent: paintedChildSize,
+            hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent)
+                || (constraintsLocal.scrollOffset > 0.0),
+            cacheExtent: cacheExtentLocal
+        );
         if (child is not null)
         {
             setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
-
 }
 
 public class RenderSliverFillRemainingAndOverscroll : RenderSliverSingleBoxAdapter
 {
-    public RenderSliverFillRemainingAndOverscroll(RenderBox? child = null) : base(child: child)
-    {
-    }
+    public RenderSliverFillRemainingAndOverscroll(RenderBox? child = null)
+        : base(child: child) { }
 
     public override void performLayout()
     {
         SliverConstraints constraintsLocal = constraints;
-        double extent = constraintsLocal.viewportMainAxisExtent - constraintsLocal.precedingScrollExtent;
-        double maxExtentLocal = constraintsLocal.remainingPaintExtent - Math.Min(constraintsLocal.overlap, 0.0);
+        double extent =
+            constraintsLocal.viewportMainAxisExtent - constraintsLocal.precedingScrollExtent;
+        double maxExtentLocal =
+            constraintsLocal.remainingPaintExtent - Math.Min(constraintsLocal.overlap, 0.0);
         if (child is not null)
         {
-            double childExtent = constraintsLocal.axis switch { Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent), Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            double childExtent = constraintsLocal.axis switch
+            {
+                Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent),
+                Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             extent = Math.Max(extent, childExtent);
             maxExtentLocal = Math.Max(extent, maxExtentLocal);
-            child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal));
+            child!.layout(
+                constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal)
+            );
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(extent));
         double paintedChildSize = calculatePaintOffset(constraintsLocal, from: 0.0, to: extent);
         DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
         DartRuntimePrimitives.Assert(() => paintedChildSize >= 0.0);
         double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: extent);
-        geometry = new SliverGeometry(scrollExtent: extent, paintExtent: Math.Min(maxExtentLocal, constraintsLocal.remainingPaintExtent), maxPaintExtent: maxExtentLocal, hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent) || (constraintsLocal.scrollOffset > 0.0), cacheExtent: cacheExtentLocal);
+        geometry = new SliverGeometry(
+            scrollExtent: extent,
+            paintExtent: Math.Min(maxExtentLocal, constraintsLocal.remainingPaintExtent),
+            maxPaintExtent: maxExtentLocal,
+            hasVisualOverflow: (extent > constraintsLocal.remainingPaintExtent)
+                || (constraintsLocal.scrollOffset > 0.0),
+            cacheExtent: cacheExtentLocal
+        );
         if (child is not null)
         {
             setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
-
 }
-

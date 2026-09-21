@@ -13,15 +13,20 @@ public sealed class SkiaFallbackFontCollection : IDisposable
     private readonly List<RegisteredFont> _fonts = [];
     private bool _disposed;
 
-    public IReadOnlyList<string> Families => _fonts.Select(font => font.Typeface.FamilyName).ToArray();
+    public IReadOnlyList<string> Families =>
+        _fonts.Select(font => font.Typeface.FamilyName).ToArray();
 
     public string Register(ReadOnlyMemory<byte> bytes, string? family = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (bytes.IsEmpty) throw new ArgumentException("Font data cannot be empty.", nameof(bytes));
+        if (bytes.IsEmpty)
+        {
+            throw new ArgumentException("Font data cannot be empty.", nameof(bytes));
+        }
 
         using var data = SKData.CreateCopy(bytes.ToArray());
-        var typeface = SKTypeface.FromData(data)
+        var typeface =
+            SKTypeface.FromData(data)
             ?? throw new InvalidDataException("Skia could not decode the supplied fallback font.");
         var font = new RegisteredFont(typeface, family);
         _fonts.Add(font);
@@ -31,31 +36,63 @@ public sealed class SkiaFallbackFontCollection : IDisposable
     public bool ContainsCharacter(int codePoint)
     {
         if (!Rune.IsValid(codePoint))
+        {
             throw new ArgumentOutOfRangeException(nameof(codePoint));
+        }
+
         return MatchCharacter(codePoint) is not null;
     }
 
-    internal SKTypeface? MatchFamily(string? family, SKFontStyle? style = null) => string.IsNullOrWhiteSpace(family) ? null :
-        _fonts.AsEnumerable().Reverse().Where(font => string.Equals(font.Alias ?? font.Typeface.FamilyName, family, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(font => Math.Abs(font.Typeface.FontWeight - (style?.Weight ?? 400)) +
-                (font.Typeface.FontSlant == (style?.Slant ?? SKFontStyleSlant.Upright) ? 0 : 1000))
-            .FirstOrDefault()?.Typeface;
+    internal SKTypeface? MatchFamily(string? family, SKFontStyle? style = null) =>
+        string.IsNullOrWhiteSpace(family)
+            ? null
+            : _fonts
+                .AsEnumerable()
+                .Reverse()
+                .Where(font =>
+                    string.Equals(
+                        font.Alias ?? font.Typeface.FamilyName,
+                        family,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
+                .OrderBy(font =>
+                    Math.Abs(font.Typeface.FontWeight - (style?.Weight ?? 400))
+                    + (
+                        font.Typeface.FontSlant == (style?.Slant ?? SKFontStyleSlant.Upright)
+                            ? 0
+                            : 1000
+                    )
+                )
+                .FirstOrDefault()
+                ?.Typeface;
 
     internal SKTypeface? MatchCharacter(int codePoint)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         foreach (var font in _fonts)
         {
-            if (font.Probe.ContainsGlyph(codePoint)) return font.Typeface;
+            if (font.Probe.ContainsGlyph(codePoint))
+            {
+                return font.Typeface;
+            }
         }
         return null;
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
-        foreach (var font in _fonts) font.Dispose();
+        foreach (var font in _fonts)
+        {
+            font.Dispose();
+        }
+
         _fonts.Clear();
     }
 

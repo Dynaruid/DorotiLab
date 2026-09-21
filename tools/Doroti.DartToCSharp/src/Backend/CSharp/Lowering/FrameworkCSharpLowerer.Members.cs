@@ -12,31 +12,52 @@ internal sealed partial class FrameworkCSharpLowerer
         string library,
         string inputPath,
         List<ConverterDiagnostic> diagnostics,
-        bool forcePublic = false)
+        bool forcePublic = false
+    )
     {
         // Dart privacy is library-wide. A Dart library is emitted as several C#
         // types, so private C# visibility would incorrectly block peer types.
-        var visibility = forcePublic || !IsDartPrivate(field) || IsRequiredByMixinConstraint(field) || field.Name == "_layerHandle" ||
-            declaration.Name == "OneSequenceGestureRecognizer" && field.Name is "_entries" or "_trackedPointers" ||
-            field.IsStatic && field.Name == "_instance" && WillEmitAsInterface(declaration)
-            ? "public"
-            : "internal";
+        var visibility =
+            forcePublic
+            || !IsDartPrivate(field)
+            || IsRequiredByMixinConstraint(field)
+            || field.Name == "_layerHandle"
+            || (
+                declaration.Name == "OneSequenceGestureRecognizer"
+                && field.Name is "_entries" or "_trackedPointers"
+            )
+            || (field.IsStatic && field.Name == "_instance" && WillEmitAsInterface(declaration))
+                ? "public"
+                : "internal";
         var contractField = field.IsStatic ? null : FindBaseContractMember(declaration, field);
         if (contractField is null && declaration.Name == "DefaultWidgetsLocalizations")
         {
             contractField = FindDirectSuperclassMember(declaration, field);
         }
-        ValidateOverrideContract(declaration, field, contractField, WillEmitAsInterface(declaration), package, library, inputPath, diagnostics);
+        ValidateOverrideContract(
+            declaration,
+            field,
+            contractField,
+            WillEmitAsInterface(declaration),
+            package,
+            library,
+            inputPath,
+            diagnostics
+        );
         var initializer = field.Ast.Child(CoreChildRole.initializerOffset);
         var ownType = MapType(field.Element.Type ?? "object");
         // Field elements expose display names such as `TextStyle` without the
         // declaring library. When an initializer calls a resolved method, its
         // return-type AST retains that identity (for example ui.TextStyle).
         // Prefer that qualified type when it is the same Dart type name.
-        if (initializer is not null && FindGlobalMember(initializer.ElementId) is { } initializerMember)
+        if (
+            initializer is not null
+            && FindGlobalMember(initializer.ElementId) is { } initializerMember
+        )
         {
-            var initializerReturnTypeNode = initializerMember.Ast.Children
-                .FirstOrDefault(item => item.Category == "type");
+            var initializerReturnTypeNode = initializerMember.Ast.Children.FirstOrDefault(item =>
+                item.Category == "type"
+            );
             if (initializerReturnTypeNode is not null)
             {
                 var resolvedInitializerType = MapTypeFromAst(initializerReturnTypeNode);
@@ -44,10 +65,14 @@ internal sealed partial class FrameworkCSharpLowerer
                 var sameQualifiedType = string.Equals(
                     StripLibraryPrefix(resolvedInitializerType).TrimEnd('?'),
                     StripLibraryPrefix(ownType).TrimEnd('?'),
-                    StringComparison.Ordinal);
-                var sameUnqualifiedType = declaredTypeName.Length > 0 &&
-                    !declaredTypeName.Contains('<', StringComparison.Ordinal) &&
-                    resolvedInitializerType.TrimEnd('?').EndsWith('.' + declaredTypeName, StringComparison.Ordinal);
+                    StringComparison.Ordinal
+                );
+                var sameUnqualifiedType =
+                    declaredTypeName.Length > 0
+                    && !declaredTypeName.Contains('<', StringComparison.Ordinal)
+                    && resolvedInitializerType
+                        .TrimEnd('?')
+                        .EndsWith('.' + declaredTypeName, StringComparison.Ordinal);
                 if (sameQualifiedType || sameUnqualifiedType)
                 {
                     ownType = resolvedInitializerType;
@@ -56,35 +81,50 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         var contractType = contractField is null
             ? ownType
-            : MapType(ApplyTypeParameterSubstitutions(contractField.Element.ReturnType ?? contractField.Element.Type ?? field.Element.Type ?? "object", ContractTypeParameterSubstitutions(declaration, contractField)));
-        var type = Regex.IsMatch(contractType, @"\b[A-Z]\b", RegexOptions.CultureInvariant) &&
-            !Regex.IsMatch(ownType, @"\b[A-Z]\b", RegexOptions.CultureInvariant)
+            : MapType(
+                ApplyTypeParameterSubstitutions(
+                    contractField.Element.ReturnType
+                        ?? contractField.Element.Type
+                        ?? field.Element.Type
+                        ?? "object",
+                    ContractTypeParameterSubstitutions(declaration, contractField)
+                )
+            );
+        var type =
+            Regex.IsMatch(contractType, @"\b[A-Z]\b", RegexOptions.CultureInvariant)
+            && !Regex.IsMatch(ownType, @"\b[A-Z]\b", RegexOptions.CultureInvariant)
                 ? ownType
                 : contractType;
         if (field.Name == "renderObject")
         {
             type = contractField is null
                 ? ownType
-                : "global::Doroti.Framework.Rendering.RenderObject" +
-                    (ownType.EndsWith("?", StringComparison.Ordinal) ? "?" : string.Empty);
+                : "global::Doroti.Framework.Rendering.RenderObject"
+                    + (ownType.EndsWith("?", StringComparison.Ordinal) ? "?" : string.Empty);
         }
         if (field.Name == "compareOrder")
         {
-            type = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
+            type =
+                "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (declaration.Name == "TreeSliver" && field.Name == "treeRowExtentBuilder")
         {
-            type = "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
+            type =
+                "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
         }
         if (declaration.Name == "_TreeSliverState" && field.Name == "_activeAnimations")
         {
-            type = "DartMap<global::Doroti.Framework.Foundation.UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation>";
+            type =
+                "DartMap<global::Doroti.Framework.Foundation.UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation>";
         }
         if (declaration.Name == "ScrollAwareImageProvider" && field.Name == "context")
         {
             type = "dynamic";
         }
-        if (field.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
+        if (
+            field.Name == "value"
+            && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState"
+        )
         {
             type = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
@@ -92,8 +132,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             type = "IntentAction<Intent>";
         }
-        if (DisplacedStructuralSuperclass(declaration) is not null &&
-            field.Name is "original" or "transform")
+        if (
+            DisplacedStructuralSuperclass(declaration) is not null
+            && field.Name is "original" or "transform"
+        )
         {
             type = ownType;
         }
@@ -103,15 +145,30 @@ internal sealed partial class FrameworkCSharpLowerer
         var name = SafeIdentifier(field.Name);
         var contractOwner = contractField is null ? null : FindDeclaringDeclaration(contractField);
         var contractOwnerName = contractOwner?.Name;
-        var canOverrideContract = contractOwner is not null && FindOverriddenBaseMember(declaration, field) is not null &&
-            (IsGeneratedDeclaration(contractOwner) || contractOwnerName is not ("ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate"));
-        if (declaration.Element.Supertype is { } fieldSupertype &&
-            StripLibraryPrefix(fieldSupertype).Split('<')[0] == "DiagnosticsSerializationDelegate")
+        var canOverrideContract =
+            contractOwner is not null
+            && FindOverriddenBaseMember(declaration, field) is not null
+            && (
+                IsGeneratedDeclaration(contractOwner)
+                || contractOwnerName
+                    is not (
+                        "ValueNotifier"
+                        or "DiagnosticsProperty"
+                        or "DiagnosticsSerializationDelegate"
+                    )
+            );
+        if (
+            declaration.Element.Supertype is { } fieldSupertype
+            && StripLibraryPrefix(fieldSupertype).Split('<')[0]
+                == "DiagnosticsSerializationDelegate"
+        )
         {
             canOverrideContract = false;
         }
-        if (declaration.Name is "_OverridableAction" or "_OverridableContextAction" &&
-            field.Name is "_defaultAction" or "_lookupContext")
+        if (
+            declaration.Name is "_OverridableAction" or "_OverridableContextAction"
+            && field.Name is "_defaultAction" or "_lookupContext"
+        )
         {
             canOverrideContract = false;
             if (declaration.Name == "_OverridableContextAction" && field.Name == "_defaultAction")
@@ -121,15 +178,27 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (field.IsStatic)
         {
-            if (field.IsConst && initializer is { Kind: CoreNodeKind.SimpleIdentifier } &&
-                FindGlobalMember(initializer.ElementId) is { IsStatic: true })
+            if (
+                field.IsConst
+                && initializer is { Kind: CoreNodeKind.SimpleIdentifier }
+                && FindGlobalMember(initializer.ElementId) is { IsStatic: true }
+            )
             {
                 // Dart const aliases are canonical compile-time values and do
                 // not observe textual static initialization order. A CLR field
                 // alias can read a later field as null, so retain the dependency
                 // as an expression-bodied static property.
                 builder.Append($"    {visibility} static {type} {name} => ");
-                EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                EmitFieldInitializer(
+                    builder,
+                    type,
+                    initializer,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
                 return;
             }
@@ -138,7 +207,16 @@ internal sealed partial class FrameworkCSharpLowerer
             if (initializer is not null)
             {
                 builder.Append(" = ");
-                EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                EmitFieldInitializer(
+                    builder,
+                    type,
+                    initializer,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
             }
             else if (modifier == "const")
             {
@@ -165,13 +243,24 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine($"            if (!{storageName}_initialized)");
             builder.AppendLine("            {");
             builder.Append($"                {storageName} = ");
-            EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+            EmitFieldInitializer(
+                builder,
+                type,
+                initializer,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.AppendLine(";");
             builder.AppendLine($"                {storageName}_initialized = true;");
             builder.AppendLine("            }");
             builder.AppendLine($"            return {storageName};");
             builder.AppendLine("        }");
-            builder.AppendLine($"        set {{ {storageName} = value; {storageName}_initialized = true; }}");
+            builder.AppendLine(
+                $"        set {{ {storageName} = value; {storageName}_initialized = true; }}"
+            );
             builder.AppendLine("    }");
             return;
         }
@@ -191,7 +280,16 @@ internal sealed partial class FrameworkCSharpLowerer
                 builder.AppendLine($"            if (!{storageName}_initialized)");
                 builder.AppendLine("            {");
                 builder.Append($"                {storageName} = ");
-                EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                EmitFieldInitializer(
+                    builder,
+                    type,
+                    initializer,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
                 builder.AppendLine($"                {storageName}_initialized = true;");
                 builder.AppendLine("            }");
@@ -207,22 +305,45 @@ internal sealed partial class FrameworkCSharpLowerer
                 if (initializer is not null)
                 {
                     builder.Append(" = ");
-                    EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                    EmitFieldInitializer(
+                        builder,
+                        type,
+                        initializer,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                 }
                 else
                 {
                     builder.Append(" = default!");
                 }
                 builder.AppendLine(";");
-                builder.AppendLine($"    {visibility} override {type} {name} {{ get => {storageName}; }}");
+                builder.AppendLine(
+                    $"    {visibility} override {type} {name} {{ get => {storageName}; }}"
+                );
                 return;
             }
-            var setter = propertyModifier == "override " ? string.Empty : forcePublic ? " set;" : " private set;";
+            var setter =
+                propertyModifier == "override " ? string.Empty
+                : forcePublic ? " set;"
+                : " private set;";
             builder.Append($"    {visibility} {propertyModifier}{type} {name} {{ get;{setter} }}");
             if (initializer is not null)
             {
                 builder.Append(" = ");
-                EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                EmitFieldInitializer(
+                    builder,
+                    type,
+                    initializer,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append(';');
             }
             else if (!type.EndsWith("?", StringComparison.Ordinal))
@@ -238,18 +359,35 @@ internal sealed partial class FrameworkCSharpLowerer
         if (initializer is not null)
         {
             builder.Append(" = ");
-            EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+            EmitFieldInitializer(
+                builder,
+                type,
+                initializer,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
         }
         else
         {
-            builder.Append(type.EndsWith("?", StringComparison.Ordinal) ? " = default" : " = default!");
+            builder.Append(
+                type.EndsWith("?", StringComparison.Ordinal) ? " = default" : " = default!"
+            );
         }
         builder.AppendLine(";");
         if (declaration.Name == "_RenderCustomClip" && field.Name == "_clip")
         {
-            builder.AppendLine("    // `T?` on an unconstrained C# generic is only a nullable annotation. When T is");
-            builder.AppendLine("    // Rect or RRect, default(T) is an empty value rather than Dart's null sentinel.");
-            builder.AppendLine("    // Track validity explicitly so the first paint computes the actual clip.");
+            builder.AppendLine(
+                "    // `T?` on an unconstrained C# generic is only a nullable annotation. When T is"
+            );
+            builder.AppendLine(
+                "    // Rect or RRect, default(T) is an empty value rather than Dart's null sentinel."
+            );
+            builder.AppendLine(
+                "    // Track validity explicitly so the first paint computes the actual clip."
+            );
             builder.AppendLine("    internal virtual bool _clipIsValid { get; set; }");
         }
     }
@@ -262,36 +400,63 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var actualType = MapType(initializer.StaticType ?? string.Empty);
         var expected = expectedType.TrimEnd('?');
         var actual = actualType.TrimEnd('?');
-        var argumentList = initializer.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList);
-        if (initializer.Kind == CoreNodeKind.ListLiteral &&
-            initializer.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList)?
-                .Children.FirstOrDefault(item => item.Category == "type") is { } explicitListArgument)
+        var argumentList = initializer.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.ArgumentList
+        );
+        if (
+            initializer.Kind == CoreNodeKind.ListLiteral
+            && initializer
+                .Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList)
+                ?.Children.FirstOrDefault(item => item.Category == "type")
+                is { } explicitListArgument
+        )
         {
             actualType = $"List<{MapTypeFromAst(explicitListArgument)}>";
             actual = actualType;
         }
-        if (initializer.Kind == CoreNodeKind.InstanceCreationExpression &&
-            expected.StartsWith("GlobalKey<", StringComparison.Ordinal) &&
-            (argumentList ?? DescendantsAndSelf(initializer).FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList))?
-                .Children.Any(item => item.Category == "expression") != true)
+        if (
+            initializer.Kind == CoreNodeKind.InstanceCreationExpression
+            && expected.StartsWith("GlobalKey<", StringComparison.Ordinal)
+            && (
+                argumentList
+                ?? DescendantsAndSelf(initializer)
+                    .FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList)
+            )?.Children.Any(item => item.Category == "expression") != true
+        )
         {
             builder.Append(expected).Append(".Create()");
             return;
         }
-        var emptySameGenericConstruction = initializer.Kind == CoreNodeKind.InstanceCreationExpression &&
-            (argumentList ?? DescendantsAndSelf(initializer).FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList))?
-                .Children.Any(item => item.Category == "expression") != true &&
-            TryGetGenericTypeArguments(expected, out _) &&
-            TryGetGenericTypeArguments(actual, out _) &&
-            string.Equals(expected[..expected.IndexOf('<')], actual[..actual.IndexOf('<')], StringComparison.Ordinal) &&
-            expected[..expected.IndexOf('<')] is not ("IEnumerable" or "IReadOnlyList" or "IList" or "IDictionary" or "GlobalKey") &&
-            (FindGlobalDeclaration(expected[..expected.IndexOf('<')]) is not { } expectedDeclaration ||
-             !expectedDeclaration.Element.IsAbstract && !WillEmitAsInterface(expectedDeclaration));
+        var emptySameGenericConstruction =
+            initializer.Kind == CoreNodeKind.InstanceCreationExpression
+            && (
+                argumentList
+                ?? DescendantsAndSelf(initializer)
+                    .FirstOrDefault(item => item.Kind == CoreNodeKind.ArgumentList)
+            )?.Children.Any(item => item.Category == "expression") != true
+            && TryGetGenericTypeArguments(expected, out _)
+            && TryGetGenericTypeArguments(actual, out _)
+            && string.Equals(
+                expected[..expected.IndexOf('<')],
+                actual[..actual.IndexOf('<')],
+                StringComparison.Ordinal
+            )
+            && expected[..expected.IndexOf('<')]
+                is not ("IEnumerable" or "IReadOnlyList" or "IList" or "IDictionary" or "GlobalKey")
+            && (
+                FindGlobalDeclaration(expected[..expected.IndexOf('<')])
+                    is not { } expectedDeclaration
+                || (
+                    !expectedDeclaration.Element.IsAbstract
+                    && !WillEmitAsInterface(expectedDeclaration)
+                )
+            );
         if (emptySameGenericConstruction)
         {
             builder.Append("new ").Append(expected).Append("()");
@@ -299,58 +464,101 @@ internal sealed partial class FrameworkCSharpLowerer
         }
 
         var isCollectionConversion =
-            expected.StartsWith("List<", StringComparison.Ordinal) &&
-            (actual.StartsWith("List<", StringComparison.Ordinal) ||
-             actual.StartsWith("IEnumerable<", StringComparison.Ordinal) ||
-             actual.StartsWith("IReadOnlyList<", StringComparison.Ordinal)) ||
-            expected.StartsWith("DartMap<", StringComparison.Ordinal) &&
-            actual.StartsWith("DartMap<", StringComparison.Ordinal);
-        var needsCheckedCast = !isCollectionConversion &&
-            expected is not ("object" or "dynamic" or "void") &&
-            actual is not "void" &&
-            !IsValueType(expected) &&
-            !string.Equals(expected, actual, StringComparison.Ordinal);
-        if (needsCheckedCast) builder.Append("((").Append(expectedType).Append(")(object?)");
-        LowerExpression(builder, initializer, declaration, package, library, inputPath, diagnostics);
-        if (needsCheckedCast) builder.Append(')');
-        else AppendFieldInitializerCollectionConversion(builder, expectedType, initializer);
+            (
+                expected.StartsWith("List<", StringComparison.Ordinal)
+                && (
+                    actual.StartsWith("List<", StringComparison.Ordinal)
+                    || actual.StartsWith("IEnumerable<", StringComparison.Ordinal)
+                    || actual.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
+                )
+            )
+            || (
+                expected.StartsWith("DartMap<", StringComparison.Ordinal)
+                && actual.StartsWith("DartMap<", StringComparison.Ordinal)
+            );
+        var needsCheckedCast =
+            !isCollectionConversion
+            && expected is not ("object" or "dynamic" or "void")
+            && actual is not "void"
+            && !IsValueType(expected)
+            && !string.Equals(expected, actual, StringComparison.Ordinal);
+        if (needsCheckedCast)
+        {
+            builder.Append("((").Append(expectedType).Append(")(object?)");
+        }
+
+        LowerExpression(
+            builder,
+            initializer,
+            declaration,
+            package,
+            library,
+            inputPath,
+            diagnostics
+        );
+        if (needsCheckedCast)
+        {
+            builder.Append(')');
+        }
+        else
+        {
+            AppendFieldInitializerCollectionConversion(builder, expectedType, initializer);
+        }
     }
 
     private void AppendFieldInitializerCollectionConversion(
         CsSyntaxBuilder builder,
         string expectedType,
-        CoreAstNode initializer)
+        CoreAstNode initializer
+    )
     {
         var actualType = MapType(initializer.StaticType ?? string.Empty).TrimEnd('?');
-        if (initializer.Kind == CoreNodeKind.ListLiteral &&
-            initializer.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList)?
-                .Children.FirstOrDefault(item => item.Category == "type") is { } explicitListArgument)
+        if (
+            initializer.Kind == CoreNodeKind.ListLiteral
+            && initializer
+                .Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList)
+                ?.Children.FirstOrDefault(item => item.Category == "type")
+                is { } explicitListArgument
+        )
         {
             actualType = $"List<{MapTypeFromAst(explicitListArgument)}>";
         }
         var expected = expectedType.TrimEnd('?');
-        if (expected.StartsWith("List<", StringComparison.Ordinal) &&
-            (actualType.StartsWith("List<", StringComparison.Ordinal) ||
-             actualType.StartsWith("IEnumerable<", StringComparison.Ordinal) ||
-             actualType.StartsWith("IReadOnlyList<", StringComparison.Ordinal)) &&
-            TryGetGenericTypeArguments(expected, out var expectedArguments) &&
-            TryGetGenericTypeArguments(actualType, out var actualArguments) &&
-            expectedArguments.Length == 1 && actualArguments.Length == 1)
+        if (
+            expected.StartsWith("List<", StringComparison.Ordinal)
+            && (
+                actualType.StartsWith("List<", StringComparison.Ordinal)
+                || actualType.StartsWith("IEnumerable<", StringComparison.Ordinal)
+                || actualType.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
+            )
+            && TryGetGenericTypeArguments(expected, out var expectedArguments)
+            && TryGetGenericTypeArguments(actualType, out var actualArguments)
+            && expectedArguments.Length == 1
+            && actualArguments.Length == 1
+        )
         {
             if (!string.Equals(expectedArguments[0], actualArguments[0], StringComparison.Ordinal))
             {
                 builder.Append(".Cast<").Append(expectedArguments[0]).Append(">()");
             }
-            if (!actualType.StartsWith("List<", StringComparison.Ordinal) ||
-                !string.Equals(expectedArguments[0], actualArguments[0], StringComparison.Ordinal))
+            if (
+                !actualType.StartsWith("List<", StringComparison.Ordinal)
+                || !string.Equals(
+                    expectedArguments[0],
+                    actualArguments[0],
+                    StringComparison.Ordinal
+                )
+            )
             {
                 builder.Append(".ToList()");
             }
             return;
         }
-        if (expected.StartsWith("DartMap<", StringComparison.Ordinal) &&
-            actualType.StartsWith("DartMap<", StringComparison.Ordinal) &&
-            !string.Equals(expected, actualType, StringComparison.Ordinal))
+        if (
+            expected.StartsWith("DartMap<", StringComparison.Ordinal)
+            && actualType.StartsWith("DartMap<", StringComparison.Ordinal)
+            && !string.Equals(expected, actualType, StringComparison.Ordinal)
+        )
         {
             builder.Append(".cast<").Append(DartMapTypeArguments(expected)).Append(">()");
         }
@@ -364,91 +572,200 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var expected = expectedType.TrimEnd('?');
         var actualType = MapType(expression.StaticType ?? string.Empty);
         var actual = actualType.TrimEnd('?');
         if (expression.Kind == CoreNodeKind.ThrowExpression)
         {
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
         if (expected == "void")
         {
-            if (expression.Kind == CoreNodeKind.ConditionalExpression &&
-                expression.Child(CoreChildRole.conditionOffset) is { } condition &&
-                expression.Child(CoreChildRole.thenOffset) is { } thenExpression &&
-                expression.Child(CoreChildRole.elseOffset) is { } elseExpression)
+            if (
+                expression.Kind == CoreNodeKind.ConditionalExpression
+                && expression.Child(CoreChildRole.conditionOffset) is { } condition
+                && expression.Child(CoreChildRole.thenOffset) is { } thenExpression
+                && expression.Child(CoreChildRole.elseOffset) is { } elseExpression
+            )
             {
                 builder.Append("((Action)(() => { if (");
-                LowerExpression(builder, condition, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    condition,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append(") { ");
-                LowerExpression(builder, thenExpression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    thenExpression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append("; } else { ");
-                LowerExpression(builder, elseExpression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    elseExpression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append("; } }))()");
                 return;
             }
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
         if (actual == "void")
         {
             builder.Append("DartRuntimePrimitives.CaptureVoid(() => ");
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.Append(')');
             return;
         }
-        if (expected.StartsWith("List<", StringComparison.Ordinal) &&
-            (actual.StartsWith("List<", StringComparison.Ordinal) ||
-             actual.StartsWith("IEnumerable<", StringComparison.Ordinal) ||
-             actual.StartsWith("IReadOnlyList<", StringComparison.Ordinal)) &&
-            !ExpressionProducesFuture(expression) &&
-            TryGetGenericTypeArguments(expected, out var expectedArguments) &&
-            expectedArguments.Length == 1)
+        if (
+            expected.StartsWith("List<", StringComparison.Ordinal)
+            && (
+                actual.StartsWith("List<", StringComparison.Ordinal)
+                || actual.StartsWith("IEnumerable<", StringComparison.Ordinal)
+                || actual.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
+            )
+            && !ExpressionProducesFuture(expression)
+            && TryGetGenericTypeArguments(expected, out var expectedArguments)
+            && expectedArguments.Length == 1
+        )
         {
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             if (!string.Equals(expected, actual, StringComparison.Ordinal))
             {
                 builder.Append(".Cast<").Append(expectedArguments[0]).Append(">().ToList()");
             }
             return;
         }
-        if (IsValueType(expected) && !expectedType.EndsWith("?", StringComparison.Ordinal) &&
-            actualType == expected + "?")
+        if (
+            IsValueType(expected)
+            && !expectedType.EndsWith("?", StringComparison.Ordinal)
+            && actualType == expected + "?"
+        )
         {
             builder.Append("DartRuntimePrimitives.RequireValue(");
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.Append(')');
             return;
         }
-        if (expected is not ("object" or "dynamic") &&
-            !expected.StartsWith("___", StringComparison.Ordinal) &&
-            actual.Length > 0 && actual != "void" &&
-            !string.Equals(expected, actual, StringComparison.Ordinal))
+        if (
+            expected is not ("object" or "dynamic")
+            && !expected.StartsWith("___", StringComparison.Ordinal)
+            && actual.Length > 0
+            && actual != "void"
+            && !string.Equals(expected, actual, StringComparison.Ordinal)
+        )
         {
             if (expression.Kind == CoreNodeKind.FunctionExpression)
             {
                 builder.Append("((").Append(expectedType).Append(')');
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append(')');
             }
             else
             {
-                builder.Append("DartRuntimePrimitives.ConvertValue<").Append(expectedType.TrimEnd('?')).Append(">(");
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                builder
+                    .Append("DartRuntimePrimitives.ConvertValue<")
+                    .Append(expectedType.TrimEnd('?'))
+                    .Append(">(");
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.Append(')');
             }
             return;
         }
-        if (expected is not ("object" or "dynamic") &&
-            !expected.StartsWith("___", StringComparison.Ordinal) &&
-            expression.Kind is CoreNodeKind.BinaryExpression or CoreNodeKind.PostfixExpression &&
-            expression.Kind != CoreNodeKind.FunctionExpression)
+        if (
+            expected is not ("object" or "dynamic")
+            && !expected.StartsWith("___", StringComparison.Ordinal)
+            && expression.Kind is CoreNodeKind.BinaryExpression or CoreNodeKind.PostfixExpression
+            && expression.Kind != CoreNodeKind.FunctionExpression
+        )
         {
-            builder.Append("DartRuntimePrimitives.ConvertValue<").Append(expectedType.TrimEnd('?')).Append(">(");
-            LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+            builder
+                .Append("DartRuntimePrimitives.ConvertValue<")
+                .Append(expectedType.TrimEnd('?'))
+                .Append(">(");
+            LowerExpression(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.Append(')');
             return;
         }
@@ -464,13 +781,23 @@ internal sealed partial class FrameworkCSharpLowerer
         string library,
         string inputPath,
         List<ConverterDiagnostic> diagnostics,
-        int indent)
+        int indent
+    )
     {
         var previousReturnType = _session.ActiveFunctionReturnType;
         _session.ActiveFunctionReturnType = expectedReturnType;
         try
         {
-            EmitBlockBody(builder, block, declaration, package, library, inputPath, diagnostics, indent);
+            EmitBlockBody(
+                builder,
+                block,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                indent
+            );
         }
         finally
         {
@@ -481,7 +808,8 @@ internal sealed partial class FrameworkCSharpLowerer
     private void EmitVirtualContractStub(
         CsSyntaxBuilder builder,
         CoreResolvedDeclaration declaration,
-        CoreResolvedMember member)
+        CoreResolvedMember member
+    )
     {
         var returnType = MapType(member.Element.ReturnType ?? member.Element.Type ?? "void");
         if (declaration.Name == "SelectionContainerDelegate" && member.Name == "value")
@@ -491,18 +819,28 @@ internal sealed partial class FrameworkCSharpLowerer
         var name = MapMethodDeclarationName(member);
         if (member.IsGetter)
         {
-            builder.AppendLine($"    public virtual {returnType} {name} => throw new NotSupportedException();");
+            builder.AppendLine(
+                $"    public virtual {returnType} {name} => throw new NotSupportedException();"
+            );
             return;
         }
         if (member.IsSetter)
         {
-            builder.AppendLine($"    public virtual {returnType} {name} {{ set => throw new NotSupportedException(); }}");
+            builder.AppendLine(
+                $"    public virtual {returnType} {name} {{ set => throw new NotSupportedException(); }}"
+            );
             return;
         }
-        builder.AppendLine($"    public virtual {returnType} {name}({string.Join(", ", MapParameters(member.Element.Parameters ?? []))}) => throw new NotSupportedException();");
+        builder.AppendLine(
+            $"    public virtual {returnType} {name}({string.Join(", ", MapParameters(member.Element.Parameters ?? []))}) => throw new NotSupportedException();"
+        );
     }
 
-    private void EmitMixinConstraintMember(CsSyntaxBuilder builder, CoreResolvedDeclaration declaration, CoreResolvedMember member)
+    private void EmitMixinConstraintMember(
+        CsSyntaxBuilder builder,
+        CoreResolvedDeclaration declaration,
+        CoreResolvedMember member
+    )
     {
         var returnType = MapType(member.Element.ReturnType ?? member.Element.Type ?? "void");
         var name = MapMethodDeclarationName(member);
@@ -515,14 +853,20 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (member.IsGetter)
         {
-            var hasSetter = FindDeclaringDeclaration(member)?.Members.Any(candidate =>
-                candidate.IsSetter && candidate.Name == member.Name) == true;
-            builder.AppendLine($"    {modifier}{returnType} {name} {{ get;{(hasSetter ? " set;" : string.Empty)} }}");
+            var hasSetter =
+                FindDeclaringDeclaration(member)
+                    ?.Members.Any(candidate => candidate.IsSetter && candidate.Name == member.Name)
+                == true;
+            builder.AppendLine(
+                $"    {modifier}{returnType} {name} {{ get;{(hasSetter ? " set;" : string.Empty)} }}"
+            );
             return;
         }
         if (member.IsSetter)
         {
-            var setterType = MapType(member.Element.Parameters?.FirstOrDefault()?.Type ?? member.Element.Type ?? "object");
+            var setterType = MapType(
+                member.Element.Parameters?.FirstOrDefault()?.Type ?? member.Element.Type ?? "object"
+            );
             builder.AppendLine($"    {modifier}{setterType} {name} {{ set; }}");
             return;
         }
@@ -530,14 +874,18 @@ internal sealed partial class FrameworkCSharpLowerer
             declaration,
             member,
             member.Element.Parameters ?? [],
-            member);
+            member
+        );
         var typeParameters = member.Element.TypeParameters is { Length: > 0 }
             ? $"<{string.Join(", ", member.Element.TypeParameters.Select(item => SafeIdentifier(item.Name)))}>"
             : string.Empty;
         var typeParameterConstraints = FormatTypeParameterConstraints(
             member.Element.TypeParameters,
-            parameters.Select(item => MapType(item.Type)).Append(returnType));
-        builder.AppendLine($"    {modifier}{returnType} {name}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints};");
+            parameters.Select(item => MapType(item.Type)).Append(returnType)
+        );
+        builder.AppendLine(
+            $"    {modifier}{returnType} {name}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints};"
+        );
     }
 
     private void EmitClassMethod(
@@ -549,18 +897,30 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var previousMethodTypeParameters = _session.ActiveMethodTypeParameters;
         var previousContractSubstitutions = _session.ActiveMemberContractSubstitutions;
         _session.ActiveMethodTypeParameters = (method.Element.TypeParameters ?? [])
             .Select(parameter => parameter.Name)
             .ToHashSet(StringComparer.Ordinal);
-        _session.ActiveMemberContractSubstitutions =
-            new Dictionary<string, string>(StringComparer.Ordinal);
+        _session.ActiveMemberContractSubstitutions = new Dictionary<string, string>(
+            StringComparer.Ordinal
+        );
         try
         {
-            EmitClassMethodCore(builder, declaration, method, members, isInterface, package, library, inputPath, diagnostics);
+            EmitClassMethodCore(
+                builder,
+                declaration,
+                method,
+                members,
+                isInterface,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
         }
         finally
         {
@@ -578,30 +938,47 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var sourceParameters = method.Element.Parameters ?? [];
-        if (!isInterface && method.Name == "resolveFrom" && !method.IsStatic &&
-            sourceParameters.Length == 1 && (method.Element.TypeParameters?.Length ?? 0) == 0 &&
-            declaration.Element.Supertype is { } colorBase &&
-            MapType(colorBase) is "Color" or "global::Doroti.Ui.Color")
+        if (
+            !isInterface
+            && method.Name == "resolveFrom"
+            && !method.IsStatic
+            && sourceParameters.Length == 1
+            && (method.Element.TypeParameters?.Length ?? 0) == 0
+            && declaration.Element.Supertype is { } colorBase
+            && MapType(colorBase) is "Color" or "global::Doroti.Ui.Color"
+        )
         {
             // The Ui port adds a generic context entry point to Dart's Color.
             // A typed framework context overload must participate in that slot.
-            builder.AppendLine($"    public override global::Doroti.Ui.Color resolveFrom<TContext>(TContext context) => resolveFrom(({MapType(sourceParameters[0].Type)})(object)context!);");
+            builder.AppendLine(
+                $"    public override global::Doroti.Ui.Color resolveFrom<TContext>(TContext context) => resolveFrom(({MapType(sourceParameters[0].Type)})(object)context!);"
+            );
         }
 
         if (TryEmitRenderCustomClipCacheMethod(builder, declaration, method))
         {
             return;
         }
-        if (declaration.Name == "LocalizationsDelegate" && method.Name == "shouldReload" &&
-            declaration.Element.TypeParameters is { Length: 1 } localizationDelegateParameters)
+        if (
+            declaration.Name == "LocalizationsDelegate"
+            && method.Name == "shouldReload"
+            && declaration.Element.TypeParameters is { Length: 1 } localizationDelegateParameters
+        )
         {
-            builder.AppendLine($"    public abstract bool shouldReload(LocalizationsDelegate<{SafeIdentifier(localizationDelegateParameters[0].Name)}> old);");
+            builder.AppendLine(
+                $"    public abstract bool shouldReload(LocalizationsDelegate<{SafeIdentifier(localizationDelegateParameters[0].Name)}> old);"
+            );
             return;
         }
-        if (declaration.Name == "WidgetInspectorService" && method.Name == "instance" && method.IsSetter)
+        if (
+            declaration.Name == "WidgetInspectorService"
+            && method.Name == "instance"
+            && method.IsSetter
+        )
         {
             return;
         }
@@ -610,75 +987,135 @@ internal sealed partial class FrameworkCSharpLowerer
         // override rewrites the derived signature to the base signature (for
         // example LinearGradient.lerp(LinearGradient, ...) became
         // lerp(Gradient, ...)), which loses the analyzer's concrete types.
-        var overriddenMember = method.IsStatic ? null : FindOverriddenBaseMember(declaration, method);
+        var overriddenMember = method.IsStatic
+            ? null
+            : FindOverriddenBaseMember(declaration, method);
         if (_session.ActiveDonorDeclaration is { } donor && HasPromotedClassRepresentation(donor))
         {
             overriddenMember = null;
         }
-        if (overriddenMember is not null &&
-            FindDeclaringDeclaration(overriddenMember) is { } promotedOwner && !IsGeneratedDeclaration(promotedOwner) &&
-            promotedOwner.Name is "ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate")
+        if (
+            overriddenMember is not null
+            && FindDeclaringDeclaration(overriddenMember) is { } promotedOwner
+            && !IsGeneratedDeclaration(promotedOwner)
+            && promotedOwner.Name
+                is "ValueNotifier"
+                    or "DiagnosticsProperty"
+                    or "DiagnosticsSerializationDelegate"
+        )
         {
             // The promoted host-neutral ChangeNotifier intentionally exposes a
             // non-virtual CLR surface. Dart subclasses may shadow these methods,
             // but cannot emit a CLR override against that reviewed owner.
             overriddenMember = null;
         }
-        var contractMember = method.IsStatic ? null : overriddenMember ?? FindBaseContractMember(declaration, method);
-        ValidateOverrideContract(declaration, method, contractMember, isInterface, package, library, inputPath, diagnostics);
+        var contractMember = method.IsStatic
+            ? null
+            : overriddenMember ?? FindBaseContractMember(declaration, method);
+        ValidateOverrideContract(
+            declaration,
+            method,
+            contractMember,
+            isInterface,
+            package,
+            library,
+            inputPath,
+            diagnostics
+        );
         var contractSubstitutions = ContractTypeParameterSubstitutions(declaration, contractMember);
         _session.ActiveMemberContractSubstitutions = contractSubstitutions;
-        var parameters = (method.IsStatic
-            ? sourceParameters
-            : CanonicalOverrideParameters(declaration, method, sourceParameters, contractMember))
-            .Select(parameter => parameter with
-            {
-                Type = ApplyTypeParameterSubstitutions(parameter.Type, contractSubstitutions)
-            })
+        var parameters = (
+            method.IsStatic
+                ? sourceParameters
+                : CanonicalOverrideParameters(declaration, method, sourceParameters, contractMember)
+        )
+            .Select(parameter =>
+                parameter with
+                {
+                    Type = ApplyTypeParameterSubstitutions(parameter.Type, contractSubstitutions),
+                }
+            )
             .ToArray();
-        if (declaration.Name == "RestorationMixin" && method.Name == "didUpdateWidget" &&
-            declaration.Element.TypeParameters is { Length: > 0 } restorationParameters && parameters.Length == 1)
+        if (
+            declaration.Name == "RestorationMixin"
+            && method.Name == "didUpdateWidget"
+            && declaration.Element.TypeParameters is { Length: > 0 } restorationParameters
+            && parameters.Length == 1
+        )
         {
             parameters[0] = parameters[0] with { Type = restorationParameters[0].Name };
         }
-        if (declaration.Name == "LocalizationsDelegate" && method.Name == "shouldReload" &&
-            declaration.Element.TypeParameters is { Length: 1 } localizationParameters && parameters.Length == 1)
+        if (
+            declaration.Name == "LocalizationsDelegate"
+            && method.Name == "shouldReload"
+            && declaration.Element.TypeParameters is { Length: 1 } localizationParameters
+            && parameters.Length == 1
+        )
         {
-            parameters[0] = parameters[0] with { Type = $"LocalizationsDelegate<{localizationParameters[0].Name}>" };
+            parameters[0] = parameters[0] with
+            {
+                Type = $"LocalizationsDelegate<{localizationParameters[0].Name}>",
+            };
         }
-        if (method.Name == "debugFillProperties" && sourceParameters.Length > 0 &&
-            declaration.Name is not ("TextStyle" or "StrutStyle"))
+        if (
+            method.Name == "debugFillProperties"
+            && sourceParameters.Length > 0
+            && declaration.Name is not ("TextStyle" or "StrutStyle")
+        )
         {
             parameters = [sourceParameters[0]];
         }
-        if (method.Name == "shouldReclip" && declaration.Element.Supertype is { } clipperBase &&
-            StripLibraryPrefix(clipperBase).StartsWith("CustomClipper<", StringComparison.Ordinal) &&
-            parameters.Length == 1)
+        if (
+            method.Name == "shouldReclip"
+            && declaration.Element.Supertype is { } clipperBase
+            && StripLibraryPrefix(clipperBase)
+                .StartsWith("CustomClipper<", StringComparison.Ordinal)
+            && parameters.Length == 1
+        )
         {
             parameters[0] = parameters[0] with { Type = clipperBase };
         }
-        if (method.Name == "shouldReload" && declaration.Element.Supertype is { } localizationBase && parameters.Length == 1)
+        if (
+            method.Name == "shouldReload"
+            && declaration.Element.Supertype is { } localizationBase
+            && parameters.Length == 1
+        )
         {
             parameters[0] = parameters[0] with { Type = localizationBase };
         }
-        if (method.Name == "updateShouldNotifyDependent" && declaration.Element.Supertype is { } inheritedModelBase &&
-            TryGenericTypeApplication(inheritedModelBase, "InheritedModel", out var inheritedArguments) &&
-            inheritedArguments.Length == 1 && parameters.Length == 2)
+        if (
+            method.Name == "updateShouldNotifyDependent"
+            && declaration.Element.Supertype is { } inheritedModelBase
+            && TryGenericTypeApplication(
+                inheritedModelBase,
+                "InheritedModel",
+                out var inheritedArguments
+            )
+            && inheritedArguments.Length == 1
+            && parameters.Length == 2
+        )
         {
             parameters[0] = parameters[0] with { Type = inheritedModelBase };
             parameters[1] = parameters[1] with { Type = $"Set<{inheritedArguments[0]}>" };
         }
-        if (method.Name == "didUpdateValue" && declaration.Element.Supertype is { } restorableBase &&
-            TryGenericTypeApplication(restorableBase, "RestorableValue", out var restorableArguments) &&
-            restorableArguments.Length == 1 && parameters.Length == 1)
+        if (
+            method.Name == "didUpdateValue"
+            && declaration.Element.Supertype is { } restorableBase
+            && TryGenericTypeApplication(
+                restorableBase,
+                "RestorableValue",
+                out var restorableArguments
+            )
+            && restorableArguments.Length == 1
+            && parameters.Length == 1
+        )
         {
             parameters[0] = parameters[0] with { Type = restorableArguments[0] };
         }
         var returnTypeNode = method.Ast.Children.FirstOrDefault(item => item.Category == "type");
-        var returnType = method.Element.ReturnType == "dynamic"
-            ? "dynamic"
-            : returnTypeNode is null
-            ? MapType(method.Element.ReturnType ?? "void")
+        var returnType =
+            method.Element.ReturnType == "dynamic" ? "dynamic"
+            : returnTypeNode is null ? MapType(method.Element.ReturnType ?? "void")
             : MapTypeFromAst(returnTypeNode);
         if (method.Name == "createRenderObject")
         {
@@ -701,15 +1138,24 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
+            returnType =
+                "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
-        if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
+        if (
+            method.Name == "value"
+            && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState"
+        )
         {
             returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
-        if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
-            (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
-                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin") is { } finalMenuMixin)
+        if (
+            method.Name == "root"
+            && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState"
+            && (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin"
+            )
+                is { } finalMenuMixin
+        )
         {
             returnType = MapType(finalMenuMixin);
         }
@@ -717,11 +1163,17 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "Future<global::Doroti.Ui.Image?>";
         }
-        if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
+        if (
+            declaration.Name == "_WidgetInspectorService"
+            && method.Name == "_getSelectedWidgetLocation"
+        )
         {
             returnType = "global::Doroti.Runtime.CreationLocation?";
         }
-        if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
+        if (
+            declaration.Name == "_UnspecifiedTextScaler"
+            && method.Name is "scale" or "textScaleFactor"
+        )
         {
             returnType = "double";
         }
@@ -731,15 +1183,24 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
+            returnType =
+                "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
-        if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
+        if (
+            method.Name == "value"
+            && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState"
+        )
         {
             returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
-        if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
-            (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
-                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin") is { } effectiveMenuMixin)
+        if (
+            method.Name == "root"
+            && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState"
+            && (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin"
+            )
+                is { } effectiveMenuMixin
+        )
         {
             returnType = MapType(effectiveMenuMixin);
         }
@@ -747,11 +1208,17 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "Future<global::Doroti.Ui.Image?>";
         }
-        if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
+        if (
+            declaration.Name == "_WidgetInspectorService"
+            && method.Name == "_getSelectedWidgetLocation"
+        )
         {
             returnType = "global::Doroti.Runtime.CreationLocation?";
         }
-        if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
+        if (
+            declaration.Name == "_UnspecifiedTextScaler"
+            && method.Name is "scale" or "textScaleFactor"
+        )
         {
             returnType = "double";
         }
@@ -761,16 +1228,26 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.IsGetter && method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
+            returnType =
+                "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
-        if (method.IsGetter && method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
+        if (
+            method.IsGetter
+            && method.Name == "value"
+            && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState"
+        )
         {
             returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
-        if (method.IsGetter && method.Name == "root" &&
-            declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
-            (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
-                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin") is { } menuMixin)
+        if (
+            method.IsGetter
+            && method.Name == "root"
+            && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState"
+            && (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin"
+            )
+                is { } menuMixin
+        )
         {
             returnType = MapType(menuMixin);
         }
@@ -778,7 +1255,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "Future<global::Doroti.Ui.Image?>";
         }
-        if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
+        if (
+            declaration.Name == "_WidgetInspectorService"
+            && method.Name == "_getSelectedWidgetLocation"
+        )
         {
             returnType = "global::Doroti.Runtime.CreationLocation?";
         }
@@ -788,7 +1268,8 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.IsGetter && method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
+            returnType =
+                "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (declaration.Name == "_RouterState" && method.Name == "_handleRoutePopped")
         {
@@ -796,50 +1277,98 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "MouseCursorManager" && method.Name == "handleDeviceCursorUpdate")
         {
-            parameters = parameters.Select(parameter => parameter.Name == "triggeringEvent"
-                ? parameter with { Type = "IPointerEvent" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Name == "triggeringEvent"
+                        ? parameter with
+                        {
+                            Type = "IPointerEvent",
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
         if (declaration.Name == "RenderViewportBase" && method.Name == "showInViewport")
         {
-            parameters = parameters.Select(parameter => parameter.Name == "viewport"
-                ? parameter with { Type = "RenderViewportBase<ParentDataClass>" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Name == "viewport"
+                        ? parameter with
+                        {
+                            Type = "RenderViewportBase<ParentDataClass>",
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
-        if (isInterface && declaration.Ast.Kind == CoreNodeKind.MixinDeclaration &&
-            method.Element.ReturnType?.Contains(" Function", StringComparison.Ordinal) == true)
+        if (
+            isInterface
+            && declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+            && method.Element.ReturnType?.Contains(" Function", StringComparison.Ordinal) == true
+        )
         {
             returnType = MapType(method.Element.ReturnType);
         }
-        if (isInterface && declaration.Name == "RenderAnimatedOpacityMixin" &&
-            method.Name == "updateCompositedLayer")
+        if (
+            isInterface
+            && declaration.Name == "RenderAnimatedOpacityMixin"
+            && method.Name == "updateCompositedLayer"
+        )
         {
             returnType = "OffsetLayer";
-            parameters = parameters.Select((parameter, index) => index == 0
-                ? parameter with { Type = "OffsetLayer?" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(
+                    (parameter, index) =>
+                        index == 0 ? parameter with { Type = "OffsetLayer?" } : parameter
+                )
+                .ToArray();
         }
-        if (!method.IsStatic && (contractMember?.Element.ReturnType ?? contractMember?.Element.Type) is { } baseReturnType)
+        if (
+            !method.IsStatic
+            && (contractMember?.Element.ReturnType ?? contractMember?.Element.Type)
+                is { } baseReturnType
+        )
         {
-            var mappedBaseReturnType = MapType(ApplyTypeParameterSubstitutions(baseReturnType, contractSubstitutions));
+            var mappedBaseReturnType = MapType(
+                ApplyTypeParameterSubstitutions(baseReturnType, contractSubstitutions)
+            );
             // Future<T> derives from Future in the runtime, so Dart's covariant
             // Future return specialization is also a valid C# override.
-            if (method.Name != "createRenderObject" &&
-                !(mappedBaseReturnType == "Future" && returnType.StartsWith("Future<", StringComparison.Ordinal)) &&
-                !(mappedBaseReturnType == "object" &&
-                  returnType.StartsWith("Future<", StringComparison.Ordinal) &&
-                  (contractMember?.Element.ReturnType?.StartsWith("FutureOr<", StringComparison.Ordinal) == true)))
+            if (
+                method.Name != "createRenderObject"
+                && !(
+                    mappedBaseReturnType == "Future"
+                    && returnType.StartsWith("Future<", StringComparison.Ordinal)
+                )
+                && !(
+                    mappedBaseReturnType == "object"
+                    && returnType.StartsWith("Future<", StringComparison.Ordinal)
+                    && (
+                        contractMember?.Element.ReturnType?.StartsWith(
+                            "FutureOr<",
+                            StringComparison.Ordinal
+                        ) == true
+                    )
+                )
+            )
             {
                 // Prefer the specialized override return type when the inherited
                 // contract still exposes an unbound type parameter (e.g. Curve
                 // overriding ParametricCurve<double>.transform).
-                if (!(ContainsUnboundTypeParameter(mappedBaseReturnType) &&
-                      !ContainsUnboundTypeParameter(returnType)))
+                if (
+                    !(
+                        ContainsUnboundTypeParameter(mappedBaseReturnType)
+                        && !ContainsUnboundTypeParameter(returnType)
+                    )
+                )
                 {
                     var ownReturnDeclaration = FindGlobalDeclaration(returnType);
                     var baseReturnDeclaration = FindGlobalDeclaration(mappedBaseReturnType);
-                    if (ownReturnDeclaration is null || baseReturnDeclaration is null ||
-                        !IsDescendantOf(ownReturnDeclaration, baseReturnDeclaration))
+                    if (
+                        ownReturnDeclaration is null
+                        || baseReturnDeclaration is null
+                        || !IsDescendantOf(ownReturnDeclaration, baseReturnDeclaration)
+                    )
                     {
                         returnType = mappedBaseReturnType;
                     }
@@ -870,13 +1399,21 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "Comparison<global::Doroti.Framework.Rendering.Selectable>";
         }
-        if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
+        if (
+            method.Name == "value"
+            && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState"
+        )
         {
             returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
-        if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
-            (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
-                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin") is { } canonicalMenuMixin)
+        if (
+            method.Name == "root"
+            && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState"
+            && (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
+                StripLibraryPrefix(type).Split('<')[0] == "_RawMenuAnchorBaseMixin"
+            )
+                is { } canonicalMenuMixin
+        )
         {
             returnType = MapType(canonicalMenuMixin);
         }
@@ -884,16 +1421,25 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "Future<global::Doroti.Ui.Image?>";
         }
-        if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
+        if (
+            declaration.Name == "_WidgetInspectorService"
+            && method.Name == "_getSelectedWidgetLocation"
+        )
         {
             returnType = "global::Doroti.Runtime.CreationLocation?";
         }
-        if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
+        if (
+            declaration.Name == "_UnspecifiedTextScaler"
+            && method.Name is "scale" or "textScaleFactor"
+        )
         {
             returnType = "double";
         }
-        if (!method.IsStatic && method.Name == "performReassemble" &&
-            IsKnownExternalOverride(declaration, method))
+        if (
+            !method.IsStatic
+            && method.Name == "performReassemble"
+            && IsKnownExternalOverride(declaration, method)
+        )
         {
             returnType = "Task";
         }
@@ -902,30 +1448,66 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             "toString" when parameters.Length == 0 => "override ",
             "hashCode" or "==" => "override ",
-            _ when !method.IsStatic && (overriddenMember is not null || IsKnownExternalOverride(declaration, method)) => "override ",
+            _ when !method.IsStatic
+                    && (
+                        overriddenMember is not null || IsKnownExternalOverride(declaration, method)
+                    ) => "override ",
             _ when method.IsStatic && overriddenMember is not null => "new ",
             _ => string.Empty,
         };
-        if (overriddenMember is null && contractMember is not null && FindDeclaringDeclaration(contractMember) is { } contractOwner &&
-            WillEmitAsInterface(contractOwner))
+        if (
+            overriddenMember is null
+            && contractMember is not null
+            && FindDeclaringDeclaration(contractMember) is { } contractOwner
+            && WillEmitAsInterface(contractOwner)
+        )
         {
             overrideModifier = string.Empty;
         }
-        if (declaration.Element.Supertype is { } directSupertype &&
-            ((StripLibraryPrefix(directSupertype).Split('<')[0] is "ShortcutActivator" or "TextScaler" &&
-              method.Name is "accepts" or "debugDescribeKeys" or "scale" or "textScaleFactor") ||
-             (declaration.Name == "TextSelectionHandleControls" && method.Name == "buildToolbar") ||
-             (declaration.Name == "PopNavigatorRouterDelegateMixin" && method.Name == "popRoute")))
+        if (
+            declaration.Element.Supertype is { } directSupertype
+            && (
+                (
+                    StripLibraryPrefix(directSupertype).Split('<')[0]
+                        is "ShortcutActivator"
+                            or "TextScaler"
+                    && method.Name
+                        is "accepts"
+                            or "debugDescribeKeys"
+                            or "scale"
+                            or "textScaleFactor"
+                )
+                || (
+                    declaration.Name == "TextSelectionHandleControls"
+                    && method.Name == "buildToolbar"
+                )
+                || (
+                    declaration.Name == "PopNavigatorRouterDelegateMixin"
+                    && method.Name == "popRoute"
+                )
+            )
+        )
         {
             overrideModifier = "override ";
         }
-        if (declaration.Name == "DefaultWidgetsLocalizations" && !method.IsStatic ||
-            declaration.Name is "SingleActivator" or "CharacterActivator" && method.Name is "accepts" or "debugDescribeKeys" ||
-            declaration.Name is "_NestedScrollPosition" or "ScrollPositionWithSingleContext" && method.Name == "axisDirection" ||
-            declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor" ||
-            declaration.Name == "TextSelectionHandleControls" && method.Name == "buildToolbar" ||
-            declaration.Name == "PopNavigatorRouterDelegateMixin" && method.Name == "popRoute" ||
-            method.Name == "createRenderObject" && declaration.Name != "RenderObjectWidget")
+        if (
+            (declaration.Name == "DefaultWidgetsLocalizations" && !method.IsStatic)
+            || (
+                declaration.Name is "SingleActivator" or "CharacterActivator"
+                && method.Name is "accepts" or "debugDescribeKeys"
+            )
+            || (
+                declaration.Name is "_NestedScrollPosition" or "ScrollPositionWithSingleContext"
+                && method.Name == "axisDirection"
+            )
+            || (
+                declaration.Name == "_UnspecifiedTextScaler"
+                && method.Name is "scale" or "textScaleFactor"
+            )
+            || (declaration.Name == "TextSelectionHandleControls" && method.Name == "buildToolbar")
+            || (declaration.Name == "PopNavigatorRouterDelegateMixin" && method.Name == "popRoute")
+            || (method.Name == "createRenderObject" && declaration.Name != "RenderObjectWidget")
+        )
         {
             overrideModifier = "override ";
         }
@@ -934,18 +1516,26 @@ internal sealed partial class FrameworkCSharpLowerer
             // Dart instance members participate in virtual dispatch by default.
             overrideModifier = "virtual ";
         }
-        if (declaration.Name is "_OverridableAction" or "_OverridableContextAction" &&
-            method.Name is "_defaultAction" or "_lookupContext")
+        if (
+            declaration.Name is "_OverridableAction" or "_OverridableContextAction"
+            && method.Name is "_defaultAction" or "_lookupContext"
+        )
         {
             overrideModifier = "virtual ";
         }
-        if (declaration.Element.Supertype is { } slottedSupertype &&
-            StripLibraryPrefix(slottedSupertype).Split('<')[0] == "SlottedMultiChildRenderObjectWidget" &&
-            method.Name is "slots" or "childForSlot")
+        if (
+            declaration.Element.Supertype is { } slottedSupertype
+            && StripLibraryPrefix(slottedSupertype).Split('<')[0]
+                == "SlottedMultiChildRenderObjectWidget"
+            && method.Name is "slots" or "childForSlot"
+        )
         {
             overrideModifier = "override ";
         }
-        if (declaration.Name is "_WidgetStateAnd" or "_WidgetStateOr" && method.Name == "isSatisfiedBy")
+        if (
+            declaration.Name is "_WidgetStateAnd" or "_WidgetStateOr"
+            && method.Name == "isSatisfiedBy"
+        )
         {
             // _WidgetStateCombo materializes the inherited interface slot.
             overrideModifier = "override ";
@@ -958,42 +1548,86 @@ internal sealed partial class FrameworkCSharpLowerer
         if (methodName == "contains" && declaration.Element.TypeParameters is { Length: > 0 })
         {
             var elementType = declaration.Element.TypeParameters[0].Name;
-            parameters = parameters.Select(parameter => parameter.Type is "Object?" or "object?" ? parameter with { Type = elementType } : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Type is "Object?" or "object?"
+                        ? parameter with
+                        {
+                            Type = elementType,
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
         if (declaration.Name == "BasicMessageChannel" && method.Name == "setMessageHandler")
         {
-            parameters = parameters.Select((parameter, index) => index == 0
-                ? parameter with { Type = "Future Function(T)?" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(
+                    (parameter, index) =>
+                        index == 0 ? parameter with { Type = "Future Function(T)?" } : parameter
+                )
+                .ToArray();
         }
-        if (method.Name is "loadStructuredData" or "loadStructuredBinaryData" && method.Element.TypeParameters is { Length: > 0 })
+        if (
+            method.Name is "loadStructuredData" or "loadStructuredBinaryData"
+            && method.Element.TypeParameters is { Length: > 0 }
+        )
         {
-            parameters = parameters.Select(parameter => parameter.Name == "parser"
-                ? parameter with
-                {
-                    Type = parameter.Type.Contains("String", StringComparison.Ordinal)
-                    ? "FutureOr<T> Function(String)"
-                    : "FutureOr<T> Function(ByteData)"
-                }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Name == "parser"
+                        ? parameter with
+                        {
+                            Type = parameter.Type.Contains("String", StringComparison.Ordinal)
+                                ? "FutureOr<T> Function(String)"
+                                : "FutureOr<T> Function(ByteData)",
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
-        if (declaration.Name == "MethodChannel" && method.Name is "setMethodCallHandler" or "_handleAsMethodCall")
+        if (
+            declaration.Name == "MethodChannel"
+            && method.Name is "setMethodCallHandler" or "_handleAsMethodCall"
+        )
         {
-            parameters = parameters.Select(parameter => parameter.Name == "handler"
-                ? parameter with { Type = "Future Function(MethodCall)" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Name == "handler"
+                        ? parameter with
+                        {
+                            Type = "Future Function(MethodCall)",
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
         if (declaration.Name == "ImageProvider" && method.Name == "_createErrorHandlerAndKey")
         {
-            parameters = parameters.Select(parameter => parameter.Name == "successCallback"
-                ? parameter with { Type = "void Function(T, void Function(Object, StackTrace?))" }
-                : parameter).ToArray();
+            parameters = parameters
+                .Select(parameter =>
+                    parameter.Name == "successCallback"
+                        ? parameter with
+                        {
+                            Type = "void Function(T, void Function(Object, StackTrace?))",
+                        }
+                        : parameter
+                )
+                .ToArray();
         }
         var visibility = IsDartPrivate(method) ? "internal" : "public";
-        if (IsDartPrivate(method) &&
-            (IsRequiredByMixinConstraint(method) ||
-             AppliedMixinDeclarations(declaration).Any(mixin => mixin.Members.Any(candidate =>
-                 candidate.Kind == "method" && candidate.Name == method.Name))))
+        if (
+            IsDartPrivate(method)
+            && (
+                IsRequiredByMixinConstraint(method)
+                || AppliedMixinDeclarations(declaration)
+                    .Any(mixin =>
+                        mixin.Members.Any(candidate =>
+                            candidate.Kind == "method" && candidate.Name == method.Name
+                        )
+                    )
+            )
+        )
         {
             // A C# interface contract is always public, including Dart library-
             // private members copied from an applied mixin.
@@ -1003,13 +1637,17 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             visibility = "public";
         }
-        if (declaration.Name is "_OverridableAction" or "_OverridableContextAction" &&
-            method.Name == "_updateCallingAction")
+        if (
+            declaration.Name is "_OverridableAction" or "_OverridableContextAction"
+            && method.Name == "_updateCallingAction"
+        )
         {
             visibility = "internal";
         }
-        if (overriddenMember is not null &&
-            (IsRequiredByMixinConstraint(overriddenMember) || method.Name == "_layerHandle"))
+        if (
+            overriddenMember is not null
+            && (IsRequiredByMixinConstraint(overriddenMember) || method.Name == "_layerHandle")
+        )
         {
             visibility = "public";
         }
@@ -1027,8 +1665,15 @@ internal sealed partial class FrameworkCSharpLowerer
             // assembly and overrides this Dart-private framework hook.
             visibility = "public";
         }
-        if (!method.IsStatic && overrideModifier == "override " &&
-            method.Name is "initInstances" or "initServiceExtensions" or "unlocked" or "performReassemble")
+        if (
+            !method.IsStatic
+            && overrideModifier == "override "
+            && method.Name
+                is "initInstances"
+                    or "initServiceExtensions"
+                    or "unlocked"
+                    or "performReassemble"
+        )
         {
             visibility = "protected";
             overrideModifier = "override ";
@@ -1036,26 +1681,51 @@ internal sealed partial class FrameworkCSharpLowerer
         var typeParameters = method.Element.TypeParameters is { Length: > 0 }
             ? $"<{string.Join(", ", method.Element.TypeParameters.Select(item => SafeIdentifier(item.Name)))}>"
             : string.Empty;
-        var effectiveContractTypeParameters = contractMember is not null && overriddenMember is null
-            ? null
-            : method.Element.TypeParameters;
-        var overrideTypeParameterConstraints = effectiveContractTypeParameters is not { Length: > 0 }
-            ? string.Empty
+        var effectiveContractTypeParameters =
+            contractMember is not null && overriddenMember is null
+                ? null
+                : method.Element.TypeParameters;
+        var overrideTypeParameterConstraints =
+            effectiveContractTypeParameters is not { Length: > 0 } ? string.Empty
             : overrideModifier == "override "
-                ? string.Concat(effectiveContractTypeParameters
-                    .Where(parameter => (method.Element.ReturnType?.Contains(parameter.Name + "?", StringComparison.Ordinal) ?? false) ||
-                        parameters.Any(item => item.Type.Contains(parameter.Name + "?", StringComparison.Ordinal)))
-                    .Select(parameter => $" where {SafeIdentifier(parameter.Name)} : default"))
-                : FormatTypeParameterConstraints(effectiveContractTypeParameters,
-                    parameters.Select(item => MapType(item.Type)).Append(returnType).Concat(
-                        declaration.Members.SelectMany(member =>
-                            new[] { member.Element.Type, member.Element.ReturnType }
-                                .Concat((member.Element.Parameters ?? []).Select(parameter => parameter.Type)))
+                ? string.Concat(
+                    effectiveContractTypeParameters
+                        .Where(parameter =>
+                            (
+                                method.Element.ReturnType?.Contains(
+                                    parameter.Name + "?",
+                                    StringComparison.Ordinal
+                                ) ?? false
+                            )
+                            || parameters.Any(item =>
+                                item.Type.Contains(parameter.Name + "?", StringComparison.Ordinal)
+                            )
+                        )
+                        .Select(parameter => $" where {SafeIdentifier(parameter.Name)} : default")
+                )
+            : FormatTypeParameterConstraints(
+                effectiveContractTypeParameters,
+                parameters
+                    .Select(item => MapType(item.Type))
+                    .Append(returnType)
+                    .Concat(
+                        declaration
+                            .Members.SelectMany(member =>
+                                new[] { member.Element.Type, member.Element.ReturnType }.Concat(
+                                    (member.Element.Parameters ?? []).Select(parameter =>
+                                        parameter.Type
+                                    )
+                                )
+                            )
                             .Where(type => !string.IsNullOrWhiteSpace(type))
-                            .Select(type => MapType(type!))));
-        if (declaration.Name == "InheritedModel" &&
-            method.Name is "_findModels" or "inheritFrom" &&
-            method.Element.TypeParameters is { Length: 1 } inheritedModelMethodParameters)
+                            .Select(type => MapType(type!))
+                    )
+            );
+        if (
+            declaration.Name == "InheritedModel"
+            && method.Name is "_findModels" or "inheritFrom"
+            && method.Element.TypeParameters is { Length: 1 } inheritedModelMethodParameters
+        )
         {
             // Dart's `T extends InheritedModel<Object?>` is covariant at the
             // call site. CLR generics are invariant, so constrain the lookup
@@ -1064,37 +1734,62 @@ internal sealed partial class FrameworkCSharpLowerer
             overrideTypeParameterConstraints =
                 $" where {SafeIdentifier(inheritedModelMethodParameters[0].Name)} : InheritedWidget";
         }
-        if (method.Name == "_getOverrideAction" &&
-            method.Element.TypeParameters is { Length: 1 } overrideActionTypeParameters)
+        if (
+            method.Name == "_getOverrideAction"
+            && method.Element.TypeParameters is { Length: 1 } overrideActionTypeParameters
+        )
         {
             // The concrete mixin carrier implements the generic constraint
             // contract emitted for _OverridableActionMixin<T>.
             overrideTypeParameterConstraints =
                 $" where {SafeIdentifier(overrideActionTypeParameters[0].Name)} : Intent";
         }
-        var expressionBody = method.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-        var blockBody = method.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
-        var expression = expressionBody is null ? null : expressionBody.Child(CoreChildRole.expressionOffset);
+        var expressionBody = method.Ast.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.ExpressionFunctionBody
+        );
+        var blockBody = method.Ast.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.BlockFunctionBody
+        );
+        var expression = expressionBody is null
+            ? null
+            : expressionBody.Child(CoreChildRole.expressionOffset);
         var block = blockBody is null ? null : blockBody.Child(CoreChildRole.blockOffset);
-        var asyncModifier = IsDartAsync(method.Ast) && (IsFutureType(returnType) || returnType == "Task") ? "async " : string.Empty;
-        var canonicalPositionals = parameters.Where(parameter => parameter.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)).ToArray();
+        var asyncModifier =
+            IsDartAsync(method.Ast) && (IsFutureType(returnType) || returnType == "Task")
+                ? "async "
+                : string.Empty;
+        var canonicalPositionals = parameters
+            .Where(parameter =>
+                parameter.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
+            )
+            .ToArray();
         var sourcePositionalIndex = 0;
-        var comparableOverrideParameters = sourceParameters.Select(source =>
-        {
-            var contract = source.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
-                ? canonicalPositionals.ElementAtOrDefault(sourcePositionalIndex++)
-                : parameters.FirstOrDefault(candidate => candidate.Name == source.Name);
-            return (First: source, Second: contract ?? source);
-        }).ToArray();
+        var comparableOverrideParameters = sourceParameters
+            .Select(source =>
+            {
+                var contract = source.Kind.Contains(
+                    "positional",
+                    StringComparison.OrdinalIgnoreCase
+                )
+                    ? canonicalPositionals.ElementAtOrDefault(sourcePositionalIndex++)
+                    : parameters.FirstOrDefault(candidate => candidate.Name == source.Name);
+                return (First: source, Second: contract ?? source);
+            })
+            .ToArray();
         var promotedOverrideParameters = comparableOverrideParameters
-            .Where(pair => pair.First.Type != pair.Second.Type &&
-                pair.Second.Type.EndsWith("?", StringComparison.Ordinal) &&
-                !pair.First.Type.EndsWith("?", StringComparison.Ordinal) &&
-                IsValueType(MapType(pair.First.Type)))
-            .Select(pair => (
-                Name: SafeIdentifier(pair.First.Name),
-                Local: SyntheticIdentifier(pair.First.Name),
-                SourceType: MapType(pair.First.Type)))
+            .Where(pair =>
+                pair.First.Type != pair.Second.Type
+                && pair.Second.Type.EndsWith("?", StringComparison.Ordinal)
+                && !pair.First.Type.EndsWith("?", StringComparison.Ordinal)
+                && IsValueType(MapType(pair.First.Type))
+            )
+            .Select(pair =>
+                (
+                    Name: SafeIdentifier(pair.First.Name),
+                    Local: SyntheticIdentifier(pair.First.Name),
+                    SourceType: MapType(pair.First.Type)
+                )
+            )
             .ToArray();
         var narrowedOverrideParameters = comparableOverrideParameters
             .Select(pair =>
@@ -1103,18 +1798,31 @@ internal sealed partial class FrameworkCSharpLowerer
                 var contractType = MapType(pair.Second.Type);
                 var sourceDeclaration = FindGlobalDeclaration(sourceType.TrimEnd('?'));
                 var contractDeclaration = FindGlobalDeclaration(contractType.TrimEnd('?'));
-                return (pair.First.Name, SourceType: sourceType, ContractType: contractType,
-                    IsNarrower: sourceType.TrimEnd('?') != contractType.TrimEnd('?') &&
-                        !IsValueType(sourceType.TrimEnd('?')) &&
-                        ((sourceDeclaration is not null && contractDeclaration is not null &&
-                          IsDescendantOf(sourceDeclaration, contractDeclaration)) ||
-                         sourceDeclaration is null || contractDeclaration is null));
+                return (
+                    pair.First.Name,
+                    SourceType: sourceType,
+                    ContractType: contractType,
+                    IsNarrower: sourceType.TrimEnd('?') != contractType.TrimEnd('?')
+                        && !IsValueType(sourceType.TrimEnd('?'))
+                        && (
+                            (
+                                sourceDeclaration is not null
+                                && contractDeclaration is not null
+                                && IsDescendantOf(sourceDeclaration, contractDeclaration)
+                            )
+                            || sourceDeclaration is null
+                            || contractDeclaration is null
+                        )
+                );
             })
             .Where(pair => pair.IsNarrower)
-            .Select(pair => (
-                Name: SafeIdentifier(pair.Name),
-                Local: SyntheticIdentifier(pair.Name),
-                pair.SourceType))
+            .Select(pair =>
+                (
+                    Name: SafeIdentifier(pair.Name),
+                    Local: SyntheticIdentifier(pair.Name),
+                    pair.SourceType
+                )
+            )
             .ToArray();
         if (method.Name == "handleEvent")
         {
@@ -1128,30 +1836,60 @@ internal sealed partial class FrameworkCSharpLowerer
                 .ToArray();
         }
         var renamedOverrideParameters = comparableOverrideParameters
-            .Where(pair => !string.Equals(pair.First.Name, pair.Second.Name, StringComparison.Ordinal))
-            .Select(pair => (Source: SafeIdentifier(pair.First.Name), Contract: SafeIdentifier(pair.Second.Name)))
+            .Where(pair =>
+                !string.Equals(pair.First.Name, pair.Second.Name, StringComparison.Ordinal)
+            )
+            .Select(pair =>
+                (
+                    Source: SafeIdentifier(pair.First.Name),
+                    Contract: SafeIdentifier(pair.Second.Name)
+                )
+            )
             .ToArray();
 
         // A referenced base cannot grow its CLR parameter list with this selection.
         // Retain the Dart overload and route the frozen base signature into it.
-        if (!isInterface && overriddenMember is not null &&
-            FindDeclaringDeclaration(overriddenMember) is { } externalOwner && !IsGeneratedDeclaration(externalOwner) &&
-            !method.IsGetter && !method.IsSetter &&
-            (overriddenMember.Element.Parameters ?? []) is { } externalParameters &&
-            parameters.Length > externalParameters.Length)
+        if (
+            !isInterface
+            && overriddenMember is not null
+            && FindDeclaringDeclaration(overriddenMember) is { } externalOwner
+            && !IsGeneratedDeclaration(externalOwner)
+            && !method.IsGetter
+            && !method.IsSetter
+            && (overriddenMember.Element.Parameters ?? []) is { } externalParameters
+            && parameters.Length > externalParameters.Length
+        )
         {
-            var baseParameters = externalParameters.Select(parameter => parameter with
-            {
-                Type = ApplyTypeParameterSubstitutions(parameter.Type, contractSubstitutions)
-            }).ToArray();
-            var callArguments = parameters.Select((parameter, index) => index < baseParameters.Length
-                ? SafeIdentifier(baseParameters[index].Name)
-                : MapDefault(parameter.DefaultValue, parameter.Type));
-            builder.AppendLine($"    {visibility} override {returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(baseParameters))}){overrideTypeParameterConstraints} => {methodName}{typeParameters}({string.Join(", ", callArguments)});");
+            var baseParameters = externalParameters
+                .Select(parameter =>
+                    parameter with
+                    {
+                        Type = ApplyTypeParameterSubstitutions(
+                            parameter.Type,
+                            contractSubstitutions
+                        ),
+                    }
+                )
+                .ToArray();
+            var callArguments = parameters.Select(
+                (parameter, index) =>
+                    index < baseParameters.Length
+                        ? SafeIdentifier(baseParameters[index].Name)
+                        : MapDefault(parameter.DefaultValue, parameter.Type)
+            );
+            builder.AppendLine(
+                $"    {visibility} override {returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(baseParameters))}){overrideTypeParameterConstraints} => {methodName}{typeParameters}({string.Join(", ", callArguments)});"
+            );
             overrideModifier = string.Empty;
-            if (!method.IsAbstract) overrideModifier = "virtual ";
-            overrideTypeParameterConstraints = FormatTypeParameterConstraints(method.Element.TypeParameters,
-                parameters.Select(parameter => MapType(parameter.Type)).Append(returnType));
+            if (!method.IsAbstract)
+            {
+                overrideModifier = "virtual ";
+            }
+
+            overrideTypeParameterConstraints = FormatTypeParameterConstraints(
+                method.Element.TypeParameters,
+                parameters.Select(parameter => MapType(parameter.Type)).Append(returnType)
+            );
         }
 
         if (method.IsOperator && method.Name is "[]" or "[]=")
@@ -1160,18 +1898,37 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 return;
             }
-            var setter = method.Name == "[]"
-                ? members.FirstOrDefault(item => item.IsOperator && item.Name == "[]=")
-                : method;
+            var setter =
+                method.Name == "[]"
+                    ? members.FirstOrDefault(item => item.IsOperator && item.Name == "[]=")
+                    : method;
             var getter = method.Name == "[]" ? method : null;
-            EmitIndexer(builder, declaration, getter, setter, returnType, visibility, isInterface, package, library, inputPath, diagnostics);
+            EmitIndexer(
+                builder,
+                declaration,
+                getter,
+                setter,
+                returnType,
+                visibility,
+                isInterface,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
 
         if (isInterface)
         {
-            if (declaration.Ast.Kind == CoreNodeKind.MixinDeclaration &&
-                method.Name is "initInstances" or "initServiceExtensions" or "unlocked" or "performReassemble")
+            if (
+                declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                && method.Name
+                    is "initInstances"
+                        or "initServiceExtensions"
+                        or "unlocked"
+                        or "performReassemble"
+            )
             {
                 return;
             }
@@ -1182,21 +1939,50 @@ internal sealed partial class FrameworkCSharpLowerer
                     if (method.IsGetter)
                     {
                         var hasStaticSetter = members.Any(candidate =>
-                            candidate.IsSetter && candidate.Name == method.Name && candidate.IsStatic);
-                        builder.AppendLine($"    {visibility} {staticModifier}{returnType} {methodName}");
+                            candidate.IsSetter
+                            && candidate.Name == method.Name
+                            && candidate.IsStatic
+                        );
+                        builder.AppendLine(
+                            $"    {visibility} {staticModifier}{returnType} {methodName}"
+                        );
                         builder.AppendLine("    {");
                         builder.Append("        get => ");
-                        LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                        LowerExpressionWithExpectedType(
+                            builder,
+                            expression,
+                            returnType,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics
+                        );
                         builder.AppendLine(";");
-                        if (hasStaticSetter && declaration.Name == "WidgetInspectorService" && method.Name == "instance")
+                        if (
+                            hasStaticSetter
+                            && declaration.Name == "WidgetInspectorService"
+                            && method.Name == "instance"
+                        )
                         {
                             builder.AppendLine("        set => _instance = value;");
                         }
                         builder.AppendLine("    }");
                         return;
                     }
-                    builder.Append($"    {visibility} {staticModifier}{asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}) => ");
-                    LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                    builder.Append(
+                        $"    {visibility} {staticModifier}{asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}) => "
+                    );
+                    LowerExpressionWithExpectedType(
+                        builder,
+                        expression,
+                        returnType,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                     return;
                 }
@@ -1204,24 +1990,49 @@ internal sealed partial class FrameworkCSharpLowerer
                 {
                     if (method.IsGetter)
                     {
-                        builder.AppendLine($"    {visibility} {staticModifier}{returnType} {methodName}");
+                        builder.AppendLine(
+                            $"    {visibility} {staticModifier}{returnType} {methodName}"
+                        );
                         builder.AppendLine("    {");
                         builder.AppendLine("        get");
                         builder.AppendLine("        {");
-                        EmitBlockBody(builder, block, declaration, package, library, inputPath, diagnostics, 3);
+                        EmitBlockBody(
+                            builder,
+                            block,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics,
+                            3
+                        );
                         builder.AppendLine("        }");
                         builder.AppendLine("    }");
                         return;
                     }
-                    builder.AppendLine($"    {visibility} {staticModifier}{asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))})");
+                    builder.AppendLine(
+                        $"    {visibility} {staticModifier}{asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))})"
+                    );
                     builder.AppendLine("    {");
-                    EmitBlockBody(builder, block, declaration, package, library, inputPath, diagnostics, 2);
+                    EmitBlockBody(
+                        builder,
+                        block,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics,
+                        2
+                    );
                     builder.AppendLine("    }");
                     return;
                 }
             }
-            if (declaration.Name == "WidgetsBindingObserver" && !method.IsAbstract &&
-                (expression is not null || block is not null))
+            if (
+                declaration.Name == "WidgetsBindingObserver"
+                && !method.IsAbstract
+                && (expression is not null || block is not null)
+            )
             {
                 if (method.IsGetter)
                 {
@@ -1230,14 +2041,32 @@ internal sealed partial class FrameworkCSharpLowerer
                     if (expression is not null)
                     {
                         builder.Append("        get => ");
-                        LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                        LowerExpressionWithExpectedType(
+                            builder,
+                            expression,
+                            returnType,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics
+                        );
                         builder.AppendLine(";");
                     }
                     else
                     {
                         builder.AppendLine("        get");
                         builder.AppendLine("        {");
-                        EmitBlockBody(builder, block!, declaration, package, library, inputPath, diagnostics, 3);
+                        EmitBlockBody(
+                            builder,
+                            block!,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics,
+                            3
+                        );
                         builder.AppendLine("        }");
                     }
                     builder.AppendLine("    }");
@@ -1245,65 +2074,129 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
                 if (expression is not null)
                 {
-                    builder.Append($"    public {asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}) => ");
-                    LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                    builder.Append(
+                        $"    public {asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}) => "
+                    );
+                    LowerExpressionWithExpectedType(
+                        builder,
+                        expression,
+                        returnType,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                     return;
                 }
-                builder.AppendLine($"    public {asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))})");
+                builder.AppendLine(
+                    $"    public {asyncModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))})"
+                );
                 builder.AppendLine("    {");
-                EmitBlockBody(builder, block!, declaration, package, library, inputPath, diagnostics, 2);
+                EmitBlockBody(
+                    builder,
+                    block!,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2
+                );
                 builder.AppendLine("    }");
                 return;
             }
-            if (method.IsAbstract || method.IsGetter || method.IsSetter ||
-                declaration.Ast.Kind == CoreNodeKind.MixinDeclaration ||
-                HasPromotedInterfaceRepresentation(declaration))
+            if (
+                method.IsAbstract
+                || method.IsGetter
+                || method.IsSetter
+                || declaration.Ast.Kind == CoreNodeKind.MixinDeclaration
+                || HasPromotedInterfaceRepresentation(declaration)
+            )
             {
                 if (method.IsGetter)
                 {
                     var hasSetter = members.Any(candidate =>
-                        candidate.IsSetter && candidate.Name == method.Name && candidate.IsStatic == method.IsStatic);
-                    builder.AppendLine($"    {visibility} {staticModifier}{returnType} {methodName} {{ get;{(hasSetter ? " set;" : string.Empty)} }}");
+                        candidate.IsSetter
+                        && candidate.Name == method.Name
+                        && candidate.IsStatic == method.IsStatic
+                    );
+                    builder.AppendLine(
+                        $"    {visibility} {staticModifier}{returnType} {methodName} {{ get;{(hasSetter ? " set;" : string.Empty)} }}"
+                    );
                 }
                 else if (method.IsSetter)
                 {
-                    if (!members.Any(candidate =>
-                        candidate.IsGetter && candidate.Name == method.Name && candidate.IsStatic == method.IsStatic))
+                    if (
+                        !members.Any(candidate =>
+                            candidate.IsGetter
+                            && candidate.Name == method.Name
+                            && candidate.IsStatic == method.IsStatic
+                        )
+                    )
                     {
-                        var valueType = method.Element.Parameters is { Length: > 0 } setterParameters
+                        var valueType = method.Element.Parameters
+                            is { Length: > 0 } setterParameters
                             ? MapType(setterParameters[^1].Type)
                             : "object";
-                        builder.AppendLine($"    {visibility} {staticModifier}{valueType} {methodName} {{ set; }}");
+                        builder.AppendLine(
+                            $"    {visibility} {staticModifier}{valueType} {methodName} {{ set; }}"
+                        );
                     }
                 }
                 else
                 {
-                    builder.AppendLine($"    {visibility} {staticModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))});");
+                    builder.AppendLine(
+                        $"    {visibility} {staticModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))});"
+                    );
                 }
                 return;
             }
-            AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, method.Ast,
-                "interface-member", "Only abstract and static members are supported in interface emission.");
+            AddUnsupportedDiagnostic(
+                diagnostics,
+                package,
+                library,
+                inputPath,
+                declaration,
+                method.Ast,
+                "interface-member",
+                "Only abstract and static members are supported in interface emission."
+            );
             return;
         }
 
         if (method.Name == "==")
         {
-            parameters = parameters.Select((item, index) => index == 0 ? item with { Type = "object?" } : item).ToArray();
+            parameters = parameters
+                .Select((item, index) => index == 0 ? item with { Type = "object?" } : item)
+                .ToArray();
         }
 
         if (methodName == "Equals")
         {
-            var classType = $"{EmittedTypeName(library, declaration.Name)}{FormatTypeParameters(declaration.Element.TypeParameters)}";
+            var classType =
+                $"{EmittedTypeName(library, declaration.Name)}{FormatTypeParameters(declaration.Element.TypeParameters)}";
             if (expression is not null)
             {
-                builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}({string.Join(", ", MapParameters(parameters))})");
+                builder.AppendLine(
+                    $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}({string.Join(", ", MapParameters(parameters))})"
+                );
                 builder.AppendLine("    {");
                 builder.AppendLine($"        var __other = other as {classType};");
                 builder.AppendLine("        if (__other is null) return false;");
                 builder.Append("        return ");
-                LowerExpressionWithLocalRename(builder, expression, declaration, package, library, inputPath, diagnostics, "other", "__other");
+                LowerExpressionWithLocalRename(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    "other",
+                    "__other"
+                );
                 builder.AppendLine(";");
                 builder.AppendLine("    }");
                 builder.AppendLine();
@@ -1311,11 +2204,24 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             if (block is not null)
             {
-                builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}({string.Join(", ", MapParameters(parameters))})");
+                builder.AppendLine(
+                    $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}({string.Join(", ", MapParameters(parameters))})"
+                );
                 builder.AppendLine("    {");
                 builder.AppendLine($"        var __other = other as {classType};");
                 builder.AppendLine("        if (__other is null) return false;");
-                EmitBlockBodyWithLocalRename(builder, block, declaration, package, library, inputPath, diagnostics, 2, "other", "__other");
+                EmitBlockBodyWithLocalRename(
+                    builder,
+                    block,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2,
+                    "other",
+                    "__other"
+                );
                 builder.AppendLine("    }");
                 builder.AppendLine();
                 return;
@@ -1324,8 +2230,27 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (method.IsGetter)
         {
-            var matchingSetter = members.FirstOrDefault(item => item.IsSetter && item.Name == method.Name);
-            EmitGetter(builder, declaration, method, members, matchingSetter, returnType, staticModifier, overrideModifier, methodName, visibility, expression, block, package, library, inputPath, diagnostics);
+            var matchingSetter = members.FirstOrDefault(item =>
+                item.IsSetter && item.Name == method.Name
+            );
+            EmitGetter(
+                builder,
+                declaration,
+                method,
+                members,
+                matchingSetter,
+                returnType,
+                staticModifier,
+                overrideModifier,
+                methodName,
+                visibility,
+                expression,
+                block,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
 
@@ -1336,44 +2261,103 @@ internal sealed partial class FrameworkCSharpLowerer
                 return;
             }
             returnType = MapType(method.Element.Parameters?.FirstOrDefault()?.Type ?? "object");
-            EmitSetterOnly(builder, declaration, method, returnType, staticModifier, overrideModifier, methodName, visibility, block, expression, package, library, inputPath, diagnostics);
+            EmitSetterOnly(
+                builder,
+                declaration,
+                method,
+                returnType,
+                staticModifier,
+                overrideModifier,
+                methodName,
+                visibility,
+                block,
+                expression,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
 
         if (method.Name == "toString" && !method.IsStatic && parameters.Length > 0)
         {
-            var defaults = parameters.Select(parameter => MapDefault(parameter.DefaultValue, parameter.Type));
-            builder.AppendLine($"    public override string ToString() => {methodName}({string.Join(", ", defaults)});");
+            var defaults = parameters.Select(parameter =>
+                MapDefault(parameter.DefaultValue, parameter.Type)
+            );
+            builder.AppendLine(
+                $"    public override string ToString() => {methodName}({string.Join(", ", defaults)});"
+            );
         }
 
         if (method.IsAbstract)
         {
-            builder.AppendLine($"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints};");
+            builder.AppendLine(
+                $"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints};"
+            );
             return;
         }
 
-        if (expression is not null && (narrowedOverrideParameters.Length > 0 || promotedOverrideParameters.Length > 0))
+        if (
+            expression is not null
+            && (narrowedOverrideParameters.Length > 0 || promotedOverrideParameters.Length > 0)
+        )
         {
-            builder.AppendLine($"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints}");
+            builder.AppendLine(
+                $"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints}"
+            );
             builder.AppendLine("    {");
             foreach (var narrowed in narrowedOverrideParameters)
             {
-                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == narrowed.Name);
-                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? narrowed.Name : renamed.Contract;
-                builder.AppendLine($"        var {narrowed.Local} = ({narrowed.SourceType})(object){parameterName};");
+                var renamed = renamedOverrideParameters.FirstOrDefault(item =>
+                    item.Source == narrowed.Name
+                );
+                var parameterName = string.IsNullOrEmpty(renamed.Contract)
+                    ? narrowed.Name
+                    : renamed.Contract;
+                builder.AppendLine(
+                    $"        var {narrowed.Local} = ({narrowed.SourceType})(object){parameterName};"
+                );
             }
             foreach (var promoted in promotedOverrideParameters)
             {
-                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == promoted.Name);
-                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? promoted.Name : renamed.Contract;
-                builder.AppendLine($"        var {promoted.Local} = DartRuntimePrimitives.ConvertValue<{promoted.SourceType}>({parameterName});");
+                var renamed = renamedOverrideParameters.FirstOrDefault(item =>
+                    item.Source == promoted.Name
+                );
+                var parameterName = string.IsNullOrEmpty(renamed.Contract)
+                    ? promoted.Name
+                    : renamed.Contract;
+                builder.AppendLine(
+                    $"        var {promoted.Local} = DartRuntimePrimitives.ConvertValue<{promoted.SourceType}>({parameterName});"
+                );
             }
             var expressionBuilder = new CsSyntaxBuilder();
-            LowerExpressionWithExpectedType(expressionBuilder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+            LowerExpressionWithExpectedType(
+                expressionBuilder,
+                expression,
+                returnType,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             var body = expressionBuilder.Build();
-            foreach (var narrowed in narrowedOverrideParameters) body = body.RenameIdentifier(narrowed.Name, narrowed.Local);
-            foreach (var promoted in promotedOverrideParameters) body = body.RenameIdentifier(promoted.Name, promoted.Local);
-            foreach (var renamed in renamedOverrideParameters) body = body.RenameIdentifier(renamed.Source, renamed.Contract);
+            foreach (var narrowed in narrowedOverrideParameters)
+            {
+                body = body.RenameIdentifier(narrowed.Name, narrowed.Local);
+            }
+
+            foreach (var promoted in promotedOverrideParameters)
+            {
+                body = body.RenameIdentifier(promoted.Name, promoted.Local);
+            }
+
+            foreach (var renamed in renamedOverrideParameters)
+            {
+                body = body.RenameIdentifier(renamed.Source, renamed.Contract);
+            }
+
             builder.Append(returnType == "void" ? "        " : "        return ");
             builder.Append(body);
             builder.AppendLine(";");
@@ -1383,19 +2367,41 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (expression is not null)
         {
-            builder.Append($"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints} => ");
+            builder.Append(
+                $"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints} => "
+            );
             if (renamedOverrideParameters.Length == 0)
             {
-                LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                LowerExpressionWithExpectedType(
+                    builder,
+                    expression,
+                    returnType,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
             }
             else
             {
                 var expressionBuilder = new CsSyntaxBuilder();
-                LowerExpression(expressionBuilder, expression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    expressionBuilder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 var emittedExpression = expressionBuilder.Build();
                 foreach (var renamed in renamedOverrideParameters)
                 {
-                    emittedExpression = emittedExpression.RenameIdentifier(renamed.Source, renamed.Contract);
+                    emittedExpression = emittedExpression.RenameIdentifier(
+                        renamed.Source,
+                        renamed.Contract
+                    );
                 }
                 builder.Append(emittedExpression);
             }
@@ -1405,55 +2411,110 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (block is not null)
         {
-            builder.AppendLine($"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints}");
+            builder.AppendLine(
+                $"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints}"
+            );
             builder.AppendLine("    {");
             foreach (var promoted in promotedOverrideParameters)
             {
-                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == promoted.Name);
-                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? promoted.Name : renamed.Contract;
-                builder.AppendLine($"        {promoted.SourceType} {promoted.Local} = DartRuntimePrimitives.ConvertValue<{promoted.SourceType}>({parameterName});");
+                var renamed = renamedOverrideParameters.FirstOrDefault(item =>
+                    item.Source == promoted.Name
+                );
+                var parameterName = string.IsNullOrEmpty(renamed.Contract)
+                    ? promoted.Name
+                    : renamed.Contract;
+                builder.AppendLine(
+                    $"        {promoted.SourceType} {promoted.Local} = DartRuntimePrimitives.ConvertValue<{promoted.SourceType}>({parameterName});"
+                );
             }
             foreach (var narrowed in narrowedOverrideParameters)
             {
-                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == narrowed.Name);
-                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? narrowed.Name : renamed.Contract;
-                if (method.Name == "updateShouldNotifyDependent" && sourceParameters.Length == 2 &&
-                    narrowed.Name == sourceParameters[1].Name &&
-                    narrowed.SourceType == "HashSet<object>" &&
-                    parameters.Length == 2 &&
-                    MapType(parameters[1].Type).StartsWith("HashSet<", StringComparison.Ordinal))
+                var renamed = renamedOverrideParameters.FirstOrDefault(item =>
+                    item.Source == narrowed.Name
+                );
+                var parameterName = string.IsNullOrEmpty(renamed.Contract)
+                    ? narrowed.Name
+                    : renamed.Contract;
+                if (
+                    method.Name == "updateShouldNotifyDependent"
+                    && sourceParameters.Length == 2
+                    && narrowed.Name == sourceParameters[1].Name
+                    && narrowed.SourceType == "HashSet<object>"
+                    && parameters.Length == 2
+                    && MapType(parameters[1].Type).StartsWith("HashSet<", StringComparison.Ordinal)
+                )
                 {
                     // InheritedModel<T> stores dependencies as HashSet<T>. Dart's
                     // override may expose Set<Object>, but CLR generic collections
                     // are invariant. Copy the tiny dependency set into its source
                     // view instead of emitting an invalid HashSet<T> cast.
-                    builder.AppendLine($"        var {narrowed.Local} = new HashSet<object>({parameterName}.Cast<object>());");
+                    builder.AppendLine(
+                        $"        var {narrowed.Local} = new HashSet<object>({parameterName}.Cast<object>());"
+                    );
                 }
                 else if (narrowed.SourceType.EndsWith("?", StringComparison.Ordinal))
                 {
-                    builder.AppendLine($"        var {narrowed.Local} = {parameterName} is null ? null : ({narrowed.SourceType.TrimEnd('?')})(object){parameterName};");
+                    builder.AppendLine(
+                        $"        var {narrowed.Local} = {parameterName} is null ? null : ({narrowed.SourceType.TrimEnd('?')})(object){parameterName};"
+                    );
                 }
                 else
                 {
-                    builder.AppendLine($"        var {narrowed.Local} = ({narrowed.SourceType})(object){parameterName};");
+                    builder.AppendLine(
+                        $"        var {narrowed.Local} = ({narrowed.SourceType})(object){parameterName};"
+                    );
                 }
             }
-            if (promotedOverrideParameters.Length == 0 && narrowedOverrideParameters.Length == 0 && renamedOverrideParameters.Length == 0)
+            if (
+                promotedOverrideParameters.Length == 0
+                && narrowedOverrideParameters.Length == 0
+                && renamedOverrideParameters.Length == 0
+            )
             {
                 EmitBlockBodyWithReturnContract(
-                    builder, block, declaration, returnType, package, library, inputPath, diagnostics, 2);
+                    builder,
+                    block,
+                    declaration,
+                    returnType,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2
+                );
             }
             else
             {
                 var bodyBuilder = new CsSyntaxBuilder();
                 EmitBlockBodyWithReturnContract(
-                    bodyBuilder, block, declaration, returnType, package, library, inputPath, diagnostics, 2);
+                    bodyBuilder,
+                    block,
+                    declaration,
+                    returnType,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2
+                );
                 var body = bodyBuilder.Build();
-                if (method.Name == "handleEvent" &&
-                    narrowedOverrideParameters.Any(item => item.Name == "entry" && item.Local == "__entry"))
+                if (
+                    method.Name == "handleEvent"
+                    && narrowedOverrideParameters.Any(item =>
+                        item.Name == "entry" && item.Local == "__entry"
+                    )
+                )
                 {
-                    body = body.RenameIdentifierInInvocation("handleEvent", "entry", "__contract_entry")
-                        .RenameIdentifierInInvocation("debugHandleEvent", "entry", "__contract_entry");
+                    body = body.RenameIdentifierInInvocation(
+                            "handleEvent",
+                            "entry",
+                            "__contract_entry"
+                        )
+                        .RenameIdentifierInInvocation(
+                            "debugHandleEvent",
+                            "entry",
+                            "__contract_entry"
+                        );
                 }
                 foreach (var promoted in promotedOverrideParameters)
                 {
@@ -1472,21 +2533,32 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             if (returnType != "void" && !(asyncModifier.Length > 0 && returnType == "Future"))
             {
-                builder.AppendLine("        throw new InvalidOperationException(\"Dart control flow completed without a value.\");");
+                builder.AppendLine(
+                    "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                );
             }
             builder.AppendLine("    }");
             builder.AppendLine();
             return;
         }
 
-        AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, method.Ast,
-            "class-method-body", "Add a typed block or expression method visitor before selecting this class.");
+        AddUnsupportedDiagnostic(
+            diagnostics,
+            package,
+            library,
+            inputPath,
+            declaration,
+            method.Ast,
+            "class-method-body",
+            "Add a typed block or expression method visitor before selecting this class."
+        );
     }
 
     private static bool TryEmitRenderCustomClipCacheMethod(
         CsSyntaxBuilder builder,
         CoreResolvedDeclaration declaration,
-        CoreResolvedMember method)
+        CoreResolvedMember method
+    )
     {
         if (declaration.Name != "_RenderCustomClip")
         {
@@ -1543,23 +2615,24 @@ internal sealed partial class FrameworkCSharpLowerer
         return false;
     }
 
-    private string MapMethodDeclarationName(CoreResolvedMember method) => method.Name switch
-    {
-        "toString" => "ToString",
-        "hashCode" => "GetHashCode",
-        "iterator" => "GetEnumerator",
-        "==" => "Equals",
-        "+" => "op_Add",
-        "-" => "op_Subtract",
-        "*" => "op_Multiply",
-        "/" => "op_Divide",
-        "&" => "op_BitwiseAnd",
-        "|" => "op_BitwiseOr",
-        "~" => "op_OnesComplement",
-        "%" => "op_Modulus",
-        "~/" => "op_TruncateDivide",
-        _ => SafeIdentifier(method.Name),
-    };
+    private string MapMethodDeclarationName(CoreResolvedMember method) =>
+        method.Name switch
+        {
+            "toString" => "ToString",
+            "hashCode" => "GetHashCode",
+            "iterator" => "GetEnumerator",
+            "==" => "Equals",
+            "+" => "op_Add",
+            "-" => "op_Subtract",
+            "*" => "op_Multiply",
+            "/" => "op_Divide",
+            "&" => "op_BitwiseAnd",
+            "|" => "op_BitwiseOr",
+            "~" => "op_OnesComplement",
+            "%" => "op_Modulus",
+            "~/" => "op_TruncateDivide",
+            _ => SafeIdentifier(method.Name),
+        };
 
     private void EmitIndexer(
         CsSyntaxBuilder builder,
@@ -1572,29 +2645,44 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var indexSource = getter ?? setter;
         if (indexSource is null)
         {
             return;
         }
-        var indexParameters = (getter?.Element.Parameters ?? setter?.Element.Parameters?.Take(1).ToArray()) ?? [];
+        var indexParameters =
+            (getter?.Element.Parameters ?? setter?.Element.Parameters?.Take(1).ToArray()) ?? [];
         if (indexParameters.Length != 1)
         {
-            AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, indexSource.Ast,
-                "indexer-shape", "Index operators must take an index parameter.");
+            AddUnsupportedDiagnostic(
+                diagnostics,
+                package,
+                library,
+                inputPath,
+                declaration,
+                indexSource.Ast,
+                "indexer-shape",
+                "Index operators must take an index parameter."
+            );
             return;
         }
         var indexParameter = MapParameter(indexParameters[0]);
         var valueType = getter is not null
             ? returnType
             : MapType(setter!.Element.Parameters![1].Type);
-        var abstractLike = isInterface || (getter?.IsAbstract ?? false) || (setter?.IsAbstract ?? false);
+        var abstractLike =
+            isInterface || (getter?.IsAbstract ?? false) || (setter?.IsAbstract ?? false);
         if (abstractLike)
         {
-            var accessors = (getter is not null ? "get; " : string.Empty) + (setter is not null ? "set; " : string.Empty);
-            builder.AppendLine($"    {visibility} {valueType} this[{indexParameter}] {{ {accessors}}}");
+            var accessors =
+                (getter is not null ? "get; " : string.Empty)
+                + (setter is not null ? "set; " : string.Empty);
+            builder.AppendLine(
+                $"    {visibility} {valueType} this[{indexParameter}] {{ {accessors}}}"
+            );
             return;
         }
 
@@ -1602,10 +2690,16 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("    {");
         if (getter is not null)
         {
-            var getterExpression = getter.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody) is { } ge
+            var getterExpression = getter.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ExpressionFunctionBody
+            )
+                is { } ge
                 ? ge.Child(CoreChildRole.expressionOffset)
                 : null;
-            var getterBlock = getter.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody) is { } gb
+            var getterBlock = getter.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            )
+                is { } gb
                 ? gb.Child(CoreChildRole.blockOffset)
                 : null;
             builder.AppendLine("        get");
@@ -1613,12 +2707,29 @@ internal sealed partial class FrameworkCSharpLowerer
             if (getterExpression is not null)
             {
                 builder.Append("            return ");
-                LowerExpression(builder, getterExpression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    getterExpression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else if (getterBlock is not null)
             {
-                EmitBlockBody(builder, getterBlock, declaration, package, library, inputPath, diagnostics, 3);
+                EmitBlockBody(
+                    builder,
+                    getterBlock,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    3
+                );
                 builder.AppendLine("            return default!;");
             }
             builder.AppendLine("        }");
@@ -1626,10 +2737,16 @@ internal sealed partial class FrameworkCSharpLowerer
         if (setter is not null)
         {
             var setterParameters = setter.Element.Parameters ?? [];
-            var setterExpression = setter.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody) is { } se
+            var setterExpression = setter.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.ExpressionFunctionBody
+            )
+                is { } se
                 ? se.Child(CoreChildRole.expressionOffset)
                 : null;
-            var setterBlock = setter.Ast.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody) is { } sb
+            var setterBlock = setter.Ast.Children.FirstOrDefault(item =>
+                item.Kind == CoreNodeKind.BlockFunctionBody
+            )
+                is { } sb
                 ? sb.Child(CoreChildRole.blockOffset)
                 : null;
             builder.AppendLine("        set");
@@ -1644,12 +2761,29 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             if (setterExpression is not null)
             {
-                LowerExpression(builder, setterExpression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    setterExpression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else if (setterBlock is not null)
             {
-                EmitBlockBody(builder, setterBlock, declaration, package, library, inputPath, diagnostics, 3);
+                EmitBlockBody(
+                    builder,
+                    setterBlock,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    3
+                );
             }
             builder.AppendLine("        }");
         }
@@ -1673,11 +2807,28 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         if (matchingSetter is not null)
         {
-            EmitGetterSetterProperty(builder, declaration, method, matchingSetter, returnType, staticModifier, overrideModifier, methodName, visibility, expression, block, package, library, inputPath, diagnostics);
+            EmitGetterSetterProperty(
+                builder,
+                declaration,
+                method,
+                matchingSetter,
+                returnType,
+                staticModifier,
+                overrideModifier,
+                methodName,
+                visibility,
+                expression,
+                block,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             return;
         }
 
@@ -1685,19 +2836,43 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             if (method.IsAbstract || (block is null && expression is null))
             {
-                builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}();");
+                builder.AppendLine(
+                    $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}();"
+                );
                 return;
             }
             if (expression is not null)
             {
-                builder.Append($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}() => ");
-                LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                builder.Append(
+                    $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}() => "
+                );
+                LowerExpressionWithExpectedType(
+                    builder,
+                    expression,
+                    returnType,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
                 return;
             }
-            builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}()");
+            builder.AppendLine(
+                $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}()"
+            );
             builder.AppendLine("    {");
-            EmitBlockBody(builder, block!, declaration, package, library, inputPath, diagnostics, 2);
+            EmitBlockBody(
+                builder,
+                block!,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                2
+            );
             builder.AppendLine("        return default!;");
             builder.AppendLine("    }");
             return;
@@ -1706,41 +2881,84 @@ internal sealed partial class FrameworkCSharpLowerer
         if (HasGlobalSetterOverride(declaration, method.Name))
         {
             var propertyModifier = overrideModifier == "override " ? "override " : "virtual ";
-            builder.AppendLine($"    {visibility} {propertyModifier}{staticModifier}{returnType} {methodName}");
+            builder.AppendLine(
+                $"    {visibility} {propertyModifier}{staticModifier}{returnType} {methodName}"
+            );
             builder.AppendLine("    {");
             if (expression is not null)
             {
                 builder.Append("        get => ");
-                LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                LowerExpressionWithExpectedType(
+                    builder,
+                    expression,
+                    returnType,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else if (block is not null)
             {
                 builder.AppendLine("        get {");
-                EmitBlockBody(builder, block, declaration, package, library, inputPath, diagnostics, 3);
+                EmitBlockBody(
+                    builder,
+                    block,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    3
+                );
                 builder.AppendLine("            return default!;");
                 builder.AppendLine("        }");
             }
-            else builder.AppendLine("        get => throw new NotSupportedException(\"Dart getter contract has no base implementation.\");");
-            builder.AppendLine("        set => throw new NotSupportedException(\"Dart setter contract has no base implementation.\");");
+            else
+            {
+                builder.AppendLine(
+                    "        get => throw new NotSupportedException(\"Dart getter contract has no base implementation.\");"
+                );
+            }
+
+            builder.AppendLine(
+                "        set => throw new NotSupportedException(\"Dart setter contract has no base implementation.\");"
+            );
             builder.AppendLine("    }");
             return;
         }
         if (method.IsAbstract || (block is null && expression is null))
         {
-            builder.AppendLine($"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName} {{ get; }}");
+            builder.AppendLine(
+                $"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName} {{ get; }}"
+            );
             return;
         }
 
         if (expression is not null)
         {
-            builder.Append($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName} => ");
-            LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+            builder.Append(
+                $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName} => "
+            );
+            LowerExpressionWithExpectedType(
+                builder,
+                expression,
+                returnType,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.AppendLine(";");
             return;
         }
 
-        builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}");
+        builder.AppendLine(
+            $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}"
+        );
         builder.AppendLine("    {");
         builder.AppendLine("        get");
         builder.AppendLine("        {");
@@ -1765,12 +2983,19 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
-        var setterExpressionBody = DescendantsAndSelf(setter.Ast).FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-        var setterBlockBody = DescendantsAndSelf(setter.Ast).FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
-        var setterExpression = setterExpressionBody is null ? null : setterExpressionBody.Child(CoreChildRole.expressionOffset);
-        var setterBlock = setterBlockBody is null ? null : setterBlockBody.Child(CoreChildRole.blockOffset);
+        var setterExpressionBody = DescendantsAndSelf(setter.Ast)
+            .FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
+        var setterBlockBody = DescendantsAndSelf(setter.Ast)
+            .FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody);
+        var setterExpression = setterExpressionBody is null
+            ? null
+            : setterExpressionBody.Child(CoreChildRole.expressionOffset);
+        var setterBlock = setterBlockBody is null
+            ? null
+            : setterBlockBody.Child(CoreChildRole.blockOffset);
         var setterParameter = setter.Element.Parameters?.FirstOrDefault();
         var setterParameterName = setterParameter?.Name ?? "value";
         var localName = setterParameterName == "value" ? "__value" : setterParameterName;
@@ -1778,29 +3003,56 @@ internal sealed partial class FrameworkCSharpLowerer
         var setterSourceType = MapType(setterParameter?.Type ?? returnType);
         var setterSourceDeclaration = FindGlobalDeclaration(setterSourceType.TrimEnd('?'));
         var propertyDeclaration = FindGlobalDeclaration(returnType.TrimEnd('?'));
-        var needsSetterNarrowing = setterSourceType.TrimEnd('?') != returnType.TrimEnd('?') &&
-            !IsValueType(setterSourceType.TrimEnd('?')) &&
-            ((setterSourceDeclaration is not null && propertyDeclaration is not null &&
-              IsDescendantOf(setterSourceDeclaration, propertyDeclaration)) ||
-             setterSourceDeclaration is null || propertyDeclaration is null);
-        var needsSetterValuePromotion = IsValueType(setterSourceType) &&
-            !setterSourceType.EndsWith("?", StringComparison.Ordinal) &&
-            returnType == setterSourceType + "?";
+        var needsSetterNarrowing =
+            setterSourceType.TrimEnd('?') != returnType.TrimEnd('?')
+            && !IsValueType(setterSourceType.TrimEnd('?'))
+            && (
+                (
+                    setterSourceDeclaration is not null
+                    && propertyDeclaration is not null
+                    && IsDescendantOf(setterSourceDeclaration, propertyDeclaration)
+                )
+                || setterSourceDeclaration is null
+                || propertyDeclaration is null
+            );
+        var needsSetterValuePromotion =
+            IsValueType(setterSourceType)
+            && !setterSourceType.EndsWith("?", StringComparison.Ordinal)
+            && returnType == setterSourceType + "?";
         var needsNullableSetterLocal = setterSourceType == returnType + "?";
 
-        builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}");
+        builder.AppendLine(
+            $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}"
+        );
         builder.AppendLine("    {");
         builder.Append("        get");
         if (getterExpression is not null)
         {
             builder.Append(" => ");
-            LowerExpression(builder, getterExpression, declaration, package, library, inputPath, diagnostics);
+            LowerExpression(
+                builder,
+                getterExpression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
             builder.AppendLine(";");
         }
         else if (getterBlock is not null)
         {
             builder.AppendLine("{");
-            EmitBlockBody(builder, getterBlock, declaration, package, library, inputPath, diagnostics, 3);
+            EmitBlockBody(
+                builder,
+                getterBlock,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                3
+            );
             builder.AppendLine("            return default!;");
             builder.AppendLine("        }");
         }
@@ -1812,7 +3064,9 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("        {");
         if (needsSetterValuePromotion)
         {
-            builder.AppendLine($"            var {localName} = DartRuntimePrimitives.RequireValue(value);");
+            builder.AppendLine(
+                $"            var {localName} = DartRuntimePrimitives.RequireValue(value);"
+            );
         }
         else if (needsNullableSetterLocal)
         {
@@ -1820,9 +3074,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         else if (needsSetterNarrowing)
         {
-            builder.AppendLine(setterSourceType.EndsWith("?", StringComparison.Ordinal)
-                ? $"            var {localName} = value is null ? null : ({setterSourceType.TrimEnd('?')})(object)value;"
-                : $"            var {localName} = ({setterSourceType})(object)value;");
+            builder.AppendLine(
+                setterSourceType.EndsWith("?", StringComparison.Ordinal)
+                    ? $"            var {localName} = value is null ? null : ({setterSourceType.TrimEnd('?')})(object)value;"
+                    : $"            var {localName} = ({setterSourceType})(object)value;"
+            );
         }
         else if (needsRename)
         {
@@ -1834,12 +3090,33 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (setterBlock is not null)
         {
-            EmitBlockBodyWithLocalRename(builder, setterBlock, declaration, package, library, inputPath, diagnostics, 3, setterParameterName, localName);
+            EmitBlockBodyWithLocalRename(
+                builder,
+                setterBlock,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                3,
+                setterParameterName,
+                localName
+            );
         }
         else if (setterExpression is not null)
         {
             builder.Append("            ");
-            LowerExpressionWithLocalRename(builder, setterExpression, declaration, package, library, inputPath, diagnostics, setterParameterName, localName);
+            LowerExpressionWithLocalRename(
+                builder,
+                setterExpression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                setterParameterName,
+                localName
+            );
             builder.AppendLine(";");
         }
         builder.AppendLine("        }");
@@ -1860,7 +3137,8 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var setterParameter = method.Element.Parameters?.FirstOrDefault();
         var setterParameterName = setterParameter?.Name ?? "value";
@@ -1869,17 +3147,32 @@ internal sealed partial class FrameworkCSharpLowerer
         var setterSourceType = MapType(setterParameter?.Type ?? returnType);
         var setterSourceDeclaration = FindGlobalDeclaration(setterSourceType.TrimEnd('?'));
         var propertyDeclaration = FindGlobalDeclaration(returnType.TrimEnd('?'));
-        var needsSetterNarrowing = setterSourceType.TrimEnd('?') != returnType.TrimEnd('?') &&
-            !IsValueType(setterSourceType.TrimEnd('?')) &&
-            ((setterSourceDeclaration is not null && propertyDeclaration is not null &&
-              IsDescendantOf(setterSourceDeclaration, propertyDeclaration)) ||
-             setterSourceDeclaration is null || propertyDeclaration is null);
-        var needsSetterValuePromotion = IsValueType(setterSourceType) &&
-            !setterSourceType.EndsWith("?", StringComparison.Ordinal) &&
-            returnType == setterSourceType + "?";
-        var inheritsReadableProperty = declaration.Name == "TextEditingController" && method.Name == "value";
-        if (inheritsReadableProperty) overrideModifier = "override ";
-        builder.AppendLine($"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}");
+        var needsSetterNarrowing =
+            setterSourceType.TrimEnd('?') != returnType.TrimEnd('?')
+            && !IsValueType(setterSourceType.TrimEnd('?'))
+            && (
+                (
+                    setterSourceDeclaration is not null
+                    && propertyDeclaration is not null
+                    && IsDescendantOf(setterSourceDeclaration, propertyDeclaration)
+                )
+                || setterSourceDeclaration is null
+                || propertyDeclaration is null
+            );
+        var needsSetterValuePromotion =
+            IsValueType(setterSourceType)
+            && !setterSourceType.EndsWith("?", StringComparison.Ordinal)
+            && returnType == setterSourceType + "?";
+        var inheritsReadableProperty =
+            declaration.Name == "TextEditingController" && method.Name == "value";
+        if (inheritsReadableProperty)
+        {
+            overrideModifier = "override ";
+        }
+
+        builder.AppendLine(
+            $"    {visibility} {staticModifier}{overrideModifier}{returnType} {methodName}"
+        );
         builder.AppendLine("    {");
         if (inheritsReadableProperty)
         {
@@ -1889,13 +3182,17 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("        {");
         if (needsSetterValuePromotion)
         {
-            builder.AppendLine($"            var {localName} = DartRuntimePrimitives.RequireValue(value);");
+            builder.AppendLine(
+                $"            var {localName} = DartRuntimePrimitives.RequireValue(value);"
+            );
         }
         else if (needsSetterNarrowing)
         {
-            builder.AppendLine(setterSourceType.EndsWith("?", StringComparison.Ordinal)
-                ? $"            var {localName} = value is null ? null : ({setterSourceType.TrimEnd('?')})(object)value;"
-                : $"            var {localName} = ({setterSourceType})(object)value;");
+            builder.AppendLine(
+                setterSourceType.EndsWith("?", StringComparison.Ordinal)
+                    ? $"            var {localName} = value is null ? null : ({setterSourceType.TrimEnd('?')})(object)value;"
+                    : $"            var {localName} = ({setterSourceType})(object)value;"
+            );
         }
         else if (needsRename)
         {
@@ -1907,12 +3204,33 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (block is not null)
         {
-            EmitBlockBodyWithLocalRename(builder, block, declaration, package, library, inputPath, diagnostics, 3, setterParameterName, localName);
+            EmitBlockBodyWithLocalRename(
+                builder,
+                block,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                3,
+                setterParameterName,
+                localName
+            );
         }
         else if (expression is not null)
         {
             builder.Append("            ");
-            LowerExpressionWithLocalRename(builder, expression, declaration, package, library, inputPath, diagnostics, setterParameterName, localName);
+            LowerExpressionWithLocalRename(
+                builder,
+                expression,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics,
+                setterParameterName,
+                localName
+            );
             builder.AppendLine(";");
         }
         builder.AppendLine("        }");
@@ -1925,19 +3243,32 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
-        var functionExpression = declaration.Ast.Children.SingleOrDefault(item => item.Kind == CoreNodeKind.FunctionExpression);
+        var functionExpression = declaration.Ast.Children.SingleOrDefault(item =>
+            item.Kind == CoreNodeKind.FunctionExpression
+        );
         if (functionExpression is null)
         {
-            AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, declaration.Ast,
-                "function-shape", "Provide a typed FunctionExpression lowering rule.");
+            AddUnsupportedDiagnostic(
+                diagnostics,
+                package,
+                library,
+                inputPath,
+                declaration,
+                declaration.Ast,
+                "function-shape",
+                "Provide a typed FunctionExpression lowering rule."
+            );
             return;
         }
 
         var returnType = MapType(declaration.Element.ReturnType ?? "void");
-        if (declaration.Name == "_getCreationLocation" &&
-            library.EndsWith("/widget_inspector.dart", StringComparison.Ordinal))
+        if (
+            declaration.Name == "_getCreationLocation"
+            && library.EndsWith("/widget_inspector.dart", StringComparison.Ordinal)
+        )
         {
             returnType = "global::Doroti.Runtime.CreationLocation?";
         }
@@ -1949,38 +3280,67 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         relevantTypes.AddRange(parameters.Select(parameter => MapType(parameter.Type)));
         var typeParameters = FormatTypeParameters(declaration.Element.TypeParameters);
-        if (declaration.Name == "_stringify" && string.IsNullOrEmpty(typeParameters) && parameters.Length == 1)
+        if (
+            declaration.Name == "_stringify"
+            && string.IsNullOrEmpty(typeParameters)
+            && parameters.Length == 1
+        )
         {
             typeParameters = "<T>";
             parameters = [parameters[0] with { Type = "List<T>" }];
         }
-        var typeParameterConstraints = FormatTypeParameterConstraints(declaration.Element.TypeParameters, relevantTypes);
-        var className = string.Equals(declaration.Name, "objectRuntimeType", StringComparison.Ordinal) &&
-            string.Equals(library, "package:flutter/src/foundation/object.dart", StringComparison.Ordinal)
+        var typeParameterConstraints = FormatTypeParameterConstraints(
+            declaration.Element.TypeParameters,
+            relevantTypes
+        );
+        var className =
+            string.Equals(declaration.Name, "objectRuntimeType", StringComparison.Ordinal)
+            && string.Equals(
+                library,
+                "package:flutter/src/foundation/object.dart",
+                StringComparison.Ordinal
+            )
                 ? "objectRuntimeTypeFunctions"
                 : LibraryStaticClassName(library);
         var isGetter = declaration.Ast.Text(CoreProperty.isGetter) == "true";
         var isSetter = declaration.Ast.Text(CoreProperty.isSetter) == "true";
-        var expressionBody = functionExpression.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-        var expression = expressionBody is null ? null : expressionBody.Child(CoreChildRole.expressionOffset);
+        var expressionBody = functionExpression.Children.FirstOrDefault(item =>
+            item.Kind == CoreNodeKind.ExpressionFunctionBody
+        );
+        var expression = expressionBody is null
+            ? null
+            : expressionBody.Child(CoreChildRole.expressionOffset);
         var ownedBody = functionExpression.Child(CoreChildRole.bodyOffset);
-        var body = DescendantsAndSelf(functionExpression).SingleOrDefault(item => item.Kind == CoreNodeKind.Block && item.Offset == ownedBody?.Offset);
+        var body = DescendantsAndSelf(functionExpression)
+            .SingleOrDefault(item =>
+                item.Kind == CoreNodeKind.Block && item.Offset == ownedBody?.Offset
+            );
         if (body is null)
         {
-            body = DescendantsAndSelf(functionExpression).FirstOrDefault(item => item.Kind == CoreNodeKind.Block);
+            body = DescendantsAndSelf(functionExpression)
+                .FirstOrDefault(item => item.Kind == CoreNodeKind.Block);
         }
-        var asyncModifier = IsDartAsync(functionExpression) && IsFutureType(returnType) ? "async " : string.Empty;
+        var asyncModifier =
+            IsDartAsync(functionExpression) && IsFutureType(returnType) ? "async " : string.Empty;
         var memberVisibility = IsDartPrivate(declaration) ? "internal" : "public";
         var restoredValueParameters = parameters.Where(NeedsNonConstValueDefault).ToArray();
 
         builder.AppendLine($"public static partial class {className}");
         builder.AppendLine("{");
-        if (string.Equals(library, "package:flutter/src/widgets/_window_io.dart", StringComparison.Ordinal) &&
-            declaration.Name == "createDefaultOwner")
+        if (
+            string.Equals(
+                library,
+                "package:flutter/src/widgets/_window_io.dart",
+                StringComparison.Ordinal
+            )
+            && declaration.Name == "createDefaultOwner"
+        )
         {
             // The generated Widgets layer is host-neutral. Concrete Win32/Linux/macOS
             // owner construction belongs to the registered host bridge.
-            builder.AppendLine($"    {memberVisibility} static {returnType} createDefaultOwner() => null;");
+            builder.AppendLine(
+                $"    {memberVisibility} static {returnType} createDefaultOwner() => null;"
+            );
             builder.AppendLine("}");
             builder.AppendLine();
             return;
@@ -1988,20 +3348,40 @@ internal sealed partial class FrameworkCSharpLowerer
         if (isGetter)
         {
             var matchingSetter = _currentDeclarations?.FirstOrDefault(item =>
-                item.Name == declaration.Name && item.Ast.Text(CoreProperty.isSetter) == "true");
+                item.Name == declaration.Name && item.Ast.Text(CoreProperty.isSetter) == "true"
+            );
             if (matchingSetter is not null)
             {
-                var setterExpression = matchingSetter.Ast.Children.SingleOrDefault(item => item.Kind == CoreNodeKind.FunctionExpression);
-                var setterExpressionBody = setterExpression?.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.ExpressionFunctionBody);
-                var setterValue = setterExpressionBody is null ? null : setterExpressionBody.Child(CoreChildRole.expressionOffset);
-                var setterBody = setterExpression is null ? null : DescendantsAndSelf(setterExpression).FirstOrDefault(item => item.Kind == CoreNodeKind.Block);
-                builder.AppendLine($"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}");
+                var setterExpression = matchingSetter.Ast.Children.SingleOrDefault(item =>
+                    item.Kind == CoreNodeKind.FunctionExpression
+                );
+                var setterExpressionBody = setterExpression?.Children.FirstOrDefault(item =>
+                    item.Kind == CoreNodeKind.ExpressionFunctionBody
+                );
+                var setterValue = setterExpressionBody is null
+                    ? null
+                    : setterExpressionBody.Child(CoreChildRole.expressionOffset);
+                var setterBody = setterExpression is null
+                    ? null
+                    : DescendantsAndSelf(setterExpression)
+                        .FirstOrDefault(item => item.Kind == CoreNodeKind.Block);
+                builder.AppendLine(
+                    $"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}"
+                );
                 builder.AppendLine("    {");
                 builder.Append("        get");
                 if (expression is not null)
                 {
                     builder.Append(" => ");
-                    LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                    LowerExpression(
+                        builder,
+                        expression,
+                        declaration,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                 }
                 else
@@ -2010,7 +3390,16 @@ internal sealed partial class FrameworkCSharpLowerer
                     builder.AppendLine("        {");
                     if (body is not null)
                     {
-                        EmitBlockBody(builder, body, declaration, package, library, inputPath, diagnostics, 3);
+                        EmitBlockBody(
+                            builder,
+                            body,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics,
+                            3
+                        );
                     }
                     builder.AppendLine("        }");
                 }
@@ -2018,12 +3407,29 @@ internal sealed partial class FrameworkCSharpLowerer
                 builder.AppendLine("        {");
                 if (setterBody is not null)
                 {
-                    EmitBlockBody(builder, setterBody, matchingSetter, package, library, inputPath, diagnostics, 3);
+                    EmitBlockBody(
+                        builder,
+                        setterBody,
+                        matchingSetter,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics,
+                        3
+                    );
                 }
                 else if (setterValue is not null)
                 {
                     builder.Append("            ");
-                    LowerExpression(builder, setterValue, matchingSetter, package, library, inputPath, diagnostics);
+                    LowerExpression(
+                        builder,
+                        setterValue,
+                        matchingSetter,
+                        package,
+                        library,
+                        inputPath,
+                        diagnostics
+                    );
                     builder.AppendLine(";");
                 }
                 builder.AppendLine("        }");
@@ -2031,46 +3437,102 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             else if (expression is not null)
             {
-                builder.Append($"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)} => ");
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                builder.Append(
+                    $"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)} => "
+                );
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else if (body is not null)
             {
-                builder.AppendLine($"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}");
+                builder.AppendLine(
+                    $"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}"
+                );
                 builder.AppendLine("    {");
                 builder.AppendLine("        get");
                 builder.AppendLine("        {");
-                EmitBlockBody(builder, body, declaration, package, library, inputPath, diagnostics, 3);
+                EmitBlockBody(
+                    builder,
+                    body,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    3
+                );
                 builder.AppendLine("        }");
                 builder.AppendLine("    }");
             }
             else
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, functionExpression,
-                    "function-body", "Add an expression-body or block-body typed lowering rule.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    functionExpression,
+                    "function-body",
+                    "Add an expression-body or block-body typed lowering rule."
+                );
             }
         }
         else if (isSetter)
         {
-            builder.AppendLine($"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}");
+            builder.AppendLine(
+                $"    {memberVisibility} static {returnType} {SafeIdentifier(declaration.Name)}"
+            );
             builder.AppendLine("    {");
             builder.AppendLine("        set");
             builder.AppendLine("        {");
             if (expression is not null)
             {
                 builder.Append("            ");
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else if (body is not null)
             {
-                EmitBlockBody(builder, body, declaration, package, library, inputPath, diagnostics, 3);
+                EmitBlockBody(
+                    builder,
+                    body,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    3
+                );
             }
             else
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, functionExpression,
-                    "function-body", "Add an expression-body or block-body typed lowering rule.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    functionExpression,
+                    "function-body",
+                    "Add an expression-body or block-body typed lowering rule."
+                );
             }
             builder.AppendLine("        }");
             builder.AppendLine("    }");
@@ -2079,24 +3541,49 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             if (restoredValueParameters.Length == 0)
             {
-                builder.Append($"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints} => ");
-                LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
+                builder.Append(
+                    $"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints} => "
+                );
+                LowerExpression(
+                    builder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 builder.AppendLine(";");
             }
             else
             {
-                builder.AppendLine($"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints}");
+                builder.AppendLine(
+                    $"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints}"
+                );
                 builder.AppendLine("    {");
                 foreach (var parameter in restoredValueParameters)
                 {
-                    builder.AppendLine($"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};");
+                    builder.AppendLine(
+                        $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};"
+                    );
                 }
                 var expressionBuilder = new CsSyntaxBuilder();
-                LowerExpression(expressionBuilder, expression, declaration, package, library, inputPath, diagnostics);
+                LowerExpression(
+                    expressionBuilder,
+                    expression,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics
+                );
                 var expressionSyntax = expressionBuilder.Build();
                 foreach (var parameter in restoredValueParameters)
                 {
-                    expressionSyntax = expressionSyntax.RenameIdentifier(SafeIdentifier(parameter.Name), SyntheticIdentifier(parameter.Name));
+                    expressionSyntax = expressionSyntax.RenameIdentifier(
+                        SafeIdentifier(parameter.Name),
+                        SyntheticIdentifier(parameter.Name)
+                    );
                 }
                 builder.Append("        return ").Append(expressionSyntax).AppendLine(";");
                 builder.AppendLine("    }");
@@ -2104,33 +3591,68 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         else
         {
-            builder.AppendLine($"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints}");
+            builder.AppendLine(
+                $"    {memberVisibility} static {asyncModifier}{returnType} {SafeIdentifier(declaration.Name)}{typeParameters}({string.Join(", ", MapParameters(parameters))}){typeParameterConstraints}"
+            );
             builder.AppendLine("    {");
             if (body is null)
             {
-                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, functionExpression,
-                    "function-body", "Add an expression-body or block-body typed lowering rule.");
+                AddUnsupportedDiagnostic(
+                    diagnostics,
+                    package,
+                    library,
+                    inputPath,
+                    declaration,
+                    functionExpression,
+                    "function-body",
+                    "Add an expression-body or block-body typed lowering rule."
+                );
             }
             else
             {
                 foreach (var parameter in restoredValueParameters)
                 {
-                    builder.AppendLine($"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};");
+                    builder.AppendLine(
+                        $"        {MapType(parameter.Type)} {SyntheticIdentifier(parameter.Name)} = {SafeIdentifier(parameter.Name)} ?? {MapParameterRuntimeDefault(parameter, library)};"
+                    );
                 }
                 var bodyBuilder = new CsSyntaxBuilder();
-                EmitBlockBody(bodyBuilder, body, declaration, package, library, inputPath, diagnostics, 2);
+                EmitBlockBody(
+                    bodyBuilder,
+                    body,
+                    declaration,
+                    package,
+                    library,
+                    inputPath,
+                    diagnostics,
+                    2
+                );
                 var bodySyntax = bodyBuilder.Build();
                 foreach (var parameter in restoredValueParameters)
                 {
-                    bodySyntax = bodySyntax.RenameIdentifier(SafeIdentifier(parameter.Name), SyntheticIdentifier(parameter.Name));
+                    bodySyntax = bodySyntax.RenameIdentifier(
+                        SafeIdentifier(parameter.Name),
+                        SyntheticIdentifier(parameter.Name)
+                    );
                 }
                 builder.Append(bodySyntax);
             }
-            if (returnType != "void" && !(asyncModifier.Length > 0 && returnType == "Future") &&
-                !(string.Equals(declaration.Name, "objectRuntimeType", StringComparison.Ordinal) &&
-                  string.Equals(library, "package:flutter/src/foundation/object.dart", StringComparison.Ordinal)))
+            if (
+                returnType != "void"
+                && !(asyncModifier.Length > 0 && returnType == "Future")
+                && !(
+                    string.Equals(declaration.Name, "objectRuntimeType", StringComparison.Ordinal)
+                    && string.Equals(
+                        library,
+                        "package:flutter/src/foundation/object.dart",
+                        StringComparison.Ordinal
+                    )
+                )
+            )
             {
-                builder.AppendLine("        throw new InvalidOperationException(\"Dart control flow completed without a value.\");");
+                builder.AppendLine(
+                    "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                );
             }
             builder.AppendLine("    }");
         }
@@ -2138,5 +3660,4 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("}");
         builder.AppendLine();
     }
-
 }

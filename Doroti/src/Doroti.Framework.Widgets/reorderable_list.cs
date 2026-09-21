@@ -7,7 +7,11 @@ namespace Doroti.Framework.Widgets;
 
 public delegate void ReorderCallback(long oldIndex, long newIndex);
 
-public delegate Widget ReorderItemProxyDecorator(Widget child, long index, Animation<double> animation);
+public delegate Widget ReorderItemProxyDecorator(
+    Widget child,
+    long index,
+    Animation<double> animation
+);
 
 public delegate DragBoundaryDelegate<Rect>? ReorderDragBoundaryProvider(BuildContext context);
 
@@ -19,7 +23,11 @@ public class ReorderableList : StatefulWidget
     public virtual Action<long, long>? onReorderItem { get; private set; }
     public virtual Action<long>? onReorderStart { get; private set; }
     public virtual Action<long>? onReorderEnd { get; private set; }
-    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    {
+        get;
+        private set;
+    }
     public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
@@ -38,9 +46,42 @@ public class ReorderableList : StatefulWidget
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
     public virtual Widget? prototypeItem { get; private set; }
     public virtual double? autoScrollerVelocityScalar { get; private set; }
-    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
+    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider
+    {
+        get;
+        private set;
+    }
 
-    public ReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, EdgeInsetsGeometry? padding = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null) : base(key: key)
+    public ReorderableList(
+        Key? key = null,
+        Func<BuildContext, long, Widget> itemBuilder = default!,
+        long itemCount = default!,
+        Action<long, long>? onReorder = null,
+        Action<long, long>? onReorderItem = null,
+        Action<long>? onReorderStart = null,
+        Action<long>? onReorderEnd = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null,
+        EdgeInsetsGeometry? padding = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        double anchor = 0.0,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        double? autoScrollerVelocityScalar = null,
+        Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null
+    )
+        : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.itemCount = itemCount;
@@ -69,22 +110,48 @@ public class ReorderableList : StatefulWidget
         this.autoScrollerVelocityScalar = autoScrollerVelocityScalar;
         this.dragBoundaryProvider = dragBoundaryProvider;
         System.Diagnostics.Debug.Assert(itemCount >= 0L);
-        System.Diagnostics.Debug.Assert((itemExtent is null) && (prototypeItem is null) || (itemExtent is null) && (itemExtentBuilder is null) || (prototypeItem is null) && (itemExtentBuilder is null));
-        System.Diagnostics.Debug.Assert((onReorderItem is not null) && (onReorder is null) || (onReorderItem is null) && (onReorder is not null));
+        System.Diagnostics.Debug.Assert(
+            ((itemExtent is null) && (prototypeItem is null))
+                || ((itemExtent is null) && (itemExtentBuilder is null))
+                || ((prototypeItem is null) && (itemExtentBuilder is null))
+        );
+        System.Diagnostics.Debug.Assert(
+            ((onReorderItem is not null) && (onReorder is null))
+                || ((onReorderItem is null) && (onReorder is not null))
+        );
     }
 
     public static ReorderableListState of(BuildContext context)
     {
         ReorderableListState? result = context.findAncestorStateOfType<ReorderableListState>();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (result is null)
             {
-                if (result is null)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("ReorderableList.of() called with a context that does not contain a ReorderableList."), new ErrorDescription("No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of()."), new ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the ReorderableList. Please see the ReorderableList documentation for examples " + "of how to refer to an ReorderableListState object:\n" + "  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html"), context.describeElement("The context used was") }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "ReorderableList.of() called with a context that does not contain a ReorderableList."
+                            ),
+                            new ErrorDescription(
+                                "No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of()."
+                            ),
+                            new ErrorHint(
+                                "This can happen when the context provided is from the same StatefulWidget that "
+                                    + "built the ReorderableList. Please see the ReorderableList documentation for examples "
+                                    + "of how to refer to an ReorderableListState object:\n"
+                                    + "  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html"
+                            ),
+                            context.describeElement("The context used was"),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return result!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -95,12 +162,17 @@ public class ReorderableList : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new ReorderableListState());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new ReorderableListState());
 }
 
 public class ReorderableListState : State<ReorderableList>
 {
-    internal virtual GlobalKey<SliverReorderableListState> _sliverReorderableListKey { get; private set; } = GlobalKey<SliverReorderableListState>.Create();
+    internal virtual GlobalKey<SliverReorderableListState> _sliverReorderableListKey
+    {
+        get;
+        private set;
+    } = GlobalKey<SliverReorderableListState>.Create();
 
     internal virtual ScrollCacheExtent? _effectiveScrollCacheExtent
     {
@@ -112,14 +184,25 @@ public class ReorderableListState : State<ReorderableList>
             }
             if (widget.cacheExtent is not null)
             {
-                return ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(widget.cacheExtent));
+                return ScrollCacheExtent.CreatePixels(
+                    DartRuntimePrimitives.RequireValue(widget.cacheExtent)
+                );
             }
             return null;
         }
     }
-    public virtual void startItemDragReorder(long index, Gestures.PointerDownEvent @event, MultiDragGestureRecognizer recognizer)
+
+    public virtual void startItemDragReorder(
+        long index,
+        Gestures.PointerDownEvent @event,
+        MultiDragGestureRecognizer recognizer
+    )
     {
-        _sliverReorderableListKey.currentState!.startItemDragReorder(index: index, @event: @event, recognizer: recognizer);
+        _sliverReorderableListKey.currentState!.startItemDragReorder(
+            index: index,
+            @event: @event,
+            recognizer: recognizer
+        );
     }
 
     public virtual void cancelReorder()
@@ -129,10 +212,43 @@ public class ReorderableListState : State<ReorderableList>
 
     public override Widget build(BuildContext context)
     {
-        return new CustomScrollView(scrollDirection: widget.scrollDirection, reverse: widget.reverse, controller: widget.controller, primary: widget.primary, physics: widget.physics, shrinkWrap: widget.shrinkWrap, anchor: widget.anchor, scrollCacheExtent: _effectiveScrollCacheExtent, dragStartBehavior: widget.dragStartBehavior, keyboardDismissBehavior: widget.keyboardDismissBehavior, restorationId: widget.restorationId, clipBehavior: widget.clipBehavior, slivers: new List<Widget> { new SliverPadding(padding: widget.padding ?? EdgeInsets.zero, sliver: new SliverReorderableList(key: _sliverReorderableListKey, itemExtent: widget.itemExtent, prototypeItem: widget.prototypeItem, itemBuilder: widget.itemBuilder, itemExtentBuilder: widget.itemExtentBuilder, itemCount: widget.itemCount, onReorder: widget.onReorder, onReorderItem: widget.onReorderItem, onReorderStart: widget.onReorderStart, onReorderEnd: widget.onReorderEnd, proxyDecorator: widget.proxyDecorator, autoScrollerVelocityScalar: widget.autoScrollerVelocityScalar, dragBoundaryProvider: widget.dragBoundaryProvider)) });
+        return new CustomScrollView(
+            scrollDirection: widget.scrollDirection,
+            reverse: widget.reverse,
+            controller: widget.controller,
+            primary: widget.primary,
+            physics: widget.physics,
+            shrinkWrap: widget.shrinkWrap,
+            anchor: widget.anchor,
+            scrollCacheExtent: _effectiveScrollCacheExtent,
+            dragStartBehavior: widget.dragStartBehavior,
+            keyboardDismissBehavior: widget.keyboardDismissBehavior,
+            restorationId: widget.restorationId,
+            clipBehavior: widget.clipBehavior,
+            slivers: new List<Widget>
+            {
+                new SliverPadding(
+                    padding: widget.padding ?? EdgeInsets.zero,
+                    sliver: new SliverReorderableList(
+                        key: _sliverReorderableListKey,
+                        itemExtent: widget.itemExtent,
+                        prototypeItem: widget.prototypeItem,
+                        itemBuilder: widget.itemBuilder,
+                        itemExtentBuilder: widget.itemExtentBuilder,
+                        itemCount: widget.itemCount,
+                        onReorder: widget.onReorder,
+                        onReorderItem: widget.onReorderItem,
+                        onReorderStart: widget.onReorderStart,
+                        onReorderEnd: widget.onReorderEnd,
+                        proxyDecorator: widget.proxyDecorator,
+                        autoScrollerVelocityScalar: widget.autoScrollerVelocityScalar,
+                        dragBoundaryProvider: widget.dragBoundaryProvider
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverReorderableList : StatefulWidget
@@ -145,14 +261,38 @@ public class SliverReorderableList : StatefulWidget
     public virtual Action<long, long>? onReorderItem { get; private set; }
     public virtual Action<long>? onReorderStart { get; private set; }
     public virtual Action<long>? onReorderEnd { get; private set; }
-    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    {
+        get;
+        private set;
+    }
     public virtual double? itemExtent { get; private set; }
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
     public virtual Widget? prototypeItem { get; private set; }
     public virtual double autoScrollerVelocityScalar { get; private set; } = default!;
-    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
+    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider
+    {
+        get;
+        private set;
+    }
 
-    public SliverReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, double? autoScrollerVelocityScalar = null) : base(key: key)
+    public SliverReorderableList(
+        Key? key = null,
+        Func<BuildContext, long, Widget> itemBuilder = default!,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long itemCount = default!,
+        Action<long, long>? onReorder = null,
+        Action<long, long>? onReorderItem = null,
+        Action<long>? onReorderStart = null,
+        Action<long>? onReorderEnd = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null,
+        Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null,
+        double? autoScrollerVelocityScalar = null
+    )
+        : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.findChildIndexCallback = findChildIndexCallback;
@@ -166,25 +306,55 @@ public class SliverReorderableList : StatefulWidget
         this.prototypeItem = prototypeItem;
         this.proxyDecorator = proxyDecorator;
         this.dragBoundaryProvider = dragBoundaryProvider;
-        this.autoScrollerVelocityScalar = autoScrollerVelocityScalar ?? _kDefaultAutoScrollVelocityScalar;
+        this.autoScrollerVelocityScalar =
+            autoScrollerVelocityScalar ?? _kDefaultAutoScrollVelocityScalar;
         System.Diagnostics.Debug.Assert(itemCount >= 0L);
-        System.Diagnostics.Debug.Assert((itemExtent is null) && (prototypeItem is null) || (itemExtent is null) && (itemExtentBuilder is null) || (prototypeItem is null) && (itemExtentBuilder is null));
-        System.Diagnostics.Debug.Assert((onReorderItem is not null) && (onReorder is null) || (onReorderItem is null) && (onReorder is not null));
+        System.Diagnostics.Debug.Assert(
+            ((itemExtent is null) && (prototypeItem is null))
+                || ((itemExtent is null) && (itemExtentBuilder is null))
+                || ((prototypeItem is null) && (itemExtentBuilder is null))
+        );
+        System.Diagnostics.Debug.Assert(
+            ((onReorderItem is not null) && (onReorder is null))
+                || ((onReorderItem is null) && (onReorder is not null))
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new SliverReorderableListState());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new SliverReorderableListState());
+
     public static SliverReorderableListState of(BuildContext context)
     {
-        SliverReorderableListState? result = context.findAncestorStateOfType<SliverReorderableListState>();
+        SliverReorderableListState? result =
+            context.findAncestorStateOfType<SliverReorderableListState>();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (result is null)
             {
-                if (result is null)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("SliverReorderableList.of() called with a context that does not contain a SliverReorderableList."), new ErrorDescription("No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of()."), new ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the SliverReorderableList. Please see the SliverReorderableList documentation for examples " + "of how to refer to an SliverReorderableList object:\n" + "  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html"), context.describeElement("The context used was") }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "SliverReorderableList.of() called with a context that does not contain a SliverReorderableList."
+                            ),
+                            new ErrorDescription(
+                                "No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of()."
+                            ),
+                            new ErrorHint(
+                                "This can happen when the context provided is from the same StatefulWidget that "
+                                    + "built the SliverReorderableList. Please see the SliverReorderableList documentation for examples "
+                                    + "of how to refer to an SliverReorderableList object:\n"
+                                    + "  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html"
+                            ),
+                            context.describeElement("The context used was"),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return result!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -194,12 +364,17 @@ public class SliverReorderableList : StatefulWidget
         return context.findAncestorStateOfType<SliverReorderableListState>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class SliverReorderableListState : State<SliverReorderableList>, TickerProviderStateMixin<SliverReorderableList>
+public class SliverReorderableListState
+    : State<SliverReorderableList>,
+        TickerProviderStateMixin<SliverReorderableList>
 {
-    internal virtual DartMap<long, _ReorderableItemState__reorderable_list> _items { get; private set; } = new DartMap<long, _ReorderableItemState__reorderable_list>();
+    internal virtual DartMap<long, _ReorderableItemState__reorderable_list> _items
+    {
+        get;
+        private set;
+    } = new DartMap<long, _ReorderableItemState__reorderable_list>();
     internal virtual OverlayEntry? _overlayEntry { get; set; } = default;
     internal virtual long? _dragIndex { get; set; } = default;
     internal virtual _DragInfo__reorderable_list? _dragInfo { get; set; } = default;
@@ -212,8 +387,11 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual Axis _scrollDirection => Basic_typesLibrary.axisDirectionToAxis(_scrollable.axisDirection);
-    internal virtual bool _reverse => Basic_typesLibrary.axisDirectionIsReversed(_scrollable.axisDirection);
+    internal virtual Axis _scrollDirection =>
+        Basic_typesLibrary.axisDirectionToAxis(_scrollable.axisDirection);
+    internal virtual bool _reverse =>
+        Basic_typesLibrary.axisDirectionIsReversed(_scrollable.axisDirection);
+
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
@@ -221,7 +399,11 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         if (!Equals(_autoScroller?.scrollable, _scrollable))
         {
             _autoScroller?.stopAutoScroll();
-            _autoScroller = new EdgeDraggingAutoScroller(_scrollable, onScrollViewScrolled: () => _handleScrollableAutoScrolled(), velocityScalar: widget.autoScrollerVelocityScalar);
+            _autoScroller = new EdgeDraggingAutoScroller(
+                _scrollable,
+                onScrollViewScrolled: () => _handleScrollableAutoScrolled(),
+                velocityScalar: widget.autoScrollerVelocityScalar
+            );
         }
     }
 
@@ -235,7 +417,11 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         if (widget.autoScrollerVelocityScalar != oldWidget.autoScrollerVelocityScalar)
         {
             _autoScroller?.stopAutoScroll();
-            _autoScroller = new EdgeDraggingAutoScroller(_scrollable, onScrollViewScrolled: () => _handleScrollableAutoScrolled(), velocityScalar: widget.autoScrollerVelocityScalar);
+            _autoScroller = new EdgeDraggingAutoScroller(
+                _scrollable,
+                onScrollViewScrolled: () => _handleScrollableAutoScrolled(),
+                velocityScalar: widget.autoScrollerVelocityScalar
+            );
         }
     }
 
@@ -244,26 +430,48 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         _dragReset();
         _recognizer?.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
 
-    public virtual void startItemDragReorder(long index, Gestures.PointerDownEvent @event, MultiDragGestureRecognizer recognizer)
+    public virtual void startItemDragReorder(
+        long index,
+        Gestures.PointerDownEvent @event,
+        MultiDragGestureRecognizer recognizer
+    )
     {
         DartRuntimePrimitives.Assert(() => (0L <= index) && (index < widget.itemCount));
         setState(() =>
@@ -284,13 +492,17 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             if (_items.ContainsKey(index))
             {
                 _dragIndex = index;
-                _recognizer = ((Func<MultiDragGestureRecognizer>)(() =>
-            {
-                var __cascade = recognizer;
-                __cascade.onStart = _dragStart;
-                __cascade.addPointer(@event);
-                return __cascade;
-            }))();
+                _recognizer = (
+                    (Func<MultiDragGestureRecognizer>)(
+                        () =>
+                        {
+                            var __cascade = recognizer;
+                            __cascade.onStart = _dragStart;
+                            __cascade.addPointer(@event);
+                            return __cascade;
+                        }
+                    )
+                )();
                 _recognizerPointer = @event.pointer;
             }
             else
@@ -312,7 +524,13 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     {
         if ((_dragInfo is not null) && (!Equals(_items.GetValueOrDefault(item.index), item)))
         {
-            item.updateForGap(_dragInfo!.index, _dragInfo!.index, _dragInfo!.itemExtent, false, _reverse);
+            item.updateForGap(
+                _dragInfo!.index,
+                _dragInfo!.index,
+                _dragInfo!.itemExtent,
+                false,
+                _reverse
+            );
         }
         _items[item.index] = item;
         if (item.index == _dragInfo?.index)
@@ -334,12 +552,24 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     internal virtual Drag? _dragStart(Offset position)
     {
         DartRuntimePrimitives.Assert(() => _dragInfo is null);
-        _ReorderableItemState__reorderable_list itemLocal = _items.GetValueOrDefault(DartRuntimePrimitives.RequireValue(_dragIndex))!;
+        _ReorderableItemState__reorderable_list itemLocal = _items.GetValueOrDefault(
+            DartRuntimePrimitives.RequireValue(_dragIndex)
+        )!;
         itemLocal.dragging = true;
         widget.onReorderStart?.Invoke(DartRuntimePrimitives.RequireValue(_dragIndex));
         itemLocal.rebuild();
         _insertIndex = itemLocal.index;
-        _dragInfo = new _DragInfo__reorderable_list(item: itemLocal, initialPosition: position, scrollDirection: _scrollDirection, onUpdate: _dragUpdate, onCancel: _dragCancel, onEnd: _dragEnd, onDropCompleted: () => _dropCompleted(), proxyDecorator: widget.proxyDecorator, tickerProvider: this);
+        _dragInfo = new _DragInfo__reorderable_list(
+            item: itemLocal,
+            initialPosition: position,
+            scrollDirection: _scrollDirection,
+            onUpdate: _dragUpdate,
+            onCancel: _dragCancel,
+            onEnd: _dragEnd,
+            onDropCompleted: () => _dropCompleted(),
+            proxyDecorator: widget.proxyDecorator,
+            tickerProvider: this
+        );
         _dragInfo!.startDrag();
         OverlayState overlay = Overlay.of(context, debugRequiredFor: widget);
         DartRuntimePrimitives.Assert(() => _overlayEntry is null);
@@ -351,13 +581,23 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             {
                 continue;
             }
-            childItem.updateForGap(DartRuntimePrimitives.RequireValue(_insertIndex), DartRuntimePrimitives.RequireValue(_insertIndex), _dragInfo!.itemExtent, false, _reverse);
+            childItem.updateForGap(
+                DartRuntimePrimitives.RequireValue(_insertIndex),
+                DartRuntimePrimitives.RequireValue(_insertIndex),
+                _dragInfo!.itemExtent,
+                false,
+                _reverse
+            );
         }
         return (Drag?)_dragInfo;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _dragUpdate(_DragInfo__reorderable_list item, Offset position, Offset delta)
+    internal virtual void _dragUpdate(
+        _DragInfo__reorderable_list item,
+        Offset position,
+        Offset delta
+    )
     {
         setState(() =>
         {
@@ -381,37 +621,64 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         {
             if ((DartRuntimePrimitives.RequireValue(_insertIndex) - item.index) == 1L)
             {
-                _finalDropPosition = _itemOffsetAt(DartRuntimePrimitives.RequireValue(_insertIndex) - 1L);
+                _finalDropPosition = _itemOffsetAt(
+                    DartRuntimePrimitives.RequireValue(_insertIndex) - 1L
+                );
             }
             else
             {
                 if (_insertIndex == item.index)
                 {
-                    _finalDropPosition = _itemOffsetAt(DartRuntimePrimitives.RequireValue(_insertIndex));
+                    _finalDropPosition = _itemOffsetAt(
+                        DartRuntimePrimitives.RequireValue(_insertIndex)
+                    );
                 }
                 else
                 {
                     if (_reverse)
                     {
-                        if (DartRuntimePrimitives.RequireValue(_insertIndex) >= checked(_items.Count))
+                        if (
+                            DartRuntimePrimitives.RequireValue(_insertIndex)
+                            >= checked(_items.Count)
+                        )
                         {
-                            _finalDropPosition = _itemOffsetAt(checked(_items.Count) - 1L) - Reorderable_listLibrary._extentOffset(item.itemExtent, _scrollDirection);
+                            _finalDropPosition =
+                                _itemOffsetAt(checked(_items.Count) - 1L)
+                                - Reorderable_listLibrary._extentOffset(
+                                    item.itemExtent,
+                                    _scrollDirection
+                                );
                         }
                         else
                         {
-                            _finalDropPosition = _itemOffsetAt(DartRuntimePrimitives.RequireValue(_insertIndex)) + Reorderable_listLibrary._extentOffset(_itemExtentAt(DartRuntimePrimitives.RequireValue(_insertIndex)), _scrollDirection);
+                            _finalDropPosition =
+                                _itemOffsetAt(DartRuntimePrimitives.RequireValue(_insertIndex))
+                                + Reorderable_listLibrary._extentOffset(
+                                    _itemExtentAt(DartRuntimePrimitives.RequireValue(_insertIndex)),
+                                    _scrollDirection
+                                );
                         }
                     }
                     else
                     {
                         if (DartRuntimePrimitives.RequireValue(_insertIndex) == 0L)
                         {
-                            _finalDropPosition = _itemOffsetAt(0L) - Reorderable_listLibrary._extentOffset(item.itemExtent, _scrollDirection);
+                            _finalDropPosition =
+                                _itemOffsetAt(0L)
+                                - Reorderable_listLibrary._extentOffset(
+                                    item.itemExtent,
+                                    _scrollDirection
+                                );
                         }
                         else
                         {
                             long atIndex = DartRuntimePrimitives.RequireValue(_insertIndex) - 1L;
-                            _finalDropPosition = _itemOffsetAt(atIndex) + Reorderable_listLibrary._extentOffset(_itemExtentAt(atIndex), _scrollDirection);
+                            _finalDropPosition =
+                                _itemOffsetAt(atIndex)
+                                + Reorderable_listLibrary._extentOffset(
+                                    _itemExtentAt(atIndex),
+                                    _scrollDirection
+                                );
                         }
                     }
                 }
@@ -435,9 +702,14 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     {
         if (_dragInfo is not null)
         {
-            if ((_dragIndex is not null) && _items.ContainsKey(DartRuntimePrimitives.RequireValue(_dragIndex)))
+            if (
+                (_dragIndex is not null)
+                && _items.ContainsKey(DartRuntimePrimitives.RequireValue(_dragIndex))
+            )
             {
-                _ReorderableItemState__reorderable_list dragItem = _items.GetValueOrDefault(DartRuntimePrimitives.RequireValue(_dragIndex))!;
+                _ReorderableItemState__reorderable_list dragItem = _items.GetValueOrDefault(
+                    DartRuntimePrimitives.RequireValue(_dragIndex)
+                )!;
                 dragItem._dragging = false;
                 dragItem.rebuild();
                 _dragIndex = null;
@@ -494,18 +766,28 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     {
         DartRuntimePrimitives.Assert(() => _dragInfo is not null);
         double gapExtent = _dragInfo!.itemExtent;
-        double proxyItemStart = Reorderable_listLibrary._offsetExtent(_dragInfo!.dragPosition - _dragInfo!.dragOffset, _scrollDirection);
+        double proxyItemStart = Reorderable_listLibrary._offsetExtent(
+            _dragInfo!.dragPosition - _dragInfo!.dragOffset,
+            _scrollDirection
+        );
         double proxyItemEnd = proxyItemStart + gapExtent;
         long newIndex = DartRuntimePrimitives.RequireValue(_insertIndex);
         foreach (_ReorderableItemState__reorderable_list item in _items.Values)
         {
-            if (_reverse && (item.index == DartRuntimePrimitives.RequireValue(_dragIndex)) || !item.mounted)
+            if (
+                (_reverse && (item.index == DartRuntimePrimitives.RequireValue(_dragIndex)))
+                || !item.mounted
+            )
             {
                 continue;
             }
             Rect geometry = item.targetGeometry();
-            double itemStart = Equals(_scrollDirection, Axis.vertical) ? geometry.top : geometry.left;
-            double itemExtentLocal = Equals(_scrollDirection, Axis.vertical) ? geometry.height : geometry.width;
+            double itemStart = Equals(_scrollDirection, Axis.vertical)
+                ? geometry.top
+                : geometry.left;
+            double itemExtentLocal = Equals(_scrollDirection, Axis.vertical)
+                ? geometry.height
+                : geometry.width;
             double itemEnd = itemStart + itemExtentLocal;
             double itemMiddle = itemStart + (itemExtentLocal / 2L);
             if (_reverse)
@@ -584,11 +866,20 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             _insertIndex = newIndex;
             foreach (_ReorderableItemState__reorderable_list itemLocal in _items.Values)
             {
-                if ((itemLocal.index == DartRuntimePrimitives.RequireValue(_dragIndex)) || !itemLocal.mounted)
+                if (
+                    (itemLocal.index == DartRuntimePrimitives.RequireValue(_dragIndex))
+                    || !itemLocal.mounted
+                )
                 {
                     continue;
                 }
-                itemLocal.updateForGap(DartRuntimePrimitives.RequireValue(_dragIndex), newIndex, gapExtent, true, _reverse);
+                itemLocal.updateForGap(
+                    DartRuntimePrimitives.RequireValue(_dragIndex),
+                    newIndex,
+                    gapExtent,
+                    true,
+                    _reverse
+                );
             }
         }
     }
@@ -598,9 +889,15 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         get
         {
             Offset origin = _dragInfo!.dragPosition - _dragInfo!.dragOffset;
-            return Rect.fromLTWH(origin.dx, origin.dy, _dragInfo!.itemSize.width, _dragInfo!.itemSize.height);
+            return Rect.fromLTWH(
+                origin.dx,
+                origin.dy,
+                _dragInfo!.itemSize.width,
+                _dragInfo!.itemSize.height
+            );
         }
     }
+
     internal virtual Offset _itemOffsetAt(long index)
     {
         return _items.GetValueOrDefault(index)!.targetGeometry().topLeft;
@@ -609,7 +906,10 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
 
     internal virtual double _itemExtentAt(long index)
     {
-        return Reorderable_listLibrary._sizeExtent(_items.GetValueOrDefault(index)!.targetGeometry().size, _scrollDirection);
+        return Reorderable_listLibrary._sizeExtent(
+            _items.GetValueOrDefault(index)!.targetGeometry().size,
+            _scrollDirection
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -617,12 +917,29 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     {
         if ((_dragInfo is not null) && (index >= widget.itemCount))
         {
-            return _scrollDirection switch { Axis.horizontal => new SizedBox(width: _dragInfo!.itemExtent), Axis.vertical => new SizedBox(height: _dragInfo!.itemExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return _scrollDirection switch
+            {
+                Axis.horizontal => new SizedBox(width: _dragInfo!.itemExtent),
+                Axis.vertical => new SizedBox(height: _dragInfo!.itemExtent),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
         Widget childLocal = widget.itemBuilder(context, index);
-        DartRuntimePrimitives.Assert(() => childLocal.key is not null, () => (object?)"All list items must have a key");
+        DartRuntimePrimitives.Assert(
+            () => childLocal.key is not null,
+            () => (object?)"All list items must have a key"
+        );
         OverlayState overlay = Overlay.of(context, debugRequiredFor: widget);
-        return new _ReorderableItem__reorderable_list(_ReorderableItemGlobalKey__reorderable_list.Create(key: childLocal.key!, index: index, state: this), index: index, capturedThemes: InheritedTheme.capture(from: context, to: overlay.context), child: _wrapWithSemantics(childLocal, index));
+        return new _ReorderableItem__reorderable_list(
+            _ReorderableItemGlobalKey__reorderable_list.Create(
+                key: childLocal.key!,
+                index: index,
+                state: this
+            ),
+            index: index,
+            capturedThemes: InheritedTheme.capture(from: context, to: overlay.context),
+            child: _wrapWithSemantics(childLocal, index)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -649,11 +966,14 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         var isHorizontal = Equals(_scrollDirection, Axis.horizontal);
         if (index > 0L)
         {
-            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToStart)] = moveToStart;
+            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToStart)] =
+                moveToStart;
             string reorderItemBefore = localizations.reorderItemUp;
             if (isHorizontal)
             {
-                reorderItemBefore = Equals(Directionality.of(context), TextDirection.ltr) ? localizations.reorderItemLeft : localizations.reorderItemRight;
+                reorderItemBefore = Equals(Directionality.of(context), TextDirection.ltr)
+                    ? localizations.reorderItemLeft
+                    : localizations.reorderItemRight;
             }
             semanticsActions[new CustomSemanticsAction(label: reorderItemBefore)] = moveBefore;
         }
@@ -662,34 +982,54 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             string reorderItemAfter = localizations.reorderItemDown;
             if (isHorizontal)
             {
-                reorderItemAfter = Equals(Directionality.of(context), TextDirection.ltr) ? localizations.reorderItemRight : localizations.reorderItemLeft;
+                reorderItemAfter = Equals(Directionality.of(context), TextDirection.ltr)
+                    ? localizations.reorderItemRight
+                    : localizations.reorderItemLeft;
             }
             semanticsActions[new CustomSemanticsAction(label: reorderItemAfter)] = moveAfter;
-            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToEnd)] = moveToEnd;
+            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToEnd)] =
+                moveToEnd;
         }
-        return new Semantics(container: true, customSemanticsActions: semanticsActions, child: child);
+        return new Semantics(
+            container: true,
+            customSemanticsActions: semanticsActions,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasOverlay(context));
-        var childrenDelegate = new SliverChildBuilderDelegate(_itemBuilder, childCount: widget.itemCount, findChildIndexCallback: widget.findChildIndexCallback);
+        var childrenDelegate = new SliverChildBuilderDelegate(
+            _itemBuilder,
+            childCount: widget.itemCount,
+            findChildIndexCallback: widget.findChildIndexCallback
+        );
         if (widget.itemExtent is not null)
         {
-            return new SliverFixedExtentList(@delegate: childrenDelegate, itemExtent: DartRuntimePrimitives.RequireValue(widget.itemExtent));
+            return new SliverFixedExtentList(
+                @delegate: childrenDelegate,
+                itemExtent: DartRuntimePrimitives.RequireValue(widget.itemExtent)
+            );
         }
         else
         {
             if (widget.itemExtentBuilder is not null)
             {
-                return new SliverVariedExtentList(@delegate: childrenDelegate, itemExtentBuilder: widget.itemExtentBuilder!);
+                return new SliverVariedExtentList(
+                    @delegate: childrenDelegate,
+                    itemExtentBuilder: widget.itemExtentBuilder!
+                );
             }
             else
             {
                 if (widget.prototypeItem is not null)
                 {
-                    return new SliverPrototypeExtentList(@delegate: childrenDelegate, prototypeItem: widget.prototypeItem!);
+                    return new SliverPrototypeExtentList(
+                        @delegate: childrenDelegate,
+                        prototypeItem: widget.prototypeItem!
+                    );
                 }
             }
         }
@@ -706,13 +1046,23 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -761,9 +1111,17 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class _ReorderableItem__reorderable_list : StatefulWidget
@@ -772,14 +1130,21 @@ public class _ReorderableItem__reorderable_list : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual CapturedThemes capturedThemes { get; private set; } = default!;
 
-    internal _ReorderableItem__reorderable_list(Key key, long index, Widget child, CapturedThemes capturedThemes) : base(key: key)
+    internal _ReorderableItem__reorderable_list(
+        Key key,
+        long index,
+        Widget child,
+        CapturedThemes capturedThemes
+    )
+        : base(key: key)
     {
         this.index = index;
         this.child = child;
         this.capturedThemes = capturedThemes;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ReorderableItemState__reorderable_list());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ReorderableItemState__reorderable_list());
 }
 
 public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__reorderable_list>
@@ -807,6 +1172,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             }
         }
     }
+
     public override void initState()
     {
         _listState = SliverReorderableList.of(context);
@@ -835,7 +1201,10 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     {
         if (_dragging)
         {
-            Size sizeLocal = Reorderable_listLibrary._extentSize(_listState._dragInfo!.itemExtent, _listState._scrollDirection);
+            Size sizeLocal = Reorderable_listLibrary._extentSize(
+                _listState._dragInfo!.itemExtent,
+                _listState._scrollDirection
+            );
             return SizedBox.CreateFromSize(size: sizeLocal);
         }
         _listState._registerItem(this);
@@ -856,23 +1225,38 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             if (_offsetAnimation is not null)
             {
                 double animValue = Curves.easeInOut.transform(_offsetAnimation!.value);
-                return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue));
+                return DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue)
+                );
             }
             return _targetOffset;
         }
     }
-    public virtual void updateForGap(long dragIndex, long gapIndex, double gapExtent, bool animate, bool reverse)
+
+    public virtual void updateForGap(
+        long dragIndex,
+        long gapIndex,
+        double gapExtent,
+        bool animate,
+        bool reverse
+    )
     {
         Offset newTargetOffset = default!;
         if ((gapIndex < dragIndex) && (index < dragIndex) && (index >= gapIndex))
         {
-            newTargetOffset = Reorderable_listLibrary._extentOffset(reverse ? -gapExtent : gapExtent, _listState._scrollDirection);
+            newTargetOffset = Reorderable_listLibrary._extentOffset(
+                reverse ? -gapExtent : gapExtent,
+                _listState._scrollDirection
+            );
         }
         else
         {
             if ((gapIndex > dragIndex) && (index > dragIndex) && (index < gapIndex))
             {
-                newTargetOffset = Reorderable_listLibrary._extentOffset(reverse ? gapExtent : -gapExtent, _listState._scrollDirection);
+                newTargetOffset = Reorderable_listLibrary._extentOffset(
+                    reverse ? gapExtent : -gapExtent,
+                    _listState._scrollDirection
+                );
             }
             else
             {
@@ -887,27 +1271,38 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             {
                 if (_offsetAnimation is null)
                 {
-                    _offsetAnimation = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(vsync: _listState, duration: Duration.Create(milliseconds: 250L));
-    __cascade.addListener(rebuild);
-    __cascade.addStatusListener((status) =>
-    {
-        if (AnimationStatusMembers.isCompleted(status))
-        {
-            _startOffset = _targetOffset;
-            _offsetAnimation!.dispose();
-            _offsetAnimation = null;
-        }
-    });
-    __cascade.forward();
-    return __cascade;
-}))();
+                    _offsetAnimation = (
+                        (Func<AnimationController>)(
+                            () =>
+                            {
+                                var __cascade = new AnimationController(
+                                    vsync: _listState,
+                                    duration: Duration.Create(milliseconds: 250L)
+                                );
+                                __cascade.addListener(rebuild);
+                                __cascade.addStatusListener(
+                                    (status) =>
+                                    {
+                                        if (AnimationStatusMembers.isCompleted(status))
+                                        {
+                                            _startOffset = _targetOffset;
+                                            _offsetAnimation!.dispose();
+                                            _offsetAnimation = null;
+                                        }
+                                    }
+                                );
+                                __cascade.forward();
+                                return __cascade;
+                            }
+                        )
+                    )();
                 }
                 else
                 {
                     double currentAnimValue = Curves.easeInOut.transform(_offsetAnimation!.value);
-                    Offset currentPosition = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue));
+                    Offset currentPosition = DartRuntimePrimitives.RequireValue(
+                        Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue)
+                    );
                     _startOffset = currentPosition;
                     _offsetAnimation!.forward(from: 0.0);
                 }
@@ -949,12 +1344,9 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     {
         if (mounted)
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
     }
-
 }
 
 public class ReorderableDragStartListener : StatelessWidget
@@ -963,7 +1355,13 @@ public class ReorderableDragStartListener : StatelessWidget
     public virtual long index { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public ReorderableDragStartListener(Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key)
+    public ReorderableDragStartListener(
+        Key? key = null,
+        Widget child = default!,
+        long index = default!,
+        bool enabled = true
+    )
+        : base(key: key)
     {
         this.child = child;
         this.index = index;
@@ -972,7 +1370,17 @@ public class ReorderableDragStartListener : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new Listener(onPointerDown: enabled ? ((@event) => { _startDragging(context, @event); }) : null, child: child);
+        return new Listener(
+            onPointerDown: enabled
+                ? (
+                    (@event) =>
+                    {
+                        _startDragging(context, @event);
+                    }
+                )
+                : null,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -986,42 +1394,64 @@ public class ReorderableDragStartListener : StatelessWidget
     {
         DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(context);
         SliverReorderableListState? list = SliverReorderableList.maybeOf(context);
-        list?.startItemDragReorder(index: index, @event: @event, recognizer: ((Func<MultiDragGestureRecognizer>)(() =>
-{
-    var __cascade = createRecognizer();
-    __cascade.gestureSettings = gestureSettingsLocal;
-    return __cascade;
-}))());
+        list?.startItemDragReorder(
+            index: index,
+            @event: @event,
+            recognizer: (
+                (Func<MultiDragGestureRecognizer>)(
+                    () =>
+                    {
+                        var __cascade = createRecognizer();
+                        __cascade.gestureSettings = gestureSettingsLocal;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class ReorderableDelayedDragStartListener : ReorderableDragStartListener
 {
-    public ReorderableDelayedDragStartListener(Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key, child: child, index: index, enabled: enabled)
-    {
-    }
+    public ReorderableDelayedDragStartListener(
+        Key? key = null,
+        Widget child = default!,
+        long index = default!,
+        bool enabled = true
+    )
+        : base(key: key, child: child, index: index, enabled: enabled) { }
 
     public override MultiDragGestureRecognizer createRecognizer()
     {
         return new DelayedMultiDragGestureRecognizer(debugOwner: this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal delegate void _DragItemUpdate__reorderable_list(_DragInfo__reorderable_list item, Offset position, Offset delta);
+internal delegate void _DragItemUpdate__reorderable_list(
+    _DragInfo__reorderable_list item,
+    Offset position,
+    Offset delta
+);
 
 internal delegate void _DragItemCallback__reorderable_list(_DragInfo__reorderable_list item);
 
 internal class _DragInfo__reorderable_list : Drag
 {
     public virtual Axis scrollDirection { get; private set; } = default!;
-    public virtual Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate { get; private set; }
+    public virtual Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate
+    {
+        get;
+        private set;
+    }
     public virtual Action<_DragInfo__reorderable_list>? onEnd { get; private set; }
     public virtual Action<_DragInfo__reorderable_list>? onCancel { get; private set; }
     public virtual Action? onDropCompleted { get; private set; }
-    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    {
+        get;
+        private set;
+    }
     public virtual Scheduler.TickerProvider tickerProvider { get; private set; } = default!;
     public virtual DragBoundaryDelegate<Rect>? boundary { get; set; } = default;
     public virtual SliverReorderableListState listState { get; set; } = default!;
@@ -1037,7 +1467,17 @@ internal class _DragInfo__reorderable_list : Drag
     internal virtual AnimationController? _proxyAnimation { get; set; } = default;
     internal virtual Offset _rawDragPosition { get; set; } = default!;
 
-    internal _DragInfo__reorderable_list(_ReorderableItemState__reorderable_list item, Offset initialPosition = default, Axis scrollDirection = Axis.vertical, Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null, Action<_DragInfo__reorderable_list>? onEnd = null, Action<_DragInfo__reorderable_list>? onCancel = null, Action? onDropCompleted = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Scheduler.TickerProvider tickerProvider = default!)
+    internal _DragInfo__reorderable_list(
+        _ReorderableItemState__reorderable_list item,
+        Offset initialPosition = default,
+        Axis scrollDirection = Axis.vertical,
+        Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null,
+        Action<_DragInfo__reorderable_list>? onEnd = null,
+        Action<_DragInfo__reorderable_list>? onCancel = null,
+        Action? onDropCompleted = null,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null,
+        Scheduler.TickerProvider tickerProvider = default!
+    )
     {
         this.scrollDirection = scrollDirection;
         this.onUpdate = onUpdate;
@@ -1050,25 +1490,36 @@ internal class _DragInfo__reorderable_list : Drag
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _proxyAnimation?.dispose();
     }
 
     public virtual void startDrag()
     {
-        _proxyAnimation = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(vsync: tickerProvider, duration: Duration.Create(milliseconds: 250L));
-    __cascade.addStatusListener((status) =>
-    {
-        if (AnimationStatusMembers.isDismissed(status))
-        {
-            _dropCompleted();
-        }
-    });
-    __cascade.forward();
-    return __cascade;
-}))();
+        _proxyAnimation = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        vsync: tickerProvider,
+                        duration: Duration.Create(milliseconds: 250L)
+                    );
+                    __cascade.addStatusListener(
+                        (status) =>
+                        {
+                            if (AnimationStatusMembers.isDismissed(status))
+                            {
+                                _dropCompleted();
+                            }
+                        }
+                    );
+                    __cascade.forward();
+                    return __cascade;
+                }
+            )
+        )();
     }
 
     public override void update(DragUpdateDetails details)
@@ -1098,7 +1549,10 @@ internal class _DragInfo__reorderable_list : Drag
         {
             return offset;
         }
-        Offset adjOffset = boundary!.nearestPositionWithinBoundary(offset - dragOffset & itemSize).shift(dragOffset).topLeft;
+        Offset adjOffset = boundary!
+            .nearestPositionWithinBoundary((offset - dragOffset) & itemSize)
+            .shift(dragOffset)
+            .topLeft;
         return adjOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1112,10 +1566,22 @@ internal class _DragInfo__reorderable_list : Drag
 
     public virtual Widget createProxy(BuildContext context)
     {
-        return capturedThemes.wrap(new _DragItemProxy__reorderable_list(listState: listState, index: index, size: itemSize, constraints: itemLayoutConstraints, animation: _proxyAnimation!, position: dragPosition - dragOffset - Reorderable_listLibrary._overlayOrigin(context), proxyDecorator: proxyDecorator, child: child));
+        return capturedThemes.wrap(
+            new _DragItemProxy__reorderable_list(
+                listState: listState,
+                index: index,
+                size: itemSize,
+                constraints: itemLayoutConstraints,
+                animation: _proxyAnimation!,
+                position: dragPosition
+                    - dragOffset
+                    - Reorderable_listLibrary._overlayOrigin(context),
+                proxyDecorator: proxyDecorator,
+                child: child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Reorderable_listLibrary
@@ -1138,9 +1604,22 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
     public virtual Size size { get; private set; } = default!;
     public virtual BoxConstraints constraints { get; private set; } = default!;
     public virtual AnimationController animation { get; private set; } = default!;
-    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    {
+        get;
+        private set;
+    }
 
-    internal _DragItemProxy__reorderable_list(SliverReorderableListState listState, long index, Widget child, Offset position, Size size, BoxConstraints constraints, AnimationController animation, Func<Widget, long, Animation<double>, Widget>? proxyDecorator)
+    internal _DragItemProxy__reorderable_list(
+        SliverReorderableListState listState,
+        long index,
+        Widget child,
+        Offset position,
+        Size size,
+        BoxConstraints constraints,
+        AnimationController animation,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    )
     {
         this.listState = listState;
         this.index = index;
@@ -1154,30 +1633,69 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget proxyChild = proxyDecorator is null ? child : proxyDecorator.Invoke(child, index, animation.view);
+        Widget proxyChild = proxyDecorator is null
+            ? child
+            : proxyDecorator.Invoke(child, index, animation.view);
         Offset overlayOrigin = Reorderable_listLibrary._overlayOrigin(context);
-        return new MediaQuery(data: MediaQuery.of(context).removePadding(removeTop: true), child: new AnimatedBuilder(animation: animation, builder: (context, child) =>
-        {
-            Offset effectivePosition = position;
-            Offset? dropPosition = listState._finalDropPosition;
-            if (dropPosition is not null)
-            {
-                Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(dropPosition);
-                effectivePosition = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(DartRuntimePrimitives.RequireValue(dropPosition__58071__value58130) - overlayOrigin, effectivePosition, Curves.easeOut.transform(animation.value)));
-            }
-            return new Positioned(left: effectivePosition.dx, top: effectivePosition.dy, child: new SizedBox(width: size.width, height: size.height, child: new OverflowBox(minWidth: constraints.minWidth, minHeight: constraints.minHeight, maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight, alignment: Equals(listState._scrollDirection, Axis.horizontal) ? Alignment.centerLeft : Alignment.topCenter, child: child)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: proxyChild));
+        return new MediaQuery(
+            data: MediaQuery.of(context).removePadding(removeTop: true),
+            child: new AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) =>
+                {
+                    Offset effectivePosition = position;
+                    Offset? dropPosition = listState._finalDropPosition;
+                    if (dropPosition is not null)
+                    {
+                        Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(
+                            dropPosition
+                        );
+                        effectivePosition = DartRuntimePrimitives.RequireValue(
+                            Dart_uiLibrary.Offset.lerp(
+                                DartRuntimePrimitives.RequireValue(dropPosition__58071__value58130)
+                                    - overlayOrigin,
+                                effectivePosition,
+                                Curves.easeOut.transform(animation.value)
+                            )
+                        );
+                    }
+                    return new Positioned(
+                        left: effectivePosition.dx,
+                        top: effectivePosition.dy,
+                        child: new SizedBox(
+                            width: size.width,
+                            height: size.height,
+                            child: new OverflowBox(
+                                minWidth: constraints.minWidth,
+                                minHeight: constraints.minHeight,
+                                maxWidth: constraints.maxWidth,
+                                maxHeight: constraints.maxHeight,
+                                alignment: Equals(listState._scrollDirection, Axis.horizontal)
+                                    ? Alignment.centerLeft
+                                    : Alignment.topCenter,
+                                child: child
+                            )
+                        )
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                child: proxyChild
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Reorderable_listLibrary
 {
     internal static double _sizeExtent(Size size, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => size.width, Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch
+        {
+            Axis.horizontal => size.width,
+            Axis.vertical => size.height,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1186,7 +1704,12 @@ public static partial class Reorderable_listLibrary
 {
     internal static Size _extentSize(double extent, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new Size(extent, 0), Axis.vertical => new Size(0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch
+        {
+            Axis.horizontal => new Size(extent, 0),
+            Axis.vertical => new Size(0, extent),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1195,7 +1718,12 @@ public static partial class Reorderable_listLibrary
 {
     internal static double _offsetExtent(Offset offset, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => offset.dx, Axis.vertical => offset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch
+        {
+            Axis.horizontal => offset.dx,
+            Axis.vertical => offset.dy,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1204,7 +1732,12 @@ public static partial class Reorderable_listLibrary
 {
     internal static Offset _extentOffset(double extent, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new Offset(extent, 0.0), Axis.vertical => new Offset(0.0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch
+        {
+            Axis.horizontal => new Offset(extent, 0.0),
+            Axis.vertical => new Offset(0.0, extent),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1213,7 +1746,12 @@ public static partial class Reorderable_listLibrary
 {
     internal static Offset _restrictAxis(Offset offset, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new Offset(offset.dx, 0.0), Axis.vertical => new Offset(0.0, offset.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch
+        {
+            Axis.horizontal => new Offset(offset.dx, 0.0),
+            Axis.vertical => new Offset(0.0, offset.dy),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1224,7 +1762,12 @@ internal class _ReorderableItemGlobalKey__reorderable_list : GlobalObjectKey<ISt
     public virtual long index { get; private set; } = default!;
     public virtual SliverReorderableListState state { get; private set; } = default!;
 
-    internal _ReorderableItemGlobalKey__reorderable_list(Key subKey, long index, SliverReorderableListState state) : base(subKey)
+    internal _ReorderableItemGlobalKey__reorderable_list(
+        Key subKey,
+        long index,
+        SliverReorderableListState state
+    )
+        : base(subKey)
     {
         this.subKey = subKey;
         this.index = index;
@@ -1234,15 +1777,29 @@ internal class _ReorderableItemGlobalKey__reorderable_list : GlobalObjectKey<ISt
     public override bool Equals(object? other)
     {
         var __other = other as _ReorderableItemGlobalKey__reorderable_list;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is _ReorderableItemGlobalKey__reorderable_list) && Equals(__other.subKey, subKey) && (__other.index == index) && Equals(__other.state, state);
+        return (__other is _ReorderableItemGlobalKey__reorderable_list)
+            && Equals(__other.subKey, subKey)
+            && (__other.index == index)
+            && Equals(__other.state, state);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(subKey, index, state));
-    internal static _ReorderableItemGlobalKey__reorderable_list Create(Key key, long index, SliverReorderableListState state) => new(key, index, state);
-}
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(subKey, index, state)
+        );
 
+    internal static _ReorderableItemGlobalKey__reorderable_list Create(
+        Key key,
+        long index,
+        SliverReorderableListState state
+    ) => new(key, index, state);
+}

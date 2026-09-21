@@ -6,13 +6,13 @@ namespace Doroti.Host.Web;
 /// <summary>
 /// Browser Skia graphics capabilities used by the framework host.
 /// </summary>
-internal interface IBrowserGraphicsCapabilities :
-    ISceneHostCapability,
-    IParagraphHostCapability,
-    IFontHostCapability,
-    IImageHostCapability,
-    ISemanticsHostCapability,
-    IDisposable
+internal interface IBrowserGraphicsCapabilities
+    : ISceneHostCapability,
+        IParagraphHostCapability,
+        IFontHostCapability,
+        IImageHostCapability,
+        ISemanticsHostCapability,
+        IDisposable
 {
     new bool CoalesceGeometryDuringActiveMetrics { get; }
 
@@ -27,7 +27,8 @@ internal interface IBrowserGraphicsCapabilities :
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch target,
-        long requestId);
+        long requestId
+    );
 
     void CompletePaint(long requestId, string terminal, string reason);
 

@@ -1,7 +1,7 @@
 using Doroti.Ui;
-using Rect = Doroti.Ui.Rect;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
+using Rect = Doroti.Ui.Rect;
 #if IOS || MACCATALYST
 using CoreGraphics;
 using UIKit;
@@ -42,7 +42,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private bool _hasLastCaretRect;
 
     internal MauiTextInputBridge(
-        Entry entry, Editor editor, Layout? visualHost = null, bool attachOnDemand = false)
+        Entry entry,
+        Editor editor,
+        Layout? visualHost = null,
+        bool attachOnDemand = false
+    )
         : this(() => entry, () => editor, visualHost, attachOnDemand)
     {
         _entry = Subscribe(entry);
@@ -51,20 +55,33 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal MauiTextInputBridge(
-        Func<Entry> entryFactory, Func<Editor> editorFactory,
-        Layout? visualHost = null, bool attachOnDemand = false)
+        Func<Entry> entryFactory,
+        Func<Editor> editorFactory,
+        Layout? visualHost = null,
+        bool attachOnDemand = false
+    )
     {
         _entryFactory = entryFactory ?? throw new ArgumentNullException(nameof(entryFactory));
         _editorFactory = editorFactory ?? throw new ArgumentNullException(nameof(editorFactory));
         _visualHost = visualHost;
         _attachOnDemand = attachOnDemand;
-        _inputDispatcher = visualHost?.Dispatcher ?? Dispatcher.GetForCurrentThread()
-            ?? throw new InvalidOperationException("Text input must be created on a MAUI dispatcher thread.");
+        _inputDispatcher =
+            visualHost?.Dispatcher
+            ?? Dispatcher.GetForCurrentThread()
+            ?? throw new InvalidOperationException(
+                "Text input must be created on a MAUI dispatcher thread."
+            );
         if (_attachOnDemand && _visualHost is null)
-            throw new ArgumentNullException(nameof(visualHost), "On-demand MAUI text input requires a visual host.");
+        {
+            throw new ArgumentNullException(
+                nameof(visualHost),
+                "On-demand MAUI text input requires a visual host."
+            );
+        }
     }
 
-    private T Subscribe<T>(T input) where T : InputView
+    private T Subscribe<T>(T input)
+        where T : InputView
     {
 #if IOS && !MACCATALYST
         input.HandlerChanged += HandleUIKitInputHandlerChanged;
@@ -78,9 +95,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
         input.HandlerChanged += HandleMacOSInputHandlerChanged;
         AttachMacOSInput(input);
 #else
-        if (input is Entry entry) entry.Completed += HandleCompleted;
+        if (input is Entry entry)
+        {
+            entry.Completed += HandleCompleted;
+        }
 #endif
-        if (input is Editor editor) editor.Completed += HandleCompleted;
+        if (input is Editor editor)
+        {
+            editor.Completed += HandleCompleted;
+        }
+
         return input;
     }
 
@@ -90,22 +114,36 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #if IOS && !MACCATALYST
     internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged;
 #else
-    internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged { add { } remove { } }
+    internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
+    {
+        add { }
+        remove { }
+    }
 #endif
     internal IReadOnlyList<InputView> Inputs =>
-        _entry is null ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
+        _entry is null
+            ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
             : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
     internal bool HasClient => _hasClient;
 
-    internal void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
+    internal void SetClient(
+        DorotiTextInputConfiguration configuration,
+        DorotiTextEditingState state
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         DispatchInputMutation(() => SetClientCore(configuration, state), changesClient: true);
     }
 
-    private void SetClientCore(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
+    private void SetClientCore(
+        DorotiTextInputConfiguration configuration,
+        DorotiTextEditingState state
+    )
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
 #if MACOS
         _macOSNativeFocus = false;
 #endif
@@ -114,9 +152,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #endif
         _configuration = configuration;
         _hasClient = true;
-        var next = configuration.inputType == DorotiTextInputType.multiline
-            ? (InputView)(_editor ??= Subscribe(_editorFactory()))
-            : (_entry ??= Subscribe(_entryFactory()));
+        var next =
+            configuration.inputType == DorotiTextInputType.multiline
+                ? (InputView)(_editor ??= Subscribe(_editorFactory()))
+                : (_entry ??= Subscribe(_entryFactory()));
         if (!ReferenceEquals(_active, next))
         {
             _active?.Unfocus();
@@ -135,18 +174,38 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void UpdateStateCore(DorotiTextEditingState state)
     {
-        if (_disposed) return;
-        if (_active is null || !_hasClient) return;
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (_active is null || !_hasClient)
+        {
+            return;
+        }
+
         var length = state.text.Length;
-        var start = Math.Clamp(Math.Min(state.selection.baseOffset, state.selection.extentOffset), 0, length);
-        var end = Math.Clamp(Math.Max(state.selection.baseOffset, state.selection.extentOffset), start, length);
+        var start = Math.Clamp(
+            Math.Min(state.selection.baseOffset, state.selection.extentOffset),
+            0,
+            length
+        );
+        var end = Math.Clamp(
+            Math.Max(state.selection.baseOffset, state.selection.extentOffset),
+            start,
+            length
+        );
 
         // Do not echo a native edit back into the same control. Reassigning an
         // accepted text/selection can replace or end the platform IME's active
         // composing/marked range (for example Gboard's Editable span).
-        if (string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal) &&
-            (_publishingNativeTextChange ||
-             (_active.CursorPosition == start && _active.SelectionLength == end - start)))
+        if (
+            string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal)
+            && (
+                _publishingNativeTextChange
+                || (_active.CursorPosition == start && _active.SelectionLength == end - start)
+            )
+        )
         {
             return;
         }
@@ -159,9 +218,19 @@ public sealed partial class MauiTextInputBridge : IDisposable
         try
         {
             if (!string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal))
+            {
                 _active.Text = state.text;
-            if (_active.CursorPosition != start) _active.CursorPosition = start;
-            if (_active.SelectionLength != end - start) _active.SelectionLength = end - start;
+            }
+
+            if (_active.CursorPosition != start)
+            {
+                _active.CursorPosition = start;
+            }
+
+            if (_active.SelectionLength != end - start)
+            {
+                _active.SelectionLength = end - start;
+            }
         }
         finally
         {
@@ -171,11 +240,19 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     internal void SetCaretRect(Rect rect)
     {
-        if (_disposed || _active is null || !_hasClient) return;
+        if (_disposed || _active is null || !_hasClient)
+        {
+            return;
+        }
+
         lock (_caretGate)
         {
             _pendingCaretRect = rect;
-            if (_caretDispatchPending) return;
+            if (_caretDispatchPending)
+            {
+                return;
+            }
+
             _caretDispatchPending = true;
         }
 
@@ -188,10 +265,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             if (!dispatcher.Dispatch(ApplyPendingCaretRect))
             {
-                lock (_caretGate) _caretDispatchPending = false;
+                lock (_caretGate)
+                {
+                    _caretDispatchPending = false;
+                }
             }
         }
-        else ApplyPendingCaretRect();
+        else
+        {
+            ApplyPendingCaretRect();
+        }
     }
 
     private void ApplyPendingCaretRect()
@@ -203,9 +286,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
             _caretDispatchPending = false;
         }
 
-        if (_disposed || _active is null) return;
+        if (_disposed || _active is null)
+        {
+            return;
+        }
+
         var active = _active;
-        if (_hasLastCaretRect && ReferenceEquals(_lastCaretInput, active) && _lastCaretRect == rect) return;
+        if (_hasLastCaretRect && ReferenceEquals(_lastCaretInput, active) && _lastCaretRect == rect)
+        {
+            return;
+        }
 
         var x = Math.Max(0, rect.left);
         var y = Math.Max(0, rect.top);
@@ -226,22 +316,40 @@ public sealed partial class MauiTextInputBridge : IDisposable
             return;
         }
 #endif
-        if (active.TranslationX != x) active.TranslationX = x;
-        if (active.TranslationY != y) active.TranslationY = y;
-        if (active.WidthRequest != width) active.WidthRequest = width;
-        if (active.HeightRequest != height) active.HeightRequest = height;
+        if (active.TranslationX != x)
+        {
+            active.TranslationX = x;
+        }
+
+        if (active.TranslationY != y)
+        {
+            active.TranslationY = y;
+        }
+
+        if (active.WidthRequest != width)
+        {
+            active.WidthRequest = width;
+        }
+
+        if (active.HeightRequest != height)
+        {
+            active.HeightRequest = height;
+        }
 
         _lastCaretInput = active;
         _lastCaretRect = rect;
         _hasLastCaretRect = true;
     }
 
-    internal void ClearClient()
-        => DispatchInputMutation(ClearClientCore, changesClient: true);
+    internal void ClearClient() => DispatchInputMutation(ClearClientCore, changesClient: true);
 
     private void ClearClientCore()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _hasClient = false;
 #if IOS && !MACCATALYST
         ResetUIKitInput();
@@ -258,12 +366,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
         DetachInputs();
     }
 
-    internal void Suspend()
-        => DispatchInputMutation(SuspendCore);
+    internal void Suspend() => DispatchInputMutation(SuspendCore);
 
     private void SuspendCore()
     {
-        if (_disposed || !_attachOnDemand) return;
+        if (_disposed || !_attachOnDemand)
+        {
+            return;
+        }
 #if IOS && !MACCATALYST
         ResetUIKitInput();
 #endif
@@ -272,22 +382,30 @@ public sealed partial class MauiTextInputBridge : IDisposable
         DetachInputs();
     }
 
-    internal void Resume()
-        => DispatchInputMutation(ResumeCore);
+    internal void Resume() => DispatchInputMutation(ResumeCore);
 
     private void ResumeCore()
     {
-        if (_disposed || !_attachOnDemand) return;
+        if (_disposed || !_attachOnDemand)
+        {
+            return;
+        }
+
         _suspended = false;
-        if (_hasClient) AttachActiveInput(requestFocus: true);
+        if (_hasClient)
+        {
+            AttachActiveInput(requestFocus: true);
+        }
     }
 
-    internal void ShowTextInput()
-        => DispatchInputMutation(ShowTextInputCore);
+    internal void ShowTextInput() => DispatchInputMutation(ShowTextInputCore);
 
     private void ShowTextInputCore()
     {
-        if (_disposed || _suspended || !_hasClient) return;
+        if (_disposed || _suspended || !_hasClient)
+        {
+            return;
+        }
 #if MACOS
         _macOSNativeFocus = false;
 #endif
@@ -295,8 +413,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         DispatchActiveInputMutation(ActivateNativeTextInput);
     }
 
-    internal void HideTextInput()
-        => DispatchInputMutation(HideTextInputCore);
+    internal void HideTextInput() => DispatchInputMutation(HideTextInputCore);
 
 #if IOS && !MACCATALYST
     internal void YieldUIKitNativeFocus()
@@ -316,7 +433,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HideTextInputCore()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         DeactivateActiveInput(clearFocus: false);
     }
 
@@ -331,7 +452,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
         lock (_inputMutationGate)
         {
             _inputMutations.Enqueue((mutation, changesClient));
-            if (changesClient) _pendingClientChanges++;
+            if (changesClient)
+            {
+                _pendingClientChanges++;
+            }
         }
 #if IOS && !MACCATALYST
         // Becoming/resigning first responder synchronously publishes UIKit
@@ -343,14 +467,24 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // UIKit mutation, even when it already originates on the UI thread.
         _inputDispatcher.Dispatch(DrainInputMutations);
 #else
-        if (_inputDispatcher.IsDispatchRequired) _inputDispatcher.Dispatch(DrainInputMutations);
-        else DrainInputMutations();
+        if (_inputDispatcher.IsDispatchRequired)
+        {
+            _inputDispatcher.Dispatch(DrainInputMutations);
+        }
+        else
+        {
+            DrainInputMutations();
+        }
 #endif
     }
 
     private void DrainInputMutations()
     {
-        if (_drainingInputMutations) return;
+        if (_drainingInputMutations)
+        {
+            return;
+        }
+
         _drainingInputMutations = true;
         try
         {
@@ -359,8 +493,15 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 (Action Apply, bool ChangesClient) mutation;
                 lock (_inputMutationGate)
                 {
-                    if (!_inputMutations.TryDequeue(out mutation)) return;
-                    if (mutation.ChangesClient) _pendingClientChanges--;
+                    if (!_inputMutations.TryDequeue(out mutation))
+                    {
+                        return;
+                    }
+
+                    if (mutation.ChangesClient)
+                    {
+                        _pendingClientChanges--;
+                    }
                 }
                 mutation.Apply();
             }
@@ -369,82 +510,163 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             _drainingInputMutations = false;
             bool pending;
-            lock (_inputMutationGate) pending = _inputMutations.Count > 0;
-            if (pending) _inputDispatcher.Dispatch(DrainInputMutations);
+            lock (_inputMutationGate)
+            {
+                pending = _inputMutations.Count > 0;
+            }
+
+            if (pending)
+            {
+                _inputDispatcher.Dispatch(DrainInputMutations);
+            }
         }
     }
 
     private bool HasPendingInputMutation
     {
-        get { lock (_inputMutationGate) return _inputMutations.Count > 0; }
+        get
+        {
+            lock (_inputMutationGate)
+            {
+                return _inputMutations.Count > 0;
+            }
+        }
     }
 
     private bool HasPendingClientChange
     {
-        get { lock (_inputMutationGate) return _pendingClientChanges > 0; }
+        get
+        {
+            lock (_inputMutationGate)
+            {
+                return _pendingClientChanges > 0;
+            }
+        }
     }
 
     private void AttachActiveInput(bool requestFocus)
     {
-        if (_disposed || _active is null || !_hasClient) return;
+        if (_disposed || _active is null || !_hasClient)
+        {
+            return;
+        }
+
         var expected = _active;
         if (!_attachOnDemand)
         {
-            if (requestFocus) _inputDispatcher.Dispatch(() =>
+            if (requestFocus)
             {
-                if (!_disposed && _hasClient && !HasPendingInputMutation && ReferenceEquals(expected, _active))
-                    FocusInput(expected);
-            });
+                _inputDispatcher.Dispatch(() =>
+                {
+                    if (
+                        !_disposed
+                        && _hasClient
+                        && !HasPendingInputMutation
+                        && ReferenceEquals(expected, _active)
+                    )
+                    {
+                        FocusInput(expected);
+                    }
+                });
+            }
+
             return;
         }
-        if (_visualHost is null || _suspended || !_hasClient) return;
+        if (_visualHost is null || _suspended || !_hasClient)
+        {
+            return;
+        }
+
         DispatchVisualMutation(() =>
         {
-            if (_disposed || _suspended || !_hasClient || !ReferenceEquals(expected, _active)) return;
+            if (_disposed || _suspended || !_hasClient || !ReferenceEquals(expected, _active))
+            {
+                return;
+            }
+
             foreach (var input in Inputs)
             {
                 if (!ReferenceEquals(input, expected) && ReferenceEquals(input.Parent, _visualHost))
+                {
                     _visualHost.Children.Remove(input);
+                }
             }
-            if (expected.Parent is null) _visualHost.Children.Add(expected);
+            if (expected.Parent is null)
+            {
+                _visualHost.Children.Add(expected);
+            }
 #if MACOS
             AttachMacOSInput(expected);
 #endif
-            if (requestFocus) FocusInput(expected);
+            if (requestFocus)
+            {
+                FocusInput(expected);
+            }
         });
     }
 
     private void DetachInputs()
     {
-        if (!_attachOnDemand || _visualHost is null) return;
+        if (!_attachOnDemand || _visualHost is null)
+        {
+            return;
+        }
+
         DispatchVisualMutation(() =>
         {
             foreach (var input in Inputs)
             {
-                if (ReferenceEquals(input.Parent, _visualHost)) _visualHost.Children.Remove(input);
+                if (ReferenceEquals(input.Parent, _visualHost))
+                {
+                    _visualHost.Children.Remove(input);
+                }
             }
         });
     }
 
     private void DispatchVisualMutation(Action mutation)
     {
-        if (_visualHost is null) return;
-        if (_visualHost.Dispatcher.IsDispatchRequired) _visualHost.Dispatcher.Dispatch(mutation);
-        else mutation();
+        if (_visualHost is null)
+        {
+            return;
+        }
+
+        if (_visualHost.Dispatcher.IsDispatchRequired)
+        {
+            _visualHost.Dispatcher.Dispatch(mutation);
+        }
+        else
+        {
+            mutation();
+        }
     }
 
     private void DispatchActiveInputMutation(Action<InputView> mutation)
     {
         var expected = _active;
-        if (expected is null) return;
+        if (expected is null)
+        {
+            return;
+        }
+
         void Apply()
         {
-            if (_disposed || !ReferenceEquals(expected, _active)) return;
+            if (_disposed || !ReferenceEquals(expected, _active))
+            {
+                return;
+            }
+
             mutation(expected);
         }
 
-        if (expected.Dispatcher.IsDispatchRequired) expected.Dispatcher.Dispatch(Apply);
-        else Apply();
+        if (expected.Dispatcher.IsDispatchRequired)
+        {
+            expected.Dispatcher.Dispatch(Apply);
+        }
+        else
+        {
+            Apply();
+        }
     }
 
     private void DeactivateActiveInput(bool clearFocus)
@@ -452,7 +674,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
         DispatchActiveInputMutation(input =>
         {
             HideNativeTextInput(input);
-            if (clearFocus) input.Unfocus();
+            if (clearFocus)
+            {
+                input.Unfocus();
+            }
         });
     }
 
@@ -465,10 +690,13 @@ public sealed partial class MauiTextInputBridge : IDisposable
             nativeView.RequestFocus();
             nativeView.Post(() =>
             {
-                var inputMethodManager = nativeView.Context?.GetSystemService(
-                    Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+                var inputMethodManager =
+                    nativeView.Context?.GetSystemService(Android.Content.Context.InputMethodService)
+                    as Android.Views.InputMethods.InputMethodManager;
                 inputMethodManager?.ShowSoftInput(
-                    nativeView, Android.Views.InputMethods.ShowFlags.Implicit);
+                    nativeView,
+                    Android.Views.InputMethods.ShowFlags.Implicit
+                );
             });
         }
 #endif
@@ -489,10 +717,13 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #if ANDROID
         if (input.Handler?.PlatformView is Android.Views.View nativeView)
         {
-            var inputMethodManager = nativeView.Context?.GetSystemService(
-                Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+            var inputMethodManager =
+                nativeView.Context?.GetSystemService(Android.Content.Context.InputMethodService)
+                as Android.Views.InputMethods.InputMethodManager;
             inputMethodManager?.HideSoftInputFromWindow(
-                nativeView.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+                nativeView.WindowToken,
+                Android.Views.InputMethods.HideSoftInputFlags.None
+            );
         }
 #endif
     }
@@ -509,8 +740,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
             DorotiTextCapitalization.characters => KeyboardFlags.CapitalizeCharacter,
             _ => KeyboardFlags.None,
         };
-        if (configuration.autocorrect) keyboardFlags |= KeyboardFlags.Spellcheck;
-        if (configuration.enableSuggestions) keyboardFlags |= KeyboardFlags.Suggestions;
+        if (configuration.autocorrect)
+        {
+            keyboardFlags |= KeyboardFlags.Spellcheck;
+        }
+
+        if (configuration.enableSuggestions)
+        {
+            keyboardFlags |= KeyboardFlags.Suggestions;
+        }
+
         input.Keyboard = configuration.inputType switch
         {
             DorotiTextInputType.number => Keyboard.Numeric,
@@ -537,8 +776,18 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
-        if (_disposed || _active is null || _updating || _drainingInputMutations || HasPendingClientChange ||
-            !ReferenceEquals(sender, _active)) return;
+        if (
+            _disposed
+            || _active is null
+            || _updating
+            || _drainingInputMutations
+            || HasPendingClientChange
+            || !ReferenceEquals(sender, _active)
+        )
+        {
+            return;
+        }
+
         var text = args.NewTextValue ?? string.Empty;
         var selection = ResolveSelectionAfterTextChange(args.OldTextValue ?? string.Empty, text);
         _publishingNativeTextChange = true;
@@ -559,10 +808,25 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
     }
 
-    private void HandleInputPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+    private void HandleInputPropertyChanged(
+        object? sender,
+        System.ComponentModel.PropertyChangedEventArgs args
+    )
     {
-        if (_disposed || _active is null || _updating || _drainingInputMutations || HasPendingClientChange || !ReferenceEquals(sender, _active) ||
-            args.PropertyName is not (nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))) return;
+        if (
+            _disposed
+            || _active is null
+            || _updating
+            || _drainingInputMutations
+            || HasPendingClientChange
+            || !ReferenceEquals(sender, _active)
+            || args.PropertyName
+                is not (nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))
+        )
+        {
+            return;
+        }
+
         QueueNativeEditingState(_active, _active.Text ?? string.Empty);
     }
 
@@ -570,7 +834,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
     {
         _pendingNativeText = text;
         _pendingNativeInput = input;
-        if (_editingStateDispatchPending) return;
+        if (_editingStateDispatchPending)
+        {
+            return;
+        }
+
         _editingStateDispatchPending = true;
 
         // Selection-only notifications can arrive before the platform has
@@ -591,8 +859,19 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var text = _pendingNativeText;
         _pendingNativeInput = null;
         _pendingNativeText = null;
-        if (_disposed || _updating || _drainingInputMutations || HasPendingClientChange || !_hasClient || text is null ||
-            input is null || !ReferenceEquals(input, _active)) return;
+        if (
+            _disposed
+            || _updating
+            || _drainingInputMutations
+            || HasPendingClientChange
+            || !_hasClient
+            || text is null
+            || input is null
+            || !ReferenceEquals(input, _active)
+        )
+        {
+            return;
+        }
 
         // UIKit and Android can both normalize selection after their text
         // callback. Clamp the finalized native selection to the exact value
@@ -609,11 +888,18 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // observe these nulls and become a harmless no-op.
         _pendingNativeInput = null;
         _pendingNativeText = null;
-        if (_disposed || _updating || !_hasClient || !ReferenceEquals(input, _active)) return;
-        EditingStateChanged?.Invoke(new DorotiTextEditingState(
-            text,
-            new(start, end),
-            ReadNativeComposingRange(input, text.Length)));
+        if (_disposed || _updating || !_hasClient || !ReferenceEquals(input, _active))
+        {
+            return;
+        }
+
+        EditingStateChanged?.Invoke(
+            new DorotiTextEditingState(
+                text,
+                new(start, end),
+                ReadNativeComposingRange(input, text.Length)
+            )
+        );
     }
 
     internal static int ResolveSelectionAfterTextChange(string oldText, string newText)
@@ -621,12 +907,17 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var prefixLength = 0;
         var sharedLength = Math.Min(oldText.Length, newText.Length);
         while (prefixLength < sharedLength && oldText[prefixLength] == newText[prefixLength])
+        {
             prefixLength++;
+        }
 
         var suffixLength = 0;
-        while (suffixLength < oldText.Length - prefixLength &&
-               suffixLength < newText.Length - prefixLength &&
-               oldText[oldText.Length - 1 - suffixLength] == newText[newText.Length - 1 - suffixLength])
+        while (
+            suffixLength < oldText.Length - prefixLength
+            && suffixLength < newText.Length - prefixLength
+            && oldText[oldText.Length - 1 - suffixLength]
+                == newText[newText.Length - 1 - suffixLength]
+        )
         {
             suffixLength++;
         }
@@ -637,21 +928,35 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private static DorotiTextSelection? ReadNativeComposingRange(InputView input, int textLength)
     {
 #if ANDROID
-        if (input.Handler?.PlatformView is Android.Widget.EditText nativeView &&
-            nativeView.EditableText is Android.Text.ISpannable editable)
+        if (
+            input.Handler?.PlatformView is Android.Widget.EditText nativeView
+            && nativeView.EditableText is Android.Text.ISpannable editable
+        )
         {
-            var start = Android.Views.InputMethods.BaseInputConnection.GetComposingSpanStart(editable);
+            var start = Android.Views.InputMethods.BaseInputConnection.GetComposingSpanStart(
+                editable
+            );
             var end = Android.Views.InputMethods.BaseInputConnection.GetComposingSpanEnd(editable);
-            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+            if (start >= 0 && end > start && end <= textLength)
+            {
+                return new(start, end);
+            }
         }
 #elif IOS || MACCATALYST
-        if (input.Handler?.PlatformView is IUITextInput nativeInput &&
-            nativeInput.MarkedTextRange is { } markedRange)
+        if (
+            input.Handler?.PlatformView is IUITextInput nativeInput
+            && nativeInput.MarkedTextRange is { } markedRange
+        )
         {
             var beginning = nativeInput.BeginningOfDocument;
-            var start = checked((int)nativeInput.GetOffsetFromPosition(beginning, markedRange.Start));
+            var start = checked(
+                (int)nativeInput.GetOffsetFromPosition(beginning, markedRange.Start)
+            );
             var end = checked((int)nativeInput.GetOffsetFromPosition(beginning, markedRange.End));
-            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+            if (start >= 0 && end > start && end <= textLength)
+            {
+                return new(start, end);
+            }
         }
 #elif MACOS
         NSTextView? nativeTextView = input.Handler?.PlatformView switch
@@ -666,7 +971,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
             var range = nativeTextView.MarkedRange;
             var start = checked((int)range.Location);
             var end = checked(start + (int)range.Length);
-            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+            if (start >= 0 && end > start && end <= textLength)
+            {
+                return new(start, end);
+            }
         }
 #endif
         return null;
@@ -675,22 +983,35 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private void HandleCompleted(object? sender, EventArgs args)
     {
         _ = args;
-        if (ReferenceEquals(sender, _active)) ActionPerformed?.Invoke(_configuration.inputAction);
+        if (ReferenceEquals(sender, _active))
+        {
+            ActionPerformed?.Invoke(_configuration.inputAction);
+        }
     }
 
     private void HandleFocused(object? sender, FocusEventArgs args)
     {
-        if (ReferenceEquals(sender, _active)) FocusChanged?.Invoke(true);
+        if (ReferenceEquals(sender, _active))
+        {
+            FocusChanged?.Invoke(true);
+        }
     }
 
     private void HandleUnfocused(object? sender, FocusEventArgs args)
     {
-        if (ReferenceEquals(sender, _active)) FocusChanged?.Invoke(false);
+        if (ReferenceEquals(sender, _active))
+        {
+            FocusChanged?.Invoke(false);
+        }
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         DispatchInputMutation(DisposeCore);
     }
@@ -706,7 +1027,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
 #if IOS && !MACCATALYST
             input.HandlerChanged -= HandleUIKitInputHandlerChanged;
-            if (input.Handler?.PlatformView is IDorotiUIKitTextInput native) native.FloatingCursorChanged = null;
+            if (input.Handler?.PlatformView is IDorotiUIKitTextInput native)
+            {
+                native.FloatingCursorChanged = null;
+            }
 #endif
             input.TextChanged -= HandleTextChanged;
             input.PropertyChanged -= HandleInputPropertyChanged;
@@ -716,9 +1040,15 @@ public sealed partial class MauiTextInputBridge : IDisposable
             input.HandlerChanged -= HandleMacOSInputHandlerChanged;
             DetachMacOSInput(input);
 #else
-            if (input is Entry entry) entry.Completed -= HandleCompleted;
+            if (input is Entry entry)
+            {
+                entry.Completed -= HandleCompleted;
+            }
 #endif
-            if (input is Editor editor) editor.Completed -= HandleCompleted;
+            if (input is Editor editor)
+            {
+                editor.Completed -= HandleCompleted;
+            }
         }
         DetachInputs();
     }

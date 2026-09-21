@@ -29,7 +29,26 @@ public class RenderImage : RenderBox
     internal virtual TextDirection? _textDirection { get; set; } = default;
     internal virtual bool _isAntiAlias { get; set; } = default!;
 
-    public RenderImage(Image? image = null, string? debugImageLabel = null, double? width = null, double? height = null, double scale = 1.0, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, TextDirection? textDirection = null, bool invertColors = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, BlendMode blendMode = BlendMode.srcOver)
+    public RenderImage(
+        Image? image = null,
+        string? debugImageLabel = null,
+        double? width = null,
+        double? height = null,
+        double scale = 1.0,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        TextDirection? textDirection = null,
+        bool invertColors = false,
+        bool isAntiAlias = false,
+        FilterQuality filterQuality = FilterQuality.medium,
+        BlendMode blendMode = BlendMode.srcOver
+    )
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.debugImageLabel = debugImageLabel;
@@ -84,7 +103,8 @@ public class RenderImage : RenderBox
                 __value.dispose();
                 return;
             }
-            bool sizeChanged = (_image?.width != __value?.width) || (_image?.height != __value?.height);
+            bool sizeChanged =
+                (_image?.width != __value?.width) || (_image?.height != __value?.height);
             _image?.dispose();
             _image = __value;
             markNeedsPaint();
@@ -136,6 +156,7 @@ public class RenderImage : RenderBox
             markNeedsLayout();
         }
     }
+
     internal virtual void _updateColorFilter()
     {
         if (_color is null)
@@ -339,14 +360,19 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
+
     internal virtual Size _sizeForConstraints(BoxConstraints constraints)
     {
-        constraints = BoxConstraints.CreateTightFor(width: _width, height: _height).enforce(constraints);
+        constraints = BoxConstraints
+            .CreateTightFor(width: _width, height: _height)
+            .enforce(constraints);
         if (_image is null)
         {
             return constraints.smallest;
         }
-        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(new Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale));
+        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(
+            new Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -357,14 +383,18 @@ public class RenderImage : RenderBox
         {
             return 0.0;
         }
-        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width;
+        return _sizeForConstraints(
+            BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))
+        ).width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => height >= 0.0);
-        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width;
+        return _sizeForConstraints(
+            BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))
+        ).width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,18 +405,23 @@ public class RenderImage : RenderBox
         {
             return 0.0;
         }
-        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height;
+        return _sizeForConstraints(
+            BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))
+        ).height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => width >= 0.0);
-        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height;
+        return _sizeForConstraints(
+            BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))
+        ).height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _sizeForConstraints(constraints);
@@ -419,7 +454,24 @@ public class RenderImage : RenderBox
         _resolve();
         DartRuntimePrimitives.Assert(() => _resolvedAlignment is not null);
         DartRuntimePrimitives.Assert(() => _flipHorizontally is not null);
-        Decoration_imageLibrary.paintImage(canvas: context.canvas, rect: offset & size, image: _image!, debugImageLabel: debugImageLabel, scale: _scale, opacity: _opacity?.value ?? 1.0, colorFilter: _colorFilter, fit: _fit, alignment: _resolvedAlignment!, centerSlice: _centerSlice, repeat: _repeat, flipHorizontally: DartRuntimePrimitives.RequireValue(_flipHorizontally), invertColors: invertColors, filterQuality: _filterQuality, isAntiAlias: _isAntiAlias, blendMode: _blendMode);
+        Decoration_imageLibrary.paintImage(
+            canvas: context.canvas,
+            rect: offset & size,
+            image: _image!,
+            debugImageLabel: debugImageLabel,
+            scale: _scale,
+            opacity: _opacity?.value ?? 1.0,
+            colorFilter: _colorFilter,
+            fit: _fit,
+            alignment: _resolvedAlignment!,
+            centerSlice: _centerSlice,
+            repeat: _repeat,
+            flipHorizontally: DartRuntimePrimitives.RequireValue(_flipHorizontally),
+            invertColors: invertColors,
+            filterQuality: _filterQuality,
+            isAntiAlias: _isAntiAlias,
+            blendMode: _blendMode
+        );
     }
 
     public override void dispose()
@@ -437,18 +489,36 @@ public class RenderImage : RenderBox
         properties.add(new DoubleProperty("height", height, defaultValue: null));
         properties.add(new DoubleProperty("scale", scale, defaultValue: 1.0));
         properties.add(new ColorProperty("color", color, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null));
-        properties.add(new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null)
+        );
+        properties.add(
+            new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null)
+        );
         properties.add(new EnumProperty<BoxFit>("fit", fit, defaultValue: null));
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null));
-        properties.add(new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null));
-        properties.add(new FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null)
+        );
+        properties.add(
+            new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat)
+        );
+        properties.add(
+            new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null)
+        );
+        properties.add(
+            new FlagProperty(
+                "matchTextDirection",
+                value: matchTextDirection,
+                ifTrue: "match text direction"
+            )
+        );
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<bool>("invertColors", invertColors));
         properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality));
-        properties.add(new EnumProperty<BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver));
+        properties.add(
+            new EnumProperty<BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver)
+        );
     }
-
 }
-

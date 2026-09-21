@@ -10,12 +10,17 @@ public class Tolerance
     public double time { get; }
     public double velocity { get; }
 
-    public Tolerance(double distance = _epsilonDefault, double time = _epsilonDefault, double velocity = _epsilonDefault)
+    public Tolerance(
+        double distance = _epsilonDefault,
+        double time = _epsilonDefault,
+        double velocity = _epsilonDefault
+    )
     {
         this.distance = distance;
         this.time = time;
         this.velocity = velocity;
     }
 
-    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
+    public override string ToString() =>
+        $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
 }

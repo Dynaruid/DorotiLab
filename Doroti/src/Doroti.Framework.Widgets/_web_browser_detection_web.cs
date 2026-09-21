@@ -16,4 +16,3 @@ internal class WebBrowserDetectionIo
 {
     public static bool isSafari => Dart_ui_webLibrary.BrowserDetection.instance.isSafari;
 }
-

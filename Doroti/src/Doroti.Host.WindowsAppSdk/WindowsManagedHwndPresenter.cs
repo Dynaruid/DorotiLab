@@ -47,8 +47,10 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     internal bool DebugLayerEnabled { get; }
     internal override string BackendName => "D3D12";
-    internal override string RuntimeEffectsBackend => Doroti.Skia.RuntimeEffects.DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend;
-    internal override string DiagnosticCoverage => DebugLayerEnabled ? "D3D12 debug layer" : "explicit HRESULT checks";
+    internal override string RuntimeEffectsBackend =>
+        Doroti.Skia.RuntimeEffects.DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend;
+    internal override string DiagnosticCoverage =>
+        DebugLayerEnabled ? "D3D12 debug layer" : "explicit HRESULT checks";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
@@ -78,22 +80,49 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
     internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (childWindow == 0) throw new ArgumentOutOfRangeException(nameof(childWindow));
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        if (childWindow == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(childWindow));
+        }
+
+        if (width <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
+
         EnsureDevice();
         if (_window != 0 && _window != childWindow)
+        {
             ReleaseSwapChain();
+        }
+
         _window = childWindow;
         if (_swapChain is null)
         {
             var description = new SwapChainDescription1(
-                checked((uint)width), checked((uint)height),
-                Format.FormatB8G8R8A8Unorm, false,
-                Usage.RenderTargetOutput, 2, Scaling.None,
-                SwapEffect.FlipDiscard, AlphaMode.Ignore, SwapChainFlags.None);
+                checked((uint)width),
+                checked((uint)height),
+                Format.FormatB8G8R8A8Unorm,
+                false,
+                Usage.RenderTargetOutput,
+                2,
+                Scaling.None,
+                SwapEffect.FlipDiscard,
+                AlphaMode.Ignore,
+                SwapChainFlags.None
+            );
             using var created = _factory!.CreateSwapChainForHwnd(
-                _queue!, childWindow, description, null, null);
+                _queue!,
+                childWindow,
+                description,
+                null,
+                null
+            );
             _swapChain = created.QueryInterface<IDXGISwapChain3>();
         }
         else if (Width != width || Height != height)
@@ -103,9 +132,15 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             _backing = null;
             try
             {
-                _swapChain.ResizeBuffers(
-                    2, checked((uint)width), checked((uint)height),
-                    Format.FormatB8G8R8A8Unorm, SwapChainFlags.None).CheckError();
+                _swapChain
+                    .ResizeBuffers(
+                        2,
+                        checked((uint)width),
+                        checked((uint)height),
+                        Format.FormatB8G8R8A8Unorm,
+                        SwapChainFlags.None
+                    )
+                    .CheckError();
             }
             catch (COMException exception) when (exception.HResult == unchecked((int)0x887A0001))
             {
@@ -124,7 +159,10 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
     internal override void SealInitializationDebugBaseline()
     {
         if (!DebugLayerEnabled || _infoQueue is null || _debugBaselineSealed)
+        {
             return;
+        }
+
         var snapshot = CaptureAndClearDebugMessages("initialization");
         InitializationDebugMessageCount += snapshot.Total;
         InitializationDebugErrorCount += snapshot.Errors;
@@ -133,7 +171,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     internal override void CaptureOperationalDebugMessages()
     {
-        if (!DebugLayerEnabled || _infoQueue is null || !_debugBaselineSealed) return;
+        if (!DebugLayerEnabled || _infoQueue is null || !_debugBaselineSealed)
+        {
+            return;
+        }
+
         var snapshot = CaptureAndClearDebugMessages("operation");
         OperationalDebugMessageCount += snapshot.Total;
         OperationalDebugErrorCount += snapshot.Errors;
@@ -149,7 +191,8 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
                 paint(surface.Canvas);
                 return true;
             },
-            static value => value);
+            static value => value
+        );
     }
 
     internal override T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent)
@@ -158,38 +201,69 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         ArgumentNullException.ThrowIfNull(shouldPresent);
         ObjectDisposedException.ThrowIf(_disposed, this);
         LastPresentSucceeded = false;
-        var context = _context ?? throw new InvalidOperationException("The managed D3D12 context is unavailable.");
-        var backing = _backing ?? throw new InvalidOperationException("The exact backing store is unavailable.");
-        var swapChain = _swapChain ?? throw new InvalidOperationException("The HWND swap chain is unavailable.");
+        var context =
+            _context
+            ?? throw new InvalidOperationException("The managed D3D12 context is unavailable.");
+        var backing =
+            _backing
+            ?? throw new InvalidOperationException("The exact backing store is unavailable.");
+        var swapChain =
+            _swapChain
+            ?? throw new InvalidOperationException("The HWND swap chain is unavailable.");
         var result = paint(backing.Surface);
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
+
         backing.Surface.Canvas.Flush();
         context.Flush(backing.Surface);
         context.Submit(true);
         SignalAndWait();
         ManagedSubmitFenceCount++;
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
 
         _copyAllocator!.Reset();
         _copyCommandList!.Reset(_copyAllocator);
         using (var buffer = swapChain.GetBuffer<ID3D12Resource>(swapChain.CurrentBackBufferIndex))
         {
-            _copyCommandList.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(backing.Resource, ResourceStates.RenderTarget, ResourceStates.CopySource),
-                ResourceBarrier.BarrierTransition(buffer, ResourceStates.Present, ResourceStates.CopyDest),
+            _copyCommandList.ResourceBarrier([
+                ResourceBarrier.BarrierTransition(
+                    backing.Resource,
+                    ResourceStates.RenderTarget,
+                    ResourceStates.CopySource
+                ),
+                ResourceBarrier.BarrierTransition(
+                    buffer,
+                    ResourceStates.Present,
+                    ResourceStates.CopyDest
+                ),
             ]);
             _copyCommandList.CopyResource(buffer, backing.Resource);
-            _copyCommandList.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(backing.Resource, ResourceStates.CopySource, ResourceStates.RenderTarget),
-                ResourceBarrier.BarrierTransition(buffer, ResourceStates.CopyDest, ResourceStates.Present),
+            _copyCommandList.ResourceBarrier([
+                ResourceBarrier.BarrierTransition(
+                    backing.Resource,
+                    ResourceStates.CopySource,
+                    ResourceStates.RenderTarget
+                ),
+                ResourceBarrier.BarrierTransition(
+                    buffer,
+                    ResourceStates.CopyDest,
+                    ResourceStates.Present
+                ),
             ]);
             _copyCommandList.Close();
             _queue!.ExecuteCommandList(_copyCommandList);
         }
         SignalAndWait();
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
+
         CopyFenceCount++;
         swapChain.Present(0, PresentFlags.None).CheckError();
         PresentCount++;
@@ -206,7 +280,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     private void EnsureDevice()
     {
-        if (_device is not null) return;
+        if (_device is not null)
+        {
+            return;
+        }
+
         if (DebugLayerEnabled)
         {
             using var debug = D3D12GetDebugInterface<ID3D12Debug>();
@@ -216,8 +294,15 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         for (uint index = 0; ; index++)
         {
             var result = _factory.EnumAdapterByGpuPreference(
-                index, GpuPreference.HighPerformance, out IDXGIAdapter1? candidate);
-            if (result == ResultCode.NotFound) break;
+                index,
+                GpuPreference.HighPerformance,
+                out IDXGIAdapter1? candidate
+            );
+            if (result == ResultCode.NotFound)
+            {
+                break;
+            }
+
             result.CheckError();
             try
             {
@@ -231,14 +316,25 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             }
         }
         if (_device is null || _adapter is null)
-            throw new InvalidOperationException("No adapter supports the required D3D12 device and feature level.");
+        {
+            throw new InvalidOperationException(
+                "No adapter supports the required D3D12 device and feature level."
+            );
+        }
+
         AdapterDescription = _adapter.Description1.Description;
         if (DebugLayerEnabled)
+        {
             _infoQueue = _device.QueryInterface<ID3D12InfoQueue>();
+        }
+
         _queue = _device.CreateCommandQueue(CommandListType.Direct, 0, CommandQueueFlags.None, 0);
         _copyAllocator = _device.CreateCommandAllocator(CommandListType.Direct);
         _copyCommandList = _device.CreateCommandList<ID3D12GraphicsCommandList>(
-            CommandListType.Direct, _copyAllocator, null);
+            CommandListType.Direct,
+            _copyAllocator,
+            null
+        );
         _copyCommandList.Close();
         _fence = _device.CreateFence(0, FenceFlags.None);
         _backend = new GRD3DBackendContext
@@ -247,8 +343,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             Device = _device.NativePointer,
             Queue = _queue.NativePointer,
         };
-        _context = GRContext.CreateDirect3D(_backend) ??
-            throw new InvalidOperationException("Skia could not create the managed-owner D3D12 context.");
+        _context =
+            GRContext.CreateDirect3D(_backend)
+            ?? throw new InvalidOperationException(
+                "Skia could not create the managed-owner D3D12 context."
+            );
         DeviceGeneration++;
         _debugBaselineSealed = false;
     }
@@ -262,14 +361,20 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             using var completion = new EventWaitHandle(false, EventResetMode.AutoReset);
             _fence.SetEventOnCompletion(target, completion).CheckError();
             if (!completion.WaitOne(TimeSpan.FromSeconds(5)))
+            {
                 throw new TimeoutException($"Managed D3D12 fence {target} timed out.");
+            }
         }
         _confirmedFence = target;
     }
 
     private void WaitIdle()
     {
-        if (_queue is null || _fence is null) return;
+        if (_queue is null || _fence is null)
+        {
+            return;
+        }
+
         SignalAndWait();
     }
 
@@ -286,7 +391,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     private void ReleaseDevice()
     {
-        if (_device is null) return;
+        if (_device is null)
+        {
+            return;
+        }
+
         ReleaseSwapChain();
         _context?.AbandonContext(false);
         _context?.Dispose();
@@ -316,7 +425,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     private (ulong Total, ulong Errors, ulong Warnings) CaptureAndClearDebugMessages(string stage)
     {
-        if (_infoQueue is null) return default;
+        if (_infoQueue is null)
+        {
+            return default;
+        }
+
         var total = _infoQueue.NumStoredMessages;
         ulong errors = 0;
         ulong warnings = 0;
@@ -324,11 +437,17 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         {
             var message = _infoQueue.GetMessage(index);
             if (message.Severity is MessageSeverity.Error or MessageSeverity.Corruption)
+            {
                 errors++;
+            }
             else if (message.Severity == MessageSeverity.Warning)
+            {
                 warnings++;
+            }
+
             Console.Error.WriteLine(
-                $"D3D12 {stage} severity={message.Severity} id={(int)message.Id}: {message.Description}");
+                $"D3D12 {stage} severity={message.Severity} id={(int)message.Id}: {message.Description}"
+            );
         }
         _infoQueue.ClearStoredMessages();
         return (total, errors, warnings);
@@ -336,7 +455,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
 
     public override void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         ReleaseDevice();
         _disposed = true;
     }
@@ -360,23 +483,42 @@ internal sealed class WindowsManagedD3D12BackingStore : IDisposable
         _context = context;
     }
 
-    internal ID3D12Resource Resource => _resource ??
-        throw new InvalidOperationException("The managed exact backing resource is unavailable.");
-    internal SKSurface Surface => _surface ??
-        throw new InvalidOperationException("The managed exact Skia surface is unavailable.");
+    internal ID3D12Resource Resource =>
+        _resource
+        ?? throw new InvalidOperationException(
+            "The managed exact backing resource is unavailable."
+        );
+    internal SKSurface Surface =>
+        _surface
+        ?? throw new InvalidOperationException("The managed exact Skia surface is unavailable.");
     internal int Width { get; private set; }
     internal int Height { get; private set; }
 
     internal void EnsureSize(int width, int height)
     {
-        if (_surface is not null && Width == width && Height == height) return;
+        if (_surface is not null && Width == width && Height == height)
+        {
+            return;
+        }
+
         Release();
         var description = ResourceDescription.Texture2D(
-            Format.FormatB8G8R8A8Unorm, checked((uint)width), checked((uint)height),
-            1, 1, 1, 0, ResourceFlags.AllowRenderTarget);
+            Format.FormatB8G8R8A8Unorm,
+            checked((uint)width),
+            checked((uint)height),
+            1,
+            1,
+            1,
+            0,
+            ResourceFlags.AllowRenderTarget
+        );
         _resource = _device.CreateCommittedResource(
-            HeapType.Default, HeapFlags.None, description,
-            ResourceStates.RenderTarget, null);
+            HeapType.Default,
+            HeapFlags.None,
+            description,
+            ResourceStates.RenderTarget,
+            null
+        );
         _resourceInfo = new GRD3DTextureResourceInfo
         {
             Resource = _resource.NativePointer,
@@ -386,9 +528,11 @@ internal sealed class WindowsManagedD3D12BackingStore : IDisposable
             LevelCount = 1,
         };
         _target = new GRBackendRenderTarget(width, height, _resourceInfo);
-        _surface = SKSurface.Create(
-            _context, _target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888) ??
-            throw new InvalidOperationException("Skia could not wrap the managed exact D3D12 backing.");
+        _surface =
+            SKSurface.Create(_context, _target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888)
+            ?? throw new InvalidOperationException(
+                "Skia could not wrap the managed exact D3D12 backing."
+            );
         Width = width;
         Height = height;
     }

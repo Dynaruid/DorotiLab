@@ -10,7 +10,7 @@ public enum DeviceOrientation
     portraitUp,
     landscapeLeft,
     portraitDown,
-    landscapeRight
+    landscapeRight,
 }
 
 public class ApplicationSwitcherDescription
@@ -23,13 +23,12 @@ public class ApplicationSwitcherDescription
         this.label = label;
         this.primaryColor = primaryColor;
     }
-
 }
 
 public enum SystemUiOverlay
 {
     top,
-    bottom
+    bottom,
 }
 
 public enum SystemUiMode
@@ -38,7 +37,7 @@ public enum SystemUiMode
     immersive,
     immersiveSticky,
     edgeToEdge,
-    manual
+    manual,
 }
 
 public class SystemUiOverlayStyle : Diagnosticable
@@ -51,10 +50,29 @@ public class SystemUiOverlayStyle : Diagnosticable
     public virtual Brightness? statusBarBrightness { get; private set; }
     public virtual Brightness? statusBarIconBrightness { get; private set; }
     public virtual bool? systemStatusBarContrastEnforced { get; private set; }
-    public static SystemUiOverlayStyle light = new SystemUiOverlayStyle(systemNavigationBarColor: new Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.dark);
-    public static SystemUiOverlayStyle dark = new SystemUiOverlayStyle(systemNavigationBarColor: new Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.light);
+    public static SystemUiOverlayStyle light = new SystemUiOverlayStyle(
+        systemNavigationBarColor: new Color(4278190080L),
+        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark
+    );
+    public static SystemUiOverlayStyle dark = new SystemUiOverlayStyle(
+        systemNavigationBarColor: new Color(4278190080L),
+        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light
+    );
 
-    public SystemUiOverlayStyle(Color? systemNavigationBarColor = null, Color? systemNavigationBarDividerColor = null, Brightness? systemNavigationBarIconBrightness = null, bool? systemNavigationBarContrastEnforced = null, Color? statusBarColor = null, Brightness? statusBarBrightness = null, Brightness? statusBarIconBrightness = null, bool? systemStatusBarContrastEnforced = null)
+    public SystemUiOverlayStyle(
+        Color? systemNavigationBarColor = null,
+        Color? systemNavigationBarDividerColor = null,
+        Brightness? systemNavigationBarIconBrightness = null,
+        bool? systemNavigationBarContrastEnforced = null,
+        Color? statusBarColor = null,
+        Brightness? statusBarBrightness = null,
+        Brightness? statusBarIconBrightness = null,
+        bool? systemStatusBarContrastEnforced = null
+    )
     {
         this.systemNavigationBarColor = systemNavigationBarColor;
         this.systemNavigationBarDividerColor = systemNavigationBarDividerColor;
@@ -68,41 +86,121 @@ public class SystemUiOverlayStyle : Diagnosticable
 
     internal virtual DartMap<string, object?> _toMap()
     {
-        return new DartMap<string, object?> { ["systemNavigationBarColor"] = systemNavigationBarColor?.value, ["systemNavigationBarDividerColor"] = systemNavigationBarDividerColor?.value, ["systemStatusBarContrastEnforced"] = systemStatusBarContrastEnforced, ["statusBarColor"] = statusBarColor?.value, ["statusBarBrightness"] = statusBarBrightness?.ToString(), ["statusBarIconBrightness"] = statusBarIconBrightness?.ToString(), ["systemNavigationBarIconBrightness"] = systemNavigationBarIconBrightness?.ToString(), ["systemNavigationBarContrastEnforced"] = systemNavigationBarContrastEnforced };
+        return new DartMap<string, object?>
+        {
+            ["systemNavigationBarColor"] = systemNavigationBarColor?.value,
+            ["systemNavigationBarDividerColor"] = systemNavigationBarDividerColor?.value,
+            ["systemStatusBarContrastEnforced"] = systemStatusBarContrastEnforced,
+            ["statusBarColor"] = statusBarColor?.value,
+            ["statusBarBrightness"] = statusBarBrightness?.ToString(),
+            ["statusBarIconBrightness"] = statusBarIconBrightness?.ToString(),
+            ["systemNavigationBarIconBrightness"] = systemNavigationBarIconBrightness?.ToString(),
+            ["systemNavigationBarContrastEnforced"] = systemNavigationBarContrastEnforced,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual SystemUiOverlayStyle copyWith(Color? systemNavigationBarColor = null, Color? systemNavigationBarDividerColor = null, bool? systemNavigationBarContrastEnforced = null, Color? statusBarColor = null, Brightness? statusBarBrightness = null, Brightness? statusBarIconBrightness = null, bool? systemStatusBarContrastEnforced = null, Brightness? systemNavigationBarIconBrightness = null)
+    public virtual SystemUiOverlayStyle copyWith(
+        Color? systemNavigationBarColor = null,
+        Color? systemNavigationBarDividerColor = null,
+        bool? systemNavigationBarContrastEnforced = null,
+        Color? statusBarColor = null,
+        Brightness? statusBarBrightness = null,
+        Brightness? statusBarIconBrightness = null,
+        bool? systemStatusBarContrastEnforced = null,
+        Brightness? systemNavigationBarIconBrightness = null
+    )
     {
-        return new SystemUiOverlayStyle(systemNavigationBarColor: systemNavigationBarColor ?? this.systemNavigationBarColor, systemNavigationBarDividerColor: systemNavigationBarDividerColor ?? this.systemNavigationBarDividerColor, systemNavigationBarContrastEnforced: systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced, statusBarColor: statusBarColor ?? this.statusBarColor, statusBarIconBrightness: statusBarIconBrightness ?? this.statusBarIconBrightness, statusBarBrightness: statusBarBrightness ?? this.statusBarBrightness, systemStatusBarContrastEnforced: systemStatusBarContrastEnforced ?? this.systemStatusBarContrastEnforced, systemNavigationBarIconBrightness: systemNavigationBarIconBrightness ?? this.systemNavigationBarIconBrightness);
+        return new SystemUiOverlayStyle(
+            systemNavigationBarColor: systemNavigationBarColor ?? this.systemNavigationBarColor,
+            systemNavigationBarDividerColor: systemNavigationBarDividerColor
+                ?? this.systemNavigationBarDividerColor,
+            systemNavigationBarContrastEnforced: systemNavigationBarContrastEnforced
+                ?? this.systemNavigationBarContrastEnforced,
+            statusBarColor: statusBarColor ?? this.statusBarColor,
+            statusBarIconBrightness: statusBarIconBrightness ?? this.statusBarIconBrightness,
+            statusBarBrightness: statusBarBrightness ?? this.statusBarBrightness,
+            systemStatusBarContrastEnforced: systemStatusBarContrastEnforced
+                ?? this.systemStatusBarContrastEnforced,
+            systemNavigationBarIconBrightness: systemNavigationBarIconBrightness
+                ?? this.systemNavigationBarIconBrightness
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(systemNavigationBarColor, systemNavigationBarDividerColor, systemNavigationBarContrastEnforced, statusBarColor, statusBarBrightness, statusBarIconBrightness, systemStatusBarContrastEnforced, systemNavigationBarIconBrightness);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            systemNavigationBarColor,
+            systemNavigationBarDividerColor,
+            systemNavigationBarContrastEnforced,
+            statusBarColor,
+            statusBarBrightness,
+            statusBarIconBrightness,
+            systemStatusBarContrastEnforced,
+            systemNavigationBarIconBrightness
+        );
+
     public override bool Equals(object? other)
     {
         var __other = other as SystemUiOverlayStyle;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return (__other is SystemUiOverlayStyle) && Equals(__other.systemNavigationBarColor, systemNavigationBarColor) && Equals(__other.systemNavigationBarDividerColor, systemNavigationBarDividerColor) && (__other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced) && Equals(__other.statusBarColor, statusBarColor) && Equals(__other.statusBarIconBrightness, statusBarIconBrightness) && Equals(__other.statusBarBrightness, statusBarBrightness) && (__other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced) && Equals(__other.systemNavigationBarIconBrightness, systemNavigationBarIconBrightness);
+        return (__other is SystemUiOverlayStyle)
+            && Equals(__other.systemNavigationBarColor, systemNavigationBarColor)
+            && Equals(__other.systemNavigationBarDividerColor, systemNavigationBarDividerColor)
+            && (__other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced)
+            && Equals(__other.statusBarColor, statusBarColor)
+            && Equals(__other.statusBarIconBrightness, statusBarIconBrightness)
+            && Equals(__other.statusBarBrightness, statusBarBrightness)
+            && (__other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced)
+            && Equals(__other.systemNavigationBarIconBrightness, systemNavigationBarIconBrightness);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.Add(new DiagnosticsProperty<Color>("systemNavigationBarColor", systemNavigationBarColor));
-        properties.Add(new DiagnosticsProperty<Color>("systemNavigationBarDividerColor", systemNavigationBarDividerColor));
-        properties.Add(new DiagnosticsProperty<Brightness>("systemNavigationBarIconBrightness", systemNavigationBarIconBrightness));
-        properties.Add(new DiagnosticsProperty<bool>("systemNavigationBarContrastEnforced", systemNavigationBarContrastEnforced));
+        properties.Add(
+            new DiagnosticsProperty<Color>("systemNavigationBarColor", systemNavigationBarColor)
+        );
+        properties.Add(
+            new DiagnosticsProperty<Color>(
+                "systemNavigationBarDividerColor",
+                systemNavigationBarDividerColor
+            )
+        );
+        properties.Add(
+            new DiagnosticsProperty<Brightness>(
+                "systemNavigationBarIconBrightness",
+                systemNavigationBarIconBrightness
+            )
+        );
+        properties.Add(
+            new DiagnosticsProperty<bool>(
+                "systemNavigationBarContrastEnforced",
+                systemNavigationBarContrastEnforced
+            )
+        );
         properties.Add(new DiagnosticsProperty<Color>("statusBarColor", statusBarColor));
-        properties.Add(new DiagnosticsProperty<Brightness>("statusBarBrightness", statusBarBrightness));
-        properties.Add(new DiagnosticsProperty<Brightness>("statusBarIconBrightness", statusBarIconBrightness));
-        properties.Add(new DiagnosticsProperty<bool>("systemStatusBarContrastEnforced", systemStatusBarContrastEnforced));
+        properties.Add(
+            new DiagnosticsProperty<Brightness>("statusBarBrightness", statusBarBrightness)
+        );
+        properties.Add(
+            new DiagnosticsProperty<Brightness>("statusBarIconBrightness", statusBarIconBrightness)
+        );
+        properties.Add(
+            new DiagnosticsProperty<bool>(
+                "systemStatusBarContrastEnforced",
+                systemStatusBarContrastEnforced
+            )
+        );
     }
-
 }
 
 public static partial class System_chromeLibrary
@@ -117,24 +215,47 @@ public abstract class SystemChrome
 
     public static async Future setPreferredOrientations(List<DeviceOrientation> orientations)
     {
-        await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setPreferredOrientations", System_chromeLibrary._stringify(orientations));
+        await SystemChannels.platform.invokeMethod<object?>(
+            "SystemChrome.setPreferredOrientations",
+            System_chromeLibrary._stringify(orientations)
+        );
     }
 
-    public static async Future setApplicationSwitcherDescription(ApplicationSwitcherDescription description)
+    public static async Future setApplicationSwitcherDescription(
+        ApplicationSwitcherDescription description
+    )
     {
-        await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setApplicationSwitcherDescription", new DartMap<string, object?> { ["label"] = description.label, ["primaryColor"] = description.primaryColor });
+        await SystemChannels.platform.invokeMethod<object?>(
+            "SystemChrome.setApplicationSwitcherDescription",
+            new DartMap<string, object?>
+            {
+                ["label"] = description.label,
+                ["primaryColor"] = description.primaryColor,
+            }
+        );
     }
 
-    public static async Future setEnabledSystemUIMode(SystemUiMode mode, List<SystemUiOverlay>? overlays = null)
+    public static async Future setEnabledSystemUIMode(
+        SystemUiMode mode,
+        List<SystemUiOverlay>? overlays = null
+    )
     {
         if (!Equals(mode, SystemUiMode.manual))
         {
-            await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIMode", mode.ToString());
+            await SystemChannels.platform.invokeMethod<object?>(
+                "SystemChrome.setEnabledSystemUIMode",
+                mode.ToString()
+            );
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => Equals(mode, SystemUiMode.manual) && (overlays is not null));
-            await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIOverlays", System_chromeLibrary._stringify(overlays!));
+            DartRuntimePrimitives.Assert(() =>
+                Equals(mode, SystemUiMode.manual) && (overlays is not null)
+            );
+            await SystemChannels.platform.invokeMethod<object?>(
+                "SystemChrome.setEnabledSystemUIOverlays",
+                System_chromeLibrary._stringify(overlays!)
+            );
         }
     }
 
@@ -143,7 +264,9 @@ public abstract class SystemChrome
         ServicesBinding.instance.setSystemUiChangeCallback(callback);
         if (callback is not null)
         {
-            await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIChangeListener");
+            await SystemChannels.platform.invokeMethod<object?>(
+                "SystemChrome.setSystemUIChangeListener"
+            );
         }
     }
 
@@ -169,12 +292,27 @@ public abstract class SystemChrome
             DartRuntimePrimitives.Assert(() => _pendingStyle is not null);
             if (!Equals(_pendingStyle, _latestStyle))
             {
-                _ = SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIOverlayStyle", _pendingStyle!._toMap()).then((_) =>
-                {
-                }, onError: (error, stack) =>
-                {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stack, library: "services library", context: new ErrorDescription("while setting the system UI overlay style")));
-                });
+                _ = SystemChannels
+                    .platform.invokeMethod<object?>(
+                        "SystemChrome.setSystemUIOverlayStyle",
+                        _pendingStyle!._toMap()
+                    )
+                    .then(
+                        (_) => { },
+                        onError: (error, stack) =>
+                        {
+                            FlutterError.reportError(
+                                new FlutterErrorDetails(
+                                    exception: error,
+                                    stack: stack,
+                                    library: "services library",
+                                    context: new ErrorDescription(
+                                        "while setting the system UI overlay style"
+                                    )
+                                )
+                            );
+                        }
+                    );
                 _latestStyle = _pendingStyle;
             }
             _pendingStyle = null;

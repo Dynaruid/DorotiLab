@@ -13,7 +13,14 @@ public class PopScope<T> : StatefulWidget
     public virtual Action<bool>? onPopInvoked { get; private set; }
     public virtual bool canPop { get; private set; } = default!;
 
-    public PopScope(Key? key = null, Widget child = default!, bool canPop = true, Action<bool, T?>? onPopInvokedWithResult = null, Action<bool>? onPopInvoked = null) : base(key: key)
+    public PopScope(
+        Key? key = null,
+        Widget child = default!,
+        bool canPop = true,
+        Action<bool, T?>? onPopInvokedWithResult = null,
+        Action<bool>? onPopInvoked = null
+    )
+        : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -32,13 +39,16 @@ public class PopScope<T> : StatefulWidget
         onPopInvoked?.Invoke(didPop);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopScopeState__pop_scope<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _PopScopeState__pop_scope<T>());
 }
 
 internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
 {
     ValueListenable<bool> IPopEntry.canPopNotifier => canPopNotifier;
-    void IPopEntry.onPopInvokedWithResultObject(bool didPop, object? result) => onPopInvokedWithResult(didPop, result is null ? default : (T)result);
+
+    void IPopEntry.onPopInvokedWithResultObject(bool didPop, object? result) =>
+        onPopInvokedWithResult(didPop, result is null ? default : (T)result);
 
     internal virtual IModalRoute? _route { get; set; } = default!;
     public virtual ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
@@ -86,4 +96,3 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
 
     public override Widget build(BuildContext context) => widget.child;
 }
-

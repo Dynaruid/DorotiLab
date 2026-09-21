@@ -6,14 +6,18 @@ public sealed record DorotiApplicationResource(
     string? FontFamily,
     string? Locale,
     string Sha256,
-    long Length);
+    long Length
+);
 
 /// <summary>Host-neutral access to compiler-registered application assets, fonts, and localization payloads.</summary>
 public interface IApplicationResourceHostCapability
 {
     IReadOnlyList<DorotiApplicationResource> Resources { get; }
 
-    ValueTask<ReadOnlyMemory<byte>> LoadAsync(string key, CancellationToken cancellationToken = default);
+    ValueTask<ReadOnlyMemory<byte>> LoadAsync(
+        string key,
+        CancellationToken cancellationToken = default
+    );
 
     DorotiApplicationResource ResolveFont(string family);
 

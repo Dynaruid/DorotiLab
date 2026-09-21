@@ -12,12 +12,17 @@ internal sealed class DorotiNativePlatformBridge : DorotiNativePlatformBridgeBas
 
     public override async ValueTask<string> EchoOnUiThreadAsync(
         string value,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var activity = Platform.CurrentActivity
-            ?? throw new InvalidOperationException("The Android native bridge requires a current Activity.");
-        return await Native.DorotiNativeBridgeBinding.EchoOnUiThreadAsync(activity, value)
+        var activity =
+            Platform.CurrentActivity
+            ?? throw new InvalidOperationException(
+                "The Android native bridge requires a current Activity."
+            );
+        return await Native
+            .DorotiNativeBridgeBinding.EchoOnUiThreadAsync(activity, value)
             .WaitAsync(cancellationToken)
             .ConfigureAwait(false);
     }

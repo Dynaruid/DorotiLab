@@ -11,20 +11,28 @@ public delegate IEnumerable<T> IterableFilter<T>(IEnumerable<T> input);
 public delegate Task AsyncCallback();
 public delegate Task AsyncValueSetter<in T>(T value);
 public delegate Task<T> AsyncValueGetter<T>();
+
 public sealed class Factory<T>
 {
-    public Factory(Func<T> constructor) => this.constructor = constructor ?? throw new ArgumentNullException(nameof(constructor));
+    public Factory(Func<T> constructor) =>
+        this.constructor = constructor ?? throw new ArgumentNullException(nameof(constructor));
+
     public Func<T> constructor { get; }
     public Type type => typeof(T);
+
     public T Invoke() => constructor();
+
     public static implicit operator Factory<T>(Func<T> constructor) => new(constructor);
+
     public override string ToString() => $"Factory(type: {type})";
 }
 
 public static class BasicTypesLibrary
 {
     public static TimeSpan lerpDuration(TimeSpan a, TimeSpan b, double t) =>
-        TimeSpan.FromTicks(a.Ticks + (long)Math.Round((b.Ticks - a.Ticks) * t, MidpointRounding.AwayFromZero));
+        TimeSpan.FromTicks(
+            a.Ticks + (long)Math.Round((b.Ticks - a.Ticks) * t, MidpointRounding.AwayFromZero)
+        );
 }
 
 /// <summary>A lazy iterable that enumerates its source at most once and caches observed values.</summary>
@@ -35,7 +43,8 @@ public sealed class CachingIterable<T> : IEnumerable<T>
     private readonly List<T> _results = [];
     private bool _complete;
 
-    public CachingIterable(IEnumerator<T> source) => _source = source ?? throw new ArgumentNullException(nameof(source));
+    public CachingIterable(IEnumerator<T> source) =>
+        _source = source ?? throw new ArgumentNullException(nameof(source));
 
     public int length
     {
@@ -51,10 +60,10 @@ public sealed class CachingIterable<T> : IEnumerable<T>
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         lock (_gate)
         {
-            while (_results.Count <= index && FillNextCore())
-            {
-            }
-            return index < _results.Count ? _results[index] : throw new ArgumentOutOfRangeException(nameof(index));
+            while (_results.Count <= index && FillNextCore()) { }
+            return index < _results.Count
+                ? _results[index]
+                : throw new ArgumentOutOfRangeException(nameof(index));
         }
     }
 
@@ -69,21 +78,35 @@ public sealed class CachingIterable<T> : IEnumerable<T>
     }
 
     public CachingIterable<TResult> map<TResult>(Func<T, TResult> transform) =>
-        new(Enumerable.Select(this, transform ?? throw new ArgumentNullException(nameof(transform))).GetEnumerator());
+        new(
+            Enumerable
+                .Select(this, transform ?? throw new ArgumentNullException(nameof(transform)))
+                .GetEnumerator()
+        );
 
     public CachingIterable<T> where(Func<T, bool> predicate) =>
-        new(Enumerable.Where(this, predicate ?? throw new ArgumentNullException(nameof(predicate))).GetEnumerator());
+        new(
+            Enumerable
+                .Where(this, predicate ?? throw new ArgumentNullException(nameof(predicate)))
+                .GetEnumerator()
+        );
 
     public CachingIterable<TResult> expand<TResult>(Func<T, IEnumerable<TResult>> transform) =>
-        new(Enumerable.SelectMany(this, transform ?? throw new ArgumentNullException(nameof(transform))).GetEnumerator());
+        new(
+            Enumerable
+                .SelectMany(this, transform ?? throw new ArgumentNullException(nameof(transform)))
+                .GetEnumerator()
+        );
 
     public CachingIterable<T> take(int count) => new(Enumerable.Take(this, count).GetEnumerator());
 
-    public CachingIterable<T> takeWhile(Func<T, bool> predicate) => new(Enumerable.TakeWhile(this, predicate).GetEnumerator());
+    public CachingIterable<T> takeWhile(Func<T, bool> predicate) =>
+        new(Enumerable.TakeWhile(this, predicate).GetEnumerator());
 
     public CachingIterable<T> skip(int count) => new(Enumerable.Skip(this, count).GetEnumerator());
 
-    public CachingIterable<T> skipWhile(Func<T, bool> predicate) => new(Enumerable.SkipWhile(this, predicate).GetEnumerator());
+    public CachingIterable<T> skipWhile(Func<T, bool> predicate) =>
+        new(Enumerable.SkipWhile(this, predicate).GetEnumerator());
 
     public IEnumerator<T> GetEnumerator() => new _LazyListIterator<T>(this);
 
@@ -93,9 +116,7 @@ public sealed class CachingIterable<T> : IEnumerable<T>
     {
         lock (_gate)
         {
-            while (_results.Count <= index && FillNextCore())
-            {
-            }
+            while (_results.Count <= index && FillNextCore()) { }
             if (index < _results.Count)
             {
                 value = _results[index];
@@ -110,9 +131,7 @@ public sealed class CachingIterable<T> : IEnumerable<T>
     {
         lock (_gate)
         {
-            while (FillNextCore())
-            {
-            }
+            while (FillNextCore()) { }
         }
     }
 
@@ -154,7 +173,5 @@ internal sealed class _LazyListIterator<T>(CachingIterable<T> owner) : IEnumerat
 
     public void Reset() => throw new NotSupportedException();
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

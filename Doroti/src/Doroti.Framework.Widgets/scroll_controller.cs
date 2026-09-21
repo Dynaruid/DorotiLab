@@ -13,9 +13,16 @@ public class ScrollController : ChangeNotifier
     public virtual Action<ScrollPosition>? onAttach { get; private set; }
     public virtual Action<ScrollPosition>? onDetach { get; private set; }
     public virtual string? debugLabel { get; private set; }
-    internal virtual List<ScrollPosition> _positions { get; private set; } = new List<ScrollPosition>();
+    internal virtual List<ScrollPosition> _positions { get; private set; } =
+        new List<ScrollPosition>();
 
-    public ScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null)
+    public ScrollController(
+        double initialScrollOffset = 0.0,
+        bool keepScrollOffset = true,
+        string? debugLabel = null,
+        Action<ScrollPosition>? onAttach = null,
+        Action<ScrollPosition>? onDetach = null
+    )
     {
         this.keepScrollOffset = keepScrollOffset;
         this.debugLabel = debugLabel;
@@ -25,21 +32,32 @@ public class ScrollController : ChangeNotifier
     }
 
     public virtual double initialScrollOffset => _initialScrollOffset;
-    public virtual IEnumerable<ScrollPosition> positions => DartRuntimePrimitives.ConvertValue<IEnumerable<ScrollPosition>>(_positions);
+    public virtual IEnumerable<ScrollPosition> positions =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<ScrollPosition>>(_positions);
     public virtual bool hasClients => Enumerable.Any(_positions);
     public virtual ScrollPosition position
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => Enumerable.Any(_positions), () => (object?)"ScrollController not attached to any scroll views.");
-            DartRuntimePrimitives.Assert(() => checked(_positions.Count) == 1L, () => (object?)"ScrollController attached to multiple scroll views.");
+            DartRuntimePrimitives.Assert(
+                () => Enumerable.Any(_positions),
+                () => (object?)"ScrollController not attached to any scroll views."
+            );
+            DartRuntimePrimitives.Assert(
+                () => checked(_positions.Count) == 1L,
+                () => (object?)"ScrollController attached to multiple scroll views."
+            );
             return _positions.Single();
         }
     }
     public virtual double offset => position.pixels;
-    public async virtual Future animateTo(double offset, Duration duration, Curve curve)
+
+    public virtual async Future animateTo(double offset, Duration duration, Curve curve)
     {
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(_positions), () => (object?)"ScrollController not attached to any scroll views.");
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(_positions),
+            () => (object?)"ScrollController not attached to any scroll views."
+        );
         // Snapshot before starting an animation. A position may detach while a
         // sibling is animating, but Flutter's controller waits for every
         // position that was attached at invocation time.
@@ -53,8 +71,15 @@ public class ScrollController : ChangeNotifier
 
     public virtual void jumpTo(double value)
     {
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(_positions), () => (object?)"ScrollController not attached to any scroll views.");
-        foreach (var position in new List<ScrollPosition>(DartRuntimePrimitives.ConvertEnumerable<ScrollPosition>(_positions)))
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(_positions),
+            () => (object?)"ScrollController not attached to any scroll views."
+        );
+        foreach (
+            var position in new List<ScrollPosition>(
+                DartRuntimePrimitives.ConvertEnumerable<ScrollPosition>(_positions)
+            )
+        )
         {
             position.jumpTo(value);
         }
@@ -85,9 +110,20 @@ public class ScrollController : ChangeNotifier
         base.dispose();
     }
 
-    public virtual ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
+    public virtual ScrollPosition createScrollPosition(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition
+    )
     {
-        return new ScrollPositionWithSingleContext(physics: physics, context: context, initialPixels: initialScrollOffset, keepScrollOffset: keepScrollOffset, oldPosition: oldPosition, debugLabel: debugLabel);
+        return new ScrollPositionWithSingleContext(
+            physics: physics,
+            context: context,
+            initialPixels: initialScrollOffset,
+            keepScrollOffset: keepScrollOffset,
+            oldPosition: oldPosition,
+            debugLabel: debugLabel
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,21 +161,34 @@ public class ScrollController : ChangeNotifier
             }
         }
     }
-
 }
 
 public class TrackingScrollController : ScrollController
 {
-    internal virtual DartMap<ScrollPosition, Action> _positionToListener { get; private set; } = new DartMap<ScrollPosition, Action>();
+    internal virtual DartMap<ScrollPosition, Action> _positionToListener { get; private set; } =
+        new DartMap<ScrollPosition, Action>();
     internal virtual ScrollPosition? _lastUpdated { get; set; } = default;
     internal virtual double? _lastUpdatedOffset { get; set; } = default;
 
-    public TrackingScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null) : base(initialScrollOffset: initialScrollOffset, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
-    {
-    }
+    public TrackingScrollController(
+        double initialScrollOffset = 0.0,
+        bool keepScrollOffset = true,
+        string? debugLabel = null,
+        Action<ScrollPosition>? onAttach = null,
+        Action<ScrollPosition>? onDetach = null
+    )
+        : base(
+            initialScrollOffset: initialScrollOffset,
+            keepScrollOffset: keepScrollOffset,
+            debugLabel: debugLabel,
+            onAttach: onAttach,
+            onDetach: onDetach
+        ) { }
 
     public virtual ScrollPosition? mostRecentlyUpdatedPosition => _lastUpdated;
-    public override double initialScrollOffset => DartRuntimePrimitives.ConvertValue<double>(_lastUpdatedOffset ?? base.initialScrollOffset);
+    public override double initialScrollOffset =>
+        DartRuntimePrimitives.ConvertValue<double>(_lastUpdatedOffset ?? base.initialScrollOffset);
+
     public override void attach(ScrollPosition position)
     {
         base.attach(position);
@@ -177,5 +226,4 @@ public class TrackingScrollController : ScrollController
         }
         base.dispose();
     }
-
 }

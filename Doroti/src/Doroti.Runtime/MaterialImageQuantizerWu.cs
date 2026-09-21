@@ -17,6 +17,7 @@
 
 using MaterialColorUtilities.Quantize;
 using MaterialColorUtilities.Utils;
+
 namespace Doroti.Runtime;
 
 /// <summary>
@@ -58,8 +59,8 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
         return new(resultMap);
     }
 
-    static int GetIndex(int r, int g, int b)
-        => (r << (INDEX_BITS * 2)) + (r << (INDEX_BITS + 1)) + r + (g << INDEX_BITS) + g + b;
+    static int GetIndex(int r, int g, int b) =>
+        (r << (INDEX_BITS * 2)) + (r << (INDEX_BITS + 1)) + r + (g << INDEX_BITS) + g + b;
 
     void ConstructHistogram(Dictionary<uint, uint> pixels)
     {
@@ -190,9 +191,9 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
             long weight = Volume(cube, weights);
             if (weight > 0)
             {
-                int r = (int)Math.Floor((double)Volume(cube, momentsR) / weight + 0.5);
-                int g = (int)Math.Floor((double)Volume(cube, momentsG) / weight + 0.5);
-                int b = (int)Math.Floor((double)Volume(cube, momentsB) / weight + 0.5);
+                int r = (int)Math.Floor(((double)Volume(cube, momentsR) / weight) + 0.5);
+                int g = (int)Math.Floor(((double)Volume(cube, momentsG) / weight) + 0.5);
+                int b = (int)Math.Floor(((double)Volume(cube, momentsB) / weight) + 0.5);
                 int color = (255 << 24) | ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);
                 colors.Add((uint)color);
             }
@@ -215,7 +216,7 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
             + moments[GetIndex(cube.R0, cube.G0, cube.B1)]
             - moments[GetIndex(cube.R0, cube.G0, cube.B0)];
 
-        double hypotenuse = (double)dr * dr + (double)dg * dg + (double)db * db;
+        double hypotenuse = ((double)dr * dr) + ((double)dg * dg) + ((double)db * db);
         long volume = Volume(cube, weights);
         return xx - (hypotenuse / volume);
     }
@@ -227,12 +228,36 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
         long wholeB = Volume(one, momentsB);
         long wholeW = Volume(one, weights);
 
-        MaximizeResult maxRResult =
-            Maximize(one, Direction.RED, one.R0 + 1, one.R1, wholeR, wholeG, wholeB, wholeW);
-        MaximizeResult maxGResult =
-            Maximize(one, Direction.GREEN, one.G0 + 1, one.G1, wholeR, wholeG, wholeB, wholeW);
-        MaximizeResult maxBResult =
-            Maximize(one, Direction.BLUE, one.B0 + 1, one.B1, wholeR, wholeG, wholeB, wholeW);
+        MaximizeResult maxRResult = Maximize(
+            one,
+            Direction.RED,
+            one.R0 + 1,
+            one.R1,
+            wholeR,
+            wholeG,
+            wholeB,
+            wholeW
+        );
+        MaximizeResult maxGResult = Maximize(
+            one,
+            Direction.GREEN,
+            one.G0 + 1,
+            one.G1,
+            wholeR,
+            wholeG,
+            wholeB,
+            wholeW
+        );
+        MaximizeResult maxBResult = Maximize(
+            one,
+            Direction.BLUE,
+            one.B0 + 1,
+            one.B1,
+            wholeR,
+            wholeG,
+            wholeB,
+            wholeW
+        );
         Direction cutDirection;
         double maxR = maxRResult.Maximum;
         double maxG = maxGResult.Maximum;
@@ -294,7 +319,8 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
         long wholeR,
         long wholeG,
         long wholeB,
-        long wholeW)
+        long wholeW
+    )
     {
         long bottomR = Bottom(cube, direction, momentsR);
         long bottomG = Bottom(cube, direction, momentsG);
@@ -319,7 +345,8 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
                 continue;
             }
 
-            double tempNumerator = (double)halfR * halfR + (double)halfG * halfG + (double)halfB * halfB;
+            double tempNumerator =
+                ((double)halfR * halfR) + ((double)halfG * halfG) + ((double)halfB * halfB);
             double tempDenominator = halfW;
             double temp = tempNumerator / tempDenominator;
 
@@ -332,7 +359,8 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
                 continue;
             }
 
-            tempNumerator = (double)halfR * halfR + (double)halfG * halfG + (double)halfB * halfB;
+            tempNumerator =
+                ((double)halfR * halfR) + ((double)halfG * halfG) + ((double)halfB * halfB);
             tempDenominator = halfW;
             temp += tempNumerator / tempDenominator;
 
@@ -345,7 +373,7 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
         return new MaximizeResult(cut, max);
     }
 
-    private static long Volume(Box cube, long[] moment) => 
+    private static long Volume(Box cube, long[] moment) =>
         moment[GetIndex(cube.R1, cube.G1, cube.B1)]
         - moment[GetIndex(cube.R1, cube.G1, cube.B0)]
         - moment[GetIndex(cube.R1, cube.G0, cube.B1)]
@@ -355,51 +383,47 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
         + moment[GetIndex(cube.R0, cube.G0, cube.B1)]
         - moment[GetIndex(cube.R0, cube.G0, cube.B0)];
 
-    private static long Bottom(Box cube, Direction direction, long[] moment) => direction switch
-    {
-        Direction.RED =>
-            -moment[GetIndex(cube.R0, cube.G1, cube.B1)]
-            + moment[GetIndex(cube.R0, cube.G1, cube.B0)]
-            + moment[GetIndex(cube.R0, cube.G0, cube.B1)]
-            - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
-        Direction.GREEN =>
-            -moment[GetIndex(cube.R1, cube.G0, cube.B1)]
-            + moment[GetIndex(cube.R1, cube.G0, cube.B0)]
-            + moment[GetIndex(cube.R0, cube.G0, cube.B1)]
-            - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
-        Direction.BLUE =>
-            -moment[GetIndex(cube.R1, cube.G1, cube.B0)]
-            + moment[GetIndex(cube.R1, cube.G0, cube.B0)]
-            + moment[GetIndex(cube.R0, cube.G1, cube.B0)]
-            - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
-        _ => throw new ArgumentException("Unexpected direction: " + direction),
-    };
+    private static long Bottom(Box cube, Direction direction, long[] moment) =>
+        direction switch
+        {
+            Direction.RED => -moment[GetIndex(cube.R0, cube.G1, cube.B1)]
+                + moment[GetIndex(cube.R0, cube.G1, cube.B0)]
+                + moment[GetIndex(cube.R0, cube.G0, cube.B1)]
+                - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
+            Direction.GREEN => -moment[GetIndex(cube.R1, cube.G0, cube.B1)]
+                + moment[GetIndex(cube.R1, cube.G0, cube.B0)]
+                + moment[GetIndex(cube.R0, cube.G0, cube.B1)]
+                - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
+            Direction.BLUE => -moment[GetIndex(cube.R1, cube.G1, cube.B0)]
+                + moment[GetIndex(cube.R1, cube.G0, cube.B0)]
+                + moment[GetIndex(cube.R0, cube.G1, cube.B0)]
+                - moment[GetIndex(cube.R0, cube.G0, cube.B0)],
+            _ => throw new ArgumentException("Unexpected direction: " + direction),
+        };
 
-    private static long Top(Box cube, Direction direction, int position, long[] moment) => direction switch
-    {
-        Direction.RED =>
-            moment[GetIndex(position, cube.G1, cube.B1)]
-            - moment[GetIndex(position, cube.G1, cube.B0)]
-            - moment[GetIndex(position, cube.G0, cube.B1)]
-            + moment[GetIndex(position, cube.G0, cube.B0)],
-        Direction.GREEN =>
-            moment[GetIndex(cube.R1, position, cube.B1)]
-            - moment[GetIndex(cube.R1, position, cube.B0)]
-            - moment[GetIndex(cube.R0, position, cube.B1)]
-            + moment[GetIndex(cube.R0, position, cube.B0)],
-        Direction.BLUE =>
-            moment[GetIndex(cube.R1, cube.G1, position)]
-            - moment[GetIndex(cube.R1, cube.G0, position)]
-            - moment[GetIndex(cube.R0, cube.G1, position)]
-            + moment[GetIndex(cube.R0, cube.G0, position)],
-        _ => throw new ArgumentException("Unexpected direction: " + direction),
-    };
+    private static long Top(Box cube, Direction direction, int position, long[] moment) =>
+        direction switch
+        {
+            Direction.RED => moment[GetIndex(position, cube.G1, cube.B1)]
+                - moment[GetIndex(position, cube.G1, cube.B0)]
+                - moment[GetIndex(position, cube.G0, cube.B1)]
+                + moment[GetIndex(position, cube.G0, cube.B0)],
+            Direction.GREEN => moment[GetIndex(cube.R1, position, cube.B1)]
+                - moment[GetIndex(cube.R1, position, cube.B0)]
+                - moment[GetIndex(cube.R0, position, cube.B1)]
+                + moment[GetIndex(cube.R0, position, cube.B0)],
+            Direction.BLUE => moment[GetIndex(cube.R1, cube.G1, position)]
+                - moment[GetIndex(cube.R1, cube.G0, position)]
+                - moment[GetIndex(cube.R0, cube.G1, position)]
+                + moment[GetIndex(cube.R0, cube.G0, position)],
+            _ => throw new ArgumentException("Unexpected direction: " + direction),
+        };
 
     public enum Direction
     {
         RED,
         GREEN,
-        BLUE
+        BLUE,
     }
 
     public class MaximizeResult

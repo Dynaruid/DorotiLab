@@ -11,19 +11,16 @@ public static partial class Message_codecsLibrary
 
 public class BinaryCodec : MessageCodec<ByteData>
 {
-    public BinaryCodec()
-    {
-    }
+    public BinaryCodec() { }
 
     public virtual ByteData? decodeMessage(ByteData? message) => message;
+
     public virtual ByteData? encodeMessage(ByteData? message) => message;
 }
 
 public class StringCodec : MessageCodec<string>
 {
-    public StringCodec()
-    {
-    }
+    public StringCodec() { }
 
     public virtual string? decodeMessage(ByteData? message)
     {
@@ -44,14 +41,11 @@ public class StringCodec : MessageCodec<string>
         return new ByteData(Dart_convertLibrary.utf8.encode(message));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class JSONMessageCodec : MessageCodec<object?>
 {
-    public JSONMessageCodec()
-    {
-    }
+    public JSONMessageCodec() { }
 
     public virtual ByteData? encodeMessage(object? message)
     {
@@ -72,25 +66,31 @@ public class JSONMessageCodec : MessageCodec<object?>
         return Dart_convertLibrary.json.decode(new StringCodec().decodeMessage(message)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class JSONMethodCodec : MethodCodec
 {
-    public JSONMethodCodec()
-    {
-    }
+    public JSONMethodCodec() { }
 
     public virtual ByteData encodeMethodCall(MethodCall methodCall)
     {
-        return new JSONMessageCodec().encodeMessage(new DartMap<string, object?> { ["method"] = methodCall.method, ["args"] = methodCall.arguments })!;
+        return new JSONMessageCodec().encodeMessage(
+            new DartMap<string, object?>
+            {
+                ["method"] = methodCall.method,
+                ["args"] = methodCall.arguments,
+            }
+        )!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual MethodCall decodeMethodCall(ByteData? methodCall)
     {
         object? decoded = new JSONMessageCodec().decodeMessage(methodCall);
-        if (!DartPatternRuntime.TryGetMapValue(decoded, "method", out var methodValue) || methodValue is not string method)
+        if (
+            !DartPatternRuntime.TryGetMapValue(decoded, "method", out var methodValue)
+            || methodValue is not string method
+        )
         {
             throw new FormatException($"Expected method call Map, got {decoded}");
         }
@@ -109,13 +109,40 @@ public class JSONMethodCodec : MethodCodec
         {
             return ((List<object>)decoded)[(int)0L];
         }
-        if ((((List<object>)decoded).Count == 3L) && (((List<object>)decoded)[(int)0L] is string) && ((((List<object>)decoded)[(int)1L] is null) || (((List<object>)decoded)[(int)1L] is string)))
+        if (
+            (((List<object>)decoded).Count == 3L)
+            && (((List<object>)decoded)[(int)0L] is string)
+            && (
+                (((List<object>)decoded)[(int)1L] is null)
+                || (((List<object>)decoded)[(int)1L] is string)
+            )
+        )
         {
-            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)0L])!, message: ((string?)((List<object>)decoded)[(int)1L])!, details: ((List<object>)decoded)[(int)2L]);
+            throw new PlatformException(
+                code: ((string?)((List<object>)decoded)[(int)0L])!,
+                message: ((string?)((List<object>)decoded)[(int)1L])!,
+                details: ((List<object>)decoded)[(int)2L]
+            );
         }
-        if ((((List<object>)decoded).Count == 4L) && (((List<object>)decoded)[(int)0L] is string) && ((((List<object>)decoded)[(int)1L] is null) || (((List<object>)decoded)[(int)1L] is string)) && ((((List<object>)decoded)[(int)3L] is null) || (((List<object>)decoded)[(int)3L] is string)))
+        if (
+            (((List<object>)decoded).Count == 4L)
+            && (((List<object>)decoded)[(int)0L] is string)
+            && (
+                (((List<object>)decoded)[(int)1L] is null)
+                || (((List<object>)decoded)[(int)1L] is string)
+            )
+            && (
+                (((List<object>)decoded)[(int)3L] is null)
+                || (((List<object>)decoded)[(int)3L] is string)
+            )
+        )
         {
-            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)0L])!, message: ((string?)((List<object>)decoded)[(int)1L])!, details: ((List<object>)decoded)[(int)2L], stacktrace: ((string?)((List<object>)decoded)[(int)3L])!);
+            throw new PlatformException(
+                code: ((string?)((List<object>)decoded)[(int)0L])!,
+                message: ((string?)((List<object>)decoded)[(int)1L])!,
+                details: ((List<object>)decoded)[(int)2L],
+                stacktrace: ((string?)((List<object>)decoded)[(int)3L])!
+            );
         }
         throw new FormatException($"Invalid envelope: {(List<object>)decoded}");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -127,12 +154,15 @@ public class JSONMethodCodec : MethodCodec
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ByteData encodeErrorEnvelope(string code, string? message = null, object? details = null)
+    public virtual ByteData encodeErrorEnvelope(
+        string code,
+        string? message = null,
+        object? details = null
+    )
     {
         return new JSONMessageCodec().encodeMessage(new List<object?> { code, message, details })!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class StandardMessageCodec : MessageCodec<object?>
@@ -153,9 +183,7 @@ public class StandardMessageCodec : MessageCodec<object?>
     internal const long _valueMap = 13L;
     internal const long _valueFloat32List = 14L;
 
-    public StandardMessageCodec()
-    {
-    }
+    public StandardMessageCodec() { }
 
     public virtual ByteData? encodeMessage(object? message)
     {
@@ -163,7 +191,9 @@ public class StandardMessageCodec : MessageCodec<object?>
         {
             return null;
         }
-        var buffer = new WriteBuffer(startCapacity: Message_codecsLibrary._writeBufferStartCapacity);
+        var buffer = new WriteBuffer(
+            startCapacity: Message_codecsLibrary._writeBufferStartCapacity
+        );
         writeValue(buffer, message);
         return buffer.done();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -208,7 +238,10 @@ public class StandardMessageCodec : MessageCodec<object?>
                 {
                     if (value is long value__as15467)
                     {
-                        if (((-2147483647L - 1L) <= value__as15467) && (value__as15467 <= 2147483647L))
+                        if (
+                            ((-2147483647L - 1L) <= value__as15467)
+                            && (value__as15467 <= 2147483647L)
+                        )
                         {
                             buffer.putUint8(_valueInt32);
                             buffer.putInt32(value__as15467);
@@ -236,7 +269,9 @@ public class StandardMessageCodec : MessageCodec<object?>
                                 }
                                 else
                                 {
-                                    utf8Bytes = Dart_convertLibrary.utf8.encode(value__as15722.substring(i));
+                                    utf8Bytes = Dart_convertLibrary.utf8.encode(
+                                        value__as15722.substring(i)
+                                    );
                                     utf8Offset = i;
                                     break;
                                 }
@@ -295,7 +330,9 @@ public class StandardMessageCodec : MessageCodec<object?>
                                             }
                                             else
                                             {
-                                                if (value is System.Collections.IList value__as17335)
+                                                if (
+                                                    value is System.Collections.IList value__as17335
+                                                )
                                                 {
                                                     buffer.putUint8(_valueList);
                                                     writeSize(buffer, value__as17335.Count);
@@ -306,11 +343,16 @@ public class StandardMessageCodec : MessageCodec<object?>
                                                 }
                                                 else
                                                 {
-                                                    if (value is System.Collections.IDictionary value__as17525)
+                                                    if (
+                                                        value
+                                                        is System.Collections.IDictionary value__as17525
+                                                    )
                                                     {
                                                         buffer.putUint8(_valueMap);
                                                         writeSize(buffer, value__as17525.Count);
-                                                        foreach (System.Collections.DictionaryEntry entry in value__as17525)
+                                                        foreach (
+                                                            System.Collections.DictionaryEntry entry in value__as17525
+                                                        )
                                                         {
                                                             writeValue(buffer, entry.Key);
                                                             writeValue(buffer, entry.Value);
@@ -318,7 +360,9 @@ public class StandardMessageCodec : MessageCodec<object?>
                                                     }
                                                     else
                                                     {
-                                                        throw new ArgumentException(value?.ToString());
+                                                        throw new ArgumentException(
+                                                            value?.ToString()
+                                                        );
                                                     }
                                                 }
                                             }
@@ -349,84 +393,86 @@ public class StandardMessageCodec : MessageCodec<object?>
         switch (type)
         {
             case var __case18505 when Equals(__case18505, _valueNull):
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case var __case18549 when Equals(__case18549, _valueTrue):
-                {
-                    return true;
-                }
+            {
+                return true;
+            }
             case var __case18593 when Equals(__case18593, _valueFalse):
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
             case var __case18639 when Equals(__case18639, _valueInt32):
-                {
-                    return (long)buffer.getInt32();
-                }
+            {
+                return (long)buffer.getInt32();
+            }
             case var __case18697 when Equals(__case18697, _valueInt64):
-                {
-                    return buffer.getInt64();
-                }
+            {
+                return buffer.getInt64();
+            }
             case var __case18755 when Equals(__case18755, _valueFloat64):
-                {
-                    return buffer.getFloat64();
-                }
+            {
+                return buffer.getFloat64();
+            }
             case var __case18817 when Equals(__case18817, _valueLargeInt):
             case var __case18844 when Equals(__case18844, _valueString):
-                {
-                    long length = readSize(buffer);
-                    return Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length));
-                }
+            {
+                long length = readSize(buffer);
+                return Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length));
+            }
             case var __case18980 when Equals(__case18980, _valueUint8List):
-                {
-                    long lengthLocal = readSize(buffer);
-                    return new Uint8List(buffer.getUint8List(lengthLocal).ToArray());
-                }
+            {
+                long lengthLocal = readSize(buffer);
+                return new Uint8List(buffer.getUint8List(lengthLocal).ToArray());
+            }
             case var __case19097 when Equals(__case19097, _valueInt32List):
-                {
-                    long lengthAlternate = readSize(buffer);
-                    return buffer.getInt32List(lengthAlternate);
-                }
+            {
+                long lengthAlternate = readSize(buffer);
+                return buffer.getInt32List(lengthAlternate);
+            }
             case var __case19214 when Equals(__case19214, _valueInt64List):
-                {
-                    long lengthNested = readSize(buffer);
-                    return buffer.getInt64List(lengthNested);
-                }
+            {
+                long lengthNested = readSize(buffer);
+                return buffer.getInt64List(lengthNested);
+            }
             case var __case19331 when Equals(__case19331, _valueFloat32List):
-                {
-                    long lengthCurrent = readSize(buffer);
-                    return buffer.getFloat32List(lengthCurrent);
-                }
+            {
+                long lengthCurrent = readSize(buffer);
+                return buffer.getFloat32List(lengthCurrent);
+            }
             case var __case19452 when Equals(__case19452, _valueFloat64List):
-                {
-                    long lengthNext = readSize(buffer);
-                    return buffer.getFloat64List(lengthNext);
-                }
+            {
+                long lengthNext = readSize(buffer);
+                return buffer.getFloat64List(lengthNext);
+            }
             case var __case19573 when Equals(__case19573, _valueList):
+            {
+                long lengthCandidate = readSize(buffer);
+                var result = new List<object?>(
+                    Enumerable.Repeat<object?>(null, checked((int)lengthCandidate))
+                );
+                for (var i = 0L; i < lengthCandidate; i++)
                 {
-                    long lengthCandidate = readSize(buffer);
-                    var result = new List<object?>(Enumerable.Repeat<object?>(null, checked((int)lengthCandidate)));
-                    for (var i = 0L; i < lengthCandidate; i++)
-                    {
-                        result[(int)i] = readValue(buffer);
-                    }
-                    return result;
+                    result[(int)i] = readValue(buffer);
                 }
+                return result;
+            }
             case var __case19817 when Equals(__case19817, _valueMap):
+            {
+                long lengthA = readSize(buffer);
+                var resultLocal = new DartMap<object?, object?>();
+                for (var iLocal = 0L; iLocal < lengthA; iLocal++)
                 {
-                    long lengthA = readSize(buffer);
-                    var resultLocal = new DartMap<object?, object?>();
-                    for (var iLocal = 0L; iLocal < lengthA; iLocal++)
-                    {
-                        resultLocal[readValue(buffer)] = readValue(buffer);
-                    }
-                    return resultLocal;
+                    resultLocal[readValue(buffer)] = readValue(buffer);
                 }
+                return resultLocal;
+            }
             default:
-                {
-                    throw new FormatException("Message corrupted");
-                }
+            {
+                throw new FormatException("Message corrupted");
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -456,10 +502,14 @@ public class StandardMessageCodec : MessageCodec<object?>
     public virtual long readSize(ReadBuffer buffer)
     {
         long value = buffer.getUint8();
-        return value switch { var __case20966 when Equals(__case20966, 254L) => buffer.getUint16(), var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(), _ => value };
+        return value switch
+        {
+            var __case20966 when Equals(__case20966, 254L) => buffer.getUint16(),
+            var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(),
+            _ => value,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class StandardMethodCodec : MethodCodec
@@ -473,7 +523,9 @@ public class StandardMethodCodec : MethodCodec
 
     public virtual ByteData encodeMethodCall(MethodCall methodCall)
     {
-        var buffer = new WriteBuffer(startCapacity: Message_codecsLibrary._writeBufferStartCapacity);
+        var buffer = new WriteBuffer(
+            startCapacity: Message_codecsLibrary._writeBufferStartCapacity
+        );
         messageCodec.writeValue(buffer, methodCall.method);
         messageCodec.writeValue(buffer, methodCall.arguments);
         return buffer.done();
@@ -498,16 +550,24 @@ public class StandardMethodCodec : MethodCodec
 
     public virtual ByteData encodeSuccessEnvelope(object? result)
     {
-        var buffer = new WriteBuffer(startCapacity: Message_codecsLibrary._writeBufferStartCapacity);
+        var buffer = new WriteBuffer(
+            startCapacity: Message_codecsLibrary._writeBufferStartCapacity
+        );
         buffer.putUint8(0L);
         messageCodec.writeValue(buffer, result);
         return buffer.done();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ByteData encodeErrorEnvelope(string code, string? message = null, object? details = null)
+    public virtual ByteData encodeErrorEnvelope(
+        string code,
+        string? message = null,
+        object? details = null
+    )
     {
-        var buffer = new WriteBuffer(startCapacity: Message_codecsLibrary._writeBufferStartCapacity);
+        var buffer = new WriteBuffer(
+            startCapacity: Message_codecsLibrary._writeBufferStartCapacity
+        );
         buffer.putUint8(1L);
         messageCodec.writeValue(buffer, code);
         messageCodec.writeValue(buffer, message);
@@ -530,10 +590,21 @@ public class StandardMethodCodec : MethodCodec
         object? errorCode = messageCodec.readValue(buffer);
         object? errorMessage = messageCodec.readValue(buffer);
         object? errorDetails = messageCodec.readValue(buffer);
-        string? errorStacktrace = buffer.hasRemaining ? ((string?)messageCodec.readValue(buffer))! : null;
-        if ((errorCode is string) && ((errorMessage is null) || (errorMessage is string)) && !buffer.hasRemaining)
+        string? errorStacktrace = buffer.hasRemaining
+            ? ((string?)messageCodec.readValue(buffer))!
+            : null;
+        if (
+            (errorCode is string)
+            && ((errorMessage is null) || (errorMessage is string))
+            && !buffer.hasRemaining
+        )
         {
-            throw new PlatformException(code: (string)errorCode, message: ((string?)errorMessage)!, details: errorDetails, stacktrace: errorStacktrace);
+            throw new PlatformException(
+                code: (string)errorCode,
+                message: ((string?)errorMessage)!,
+                details: errorDetails,
+                stacktrace: errorStacktrace
+            );
         }
         else
         {
@@ -541,5 +612,4 @@ public class StandardMethodCodec : MethodCodec
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

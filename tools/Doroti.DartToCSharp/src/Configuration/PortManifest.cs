@@ -35,7 +35,8 @@ public sealed record PortManifest(
     string CompilerSelection,
     PortInput[] Inputs,
     PortCustomizations Customizations,
-    string[] RequiredFixtures);
+    string[] RequiredFixtures
+);
 
 public sealed record PortSource(string Kind, string Revision, string License);
 
@@ -45,7 +46,8 @@ public sealed record PortCustomizations(
     string[] MappingFiles,
     string? ReplacementManifest,
     string[] ExtensionRoots,
-    string[] PlatformPortRoots);
+    string[] PlatformPortRoots
+);
 
 public sealed record PortReplacementManifest(string SchemaVersion, PortReplacement[] Replacements);
 
@@ -54,7 +56,8 @@ public sealed record PortReplacement(
     string Symbol,
     string GeneratedBaseSha256,
     string Source,
-    string? Member = null);
+    string? Member = null
+);
 
 public sealed class PortContractException : Exception
 {
@@ -75,7 +78,11 @@ public sealed class PortManifestLoader
         var manifest = Read<PortManifest>(path, PortSchemas.Manifest, "DORPORT001");
         var portRoot = Path.GetDirectoryName(path)!;
 
-        if (manifest.Mode is not PortSchemas.RegeneratablePackage and not PortSchemas.RuntimeAdoption)
+        if (
+            manifest.Mode
+            is not PortSchemas.RegeneratablePackage
+                and not PortSchemas.RuntimeAdoption
+        )
         {
             throw Error("DORPORT002", $"Unsupported port mode '{manifest.Mode}'.");
         }
@@ -96,8 +103,11 @@ public sealed class PortManifestLoader
         {
             throw Error("DORPORT001", "customizations is required.");
         }
-        if (manifest.RequiredFixtures is null || manifest.RequiredFixtures.Length == 0 ||
-            manifest.RequiredFixtures.Any(string.IsNullOrWhiteSpace))
+        if (
+            manifest.RequiredFixtures is null
+            || manifest.RequiredFixtures.Length == 0
+            || manifest.RequiredFixtures.Any(string.IsNullOrWhiteSpace)
+        )
         {
             throw Error("DORPORT001", "requiredFixtures must contain at least one fixture id.");
         }
@@ -107,15 +117,25 @@ public sealed class PortManifestLoader
         foreach (var input in manifest.Inputs)
         {
             RequireText(input?.Library, "inputs.library");
-            if (input!.Symbols is null || input.Symbols.Length == 0 || input.Symbols.Any(string.IsNullOrWhiteSpace))
+            if (
+                input!.Symbols is null
+                || input.Symbols.Length == 0
+                || input.Symbols.Any(string.IsNullOrWhiteSpace)
+            )
             {
-                throw Error("DORPORT001", $"Port input '{input.Library}' must select at least one symbol.");
+                throw Error(
+                    "DORPORT001",
+                    $"Port input '{input.Library}' must select at least one symbol."
+                );
             }
             foreach (var symbol in input.Symbols)
             {
                 if (!selectedSymbols.Add(TargetKey(input.Library, symbol, null)))
                 {
-                    throw Error("DORPORT005", $"Duplicate selected symbol ownership: {input.Library}#{symbol}.");
+                    throw Error(
+                        "DORPORT005",
+                        $"Duplicate selected symbol ownership: {input.Library}#{symbol}."
+                    );
                 }
             }
         }
@@ -145,11 +165,17 @@ public sealed class PortManifestLoader
             members.Add(replacement.Member);
             if (members.Count > 1 && members.Any(string.IsNullOrWhiteSpace))
             {
-                throw Error("DORPORT005", $"A whole-symbol replacement overlaps a member replacement for {symbolKey}.");
+                throw Error(
+                    "DORPORT005",
+                    $"A whole-symbol replacement overlaps a member replacement for {symbolKey}."
+                );
             }
             if (!selectedSymbols.Contains(TargetKey(replacement.Library, replacement.Symbol, null)))
             {
-                throw Error("DORPORT007", $"Replacement target is not selected by the port: {key}.");
+                throw Error(
+                    "DORPORT007",
+                    $"Replacement target is not selected by the port: {key}."
+                );
             }
         }
 
@@ -163,12 +189,24 @@ public sealed class PortManifestLoader
             return [];
         }
         var portRoot = Path.GetDirectoryName(Path.GetFullPath(manifestPath))!;
-        var replacementPath = ResolveUserPath(portRoot, manifest.Customizations.ReplacementManifest, requireDirectory: false);
-        var document = Read<PortReplacementManifest>(replacementPath, PortSchemas.Replacements, "DORPORT001");
+        var replacementPath = ResolveUserPath(
+            portRoot,
+            manifest.Customizations.ReplacementManifest,
+            requireDirectory: false
+        );
+        var document = Read<PortReplacementManifest>(
+            replacementPath,
+            PortSchemas.Replacements,
+            "DORPORT001"
+        );
         return document.Replacements ?? throw Error("DORPORT001", "replacements is required.");
     }
 
-    internal static string ResolveUserPath(string portRoot, string relativePath, bool requireDirectory)
+    internal static string ResolveUserPath(
+        string portRoot,
+        string relativePath,
+        bool requireDirectory
+    )
     {
         RequireRelativePath(relativePath, "customization path");
         string path;
@@ -183,7 +221,10 @@ public sealed class PortManifestLoader
         var exists = requireDirectory ? Directory.Exists(path) : File.Exists(path);
         if (!exists)
         {
-            throw Error("DORPORT003", $"Port-owned {(requireDirectory ? "directory" : "file")} does not exist: {relativePath}");
+            throw Error(
+                "DORPORT003",
+                $"Port-owned {(requireDirectory ? "directory" : "file")} does not exist: {relativePath}"
+            );
         }
         return path;
     }
@@ -195,7 +236,10 @@ public sealed class PortManifestLoader
         var path = Path.GetFullPath(manifest.CompilerSelection, portRoot);
         if (!File.Exists(path))
         {
-            throw Error("DORPORT003", $"Compiler selection does not exist: {manifest.CompilerSelection}");
+            throw Error(
+                "DORPORT003",
+                $"Compiler selection does not exist: {manifest.CompilerSelection}"
+            );
         }
         return path;
     }
@@ -210,7 +254,8 @@ public sealed class PortManifestLoader
         {
             document = ArtifactFiles.ReadJson<T>(path);
         }
-        catch (Exception exception) when (exception is IOException or System.Text.Json.JsonException)
+        catch (Exception exception)
+            when (exception is IOException or System.Text.Json.JsonException)
         {
             throw Error(code, $"Could not read {Path.GetFileName(path)}: {exception.Message}");
         }
@@ -222,12 +267,18 @@ public sealed class PortManifestLoader
         };
         if (!string.Equals(actual, schema, StringComparison.Ordinal))
         {
-            throw Error(code, $"Unsupported schema '{actual ?? "<missing>"}'; expected '{schema}'.");
+            throw Error(
+                code,
+                $"Unsupported schema '{actual ?? "<missing>"}'; expected '{schema}'."
+            );
         }
         return document;
     }
 
-    private static void ValidateCustomizationPaths(string portRoot, PortCustomizations customizations)
+    private static void ValidateCustomizationPaths(
+        string portRoot,
+        PortCustomizations customizations
+    )
     {
         foreach (var mapping in customizations.MappingFiles ?? [])
         {
@@ -266,7 +317,11 @@ public sealed class PortManifestLoader
 
     private static void RequireSha256(string? value, string name)
     {
-        if (value is null || value.Length != 64 || value.Any(character => !Uri.IsHexDigit(character)))
+        if (
+            value is null
+            || value.Length != 64
+            || value.Any(character => !Uri.IsHexDigit(character))
+        )
         {
             throw Error("DORPORT001", $"{name} must be a 64-character SHA-256 value.");
         }

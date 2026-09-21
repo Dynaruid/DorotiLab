@@ -9,7 +9,8 @@ internal static class CSharpLocalNameNormalizer
 {
     private static readonly Regex AnalyzerOffsetSuffix = new(
         @"^(?<base>[A-Za-z_][A-Za-z0-9_]*)__\d+$",
-        RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        RegexOptions.CultureInvariant | RegexOptions.Compiled
+    );
 
     private static readonly string[] CollisionSuffixes =
     [
@@ -23,13 +24,17 @@ internal static class CSharpLocalNameNormalizer
 
     public static string Normalize(string source)
     {
-        var root = CSharpSyntaxTree.ParseText(
+        var root = CSharpSyntaxTree
+            .ParseText(
                 source,
-                CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest))
+                CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest)
+            )
             .GetRoot();
         var matchingTokens = root.DescendantTokens()
-            .Where(token => token.IsKind(SyntaxKind.IdentifierToken) &&
-                AnalyzerOffsetSuffix.IsMatch(token.ValueText))
+            .Where(token =>
+                token.IsKind(SyntaxKind.IdentifierToken)
+                && AnalyzerOffsetSuffix.IsMatch(token.ValueText)
+            )
             .ToArray();
         if (matchingTokens.Length == 0)
         {
@@ -43,8 +48,10 @@ internal static class CSharpLocalNameNormalizer
         {
             var boundary = group.Key;
             var reservedNames = (boundary?.DescendantTokens() ?? root.DescendantTokens())
-                .Where(token => token.IsKind(SyntaxKind.IdentifierToken) &&
-                    !AnalyzerOffsetSuffix.IsMatch(token.ValueText))
+                .Where(token =>
+                    token.IsKind(SyntaxKind.IdentifierToken)
+                    && !AnalyzerOffsetSuffix.IsMatch(token.ValueText)
+                )
                 .Select(token => token.ValueText)
                 .ToHashSet(StringComparer.Ordinal);
             var allocatedNames = new HashSet<string>(reservedNames, StringComparer.Ordinal);
@@ -66,19 +73,24 @@ internal static class CSharpLocalNameNormalizer
 
         var rewritten = root.ReplaceTokens(
             replacements.Keys,
-            (original, _) => CreateIdentifier(original, replacements[original]));
+            (original, _) => CreateIdentifier(original, replacements[original])
+        );
         return rewritten.ToFullString();
     }
 
     private static SyntaxNode? FindExecutableBoundary(SyntaxNode? node) =>
-        node?.AncestorsAndSelf().FirstOrDefault(candidate => candidate is
-            BaseMethodDeclarationSyntax or
-            AccessorDeclarationSyntax or
-            PropertyDeclarationSyntax or
-            IndexerDeclarationSyntax or
-            FieldDeclarationSyntax or
-            EventFieldDeclarationSyntax or
-            GlobalStatementSyntax);
+        node
+            ?.AncestorsAndSelf()
+            .FirstOrDefault(candidate =>
+                candidate
+                    is BaseMethodDeclarationSyntax
+                        or AccessorDeclarationSyntax
+                        or PropertyDeclarationSyntax
+                        or IndexerDeclarationSyntax
+                        or FieldDeclarationSyntax
+                        or EventFieldDeclarationSyntax
+                        or GlobalStatementSyntax
+            );
 
     private static string AllocateName(string baseName, HashSet<string> allocatedNames)
     {
@@ -109,23 +121,24 @@ internal static class CSharpLocalNameNormalizer
         var result = string.Empty;
         do
         {
-            result = (char)('A' + index % 26) + result;
+            result = (char)('A' + (index % 26)) + result;
             index = (index / 26) - 1;
-        }
-        while (index >= 0);
+        } while (index >= 0);
         return result;
     }
 
     private static SyntaxToken CreateIdentifier(SyntaxToken original, string valueText)
     {
-        var needsEscape = SyntaxFacts.GetKeywordKind(valueText) != SyntaxKind.None ||
-            SyntaxFacts.GetContextualKeywordKind(valueText) != SyntaxKind.None;
+        var needsEscape =
+            SyntaxFacts.GetKeywordKind(valueText) != SyntaxKind.None
+            || SyntaxFacts.GetContextualKeywordKind(valueText) != SyntaxKind.None;
         var text = needsEscape ? "@" + valueText : valueText;
         return SyntaxFactory.Identifier(
             original.LeadingTrivia,
             SyntaxKind.IdentifierToken,
             text,
             valueText,
-            original.TrailingTrivia);
+            original.TrailingTrivia
+        );
     }
 }

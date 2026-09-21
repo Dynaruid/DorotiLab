@@ -10,12 +10,30 @@ internal static class WindowsKeyMap
 
     internal static long Physical(long scanCode, long virtualKey)
     {
-        if (virtualKey is >= 0x41 and <= 0x5a) return HidPlane + 0x04 + virtualKey - 0x41;
-        if (virtualKey is >= 0x31 and <= 0x39) return HidPlane + 0x1e + virtualKey - 0x31;
-        if (virtualKey == 0x30) return HidPlane + 0x27;
-        if (virtualKey is >= 0x70 and <= 0x7b) return HidPlane + 0x3a + virtualKey - 0x70;
+        if (virtualKey is >= 0x41 and <= 0x5a)
+        {
+            return HidPlane + 0x04 + virtualKey - 0x41;
+        }
+
+        if (virtualKey is >= 0x31 and <= 0x39)
+        {
+            return HidPlane + 0x1e + virtualKey - 0x31;
+        }
+
+        if (virtualKey == 0x30)
+        {
+            return HidPlane + 0x27;
+        }
+
+        if (virtualKey is >= 0x70 and <= 0x7b)
+        {
+            return HidPlane + 0x3a + virtualKey - 0x70;
+        }
+
         if (virtualKey is >= 0x60 and <= 0x69)
+        {
             return virtualKey == 0x60 ? HidPlane + 0x62 : HidPlane + 0x59 + virtualKey - 0x61;
+        }
 
         var extended = (scanCode & 0x100) != 0;
         return virtualKey switch
@@ -68,11 +86,30 @@ internal static class WindowsKeyMap
     internal static long Logical(long scanCode, long virtualKey, string character)
     {
         var runes = character.EnumerateRunes().Take(2).ToArray();
-        if (runes is [var rune] && !Rune.IsControl(rune)) return Rune.ToLowerInvariant(rune).Value;
-        if (virtualKey is >= 0x41 and <= 0x5a) return 'a' + virtualKey - 0x41;
-        if (virtualKey is >= 0x30 and <= 0x39) return virtualKey;
-        if (virtualKey is >= 0x70 and <= 0x87) return 0x100000801 + virtualKey - 0x70;
-        if (virtualKey is >= 0x60 and <= 0x69) return 8589935152L + virtualKey - 0x60;
+        if (runes is [var rune] && !Rune.IsControl(rune))
+        {
+            return Rune.ToLowerInvariant(rune).Value;
+        }
+
+        if (virtualKey is >= 0x41 and <= 0x5a)
+        {
+            return 'a' + virtualKey - 0x41;
+        }
+
+        if (virtualKey is >= 0x30 and <= 0x39)
+        {
+            return virtualKey;
+        }
+
+        if (virtualKey is >= 0x70 and <= 0x87)
+        {
+            return 0x100000801 + virtualKey - 0x70;
+        }
+
+        if (virtualKey is >= 0x60 and <= 0x69)
+        {
+            return 8589935152L + virtualKey - 0x60;
+        }
 
         var extended = (scanCode & 0x100) != 0;
         return virtualKey switch

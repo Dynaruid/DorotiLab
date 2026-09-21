@@ -6,10 +6,15 @@ namespace Doroti.Host.Maui;
 public sealed class DorotiMacOSMetalSurfaceHandler
     : MacOSViewHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalView>
 {
-    public static readonly IPropertyMapper<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler> Mapper =
-        new PropertyMapper<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>(ViewMapper);
+    public static readonly IPropertyMapper<
+        DorotiMacOSMetalSurface,
+        DorotiMacOSMetalSurfaceHandler
+    > Mapper = new PropertyMapper<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>(
+        ViewMapper
+    );
 
-    public DorotiMacOSMetalSurfaceHandler() : base(Mapper) { }
+    public DorotiMacOSMetalSurfaceHandler()
+        : base(Mapper) { }
 
     protected override DorotiMacOSMetalView CreatePlatformView() => new();
 

@@ -6,9 +6,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public static partial class Date_pickerLibrary
-{
-}
+public static partial class Date_pickerLibrary { }
 
 public static partial class Date_pickerLibrary
 {
@@ -20,9 +18,7 @@ public static partial class Date_pickerLibrary
     internal static Size _calendarLandscapeDialogSize = new Size(496.0, 346.0);
 }
 
-public static partial class Date_pickerLibrary
-{
-}
+public static partial class Date_pickerLibrary { }
 
 public static partial class Date_pickerLibrary
 {
@@ -91,41 +87,155 @@ public static partial class Date_pickerLibrary
 
 public static partial class Date_pickerLibrary
 {
-    public static async Future<DateTime?> showDatePicker(BuildContext context, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? helpText = null, string? cancelText = null, string? confirmText = null, Locale? locale = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, RouteSettings? routeSettings = null, TextDirection? textDirection = null, Func<BuildContext, Widget?, Widget>? builder = null, DatePickerMode initialDatePickerMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, Offset? anchorPoint = null, Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, CalendarDelegate<DateTime> calendarDelegate = default!)
+    public static async Future<DateTime?> showDatePicker(
+        BuildContext context,
+        DateTime? initialDate = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        DateTime? currentDate = null,
+        DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+        Func<DateTime, bool>? selectableDayPredicate = null,
+        string? helpText = null,
+        string? cancelText = null,
+        string? confirmText = null,
+        Locale? locale = null,
+        bool barrierDismissible = true,
+        Color? barrierColor = null,
+        string? barrierLabel = null,
+        bool useRootNavigator = true,
+        RouteSettings? routeSettings = null,
+        TextDirection? textDirection = null,
+        Func<BuildContext, Widget?, Widget>? builder = null,
+        DatePickerMode initialDatePickerMode = DatePickerMode.day,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? fieldHintText = null,
+        string? fieldLabelText = null,
+        TextInputType? keyboardType = null,
+        Offset? anchorPoint = null,
+        Action<DatePickerEntryMode>? onDatePickerModeChange = null,
+        Icon? switchToInputEntryModeIcon = null,
+        Icon? switchToCalendarEntryModeIcon = null,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
     {
         calendarDelegate ??= new GregorianCalendarDelegate();
-        initialDate = (initialDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate)));
+        initialDate =
+            (initialDate is null)
+                ? null
+                : calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialDate)
+                    )
+                );
         firstDate = calendarDelegate.dateOnly(firstDate);
         lastDate = calendarDelegate.dateOnly(lastDate);
-        DartRuntimePrimitives.Assert(() => !lastDate.isBefore(firstDate), () => (object?)$"lastDate {lastDate} must be on or after firstDate {firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(initialDate).isBefore(firstDate), () => (object?)$"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or after firstDate {firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(initialDate).isAfter(lastDate), () => (object?)$"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or before lastDate {lastDate}.");
-        DartRuntimePrimitives.Assert(() => (selectableDayPredicate is null) || (initialDate is null) || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDate)), () => (object?)$"Provided initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must satisfy provided selectableDayPredicate.");
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        Widget dialog = new DatePickerDialog(initialDate: initialDate, firstDate: firstDate, lastDate: lastDate, currentDate: currentDate, initialEntryMode: initialEntryMode, selectableDayPredicate: selectableDayPredicate, helpText: helpText, cancelText: cancelText, confirmText: confirmText, initialCalendarMode: initialDatePickerMode, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, fieldHintText: fieldHintText, fieldLabelText: fieldLabelText, keyboardType: keyboardType, onDatePickerModeChange: onDatePickerModeChange, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate);
+        DartRuntimePrimitives.Assert(
+            () => !lastDate.isBefore(firstDate),
+            () => (object?)$"lastDate {lastDate} must be on or after firstDate {firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(initialDate).isBefore(firstDate),
+            () =>
+                (object?)
+                    $"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or after firstDate {firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(initialDate).isAfter(lastDate),
+            () =>
+                (object?)
+                    $"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or before lastDate {lastDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (selectableDayPredicate is null)
+                || (initialDate is null)
+                || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDate)),
+            () =>
+                (object?)
+                    $"Provided initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must satisfy provided selectableDayPredicate."
+        );
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
+        Widget dialog = new DatePickerDialog(
+            initialDate: initialDate,
+            firstDate: firstDate,
+            lastDate: lastDate,
+            currentDate: currentDate,
+            initialEntryMode: initialEntryMode,
+            selectableDayPredicate: selectableDayPredicate,
+            helpText: helpText,
+            cancelText: cancelText,
+            confirmText: confirmText,
+            initialCalendarMode: initialDatePickerMode,
+            errorFormatText: errorFormatText,
+            errorInvalidText: errorInvalidText,
+            fieldHintText: fieldHintText,
+            fieldLabelText: fieldLabelText,
+            keyboardType: keyboardType,
+            onDatePickerModeChange: onDatePickerModeChange,
+            switchToInputEntryModeIcon: switchToInputEntryModeIcon,
+            switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon,
+            calendarDelegate: calendarDelegate
+        );
         if (textDirection is not null)
         {
-            TextDirection textDirection__value11363 = DartRuntimePrimitives.RequireValue(textDirection);
-            dialog = DartRuntimePrimitives.ConvertValue<Widget>(new Directionality(textDirection: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirection__value11363)), child: dialog));
+            TextDirection textDirection__value11363 = DartRuntimePrimitives.RequireValue(
+                textDirection
+            );
+            dialog = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Directionality(
+                    textDirection: DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(textDirection__value11363)
+                    ),
+                    child: dialog
+                )
+            );
         }
         if (locale is not null)
         {
             Locale locale__value11473 = DartRuntimePrimitives.RequireValue(locale);
-            dialog = DartRuntimePrimitives.ConvertValue<Widget>(Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value11473), child: dialog));
+            dialog = DartRuntimePrimitives.ConvertValue<Widget>(
+                Localizations.CreateOverride(
+                    context: context,
+                    locale: DartRuntimePrimitives.RequireValue(locale__value11473),
+                    child: dialog
+                )
+            );
         }
         else
         {
             DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
             if (datePickerTheme.locale is not null)
             {
-                dialog = DartRuntimePrimitives.ConvertValue<Widget>(Localizations.CreateOverride(context: context, locale: datePickerTheme.locale, child: dialog));
+                dialog = DartRuntimePrimitives.ConvertValue<Widget>(
+                    Localizations.CreateOverride(
+                        context: context,
+                        locale: datePickerTheme.locale,
+                        child: dialog
+                    )
+                );
             }
         }
-        return await DialogLibrary.showDialog<DateTime?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, builder: (context) =>
-        {
-            return (builder is null) ? dialog : builder(context, dialog);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, anchorPoint: anchorPoint);
+        return await DialogLibrary.showDialog<DateTime?>(
+            context: context,
+            barrierDismissible: barrierDismissible,
+            barrierColor: barrierColor,
+            barrierLabel: barrierLabel,
+            useRootNavigator: useRootNavigator,
+            routeSettings: routeSettings,
+            builder: (context) =>
+            {
+                return (builder is null) ? dialog : builder(context, dialog);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            anchorPoint: anchorPoint
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -154,10 +264,36 @@ public class DatePickerDialog : StatefulWidget
     public virtual EdgeInsets insetPadding { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public DatePickerDialog(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? cancelText = null, string? confirmText = null, string? helpText = null, DatePickerMode initialCalendarMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, string? restorationId = null, Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, EdgeInsets insetPadding = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public DatePickerDialog(
+        Key? key = null,
+        DateTime? initialDate = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        DateTime? currentDate = null,
+        DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+        Func<DateTime, bool>? selectableDayPredicate = null,
+        string? cancelText = null,
+        string? confirmText = null,
+        string? helpText = null,
+        DatePickerMode initialCalendarMode = DatePickerMode.day,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? fieldHintText = null,
+        string? fieldLabelText = null,
+        TextInputType? keyboardType = null,
+        string? restorationId = null,
+        Action<DatePickerEntryMode>? onDatePickerModeChange = null,
+        Icon? switchToInputEntryModeIcon = null,
+        Icon? switchToCalendarEntryModeIcon = null,
+        EdgeInsets insetPadding = default!,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
+        : base(key: key)
     {
-        EdgeInsets __insetPadding = insetPadding ?? EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
-        CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
+        EdgeInsets __insetPadding =
+            insetPadding ?? EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
+        CalendarDelegate<DateTime> __calendarDelegate =
+            calendarDelegate ?? new GregorianCalendarDelegate();
         this.initialEntryMode = initialEntryMode;
         this.selectableDayPredicate = selectableDayPredicate;
         this.cancelText = cancelText;
@@ -175,20 +311,60 @@ public class DatePickerDialog : StatefulWidget
         this.switchToCalendarEntryModeIcon = switchToCalendarEntryModeIcon;
         this.insetPadding = __insetPadding;
         this.calendarDelegate = __calendarDelegate;
-        this.initialDate = (initialDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate)));
+        this.initialDate =
+            (initialDate is null)
+                ? null
+                : this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialDate)
+                    )
+                );
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
         this.lastDate = this.calendarDelegate.dateOnly(lastDate);
-        this.currentDate = this.calendarDelegate.dateOnly(currentDate ?? this.calendarDelegate.now());
-        DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate), () => (object?)$"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate), () => (object?)$"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}.");
-        DartRuntimePrimitives.Assert(() => (this.selectableDayPredicate is null) || (initialDate is null) || this.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(this.initialDate)), () => (object?)$"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate");
+        this.currentDate = this.calendarDelegate.dateOnly(
+            currentDate ?? this.calendarDelegate.now()
+        );
+        DartRuntimePrimitives.Assert(
+            () => !this.lastDate.isBefore(this.firstDate),
+            () =>
+                (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate),
+            () =>
+                (object?)
+                    $"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate),
+            () =>
+                (object?)
+                    $"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (this.selectableDayPredicate is null)
+                || (initialDate is null)
+                || this.selectableDayPredicate!(
+                    DartRuntimePrimitives.RequireValue(this.initialDate)
+                ),
+            () =>
+                (object?)
+                    $"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate"
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DatePickerDialogState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DatePickerDialogState__date_picker());
 }
 
-internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, RestorationMixin<DatePickerDialog>
+internal class _DatePickerDialogState__date_picker
+    : State<DatePickerDialog>,
+        RestorationMixin<DatePickerDialog>
 {
     private bool __late__selectedDate_initialized;
     private RestorableDateTimeN __late__selectedDate = default!;
@@ -212,19 +388,35 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         {
             if (!__late__entryMode_initialized)
             {
-                __late__entryMode = new _RestorableDatePickerEntryMode__date_picker(widget.initialEntryMode);
+                __late__entryMode = new _RestorableDatePickerEntryMode__date_picker(
+                    widget.initialEntryMode
+                );
                 __late__entryMode_initialized = true;
             }
             return __late__entryMode;
         }
     }
-    internal virtual _RestorableAutovalidateMode__date_picker _autovalidateMode { get; private set; } = new _RestorableAutovalidateMode__date_picker(AutovalidateMode.disabled);
-    internal virtual GlobalKey<IState> _calendarPickerKey { get; private set; } = GlobalKey<IState>.Create();
-    internal virtual GlobalKey<FormState> _formKey { get; private set; } = GlobalKey<FormState>.Create();
-    internal static DartMap<ShortcutActivator, Intent> _formShortcutMap = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = new NextFocusIntent() };
+    internal virtual _RestorableAutovalidateMode__date_picker _autovalidateMode
+    {
+        get;
+        private set;
+    } = new _RestorableAutovalidateMode__date_picker(AutovalidateMode.disabled);
+    internal virtual GlobalKey<IState> _calendarPickerKey { get; private set; } =
+        GlobalKey<IState>.Create();
+    internal virtual GlobalKey<FormState> _formKey { get; private set; } =
+        GlobalKey<FormState>.Create();
+    internal static DartMap<ShortcutActivator, Intent> _formShortcutMap = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.enter)] = new NextFocusIntent(),
+    };
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
 
@@ -233,19 +425,22 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         _selectedDate.dispose();
         _entryMode.dispose();
         _autovalidateMode.dispose();
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
     }
 
     public virtual string? restorationId => widget.restorationId;
+
     public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(_selectedDate, "selected_date");
@@ -255,12 +450,18 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
 
     internal virtual void _handleOk()
     {
-        if (Equals(_entryMode.value, DatePickerEntryMode.input) || Equals(_entryMode.value, DatePickerEntryMode.inputOnly))
+        if (
+            Equals(_entryMode.value, DatePickerEntryMode.input)
+            || Equals(_entryMode.value, DatePickerEntryMode.inputOnly)
+        )
         {
             FormState form = _formKey.currentState!;
             if (!form.validate())
             {
-                setState(() => { _ = _autovalidateMode.value = AutovalidateMode.always; });
+                setState(() =>
+                {
+                    _ = _autovalidateMode.value = AutovalidateMode.always;
+                });
                 return;
             }
             form.save();
@@ -285,39 +486,59 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
             switch (_entryMode.value)
             {
                 case DatePickerEntryMode.calendar:
-                    {
-                        _autovalidateMode.value = AutovalidateMode.disabled;
-                        _entryMode.value = DatePickerEntryMode.input;
-                        _handleOnDatePickerModeChange();
-                        break;
-                    }
+                {
+                    _autovalidateMode.value = AutovalidateMode.disabled;
+                    _entryMode.value = DatePickerEntryMode.input;
+                    _handleOnDatePickerModeChange();
+                    break;
+                }
                 case DatePickerEntryMode.input:
-                    {
-                        _formKey.currentState!.save();
-                        _entryMode.value = DatePickerEntryMode.calendar;
-                        _handleOnDatePickerModeChange();
-                        break;
-                    }
+                {
+                    _formKey.currentState!.save();
+                    _entryMode.value = DatePickerEntryMode.calendar;
+                    _handleOnDatePickerModeChange();
+                    break;
+                }
                 case DatePickerEntryMode.calendarOnly:
                 case DatePickerEntryMode.inputOnly:
-                    {
-                        DartRuntimePrimitives.Assert(() => false, () => (object?)$"Can not change entry mode from {_entryMode.value}");
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(
+                        () => false,
+                        () => (object?)$"Can not change entry mode from {_entryMode.value}"
+                    );
+                    break;
+                }
             }
         });
     }
 
     internal virtual void _handleDateChanged(DateTime date)
     {
-        setState(() => { _ = _selectedDate.value = date; });
+        setState(() =>
+        {
+            _ = _selectedDate.value = date;
+        });
     }
 
     internal virtual Size _dialogSize(BuildContext context)
     {
-        bool isCalendar = _entryMode.value switch { DatePickerEntryMode.calendar => true,DatePickerEntryMode.calendarOnly => true,DatePickerEntryMode.input => false,DatePickerEntryMode.inputOnly => false,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        bool isCalendar = _entryMode.value switch
+        {
+            DatePickerEntryMode.calendar => true,
+            DatePickerEntryMode.calendarOnly => true,
+            DatePickerEntryMode.input => false,
+            DatePickerEntryMode.inputOnly => false,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         Orientation orientation = MediaQuery.orientationOf(context);
-        return (isCalendar, orientation) switch { (true, Orientation.portrait) => Date_pickerLibrary._calendarPortraitDialogSizeM3,(false, Orientation.portrait) => Date_pickerLibrary._inputPortraitDialogSizeM3,(true, Orientation.landscape) => Date_pickerLibrary._calendarLandscapeDialogSize,(false, Orientation.landscape) => Date_pickerLibrary._inputLandscapeDialogSize };
+        return (isCalendar, orientation) switch
+        {
+            (true, Orientation.portrait) => Date_pickerLibrary._calendarPortraitDialogSizeM3,
+            (false, Orientation.portrait) => Date_pickerLibrary._inputPortraitDialogSizeM3,
+            (true, Orientation.landscape) => Date_pickerLibrary._calendarLandscapeDialogSize,
+            (false, Orientation.landscape) => Date_pickerLibrary._inputLandscapeDialogSize,
+        };
     }
 
     public override Widget build(BuildContext context)
@@ -331,34 +552,127 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         TextTheme textThemeLocal = theme.textTheme;
         TextStyle? headlineStyle = default!;
         {
-            headlineStyle = datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle;
+            headlineStyle =
+                datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle;
             switch (_entryMode.value)
             {
                 case DatePickerEntryMode.input:
                 case DatePickerEntryMode.inputOnly:
+                {
+                    if (Equals(orientationLocal, Orientation.landscape))
                     {
-                        if (Equals(orientationLocal, Orientation.landscape))
-                        {
-                            headlineStyle = textThemeLocal.headlineSmall;
-                        }
-                        break;
+                        headlineStyle = textThemeLocal.headlineSmall;
                     }
+                    break;
+                }
                 case DatePickerEntryMode.calendar:
                 case DatePickerEntryMode.calendarOnly:
                     break;
             }
         }
-        Color? headerForegroundColorLocal = datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
+        Color? headerForegroundColorLocal =
+            datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
         headlineStyle = headlineStyle?.copyWith(color: headerForegroundColorLocal);
-        Widget actions = new ConstrainedBox(constraints: new BoxConstraints(minHeight: 52.0), child: MediaQuery.withClampedTextScaling(maxScaleFactor: isLandscapeOrientation ? 1.6 : Calendar_date_pickerLibrary._kMaxTextScaleFactor, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8), child: new Align(alignment: AlignmentDirectional.centerEnd, child: new OverflowBar(spacing: 8, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new TextButton(style: datePickerTheme.cancelButtonStyle ?? defaultsLocal.cancelButtonStyle, onPressed: _handleCancel, child: new Text(widget.cancelText ?? localizations.cancelButtonLabel))), DartRuntimePrimitives.ConvertValue<Widget>(new TextButton(style: datePickerTheme.confirmButtonStyle ?? defaultsLocal.confirmButtonStyle, onPressed: _handleOk, child: new Text(widget.confirmText ?? localizations.okButtonLabel))) })))));
+        Widget actions = new ConstrainedBox(
+            constraints: new BoxConstraints(minHeight: 52.0),
+            child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: isLandscapeOrientation
+                    ? 1.6
+                    : Calendar_date_pickerLibrary._kMaxTextScaleFactor,
+                child: new Padding(
+                    padding: EdgeInsets.CreateSymmetric(horizontal: 8),
+                    child: new Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: new OverflowBar(
+                            spacing: 8,
+                            children: new List<Widget>
+                            {
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new TextButton(
+                                        style: datePickerTheme.cancelButtonStyle
+                                            ?? defaultsLocal.cancelButtonStyle,
+                                        onPressed: _handleCancel,
+                                        child: new Text(
+                                            widget.cancelText ?? localizations.cancelButtonLabel
+                                        )
+                                    )
+                                ),
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new TextButton(
+                                        style: datePickerTheme.confirmButtonStyle
+                                            ?? defaultsLocal.confirmButtonStyle,
+                                        onPressed: _handleOk,
+                                        child: new Text(
+                                            widget.confirmText ?? localizations.okButtonLabel
+                                        )
+                                    )
+                                ),
+                            }
+                        )
+                    )
+                )
+            )
+        );
         CalendarDatePicker calendarDatePicker()
         {
-            return new CalendarDatePicker(calendarDelegate: widget.calendarDelegate, key: _calendarPickerKey, initialDate: _selectedDate.value, firstDate: widget.firstDate, lastDate: widget.lastDate, currentDate: widget.currentDate, onDateChanged: _handleDateChanged, selectableDayPredicate: widget.selectableDayPredicate, initialCalendarMode: widget.initialCalendarMode);
+            return new CalendarDatePicker(
+                calendarDelegate: widget.calendarDelegate,
+                key: _calendarPickerKey,
+                initialDate: _selectedDate.value,
+                firstDate: widget.firstDate,
+                lastDate: widget.lastDate,
+                currentDate: widget.currentDate,
+                onDateChanged: _handleDateChanged,
+                selectableDayPredicate: widget.selectableDayPredicate,
+                initialCalendarMode: widget.initialCalendarMode
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         Form inputDatePicker()
         {
-            return new Form(key: _formKey, autovalidateMode: _autovalidateMode.value, child: new SizedBox(height: Equals(orientationLocal, Orientation.portrait) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 24), child: new Shortcuts(shortcuts: _formShortcutMap, child: new Column(mainAxisAlignment: MainAxisAlignment.center, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: MediaQuery.withClampedTextScaling(maxScaleFactor: 2.0, child: new InputDatePickerFormField(calendarDelegate: widget.calendarDelegate, initialDate: _selectedDate.value, firstDate: widget.firstDate, lastDate: widget.lastDate, onDateSubmitted: _handleDateChanged, onDateSaved: _handleDateChanged, selectableDayPredicate: widget.selectableDayPredicate, errorFormatText: widget.errorFormatText, errorInvalidText: widget.errorInvalidText, fieldHintText: widget.fieldHintText, fieldLabelText: widget.fieldLabelText, keyboardType: widget.keyboardType, autofocus: true)))) })))));
+            return new Form(
+                key: _formKey,
+                autovalidateMode: _autovalidateMode.value,
+                child: new SizedBox(
+                    height: Equals(orientationLocal, Orientation.portrait)
+                        ? Date_pickerLibrary._inputFormPortraitHeight
+                        : Date_pickerLibrary._inputFormLandscapeHeight,
+                    child: new Padding(
+                        padding: EdgeInsets.CreateSymmetric(horizontal: 24),
+                        child: new Shortcuts(
+                            shortcuts: _formShortcutMap,
+                            child: new Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: new List<Widget>
+                                {
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new Flexible(
+                                            child: MediaQuery.withClampedTextScaling(
+                                                maxScaleFactor: 2.0,
+                                                child: new InputDatePickerFormField(
+                                                    calendarDelegate: widget.calendarDelegate,
+                                                    initialDate: _selectedDate.value,
+                                                    firstDate: widget.firstDate,
+                                                    lastDate: widget.lastDate,
+                                                    onDateSubmitted: _handleDateChanged,
+                                                    onDateSaved: _handleDateChanged,
+                                                    selectableDayPredicate: widget.selectableDayPredicate,
+                                                    errorFormatText: widget.errorFormatText,
+                                                    errorInvalidText: widget.errorInvalidText,
+                                                    fieldHintText: widget.fieldHintText,
+                                                    fieldLabelText: widget.fieldLabelText,
+                                                    keyboardType: widget.keyboardType,
+                                                    autofocus: true
+                                                )
+                                            )
+                                        )
+                                    ),
+                                }
+                            )
+                        )
+                    )
+                )
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         Widget picker = default!;
@@ -366,59 +680,213 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         switch (_entryMode.value)
         {
             case DatePickerEntryMode.calendar:
-                {
-                    picker = DartRuntimePrimitives.ConvertValue<Widget>(calendarDatePicker());
-                    entryModeButtonLocal = DartRuntimePrimitives.ConvertValue<Widget>(new IconButton(icon: widget.switchToInputEntryModeIcon ?? new Icon(Icons.edit_outlined), color: headerForegroundColorLocal, tooltip: localizations.inputDateModeButtonLabel, onPressed: _handleEntryModeToggle));
-                    break;
-                }
+            {
+                picker = DartRuntimePrimitives.ConvertValue<Widget>(calendarDatePicker());
+                entryModeButtonLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new IconButton(
+                        icon: widget.switchToInputEntryModeIcon ?? new Icon(Icons.edit_outlined),
+                        color: headerForegroundColorLocal,
+                        tooltip: localizations.inputDateModeButtonLabel,
+                        onPressed: _handleEntryModeToggle
+                    )
+                );
+                break;
+            }
             case DatePickerEntryMode.calendarOnly:
-                {
-                    picker = DartRuntimePrimitives.ConvertValue<Widget>(calendarDatePicker());
-                    entryModeButtonLocal = null;
-                    break;
-                }
+            {
+                picker = DartRuntimePrimitives.ConvertValue<Widget>(calendarDatePicker());
+                entryModeButtonLocal = null;
+                break;
+            }
             case DatePickerEntryMode.input:
-                {
-                    picker = DartRuntimePrimitives.ConvertValue<Widget>(inputDatePicker());
-                    entryModeButtonLocal = DartRuntimePrimitives.ConvertValue<Widget>(new IconButton(icon: widget.switchToCalendarEntryModeIcon ?? new Icon(Icons.calendar_today), color: headerForegroundColorLocal, tooltip: localizations.calendarModeButtonLabel, onPressed: _handleEntryModeToggle));
-                    break;
-                }
+            {
+                picker = DartRuntimePrimitives.ConvertValue<Widget>(inputDatePicker());
+                entryModeButtonLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new IconButton(
+                        icon: widget.switchToCalendarEntryModeIcon
+                            ?? new Icon(Icons.calendar_today),
+                        color: headerForegroundColorLocal,
+                        tooltip: localizations.calendarModeButtonLabel,
+                        onPressed: _handleEntryModeToggle
+                    )
+                );
+                break;
+            }
             case DatePickerEntryMode.inputOnly:
-                {
-                    picker = DartRuntimePrimitives.ConvertValue<Widget>(inputDatePicker());
-                    entryModeButtonLocal = null;
-                    break;
-                }
+            {
+                picker = DartRuntimePrimitives.ConvertValue<Widget>(inputDatePicker());
+                entryModeButtonLocal = null;
+                break;
+            }
         }
-        Widget header = new _DatePickerHeader__date_picker(helpText: widget.helpText ?? localizations.datePickerHelpText, titleText: (_selectedDate.value is null) ? "" : widget.calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(_selectedDate.value), localizations), titleStyle: headlineStyle, orientation: orientationLocal, isShort: Equals(orientationLocal, Orientation.landscape), entryModeButton: entryModeButtonLocal);
-        double textScaleFactor = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale;
+        Widget header = new _DatePickerHeader__date_picker(
+            helpText: widget.helpText ?? localizations.datePickerHelpText,
+            titleText: (_selectedDate.value is null)
+                ? ""
+                : widget.calendarDelegate.formatMediumDate(
+                    DartRuntimePrimitives.RequireValue(_selectedDate.value),
+                    localizations
+                ),
+            titleStyle: headlineStyle,
+            orientation: orientationLocal,
+            isShort: Equals(orientationLocal, Orientation.landscape),
+            entryModeButton: entryModeButtonLocal
+        );
+        double textScaleFactor =
+            MediaQuery
+                .textScalerOf(context)
+                .clamp(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor)
+                .scale(Calendar_date_pickerLibrary._fontSizeToScale)
+            / Calendar_date_pickerLibrary._fontSizeToScale;
         Size dialogSize = _dialogSize(context) * textScaleFactor;
         DialogThemeData dialogThemeLocal = theme.dialogTheme;
-        return new Dialog(backgroundColor: datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor, elevation: datePickerTheme.elevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation), shadowColor: datePickerTheme.shadowColor ?? defaultsLocal.shadowColor, surfaceTintColor: datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor, shape: datePickerTheme.shape ?? defaultsLocal.shape, insetPadding: widget.insetPadding, clipBehavior: Clip.antiAlias, child: new AnimatedContainer(width: dialogSize.width, height: dialogSize.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor, child: new LayoutBuilder(builder: (context, constraints) =>
-        {
-            Size portraitDialogSize = Date_pickerLibrary._inputPortraitDialogSizeM3;
-            bool isFullyPortrait = constraints.maxHeight >= Math.Min(dialogSize.height, portraitDialogSize.height);
-            switch (orientationLocal)
-            {
-                case Orientation.portrait:
-                    {
-                        bool isInputMode = Equals(_entryMode.value, DatePickerEntryMode.inputOnly) || Equals(_entryMode.value, DatePickerEntryMode.input);
-                        bool showHeader = isFullyPortrait || !isInputMode;
-                        bool showPicker = isFullyPortrait || isInputMode;
-                        return new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<Widget>>)(() => { var __collection31479 = new List<Widget>(); if (showHeader) { __collection31479.Add(DartRuntimePrimitives.ConvertValue<Widget>(header)); } { __collection31479.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Divider(height: 0, color: datePickerTheme.dividerColor))); } if (showPicker) { __collection31479.AddRange(new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<Widget>(actions) }); } return __collection31479; }))());
-                    }
-                case Orientation.landscape:
-                    {
-                        return new Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<Widget>>)(() => { var __collection31985 = new List<Widget>(); __collection31985.Add(DartRuntimePrimitives.ConvertValue<Widget>(header)); { __collection31985.Add(DartRuntimePrimitives.ConvertValue<Widget>(new VerticalDivider(width: 0, color: datePickerTheme.dividerColor))); } __collection31985.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<Widget>(actions) })))); return __collection31985; }))());
-                    }
-                default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
-            }
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        return new Dialog(
+            backgroundColor: datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor,
+            elevation: datePickerTheme.elevation
+                ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation),
+            shadowColor: datePickerTheme.shadowColor ?? defaultsLocal.shadowColor,
+            surfaceTintColor: datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor,
+            shape: datePickerTheme.shape ?? defaultsLocal.shape,
+            insetPadding: widget.insetPadding,
+            clipBehavior: Clip.antiAlias,
+            child: new AnimatedContainer(
+                width: dialogSize.width,
+                height: dialogSize.height,
+                duration: Date_pickerLibrary._dialogSizeAnimationDuration,
+                curve: Curves.easeIn,
+                child: MediaQuery.withClampedTextScaling(
+                    maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor,
+                    child: new LayoutBuilder(
+                        builder: (context, constraints) =>
+                        {
+                            Size portraitDialogSize = Date_pickerLibrary._inputPortraitDialogSizeM3;
+                            bool isFullyPortrait =
+                                constraints.maxHeight
+                                >= Math.Min(dialogSize.height, portraitDialogSize.height);
+                            switch (orientationLocal)
+                            {
+                                case Orientation.portrait:
+                                {
+                                    bool isInputMode =
+                                        Equals(_entryMode.value, DatePickerEntryMode.inputOnly)
+                                        || Equals(_entryMode.value, DatePickerEntryMode.input);
+                                    bool showHeader = isFullyPortrait || !isInputMode;
+                                    bool showPicker = isFullyPortrait || isInputMode;
+                                    return new Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: (
+                                            (Func<List<Widget>>)(
+                                                () =>
+                                                {
+                                                    var __collection31479 = new List<Widget>();
+                                                    if (showHeader)
+                                                    {
+                                                        __collection31479.Add(
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                header
+                                                            )
+                                                        );
+                                                    }
+                                                    {
+                                                        __collection31479.Add(
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                new Divider(
+                                                                    height: 0,
+                                                                    color: datePickerTheme.dividerColor
+                                                                )
+                                                            )
+                                                        );
+                                                    }
+                                                    if (showPicker)
+                                                    {
+                                                        __collection31479.AddRange(
+                                                            new List<Widget>
+                                                            {
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new Expanded(child: picker)
+                                                                ),
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    actions
+                                                                ),
+                                                            }
+                                                        );
+                                                    }
+                                                    return __collection31479;
+                                                }
+                                            )
+                                        )()
+                                    );
+                                }
+                                case Orientation.landscape:
+                                {
+                                    return new Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: (
+                                            (Func<List<Widget>>)(
+                                                () =>
+                                                {
+                                                    var __collection31985 = new List<Widget>();
+                                                    __collection31985.Add(
+                                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                                            header
+                                                        )
+                                                    );
+                                                    {
+                                                        __collection31985.Add(
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                new VerticalDivider(
+                                                                    width: 0,
+                                                                    color: datePickerTheme.dividerColor
+                                                                )
+                                                            )
+                                                        );
+                                                    }
+                                                    __collection31985.Add(
+                                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                                            new Flexible(
+                                                                child: new Column(
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                    children: new List<Widget>
+                                                                    {
+                                                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                            new Expanded(
+                                                                                child: picker
+                                                                            )
+                                                                        ),
+                                                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                            actions
+                                                                        ),
+                                                                    }
+                                                                )
+                                                            )
+                                                        )
+                                                    );
+                                                    return __collection31985;
+                                                }
+                                            )
+                                        )()
+                                    );
+                                }
+                                default:
+                                    throw new InvalidOperationException(
+                                        "Non-exhaustive Dart switch value."
+                                    );
+                            }
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -426,10 +894,22 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -444,17 +924,21 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -472,7 +956,10 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -500,17 +987,25 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -525,28 +1020,65 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection41817 = new List<DiagnosticsNode>();
+                                    __collection41817.Add(
+                                        new ErrorSummary(
+                                            "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                                        )
+                                    );
+                                    __collection41817.Add(
+                                        new ErrorDescription(
+                                            $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                                + "\"restoreState\" was called:"
+                                        )
+                                    );
+                                    __collection41817.AddRange(
+                                        _debugPropertiesWaitingForReregistration!.map<
+                                            IRestorableProperty,
+                                            DiagnosticsNode
+                                        >(
+                                            (property) =>
+                                                new ErrorDescription(
+                                                    $" * {property._restorationId}"
+                                                )
+                                        )
+                                    );
+                                    return __collection41817;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -554,7 +1086,10 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -578,7 +1113,9 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -602,14 +1139,13 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
         property.removeListener(listener);
         property._unregister();
     }
-
 }
 
 internal class _RestorableDatePickerEntryMode__date_picker : RestorableValue<DatePickerEntryMode>
@@ -622,13 +1158,20 @@ internal class _RestorableDatePickerEntryMode__date_picker : RestorableValue<Dat
     }
 
     public override DatePickerEntryMode createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(DatePickerEntryMode oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(value)));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(
+                FoundationRuntimePorts.EnumIndex(value)
+            )
+        );
         notifyListeners();
     }
 
-    public override DatePickerEntryMode fromPrimitives(object? data) => Enum.GetValues<DatePickerEntryMode>().ToList()[(int)(long)data!];
+    public override DatePickerEntryMode fromPrimitives(object? data) =>
+        Enum.GetValues<DatePickerEntryMode>().ToList()[(int)(long)data!];
+
     public override object? toPrimitives() => FoundationRuntimePorts.EnumIndex(value);
 }
 
@@ -642,13 +1185,20 @@ internal class _RestorableAutovalidateMode__date_picker : RestorableValue<Autova
     }
 
     public override AutovalidateMode createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(AutovalidateMode oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(value)));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(
+                FoundationRuntimePorts.EnumIndex(value)
+            )
+        );
         notifyListeners();
     }
 
-    public override AutovalidateMode fromPrimitives(object? data) => Enum.GetValues<AutovalidateMode>().ToList()[(int)(long)data!];
+    public override AutovalidateMode fromPrimitives(object? data) =>
+        Enum.GetValues<AutovalidateMode>().ToList()[(int)(long)data!];
+
     public override object? toPrimitives() => FoundationRuntimePorts.EnumIndex(value);
 }
 
@@ -665,7 +1215,15 @@ internal class _DatePickerHeader__date_picker : StatelessWidget
     public virtual bool isShort { get; private set; } = default!;
     public virtual Widget? entryModeButton { get; private set; }
 
-    internal _DatePickerHeader__date_picker(string helpText, string titleText, string? titleSemanticsLabel = null, TextStyle? titleStyle = default!, Orientation orientation = default!, bool isShort = false, Widget? entryModeButton = null)
+    internal _DatePickerHeader__date_picker(
+        string helpText,
+        string titleText,
+        string? titleSemanticsLabel = null,
+        TextStyle? titleStyle = default!,
+        Orientation orientation = default!,
+        bool isShort = false,
+        Widget? entryModeButton = null
+    )
     {
         this.helpText = helpText;
         this.titleText = titleText;
@@ -681,87 +1239,434 @@ internal class _DatePickerHeader__date_picker : StatelessWidget
         ThemeData theme = Theme.of(context);
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        Color? backgroundColor = datePickerTheme.headerBackgroundColor ?? defaultsLocal.headerBackgroundColor;
-        Color? foregroundColor = datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
-        TextStyle? helpStyle = (datePickerTheme.headerHelpStyle ?? defaultsLocal.headerHelpStyle)?.copyWith(color: foregroundColor);
-        double currentScale = MediaQuery.textScalerOf(context).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale;
-        double maxHeaderTextScaleFactor = Math.Min(currentScale, (entryModeButton is not null) ? Date_pickerLibrary._kMaxHeaderWithEntryTextScaleFactor : Date_pickerLibrary._kMaxHeaderTextScaleFactor);
-        double textScaleFactor = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: maxHeaderTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale;
+        Color? backgroundColor =
+            datePickerTheme.headerBackgroundColor ?? defaultsLocal.headerBackgroundColor;
+        Color? foregroundColor =
+            datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
+        TextStyle? helpStyle = (
+            datePickerTheme.headerHelpStyle ?? defaultsLocal.headerHelpStyle
+        )?.copyWith(color: foregroundColor);
+        double currentScale =
+            MediaQuery.textScalerOf(context).scale(Calendar_date_pickerLibrary._fontSizeToScale)
+            / Calendar_date_pickerLibrary._fontSizeToScale;
+        double maxHeaderTextScaleFactor = Math.Min(
+            currentScale,
+            (entryModeButton is not null)
+                ? Date_pickerLibrary._kMaxHeaderWithEntryTextScaleFactor
+                : Date_pickerLibrary._kMaxHeaderTextScaleFactor
+        );
+        double textScaleFactor =
+            MediaQuery
+                .textScalerOf(context)
+                .clamp(maxScaleFactor: maxHeaderTextScaleFactor)
+                .scale(Calendar_date_pickerLibrary._fontSizeToScale)
+            / Calendar_date_pickerLibrary._fontSizeToScale;
         double scaledFontSize = MediaQuery.textScalerOf(context).scale(titleStyle?.fontSize ?? 32);
         var headerScaleFactor = (textScaleFactor > 1L) ? textScaleFactor : 1.0;
-        var help = new Text(helpText, style: helpStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Math.Min(textScaleFactor, Equals(orientation, Orientation.portrait) ? Date_pickerLibrary._kMaxHelpPortraitTextScaleFactor : Date_pickerLibrary._kMaxHelpLandscapeTextScaleFactor)));
-        var title = new Text(titleText, semanticsLabel: titleSemanticsLabel ?? titleText, style: titleStyle, maxLines: Equals(orientation, Orientation.portrait) ? ((scaledFontSize > 70L) ? 2L : 1L) : ((scaledFontSize > 40L) ? 3L : 2L), overflow: TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: textScaleFactor));
-        double fontScaleAdjustedHeaderHeight = (headerScaleFactor > 1.3) ? (headerScaleFactor - 0.2) : 1.0;
+        var help = new Text(
+            helpText,
+            style: helpStyle,
+            maxLines: 1L,
+            overflow: TextOverflow.ellipsis,
+            textScaler: MediaQuery
+                .textScalerOf(context)
+                .clamp(
+                    maxScaleFactor: Math.Min(
+                        textScaleFactor,
+                        Equals(orientation, Orientation.portrait)
+                            ? Date_pickerLibrary._kMaxHelpPortraitTextScaleFactor
+                            : Date_pickerLibrary._kMaxHelpLandscapeTextScaleFactor
+                    )
+                )
+        );
+        var title = new Text(
+            titleText,
+            semanticsLabel: titleSemanticsLabel ?? titleText,
+            style: titleStyle,
+            maxLines: Equals(orientation, Orientation.portrait)
+                ? ((scaledFontSize > 70L) ? 2L : 1L)
+                : ((scaledFontSize > 40L) ? 3L : 2L),
+            overflow: TextOverflow.ellipsis,
+            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: textScaleFactor)
+        );
+        double fontScaleAdjustedHeaderHeight =
+            (headerScaleFactor > 1.3) ? (headerScaleFactor - 0.2) : 1.0;
         switch (orientation)
         {
             case Orientation.portrait:
-                {
-                    return new Widgets.Semantics(container: true, child: new SizedBox(height: _datePickerHeaderPortraitHeight * fontScaleAdjustedHeaderHeight, child: new Material(color: backgroundColor, child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 24, end: 12, bottom: 12), child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: 16)), DartRuntimePrimitives.ConvertValue<Widget>(help), DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new SizedBox(height: 38))), DartRuntimePrimitives.ConvertValue<Widget>(new Row(children: ((Func<List<Widget>>)(() => { var __collection38913 = new List<Widget>(); __collection38913.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: title))); if (entryModeButton is not null) { __collection38913.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(container: true, child: entryModeButton))); } return __collection38913; }))())) })))));
-                }
+            {
+                return new Widgets.Semantics(
+                    container: true,
+                    child: new SizedBox(
+                        height: _datePickerHeaderPortraitHeight * fontScaleAdjustedHeaderHeight,
+                        child: new Material(
+                            color: backgroundColor,
+                            child: new Padding(
+                                padding: EdgeInsetsDirectional.CreateOnly(
+                                    start: 24,
+                                    end: 12,
+                                    bottom: 12
+                                ),
+                                child: new Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: new List<Widget>
+                                    {
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new SizedBox(height: 16)
+                                        ),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(help),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new Flexible(child: new SizedBox(height: 38))
+                                        ),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new Row(
+                                                children: (
+                                                    (Func<List<Widget>>)(
+                                                        () =>
+                                                        {
+                                                            var __collection38913 =
+                                                                new List<Widget>();
+                                                            __collection38913.Add(
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new Expanded(child: title)
+                                                                )
+                                                            );
+                                                            if (entryModeButton is not null)
+                                                            {
+                                                                __collection38913.Add(
+                                                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                        new Widgets.Semantics(
+                                                                            container: true,
+                                                                            child: entryModeButton
+                                                                        )
+                                                                    )
+                                                                );
+                                                            }
+                                                            return __collection38913;
+                                                        }
+                                                    )
+                                                )()
+                                            )
+                                        ),
+                                    }
+                                )
+                            )
+                        )
+                    )
+                );
+            }
             case Orientation.landscape:
-                {
-                    return new Widgets.Semantics(container: true, child: new SizedBox(width: _datePickerHeaderLandscapeWidth, child: new Material(color: backgroundColor, child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children: ((Func<List<Widget>>)(() => { var __collection39596 = new List<Widget>(); __collection39596.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: 16))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: help))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: isShort ? 16 : 56))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: title)))); if (entryModeButton is not null) { __collection39596.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0, end: 4.0, bottom: 6.0), child: new Widgets.Semantics(container: true, child: entryModeButton)))); } return __collection39596; }))()))));
-                }
+            {
+                return new Widgets.Semantics(
+                    container: true,
+                    child: new SizedBox(
+                        width: _datePickerHeaderLandscapeWidth,
+                        child: new Material(
+                            color: backgroundColor,
+                            child: new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: (
+                                    (Func<List<Widget>>)(
+                                        () =>
+                                        {
+                                            var __collection39596 = new List<Widget>();
+                                            __collection39596.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new SizedBox(height: 16)
+                                                )
+                                            );
+                                            __collection39596.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new Padding(
+                                                        padding: EdgeInsets.CreateSymmetric(
+                                                            horizontal: _headerPaddingLandscape
+                                                        ),
+                                                        child: help
+                                                    )
+                                                )
+                                            );
+                                            __collection39596.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new SizedBox(height: isShort ? 16 : 56)
+                                                )
+                                            );
+                                            __collection39596.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new Expanded(
+                                                        child: new Padding(
+                                                            padding: EdgeInsets.CreateSymmetric(
+                                                                horizontal: _headerPaddingLandscape
+                                                            ),
+                                                            child: title
+                                                        )
+                                                    )
+                                                )
+                                            );
+                                            if (entryModeButton is not null)
+                                            {
+                                                __collection39596.Add(
+                                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                                        new Padding(
+                                                            padding: EdgeInsetsDirectional.CreateOnly(
+                                                                start: 8.0,
+                                                                end: 4.0,
+                                                                bottom: 6.0
+                                                            ),
+                                                            child: new Widgets.Semantics(
+                                                                container: true,
+                                                                child: entryModeButton
+                                                            )
+                                                        )
+                                                    )
+                                                );
+                                            }
+                                            return __collection39596;
+                                        }
+                                    )
+                                )()
+                            )
+                        )
+                    )
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public delegate bool SelectableDayForRangePredicate(DateTime day, DateTime? selectedStartDay, DateTime? selectedEndDay);
+public delegate bool SelectableDayForRangePredicate(
+    DateTime day,
+    DateTime? selectedStartDay,
+    DateTime? selectedEndDay
+);
 
 public static partial class Date_pickerLibrary
 {
-    public static async Future<DateTimeRange<DateTime>?> showDateRangePicker(BuildContext context, DateTimeRange<DateTime>? initialDateRange = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, string? helpText = null, string? cancelText = null, string? confirmText = null, string? saveText = null, string? errorFormatText = null, string? errorInvalidText = null, string? errorInvalidRangeText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, Locale? locale = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, RouteSettings? routeSettings = null, TextDirection? textDirection = null, Func<BuildContext, Widget?, Widget>? builder = null, Offset? anchorPoint = null, TextInputType keyboardType = default!, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = null, CalendarDelegate<DateTime> calendarDelegate = default!)
+    public static async Future<DateTimeRange<DateTime>?> showDateRangePicker(
+        BuildContext context,
+        DateTimeRange<DateTime>? initialDateRange = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        DateTime? currentDate = null,
+        DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+        string? helpText = null,
+        string? cancelText = null,
+        string? confirmText = null,
+        string? saveText = null,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? errorInvalidRangeText = null,
+        string? fieldStartHintText = null,
+        string? fieldEndHintText = null,
+        string? fieldStartLabelText = null,
+        string? fieldEndLabelText = null,
+        Locale? locale = null,
+        bool barrierDismissible = true,
+        Color? barrierColor = null,
+        string? barrierLabel = null,
+        bool useRootNavigator = true,
+        RouteSettings? routeSettings = null,
+        TextDirection? textDirection = null,
+        Func<BuildContext, Widget?, Widget>? builder = null,
+        Offset? anchorPoint = null,
+        TextInputType keyboardType = default!,
+        Icon? switchToInputEntryModeIcon = null,
+        Icon? switchToCalendarEntryModeIcon = null,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = null,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
     {
-        initialDateRange = (initialDateRange is null) ? null : calendarDelegate.datesOnly(initialDateRange);
+        initialDateRange =
+            (initialDateRange is null) ? null : calendarDelegate.datesOnly(initialDateRange);
         firstDate = calendarDelegate.dateOnly(firstDate);
         lastDate = calendarDelegate.dateOnly(lastDate);
-        DartRuntimePrimitives.Assert(() => !lastDate.isBefore(firstDate), () => (object?)$"lastDate {lastDate} must be on or after firstDate {firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || !initialDateRange.start.isBefore(firstDate), () => (object?)$"initialDateRange's start date must be on or after firstDate {firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || !initialDateRange.end.isBefore(firstDate), () => (object?)$"initialDateRange's end date must be on or after firstDate {firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || !initialDateRange.start.isAfter(lastDate), () => (object?)$"initialDateRange's start date must be on or before lastDate {lastDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || !initialDateRange.end.isAfter(lastDate), () => (object?)$"initialDateRange's end date must be on or before lastDate {lastDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || (selectableDayPredicate is null) || selectableDayPredicate(initialDateRange.start, initialDateRange.start, initialDateRange.end), () => (object?)"initialDateRange's start date must be selectable.");
-        DartRuntimePrimitives.Assert(() => (initialDateRange is null) || (selectableDayPredicate is null) || selectableDayPredicate(initialDateRange.end, initialDateRange.start, initialDateRange.end), () => (object?)"initialDateRange's end date must be selectable.");
+        DartRuntimePrimitives.Assert(
+            () => !lastDate.isBefore(firstDate),
+            () => (object?)$"lastDate {lastDate} must be on or after firstDate {firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () => (initialDateRange is null) || !initialDateRange.start.isBefore(firstDate),
+            () =>
+                (object?)$"initialDateRange's start date must be on or after firstDate {firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () => (initialDateRange is null) || !initialDateRange.end.isBefore(firstDate),
+            () => (object?)$"initialDateRange's end date must be on or after firstDate {firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () => (initialDateRange is null) || !initialDateRange.start.isAfter(lastDate),
+            () =>
+                (object?)$"initialDateRange's start date must be on or before lastDate {lastDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () => (initialDateRange is null) || !initialDateRange.end.isAfter(lastDate),
+            () => (object?)$"initialDateRange's end date must be on or before lastDate {lastDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDateRange is null)
+                || (selectableDayPredicate is null)
+                || selectableDayPredicate(
+                    initialDateRange.start,
+                    initialDateRange.start,
+                    initialDateRange.end
+                ),
+            () => (object?)"initialDateRange's start date must be selectable."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDateRange is null)
+                || (selectableDayPredicate is null)
+                || selectableDayPredicate(
+                    initialDateRange.end,
+                    initialDateRange.start,
+                    initialDateRange.end
+                ),
+            () => (object?)"initialDateRange's end date must be selectable."
+        );
         currentDate = calendarDelegate.dateOnly(currentDate ?? calendarDelegate.now());
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        Widget dialog = new DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate, currentDate: DartRuntimePrimitives.RequireValue(currentDate), selectableDayPredicate: selectableDayPredicate, initialEntryMode: initialEntryMode, helpText: helpText, cancelText: cancelText, confirmText: confirmText, saveText: saveText, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, errorInvalidRangeText: errorInvalidRangeText, fieldStartHintText: fieldStartHintText, fieldEndHintText: fieldEndHintText, fieldStartLabelText: fieldStartLabelText, fieldEndLabelText: fieldEndLabelText, keyboardType: keyboardType, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate);
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
+        Widget dialog = new DateRangePickerDialog(
+            initialDateRange: initialDateRange,
+            firstDate: firstDate,
+            lastDate: lastDate,
+            currentDate: DartRuntimePrimitives.RequireValue(currentDate),
+            selectableDayPredicate: selectableDayPredicate,
+            initialEntryMode: initialEntryMode,
+            helpText: helpText,
+            cancelText: cancelText,
+            confirmText: confirmText,
+            saveText: saveText,
+            errorFormatText: errorFormatText,
+            errorInvalidText: errorInvalidText,
+            errorInvalidRangeText: errorInvalidRangeText,
+            fieldStartHintText: fieldStartHintText,
+            fieldEndHintText: fieldEndHintText,
+            fieldStartLabelText: fieldStartLabelText,
+            fieldEndLabelText: fieldEndLabelText,
+            keyboardType: keyboardType,
+            switchToInputEntryModeIcon: switchToInputEntryModeIcon,
+            switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon,
+            calendarDelegate: calendarDelegate
+        );
         if (textDirection is not null)
         {
-            TextDirection textDirection__value49942 = DartRuntimePrimitives.RequireValue(textDirection);
-            dialog = DartRuntimePrimitives.ConvertValue<Widget>(new Directionality(textDirection: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirection__value49942)), child: dialog));
+            TextDirection textDirection__value49942 = DartRuntimePrimitives.RequireValue(
+                textDirection
+            );
+            dialog = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Directionality(
+                    textDirection: DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(textDirection__value49942)
+                    ),
+                    child: dialog
+                )
+            );
         }
         if (locale is not null)
         {
             Locale locale__value50052 = DartRuntimePrimitives.RequireValue(locale);
-            dialog = DartRuntimePrimitives.ConvertValue<Widget>(Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value50052), child: dialog));
+            dialog = DartRuntimePrimitives.ConvertValue<Widget>(
+                Localizations.CreateOverride(
+                    context: context,
+                    locale: DartRuntimePrimitives.RequireValue(locale__value50052),
+                    child: dialog
+                )
+            );
         }
-        return await DialogLibrary.showDialog<DateTimeRange<DateTime>>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, useSafeArea: false, builder: (context) =>
-        {
-            return (builder is null) ? dialog : builder(context, dialog);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, anchorPoint: anchorPoint);
+        return await DialogLibrary.showDialog<DateTimeRange<DateTime>>(
+            context: context,
+            barrierDismissible: barrierDismissible,
+            barrierColor: barrierColor,
+            barrierLabel: barrierLabel,
+            useRootNavigator: useRootNavigator,
+            routeSettings: routeSettings,
+            useSafeArea: false,
+            builder: (context) =>
+            {
+                return (builder is null) ? dialog : builder(context, dialog);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            anchorPoint: anchorPoint
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static string _formatRangeStartDate(MaterialLocalizations localizations, CalendarDelegate<DateTime> calendarDelegate, DateTime? startDate, DateTime? endDate)
+    internal static string _formatRangeStartDate(
+        MaterialLocalizations localizations,
+        CalendarDelegate<DateTime> calendarDelegate,
+        DateTime? startDate,
+        DateTime? endDate
+    )
     {
-        return (startDate is null) ? localizations.dateRangeStartLabel : (((endDate is null) || (DartRuntimePrimitives.RequireValue(startDate).Year == DartRuntimePrimitives.RequireValue(endDate).Year)) ? calendarDelegate.formatShortMonthDay(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(startDate)), localizations) : calendarDelegate.formatShortDate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(startDate)), localizations));
+        return (startDate is null)
+            ? localizations.dateRangeStartLabel
+            : (
+                (
+                    (endDate is null)
+                    || (
+                        DartRuntimePrimitives.RequireValue(startDate).Year
+                        == DartRuntimePrimitives.RequireValue(endDate).Year
+                    )
+                )
+                    ? calendarDelegate.formatShortMonthDay(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(startDate)
+                        ),
+                        localizations
+                    )
+                    : calendarDelegate.formatShortDate(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(startDate)
+                        ),
+                        localizations
+                    )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static string _formatRangeEndDate(MaterialLocalizations localizations, CalendarDelegate<DateTime> calendarDelegate, DateTime? startDate, DateTime? endDate, DateTime currentDate)
+    internal static string _formatRangeEndDate(
+        MaterialLocalizations localizations,
+        CalendarDelegate<DateTime> calendarDelegate,
+        DateTime? startDate,
+        DateTime? endDate,
+        DateTime currentDate
+    )
     {
-        return (endDate is null) ? localizations.dateRangeEndLabel : (((startDate is not null) && (DartRuntimePrimitives.RequireValue(startDate).Year == DartRuntimePrimitives.RequireValue(endDate).Year) && (DartRuntimePrimitives.RequireValue(startDate).Year == currentDate.Year)) ? calendarDelegate.formatShortMonthDay(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(endDate)), localizations) : calendarDelegate.formatShortDate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(endDate)), localizations));
+        return (endDate is null)
+            ? localizations.dateRangeEndLabel
+            : (
+                (
+                    (startDate is not null)
+                    && (
+                        DartRuntimePrimitives.RequireValue(startDate).Year
+                        == DartRuntimePrimitives.RequireValue(endDate).Year
+                    )
+                    && (DartRuntimePrimitives.RequireValue(startDate).Year == currentDate.Year)
+                )
+                    ? calendarDelegate.formatShortMonthDay(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(endDate)
+                        ),
+                        localizations
+                    )
+                    : calendarDelegate.formatShortDate(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(endDate)
+                        ),
+                        localizations
+                    )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -788,13 +1693,43 @@ public class DateRangePickerDialog : StatefulWidget
     public virtual string? restorationId { get; private set; }
     public virtual Icon? switchToInputEntryModeIcon { get; private set; }
     public virtual Icon? switchToCalendarEntryModeIcon { get; private set; }
-    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
+    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate
+    {
+        get;
+        private set;
+    }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public DateRangePickerDialog(Key? key = null, DateTimeRange<DateTime>? initialDateRange = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, string? helpText = null, string? cancelText = null, string? confirmText = null, string? saveText = null, string? errorInvalidRangeText = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, TextInputType keyboardType = default!, string? restorationId = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public DateRangePickerDialog(
+        Key? key = null,
+        DateTimeRange<DateTime>? initialDateRange = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        DateTime? currentDate = null,
+        DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+        string? helpText = null,
+        string? cancelText = null,
+        string? confirmText = null,
+        string? saveText = null,
+        string? errorInvalidRangeText = null,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? fieldStartHintText = null,
+        string? fieldEndHintText = null,
+        string? fieldStartLabelText = null,
+        string? fieldEndLabelText = null,
+        TextInputType keyboardType = default!,
+        string? restorationId = null,
+        Icon? switchToInputEntryModeIcon = null,
+        Icon? switchToCalendarEntryModeIcon = null,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = null,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
+        : base(key: key)
     {
         TextInputType __keyboardType = keyboardType ?? TextInputType.datetime;
-        CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
+        CalendarDelegate<DateTime> __calendarDelegate =
+            calendarDelegate ?? new GregorianCalendarDelegate();
         this.initialDateRange = initialDateRange;
         this.firstDate = firstDate;
         this.lastDate = lastDate;
@@ -821,15 +1756,16 @@ public class DateRangePickerDialog : StatefulWidget
 
     public virtual DateTime currentDate
     {
-        get
-        {
-            return calendarDelegate.dateOnly(_currentDate ?? calendarDelegate.now());
-        }
+        get { return calendarDelegate.dateOnly(_currentDate ?? calendarDelegate.now()); }
     }
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DateRangePickerDialogState__date_picker());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DateRangePickerDialogState__date_picker());
 }
 
-internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerDialog>, RestorationMixin<DateRangePickerDialog>
+internal class _DateRangePickerDialogState__date_picker
+    : State<DateRangePickerDialog>,
+        RestorationMixin<DateRangePickerDialog>
 {
     private bool __late__entryMode_initialized;
     private _RestorableDatePickerEntryMode__date_picker __late__entryMode = default!;
@@ -839,7 +1775,9 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         {
             if (!__late__entryMode_initialized)
             {
-                __late__entryMode = new _RestorableDatePickerEntryMode__date_picker(widget.initialEntryMode);
+                __late__entryMode = new _RestorableDatePickerEntryMode__date_picker(
+                    widget.initialEntryMode
+                );
                 __late__entryMode_initialized = true;
             }
             return __late__entryMode;
@@ -874,15 +1812,23 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         }
     }
     internal virtual RestorableBool _autoValidate { get; private set; } = new RestorableBool(false);
-    internal virtual GlobalKey<IState> _calendarPickerKey { get; private set; } = GlobalKey<IState>.Create();
-    internal virtual GlobalKey<_InputDateRangePickerState__date_picker> _inputPickerKey { get; private set; } = GlobalKey<_InputDateRangePickerState__date_picker>.Create();
+    internal virtual GlobalKey<IState> _calendarPickerKey { get; private set; } =
+        GlobalKey<IState>.Create();
+    internal virtual GlobalKey<_InputDateRangePickerState__date_picker> _inputPickerKey
+    {
+        get;
+        private set;
+    } = GlobalKey<_InputDateRangePickerState__date_picker>.Create();
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual string? restorationId => widget.restorationId;
+
     public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(_entryMode, "entry_mode");
@@ -897,13 +1843,15 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         _selectedStart.dispose();
         _selectedEnd.dispose();
         _autoValidate.dispose();
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -911,7 +1859,10 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
 
     internal virtual void _handleOk()
     {
-        if (Equals(_entryMode.value, DatePickerEntryMode.input) || Equals(_entryMode.value, DatePickerEntryMode.inputOnly))
+        if (
+            Equals(_entryMode.value, DatePickerEntryMode.input)
+            || Equals(_entryMode.value, DatePickerEntryMode.inputOnly)
+        )
         {
             _InputDateRangePickerState__date_picker picker = _inputPickerKey.currentState!;
             if (!picker.validate())
@@ -923,7 +1874,12 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
                 return;
             }
         }
-        DateTimeRange<DateTime>? selectedRange = _hasSelectedDateRange ? new DateTimeRange<DateTime>(start: DartRuntimePrimitives.RequireValue(_selectedStart.value), end: DartRuntimePrimitives.RequireValue(_selectedEnd.value)) : null;
+        DateTimeRange<DateTime>? selectedRange = _hasSelectedDateRange
+            ? new DateTimeRange<DateTime>(
+                start: DartRuntimePrimitives.RequireValue(_selectedStart.value),
+                end: DartRuntimePrimitives.RequireValue(_selectedEnd.value)
+            )
+            : null;
         Navigator.pop<object>(context, selectedRange);
     }
 
@@ -939,38 +1895,57 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
             switch (_entryMode.value)
             {
                 case DatePickerEntryMode.calendar:
-                    {
-                        _autoValidate.value = false;
-                        _entryMode.value = DatePickerEntryMode.input;
-                        break;
-                    }
+                {
+                    _autoValidate.value = false;
+                    _entryMode.value = DatePickerEntryMode.input;
+                    break;
+                }
                 case DatePickerEntryMode.input:
+                {
+                    if (
+                        (_selectedStart.value is not null)
+                        && (_selectedEnd.value is not null)
+                        && DartRuntimePrimitives
+                            .RequireValue(_selectedStart.value)
+                            .isAfter(DartRuntimePrimitives.RequireValue(_selectedEnd.value))
+                    )
                     {
-                        if ((_selectedStart.value is not null) && (_selectedEnd.value is not null) && DartRuntimePrimitives.RequireValue(_selectedStart.value).isAfter(DartRuntimePrimitives.RequireValue(_selectedEnd.value)))
-                        {
-                            _selectedEnd.value = null;
-                        }
-                        if ((_selectedStart.value is not null) && !_isDaySelectable(DartRuntimePrimitives.RequireValue(_selectedStart.value)))
-                        {
-                            _selectedStart.value = null;
-                            _selectedEnd.value = null;
-                        }
-                        else
-                        {
-                            if ((_selectedEnd.value is not null) && !_isDaySelectable(DartRuntimePrimitives.RequireValue(_selectedEnd.value)))
-                            {
-                                _selectedEnd.value = null;
-                            }
-                        }
-                        _entryMode.value = DatePickerEntryMode.calendar;
-                        break;
+                        _selectedEnd.value = null;
                     }
+                    if (
+                        (_selectedStart.value is not null)
+                        && !_isDaySelectable(
+                            DartRuntimePrimitives.RequireValue(_selectedStart.value)
+                        )
+                    )
+                    {
+                        _selectedStart.value = null;
+                        _selectedEnd.value = null;
+                    }
+                    else
+                    {
+                        if (
+                            (_selectedEnd.value is not null)
+                            && !_isDaySelectable(
+                                DartRuntimePrimitives.RequireValue(_selectedEnd.value)
+                            )
+                        )
+                        {
+                            _selectedEnd.value = null;
+                        }
+                    }
+                    _entryMode.value = DatePickerEntryMode.calendar;
+                    break;
+                }
                 case DatePickerEntryMode.calendarOnly:
                 case DatePickerEntryMode.inputOnly:
-                    {
-                        DartRuntimePrimitives.Assert(() => false, () => (object?)$"Can not change entry mode from {_entryMode}");
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(
+                        () => false,
+                        () => (object?)$"Can not change entry mode from {_entryMode}"
+                    );
+                    break;
+                }
             }
         });
     }
@@ -991,15 +1966,25 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
 
     internal virtual void _handleStartDateChanged(DateTime? date)
     {
-        setState(() => { _ = _selectedStart.value = date; });
+        setState(() =>
+        {
+            _ = _selectedStart.value = date;
+        });
     }
 
     internal virtual void _handleEndDateChanged(DateTime? date)
     {
-        setState(() => { _ = _selectedEnd.value = date; });
+        setState(() =>
+        {
+            _ = _selectedEnd.value = date;
+        });
     }
 
-    internal virtual bool _hasSelectedDateRange => DartRuntimePrimitives.ConvertValue<bool>((_selectedStart.value is not null) && (_selectedEnd.value is not null));
+    internal virtual bool _hasSelectedDateRange =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (_selectedStart.value is not null) && (_selectedEnd.value is not null)
+        );
+
     public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
@@ -1014,43 +1999,169 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         Color? surfaceTintColorLocal = default!;
         ShapeBorder? shapeLocal = default!;
         EdgeInsets insetPaddingLocal = default!;
-        bool showEntryModeButton = Equals(_entryMode.value, DatePickerEntryMode.calendar) || Equals(_entryMode.value, DatePickerEntryMode.input);
+        bool showEntryModeButton =
+            Equals(_entryMode.value, DatePickerEntryMode.calendar)
+            || Equals(_entryMode.value, DatePickerEntryMode.input);
         switch (_entryMode.value)
         {
             case DatePickerEntryMode.calendar:
             case DatePickerEntryMode.calendarOnly:
-                {
-                    contents = DartRuntimePrimitives.ConvertValue<Widget>(new _CalendarRangePickerDialog__date_picker(key: _calendarPickerKey, calendarDelegate: widget.calendarDelegate, selectedStartDate: _selectedStart.value, selectedEndDate: _selectedEnd.value, firstDate: widget.firstDate, lastDate: widget.lastDate, selectableDayPredicate: widget.selectableDayPredicate, currentDate: widget.currentDate, onStartDateChanged: (__arg0) => ((Action<DateTime?>)_handleStartDateChanged)(DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)), onEndDateChanged: _handleEndDateChanged, onConfirm: _hasSelectedDateRange ? _handleOk : null, onCancel: () => _handleCancel(), entryModeButton: showEntryModeButton ? new IconButton(icon: widget.switchToInputEntryModeIcon ?? new Icon(Icons.edit_outlined), padding: EdgeInsets.zero, tooltip: localizations.inputDateModeButtonLabel, onPressed: _handleEntryModeToggle) : null, confirmText: widget.saveText ?? localizations.saveButtonLabel, helpText: widget.helpText ?? localizations.dateRangePickerHelpText));
-                    size = MediaQuery.sizeOf(context);
-                    insetPaddingLocal = EdgeInsets.zero;
-                    elevationLocal = datePickerTheme.rangePickerElevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.rangePickerElevation);
-                    shadowColorLocal = datePickerTheme.rangePickerShadowColor ?? defaultsLocal.rangePickerShadowColor!;
-                    surfaceTintColorLocal = datePickerTheme.rangePickerSurfaceTintColor ?? defaultsLocal.rangePickerSurfaceTintColor!;
-                    shapeLocal = datePickerTheme.rangePickerShape ?? defaultsLocal.rangePickerShape;
-                    break;
-                }
+            {
+                contents = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new _CalendarRangePickerDialog__date_picker(
+                        key: _calendarPickerKey,
+                        calendarDelegate: widget.calendarDelegate,
+                        selectedStartDate: _selectedStart.value,
+                        selectedEndDate: _selectedEnd.value,
+                        firstDate: widget.firstDate,
+                        lastDate: widget.lastDate,
+                        selectableDayPredicate: widget.selectableDayPredicate,
+                        currentDate: widget.currentDate,
+                        onStartDateChanged: (__arg0) =>
+                            ((Action<DateTime?>)_handleStartDateChanged)(
+                                DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)
+                            ),
+                        onEndDateChanged: _handleEndDateChanged,
+                        onConfirm: _hasSelectedDateRange ? _handleOk : null,
+                        onCancel: () => _handleCancel(),
+                        entryModeButton: showEntryModeButton
+                            ? new IconButton(
+                                icon: widget.switchToInputEntryModeIcon
+                                    ?? new Icon(Icons.edit_outlined),
+                                padding: EdgeInsets.zero,
+                                tooltip: localizations.inputDateModeButtonLabel,
+                                onPressed: _handleEntryModeToggle
+                            )
+                            : null,
+                        confirmText: widget.saveText ?? localizations.saveButtonLabel,
+                        helpText: widget.helpText ?? localizations.dateRangePickerHelpText
+                    )
+                );
+                size = MediaQuery.sizeOf(context);
+                insetPaddingLocal = EdgeInsets.zero;
+                elevationLocal =
+                    datePickerTheme.rangePickerElevation
+                    ?? DartRuntimePrimitives.RequireValue(defaultsLocal.rangePickerElevation);
+                shadowColorLocal =
+                    datePickerTheme.rangePickerShadowColor ?? defaultsLocal.rangePickerShadowColor!;
+                surfaceTintColorLocal =
+                    datePickerTheme.rangePickerSurfaceTintColor
+                    ?? defaultsLocal.rangePickerSurfaceTintColor!;
+                shapeLocal = datePickerTheme.rangePickerShape ?? defaultsLocal.rangePickerShape;
+                break;
+            }
             case DatePickerEntryMode.input:
             case DatePickerEntryMode.inputOnly:
-                {
-                    contents = DartRuntimePrimitives.ConvertValue<Widget>(new _InputDateRangePickerDialog__date_picker(calendarDelegate: widget.calendarDelegate, selectedStartDate: _selectedStart.value, selectedEndDate: _selectedEnd.value, currentDate: widget.currentDate, picker: new SizedBox(height: Equals(orientation, Orientation.portrait) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 24), child: new Column(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Spacer()), DartRuntimePrimitives.ConvertValue<Widget>(new _InputDateRangePicker__date_picker(key: _inputPickerKey, calendarDelegate: widget.calendarDelegate, initialStartDate: _selectedStart.value, initialEndDate: _selectedEnd.value, firstDate: widget.firstDate, lastDate: widget.lastDate, selectableDayPredicate: widget.selectableDayPredicate, onStartDateChanged: _handleStartDateChanged, onEndDateChanged: _handleEndDateChanged, autofocus: true, autovalidate: DartRuntimePrimitives.RequireValue(_autoValidate.value), helpText: widget.helpText, errorInvalidRangeText: widget.errorInvalidRangeText, errorFormatText: widget.errorFormatText, errorInvalidText: widget.errorInvalidText, fieldStartHintText: widget.fieldStartHintText, fieldEndHintText: widget.fieldEndHintText, fieldStartLabelText: widget.fieldStartLabelText, fieldEndLabelText: widget.fieldEndLabelText, keyboardType: widget.keyboardType)), DartRuntimePrimitives.ConvertValue<Widget>(new Spacer()) }))), onConfirm: () => _handleOk(), onCancel: () => _handleCancel(), entryModeButton: showEntryModeButton ? new IconButton(icon: widget.switchToCalendarEntryModeIcon ?? new Icon(Icons.calendar_today), padding: EdgeInsets.zero, tooltip: localizations.calendarModeButtonLabel, onPressed: _handleEntryModeToggle) : null, confirmText: widget.confirmText ?? localizations.okButtonLabel, cancelText: widget.cancelText ?? localizations.cancelButtonLabel, helpText: widget.helpText ?? localizations.dateRangePickerHelpText));
-                    DialogThemeData dialogThemeLocal = theme.dialogTheme;
-                    size = Equals(orientation, Orientation.portrait) ? Date_pickerLibrary._inputPortraitDialogSizeM3 : Date_pickerLibrary._inputRangeLandscapeDialogSize;
-                    elevationLocal = datePickerTheme.elevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation);
-                    shadowColorLocal = datePickerTheme.shadowColor ?? defaultsLocal.shadowColor;
-                    surfaceTintColorLocal = datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor;
-                    shapeLocal = datePickerTheme.shape ?? defaultsLocal.shape;
-                    insetPaddingLocal = EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
-                    break;
-                }
+            {
+                contents = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new _InputDateRangePickerDialog__date_picker(
+                        calendarDelegate: widget.calendarDelegate,
+                        selectedStartDate: _selectedStart.value,
+                        selectedEndDate: _selectedEnd.value,
+                        currentDate: widget.currentDate,
+                        picker: new SizedBox(
+                            height: Equals(orientation, Orientation.portrait)
+                                ? Date_pickerLibrary._inputFormPortraitHeight
+                                : Date_pickerLibrary._inputFormLandscapeHeight,
+                            child: new Padding(
+                                padding: EdgeInsets.CreateSymmetric(horizontal: 24),
+                                child: new Column(
+                                    children: new List<Widget>
+                                    {
+                                        DartRuntimePrimitives.ConvertValue<Widget>(new Spacer()),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new _InputDateRangePicker__date_picker(
+                                                key: _inputPickerKey,
+                                                calendarDelegate: widget.calendarDelegate,
+                                                initialStartDate: _selectedStart.value,
+                                                initialEndDate: _selectedEnd.value,
+                                                firstDate: widget.firstDate,
+                                                lastDate: widget.lastDate,
+                                                selectableDayPredicate: widget.selectableDayPredicate,
+                                                onStartDateChanged: _handleStartDateChanged,
+                                                onEndDateChanged: _handleEndDateChanged,
+                                                autofocus: true,
+                                                autovalidate: DartRuntimePrimitives.RequireValue(
+                                                    _autoValidate.value
+                                                ),
+                                                helpText: widget.helpText,
+                                                errorInvalidRangeText: widget.errorInvalidRangeText,
+                                                errorFormatText: widget.errorFormatText,
+                                                errorInvalidText: widget.errorInvalidText,
+                                                fieldStartHintText: widget.fieldStartHintText,
+                                                fieldEndHintText: widget.fieldEndHintText,
+                                                fieldStartLabelText: widget.fieldStartLabelText,
+                                                fieldEndLabelText: widget.fieldEndLabelText,
+                                                keyboardType: widget.keyboardType
+                                            )
+                                        ),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(new Spacer()),
+                                    }
+                                )
+                            )
+                        ),
+                        onConfirm: () => _handleOk(),
+                        onCancel: () => _handleCancel(),
+                        entryModeButton: showEntryModeButton
+                            ? new IconButton(
+                                icon: widget.switchToCalendarEntryModeIcon
+                                    ?? new Icon(Icons.calendar_today),
+                                padding: EdgeInsets.zero,
+                                tooltip: localizations.calendarModeButtonLabel,
+                                onPressed: _handleEntryModeToggle
+                            )
+                            : null,
+                        confirmText: widget.confirmText ?? localizations.okButtonLabel,
+                        cancelText: widget.cancelText ?? localizations.cancelButtonLabel,
+                        helpText: widget.helpText ?? localizations.dateRangePickerHelpText
+                    )
+                );
+                DialogThemeData dialogThemeLocal = theme.dialogTheme;
+                size = Equals(orientation, Orientation.portrait)
+                    ? Date_pickerLibrary._inputPortraitDialogSizeM3
+                    : Date_pickerLibrary._inputRangeLandscapeDialogSize;
+                elevationLocal =
+                    datePickerTheme.elevation
+                    ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation);
+                shadowColorLocal = datePickerTheme.shadowColor ?? defaultsLocal.shadowColor;
+                surfaceTintColorLocal =
+                    datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor;
+                shapeLocal = datePickerTheme.shape ?? defaultsLocal.shape;
+                insetPaddingLocal = EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
+                break;
+            }
         }
-        return new Dialog(insetPadding: insetPaddingLocal, backgroundColor: datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor, elevation: elevationLocal, shadowColor: shadowColorLocal, surfaceTintColor: surfaceTintColorLocal, shape: shapeLocal, clipBehavior: Clip.antiAlias, child: new AnimatedContainer(width: size.width, height: size.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor, child: new Builder(builder: (context) =>
-        {
-            return contents;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        return new Dialog(
+            insetPadding: insetPaddingLocal,
+            backgroundColor: datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor,
+            elevation: elevationLocal,
+            shadowColor: shadowColorLocal,
+            surfaceTintColor: surfaceTintColorLocal,
+            shape: shapeLocal,
+            clipBehavior: Clip.antiAlias,
+            child: new AnimatedContainer(
+                width: size.width,
+                height: size.height,
+                duration: Date_pickerLibrary._dialogSizeAnimationDuration,
+                curve: Curves.easeIn,
+                child: MediaQuery.withClampedTextScaling(
+                    maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor,
+                    child: new Builder(
+                        builder: (context) =>
+                        {
+                            return contents;
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -1058,10 +2169,22 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -1076,17 +2199,21 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -1104,7 +2231,10 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -1132,17 +2262,25 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -1157,28 +2295,65 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection41817 = new List<DiagnosticsNode>();
+                                    __collection41817.Add(
+                                        new ErrorSummary(
+                                            "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                                        )
+                                    );
+                                    __collection41817.Add(
+                                        new ErrorDescription(
+                                            $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                                + "\"restoreState\" was called:"
+                                        )
+                                    );
+                                    __collection41817.AddRange(
+                                        _debugPropertiesWaitingForReregistration!.map<
+                                            IRestorableProperty,
+                                            DiagnosticsNode
+                                        >(
+                                            (property) =>
+                                                new ErrorDescription(
+                                                    $" * {property._restorationId}"
+                                                )
+                                        )
+                                    );
+                                    return __collection41817;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -1186,7 +2361,10 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -1210,7 +2388,9 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -1234,14 +2414,13 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
         property.removeListener(listener);
         property._unregister();
     }
-
 }
 
 internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
@@ -1250,7 +2429,11 @@ internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
     public virtual DateTime? selectedEndDate { get; private set; }
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
-    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
+    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate
+    {
+        get;
+        private set;
+    }
     public virtual DateTime? currentDate { get; private set; }
     public virtual Action<DateTime> onStartDateChanged { get; private set; } = default!;
     public virtual Action<DateTime?> onEndDateChanged { get; private set; } = default!;
@@ -1261,7 +2444,24 @@ internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
     public virtual Widget? entryModeButton { get; private set; }
 
-    internal _CalendarRangePickerDialog__date_picker(Key? key = null, DateTime? selectedStartDate = default!, DateTime? selectedEndDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = default!, Action<DateTime> onStartDateChanged = default!, Action<DateTime?> onEndDateChanged = default!, Action? onConfirm = default!, Action? onCancel = default!, string confirmText = default!, string helpText = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Widget? entryModeButton = null) : base(key: key)
+    internal _CalendarRangePickerDialog__date_picker(
+        Key? key = null,
+        DateTime? selectedStartDate = default!,
+        DateTime? selectedEndDate = default!,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        DateTime? currentDate = default!,
+        Action<DateTime> onStartDateChanged = default!,
+        Action<DateTime?> onEndDateChanged = default!,
+        Action? onConfirm = default!,
+        Action? onCancel = default!,
+        string confirmText = default!,
+        string helpText = default!,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!,
+        CalendarDelegate<DateTime> calendarDelegate = default!,
+        Widget? entryModeButton = null
+    )
+        : base(key: key)
     {
         this.selectedStartDate = selectedStartDate;
         this.selectedEndDate = selectedEndDate;
@@ -1286,21 +2486,208 @@ internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
         Orientation orientation = MediaQuery.orientationOf(context);
         DatePickerThemeData themeData = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        Color? dialogBackground = themeData.rangePickerBackgroundColor ?? defaultsLocal.rangePickerBackgroundColor;
-        Color? headerBackground = themeData.rangePickerHeaderBackgroundColor ?? defaultsLocal.rangePickerHeaderBackgroundColor;
-        Color? headerForeground = themeData.rangePickerHeaderForegroundColor ?? defaultsLocal.rangePickerHeaderForegroundColor;
+        Color? dialogBackground =
+            themeData.rangePickerBackgroundColor ?? defaultsLocal.rangePickerBackgroundColor;
+        Color? headerBackground =
+            themeData.rangePickerHeaderBackgroundColor
+            ?? defaultsLocal.rangePickerHeaderBackgroundColor;
+        Color? headerForeground =
+            themeData.rangePickerHeaderForegroundColor
+            ?? defaultsLocal.rangePickerHeaderForegroundColor;
         Color? headerDisabledForeground = headerForeground?.withOpacity(0.38);
-        TextStyle? headlineStyle = themeData.rangePickerHeaderHeadlineStyle ?? defaultsLocal.rangePickerHeaderHeadlineStyle;
-        TextStyle? headlineHelpStyle = (themeData.rangePickerHeaderHelpStyle ?? defaultsLocal.rangePickerHeaderHelpStyle)?.apply(color: headerForeground);
-        string startDateText = Date_pickerLibrary._formatRangeStartDate(localizations, calendarDelegate, selectedStartDate, selectedEndDate);
-        string endDateText = Date_pickerLibrary._formatRangeEndDate(localizations, calendarDelegate, selectedStartDate, selectedEndDate, calendarDelegate.now());
-        TextStyle? startDateStyle = headlineStyle?.apply(color: (selectedStartDate is not null) ? headerForeground : headerDisabledForeground);
-        TextStyle? endDateStyle = headlineStyle?.apply(color: (selectedEndDate is not null) ? headerForeground : headerDisabledForeground);
-        ButtonStyle buttonStyle = TextButton.styleFrom(foregroundColor: headerForeground, disabledForegroundColor: headerDisabledForeground);
+        TextStyle? headlineStyle =
+            themeData.rangePickerHeaderHeadlineStyle
+            ?? defaultsLocal.rangePickerHeaderHeadlineStyle;
+        TextStyle? headlineHelpStyle = (
+            themeData.rangePickerHeaderHelpStyle ?? defaultsLocal.rangePickerHeaderHelpStyle
+        )?.apply(color: headerForeground);
+        string startDateText = Date_pickerLibrary._formatRangeStartDate(
+            localizations,
+            calendarDelegate,
+            selectedStartDate,
+            selectedEndDate
+        );
+        string endDateText = Date_pickerLibrary._formatRangeEndDate(
+            localizations,
+            calendarDelegate,
+            selectedStartDate,
+            selectedEndDate,
+            calendarDelegate.now()
+        );
+        TextStyle? startDateStyle = headlineStyle?.apply(
+            color: (selectedStartDate is not null) ? headerForeground : headerDisabledForeground
+        );
+        TextStyle? endDateStyle = headlineStyle?.apply(
+            color: (selectedEndDate is not null) ? headerForeground : headerDisabledForeground
+        );
+        ButtonStyle buttonStyle = TextButton.styleFrom(
+            foregroundColor: headerForeground,
+            disabledForegroundColor: headerDisabledForeground
+        );
         var iconThemeLocal = new IconThemeData(color: headerForeground);
-        return new SafeArea(top: false, left: false, right: false, child: new Scaffold(appBar: new AppBar(iconTheme: iconThemeLocal, actionsIconTheme: iconThemeLocal, elevation: 0, scrolledUnderElevation: 0, backgroundColor: headerBackground, leading: new CloseButton(onPressed: onCancel), actions: ((Func<List<Widget>>)(() => { var __collection72957 = new List<Widget>(); if (Equals(orientation, Orientation.landscape) && (entryModeButton is not null)) { __collection72957.Add(DartRuntimePrimitives.ConvertValue<Widget>(entryModeButton!)); } __collection72957.Add(DartRuntimePrimitives.ConvertValue<Widget>(new TextButton(style: buttonStyle, onPressed: onConfirm, child: new Text(confirmText)))); __collection72957.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: 8))); return __collection72957; }))(), bottom: new PreferredSize(preferredSize: new Size(double.PositiveInfinity, 64), child: new Row(children: ((Func<List<Widget>>)(() => { var __collection73350 = new List<Widget>(); __collection73350.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: (MediaQuery.widthOf(context) < 360L) ? 42 : 72))); __collection73350.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Widgets.Semantics(label: $"{helpText} {startDateText} to {endDateText}", excludeSemantics: true, child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Text(helpText, style: headlineHelpStyle, maxLines: 1L, overflow: TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: 8)), DartRuntimePrimitives.ConvertValue<Widget>(new Row(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Text(startDateText, style: startDateStyle, maxLines: 1L, overflow: TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<Widget>(new Text(" – ", style: startDateStyle)), DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new Text(endDateText, style: endDateStyle, maxLines: 1L, overflow: TextOverflow.ellipsis))) })), DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: 16)) }))))); if (Equals(orientation, Orientation.portrait) && (entryModeButton is not null)) { __collection73350.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8.0), child: new IconTheme(data: iconThemeLocal, child: entryModeButton!)))); } return __collection73350; }))()))), backgroundColor: dialogBackground, body: new _CalendarDateRangePicker__date_picker(initialStartDate: selectedStartDate, initialEndDate: selectedEndDate, firstDate: firstDate, lastDate: lastDate, currentDate: currentDate, onStartDateChanged: onStartDateChanged, onEndDateChanged: onEndDateChanged, selectableDayPredicate: selectableDayPredicate, calendarDelegate: calendarDelegate)));
+        return new SafeArea(
+            top: false,
+            left: false,
+            right: false,
+            child: new Scaffold(
+                appBar: new AppBar(
+                    iconTheme: iconThemeLocal,
+                    actionsIconTheme: iconThemeLocal,
+                    elevation: 0,
+                    scrolledUnderElevation: 0,
+                    backgroundColor: headerBackground,
+                    leading: new CloseButton(onPressed: onCancel),
+                    actions: (
+                        (Func<List<Widget>>)(
+                            () =>
+                            {
+                                var __collection72957 = new List<Widget>();
+                                if (
+                                    Equals(orientation, Orientation.landscape)
+                                    && (entryModeButton is not null)
+                                )
+                                {
+                                    __collection72957.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(entryModeButton!)
+                                    );
+                                }
+                                __collection72957.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new TextButton(
+                                            style: buttonStyle,
+                                            onPressed: onConfirm,
+                                            child: new Text(confirmText)
+                                        )
+                                    )
+                                );
+                                __collection72957.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new SizedBox(width: 8)
+                                    )
+                                );
+                                return __collection72957;
+                            }
+                        )
+                    )(),
+                    bottom: new PreferredSize(
+                        preferredSize: new Size(double.PositiveInfinity, 64),
+                        child: new Row(
+                            children: (
+                                (Func<List<Widget>>)(
+                                    () =>
+                                    {
+                                        var __collection73350 = new List<Widget>();
+                                        __collection73350.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new SizedBox(
+                                                    width: (MediaQuery.widthOf(context) < 360L)
+                                                        ? 42
+                                                        : 72
+                                                )
+                                            )
+                                        );
+                                        __collection73350.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Expanded(
+                                                    child: new Widgets.Semantics(
+                                                        label: $"{helpText} {startDateText} to {endDateText}",
+                                                        excludeSemantics: true,
+                                                        child: new Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: new List<Widget>
+                                                            {
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new Text(
+                                                                        helpText,
+                                                                        style: headlineHelpStyle,
+                                                                        maxLines: 1L,
+                                                                        overflow: TextOverflow.ellipsis
+                                                                    )
+                                                                ),
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new SizedBox(height: 8)
+                                                                ),
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new Row(
+                                                                        children: new List<Widget>
+                                                                        {
+                                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                                new Text(
+                                                                                    startDateText,
+                                                                                    style: startDateStyle,
+                                                                                    maxLines: 1L,
+                                                                                    overflow: TextOverflow.ellipsis
+                                                                                )
+                                                                            ),
+                                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                                new Text(
+                                                                                    " – ",
+                                                                                    style: startDateStyle
+                                                                                )
+                                                                            ),
+                                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                                new Flexible(
+                                                                                    child: new Text(
+                                                                                        endDateText,
+                                                                                        style: endDateStyle,
+                                                                                        maxLines: 1L,
+                                                                                        overflow: TextOverflow.ellipsis
+                                                                                    )
+                                                                                )
+                                                                            ),
+                                                                        }
+                                                                    )
+                                                                ),
+                                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                    new SizedBox(height: 16)
+                                                                ),
+                                                            }
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        );
+                                        if (
+                                            Equals(orientation, Orientation.portrait)
+                                            && (entryModeButton is not null)
+                                        )
+                                        {
+                                            __collection73350.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new Padding(
+                                                        padding: EdgeInsets.CreateSymmetric(
+                                                            horizontal: 8.0
+                                                        ),
+                                                        child: new IconTheme(
+                                                            data: iconThemeLocal,
+                                                            child: entryModeButton!
+                                                        )
+                                                    )
+                                                )
+                                            );
+                                        }
+                                        return __collection73350;
+                                    }
+                                )
+                            )()
+                        )
+                    )
+                ),
+                backgroundColor: dialogBackground,
+                body: new _CalendarDateRangePicker__date_picker(
+                    initialStartDate: selectedStartDate,
+                    initialEndDate: selectedEndDate,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    currentDate: currentDate,
+                    onStartDateChanged: onStartDateChanged,
+                    onEndDateChanged: onEndDateChanged,
+                    selectableDayPredicate: selectableDayPredicate,
+                    calendarDelegate: calendarDelegate
+                )
+            )
+        );
     }
-
 }
 
 public static partial class Date_pickerLibrary
@@ -1349,33 +2736,79 @@ internal class _CalendarDateRangePicker__date_picker : StatefulWidget
     public virtual DateTime? initialEndDate { get; private set; }
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
-    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
+    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate
+    {
+        get;
+        private set;
+    }
     public virtual DateTime currentDate { get; private set; } = default!;
     public virtual Action<DateTime>? onStartDateChanged { get; private set; }
     public virtual Action<DateTime?>? onEndDateChanged { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _CalendarDateRangePicker__date_picker(DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, DateTime? currentDate = null, Action<DateTime>? onStartDateChanged = default!, Action<DateTime?>? onEndDateChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!)
+    internal _CalendarDateRangePicker__date_picker(
+        DateTime? initialStartDate = null,
+        DateTime? initialEndDate = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!,
+        DateTime? currentDate = null,
+        Action<DateTime>? onStartDateChanged = default!,
+        Action<DateTime?>? onEndDateChanged = default!,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
     {
         this.selectableDayPredicate = selectableDayPredicate;
         this.onStartDateChanged = onStartDateChanged;
         this.onEndDateChanged = onEndDateChanged;
         this.calendarDelegate = calendarDelegate;
-        this.initialStartDate = (initialStartDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate))) : null;
-        this.initialEndDate = (initialEndDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate))) : null;
+        this.initialStartDate =
+            (initialStartDate is not null)
+                ? this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialStartDate)
+                    )
+                )
+                : null;
+        this.initialEndDate =
+            (initialEndDate is not null)
+                ? this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialEndDate)
+                    )
+                )
+                : null;
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
         this.lastDate = this.calendarDelegate.dateOnly(lastDate);
-        this.currentDate = this.calendarDelegate.dateOnly(currentDate ?? this.calendarDelegate.now());
-        DartRuntimePrimitives.Assert(() => (this.initialStartDate is null) || (this.initialEndDate is null) || !DartRuntimePrimitives.RequireValue(this.initialStartDate).isAfter(DartRuntimePrimitives.RequireValue(initialEndDate)), () => (object?)"initialStartDate must be on or before initialEndDate.");
-        DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)"firstDate must be on or before lastDate.");
+        this.currentDate = this.calendarDelegate.dateOnly(
+            currentDate ?? this.calendarDelegate.now()
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (this.initialStartDate is null)
+                || (this.initialEndDate is null)
+                || !DartRuntimePrimitives
+                    .RequireValue(this.initialStartDate)
+                    .isAfter(DartRuntimePrimitives.RequireValue(initialEndDate)),
+            () => (object?)"initialStartDate must be on or before initialEndDate."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !this.lastDate.isBefore(this.firstDate),
+            () => (object?)"firstDate must be on or before lastDate."
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CalendarDateRangePickerState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _CalendarDateRangePickerState__date_picker()
+        );
 }
 
-internal class _CalendarDateRangePickerState__date_picker : State<_CalendarDateRangePicker__date_picker>
+internal class _CalendarDateRangePickerState__date_picker
+    : State<_CalendarDateRangePicker__date_picker>
 {
-    internal virtual GlobalKey<IState> _scrollViewKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _scrollViewKey { get; private set; } =
+        GlobalKey<IState>.Create();
     internal virtual Key _sliverAfterKey { get; private set; } = new UniqueKey();
     internal virtual DateTime? _startDate { get; set; } = default;
     internal virtual DateTime? _endDate { get; set; } = default;
@@ -1425,24 +2858,28 @@ internal class _CalendarDateRangePickerState__date_picker : State<_CalendarDateR
         }
     }
 
-    internal virtual long _numberOfMonths => DartRuntimePrimitives.ConvertValue<long>(widget.calendarDelegate.monthDelta(widget.firstDate, widget.lastDate) + 1L);
+    internal virtual long _numberOfMonths =>
+        DartRuntimePrimitives.ConvertValue<long>(
+            widget.calendarDelegate.monthDelta(widget.firstDate, widget.lastDate) + 1L
+        );
+
     internal virtual void _vibrate()
     {
         switch (Theme.of(context).platform)
         {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
-                {
-                    DartRuntimePrimitives.Ignore(HapticFeedback.vibrate());
-                    break;
-                }
+            {
+                DartRuntimePrimitives.Ignore(HapticFeedback.vibrate());
+                break;
+            }
             case TargetPlatform.iOS:
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
@@ -1451,7 +2888,11 @@ internal class _CalendarDateRangePickerState__date_picker : State<_CalendarDateR
         _vibrate();
         setState(() =>
         {
-            if ((_startDate is not null) && (_endDate is null) && !date.isBefore(DartRuntimePrimitives.RequireValue(_startDate)))
+            if (
+                (_startDate is not null)
+                && (_endDate is null)
+                && !date.isBefore(DartRuntimePrimitives.RequireValue(_startDate))
+            )
             {
                 _endDate = date;
                 widget.onEndDateChanged?.Invoke(_endDate);
@@ -1469,20 +2910,93 @@ internal class _CalendarDateRangePickerState__date_picker : State<_CalendarDateR
         });
     }
 
-    internal virtual Widget _buildMonthItem(BuildContext context, long index, bool beforeInitialMonth)
+    internal virtual Widget _buildMonthItem(
+        BuildContext context,
+        long index,
+        bool beforeInitialMonth
+    )
     {
-        long monthIndex = beforeInitialMonth ? (_initialMonthIndex - index - 1L) : (_initialMonthIndex + index);
+        long monthIndex = beforeInitialMonth
+            ? (_initialMonthIndex - index - 1L)
+            : (_initialMonthIndex + index);
         DateTime month = widget.calendarDelegate.addMonthsToMonthDate(widget.firstDate, monthIndex);
-        return new _MonthItem__date_picker(calendarDelegate: widget.calendarDelegate, selectedDateStart: _startDate, selectedDateEnd: _endDate, currentDate: widget.currentDate, firstDate: widget.firstDate, lastDate: widget.lastDate, displayedMonth: month, onChanged: _updateSelection, selectableDayPredicate: widget.selectableDayPredicate);
+        return new _MonthItem__date_picker(
+            calendarDelegate: widget.calendarDelegate,
+            selectedDateStart: _startDate,
+            selectedDateEnd: _endDate,
+            currentDate: widget.currentDate,
+            firstDate: widget.firstDate,
+            lastDate: widget.lastDate,
+            displayedMonth: month,
+            onChanged: _updateSelection,
+            selectableDayPredicate: widget.selectableDayPredicate
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Column(children: ((Func<List<Widget>>)(() => { var __collection82299 = new List<Widget>(); __collection82299.Add(DartRuntimePrimitives.ConvertValue<Widget>(new _DayHeaders__date_picker())); if (_showWeekBottomDivider) { __collection82299.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Divider(height: 0))); } __collection82299.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new _CalendarKeyboardNavigator__date_picker(calendarDelegate: widget.calendarDelegate, firstDate: widget.firstDate, lastDate: widget.lastDate, initialFocusedDay: (_startDate ?? widget.initialStartDate) ?? widget.currentDate, child: new CustomScrollView(key: _scrollViewKey, controller: _controller, center: _sliverAfterKey, slivers: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(SliverList.CreateBuilder(itemCount: _initialMonthIndex, itemBuilder: (context, index) => _buildMonthItem(context, index, true))), DartRuntimePrimitives.ConvertValue<Widget>(SliverList.CreateBuilder(key: _sliverAfterKey, itemCount: _numberOfMonths - _initialMonthIndex, itemBuilder: (context, index) => _buildMonthItem(context, index, false))) }))))); return __collection82299; }))());
+        return new Column(
+            children: (
+                (Func<List<Widget>>)(
+                    () =>
+                    {
+                        var __collection82299 = new List<Widget>();
+                        __collection82299.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new _DayHeaders__date_picker()
+                            )
+                        );
+                        if (_showWeekBottomDivider)
+                        {
+                            __collection82299.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(new Divider(height: 0))
+                            );
+                        }
+                        __collection82299.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new Expanded(
+                                    child: new _CalendarKeyboardNavigator__date_picker(
+                                        calendarDelegate: widget.calendarDelegate,
+                                        firstDate: widget.firstDate,
+                                        lastDate: widget.lastDate,
+                                        initialFocusedDay: (_startDate ?? widget.initialStartDate)
+                                            ?? widget.currentDate,
+                                        child: new CustomScrollView(
+                                            key: _scrollViewKey,
+                                            controller: _controller,
+                                            center: _sliverAfterKey,
+                                            slivers: new List<Widget>
+                                            {
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    SliverList.CreateBuilder(
+                                                        itemCount: _initialMonthIndex,
+                                                        itemBuilder: (context, index) =>
+                                                            _buildMonthItem(context, index, true)
+                                                    )
+                                                ),
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    SliverList.CreateBuilder(
+                                                        key: _sliverAfterKey,
+                                                        itemCount: _numberOfMonths
+                                                            - _initialMonthIndex,
+                                                        itemBuilder: (context, index) =>
+                                                            _buildMonthItem(context, index, false)
+                                                    )
+                                                ),
+                                            }
+                                        )
+                                    )
+                                )
+                            )
+                        );
+                        return __collection82299;
+                    }
+                )
+            )()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CalendarKeyboardNavigator__date_picker : StatefulWidget
@@ -1493,7 +3007,13 @@ internal class _CalendarKeyboardNavigator__date_picker : StatefulWidget
     public virtual DateTime initialFocusedDay { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _CalendarKeyboardNavigator__date_picker(Widget child, DateTime firstDate, DateTime lastDate, DateTime initialFocusedDay, CalendarDelegate<DateTime> calendarDelegate)
+    internal _CalendarKeyboardNavigator__date_picker(
+        Widget child,
+        DateTime firstDate,
+        DateTime lastDate,
+        DateTime initialFocusedDay,
+        CalendarDelegate<DateTime> calendarDelegate
+    )
     {
         this.child = child;
         this.firstDate = firstDate;
@@ -1502,22 +3022,61 @@ internal class _CalendarKeyboardNavigator__date_picker : StatefulWidget
         this.calendarDelegate = calendarDelegate;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CalendarKeyboardNavigatorState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _CalendarKeyboardNavigatorState__date_picker()
+        );
 }
 
-internal class _CalendarKeyboardNavigatorState__date_picker : State<_CalendarKeyboardNavigator__date_picker>
+internal class _CalendarKeyboardNavigatorState__date_picker
+    : State<_CalendarKeyboardNavigator__date_picker>
 {
-    internal virtual DartMap<ShortcutActivator, Intent> _shortcutMap { get; private set; } = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(TraversalDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(TraversalDirection.right), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(TraversalDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(TraversalDirection.up) };
+    internal virtual DartMap<ShortcutActivator, Intent> _shortcutMap { get; private set; } =
+        new DartMap<ShortcutActivator, Intent>
+        {
+            [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(
+                TraversalDirection.left
+            ),
+            [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(
+                TraversalDirection.right
+            ),
+            [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(
+                TraversalDirection.down
+            ),
+            [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(
+                TraversalDirection.up
+            ),
+        };
     internal virtual DartMap<Type, dynamic> _actionMap { get; set; } = default!;
     internal virtual FocusNode _dayGridFocus { get; set; } = default!;
     internal virtual TraversalDirection? _dayTraversalDirection { get; set; } = default;
     internal virtual DateTime? _focusedDay { get; set; } = default;
-    internal static DartMap<TraversalDirection, long> _directionOffset = new DartMap<TraversalDirection, long> { [TraversalDirection.up] = -7L, [TraversalDirection.right] = 1L, [TraversalDirection.down] = 7L, [TraversalDirection.left] = -1L };
+    internal static DartMap<TraversalDirection, long> _directionOffset = new DartMap<
+        TraversalDirection,
+        long
+    >
+    {
+        [TraversalDirection.up] = -7L,
+        [TraversalDirection.right] = 1L,
+        [TraversalDirection.down] = 7L,
+        [TraversalDirection.left] = -1L,
+    };
 
     public override void initState()
     {
         base.initState();
-        _actionMap = new DartMap<Type, dynamic> { [typeof(NextFocusIntent)] = new CallbackAction<NextFocusIntent>(onInvoke: _handleGridNextFocus), [typeof(PreviousFocusIntent)] = new CallbackAction<PreviousFocusIntent>(onInvoke: _handleGridPreviousFocus), [typeof(DirectionalFocusIntent)] = new CallbackAction<DirectionalFocusIntent>(onInvoke: _handleDirectionFocus) };
+        _actionMap = new DartMap<Type, dynamic>
+        {
+            [typeof(NextFocusIntent)] = new CallbackAction<NextFocusIntent>(
+                onInvoke: _handleGridNextFocus
+            ),
+            [typeof(PreviousFocusIntent)] = new CallbackAction<PreviousFocusIntent>(
+                onInvoke: _handleGridPreviousFocus
+            ),
+            [typeof(DirectionalFocusIntent)] = new CallbackAction<DirectionalFocusIntent>(
+                onInvoke: _handleDirectionFocus
+            ),
+        };
         _dayGridFocus = new FocusNode(debugLabel: "Day Grid");
     }
 
@@ -1555,7 +3114,10 @@ internal class _CalendarKeyboardNavigatorState__date_picker : State<_CalendarKey
         DartRuntimePrimitives.Assert(() => _focusedDay is not null);
         setState(() =>
         {
-            DateTime? nextDate = _nextDateInDirection(DartRuntimePrimitives.RequireValue(_focusedDay), intent.direction);
+            DateTime? nextDate = _nextDateInDirection(
+                DartRuntimePrimitives.RequireValue(_focusedDay),
+                intent.direction
+            );
             if (nextDate is not null)
             {
                 DateTime nextDate__86735__value86810 = DartRuntimePrimitives.RequireValue(nextDate);
@@ -1565,7 +3127,10 @@ internal class _CalendarKeyboardNavigatorState__date_picker : State<_CalendarKey
         });
     }
 
-    internal virtual long _dayDirectionOffset(TraversalDirection traversalDirection, TextDirection textDirection)
+    internal virtual long _dayDirectionOffset(
+        TraversalDirection traversalDirection,
+        TextDirection textDirection
+    )
     {
         if (Equals(textDirection, TextDirection.rtl))
         {
@@ -1581,14 +3146,19 @@ internal class _CalendarKeyboardNavigatorState__date_picker : State<_CalendarKey
                 }
             }
         }
-        return DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<long>(_directionOffset, traversalDirection));
+        return DartRuntimePrimitives.RequireValue(
+            DartCollectionRuntime.NullableMapValue<long>(_directionOffset, traversalDirection)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual DateTime? _nextDateInDirection(DateTime date, TraversalDirection direction)
     {
         TextDirection textDirection = Directionality.of(context);
-        DateTime nextDate = widget.calendarDelegate.addDaysToDate(date, _dayDirectionOffset(direction, textDirection));
+        DateTime nextDate = widget.calendarDelegate.addDaysToDate(
+            date,
+            _dayDirectionOffset(direction, textDirection)
+        );
         if (!nextDate.isBefore(widget.firstDate) && !nextDate.isAfter(widget.lastDate))
         {
             return nextDate;
@@ -1599,10 +3169,20 @@ internal class _CalendarKeyboardNavigatorState__date_picker : State<_CalendarKey
 
     public override Widget build(BuildContext context)
     {
-        return new FocusableActionDetector(shortcuts: _shortcutMap, actions: _actionMap, focusNode: _dayGridFocus, onFocusChange: _handleGridFocusChange, child: new _FocusedDate__date_picker(calendarDelegate: widget.calendarDelegate, date: _dayGridFocus.hasFocus ? _focusedDay : null, scrollDirection: _dayGridFocus.hasFocus ? _dayTraversalDirection : null, child: widget.child));
+        return new FocusableActionDetector(
+            shortcuts: _shortcutMap,
+            actions: _actionMap,
+            focusNode: _dayGridFocus,
+            onFocusChange: _handleGridFocusChange,
+            child: new _FocusedDate__date_picker(
+                calendarDelegate: widget.calendarDelegate,
+                date: _dayGridFocus.hasFocus ? _focusedDay : null,
+                scrollDirection: _dayGridFocus.hasFocus ? _dayTraversalDirection : null,
+                child: widget.child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _FocusedDate__date_picker : InheritedWidget
@@ -1611,7 +3191,13 @@ internal class _FocusedDate__date_picker : InheritedWidget
     public virtual DateTime? date { get; private set; }
     public virtual TraversalDirection? scrollDirection { get; private set; }
 
-    internal _FocusedDate__date_picker(Widget child, CalendarDelegate<DateTime> calendarDelegate, DateTime? date = null, TraversalDirection? scrollDirection = null) : base(child: child)
+    internal _FocusedDate__date_picker(
+        Widget child,
+        CalendarDelegate<DateTime> calendarDelegate,
+        DateTime? date = null,
+        TraversalDirection? scrollDirection = null
+    )
+        : base(child: child)
     {
         this.calendarDelegate = calendarDelegate;
         this.date = date;
@@ -1621,7 +3207,8 @@ internal class _FocusedDate__date_picker : InheritedWidget
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_FocusedDate__date_picker)oldWidget;
-        return !calendarDelegate.isSameDay(date, __oldWidget.date) || (!Equals(scrollDirection, __oldWidget.scrollDirection));
+        return !calendarDelegate.isSameDay(date, __oldWidget.date)
+            || (!Equals(scrollDirection, __oldWidget.scrollDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1630,22 +3217,30 @@ internal class _FocusedDate__date_picker : InheritedWidget
         return context.dependOnInheritedWidgetOfExactType<_FocusedDate__date_picker>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DayHeaders__date_picker : StatelessWidget
 {
-    internal _DayHeaders__date_picker()
-    {
-    }
+    internal _DayHeaders__date_picker() { }
 
-    internal virtual List<Widget> _getDayHeaders(TextStyle headerStyle, MaterialLocalizations localizations)
+    internal virtual List<Widget> _getDayHeaders(
+        TextStyle headerStyle,
+        MaterialLocalizations localizations
+    )
     {
         var result = new List<Widget>();
-        for (long i = localizations.firstDayOfWeekIndex; checked(result.Count) < 7L; i = (i + 1L) % 7L)
+        for (
+            long i = localizations.firstDayOfWeekIndex;
+            checked(result.Count) < 7L;
+            i = (i + 1L) % 7L
+        )
         {
             string weekday = localizations.narrowWeekdays[(int)i];
-            result.Add(new ExcludeSemantics(child: new Center(child: new Text(weekday, style: headerStyle))));
+            result.Add(
+                new ExcludeSemantics(
+                    child: new Center(child: new Text(weekday, style: headerStyle))
+                )
+            );
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1655,27 +3250,48 @@ internal class _DayHeaders__date_picker : StatelessWidget
     {
         ThemeData themeData = Theme.of(context);
         ColorScheme colorSchemeLocal = themeData.colorScheme;
-        TextStyle textStyle = themeData.textTheme.titleSmall!.apply(color: colorSchemeLocal.onSurface);
+        TextStyle textStyle = themeData.textTheme.titleSmall!.apply(
+            color: colorSchemeLocal.onSurface
+        );
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         List<Widget> labels = _getDayHeaders(textStyle, localizations);
         labels.Insert(checked((int)0L), SizedBox.CreateShrink());
         labels.Add(SizedBox.CreateShrink());
-        return new ConstrainedBox(constraints: new BoxConstraints(maxWidth: Equals(MediaQuery.orientationOf(context), Orientation.landscape) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait, maxHeight: Date_pickerLibrary._monthItemRowHeight), child: GridView.CreateCustom(shrinkWrap: true, gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new SliverChildListDelegate(labels, addRepaintBoundaries: false)));
+        return new ConstrainedBox(
+            constraints: new BoxConstraints(
+                maxWidth: Equals(MediaQuery.orientationOf(context), Orientation.landscape)
+                    ? Date_pickerLibrary._maxCalendarWidthLandscape
+                    : Date_pickerLibrary._maxCalendarWidthPortrait,
+                maxHeight: Date_pickerLibrary._monthItemRowHeight
+            ),
+            child: GridView.CreateCustom(
+                shrinkWrap: true,
+                gridDelegate: Date_pickerLibrary._monthItemGridDelegate,
+                childrenDelegate: new SliverChildListDelegate(labels, addRepaintBoundaries: false)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MonthItemGridDelegate__date_picker : SliverGridDelegate
 {
-    internal _MonthItemGridDelegate__date_picker()
-    {
-    }
+    internal _MonthItemGridDelegate__date_picker() { }
 
     public virtual SliverGridLayout getLayout(SliverConstraints constraints)
     {
-        double tileWidth = Math.Max((constraints.crossAxisExtent - (2L * Date_pickerLibrary._horizontalPadding)) / 7L, 0.0);
-        return new _MonthSliverGridLayout__date_picker(crossAxisCount: 7L + 2L, dayChildWidth: tileWidth, edgeChildWidth: Date_pickerLibrary._horizontalPadding, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(constraints.crossAxisDirection));
+        double tileWidth = Math.Max(
+            (constraints.crossAxisExtent - (2L * Date_pickerLibrary._horizontalPadding)) / 7L,
+            0.0
+        );
+        return new _MonthSliverGridLayout__date_picker(
+            crossAxisCount: 7L + 2L,
+            dayChildWidth: tileWidth,
+            edgeChildWidth: Date_pickerLibrary._horizontalPadding,
+            reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(
+                constraints.crossAxisDirection
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1684,7 +3300,8 @@ internal class _MonthItemGridDelegate__date_picker : SliverGridDelegate
 
 public static partial class Date_pickerLibrary
 {
-    internal static _MonthItemGridDelegate__date_picker _monthItemGridDelegate = new _MonthItemGridDelegate__date_picker();
+    internal static _MonthItemGridDelegate__date_picker _monthItemGridDelegate =
+        new _MonthItemGridDelegate__date_picker();
 }
 
 internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
@@ -1694,7 +3311,12 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
     public virtual double edgeChildWidth { get; private set; } = default!;
     public virtual bool reverseCrossAxis { get; private set; } = default!;
 
-    internal _MonthSliverGridLayout__date_picker(long crossAxisCount, double dayChildWidth, double edgeChildWidth, bool reverseCrossAxis)
+    internal _MonthSliverGridLayout__date_picker(
+        long crossAxisCount,
+        double dayChildWidth,
+        double edgeChildWidth,
+        bool reverseCrossAxis
+    )
     {
         this.crossAxisCount = crossAxisCount;
         this.dayChildWidth = dayChildWidth;
@@ -1709,16 +3331,15 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
     {
         get
         {
-            return Date_pickerLibrary._monthItemRowHeight + Date_pickerLibrary._monthItemSpaceBetweenRows;
+            return Date_pickerLibrary._monthItemRowHeight
+                + Date_pickerLibrary._monthItemSpaceBetweenRows;
         }
     }
     internal virtual double _childHeight
     {
-        get
-        {
-            return Date_pickerLibrary._monthItemRowHeight;
-        }
+        get { return Date_pickerLibrary._monthItemRowHeight; }
     }
+
     public virtual long getMinChildIndexForScrollOffset(double scrollOffset)
     {
         return crossAxisCount * checked((long)(scrollOffset / _rowHeight));
@@ -1736,7 +3357,10 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
     {
         if (reverseCrossAxis)
         {
-            return ((crossAxisCount - 2L) * dayChildWidth) + (2L * edgeChildWidth) - crossAxisStart - (isPadding ? edgeChildWidth : dayChildWidth);
+            return ((crossAxisCount - 2L) * dayChildWidth)
+                + (2L * edgeChildWidth)
+                - crossAxisStart
+                - (isPadding ? edgeChildWidth : dayChildWidth);
         }
         return crossAxisStart;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1746,8 +3370,16 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
     {
         long adjustedIndex = index % crossAxisCount;
         bool isEdge = (adjustedIndex == 0L) || (adjustedIndex == (crossAxisCount - 1L));
-        double crossAxisStart = Math.Max(0, ((adjustedIndex - 1L) * dayChildWidth) + edgeChildWidth);
-        return new SliverGridGeometry(scrollOffset: checked(index / crossAxisCount) * _rowHeight, crossAxisOffset: _getCrossAxisOffset(crossAxisStart, isEdge), mainAxisExtent: _childHeight, crossAxisExtent: isEdge ? edgeChildWidth : dayChildWidth);
+        double crossAxisStart = Math.Max(
+            0,
+            ((adjustedIndex - 1L) * dayChildWidth) + edgeChildWidth
+        );
+        return new SliverGridGeometry(
+            scrollOffset: checked(index / crossAxisCount) * _rowHeight,
+            crossAxisOffset: _getCrossAxisOffset(crossAxisStart, isEdge),
+            mainAxisExtent: _childHeight,
+            crossAxisExtent: isEdge ? edgeChildWidth : dayChildWidth
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1759,7 +3391,6 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
         return (_rowHeight * mainAxisCount) - mainAxisSpacing;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MonthItem__date_picker : StatefulWidget
@@ -1771,10 +3402,24 @@ internal class _MonthItem__date_picker : StatefulWidget
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime displayedMonth { get; private set; } = default!;
-    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
+    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate
+    {
+        get;
+        private set;
+    }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _MonthItem__date_picker(DateTime? selectedDateStart, DateTime? selectedDateEnd, DateTime currentDate, Action<DateTime> onChanged, DateTime firstDate, DateTime lastDate, DateTime displayedMonth, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate, CalendarDelegate<DateTime> calendarDelegate)
+    internal _MonthItem__date_picker(
+        DateTime? selectedDateStart,
+        DateTime? selectedDateEnd,
+        DateTime currentDate,
+        Action<DateTime> onChanged,
+        DateTime firstDate,
+        DateTime lastDate,
+        DateTime displayedMonth,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate,
+        CalendarDelegate<DateTime> calendarDelegate
+    )
     {
         this.selectedDateStart = selectedDateStart;
         this.selectedDateEnd = selectedDateEnd;
@@ -1786,14 +3431,37 @@ internal class _MonthItem__date_picker : StatefulWidget
         this.selectableDayPredicate = selectableDayPredicate;
         this.calendarDelegate = calendarDelegate;
         System.Diagnostics.Debug.Assert(!firstDate.isAfter(lastDate));
-        System.Diagnostics.Debug.Assert((selectedDateStart is null) || !DartRuntimePrimitives.RequireValue(selectedDateStart).isBefore(firstDate));
-        System.Diagnostics.Debug.Assert((selectedDateEnd is null) || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isBefore(firstDate));
-        System.Diagnostics.Debug.Assert((selectedDateStart is null) || !DartRuntimePrimitives.RequireValue(selectedDateStart).isAfter(lastDate));
-        System.Diagnostics.Debug.Assert((selectedDateEnd is null) || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isAfter(lastDate));
-        System.Diagnostics.Debug.Assert((selectedDateStart is null) || (selectedDateEnd is null) || !DartRuntimePrimitives.RequireValue(selectedDateStart).isAfter(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(selectedDateEnd))));
+        System.Diagnostics.Debug.Assert(
+            (selectedDateStart is null)
+                || !DartRuntimePrimitives.RequireValue(selectedDateStart).isBefore(firstDate)
+        );
+        System.Diagnostics.Debug.Assert(
+            (selectedDateEnd is null)
+                || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isBefore(firstDate)
+        );
+        System.Diagnostics.Debug.Assert(
+            (selectedDateStart is null)
+                || !DartRuntimePrimitives.RequireValue(selectedDateStart).isAfter(lastDate)
+        );
+        System.Diagnostics.Debug.Assert(
+            (selectedDateEnd is null)
+                || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isAfter(lastDate)
+        );
+        System.Diagnostics.Debug.Assert(
+            (selectedDateStart is null)
+                || (selectedDateEnd is null)
+                || !DartRuntimePrimitives
+                    .RequireValue(selectedDateStart)
+                    .isAfter(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(selectedDateEnd)
+                        )
+                    )
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MonthItemState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MonthItemState__date_picker());
 }
 
 internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
@@ -1803,18 +3471,37 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
     public override void initState()
     {
         base.initState();
-        long daysInMonth = widget.calendarDelegate.getDaysInMonth(widget.displayedMonth.Year, widget.displayedMonth.Month);
-        _dayFocusNodes = new List<FocusNode>(Enumerable.Select(Enumerable.Range(0, checked((int)daysInMonth)), (index) => new FocusNode(skipTraversal: true, debugLabel: $"Day {index + 1L}")));
+        long daysInMonth = widget.calendarDelegate.getDaysInMonth(
+            widget.displayedMonth.Year,
+            widget.displayedMonth.Month
+        );
+        _dayFocusNodes = new List<FocusNode>(
+            Enumerable.Select(
+                Enumerable.Range(0, checked((int)daysInMonth)),
+                (index) => new FocusNode(skipTraversal: true, debugLabel: $"Day {index + 1L}")
+            )
+        );
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         DateTime? focusedDate = _FocusedDate__date_picker.maybeOf(context)?.date;
-        if ((focusedDate is not null) && widget.calendarDelegate.isSameMonth(widget.displayedMonth, DartRuntimePrimitives.RequireValue(focusedDate)))
+        if (
+            (focusedDate is not null)
+            && widget.calendarDelegate.isSameMonth(
+                widget.displayedMonth,
+                DartRuntimePrimitives.RequireValue(focusedDate)
+            )
+        )
         {
-            DateTime focusedDate__98201__value98260 = DartRuntimePrimitives.RequireValue(focusedDate);
-            _dayFocusNodes[(int)(DartRuntimePrimitives.RequireValue(focusedDate__98201__value98260).Day - 1L)].requestFocus();
+            DateTime focusedDate__98201__value98260 = DartRuntimePrimitives.RequireValue(
+                focusedDate
+            );
+            _dayFocusNodes[
+                (int)(DartRuntimePrimitives.RequireValue(focusedDate__98201__value98260).Day - 1L)
+            ]
+                .requestFocus();
         }
     }
 
@@ -1829,7 +3516,8 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
 
     internal virtual Color _highlightColor(BuildContext context)
     {
-        return DatePickerTheme.of(context).rangeSelectionBackgroundColor ?? DatePickerTheme.defaults(context).rangeSelectionBackgroundColor!;
+        return DatePickerTheme.of(context).rangeSelectionBackgroundColor
+            ?? DatePickerTheme.defaults(context).rangeSelectionBackgroundColor!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1837,49 +3525,106 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
     {
         if (focused)
         {
-            TraversalDirection? focusDirection = _FocusedDate__date_picker.maybeOf(context)?.scrollDirection;
+            TraversalDirection? focusDirection = _FocusedDate__date_picker
+                .maybeOf(context)
+                ?.scrollDirection;
             if (focusDirection is not null)
             {
-                TraversalDirection focusDirection__98861__value98936 = DartRuntimePrimitives.RequireValue(focusDirection);
+                TraversalDirection focusDirection__98861__value98936 =
+                    DartRuntimePrimitives.RequireValue(focusDirection);
                 ScrollPositionAlignmentPolicy policy = ScrollPositionAlignmentPolicy.@explicit;
                 switch (DartRuntimePrimitives.RequireValue(focusDirection__98861__value98936))
                 {
                     case TraversalDirection.up:
                     case TraversalDirection.left:
-                        {
-                            policy = ScrollPositionAlignmentPolicy.keepVisibleAtStart;
-                            break;
-                        }
+                    {
+                        policy = ScrollPositionAlignmentPolicy.keepVisibleAtStart;
+                        break;
+                    }
                     case TraversalDirection.right:
                     case TraversalDirection.down:
-                        {
-                            policy = ScrollPositionAlignmentPolicy.keepVisibleAtEnd;
-                            break;
-                        }
+                    {
+                        policy = ScrollPositionAlignmentPolicy.keepVisibleAtEnd;
+                        break;
+                    }
                 }
-                DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(Focus_managerLibrary.primaryFocus!.context!, duration: Calendar_date_pickerLibrary._monthScrollDuration, alignmentPolicy: policy));
+                DartRuntimePrimitives.Ignore(
+                    Scrollable.ensureVisible(
+                        Focus_managerLibrary.primaryFocus!.context!,
+                        duration: Calendar_date_pickerLibrary._monthScrollDuration,
+                        alignmentPolicy: policy
+                    )
+                );
             }
         }
     }
 
-    internal virtual Widget _buildDayItem(BuildContext context, DateTime dayToBuild, long firstDayOffset, long daysInMonth)
+    internal virtual Widget _buildDayItem(
+        BuildContext context,
+        DateTime dayToBuild,
+        long firstDayOffset,
+        long daysInMonth
+    )
     {
         long dayLocal = dayToBuild.Day;
-        bool isDisabledLocal = dayToBuild.isAfter(widget.lastDate) || dayToBuild.isBefore(widget.firstDate) || ((widget.selectableDayPredicate is not null) && !widget.selectableDayPredicate!(dayToBuild, widget.selectedDateStart, widget.selectedDateEnd));
-        bool isRangeSelectedLocal = (widget.selectedDateStart is not null) && (widget.selectedDateEnd is not null);
-        bool isSelectedDayStartLocal = (widget.selectedDateStart is not null) && dayToBuild.isAtSameMomentAs(DartRuntimePrimitives.RequireValue(widget.selectedDateStart));
-        bool isSelectedDayEndLocal = (widget.selectedDateEnd is not null) && dayToBuild.isAtSameMomentAs(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
-        bool isInRangeLocal = isRangeSelectedLocal && dayToBuild.isAfter(DartRuntimePrimitives.RequireValue(widget.selectedDateStart)) && dayToBuild.isBefore(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
-        bool isOneDayRangeLocal = isRangeSelectedLocal && Equals(widget.selectedDateStart, widget.selectedDateEnd);
+        bool isDisabledLocal =
+            dayToBuild.isAfter(widget.lastDate)
+            || dayToBuild.isBefore(widget.firstDate)
+            || (
+                (widget.selectableDayPredicate is not null)
+                && !widget.selectableDayPredicate!(
+                    dayToBuild,
+                    widget.selectedDateStart,
+                    widget.selectedDateEnd
+                )
+            );
+        bool isRangeSelectedLocal =
+            (widget.selectedDateStart is not null) && (widget.selectedDateEnd is not null);
+        bool isSelectedDayStartLocal =
+            (widget.selectedDateStart is not null)
+            && dayToBuild.isAtSameMomentAs(
+                DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+            );
+        bool isSelectedDayEndLocal =
+            (widget.selectedDateEnd is not null)
+            && dayToBuild.isAtSameMomentAs(
+                DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+            );
+        bool isInRangeLocal =
+            isRangeSelectedLocal
+            && dayToBuild.isAfter(DartRuntimePrimitives.RequireValue(widget.selectedDateStart))
+            && dayToBuild.isBefore(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
+        bool isOneDayRangeLocal =
+            isRangeSelectedLocal && Equals(widget.selectedDateStart, widget.selectedDateEnd);
         bool isTodayLocal = widget.calendarDelegate.isSameDay(widget.currentDate, dayToBuild);
-        return new _DayItem__date_picker(calendarDelegate: widget.calendarDelegate, day: dayToBuild, focusNode: _dayFocusNodes[(int)(dayLocal - 1L)], onChanged: widget.onChanged, onFocusChange: _dayFocusChanged, highlightColor: _highlightColor(context), isDisabled: isDisabledLocal, isRangeSelected: isRangeSelectedLocal, isSelectedDayStart: isSelectedDayStartLocal, isSelectedDayEnd: isSelectedDayEndLocal, isInRange: isInRangeLocal, isOneDayRange: isOneDayRangeLocal, isToday: isTodayLocal);
+        return new _DayItem__date_picker(
+            calendarDelegate: widget.calendarDelegate,
+            day: dayToBuild,
+            focusNode: _dayFocusNodes[(int)(dayLocal - 1L)],
+            onChanged: widget.onChanged,
+            onFocusChange: _dayFocusChanged,
+            highlightColor: _highlightColor(context),
+            isDisabled: isDisabledLocal,
+            isRangeSelected: isRangeSelectedLocal,
+            isSelectedDayStart: isSelectedDayStartLocal,
+            isSelectedDayEnd: isSelectedDayEndLocal,
+            isInRange: isInRangeLocal,
+            isOneDayRange: isOneDayRangeLocal,
+            isToday: isTodayLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Widget _buildEdgeBox(BuildContext context, bool isHighlighted)
     {
-        Widget empty = new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand());
-        return isHighlighted ? new ColoredBox(color: _highlightColor(context), child: empty) : empty;
+        Widget empty = new LimitedBox(
+            maxWidth: 0.0,
+            maxHeight: 0.0,
+            child: SizedBox.CreateExpand()
+        );
+        return isHighlighted
+            ? new ColoredBox(color: _highlightColor(context), child: empty)
+            : empty;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1893,13 +3638,17 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
         long daysInMonth = widget.calendarDelegate.getDaysInMonth(year, month);
         long dayOffset = widget.calendarDelegate.firstDayOffset(year, month, localizations);
         long weeks = ((daysInMonth + dayOffset) / 7L).ceil();
-        double gridHeight = (weeks * Date_pickerLibrary._monthItemRowHeight) + ((weeks - 1L) * Date_pickerLibrary._monthItemSpaceBetweenRows);
+        double gridHeight =
+            (weeks * Date_pickerLibrary._monthItemRowHeight)
+            + ((weeks - 1L) * Date_pickerLibrary._monthItemSpaceBetweenRows);
         var dayItems = new List<Widget>();
         for (long day = 0L - dayOffset + 1L; day <= daysInMonth; day += 1L)
         {
             if (day < 1L)
             {
-                dayItems.Add(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand()));
+                dayItems.Add(
+                    new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand())
+                );
             }
             else
             {
@@ -1914,22 +3663,98 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
             long start = i * 7L;
             long end = Math.Min(start + 7L, checked(dayItems.Count));
             List<Widget> weekList = dayItems.GetRange(start, end).ToList();
-            DateTime dateAfterLeadingPadding = widget.calendarDelegate.getDay(year, month, start - dayOffset + 1L);
-            bool isLeadingInRange = !((dayOffset > 0L) && (i == 0L)) && (widget.selectedDateStart is not null) && (widget.selectedDateEnd is not null) && dateAfterLeadingPadding.isAfter(DartRuntimePrimitives.RequireValue(widget.selectedDateStart)) && !dateAfterLeadingPadding.isAfter(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
+            DateTime dateAfterLeadingPadding = widget.calendarDelegate.getDay(
+                year,
+                month,
+                start - dayOffset + 1L
+            );
+            bool isLeadingInRange =
+                !((dayOffset > 0L) && (i == 0L))
+                && (widget.selectedDateStart is not null)
+                && (widget.selectedDateEnd is not null)
+                && dateAfterLeadingPadding.isAfter(
+                    DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+                )
+                && !dateAfterLeadingPadding.isAfter(
+                    DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+                );
             weekList.Insert(checked((int)0L), _buildEdgeBox(context, isLeadingInRange));
-            if ((end < checked(dayItems.Count)) || (end == checked(dayItems.Count)) && ((checked(dayItems.Count) % 7L) == 0L))
+            if (
+                (end < checked(dayItems.Count))
+                || ((end == checked(dayItems.Count)) && ((checked(dayItems.Count) % 7L) == 0L))
+            )
             {
-                DateTime dateBeforeTrailingPadding = widget.calendarDelegate.getDay(year, month, end - dayOffset);
-                bool isTrailingInRange = (widget.selectedDateStart is not null) && (widget.selectedDateEnd is not null) && !dateBeforeTrailingPadding.isBefore(DartRuntimePrimitives.RequireValue(widget.selectedDateStart)) && dateBeforeTrailingPadding.isBefore(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
+                DateTime dateBeforeTrailingPadding = widget.calendarDelegate.getDay(
+                    year,
+                    month,
+                    end - dayOffset
+                );
+                bool isTrailingInRange =
+                    (widget.selectedDateStart is not null)
+                    && (widget.selectedDateEnd is not null)
+                    && !dateBeforeTrailingPadding.isBefore(
+                        DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+                    )
+                    && dateBeforeTrailingPadding.isBefore(
+                        DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+                    );
                 weekList.Add(_buildEdgeBox(context, isTrailingInRange));
             }
             paddedDayItems.AddRange(weekList.Cast<Widget>());
         }
-        double maxWidthLocal = Equals(MediaQuery.orientationOf(context), Orientation.landscape) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait;
-        return new Column(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: new BoxConstraints(maxWidth: maxWidthLocal).tighten(height: Date_pickerLibrary._monthItemHeaderHeight), child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16), child: new Align(alignment: AlignmentDirectional.centerStart, child: new ExcludeSemantics(child: new Text(widget.calendarDelegate.formatMonthYear(widget.displayedMonth, localizations), style: textThemeLocal.bodyMedium!.apply(color: themeData.colorScheme.onSurface))))))), DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: new BoxConstraints(maxWidth: maxWidthLocal, maxHeight: gridHeight), child: GridView.CreateCustom(physics: new NeverScrollableScrollPhysics(), gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new SliverChildListDelegate(paddedDayItems, addRepaintBoundaries: false)))), DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: Date_pickerLibrary._monthItemFooterHeight)) });
+        double maxWidthLocal = Equals(MediaQuery.orientationOf(context), Orientation.landscape)
+            ? Date_pickerLibrary._maxCalendarWidthLandscape
+            : Date_pickerLibrary._maxCalendarWidthPortrait;
+        return new Column(
+            children: new List<Widget>
+            {
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ConstrainedBox(
+                        constraints: new BoxConstraints(maxWidth: maxWidthLocal).tighten(
+                            height: Date_pickerLibrary._monthItemHeaderHeight
+                        ),
+                        child: new Padding(
+                            padding: EdgeInsets.CreateSymmetric(horizontal: 16),
+                            child: new Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: new ExcludeSemantics(
+                                    child: new Text(
+                                        widget.calendarDelegate.formatMonthYear(
+                                            widget.displayedMonth,
+                                            localizations
+                                        ),
+                                        style: textThemeLocal.bodyMedium!.apply(
+                                            color: themeData.colorScheme.onSurface
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ConstrainedBox(
+                        constraints: new BoxConstraints(
+                            maxWidth: maxWidthLocal,
+                            maxHeight: gridHeight
+                        ),
+                        child: GridView.CreateCustom(
+                            physics: new NeverScrollableScrollPhysics(),
+                            gridDelegate: Date_pickerLibrary._monthItemGridDelegate,
+                            childrenDelegate: new SliverChildListDelegate(
+                                paddedDayItems,
+                                addRepaintBoundaries: false
+                            )
+                        )
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new SizedBox(height: Date_pickerLibrary._monthItemFooterHeight)
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DayItem__date_picker : StatefulWidget
@@ -1948,7 +3773,21 @@ internal class _DayItem__date_picker : StatefulWidget
     public virtual bool isToday { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _DayItem__date_picker(DateTime day, FocusNode focusNode, Action<DateTime> onChanged, Action<bool> onFocusChange, Color highlightColor, bool isDisabled, bool isRangeSelected, bool isSelectedDayStart, bool isSelectedDayEnd, bool isInRange, bool isOneDayRange, bool isToday, CalendarDelegate<DateTime> calendarDelegate)
+    internal _DayItem__date_picker(
+        DateTime day,
+        FocusNode focusNode,
+        Action<DateTime> onChanged,
+        Action<bool> onFocusChange,
+        Color highlightColor,
+        bool isDisabled,
+        bool isRangeSelected,
+        bool isSelectedDayStart,
+        bool isSelectedDayEnd,
+        bool isInRange,
+        bool isOneDayRange,
+        bool isToday,
+        CalendarDelegate<DateTime> calendarDelegate
+    )
     {
         this.day = day;
         this.focusNode = focusNode;
@@ -1965,12 +3804,14 @@ internal class _DayItem__date_picker : StatefulWidget
         this.calendarDelegate = calendarDelegate;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DayItemState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DayItemState__date_picker());
 }
 
 internal class _DayItemState__date_picker : State<_DayItem__date_picker>
 {
-    internal virtual WidgetStatesController _statesController { get; private set; } = new WidgetStatesController();
+    internal virtual WidgetStatesController _statesController { get; private set; } =
+        new WidgetStatesController();
 
     public override void dispose()
     {
@@ -1995,62 +3836,114 @@ internal class _DayItemState__date_picker : State<_DayItem__date_picker>
             return getProperty(datePickerTheme) ?? getProperty(defaultsLocal);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        P? resolve<P>(Func<DatePickerThemeData?, WidgetStateProperty<P>?> getProperty, HashSet<WidgetState> states)
+        P? resolve<P>(
+            Func<DatePickerThemeData?, WidgetStateProperty<P>?> getProperty,
+            HashSet<WidgetState> states
+        )
         {
-            return effectiveValue((theme) =>
-            {
-                return getProperty(theme) is { } property ? property.resolve(states) : default;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return effectiveValue(
+                (theme) =>
+                {
+                    return getProperty(theme) is { } property ? property.resolve(states) : default;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        var statesLocal = ((Func<HashSet<WidgetState>>)(() => { var __collection108309 = new HashSet<WidgetState>(); if (widget.isDisabled) { __collection108309.Add(WidgetState.disabled); } if (widget.isSelectedDayStart || widget.isSelectedDayEnd) { __collection108309.Add(WidgetState.selected); } return __collection108309; }))();
+        var statesLocal = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection108309 = new HashSet<WidgetState>();
+                    if (widget.isDisabled)
+                    {
+                        __collection108309.Add(WidgetState.disabled);
+                    }
+                    if (widget.isSelectedDayStart || widget.isSelectedDayEnd)
+                    {
+                        __collection108309.Add(WidgetState.selected);
+                    }
+                    return __collection108309;
+                }
+            )
+        )();
         _statesController.value = statesLocal;
         Color? dayForegroundColorLocal = resolve((theme) => theme?.dayForegroundColor, statesLocal);
         Color? dayBackgroundColorLocal = resolve((theme) => theme?.dayBackgroundColor, statesLocal);
-        WidgetStateProperty<Color?> dayOverlayColorLocal = WidgetStateProperty.resolveWith((states) => effectiveValue((theme) => widget.isInRange ? theme?.rangeSelectionOverlayColor?.resolve(states) : theme?.dayOverlayColor?.resolve(states)));
-        OutlinedBorder dayShapeLocal = resolve((theme) => theme?.dayShape, statesLocal) ?? new CircleBorder();
+        WidgetStateProperty<Color?> dayOverlayColorLocal = WidgetStateProperty.resolveWith(
+            (states) =>
+                effectiveValue(
+                    (theme) =>
+                        widget.isInRange
+                            ? theme?.rangeSelectionOverlayColor?.resolve(states)
+                            : theme?.dayOverlayColor?.resolve(states)
+                )
+        );
+        OutlinedBorder dayShapeLocal =
+            resolve((theme) => theme?.dayShape, statesLocal) ?? new CircleBorder();
         _HighlightPainter__date_picker? highlightPainter = default!;
         if (widget.isSelectedDayStart || widget.isSelectedDayEnd)
         {
             itemStyle = itemStyle?.apply(color: dayForegroundColorLocal);
-            decorationLocal = new ShapeDecoration(color: dayBackgroundColorLocal, shape: dayShapeLocal);
+            decorationLocal = new ShapeDecoration(
+                color: dayBackgroundColorLocal,
+                shape: dayShapeLocal
+            );
             if (widget.isRangeSelected && !widget.isOneDayRange)
             {
-                _HighlightPainterStyle__date_picker styleLocal = widget.isSelectedDayStart ? _HighlightPainterStyle__date_picker.highlightTrailing : _HighlightPainterStyle__date_picker.highlightLeading;
-                highlightPainter = new _HighlightPainter__date_picker(color: highlightColorLocal, style: styleLocal, textDirection: textDirectionLocal);
+                _HighlightPainterStyle__date_picker styleLocal = widget.isSelectedDayStart
+                    ? _HighlightPainterStyle__date_picker.highlightTrailing
+                    : _HighlightPainterStyle__date_picker.highlightLeading;
+                highlightPainter = new _HighlightPainter__date_picker(
+                    color: highlightColorLocal,
+                    style: styleLocal,
+                    textDirection: textDirectionLocal
+                );
             }
         }
         else
         {
             if (widget.isInRange)
             {
-                highlightPainter = new _HighlightPainter__date_picker(color: highlightColorLocal, style: _HighlightPainterStyle__date_picker.highlightAll, textDirection: textDirectionLocal);
+                highlightPainter = new _HighlightPainter__date_picker(
+                    color: highlightColorLocal,
+                    style: _HighlightPainterStyle__date_picker.highlightAll,
+                    textDirection: textDirectionLocal
+                );
                 if (widget.isDisabled)
                 {
-                    itemStyle = itemStyle?.apply(color: colorSchemeLocal.onSurface.withOpacity(0.38));
+                    itemStyle = itemStyle?.apply(
+                        color: colorSchemeLocal.onSurface.withOpacity(0.38)
+                    );
                 }
             }
             else
             {
                 if (widget.isDisabled)
                 {
-                    itemStyle = itemStyle?.apply(color: colorSchemeLocal.onSurface.withOpacity(0.38));
+                    itemStyle = itemStyle?.apply(
+                        color: colorSchemeLocal.onSurface.withOpacity(0.38)
+                    );
                 }
                 else
                 {
                     if (widget.isToday)
                     {
                         itemStyle = itemStyle?.apply(color: colorSchemeLocal.primary);
-                        BorderSide todaySide = (datePickerTheme.todayBorder ?? defaultsLocal.todayBorder!).copyWith(color: colorSchemeLocal.primary);
-                        decorationLocal = new ShapeDecoration(shape: dayShapeLocal.copyWith(side: todaySide));
+                        BorderSide todaySide = (
+                            datePickerTheme.todayBorder ?? defaultsLocal.todayBorder!
+                        ).copyWith(color: colorSchemeLocal.primary);
+                        decorationLocal = new ShapeDecoration(
+                            shape: dayShapeLocal.copyWith(side: todaySide)
+                        );
                     }
                 }
             }
         }
         string dayText = localizations.formatDecimal(widget.day.Day);
         var semanticLabelSuffix = widget.isToday ? $", {localizations.currentDateLabel}" : "";
-        var semanticLabel = $"{dayText}, {widget.calendarDelegate.formatFullDate(widget.day, localizations)}{semanticLabelSuffix}";
+        var semanticLabel =
+            $"{dayText}, {widget.calendarDelegate.formatFullDate(widget.day, localizations)}{semanticLabelSuffix}";
         if (widget.isSelectedDayStart)
         {
             semanticLabel = localizations.dateRangeStartDateSemanticLabel(semanticLabel);
@@ -2062,19 +3955,42 @@ internal class _DayItemState__date_picker : State<_DayItem__date_picker>
                 semanticLabel = localizations.dateRangeEndDateSemanticLabel(semanticLabel);
             }
         }
-        Widget dayWidget = new Container(decoration: decorationLocal, alignment: Alignment.center, child: new Widgets.Semantics(label: semanticLabel, selected: widget.isSelectedDayStart || widget.isSelectedDayEnd, child: new ExcludeSemantics(child: new Text(dayText, style: itemStyle))));
+        Widget dayWidget = new Container(
+            decoration: decorationLocal,
+            alignment: Alignment.center,
+            child: new Widgets.Semantics(
+                label: semanticLabel,
+                selected: widget.isSelectedDayStart || widget.isSelectedDayEnd,
+                child: new ExcludeSemantics(child: new Text(dayText, style: itemStyle))
+            )
+        );
         if (highlightPainter is not null)
         {
-            dayWidget = DartRuntimePrimitives.ConvertValue<Widget>(new CustomPaint(painter: highlightPainter, child: dayWidget));
+            dayWidget = DartRuntimePrimitives.ConvertValue<Widget>(
+                new CustomPaint(painter: highlightPainter, child: dayWidget)
+            );
         }
         if (!widget.isDisabled)
         {
-            dayWidget = DartRuntimePrimitives.ConvertValue<Widget>(new InkResponse(focusNode: widget.focusNode, onTap: () => { widget.onChanged(widget.day); }, customBorder: dayShapeLocal, containedInkWell: true, statesController: _statesController, overlayColor: dayOverlayColorLocal, onFocusChange: widget.onFocusChange, child: dayWidget));
+            dayWidget = DartRuntimePrimitives.ConvertValue<Widget>(
+                new InkResponse(
+                    focusNode: widget.focusNode,
+                    onTap: () =>
+                    {
+                        widget.onChanged(widget.day);
+                    },
+                    customBorder: dayShapeLocal,
+                    containedInkWell: true,
+                    statesController: _statesController,
+                    overlayColor: dayOverlayColorLocal,
+                    onFocusChange: widget.onFocusChange,
+                    child: dayWidget
+                )
+            );
         }
         return dayWidget;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal enum _HighlightPainterStyle__date_picker
@@ -2082,7 +3998,7 @@ internal enum _HighlightPainterStyle__date_picker
     none,
     highlightLeading,
     highlightTrailing,
-    highlightAll
+    highlightAll,
 }
 
 internal class _HighlightPainter__date_picker : CustomPainter
@@ -2091,7 +4007,11 @@ internal class _HighlightPainter__date_picker : CustomPainter
     public virtual _HighlightPainterStyle__date_picker style { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
 
-    internal _HighlightPainter__date_picker(Color color, _HighlightPainterStyle__date_picker style = _HighlightPainterStyle__date_picker.none, TextDirection? textDirection = null)
+    internal _HighlightPainter__date_picker(
+        Color color,
+        _HighlightPainterStyle__date_picker style = _HighlightPainterStyle__date_picker.none,
+        TextDirection? textDirection = null
+    )
     {
         this.color = color;
         this.style = style;
@@ -2104,37 +4024,51 @@ internal class _HighlightPainter__date_picker : CustomPainter
         {
             return;
         }
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color;
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))();
-        bool rtlLocal = textDirection switch { TextDirection.rtl => true,null => true,TextDirection.ltr => false,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = color;
+                    __cascade.style = PaintingStyle.fill;
+                    return __cascade;
+                }
+            )
+        )();
+        bool rtlLocal = textDirection switch
+        {
+            TextDirection.rtl => true,
+            null => true,
+            TextDirection.ltr => false,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         switch (style)
         {
             case _HighlightPainterStyle__date_picker.highlightLeading when rtlLocal:
             case _HighlightPainterStyle__date_picker.highlightTrailing when !rtlLocal:
-                {
-                    canvas.drawRect(Rect.fromLTWH(size.width / 2L, 0, size.width / 2L, size.height), paintLocal);
-                    break;
-                }
+            {
+                canvas.drawRect(
+                    Rect.fromLTWH(size.width / 2L, 0, size.width / 2L, size.height),
+                    paintLocal
+                );
+                break;
+            }
             case _HighlightPainterStyle__date_picker.highlightLeading:
             case _HighlightPainterStyle__date_picker.highlightTrailing:
-                {
-                    canvas.drawRect(Rect.fromLTWH(0, 0, size.width / 2L, size.height), paintLocal);
-                    break;
-                }
+            {
+                canvas.drawRect(Rect.fromLTWH(0, 0, size.width / 2L, size.height), paintLocal);
+                break;
+            }
             case _HighlightPainterStyle__date_picker.highlightAll:
-                {
-                    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paintLocal);
-                    break;
-                }
+            {
+                canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paintLocal);
+                break;
+            }
             case _HighlightPainterStyle__date_picker.none:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
@@ -2155,7 +4089,19 @@ internal class _InputDateRangePickerDialog__date_picker : StatelessWidget
     public virtual Widget? entryModeButton { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _InputDateRangePickerDialog__date_picker(DateTime? selectedStartDate, DateTime? selectedEndDate, DateTime? currentDate, Widget picker, Action onConfirm, Action onCancel, string? confirmText, string? cancelText, string? helpText, Widget? entryModeButton, CalendarDelegate<DateTime> calendarDelegate)
+    internal _InputDateRangePickerDialog__date_picker(
+        DateTime? selectedStartDate,
+        DateTime? selectedEndDate,
+        DateTime? currentDate,
+        Widget picker,
+        Action onConfirm,
+        Action onCancel,
+        string? confirmText,
+        string? cancelText,
+        string? helpText,
+        Widget? entryModeButton,
+        CalendarDelegate<DateTime> calendarDelegate
+    )
     {
         this.selectedStartDate = selectedStartDate;
         this.selectedEndDate = selectedEndDate;
@@ -2170,16 +4116,38 @@ internal class _InputDateRangePickerDialog__date_picker : StatelessWidget
         this.calendarDelegate = calendarDelegate;
     }
 
-    internal virtual string _formatDateRange(BuildContext context, DateTime? start, DateTime? end, DateTime now)
+    internal virtual string _formatDateRange(
+        BuildContext context,
+        DateTime? start,
+        DateTime? end,
+        DateTime now
+    )
     {
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        string startText = Date_pickerLibrary._formatRangeStartDate(localizations, calendarDelegate, start, end);
-        string endText = Date_pickerLibrary._formatRangeEndDate(localizations, calendarDelegate, start, end, now);
+        string startText = Date_pickerLibrary._formatRangeStartDate(
+            localizations,
+            calendarDelegate,
+            start,
+            end
+        );
+        string endText = Date_pickerLibrary._formatRangeEndDate(
+            localizations,
+            calendarDelegate,
+            start,
+            end,
+            now
+        );
         if ((start is null) || (end is null))
         {
             return localizations.unspecifiedDateRange;
         }
-        return Directionality.of(context) switch { TextDirection.rtl => $"{endText} – {startText}",TextDirection.ltr => $"{startText} – {endText}",_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return Directionality.of(context) switch
+        {
+            TextDirection.rtl => $"{endText} – {startText}",
+            TextDirection.ltr => $"{startText} – {endText}",
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     }
 
     public override Widget build(BuildContext context)
@@ -2188,36 +4156,137 @@ internal class _InputDateRangePickerDialog__date_picker : StatelessWidget
         Orientation orientationLocal = MediaQuery.orientationOf(context);
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        TextStyle? headlineStyle = Equals(orientationLocal, Orientation.portrait) ? (datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle) : Theme.of(context).textTheme.headlineSmall;
-        Color? headerForegroundColorLocal = datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
+        TextStyle? headlineStyle = Equals(orientationLocal, Orientation.portrait)
+            ? (datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle)
+            : Theme.of(context).textTheme.headlineSmall;
+        Color? headerForegroundColorLocal =
+            datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor;
         headlineStyle = headlineStyle?.copyWith(color: headerForegroundColorLocal);
-        string dateText = _formatDateRange(context, selectedStartDate, selectedEndDate, DartRuntimePrimitives.RequireValue(currentDate));
-        var semanticDateText = ((selectedStartDate is not null) && (selectedEndDate is not null)) ? $"{calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedStartDate), localizations)} – {calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedEndDate), localizations)}" : "";
-        Widget header = new _DatePickerHeader__date_picker(helpText: helpText ?? localizations.dateRangePickerHelpText, titleText: dateText, titleSemanticsLabel: semanticDateText, titleStyle: headlineStyle, orientation: orientationLocal, isShort: Equals(orientationLocal, Orientation.landscape), entryModeButton: entryModeButton);
-        Widget actions = new ConstrainedBox(constraints: new BoxConstraints(minHeight: 52.0), child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8), child: new Align(alignment: AlignmentDirectional.centerEnd, child: new OverflowBar(spacing: 8, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new TextButton(onPressed: onCancel, child: new Text(cancelText ?? localizations.cancelButtonLabel))), DartRuntimePrimitives.ConvertValue<Widget>(new TextButton(onPressed: onConfirm, child: new Text(confirmText ?? localizations.okButtonLabel))) }))));
-        double textScaleFactor = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale;
+        string dateText = _formatDateRange(
+            context,
+            selectedStartDate,
+            selectedEndDate,
+            DartRuntimePrimitives.RequireValue(currentDate)
+        );
+        var semanticDateText =
+            ((selectedStartDate is not null) && (selectedEndDate is not null))
+                ? $"{calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedStartDate), localizations)} – {calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedEndDate), localizations)}"
+                : "";
+        Widget header = new _DatePickerHeader__date_picker(
+            helpText: helpText ?? localizations.dateRangePickerHelpText,
+            titleText: dateText,
+            titleSemanticsLabel: semanticDateText,
+            titleStyle: headlineStyle,
+            orientation: orientationLocal,
+            isShort: Equals(orientationLocal, Orientation.landscape),
+            entryModeButton: entryModeButton
+        );
+        Widget actions = new ConstrainedBox(
+            constraints: new BoxConstraints(minHeight: 52.0),
+            child: new Padding(
+                padding: EdgeInsets.CreateSymmetric(horizontal: 8),
+                child: new Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: new OverflowBar(
+                        spacing: 8,
+                        children: new List<Widget>
+                        {
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new TextButton(
+                                    onPressed: onCancel,
+                                    child: new Text(cancelText ?? localizations.cancelButtonLabel)
+                                )
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new TextButton(
+                                    onPressed: onConfirm,
+                                    child: new Text(confirmText ?? localizations.okButtonLabel)
+                                )
+                            ),
+                        }
+                    )
+                )
+            )
+        );
+        double textScaleFactor =
+            MediaQuery
+                .textScalerOf(context)
+                .clamp(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor)
+                .scale(Calendar_date_pickerLibrary._fontSizeToScale)
+            / Calendar_date_pickerLibrary._fontSizeToScale;
         Size dialogSize = Date_pickerLibrary._inputPortraitDialogSizeM3 * textScaleFactor;
         switch (orientationLocal)
         {
             case Orientation.portrait:
-                {
-                    return new LayoutBuilder(builder: (context, constraints) =>
+            {
+                return new LayoutBuilder(
+                    builder: (context, constraints) =>
                     {
                         Size portraitDialogSize = Date_pickerLibrary._inputPortraitDialogSizeM3;
-                        bool isFullyPortrait = constraints.maxHeight >= Math.Min(dialogSize.height, portraitDialogSize.height);
-                        return new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<Widget>>)(() => { var __collection120213 = new List<Widget>(); if (isFullyPortrait) { __collection120213.Add(DartRuntimePrimitives.ConvertValue<Widget>(header)); } __collection120213.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: picker))); __collection120213.Add(DartRuntimePrimitives.ConvertValue<Widget>(actions)); return __collection120213; }))());
-                    });
-                }
+                        bool isFullyPortrait =
+                            constraints.maxHeight
+                            >= Math.Min(dialogSize.height, portraitDialogSize.height);
+                        return new Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: (
+                                (Func<List<Widget>>)(
+                                    () =>
+                                    {
+                                        var __collection120213 = new List<Widget>();
+                                        if (isFullyPortrait)
+                                        {
+                                            __collection120213.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(header)
+                                            );
+                                        }
+                                        __collection120213.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Expanded(child: picker)
+                                            )
+                                        );
+                                        __collection120213.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(actions)
+                                        );
+                                        return __collection120213;
+                                    }
+                                )
+                            )()
+                        );
+                    }
+                );
+            }
             case Orientation.landscape:
-                {
-                    return new Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(header), DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<Widget>(actions) }))) });
-                }
+            {
+                return new Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: new List<Widget>
+                    {
+                        DartRuntimePrimitives.ConvertValue<Widget>(header),
+                        DartRuntimePrimitives.ConvertValue<Widget>(
+                            new Flexible(
+                                child: new Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: new List<Widget>
+                                    {
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new Expanded(child: picker)
+                                        ),
+                                        DartRuntimePrimitives.ConvertValue<Widget>(actions),
+                                    }
+                                )
+                            )
+                        ),
+                    }
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _InputDateRangePicker__date_picker : StatefulWidget
@@ -2239,10 +4308,36 @@ internal class _InputDateRangePicker__date_picker : StatefulWidget
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool autovalidate { get; private set; } = default!;
     public virtual TextInputType keyboardType { get; private set; } = default!;
-    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
+    public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate
+    {
+        get;
+        private set;
+    }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _InputDateRangePicker__date_picker(Key? key = null, DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Action<DateTime?>? onStartDateChanged = default!, Action<DateTime?>? onEndDateChanged = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, string? helpText = null, string? errorFormatText = null, string? errorInvalidText = null, string? errorInvalidRangeText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, bool autofocus = false, bool autovalidate = false, TextInputType keyboardType = default!) : base(key: key)
+    internal _InputDateRangePicker__date_picker(
+        Key? key = null,
+        DateTime? initialStartDate = null,
+        DateTime? initialEndDate = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        Action<DateTime?>? onStartDateChanged = default!,
+        Action<DateTime?>? onEndDateChanged = default!,
+        Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!,
+        CalendarDelegate<DateTime> calendarDelegate = default!,
+        string? helpText = null,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? errorInvalidRangeText = null,
+        string? fieldStartHintText = null,
+        string? fieldEndHintText = null,
+        string? fieldStartLabelText = null,
+        string? fieldEndLabelText = null,
+        bool autofocus = false,
+        bool autovalidate = false,
+        TextInputType keyboardType = default!
+    )
+        : base(key: key)
     {
         TextInputType __keyboardType = keyboardType ?? TextInputType.datetime;
         this.onStartDateChanged = onStartDateChanged;
@@ -2260,13 +4355,28 @@ internal class _InputDateRangePicker__date_picker : StatefulWidget
         this.autofocus = autofocus;
         this.autovalidate = autovalidate;
         this.keyboardType = __keyboardType;
-        this.initialStartDate = (initialStartDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate)));
-        this.initialEndDate = (initialEndDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate)));
+        this.initialStartDate =
+            (initialStartDate is null)
+                ? null
+                : this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialStartDate)
+                    )
+                );
+        this.initialEndDate =
+            (initialEndDate is null)
+                ? null
+                : this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialEndDate)
+                    )
+                );
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
         this.lastDate = this.calendarDelegate.dateOnly(lastDate);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InputDateRangePickerState__date_picker());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _InputDateRangePickerState__date_picker());
 }
 
 internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePicker__date_picker>
@@ -2303,14 +4413,20 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         if (_startDate is not null)
         {
-            _startInputText = widget.calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(_startDate), localizations);
+            _startInputText = widget.calendarDelegate.formatCompactDate(
+                DartRuntimePrimitives.RequireValue(_startDate),
+                localizations
+            );
             bool selectText = widget.autofocus && !_autoSelected;
             _updateController(_startController, _startInputText, selectText);
             _autoSelected = selectText;
         }
         if (_endDate is not null)
         {
-            _endInputText = widget.calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(_endDate), localizations);
+            _endInputText = widget.calendarDelegate.formatCompactDate(
+                DartRuntimePrimitives.RequireValue(_endDate),
+                localizations
+            );
             _updateController(_endController, _endInputText, false);
         }
     }
@@ -2321,9 +4437,15 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         string? endError = _validateDate(_endDate);
         if ((startError is null) && (endError is null))
         {
-            if (DartRuntimePrimitives.RequireValue(_startDate).isAfter(DartRuntimePrimitives.RequireValue(_endDate)))
+            if (
+                DartRuntimePrimitives
+                    .RequireValue(_startDate)
+                    .isAfter(DartRuntimePrimitives.RequireValue(_endDate))
+            )
             {
-                startError = widget.errorInvalidRangeText ?? MaterialLocalizations.of(context).invalidDateRangeLabel;
+                startError =
+                    widget.errorInvalidRangeText
+                    ?? MaterialLocalizations.of(context).invalidDateRangeLabel;
             }
         }
         setState(() =>
@@ -2346,13 +4468,19 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
     {
         if (date is null)
         {
-            return widget.errorFormatText ?? MaterialLocalizations.of(context).invalidDateFormatLabel;
+            return widget.errorFormatText
+                ?? MaterialLocalizations.of(context).invalidDateFormatLabel;
         }
         else
         {
-            if (!_isDaySelectable(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(date))))
+            if (
+                !_isDaySelectable(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(date))
+                )
+            )
             {
-                return widget.errorInvalidText ?? MaterialLocalizations.of(context).dateOutOfRangeLabel;
+                return widget.errorInvalidText
+                    ?? MaterialLocalizations.of(context).dateOutOfRangeLabel;
             }
         }
         return null;
@@ -2373,12 +4501,18 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _updateController(TextEditingController controller, string text, bool selectText)
+    internal virtual void _updateController(
+        TextEditingController controller,
+        string text,
+        bool selectText
+    )
     {
         TextEditingValue textEditingValue = controller.value.copyWith(text: text);
         if (selectText)
         {
-            textEditingValue = textEditingValue.copyWith(selection: new TextSelection(baseOffset: 0L, extentOffset: text.Length));
+            textEditingValue = textEditingValue.copyWith(
+                selection: new TextSelection(baseOffset: 0L, extentOffset: text.Length)
+            );
         }
         controller.value = textEditingValue;
     }
@@ -2417,7 +4551,49 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         InputDecorationThemeData inputTheme = InputDecorationTheme.of(context);
         InputBorder inputBorder = inputTheme.border ?? new OutlineInputBorder();
-        return new Row(crossAxisAlignment: CrossAxisAlignment.start, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new TextField(controller: _startController, decoration: new InputDecoration(border: inputBorder, filled: inputTheme.filled, hintText: widget.fieldStartHintText ?? widget.calendarDelegate.dateHelpText(localizations), labelText: widget.fieldStartLabelText ?? localizations.dateRangeStartLabel, errorText: _startErrorText), keyboardType: widget.keyboardType, onChanged: _handleStartChanged, autofocus: widget.autofocus))), DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: 8)), DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new TextField(controller: _endController, decoration: new InputDecoration(border: inputBorder, filled: inputTheme.filled, hintText: widget.fieldEndHintText ?? widget.calendarDelegate.dateHelpText(localizations), labelText: widget.fieldEndLabelText ?? localizations.dateRangeEndLabel, errorText: _endErrorText), keyboardType: widget.keyboardType, onChanged: _handleEndChanged))) });
+        return new Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: new List<Widget>
+            {
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Expanded(
+                        child: new TextField(
+                            controller: _startController,
+                            decoration: new InputDecoration(
+                                border: inputBorder,
+                                filled: inputTheme.filled,
+                                hintText: widget.fieldStartHintText
+                                    ?? widget.calendarDelegate.dateHelpText(localizations),
+                                labelText: widget.fieldStartLabelText
+                                    ?? localizations.dateRangeStartLabel,
+                                errorText: _startErrorText
+                            ),
+                            keyboardType: widget.keyboardType,
+                            onChanged: _handleStartChanged,
+                            autofocus: widget.autofocus
+                        )
+                    )
+                ),
+                DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: 8)),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Expanded(
+                        child: new TextField(
+                            controller: _endController,
+                            decoration: new InputDecoration(
+                                border: inputBorder,
+                                filled: inputTheme.filled,
+                                hintText: widget.fieldEndHintText
+                                    ?? widget.calendarDelegate.dateHelpText(localizations),
+                                labelText: widget.fieldEndLabelText
+                                    ?? localizations.dateRangeEndLabel,
+                                errorText: _endErrorText
+                            ),
+                            keyboardType: widget.keyboardType,
+                            onChanged: _handleEndChanged
+                        )
+                    )
+                ),
+            }
+        );
     }
-
 }

@@ -23,7 +23,6 @@ public abstract class Durations
     public static Duration extralong2 = Duration.Create(milliseconds: 800L);
     public static Duration extralong3 = Duration.Create(milliseconds: 900L);
     public static Duration extralong4 = Duration.Create(milliseconds: 1000L);
-
 }
 
 public abstract class Easing
@@ -37,5 +36,4 @@ public abstract class Easing
     public static Curve legacyDecelerate = new Cubic(0.0, 0.0, 0.2, 1.0);
     public static Curve legacyAccelerate = new Cubic(0.4, 0.0, 1.0, 1.0);
     public static Curve legacy = new Cubic(0.4, 0.0, 0.2, 1.0);
-
 }

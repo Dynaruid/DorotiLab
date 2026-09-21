@@ -11,7 +11,11 @@ public class RenderDecoratedSliver : RenderProxySliver
     internal virtual ImageConfiguration _configuration { get; set; } = default!;
     internal virtual BoxPainter? _painter { get; set; } = default;
 
-    public RenderDecoratedSliver(Decoration decoration, DecorationPosition position = DecorationPosition.background, ImageConfiguration configuration = default!)
+    public RenderDecoratedSliver(
+        Decoration decoration,
+        DecorationPosition position = DecorationPosition.background,
+        ImageConfiguration configuration = default!
+    )
     {
         ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         _decoration = decoration;
@@ -63,6 +67,7 @@ public class RenderDecoratedSliver : RenderProxySliver
             markNeedsPaint();
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         _painter = decoration.createBoxPainter(markNeedsPaint);
@@ -92,22 +97,26 @@ public class RenderDecoratedSliver : RenderProxySliver
         Rect paintRect = getMaxPaintRect();
         void paintDecoration()
         {
-            _painter!.paint(context.canvas, offset + paintRect.topLeft, configuration.copyWith(size: paintRect.size));
+            _painter!.paint(
+                context.canvas,
+                offset + paintRect.topLeft,
+                configuration.copyWith(size: paintRect.size)
+            );
         }
         switch (position)
         {
             case DecorationPosition.background:
-                {
-                    paintDecoration();
-                    context.paintChild(child!, offset);
-                    break;
-                }
+            {
+                paintDecoration();
+                context.paintChild(child!, offset);
+                break;
+            }
             case DecorationPosition.foreground:
-                {
-                    context.paintChild(child!, offset);
-                    paintDecoration();
-                    break;
-                }
+            {
+                context.paintChild(child!, offset);
+                paintDecoration();
+                break;
+            }
         }
     }
 
@@ -117,6 +126,4 @@ public class RenderDecoratedSliver : RenderProxySliver
         properties.add(((Diagnosticable)_decoration).toDiagnosticsNode(name: "decoration"));
         properties.add(new DiagnosticsProperty<ImageConfiguration>("configuration", configuration));
     }
-
 }
-

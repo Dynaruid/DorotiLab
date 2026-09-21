@@ -22,7 +22,10 @@ public class PointerSignalResolver
 
     public virtual void register(PointerSignalEvent @event, Action<PointerSignalEvent> callback)
     {
-        DartRuntimePrimitives.Assert(() => (_currentEvent is null) || Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event));
+        DartRuntimePrimitives.Assert(() =>
+            (_currentEvent is null)
+            || Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event)
+        );
         if (_firstRegisteredCallback is not null)
         {
             return;
@@ -39,7 +42,9 @@ public class PointerSignalResolver
             @event.respond(allowPlatformDefault: true);
             return;
         }
-        DartRuntimePrimitives.Assert(() => Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event));
+        DartRuntimePrimitives.Assert(() =>
+            Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event)
+        );
         try
         {
             _firstRegisteredCallback!(_currentEvent!);
@@ -49,15 +54,29 @@ public class PointerSignalResolver
             var stackLocal = new System.Diagnostics.StackTrace();
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerSignalEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) };
-                    return true;
-                });
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while resolving a PointerSignalEvent"), informationCollector: collector));
+            {
+                collector = () =>
+                    new List<DiagnosticsNode>
+                    {
+                        new DiagnosticsProperty<PointerSignalEvent>(
+                            "Event",
+                            @event,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    };
+                return true;
+            });
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "gesture library",
+                    context: new ErrorDescription("while resolving a PointerSignalEvent"),
+                    informationCollector: collector
+                )
+            );
         }
         _firstRegisteredCallback = null;
         _currentEvent = null;
     }
-
 }
-

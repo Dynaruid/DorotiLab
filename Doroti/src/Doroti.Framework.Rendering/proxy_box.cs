@@ -5,7 +5,10 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Rendering;
 
-public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin<RenderBox>
+public class RenderProxyBox
+    : RenderBox,
+        RenderObjectWithChildMixin<RenderBox>,
+        RenderProxyBoxMixin<RenderBox>
 {
     public virtual RenderBox? _child { get; set; } = default;
 
@@ -17,13 +20,40 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -45,6 +75,7 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -75,7 +106,12 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,14 +149,17 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        return child?.getDistanceToActualBaseline(baseline) ?? base.computeDistanceToActualBaseline(baseline);
+        return child?.getDistanceToActualBaseline(baseline)
+            ?? base.computeDistanceToActualBaseline(baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         RenderBox? childLocal = child;
-        return (childLocal is null) ? base.computeDryBaseline(constraints, baseline) : childLocal.getDryBaseline(constraints, baseline);
+        return (childLocal is null)
+            ? base.computeDryBaseline(constraints, baseline)
+            : childLocal.getDryBaseline(constraints, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,9 +188,7 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void applyPaintTransform(RenderObject child, Matrix4 transform)
-    {
-    }
+    public override void applyPaintTransform(RenderObject child, Matrix4 transform) { }
 
     public override void paint(PaintingContext context, Offset offset)
     {
@@ -162,10 +199,10 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
         }
         context.paintChild(childLocal, offset);
     }
-
 }
 
-public interface RenderProxyBoxMixin<T> where T : RenderBox
+public interface RenderProxyBoxMixin<T>
+    where T : RenderBox
 {
     public void setupParentData(RenderObject child);
     public double computeMinIntrinsicWidth(double height);
@@ -186,14 +223,18 @@ public enum HitTestBehavior
 {
     deferToChild,
     opaque,
-    translucent
+    translucent,
 }
 
 public abstract class RenderProxyBoxWithHitTestBehavior : RenderProxyBox
 {
     public virtual HitTestBehavior behavior { get; set; } = default!;
 
-    protected RenderProxyBoxWithHitTestBehavior(HitTestBehavior behavior = HitTestBehavior.deferToChild, RenderBox? child = null) : base(child)
+    protected RenderProxyBoxWithHitTestBehavior(
+        HitTestBehavior behavior = HitTestBehavior.deferToChild,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         this.behavior = behavior;
     }
@@ -214,19 +255,23 @@ public abstract class RenderProxyBoxWithHitTestBehavior : RenderProxyBox
     }
 
     public override bool hitTestSelf(Offset position) => Equals(behavior, HitTestBehavior.opaque);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<HitTestBehavior>("behavior", behavior, defaultValue: null));
     }
-
 }
 
 public class RenderConstrainedBox : RenderProxyBox
 {
     internal virtual BoxConstraints _additionalConstraints { get; set; } = default!;
 
-    public RenderConstrainedBox(RenderBox? child = null, BoxConstraints additionalConstraints = default!) : base(child)
+    public RenderConstrainedBox(
+        RenderBox? child = null,
+        BoxConstraints additionalConstraints = default!
+    )
+        : base(child)
     {
         _additionalConstraints = additionalConstraints;
         System.Diagnostics.Debug.Assert(additionalConstraints.debugAssertIsValid());
@@ -247,6 +292,7 @@ public class RenderConstrainedBox : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (_additionalConstraints.hasBoundedWidth && _additionalConstraints.hasTightWidth)
@@ -333,7 +379,8 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return child?.getDryLayout(_additionalConstraints.enforce(constraints)) ?? _additionalConstraints.enforce(constraints).constrain(Size.zero);
+        return child?.getDryLayout(_additionalConstraints.enforce(constraints))
+            ?? _additionalConstraints.enforce(constraints).constrain(Size.zero);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -341,28 +388,33 @@ public class RenderConstrainedBox : RenderProxyBox
     {
         base.debugPaintSize(context, offset);
         DartRuntimePrimitives.Assert(() =>
+        {
+            Paint paint = default!;
+            if ((child is null) || child!.size.isEmpty)
             {
-                Paint paint = default!;
-                if ((child is null) || child!.size.isEmpty)
-                {
-                    paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = new Color(2425393296L);
-    return __cascade;
-}))();
-                    context.canvas.drawRect(offset & size, paint);
-                }
-                return true;
-            });
+                paint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = new Color(2425393296L);
+                            return __cascade;
+                        }
+                    )
+                )();
+                context.canvas.drawRect(offset & size, paint);
+            }
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<BoxConstraints>("additionalConstraints", additionalConstraints));
+        properties.add(
+            new DiagnosticsProperty<BoxConstraints>("additionalConstraints", additionalConstraints)
+        );
     }
-
 }
 
 public class RenderLimitedBox : RenderProxyBox
@@ -370,7 +422,12 @@ public class RenderLimitedBox : RenderProxyBox
     internal virtual double _maxWidth { get; set; } = default!;
     internal virtual double _maxHeight { get; set; } = default!;
 
-    public RenderLimitedBox(RenderBox? child = null, double maxWidth = double.PositiveInfinity, double maxHeight = double.PositiveInfinity) : base(child)
+    public RenderLimitedBox(
+        RenderBox? child = null,
+        double maxWidth = double.PositiveInfinity,
+        double maxHeight = double.PositiveInfinity
+    )
+        : base(child)
     {
         _maxWidth = maxWidth;
         _maxHeight = maxHeight;
@@ -408,13 +465,26 @@ public class RenderLimitedBox : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     internal virtual BoxConstraints _limitConstraints(BoxConstraints constraints)
     {
-        return new BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.hasBoundedWidth ? constraints.maxWidth : constraints.constrainWidth(maxWidth), minHeight: constraints.minHeight, maxHeight: constraints.hasBoundedHeight ? constraints.maxHeight : constraints.constrainHeight(maxHeight));
+        return new BoxConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : constraints.constrainWidth(maxWidth),
+            minHeight: constraints.minHeight,
+            maxHeight: constraints.hasBoundedHeight
+                ? constraints.maxHeight
+                : constraints.constrainHeight(maxHeight)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
+    internal virtual Size _computeSize(
+        BoxConstraints constraints,
+        Func<RenderBox, BoxConstraints, Size> layoutChild
+    )
     {
         if (child is not null)
         {
@@ -427,7 +497,10 @@ public class RenderLimitedBox : RenderProxyBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
+        return _computeSize(
+            constraints: constraints,
+            layoutChild: ChildLayoutHelper.dryLayoutChild
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -439,17 +512,21 @@ public class RenderLimitedBox : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("maxWidth", maxWidth, defaultValue: double.PositiveInfinity));
-        properties.add(new DoubleProperty("maxHeight", maxHeight, defaultValue: double.PositiveInfinity));
+        properties.add(
+            new DoubleProperty("maxWidth", maxWidth, defaultValue: double.PositiveInfinity)
+        );
+        properties.add(
+            new DoubleProperty("maxHeight", maxHeight, defaultValue: double.PositiveInfinity)
+        );
     }
-
 }
 
 public class RenderAspectRatio : RenderProxyBox
 {
     internal virtual double _aspectRatio { get; set; } = default!;
 
-    public RenderAspectRatio(RenderBox? child = null, double aspectRatio = default!) : base(child)
+    public RenderAspectRatio(RenderBox? child = null, double aspectRatio = default!)
+        : base(child)
     {
         _aspectRatio = aspectRatio;
         System.Diagnostics.Debug.Assert(aspectRatio > 0.0);
@@ -472,6 +549,7 @@ public class RenderAspectRatio : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (double.IsFinite(height))
@@ -516,13 +594,19 @@ public class RenderAspectRatio : RenderProxyBox
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (!constraints.hasBoundedWidth && !constraints.hasBoundedHeight)
             {
-                if (!constraints.hasBoundedWidth && !constraints.hasBoundedHeight)
-                {
-                    throw new FlutterError($"{GetType()} has unbounded constraints.\n" + $"This {GetType()} was given an aspect ratio of {aspectRatio} but was given " + "both unbounded width and unbounded height constraints. Because both " + "constraints were unbounded, this render object doesn't know how much " + "size to consume.");
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    $"{GetType()} has unbounded constraints.\n"
+                        + $"This {GetType()} was given an aspect ratio of {aspectRatio} but was given "
+                        + "both unbounded width and unbounded height constraints. Because both "
+                        + "constraints were unbounded, this render object doesn't know how much "
+                        + "size to consume."
+                );
+            }
+            return true;
+        });
         if (constraints.isTight)
         {
             return constraints.smallest;
@@ -570,7 +654,10 @@ public class RenderAspectRatio : RenderProxyBox
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        return base.computeDryBaseline(BoxConstraints.CreateTight(getDryLayout(constraints)), baseline);
+        return base.computeDryBaseline(
+            BoxConstraints.CreateTight(getDryLayout(constraints)),
+            baseline
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -585,7 +672,6 @@ public class RenderAspectRatio : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("aspectRatio", aspectRatio));
     }
-
 }
 
 public class RenderIntrinsicWidth : RenderProxyBox
@@ -593,12 +679,21 @@ public class RenderIntrinsicWidth : RenderProxyBox
     internal virtual double? _stepWidth { get; set; } = default;
     internal virtual double? _stepHeight { get; set; } = default;
 
-    public RenderIntrinsicWidth(double? stepWidth = null, double? stepHeight = null, RenderBox? child = null) : base(child)
+    public RenderIntrinsicWidth(
+        double? stepWidth = null,
+        double? stepHeight = null,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         _stepWidth = stepWidth;
         _stepHeight = stepHeight;
-        System.Diagnostics.Debug.Assert((stepWidth is null) || (DartRuntimePrimitives.RequireValue(stepWidth) > 0.0));
-        System.Diagnostics.Debug.Assert((stepHeight is null) || (DartRuntimePrimitives.RequireValue(stepHeight) > 0.0));
+        System.Diagnostics.Debug.Assert(
+            (stepWidth is null) || (DartRuntimePrimitives.RequireValue(stepWidth) > 0.0)
+        );
+        System.Diagnostics.Debug.Assert(
+            (stepHeight is null) || (DartRuntimePrimitives.RequireValue(stepHeight) > 0.0)
+        );
     }
 
     public virtual double? stepWidth
@@ -607,7 +702,9 @@ public class RenderIntrinsicWidth : RenderProxyBox
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)
+            );
             if (__value == _stepWidth)
             {
                 return;
@@ -622,7 +719,9 @@ public class RenderIntrinsicWidth : RenderProxyBox
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)
+            );
             if (__value == _stepHeight)
             {
                 return;
@@ -631,6 +730,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     internal static double _applyStep(double input, double? step)
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(input));
@@ -638,7 +738,8 @@ public class RenderIntrinsicWidth : RenderProxyBox
         {
             return input;
         }
-        return (input / DartRuntimePrimitives.RequireValue(step)).ceil() * DartRuntimePrimitives.RequireValue(step);
+        return (input / DartRuntimePrimitives.RequireValue(step)).ceil()
+            * DartRuntimePrimitives.RequireValue(step);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -693,20 +794,35 @@ public class RenderIntrinsicWidth : RenderProxyBox
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
     {
-        return constraints.tighten(width: constraints.hasTightWidth ? null : _applyStep(child.getMaxIntrinsicWidth(constraints.maxHeight), _stepWidth), height: (stepHeight is null) ? null : _applyStep(child.getMaxIntrinsicHeight(constraints.maxWidth), _stepHeight));
+        return constraints.tighten(
+            width: constraints.hasTightWidth
+                ? null
+                : _applyStep(child.getMaxIntrinsicWidth(constraints.maxHeight), _stepWidth),
+            height: (stepHeight is null)
+                ? null
+                : _applyStep(child.getMaxIntrinsicHeight(constraints.maxWidth), _stepHeight)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(Func<RenderBox, BoxConstraints, Size> layoutChild, BoxConstraints constraints)
+    internal virtual Size _computeSize(
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        BoxConstraints constraints
+    )
     {
         RenderBox? childLocal = child;
-        return (childLocal is null) ? constraints.smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints));
+        return (childLocal is null)
+            ? constraints.smallest
+            : layoutChild(childLocal, _childConstraints(childLocal, constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(
+            layoutChild: ChildLayoutHelper.dryLayoutChild,
+            constraints: constraints
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -728,14 +844,12 @@ public class RenderIntrinsicWidth : RenderProxyBox
         properties.add(new DoubleProperty("stepWidth", stepWidth));
         properties.add(new DoubleProperty("stepHeight", stepHeight));
     }
-
 }
 
 public class RenderIntrinsicHeight : RenderProxyBox
 {
-    public RenderIntrinsicHeight(RenderBox? child = null) : base(child)
-    {
-    }
+    public RenderIntrinsicHeight(RenderBox? child = null)
+        : base(child) { }
 
     public override double computeMinIntrinsicWidth(double height)
     {
@@ -775,20 +889,30 @@ public class RenderIntrinsicHeight : RenderProxyBox
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
     {
-        return constraints.hasTightHeight ? constraints : constraints.tighten(height: child.getMaxIntrinsicHeight(constraints.maxWidth));
+        return constraints.hasTightHeight
+            ? constraints
+            : constraints.tighten(height: child.getMaxIntrinsicHeight(constraints.maxWidth));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(Func<RenderBox, BoxConstraints, Size> layoutChild, BoxConstraints constraints)
+    internal virtual Size _computeSize(
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        BoxConstraints constraints
+    )
     {
         RenderBox? childLocal = child;
-        return (childLocal is null) ? constraints.smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints));
+        return (childLocal is null)
+            ? constraints.smallest
+            : layoutChild(childLocal, _childConstraints(childLocal, constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(
+            layoutChild: ChildLayoutHelper.dryLayoutChild,
+            constraints: constraints
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -803,14 +927,12 @@ public class RenderIntrinsicHeight : RenderProxyBox
     {
         size = _computeSize(layoutChild: ChildLayoutHelper.layoutChild, constraints: constraints);
     }
-
 }
 
 public class RenderIgnoreBaseline : RenderProxyBox
 {
-    public RenderIgnoreBaseline(RenderBox? child = null) : base(child)
-    {
-    }
+    public RenderIgnoreBaseline(RenderBox? child = null)
+        : base(child) { }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
@@ -823,7 +945,6 @@ public class RenderIgnoreBaseline : RenderProxyBox
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RenderOpacity : RenderProxyBox
@@ -832,7 +953,12 @@ public class RenderOpacity : RenderProxyBox
     internal virtual double _opacity { get; set; } = default!;
     internal virtual bool _alwaysIncludeSemantics { get; set; } = default!;
 
-    public RenderOpacity(double opacity = 1.0, bool alwaysIncludeSemantics = false, RenderBox? child = null) : base(child)
+    public RenderOpacity(
+        double opacity = 1.0,
+        bool alwaysIncludeSemantics = false,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         _opacity = opacity;
         _alwaysIncludeSemantics = alwaysIncludeSemantics;
@@ -882,6 +1008,7 @@ public class RenderOpacity : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override bool paintsChild(RenderObject child)
     {
         var __child = (RenderBox)child;
@@ -920,12 +1047,18 @@ public class RenderOpacity : RenderProxyBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("opacity", opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(
+            new FlagProperty(
+                "alwaysIncludeSemantics",
+                value: alwaysIncludeSemantics,
+                ifTrue: "alwaysIncludeSemantics"
+            )
+        );
     }
-
 }
 
-public interface RenderAnimatedOpacityMixin<T> where T : RenderObject
+public interface RenderAnimatedOpacityMixin<T>
+    where T : RenderObject
 {
     long? _alpha { get; set; }
     bool? _currentlyIsRepaintBoundary { get; set; }
@@ -952,13 +1085,20 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     public virtual Animation<double>? _opacity { get; set; } = default;
     public virtual bool? _alwaysIncludeSemantics { get; set; } = default;
 
-    public RenderAnimatedOpacity(Animation<double> opacity, bool alwaysIncludeSemantics = false, RenderBox? child = null) : base(child)
+    public RenderAnimatedOpacity(
+        Animation<double> opacity,
+        bool alwaysIncludeSemantics = false,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         this.opacity = opacity;
         this.alwaysIncludeSemantics = alwaysIncludeSemantics;
     }
 
-    public override bool isRepaintBoundary => (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+    public override bool isRepaintBoundary =>
+        (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (OpacityLayer)oldLayer;
@@ -1004,6 +1144,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -1065,9 +1206,14 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Animation<double>>("opacity", opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(
+            new FlagProperty(
+                "alwaysIncludeSemantics",
+                value: alwaysIncludeSemantics,
+                ifTrue: "alwaysIncludeSemantics"
+            )
+        );
     }
-
 }
 
 public delegate Shader ShaderCallback(Rect bounds);
@@ -1077,7 +1223,12 @@ public class RenderShaderMask : RenderProxyBox
     internal virtual Func<Rect, Shader> _shaderCallback { get; set; } = default!;
     internal virtual BlendMode _blendMode { get; set; } = default!;
 
-    public RenderShaderMask(RenderBox? child = null, Func<Rect, Shader> shaderCallback = default!, BlendMode blendMode = BlendMode.modulate) : base(child)
+    public RenderShaderMask(
+        RenderBox? child = null,
+        Func<Rect, Shader> shaderCallback = default!,
+        BlendMode blendMode = BlendMode.modulate
+    )
+        : base(child)
     {
         _shaderCallback = shaderCallback;
         _blendMode = blendMode;
@@ -1113,33 +1264,37 @@ public class RenderShaderMask : RenderProxyBox
         }
     }
     public override bool alwaysNeedsCompositing => child is not null;
+
     public override void paint(PaintingContext context, Offset offset)
     {
         if (child is not null)
         {
             DartRuntimePrimitives.Assert(() => needsCompositing);
             layer ??= new ShaderMaskLayer();
-            ((Func<ShaderMaskLayer>)(() =>
-{
-    var __cascade = layer!;
-    __cascade.shader = _shaderCallback(Offset.zero & size);
-    __cascade.maskRect = offset & size;
-    __cascade.blendMode = _blendMode;
-    return __cascade;
-}))();
+            (
+                (Func<ShaderMaskLayer>)(
+                    () =>
+                    {
+                        var __cascade = layer!;
+                        __cascade.shader = _shaderCallback(Offset.zero & size);
+                        __cascade.maskRect = offset & size;
+                        __cascade.blendMode = _blendMode;
+                        return __cascade;
+                    }
+                )
+            )();
             context.pushLayer(layer!, base.paint, offset);
             DartRuntimePrimitives.Assert(() =>
-                {
-                    layer!.debugCreator = debugCreator;
-                    return true;
-                });
+            {
+                layer!.debugCreator = debugCreator;
+                return true;
+            });
         }
         else
         {
             layer = null;
         }
     }
-
 }
 
 public class RenderBackdropFilter : RenderProxyBox
@@ -1149,7 +1304,15 @@ public class RenderBackdropFilter : RenderProxyBox
     internal virtual BlendMode _blendMode { get; set; } = default!;
     internal virtual BackdropKey? _backdropKey { get; set; } = default;
 
-    public RenderBackdropFilter(RenderBox? child = null, ImageFilter? filter = null, ImageFilterConfig? filterConfig = null, BlendMode blendMode = BlendMode.srcOver, bool enabled = true, BackdropKey? backdropKey = null) : base(child)
+    public RenderBackdropFilter(
+        RenderBox? child = null,
+        ImageFilter? filter = null,
+        ImageFilterConfig? filterConfig = null,
+        BlendMode blendMode = BlendMode.srcOver,
+        bool enabled = true,
+        BackdropKey? backdropKey = null
+    )
+        : base(child)
     {
         _filterConfig = filterConfig ?? ImageFilterConfig.Create(filter!);
         _enabled = enabled;
@@ -1230,6 +1393,7 @@ public class RenderBackdropFilter : RenderProxyBox
         }
     }
     public override bool alwaysNeedsCompositing => child is not null;
+
     public override void paint(PaintingContext context, Offset offset)
     {
         if (!_enabled)
@@ -1237,7 +1401,9 @@ public class RenderBackdropFilter : RenderProxyBox
             base.paint(context, offset);
             return;
         }
-        ImageFilter effectiveFilter = _filterConfig.resolve(new ImageFilterContext(bounds: offset & size));
+        ImageFilter effectiveFilter = _filterConfig.resolve(
+            new ImageFilterContext(bounds: offset & size)
+        );
         if (child is not null)
         {
             DartRuntimePrimitives.Assert(() => needsCompositing);
@@ -1247,10 +1413,10 @@ public class RenderBackdropFilter : RenderProxyBox
             layer!.backdropKey = _backdropKey;
             context.pushLayer(layer!, base.paint, offset);
             DartRuntimePrimitives.Assert(() =>
-                {
-                    layer!.debugCreator = debugCreator;
-                    return true;
-                });
+            {
+                layer!.debugCreator = debugCreator;
+                return true;
+            });
         }
         else
         {
@@ -1261,11 +1427,16 @@ public class RenderBackdropFilter : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<ImageFilterConfig>("filterConfig", filterConfig, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<ImageFilterConfig>(
+                "filterConfig",
+                filterConfig,
+                defaultValue: null
+            )
+        );
         properties.add(new EnumProperty<BlendMode>("blendMode", blendMode));
         properties.add(new FlagProperty("enabled", value: enabled, ifTrue: "enabled"));
     }
-
 }
 
 public abstract class CustomClipper<T> : Listenable
@@ -1278,11 +1449,17 @@ public abstract class CustomClipper<T> : Listenable
     }
 
     public virtual void addListener(Action listener) => _reclip?.addListener(listener);
+
     public virtual void removeListener(Action listener) => _reclip?.removeListener(listener);
+
     public abstract T getClip(Size size);
+
     public virtual Rect getApproximateClipRect(Size size) => Offset.zero & size;
+
     public abstract bool shouldReclip(CustomClipper<T> oldClipper);
-    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "CustomClipper");
+
+    public override string ToString() =>
+        objectRuntimeTypeFunctions.objectRuntimeType(this, "CustomClipper");
 }
 
 public class ShapeBorderClipper : CustomClipper<Path>
@@ -1309,16 +1486,17 @@ public class ShapeBorderClipper : CustomClipper<Path>
             return true;
         }
         var typedOldClipper = ((ShapeBorderClipper?)oldClipper)!;
-        return (!Equals(typedOldClipper.shape, shape)) || (!Equals(typedOldClipper.textDirection, textDirection));
+        return (!Equals(typedOldClipper.shape, shape))
+            || (!Equals(typedOldClipper.textDirection, textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
 {
     internal virtual CustomClipper<T>? _clipper { get; set; } = default;
     internal virtual T? _clip { get; set; } = default;
+
     // `T?` on an unconstrained C# generic is only a nullable annotation. When T is
     // Rect or RRect, default(T) is an empty value rather than Dart's null sentinel.
     // Track validity explicitly so the first paint computes the actual clip.
@@ -1327,7 +1505,12 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     internal virtual Paint? _debugPaint { get; set; } = default;
     internal virtual TextPainter? _debugText { get; set; } = default;
 
-    internal _RenderCustomClip__proxy_box(RenderBox? child = null, CustomClipper<T>? clipper = null, Clip clipBehavior = Clip.antiAlias) : base(child)
+    internal _RenderCustomClip__proxy_box(
+        RenderBox? child = null,
+        CustomClipper<T>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias
+    )
+        : base(child)
     {
         _clipper = clipper;
         _clipBehavior = clipBehavior;
@@ -1345,8 +1528,20 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             }
             CustomClipper<T>? oldClipper = _clipper;
             _clipper = newClipper;
-            DartRuntimePrimitives.Assert(() => (newClipper is not null) || (oldClipper is not null));
-            if ((newClipper is null) || (oldClipper is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newClipper), DartRuntimePrimitives.RuntimeType(oldClipper))) || newClipper.shouldReclip(oldClipper))
+            DartRuntimePrimitives.Assert(() =>
+                (newClipper is not null) || (oldClipper is not null)
+            );
+            if (
+                (newClipper is null)
+                || (oldClipper is null)
+                || (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newClipper),
+                        DartRuntimePrimitives.RuntimeType(oldClipper)
+                    )
+                )
+                || newClipper.shouldReclip(oldClipper)
+            )
             {
                 _markNeedsClip();
             }
@@ -1357,6 +1552,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -1391,6 +1587,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             }
         }
     }
+
     public override void performLayout()
     {
         Size? oldSize = hasSize ? size : null;
@@ -1417,20 +1614,21 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             _clipIsValid = true;
         }
     }
+
     public override Rect? describeApproximatePaintClip(RenderObject child)
     {
         switch (clipBehavior)
         {
             case Clip.none:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case Clip.hardEdge:
             case Clip.antiAlias:
             case Clip.antiAliasWithSaveLayer:
-                {
-                    return _clipper?.getApproximateClipRect(size) ?? (Offset.zero & size);
-                }
+            {
+                return _clipper?.getApproximateClipRect(size) ?? (Offset.zero & size);
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1438,23 +1636,52 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPaint ??= ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.shader = Ui.Gradient.linear(Offset.zero, new Offset(10.0, 10.0), new List<Color> { new Color(0L), new Color(4294902015L), new Color(4294902015L), new Color(0L) }, new List<double> { 0.25, 0.25, 0.75, 0.75 }, TileMode.repeated);
-    __cascade.strokeWidth = 2.0;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))();
-                _debugText ??= ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter(text: new TextSpan(text: "✂", style: new Painting.TextStyle(color: new Color(4294902015L), fontSize: 14.0)), textDirection: TextDirection.rtl);
-    __cascade.layout();
-    return __cascade;
-}))();
-                return true;
-            });
+        {
+            _debugPaint ??= (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.shader = Ui.Gradient.linear(
+                            Offset.zero,
+                            new Offset(10.0, 10.0),
+                            new List<Color>
+                            {
+                                new Color(0L),
+                                new Color(4294902015L),
+                                new Color(4294902015L),
+                                new Color(0L),
+                            },
+                            new List<double> { 0.25, 0.25, 0.75, 0.75 },
+                            TileMode.repeated
+                        );
+                        __cascade.strokeWidth = 2.0;
+                        __cascade.style = PaintingStyle.stroke;
+                        return __cascade;
+                    }
+                )
+            )();
+            _debugText ??= (
+                (Func<TextPainter>)(
+                    () =>
+                    {
+                        var __cascade = new TextPainter(
+                            text: new TextSpan(
+                                text: "✂",
+                                style: new Painting.TextStyle(
+                                    color: new Color(4294902015L),
+                                    fontSize: 14.0
+                                )
+                            ),
+                            textDirection: TextDirection.rtl
+                        );
+                        __cascade.layout();
+                        return __cascade;
+                    }
+                )
+            )();
+            return true;
+        });
     }
 
     public override void dispose()
@@ -1463,16 +1690,19 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
         _debugText = null;
         base.dispose();
     }
-
 }
 
 public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
 {
-    public RenderClipRect(RenderBox? child = null, CustomClipper<Rect>? clipper = null, Clip clipBehavior = Clip.antiAlias) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
-    {
-    }
+    public RenderClipRect(
+        RenderBox? child = null,
+        CustomClipper<Rect>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias
+    )
+        : base(child: child, clipper: clipper, clipBehavior: clipBehavior) { }
 
     internal override Rect _defaultClip => Offset.zero & size;
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -1495,7 +1725,14 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
             if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRect(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRectLayer?)layer)!);
+                layer = context.pushClipRect(
+                    needsCompositing,
+                    offset,
+                    DartRuntimePrimitives.RequireValue(_clip),
+                    base.paint,
+                    clipBehavior: clipBehavior,
+                    oldLayer: ((ClipRectLayer?)layer)!
+                );
             }
             else
             {
@@ -1512,20 +1749,31 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not null)
             {
-                if (child is not null)
+                base.debugPaintSize(context, offset);
+                if (!Equals(clipBehavior, Clip.none))
                 {
-                    base.debugPaintSize(context, offset);
-                    if (!Equals(clipBehavior, Clip.none))
-                    {
-                        context.canvas.drawRect(DartRuntimePrimitives.RequireValue(_clip).shift(offset), _debugPaint!);
-                        _debugText!.paint(context.canvas, offset + new Offset(DartRuntimePrimitives.RequireValue(_clip).width / 8.0, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
-                    }
+                    context.canvas.drawRect(
+                        DartRuntimePrimitives.RequireValue(_clip).shift(offset),
+                        _debugPaint!
+                    );
+                    _debugText!.paint(
+                        context.canvas,
+                        offset
+                            + new Offset(
+                                DartRuntimePrimitives.RequireValue(_clip).width / 8.0,
+                                -DartRuntimePrimitives.RequireValue(
+                                    _debugText!.text!.style!.fontSize
+                                ) * 1.1
+                            )
+                    );
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
-
 }
 
 public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
@@ -1533,7 +1781,14 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
     internal virtual BorderRadiusGeometry _borderRadius { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderClipRRect(RenderBox? child = null, BorderRadiusGeometry borderRadius = default!, CustomClipper<RRect>? clipper = null, Clip clipBehavior = Clip.antiAlias, TextDirection? textDirection = null) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
+    public RenderClipRRect(
+        RenderBox? child = null,
+        BorderRadiusGeometry borderRadius = default!,
+        CustomClipper<RRect>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias,
+        TextDirection? textDirection = null
+    )
+        : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
     {
         BorderRadiusGeometry __borderRadius = borderRadius ?? BorderRadius.zero;
         _borderRadius = __borderRadius;
@@ -1568,7 +1823,9 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
             _markNeedsClip();
         }
     }
-    internal override RRect _defaultClip => _borderRadius.resolve(textDirection).toRRect(Offset.zero & size);
+    internal override RRect _defaultClip =>
+        _borderRadius.resolve(textDirection).toRRect(Offset.zero & size);
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -1591,7 +1848,15 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
             if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRRect(needsCompositing, offset, _clip!.outerRect, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRRectLayer?)layer)!);
+                layer = context.pushClipRRect(
+                    needsCompositing,
+                    offset,
+                    _clip!.outerRect,
+                    _clip!,
+                    base.paint,
+                    clipBehavior: clipBehavior,
+                    oldLayer: ((ClipRRectLayer?)layer)!
+                );
             }
             else
             {
@@ -1608,20 +1873,28 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not null)
             {
-                if (child is not null)
+                base.debugPaintSize(context, offset);
+                if (!Equals(clipBehavior, Clip.none))
                 {
-                    base.debugPaintSize(context, offset);
-                    if (!Equals(clipBehavior, Clip.none))
-                    {
-                        context.canvas.drawRRect(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(context.canvas, offset + new Offset(_clip!.tlRadiusX, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
-                    }
+                    context.canvas.drawRRect(_clip!.shift(offset), _debugPaint!);
+                    _debugText!.paint(
+                        context.canvas,
+                        offset
+                            + new Offset(
+                                _clip!.tlRadiusX,
+                                -DartRuntimePrimitives.RequireValue(
+                                    _debugText!.text!.style!.fontSize
+                                ) * 1.1
+                            )
+                    );
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
-
 }
 
 public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellipse>
@@ -1629,7 +1902,14 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
     internal virtual BorderRadiusGeometry _borderRadius { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderClipRSuperellipse(RenderBox? child = null, BorderRadiusGeometry borderRadius = default!, CustomClipper<RSuperellipse>? clipper = null, Clip clipBehavior = Clip.antiAlias, TextDirection? textDirection = null) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
+    public RenderClipRSuperellipse(
+        RenderBox? child = null,
+        BorderRadiusGeometry borderRadius = default!,
+        CustomClipper<RSuperellipse>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias,
+        TextDirection? textDirection = null
+    )
+        : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
     {
         BorderRadiusGeometry __borderRadius = borderRadius ?? BorderRadius.zero;
         _borderRadius = __borderRadius;
@@ -1664,7 +1944,9 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
             _markNeedsClip();
         }
     }
-    internal override RSuperellipse _defaultClip => _borderRadius.resolve(textDirection).toRSuperellipse(Offset.zero & size);
+    internal override RSuperellipse _defaultClip =>
+        _borderRadius.resolve(textDirection).toRSuperellipse(Offset.zero & size);
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -1687,7 +1969,15 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
             if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRSuperellipse(needsCompositing, offset, _clip!.outerRect, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRSuperellipseLayer?)layer)!);
+                layer = context.pushClipRSuperellipse(
+                    needsCompositing,
+                    offset,
+                    _clip!.outerRect,
+                    _clip!,
+                    base.paint,
+                    clipBehavior: clipBehavior,
+                    oldLayer: ((ClipRSuperellipseLayer?)layer)!
+                );
             }
             else
             {
@@ -1704,20 +1994,28 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not null)
             {
-                if (child is not null)
+                base.debugPaintSize(context, offset);
+                if (!Equals(clipBehavior, Clip.none))
                 {
-                    base.debugPaintSize(context, offset);
-                    if (!Equals(clipBehavior, Clip.none))
-                    {
-                        context.canvas.drawRSuperellipse(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(context.canvas, offset + new Offset(_clip!.tlRadiusX, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
-                    }
+                    context.canvas.drawRSuperellipse(_clip!.shift(offset), _debugPaint!);
+                    _debugText!.paint(
+                        context.canvas,
+                        offset
+                            + new Offset(
+                                _clip!.tlRadiusX,
+                                -DartRuntimePrimitives.RequireValue(
+                                    _debugText!.text!.style!.fontSize
+                                ) * 1.1
+                            )
+                    );
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
-
 }
 
 public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
@@ -1725,33 +2023,44 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
     internal virtual Rect? _cachedRect { get; set; } = default;
     internal virtual Path _cachedPath { get; set; } = default!;
 
-    public RenderClipOval(RenderBox? child = null, CustomClipper<Rect>? clipper = null, Clip clipBehavior = Clip.antiAlias) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
-    {
-    }
+    public RenderClipOval(
+        RenderBox? child = null,
+        CustomClipper<Rect>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias
+    )
+        : base(child: child, clipper: clipper, clipBehavior: clipBehavior) { }
 
     internal virtual Path _getClipPath(Rect rect)
     {
         if (!Equals(rect, _cachedRect))
         {
             _cachedRect = rect;
-            _cachedPath = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addOval(DartRuntimePrimitives.RequireValue(_cachedRect));
-    return __cascade;
-}))();
+            _cachedPath = (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addOval(DartRuntimePrimitives.RequireValue(_cachedRect));
+                        return __cascade;
+                    }
+                )
+            )();
         }
         return _cachedPath;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal override Rect _defaultClip => Offset.zero & size;
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         _updateClip();
         DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
         Offset centerLocal = DartRuntimePrimitives.RequireValue(_clip).center;
-        var offset = new Offset((position.dx - centerLocal.dx) / DartRuntimePrimitives.RequireValue(_clip).width, (position.dy - centerLocal.dy) / DartRuntimePrimitives.RequireValue(_clip).height);
+        var offset = new Offset(
+            (position.dx - centerLocal.dx) / DartRuntimePrimitives.RequireValue(_clip).width,
+            (position.dy - centerLocal.dy) / DartRuntimePrimitives.RequireValue(_clip).height
+        );
         if (offset.distanceSquared > 0.25)
         {
             return false;
@@ -1767,7 +2076,15 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
             if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipPath(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), _getClipPath(DartRuntimePrimitives.RequireValue(_clip)), base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
+                layer = context.pushClipPath(
+                    needsCompositing,
+                    offset,
+                    DartRuntimePrimitives.RequireValue(_clip),
+                    _getClipPath(DartRuntimePrimitives.RequireValue(_clip)),
+                    base.paint,
+                    clipBehavior: clipBehavior,
+                    oldLayer: ((ClipPathLayer?)layer)!
+                );
             }
             else
             {
@@ -1784,34 +2101,57 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not null)
             {
-                if (child is not null)
+                base.debugPaintSize(context, offset);
+                if (!Equals(clipBehavior, Clip.none))
                 {
-                    base.debugPaintSize(context, offset);
-                    if (!Equals(clipBehavior, Clip.none))
-                    {
-                        context.canvas.drawPath(_getClipPath(DartRuntimePrimitives.RequireValue(_clip)).shift(offset), _debugPaint!);
-                        _debugText!.paint(context.canvas, offset + new Offset((DartRuntimePrimitives.RequireValue(_clip).width - _debugText!.width) / 2.0, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
-                    }
+                    context.canvas.drawPath(
+                        _getClipPath(DartRuntimePrimitives.RequireValue(_clip)).shift(offset),
+                        _debugPaint!
+                    );
+                    _debugText!.paint(
+                        context.canvas,
+                        offset
+                            + new Offset(
+                                (
+                                    DartRuntimePrimitives.RequireValue(_clip).width
+                                    - _debugText!.width
+                                ) / 2.0,
+                                -DartRuntimePrimitives.RequireValue(
+                                    _debugText!.text!.style!.fontSize
+                                ) * 1.1
+                            )
+                    );
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
-
 }
 
 public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
 {
-    public RenderClipPath(RenderBox? child = null, CustomClipper<Path>? clipper = null, Clip clipBehavior = Clip.antiAlias) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
-    {
-    }
+    public RenderClipPath(
+        RenderBox? child = null,
+        CustomClipper<Path>? clipper = null,
+        Clip clipBehavior = Clip.antiAlias
+    )
+        : base(child: child, clipper: clipper, clipBehavior: clipBehavior) { }
 
-    internal override Path _defaultClip => ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRect(Offset.zero & size);
-    return __cascade;
-}))();
+    internal override Path _defaultClip =>
+        (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.addRect(Offset.zero & size);
+                    return __cascade;
+                }
+            )
+        )();
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -1834,7 +2174,15 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
             if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipPath(needsCompositing, offset, Offset.zero & size, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
+                layer = context.pushClipPath(
+                    needsCompositing,
+                    offset,
+                    Offset.zero & size,
+                    _clip!,
+                    base.paint,
+                    clipBehavior: clipBehavior,
+                    oldLayer: ((ClipPathLayer?)layer)!
+                );
             }
             else
             {
@@ -1851,20 +2199,19 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not null)
             {
-                if (child is not null)
+                base.debugPaintSize(context, offset);
+                if (!Equals(clipBehavior, Clip.none))
                 {
-                    base.debugPaintSize(context, offset);
-                    if (!Equals(clipBehavior, Clip.none))
-                    {
-                        context.canvas.drawPath(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(context.canvas, offset);
-                    }
+                    context.canvas.drawPath(_clip!.shift(offset), _debugPaint!);
+                    _debugText!.paint(context.canvas, offset);
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
-
 }
 
 public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip__proxy_box<T>
@@ -1873,7 +2220,15 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
     internal virtual Color _shadowColor { get; set; } = default!;
     internal virtual Color _color { get; set; } = default!;
 
-    internal _RenderPhysicalModelBase__proxy_box(RenderBox? child, double elevation, Color color, Color shadowColor, Clip clipBehavior = Clip.none, CustomClipper<T>? clipper = null) : base(child: child, clipBehavior: clipBehavior, clipper: clipper)
+    internal _RenderPhysicalModelBase__proxy_box(
+        RenderBox? child,
+        double elevation,
+        Color color,
+        Color shadowColor,
+        Clip clipBehavior = Clip.none,
+        CustomClipper<T>? clipper = null
+    )
+        : base(child: child, clipBehavior: clipBehavior, clipper: clipper)
     {
         _elevation = elevation;
         _color = color;
@@ -1929,6 +2284,7 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
             markNeedsPaint();
         }
     }
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -1936,7 +2292,6 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
         properties.add(new ColorProperty("color", color));
         properties.add(new ColorProperty("shadowColor", color));
     }
-
 }
 
 public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
@@ -1944,7 +2299,22 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
     internal virtual BoxShape _shape { get; set; } = default!;
     internal virtual BorderRadius? _borderRadius { get; set; } = default;
 
-    public RenderPhysicalModel(RenderBox? child = null, BoxShape shape = BoxShape.rectangle, Clip clipBehavior = Clip.none, BorderRadius? borderRadius = null, double elevation = 0.0, Color color = default!, Color shadowColor = default!) : base(child: child, clipBehavior: clipBehavior, elevation: elevation, color: color, shadowColor: shadowColor ?? new Color(0xFF000000))
+    public RenderPhysicalModel(
+        RenderBox? child = null,
+        BoxShape shape = BoxShape.rectangle,
+        Clip clipBehavior = Clip.none,
+        BorderRadius? borderRadius = null,
+        double elevation = 0.0,
+        Color color = default!,
+        Color shadowColor = default!
+    )
+        : base(
+            child: child,
+            clipBehavior: clipBehavior,
+            elevation: elevation,
+            color: color,
+            shadowColor: shadowColor ?? new Color(0xFF000000)
+        )
     {
         _shape = shape;
         _borderRadius = borderRadius;
@@ -1985,9 +2355,15 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
         {
             DartRuntimePrimitives.Assert(() => hasSize);
             Rect rect = Offset.zero & size;
-            return _shape switch { BoxShape.rectangle => (borderRadius ?? BorderRadius.zero).toRRect(rect), BoxShape.circle => RRect.fromRectXY(rect, rect.width / 2L, rect.height / 2L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return _shape switch
+            {
+                BoxShape.rectangle => (borderRadius ?? BorderRadius.zero).toRRect(rect),
+                BoxShape.circle => RRect.fromRectXY(rect, rect.width / 2L, rect.height / 2L),
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -2014,63 +2390,95 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
         RRect offsetRRect = _clip!.shift(offset);
         var paintShadows = true;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Painting.DebugLibrary.debugDisableShadows)
             {
-                if (Painting.DebugLibrary.debugDisableShadows)
+                if (elevation > 0.0)
                 {
-                    if (elevation > 0.0)
-                    {
-                        context.canvas.drawRRect(offsetRRect, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = shadowColor;
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = elevation * 2.0;
-    return __cascade;
-}))());
-                    }
-                    paintShadows = false;
+                    context.canvas.drawRRect(
+                        offsetRRect,
+                        (
+                            (Func<Paint>)(
+                                () =>
+                                {
+                                    var __cascade = new Paint();
+                                    __cascade.color = shadowColor;
+                                    __cascade.style = PaintingStyle.stroke;
+                                    __cascade.strokeWidth = elevation * 2.0;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    );
                 }
-                return true;
-            });
+                paintShadows = false;
+            }
+            return true;
+        });
         Canvas canvasLocal = context.canvas;
         if ((elevation != 0.0) && paintShadows)
         {
-            var offsetRRectAsPath = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRRect(offsetRRect);
-    return __cascade;
-}))();
+            var offsetRRectAsPath = (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addRRect(offsetRRect);
+                        return __cascade;
+                    }
+                )
+            )();
             canvasLocal.drawShadow(offsetRRectAsPath, shadowColor, elevation, color.alpha != 255L);
         }
         var usesSaveLayer = Equals(clipBehavior, Clip.antiAliasWithSaveLayer);
         if (!usesSaveLayer)
         {
-            canvasLocal.drawRRect(offsetRRect, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color;
-    return __cascade;
-}))());
+            canvasLocal.drawRRect(
+                offsetRRect,
+                (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = color;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
-        layer = context.pushClipRRect(needsCompositing, offset, Offset.zero & size, _clip!, (context, offset) =>
-        {
-            if (usesSaveLayer)
+        layer = context.pushClipRRect(
+            needsCompositing,
+            offset,
+            Offset.zero & size,
+            _clip!,
+            (context, offset) =>
             {
-                context.canvas.drawPaint(((Func<Paint>)(() =>
-            {
-                var __cascade = new Paint();
-                __cascade.color = color;
-                return __cascade;
-            }))());
-            }
-            base.paint(context, offset);
-        }, oldLayer: ((ClipRRectLayer?)layer)!, clipBehavior: clipBehavior);
+                if (usesSaveLayer)
+                {
+                    context.canvas.drawPaint(
+                        (
+                            (Func<Paint>)(
+                                () =>
+                                {
+                                    var __cascade = new Paint();
+                                    __cascade.color = color;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    );
+                }
+                base.paint(context, offset);
+            },
+            oldLayer: ((ClipRRectLayer?)layer)!,
+            clipBehavior: clipBehavior
+        );
         DartRuntimePrimitives.Assert(() =>
-            {
-                layer?.debugCreator = debugCreator;
-                return true;
-            });
+        {
+            layer?.debugCreator = debugCreator;
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2079,22 +2487,42 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
         properties.add(new DiagnosticsProperty<BoxShape>("shape", shape));
         properties.add(new DiagnosticsProperty<BorderRadius>("borderRadius", borderRadius));
     }
-
 }
 
 public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
 {
-    public RenderPhysicalShape(RenderBox? child = null, CustomClipper<Path> clipper = default!, Clip clipBehavior = Clip.none, double elevation = 0.0, Color color = default!, Color shadowColor = default!) : base(child: child, clipper: clipper, clipBehavior: clipBehavior, elevation: elevation, color: color, shadowColor: shadowColor ?? new Color(0xFF000000))
+    public RenderPhysicalShape(
+        RenderBox? child = null,
+        CustomClipper<Path> clipper = default!,
+        Clip clipBehavior = Clip.none,
+        double elevation = 0.0,
+        Color color = default!,
+        Color shadowColor = default!
+    )
+        : base(
+            child: child,
+            clipper: clipper,
+            clipBehavior: clipBehavior,
+            elevation: elevation,
+            color: color,
+            shadowColor: shadowColor ?? new Color(0xFF000000)
+        )
     {
         System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
-    internal override Path _defaultClip => ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRect(Offset.zero & size);
-    return __cascade;
-}))();
+    internal override Path _defaultClip =>
+        (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.addRect(Offset.zero & size);
+                    return __cascade;
+                }
+            )
+        )();
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (_clipper is not null)
@@ -2121,24 +2549,31 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
         Path offsetPath = _clip!.shift(offset);
         var paintShadows = true;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Painting.DebugLibrary.debugDisableShadows)
             {
-                if (Painting.DebugLibrary.debugDisableShadows)
+                if (elevation > 0.0)
                 {
-                    if (elevation > 0.0)
-                    {
-                        context.canvas.drawPath(offsetPath, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = shadowColor;
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = elevation * 2.0;
-    return __cascade;
-}))());
-                    }
-                    paintShadows = false;
+                    context.canvas.drawPath(
+                        offsetPath,
+                        (
+                            (Func<Paint>)(
+                                () =>
+                                {
+                                    var __cascade = new Paint();
+                                    __cascade.color = shadowColor;
+                                    __cascade.style = PaintingStyle.stroke;
+                                    __cascade.strokeWidth = elevation * 2.0;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    );
                 }
-                return true;
-            });
+                paintShadows = false;
+            }
+            return true;
+        });
         Canvas canvasLocal = context.canvas;
         if ((elevation != 0.0) && paintShadows)
         {
@@ -2147,31 +2582,52 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
         var usesSaveLayer = Equals(clipBehavior, Clip.antiAliasWithSaveLayer);
         if (!usesSaveLayer)
         {
-            canvasLocal.drawPath(offsetPath, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color;
-    return __cascade;
-}))());
+            canvasLocal.drawPath(
+                offsetPath,
+                (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = color;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
-        layer = context.pushClipPath(needsCompositing, offset, Offset.zero & size, _clip!, (context, offset) =>
-        {
-            if (usesSaveLayer)
+        layer = context.pushClipPath(
+            needsCompositing,
+            offset,
+            Offset.zero & size,
+            _clip!,
+            (context, offset) =>
             {
-                context.canvas.drawPaint(((Func<Paint>)(() =>
-            {
-                var __cascade = new Paint();
-                __cascade.color = color;
-                return __cascade;
-            }))());
-            }
-            base.paint(context, offset);
-        }, oldLayer: ((ClipPathLayer?)layer)!, clipBehavior: clipBehavior);
+                if (usesSaveLayer)
+                {
+                    context.canvas.drawPaint(
+                        (
+                            (Func<Paint>)(
+                                () =>
+                                {
+                                    var __cascade = new Paint();
+                                    __cascade.color = color;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    );
+                }
+                base.paint(context, offset);
+            },
+            oldLayer: ((ClipPathLayer?)layer)!,
+            clipBehavior: clipBehavior
+        );
         DartRuntimePrimitives.Assert(() =>
-            {
-                layer?.debugCreator = debugCreator;
-                return true;
-            });
+        {
+            layer?.debugCreator = debugCreator;
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2179,13 +2635,12 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<CustomClipper<Path>>("clipper", clipper));
     }
-
 }
 
 public enum DecorationPosition
 {
     background,
-    foreground
+    foreground,
 }
 
 public class RenderDecoratedBox : RenderProxyBox
@@ -2195,7 +2650,13 @@ public class RenderDecoratedBox : RenderProxyBox
     internal virtual DecorationPosition _position { get; set; } = default!;
     internal virtual ImageConfiguration _configuration { get; set; } = default!;
 
-    public RenderDecoratedBox(Decoration decoration, DecorationPosition position = DecorationPosition.background, ImageConfiguration configuration = default!, RenderBox? child = null) : base(child)
+    public RenderDecoratedBox(
+        Decoration decoration,
+        DecorationPosition position = DecorationPosition.background,
+        ImageConfiguration configuration = default!,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         _decoration = decoration;
@@ -2247,6 +2708,7 @@ public class RenderDecoratedBox : RenderProxyBox
             markNeedsPaint();
         }
     }
+
     public override void detach()
     {
         _painter?.dispose();
@@ -2275,19 +2737,41 @@ public class RenderDecoratedBox : RenderProxyBox
         {
             long? debugSaveCount = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    debugSaveCount = context.canvas.getSaveCount();
-                    return true;
-                });
+            {
+                debugSaveCount = context.canvas.getSaveCount();
+                return true;
+            });
             _painter!.paint(context.canvas, offset, filledConfiguration);
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (debugSaveCount != context.canvas.getSaveCount())
                 {
-                    if (debugSaveCount != context.canvas.getSaveCount())
-                    {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{DartRuntimePrimitives.RuntimeType(_decoration)} painter had mismatching save and restore calls."), new ErrorDescription($"Before painting the decoration, the canvas save count was {debugSaveCount}. " + $"After painting it, the canvas save count was {context.canvas.getSaveCount()}. " + "Every call to save() or saveLayer() must be matched by a call to restore()."), new DiagnosticsProperty<Decoration>("The decoration was", decoration, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<BoxPainter>("The painter was", _painter, style: DiagnosticsTreeStyle.errorProperty) });
-                    }
-                    return true;
-                });
+                    throw new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"{DartRuntimePrimitives.RuntimeType(_decoration)} painter had mismatching save and restore calls."
+                            ),
+                            new ErrorDescription(
+                                $"Before painting the decoration, the canvas save count was {debugSaveCount}. "
+                                    + $"After painting it, the canvas save count was {context.canvas.getSaveCount()}. "
+                                    + "Every call to save() or saveLayer() must be matched by a call to restore()."
+                            ),
+                            new DiagnosticsProperty<Decoration>(
+                                "The decoration was",
+                                decoration,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new DiagnosticsProperty<BoxPainter>(
+                                "The painter was",
+                                _painter,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    );
+                }
+                return true;
+            });
             if (decoration.isComplex)
             {
                 context.setIsComplexHint();
@@ -2310,7 +2794,6 @@ public class RenderDecoratedBox : RenderProxyBox
         properties.add(((Diagnosticable)_decoration).toDiagnosticsNode(name: "decoration"));
         properties.add(new DiagnosticsProperty<ImageConfiguration>("configuration", configuration));
     }
-
 }
 
 public class RenderTransform : RenderProxyBox
@@ -2322,7 +2805,16 @@ public class RenderTransform : RenderProxyBox
     internal virtual Matrix4? _transform { get; set; } = default;
     internal virtual FilterQuality? _filterQuality { get; set; } = default;
 
-    public RenderTransform(Matrix4 transform, Offset? origin = null, AlignmentGeometry? alignment = null, TextDirection? textDirection = null, bool transformHitTests = true, FilterQuality? filterQuality = null, RenderBox? child = null) : base(child)
+    public RenderTransform(
+        Matrix4 transform,
+        Offset? origin = null,
+        AlignmentGeometry? alignment = null,
+        TextDirection? textDirection = null,
+        bool transformHitTests = true,
+        FilterQuality? filterQuality = null,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         _transform = Matrix4.copy(transform);
         _origin = origin;
@@ -2377,7 +2869,8 @@ public class RenderTransform : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
-    public override bool alwaysNeedsCompositing => (child is not null) && (_filterQuality is not null);
+    public override bool alwaysNeedsCompositing =>
+        (child is not null) && (_filterQuality is not null);
     public virtual Matrix4 transform
     {
         set
@@ -2411,6 +2904,7 @@ public class RenderTransform : RenderProxyBox
             markNeedsPaint();
         }
     }
+
     public virtual void setIdentity()
     {
         _transform!.setIdentity();
@@ -2441,7 +2935,12 @@ public class RenderTransform : RenderProxyBox
 
     public virtual void translate(double x, double y = 0.0, double z = 0.0)
     {
-        _transform!.translateByDouble(x, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(y)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(z)), 1);
+        _transform!.translateByDouble(
+            x,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(y)),
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(z)),
+            1
+        );
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
@@ -2465,26 +2964,47 @@ public class RenderTransform : RenderProxyBox
             var result = Matrix4.identity();
             if (_origin is not null)
             {
-                result.translateByDouble(DartRuntimePrimitives.RequireValue(_origin).dx, DartRuntimePrimitives.RequireValue(_origin).dy, 0, 1);
+                result.translateByDouble(
+                    DartRuntimePrimitives.RequireValue(_origin).dx,
+                    DartRuntimePrimitives.RequireValue(_origin).dy,
+                    0,
+                    1
+                );
             }
             Offset? translation = default!;
             if (resolvedAlignment is not null)
             {
                 translation = resolvedAlignment.alongSize(size);
-                result.translateByDouble(DartRuntimePrimitives.RequireValue(translation).dx, DartRuntimePrimitives.RequireValue(translation).dy, 0, 1);
+                result.translateByDouble(
+                    DartRuntimePrimitives.RequireValue(translation).dx,
+                    DartRuntimePrimitives.RequireValue(translation).dy,
+                    0,
+                    1
+                );
             }
             result.multiply(_transform!);
             if (resolvedAlignment is not null)
             {
-                result.translateByDouble(-DartRuntimePrimitives.RequireValue(translation).dx, -DartRuntimePrimitives.RequireValue(translation).dy, 0, 1);
+                result.translateByDouble(
+                    -DartRuntimePrimitives.RequireValue(translation).dx,
+                    -DartRuntimePrimitives.RequireValue(translation).dy,
+                    0,
+                    1
+                );
             }
             if (_origin is not null)
             {
-                result.translateByDouble(-DartRuntimePrimitives.RequireValue(_origin).dx, -DartRuntimePrimitives.RequireValue(_origin).dy, 0, 1);
+                result.translateByDouble(
+                    -DartRuntimePrimitives.RequireValue(_origin).dx,
+                    -DartRuntimePrimitives.RequireValue(_origin).dy,
+                    0,
+                    1
+                );
             }
             return result;
         }
     }
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return hitTestChildren(result, position: position);
@@ -2494,10 +3014,14 @@ public class RenderTransform : RenderProxyBox
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         DartRuntimePrimitives.Assert(() => !transformHitTests || (_effectiveTransform is not null));
-        return result.addWithPaintTransform(transform: transformHitTests ? _effectiveTransform : null, position: position, hitTest: (result, position) =>
-        {
-            return base.hitTestChildren(result, position: position);
-        });
+        return result.addWithPaintTransform(
+            transform: transformHitTests ? _effectiveTransform : null,
+            position: position,
+            hitTest: (result, position) =>
+            {
+                return base.hitTestChildren(result, position: position);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2517,7 +3041,13 @@ public class RenderTransform : RenderProxyBox
                         layer = null;
                         return;
                     }
-                    layer = context.pushTransform(needsCompositing, offset, transform, base.paint, oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer)! : null);
+                    layer = context.pushTransform(
+                        needsCompositing,
+                        offset,
+                        transform,
+                        base.paint,
+                        oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer)! : null
+                    );
                 }
                 else
                 {
@@ -2527,14 +3057,21 @@ public class RenderTransform : RenderProxyBox
             }
             else
             {
-                var effectiveTransform = ((Func<Matrix4>)(() =>
-{
-    var __cascade = Matrix4.translationValues(offset.dx, offset.dy, 0.0);
-    __cascade.multiply(transform);
-    __cascade.translateByDouble(-offset.dx, -offset.dy, 0, 1);
-    return __cascade;
-}))();
-                var filter = new ImageFilter(effectiveTransform.storage, filterQuality: DartRuntimePrimitives.RequireValue(filterQuality));
+                var effectiveTransform = (
+                    (Func<Matrix4>)(
+                        () =>
+                        {
+                            var __cascade = Matrix4.translationValues(offset.dx, offset.dy, 0.0);
+                            __cascade.multiply(transform);
+                            __cascade.translateByDouble(-offset.dx, -offset.dy, 0, 1);
+                            return __cascade;
+                        }
+                    )
+                )();
+                var filter = new ImageFilter(
+                    effectiveTransform.storage,
+                    filterQuality: DartRuntimePrimitives.RequireValue(filterQuality)
+                );
                 if (layer is ImageFilterLayer filterLayer)
                 {
                     filterLayer.imageFilter = filter;
@@ -2545,10 +3082,10 @@ public class RenderTransform : RenderProxyBox
                 }
                 context.pushLayer(layer!, base.paint, offset);
                 DartRuntimePrimitives.Assert(() =>
-                    {
-                        layer!.debugCreator = debugCreator;
-                        return true;
-                    });
+                {
+                    layer!.debugCreator = debugCreator;
+                    return true;
+                });
             }
         }
     }
@@ -2565,10 +3102,11 @@ public class RenderTransform : RenderProxyBox
         properties.add(new TransformProperty("transform matrix", _transform));
         properties.add(new DiagnosticsProperty<Offset>("origin", origin));
         properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<bool>("transformHitTests", transformHitTests));
     }
-
 }
 
 public class RenderFittedBox : RenderProxyBox
@@ -2581,7 +3119,14 @@ public class RenderFittedBox : RenderProxyBox
     internal virtual Matrix4? _transform { get; set; } = default;
     internal virtual Clip _clipBehavior { get; set; } = Clip.none;
 
-    public RenderFittedBox(BoxFit fit = BoxFit.contain, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.none) : base(child)
+    public RenderFittedBox(
+        BoxFit fit = BoxFit.contain,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null,
+        RenderBox? child = null,
+        Clip clipBehavior = Clip.none
+    )
+        : base(child)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         _fit = fit;
@@ -2590,7 +3135,9 @@ public class RenderFittedBox : RenderProxyBox
         _clipBehavior = clipBehavior;
     }
 
-    internal virtual Alignment _resolve() => _resolvedAlignment ??= alignment.resolve(textDirection);
+    internal virtual Alignment _resolve() =>
+        _resolvedAlignment ??= alignment.resolve(textDirection);
+
     internal virtual void _markNeedResolution()
     {
         _resolvedAlignment = null;
@@ -2602,18 +3149,18 @@ public class RenderFittedBox : RenderProxyBox
         switch (fit)
         {
             case BoxFit.scaleDown:
-                {
-                    return true;
-                }
+            {
+                return true;
+            }
             case BoxFit.contain:
             case BoxFit.cover:
             case BoxFit.fill:
             case BoxFit.fitHeight:
             case BoxFit.fitWidth:
             case BoxFit.none:
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2630,7 +3177,12 @@ public class RenderFittedBox : RenderProxyBox
             }
             BoxFit lastFit = _fit;
             _fit = DartRuntimePrimitives.RequireValue(__value);
-            if (_fitAffectsLayout(lastFit) || _fitAffectsLayout(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value))))
+            if (
+                _fitAffectsLayout(lastFit)
+                || _fitAffectsLayout(
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value))
+                )
+            )
             {
                 markNeedsLayout();
             }
@@ -2671,6 +3223,7 @@ public class RenderFittedBox : RenderProxyBox
             _markNeedResolution();
         }
     }
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         if (child is not null)
@@ -2679,20 +3232,21 @@ public class RenderFittedBox : RenderProxyBox
             switch (fit)
             {
                 case BoxFit.scaleDown:
-                    {
-                        BoxConstraints sizeConstraints = constraints.loosen();
-                        Size unconstrainedSize = sizeConstraints.constrainSizeAndAttemptToPreserveAspectRatio(childSize);
-                        return constraints.constrain(unconstrainedSize);
-                    }
+                {
+                    BoxConstraints sizeConstraints = constraints.loosen();
+                    Size unconstrainedSize =
+                        sizeConstraints.constrainSizeAndAttemptToPreserveAspectRatio(childSize);
+                    return constraints.constrain(unconstrainedSize);
+                }
                 case BoxFit.contain:
                 case BoxFit.cover:
                 case BoxFit.fill:
                 case BoxFit.fitHeight:
                 case BoxFit.fitWidth:
                 case BoxFit.none:
-                    {
-                        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(childSize);
-                    }
+                {
+                    return constraints.constrainSizeAndAttemptToPreserveAspectRatio(childSize);
+                }
             }
         }
         else
@@ -2716,22 +3270,23 @@ public class RenderFittedBox : RenderProxyBox
             switch (fit)
             {
                 case BoxFit.scaleDown:
-                    {
-                        BoxConstraints sizeConstraints = constraints.loosen();
-                        Size unconstrainedSize = sizeConstraints.constrainSizeAndAttemptToPreserveAspectRatio(child!.size);
-                        size = constraints.constrain(unconstrainedSize);
-                        break;
-                    }
+                {
+                    BoxConstraints sizeConstraints = constraints.loosen();
+                    Size unconstrainedSize =
+                        sizeConstraints.constrainSizeAndAttemptToPreserveAspectRatio(child!.size);
+                    size = constraints.constrain(unconstrainedSize);
+                    break;
+                }
                 case BoxFit.contain:
                 case BoxFit.cover:
                 case BoxFit.fill:
                 case BoxFit.fitHeight:
                 case BoxFit.fitWidth:
                 case BoxFit.none:
-                    {
-                        size = constraints.constrainSizeAndAttemptToPreserveAspectRatio(child!.size);
-                        break;
-                    }
+                {
+                    size = constraints.constrainSizeAndAttemptToPreserveAspectRatio(child!.size);
+                    break;
+                }
             }
             _clearPaintData();
         }
@@ -2755,6 +3310,7 @@ public class RenderFittedBox : RenderProxyBox
             }
         }
     }
+
     internal virtual void _clearPaintData()
     {
         _hasVisualOverflow = null;
@@ -2780,26 +3336,51 @@ public class RenderFittedBox : RenderProxyBox
             double scaleX = sizes.destination.width / sizes.source.width;
             double scaleY = sizes.destination.height / sizes.source.height;
             Rect sourceRect = resolvedAlignment.inscribe(sizes.source, Offset.zero & childSize);
-            Rect destinationRect = resolvedAlignment.inscribe(sizes.destination, Offset.zero & size);
-            _hasVisualOverflow = (sourceRect.width < childSize.width) || (sourceRect.height < childSize.height);
+            Rect destinationRect = resolvedAlignment.inscribe(
+                sizes.destination,
+                Offset.zero & size
+            );
+            _hasVisualOverflow =
+                (sourceRect.width < childSize.width) || (sourceRect.height < childSize.height);
             DartRuntimePrimitives.Assert(() => double.IsFinite(scaleX) && double.IsFinite(scaleY));
-            _transform = ((Func<Matrix4>)(() =>
-{
-    var __cascade = Matrix4.translationValues(destinationRect.left, destinationRect.top, 0.0);
-    __cascade.scaleByDouble(scaleX, scaleY, 1.0, 1);
-    __cascade.translateByDouble(-sourceRect.left, -sourceRect.top, 0, 1);
-    return __cascade;
-}))();
-            DartRuntimePrimitives.Assert(() => _transform!.storage.All((value) => double.IsFinite(DartRuntimePrimitives.RequireValue(value))));
+            _transform = (
+                (Func<Matrix4>)(
+                    () =>
+                    {
+                        var __cascade = Matrix4.translationValues(
+                            destinationRect.left,
+                            destinationRect.top,
+                            0.0
+                        );
+                        __cascade.scaleByDouble(scaleX, scaleY, 1.0, 1);
+                        __cascade.translateByDouble(-sourceRect.left, -sourceRect.top, 0, 1);
+                        return __cascade;
+                    }
+                )
+            )();
+            DartRuntimePrimitives.Assert(() =>
+                _transform!.storage.All(
+                    (value) => double.IsFinite(DartRuntimePrimitives.RequireValue(value))
+                )
+            );
         }
     }
 
-    internal virtual TransformLayer? _paintChildWithTransform(PaintingContext context, Offset offset)
+    internal virtual TransformLayer? _paintChildWithTransform(
+        PaintingContext context,
+        Offset offset
+    )
     {
         Offset? childOffset = MatrixUtils.getAsTranslation(_transform!);
         if (childOffset is null)
         {
-            return context.pushTransform(needsCompositing, offset, _transform!, base.paint, oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer!)! : null);
+            return context.pushTransform(
+                needsCompositing,
+                offset,
+                _transform!,
+                base.paint,
+                oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer!)! : null
+            );
         }
         else
         {
@@ -2817,9 +3398,25 @@ public class RenderFittedBox : RenderProxyBox
         }
         _updatePaintData();
         DartRuntimePrimitives.Assert(() => child is not null);
-        if (DartRuntimePrimitives.RequireValue(_hasVisualOverflow) && (!Equals(clipBehavior, Clip.none)))
+        if (
+            DartRuntimePrimitives.RequireValue(_hasVisualOverflow)
+            && (!Equals(clipBehavior, Clip.none))
+        )
         {
-            layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, (__arg0, __arg1) => { _ = ((Func<PaintingContext, Offset, TransformLayer?>)_paintChildWithTransform)(__arg0, __arg1); }, oldLayer: (layer is ClipRectLayer) ? ((ClipRectLayer?)layer!)! : null, clipBehavior: clipBehavior);
+            layer = context.pushClipRect(
+                needsCompositing,
+                offset,
+                Offset.zero & size,
+                (__arg0, __arg1) =>
+                {
+                    _ = ((Func<PaintingContext, Offset, TransformLayer?>)_paintChildWithTransform)(
+                        __arg0,
+                        __arg1
+                    );
+                },
+                oldLayer: (layer is ClipRectLayer) ? ((ClipRectLayer?)layer!)! : null,
+                clipBehavior: clipBehavior
+            );
         }
         else
         {
@@ -2834,10 +3431,14 @@ public class RenderFittedBox : RenderProxyBox
             return false;
         }
         _updatePaintData();
-        return result.addWithPaintTransform(transform: _transform, position: position, hitTest: (result, position) =>
-        {
-            return base.hitTestChildren(result, position: position);
-        });
+        return result.addWithPaintTransform(
+            transform: _transform,
+            position: position,
+            hitTest: (result, position) =>
+            {
+                return base.hitTestChildren(result, position: position);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2868,9 +3469,10 @@ public class RenderFittedBox : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<BoxFit>("fit", fit));
         properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
-
 }
 
 public class RenderFractionalTranslation : RenderProxyBox
@@ -2878,7 +3480,12 @@ public class RenderFractionalTranslation : RenderProxyBox
     internal virtual Offset _translation { get; set; } = default!;
     public virtual bool transformHitTests { get; set; } = default!;
 
-    public RenderFractionalTranslation(Offset translation, bool transformHitTests = true, RenderBox? child = null) : base(child)
+    public RenderFractionalTranslation(
+        Offset translation,
+        bool transformHitTests = true,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         this.transformHitTests = transformHitTests;
         _translation = translation;
@@ -2899,6 +3506,7 @@ public class RenderFractionalTranslation : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return hitTestChildren(result, position: position);
@@ -2908,10 +3516,19 @@ public class RenderFractionalTranslation : RenderProxyBox
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-        return result.addWithPaintOffset(offset: transformHitTests ? new global::Doroti.Ui.Offset(translation.dx * size.width, translation.dy * size.height) : null, position: position, hitTest: (result, position) =>
-        {
-            return base.hitTestChildren(result, position: position);
-        });
+        return result.addWithPaintOffset(
+            offset: transformHitTests
+                ? new global::Doroti.Ui.Offset(
+                    translation.dx * size.width,
+                    translation.dy * size.height
+                )
+                : null,
+            position: position,
+            hitTest: (result, position) =>
+            {
+                return base.hitTestChildren(result, position: position);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2920,14 +3537,25 @@ public class RenderFractionalTranslation : RenderProxyBox
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         if (child is not null)
         {
-            base.paint(context, new Offset(offset.dx + (translation.dx * size.width), offset.dy + (translation.dy * size.height)));
+            base.paint(
+                context,
+                new Offset(
+                    offset.dx + (translation.dx * size.width),
+                    offset.dy + (translation.dy * size.height)
+                )
+            );
         }
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)child;
-        transform.translateByDouble(translation.dx * size.width, translation.dy * size.height, 0, 1);
+        transform.translateByDouble(
+            translation.dx * size.width,
+            translation.dy * size.height,
+            0,
+            1
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2936,7 +3564,6 @@ public class RenderFractionalTranslation : RenderProxyBox
         properties.add(new DiagnosticsProperty<Offset>("translation", translation));
         properties.add(new DiagnosticsProperty<bool>("transformHitTests", transformHitTests));
     }
-
 }
 
 public delegate void PointerDownEventListener(Gestures.PointerDownEvent @event);
@@ -2963,11 +3590,25 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
     public virtual Action<Gestures.PointerHoverEvent>? onPointerHover { get; set; } = default;
     public virtual Action<Gestures.PointerCancelEvent>? onPointerCancel { get; set; } = default;
     public virtual Action<PointerPanZoomStartEvent>? onPointerPanZoomStart { get; set; } = default;
-    public virtual Action<PointerPanZoomUpdateEvent>? onPointerPanZoomUpdate { get; set; } = default;
+    public virtual Action<PointerPanZoomUpdateEvent>? onPointerPanZoomUpdate { get; set; } =
+        default;
     public virtual Action<PointerPanZoomEndEvent>? onPointerPanZoomEnd { get; set; } = default;
     public virtual Action<PointerSignalEvent>? onPointerSignal { get; set; } = default;
 
-    public RenderPointerListener(Action<Gestures.PointerDownEvent>? onPointerDown = null, Action<Gestures.PointerMoveEvent>? onPointerMove = null, Action<Gestures.PointerUpEvent>? onPointerUp = null, Action<Gestures.PointerHoverEvent>? onPointerHover = null, Action<Gestures.PointerCancelEvent>? onPointerCancel = null, Action<PointerPanZoomStartEvent>? onPointerPanZoomStart = null, Action<PointerPanZoomUpdateEvent>? onPointerPanZoomUpdate = null, Action<PointerPanZoomEndEvent>? onPointerPanZoomEnd = null, Action<PointerSignalEvent>? onPointerSignal = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, RenderBox? child = null) : base(behavior: behavior, child: child)
+    public RenderPointerListener(
+        Action<Gestures.PointerDownEvent>? onPointerDown = null,
+        Action<Gestures.PointerMoveEvent>? onPointerMove = null,
+        Action<Gestures.PointerUpEvent>? onPointerUp = null,
+        Action<Gestures.PointerHoverEvent>? onPointerHover = null,
+        Action<Gestures.PointerCancelEvent>? onPointerCancel = null,
+        Action<PointerPanZoomStartEvent>? onPointerPanZoomStart = null,
+        Action<PointerPanZoomUpdateEvent>? onPointerPanZoomUpdate = null,
+        Action<PointerPanZoomEndEvent>? onPointerPanZoomEnd = null,
+        Action<PointerSignalEvent>? onPointerSignal = null,
+        HitTestBehavior behavior = HitTestBehavior.deferToChild,
+        RenderBox? child = null
+    )
+        : base(behavior: behavior, child: child)
     {
         this.onPointerDown = onPointerDown;
         this.onPointerMove = onPointerMove;
@@ -3027,9 +3668,25 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["down"] = onPointerDown, ["move"] = onPointerMove, ["up"] = onPointerUp, ["hover"] = onPointerHover, ["cancel"] = onPointerCancel, ["panZoomStart"] = onPointerPanZoomStart, ["panZoomUpdate"] = onPointerPanZoomUpdate, ["panZoomEnd"] = onPointerPanZoomEnd, ["signal"] = onPointerSignal }, ifEmpty: "<none>"));
+        properties.add(
+            new FlagsSummary<Delegate?>(
+                "listeners",
+                new DartMap<string, Delegate?>
+                {
+                    ["down"] = onPointerDown,
+                    ["move"] = onPointerMove,
+                    ["up"] = onPointerUp,
+                    ["hover"] = onPointerHover,
+                    ["cancel"] = onPointerCancel,
+                    ["panZoomStart"] = onPointerPanZoomStart,
+                    ["panZoomUpdate"] = onPointerPanZoomUpdate,
+                    ["panZoomEnd"] = onPointerPanZoomEnd,
+                    ["signal"] = onPointerSignal,
+                },
+                ifEmpty: "<none>"
+            )
+        );
     }
-
 }
 
 public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTrackerAnnotation
@@ -3040,10 +3697,22 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
     public virtual Action<Gestures.PointerExitEvent>? onExit { get; set; } = default;
     internal virtual MouseCursor _cursor { get; set; } = default!;
     internal virtual bool _validForMouseTracker { get; set; } = default!;
-    IMouseTrackerCallback? IMouseTrackerAnnotation.onEnter => onEnter is null ? null : new MouseTrackerCallback<Gestures.PointerEnterEvent>(onEnter);
-    IMouseTrackerCallback? IMouseTrackerAnnotation.onExit => onExit is null ? null : new MouseTrackerCallback<Gestures.PointerExitEvent>(onExit);
+    IMouseTrackerCallback? IMouseTrackerAnnotation.onEnter =>
+        onEnter is null ? null : new MouseTrackerCallback<Gestures.PointerEnterEvent>(onEnter);
+    IMouseTrackerCallback? IMouseTrackerAnnotation.onExit =>
+        onExit is null ? null : new MouseTrackerCallback<Gestures.PointerExitEvent>(onExit);
 
-    public RenderMouseRegion(Action<Gestures.PointerEnterEvent>? onEnter = null, Action<Gestures.PointerHoverEvent>? onHover = null, Action<Gestures.PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true, bool opaque = true, RenderBox? child = null, HitTestBehavior? hitTestBehavior = HitTestBehavior.opaque) : base(child: child, behavior: hitTestBehavior ?? HitTestBehavior.opaque)
+    public RenderMouseRegion(
+        Action<Gestures.PointerEnterEvent>? onEnter = null,
+        Action<Gestures.PointerHoverEvent>? onHover = null,
+        Action<Gestures.PointerExitEvent>? onExit = null,
+        MouseCursor cursor = default!,
+        bool validForMouseTracker = true,
+        bool opaque = true,
+        RenderBox? child = null,
+        HitTestBehavior? hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(child: child, behavior: hitTestBehavior ?? HitTestBehavior.opaque)
     {
         MouseCursor __cursor = cursor ?? MouseCursor.defer;
         this.onEnter = onEnter;
@@ -3111,6 +3780,7 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
         }
     }
     public virtual bool validForMouseTracker => _validForMouseTracker;
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -3132,12 +3802,31 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["enter"] = onEnter, ["hover"] = onHover, ["exit"] = onExit }, ifEmpty: "<none>"));
-        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer));
+        properties.add(
+            new FlagsSummary<Delegate?>(
+                "listeners",
+                new DartMap<string, Delegate?>
+                {
+                    ["enter"] = onEnter,
+                    ["hover"] = onHover,
+                    ["exit"] = onExit,
+                },
+                ifEmpty: "<none>"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer)
+        );
         properties.add(new DiagnosticsProperty<bool>("opaque", opaque, defaultValue: true));
-        properties.add(new FlagProperty("validForMouseTracker", value: validForMouseTracker, defaultValue: true, ifFalse: "invalid for MouseTracker"));
+        properties.add(
+            new FlagProperty(
+                "validForMouseTracker",
+                value: validForMouseTracker,
+                defaultValue: true,
+                ifFalse: "invalid for MouseTracker"
+            )
+        );
     }
-
 }
 
 public class RenderRepaintBoundary : RenderProxyBox
@@ -3145,11 +3834,11 @@ public class RenderRepaintBoundary : RenderProxyBox
     internal virtual long _debugSymmetricPaintCount { get; set; } = 0L;
     internal virtual long _debugAsymmetricPaintCount { get; set; } = 0L;
 
-    public RenderRepaintBoundary(RenderBox? child = null) : base(child)
-    {
-    }
+    public RenderRepaintBoundary(RenderBox? child = null)
+        : base(child) { }
 
     public override bool isRepaintBoundary => true;
+
     public virtual Future<Image> toImage(double pixelRatio = 1.0)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsPaint);
@@ -3168,30 +3857,34 @@ public class RenderRepaintBoundary : RenderProxyBox
 
     public virtual long debugSymmetricPaintCount => _debugSymmetricPaintCount;
     public virtual long debugAsymmetricPaintCount => _debugAsymmetricPaintCount;
+
     public virtual void debugResetMetrics()
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugSymmetricPaintCount = 0L;
-                _debugAsymmetricPaintCount = 0L;
-                return true;
-            });
+        {
+            _debugSymmetricPaintCount = 0L;
+            _debugAsymmetricPaintCount = 0L;
+            return true;
+        });
     }
 
-    public override void debugRegisterRepaintBoundaryPaint(bool includedParent = true, bool includedChild = false)
+    public override void debugRegisterRepaintBoundaryPaint(
+        bool includedParent = true,
+        bool includedChild = false
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (includedParent && includedChild)
             {
-                if (includedParent && includedChild)
-                {
-                    _debugSymmetricPaintCount += 1L;
-                }
-                else
-                {
-                    _debugAsymmetricPaintCount += 1L;
-                }
-                return true;
-            });
+                _debugSymmetricPaintCount += 1L;
+            }
+            else
+            {
+                _debugAsymmetricPaintCount += 1L;
+            }
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3199,28 +3892,55 @@ public class RenderRepaintBoundary : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         var inReleaseMode = true;
         DartRuntimePrimitives.Assert(() =>
+        {
+            inReleaseMode = false;
+            long totalPaints = debugSymmetricPaintCount + debugAsymmetricPaintCount;
+            if (totalPaints == 0L)
             {
-                inReleaseMode = false;
-                long totalPaints = debugSymmetricPaintCount + debugAsymmetricPaintCount;
-                if (totalPaints == 0L)
+                properties.add(
+                    new MessageProperty(
+                        "usefulness ratio",
+                        "no metrics collected yet (never painted)"
+                    )
+                );
+            }
+            else
+            {
+                double fraction = debugAsymmetricPaintCount / totalPaints;
+                string diagnosis = fraction switch
                 {
-                    properties.add(new MessageProperty("usefulness ratio", "no metrics collected yet (never painted)"));
-                }
-                else
-                {
-                    double fraction = debugAsymmetricPaintCount / totalPaints;
-                    string diagnosis = fraction switch { _ when totalPaints < 5L => "insufficient data to draw conclusion (less than five repaints)", > 0.9 => "this is an outstandingly useful repaint boundary and should definitely be kept", > 0.5 => "this is a useful repaint boundary and should be kept", > 0.3 => "this repaint boundary is probably useful, but maybe it would be more useful in tandem with adding more repaint boundaries elsewhere", > 0.1 => "this repaint boundary does sometimes show value, though currently not that often", _ when debugAsymmetricPaintCount > 0L => "this repaint boundary is not very effective and should probably be removed", _ => "this repaint boundary is astoundingly ineffectual and should be removed" };
-                    properties.add(new PercentProperty("metrics", fraction, unit: "useful", tooltip: $"{debugSymmetricPaintCount} bad vs {debugAsymmetricPaintCount} good"));
-                    properties.add(new MessageProperty("diagnosis", diagnosis));
-                }
-                return true;
-            });
+                    _ when totalPaints < 5L =>
+                        "insufficient data to draw conclusion (less than five repaints)",
+                    > 0.9 =>
+                        "this is an outstandingly useful repaint boundary and should definitely be kept",
+                    > 0.5 => "this is a useful repaint boundary and should be kept",
+                    > 0.3 =>
+                        "this repaint boundary is probably useful, but maybe it would be more useful in tandem with adding more repaint boundaries elsewhere",
+                    > 0.1 =>
+                        "this repaint boundary does sometimes show value, though currently not that often",
+                    _ when debugAsymmetricPaintCount > 0L =>
+                        "this repaint boundary is not very effective and should probably be removed",
+                    _ => "this repaint boundary is astoundingly ineffectual and should be removed",
+                };
+                properties.add(
+                    new PercentProperty(
+                        "metrics",
+                        fraction,
+                        unit: "useful",
+                        tooltip: $"{debugSymmetricPaintCount} bad vs {debugAsymmetricPaintCount} good"
+                    )
+                );
+                properties.add(new MessageProperty("diagnosis", diagnosis));
+            }
+            return true;
+        });
         if (inReleaseMode)
         {
-            properties.add(new DiagnosticsNode("(run in debug mode to collect repaint boundary statistics)"));
+            properties.add(
+                new DiagnosticsNode("(run in debug mode to collect repaint boundary statistics)")
+            );
         }
     }
-
 }
 
 public class RenderIgnorePointer : RenderProxyBox
@@ -3228,7 +3948,12 @@ public class RenderIgnorePointer : RenderProxyBox
     internal virtual bool _ignoring { get; set; } = default!;
     internal virtual bool? _ignoringSemantics { get; set; } = default;
 
-    public RenderIgnorePointer(RenderBox? child = null, bool ignoring = true, bool? ignoringSemantics = null) : base(child)
+    public RenderIgnorePointer(
+        RenderBox? child = null,
+        bool ignoring = true,
+        bool? ignoringSemantics = null
+    )
+        : base(child)
     {
         _ignoring = ignoring;
         _ignoringSemantics = ignoringSemantics;
@@ -3265,6 +3990,7 @@ public class RenderIgnorePointer : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return !ignoring && base.hitTest(result, position: position);
@@ -3290,16 +4016,24 @@ public class RenderIgnorePointer : RenderProxyBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("ignoring", _ignoring));
-        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", _ignoringSemantics, description: (_ignoringSemantics is null) ? null : $"implicitly {_ignoringSemantics}"));
+        properties.add(
+            new DiagnosticsProperty<bool?>(
+                "ignoringSemantics",
+                _ignoringSemantics,
+                description: (_ignoringSemantics is null)
+                    ? null
+                    : $"implicitly {_ignoringSemantics}"
+            )
+        );
     }
-
 }
 
 public class RenderOffstage : RenderProxyBox
 {
     internal virtual bool _offstage { get; set; } = default!;
 
-    public RenderOffstage(bool offstage = true, RenderBox? child = null) : base(child)
+    public RenderOffstage(bool offstage = true, RenderBox? child = null)
+        : base(child)
     {
         _offstage = offstage;
     }
@@ -3318,6 +4052,7 @@ public class RenderOffstage : RenderProxyBox
             markNeedsLayoutForSizedByParentChange();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (offstage)
@@ -3369,6 +4104,7 @@ public class RenderOffstage : RenderProxyBox
     }
 
     public override bool sizedByParent => offstage;
+
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return offstage ? null : base.computeDryBaseline(constraints, baseline);
@@ -3447,10 +4183,15 @@ public class RenderOffstage : RenderProxyBox
         {
             return new List<DiagnosticsNode>();
         }
-        return new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child", style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse) };
+        return new List<DiagnosticsNode>
+        {
+            ((Diagnosticable)child!).toDiagnosticsNode(
+                name: "child",
+                style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse
+            ),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RenderAbsorbPointer : RenderProxyBox
@@ -3458,7 +4199,12 @@ public class RenderAbsorbPointer : RenderProxyBox
     internal virtual bool _absorbing { get; set; } = default!;
     internal virtual bool? _ignoringSemantics { get; set; } = default;
 
-    public RenderAbsorbPointer(RenderBox? child = null, bool absorbing = true, bool? ignoringSemantics = null) : base(child)
+    public RenderAbsorbPointer(
+        RenderBox? child = null,
+        bool absorbing = true,
+        bool? ignoringSemantics = null
+    )
+        : base(child)
     {
         _absorbing = absorbing;
         _ignoringSemantics = ignoringSemantics;
@@ -3495,6 +4241,7 @@ public class RenderAbsorbPointer : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return absorbing ? size.contains(position) : base.hitTest(result, position: position);
@@ -3520,16 +4267,26 @@ public class RenderAbsorbPointer : RenderProxyBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("absorbing", absorbing));
-        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", ignoringSemantics, description: (ignoringSemantics is null) ? null : $"implicitly {ignoringSemantics}"));
+        properties.add(
+            new DiagnosticsProperty<bool?>(
+                "ignoringSemantics",
+                ignoringSemantics,
+                description: (ignoringSemantics is null) ? null : $"implicitly {ignoringSemantics}"
+            )
+        );
     }
-
 }
 
 public class RenderMetaData : RenderProxyBoxWithHitTestBehavior
 {
     public virtual object? metaData { get; set; } = default!;
 
-    public RenderMetaData(object? metaData = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, RenderBox? child = null) : base(behavior: behavior, child: child)
+    public RenderMetaData(
+        object? metaData = null,
+        HitTestBehavior behavior = HitTestBehavior.deferToChild,
+        RenderBox? child = null
+    )
+        : base(behavior: behavior, child: child)
     {
         this.metaData = metaData;
     }
@@ -3539,7 +4296,6 @@ public class RenderMetaData : RenderProxyBoxWithHitTestBehavior
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<object>("metaData", metaData));
     }
-
 }
 
 public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
@@ -3551,7 +4307,16 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     internal virtual Action<DragUpdateDetails>? _onVerticalDragUpdate { get; set; } = default;
     public virtual double scrollFactor { get; set; } = default!;
 
-    public RenderSemanticsGestureHandler(RenderBox? child = null, Action? onTap = null, Action? onLongPress = null, Action<DragUpdateDetails>? onHorizontalDragUpdate = null, Action<DragUpdateDetails>? onVerticalDragUpdate = null, double scrollFactor = 0.8, HitTestBehavior behavior = HitTestBehavior.deferToChild) : base(child: child, behavior: behavior)
+    public RenderSemanticsGestureHandler(
+        RenderBox? child = null,
+        Action? onTap = null,
+        Action? onLongPress = null,
+        Action<DragUpdateDetails>? onHorizontalDragUpdate = null,
+        Action<DragUpdateDetails>? onVerticalDragUpdate = null,
+        double scrollFactor = 0.8,
+        HitTestBehavior behavior = HitTestBehavior.deferToChild
+    )
+        : base(child: child, behavior: behavior)
     {
         this.scrollFactor = scrollFactor;
         _onTap = onTap;
@@ -3586,7 +4351,7 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
             }
             var hadHandler = _onTap is not null;
             _onTap = __value;
-            if (__value is not null != hadHandler)
+            if ((__value is not null) != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3604,7 +4369,7 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
             }
             var hadHandler = _onLongPress is not null;
             _onLongPress = __value;
-            if (__value is not null != hadHandler)
+            if ((__value is not null) != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3622,7 +4387,7 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
             }
             var hadHandler = _onHorizontalDragUpdate is not null;
             _onHorizontalDragUpdate = __value;
-            if (__value is not null != hadHandler)
+            if ((__value is not null) != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3640,12 +4405,13 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
             }
             var hadHandler = _onVerticalDragUpdate is not null;
             _onVerticalDragUpdate = __value;
-            if (__value is not null != hadHandler)
+            if ((__value is not null) != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
         }
     }
+
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
@@ -3692,7 +4458,13 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
         if (onHorizontalDragUpdate is not null)
         {
             double primaryDeltaLocal = size.width * -scrollFactor;
-            onHorizontalDragUpdate!(new DragUpdateDetails(delta: new Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            onHorizontalDragUpdate!(
+                new DragUpdateDetails(
+                    delta: new Offset(primaryDeltaLocal, 0.0),
+                    primaryDelta: primaryDeltaLocal,
+                    globalPosition: localToGlobal(size.center(Offset.zero))
+                )
+            );
         }
     }
 
@@ -3701,7 +4473,13 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
         if (onHorizontalDragUpdate is not null)
         {
             double primaryDeltaLocal = size.width * scrollFactor;
-            onHorizontalDragUpdate!(new DragUpdateDetails(delta: new Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            onHorizontalDragUpdate!(
+                new DragUpdateDetails(
+                    delta: new Offset(primaryDeltaLocal, 0.0),
+                    primaryDelta: primaryDeltaLocal,
+                    globalPosition: localToGlobal(size.center(Offset.zero))
+                )
+            );
         }
     }
 
@@ -3710,7 +4488,13 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
         if (onVerticalDragUpdate is not null)
         {
             double primaryDeltaLocal = size.height * -scrollFactor;
-            onVerticalDragUpdate!(new DragUpdateDetails(delta: new Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            onVerticalDragUpdate!(
+                new DragUpdateDetails(
+                    delta: new Offset(0.0, primaryDeltaLocal),
+                    primaryDelta: primaryDeltaLocal,
+                    globalPosition: localToGlobal(size.center(Offset.zero))
+                )
+            );
         }
     }
 
@@ -3719,7 +4503,13 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
         if (onVerticalDragUpdate is not null)
         {
             double primaryDeltaLocal = size.height * scrollFactor;
-            onVerticalDragUpdate!(new DragUpdateDetails(delta: new Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            onVerticalDragUpdate!(
+                new DragUpdateDetails(
+                    delta: new Offset(0.0, primaryDeltaLocal),
+                    primaryDelta: primaryDeltaLocal,
+                    globalPosition: localToGlobal(size.center(Offset.zero))
+                )
+            );
         }
     }
 
@@ -3733,7 +4523,6 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
         }
         properties.add(new IterableProperty<string>("gestures", gestures));
     }
-
 }
 
 public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMixin
@@ -3751,7 +4540,17 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
     public virtual AttributedString? _attributedHint { get; set; } = default;
     public virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderSemanticsAnnotations(RenderBox? child = null, SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
+    public RenderSemanticsAnnotations(
+        RenderBox? child = null,
+        SemanticsProperties properties = default!,
+        bool container = false,
+        bool explicitChildNodes = false,
+        bool excludeSemantics = false,
+        bool blockUserActions = false,
+        Locale? localeForSubtree = null,
+        TextDirection? textDirection = null
+    )
+        : base(child)
     {
         initSemanticsAnnotations(
             properties,
@@ -3760,10 +4559,19 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
             excludeSemantics,
             blockUserActions,
             localeForSubtree,
-            textDirection);
+            textDirection
+        );
     }
 
-    public virtual void initSemanticsAnnotations(SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection)
+    public virtual void initSemanticsAnnotations(
+        SemanticsProperties properties,
+        bool container,
+        bool explicitChildNodes,
+        bool excludeSemantics,
+        bool blockUserActions,
+        Locale? localeForSubtree,
+        TextDirection? textDirection
+    )
     {
         _properties = properties;
         _container = container;
@@ -3860,6 +4668,7 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
             markNeedsSemanticsUpdate();
         }
     }
+
     public virtual void _updateAttributedFields(SemanticsProperties value)
     {
         _attributedLabel = _effectiveAttributedLabel(value);
@@ -3871,31 +4680,40 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
 
     public virtual AttributedString? _effectiveAttributedLabel(SemanticsProperties value)
     {
-        return value.attributedLabel ?? ((value.label is null) ? null : new AttributedString(value.label!));
+        return value.attributedLabel
+            ?? ((value.label is null) ? null : new AttributedString(value.label!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedValue(SemanticsProperties value)
     {
-        return value.attributedValue ?? ((value.value is null) ? null : new AttributedString(value.value!));
+        return value.attributedValue
+            ?? ((value.value is null) ? null : new AttributedString(value.value!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedIncreasedValue(SemanticsProperties value)
     {
-        return value.attributedIncreasedValue ?? ((value.increasedValue is null) ? null : new AttributedString(value.increasedValue!));
+        return value.attributedIncreasedValue
+            ?? (
+                (value.increasedValue is null) ? null : new AttributedString(value.increasedValue!)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedDecreasedValue(SemanticsProperties value)
     {
-        return properties.attributedDecreasedValue ?? ((value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!));
+        return properties.attributedDecreasedValue
+            ?? (
+                (value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedHint(SemanticsProperties value)
     {
-        return value.attributedHint ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
+        return value.attributedHint
+            ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3913,6 +4731,7 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (excludeSemantics)
@@ -3932,8 +4751,13 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.localeForSubtree = localeForSubtree;
         }
-        DartRuntimePrimitives.Assert(() => (_properties.scopesRoute ?? false) && explicitChildNodes || !(_properties.scopesRoute ?? false));
-        DartRuntimePrimitives.Assert(() => !((_properties.toggled ?? false) && (_properties.@checked ?? false)));
+        DartRuntimePrimitives.Assert(() =>
+            ((_properties.scopesRoute ?? false) && explicitChildNodes)
+            || !(_properties.scopesRoute ?? false)
+        );
+        DartRuntimePrimitives.Assert(() =>
+            !((_properties.toggled ?? false) && (_properties.@checked ?? false))
+        );
         if (_properties.enabled is not null)
         {
             config.isEnabled = _properties.enabled;
@@ -4004,11 +4828,15 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.accessibilityFocusBlockType is not null)
         {
-            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(_properties.accessibilityFocusBlockType);
+            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+                _properties.accessibilityFocusBlockType
+            );
         }
         if (_properties.inMutuallyExclusiveGroup is not null)
         {
-            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(_properties.inMutuallyExclusiveGroup);
+            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+                _properties.inMutuallyExclusiveGroup
+            );
         }
         if (_properties.obscured is not null)
         {
@@ -4116,7 +4944,9 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.hitTestBehavior is not null)
         {
-            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(_properties.hitTestBehavior);
+            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+                _properties.hitTestBehavior
+            );
         }
         if (_properties.inputType is not null)
         {
@@ -4342,14 +5172,14 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
     {
         _properties.onCollapse?.Invoke();
     }
-
 }
 
 public class RenderBlockSemantics : RenderProxyBox
 {
     internal virtual bool _blocking { get; set; } = default!;
 
-    public RenderBlockSemantics(RenderBox? child = null, bool blocking = true) : base(child)
+    public RenderBlockSemantics(RenderBox? child = null, bool blocking = true)
+        : base(child)
     {
         _blocking = blocking;
     }
@@ -4368,6 +5198,7 @@ public class RenderBlockSemantics : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
@@ -4379,34 +5210,36 @@ public class RenderBlockSemantics : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("blocking", blocking));
     }
-
 }
 
 public class RenderMergeSemantics : RenderProxyBox
 {
-    public RenderMergeSemantics(RenderBox? child = null) : base(child)
-    {
-    }
+    public RenderMergeSemantics(RenderBox? child = null)
+        : base(child) { }
 
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = config;
-    __cascade.isSemanticBoundary = true;
-    __cascade.isMergingSemanticsOfDescendants = true;
-    return __cascade;
-}))();
+        (
+            (Func<SemanticsConfiguration>)(
+                () =>
+                {
+                    var __cascade = config;
+                    __cascade.isSemanticBoundary = true;
+                    __cascade.isMergingSemanticsOfDescendants = true;
+                    return __cascade;
+                }
+            )
+        )();
     }
-
 }
 
 public class RenderExcludeSemantics : RenderProxyBox
 {
     internal virtual bool _excluding { get; set; } = default!;
 
-    public RenderExcludeSemantics(RenderBox? child = null, bool excluding = true) : base(child)
+    public RenderExcludeSemantics(RenderBox? child = null, bool excluding = true)
+        : base(child)
     {
         _excluding = excluding;
     }
@@ -4425,6 +5258,7 @@ public class RenderExcludeSemantics : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (excluding)
@@ -4439,14 +5273,14 @@ public class RenderExcludeSemantics : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("excluding", excluding));
     }
-
 }
 
 public class RenderIndexedSemantics : RenderProxyBox
 {
     internal virtual long _index { get; set; } = default!;
 
-    public RenderIndexedSemantics(RenderBox? child = null, long index = default!) : base(child)
+    public RenderIndexedSemantics(RenderBox? child = null, long index = default!)
+        : base(child)
     {
         _index = index;
     }
@@ -4465,6 +5299,7 @@ public class RenderIndexedSemantics : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
@@ -4476,7 +5311,6 @@ public class RenderIndexedSemantics : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<long>("index", index));
     }
-
 }
 
 public class RenderLeaderLayer : RenderProxyBox
@@ -4484,7 +5318,8 @@ public class RenderLeaderLayer : RenderProxyBox
     internal virtual LayerLink _link { get; set; } = default!;
     internal virtual Size? _previousLayoutSize { get; set; } = default;
 
-    public RenderLeaderLayer(LayerLink link, RenderBox? child = null) : base(child)
+    public RenderLeaderLayer(LayerLink link, RenderBox? child = null)
+        : base(child)
     {
         _link = link;
     }
@@ -4509,6 +5344,7 @@ public class RenderLeaderLayer : RenderProxyBox
         }
     }
     public override bool alwaysNeedsCompositing => true;
+
     public override void performLayout()
     {
         base.performLayout();
@@ -4525,20 +5361,24 @@ public class RenderLeaderLayer : RenderProxyBox
         else
         {
             var leaderLayer = ((LeaderLayer?)layer!)!;
-            ((Func<LeaderLayer>)(() =>
-{
-    var __cascade = leaderLayer;
-    __cascade.link = link;
-    __cascade.offset = offset;
-    return __cascade;
-}))();
+            (
+                (Func<LeaderLayer>)(
+                    () =>
+                    {
+                        var __cascade = leaderLayer;
+                        __cascade.link = link;
+                        __cascade.offset = offset;
+                        return __cascade;
+                    }
+                )
+            )();
         }
         context.pushLayer(layer!, base.paint, Offset.zero);
         DartRuntimePrimitives.Assert(() =>
-            {
-                layer!.debugCreator = debugCreator;
-                return true;
-            });
+        {
+            layer!.debugCreator = debugCreator;
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -4546,7 +5386,6 @@ public class RenderLeaderLayer : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<LayerLink>("link", link));
     }
-
 }
 
 public class RenderFollowerLayer : RenderProxyBox
@@ -4557,7 +5396,15 @@ public class RenderFollowerLayer : RenderProxyBox
     internal virtual Alignment _leaderAnchor { get; set; } = default!;
     internal virtual Alignment _followerAnchor { get; set; } = default!;
 
-    public RenderFollowerLayer(LayerLink link, bool showWhenUnlinked = true, Offset offset = default, Alignment leaderAnchor = default!, Alignment followerAnchor = default!, RenderBox? child = null) : base(child)
+    public RenderFollowerLayer(
+        LayerLink link,
+        bool showWhenUnlinked = true,
+        Offset offset = default,
+        Alignment leaderAnchor = default!,
+        Alignment followerAnchor = default!,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         Alignment __leaderAnchor = leaderAnchor ?? Alignment.topLeft;
         Alignment __followerAnchor = followerAnchor ?? Alignment.topLeft;
@@ -4638,6 +5485,7 @@ public class RenderFollowerLayer : RenderProxyBox
             markNeedsPaint();
         }
     }
+
     public override void detach()
     {
         layer = null;
@@ -4646,6 +5494,7 @@ public class RenderFollowerLayer : RenderProxyBox
 
     public override bool alwaysNeedsCompositing => true;
     public override FollowerLayer? layer => ((FollowerLayer?)base.layer)!;
+
     public virtual Matrix4 getCurrentTransform()
     {
         return layer?.getLastTransform() ?? Matrix4.identity();
@@ -4664,40 +5513,78 @@ public class RenderFollowerLayer : RenderProxyBox
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        return result.addWithPaintTransform(transform: getCurrentTransform(), position: position, hitTest: (result, position) =>
-        {
-            return base.hitTestChildren(result, position: position);
-        });
+        return result.addWithPaintTransform(
+            transform: getCurrentTransform(),
+            position: position,
+            hitTest: (result, position) =>
+            {
+                return base.hitTestChildren(result, position: position);
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
         Size? leaderSizeLocal = link.leaderSize;
-        DartRuntimePrimitives.Assert(() => (link.leaderSize is not null) || (link.leader is null) || Equals(leaderAnchor, Alignment.topLeft));
-        Offset effectiveLinkedOffset = (leaderSizeLocal is null) ? this.offset : (leaderAnchor.alongSize(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leaderSizeLocal))) - followerAnchor.alongSize(size) + this.offset);
+        DartRuntimePrimitives.Assert(() =>
+            (link.leaderSize is not null)
+            || (link.leader is null)
+            || Equals(leaderAnchor, Alignment.topLeft)
+        );
+        Offset effectiveLinkedOffset =
+            (leaderSizeLocal is null)
+                ? this.offset
+                : (
+                    leaderAnchor.alongSize(
+                        DartRuntimePrimitives.RequireValue(
+                            DartRuntimePrimitives.RequireValue(leaderSizeLocal)
+                        )
+                    )
+                    - followerAnchor.alongSize(size)
+                    + this.offset
+                );
         if (layer is null)
         {
-            layer = new FollowerLayer(link: link, showWhenUnlinked: showWhenUnlinked, linkedOffset: effectiveLinkedOffset, unlinkedOffset: offset);
+            layer = new FollowerLayer(
+                link: link,
+                showWhenUnlinked: showWhenUnlinked,
+                linkedOffset: effectiveLinkedOffset,
+                unlinkedOffset: offset
+            );
         }
         else
         {
-            ((Func<FollowerLayer?>)(() =>
-{
-    var __cascade = layer;
-    __cascade.link = link;
-    __cascade.showWhenUnlinked = showWhenUnlinked;
-    __cascade.linkedOffset = effectiveLinkedOffset;
-    __cascade.unlinkedOffset = offset;
-    return __cascade;
-}))();
+            (
+                (Func<FollowerLayer?>)(
+                    () =>
+                    {
+                        var __cascade = layer;
+                        __cascade.link = link;
+                        __cascade.showWhenUnlinked = showWhenUnlinked;
+                        __cascade.linkedOffset = effectiveLinkedOffset;
+                        __cascade.unlinkedOffset = offset;
+                        return __cascade;
+                    }
+                )
+            )();
         }
-        context.pushLayer(layer!, base.paint, Offset.zero, childPaintBounds: Rect.fromLTRB(double.NegativeInfinity, double.NegativeInfinity, double.PositiveInfinity, double.PositiveInfinity));
+        context.pushLayer(
+            layer!,
+            base.paint,
+            Offset.zero,
+            childPaintBounds: Rect.fromLTRB(
+                double.NegativeInfinity,
+                double.NegativeInfinity,
+                double.PositiveInfinity,
+                double.PositiveInfinity
+            )
+        );
         DartRuntimePrimitives.Assert(() =>
-            {
-                layer!.debugCreator = debugCreator;
-                return true;
-            });
+        {
+            layer!.debugCreator = debugCreator;
+            return true;
+        });
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -4714,19 +5601,24 @@ public class RenderFollowerLayer : RenderProxyBox
         properties.add(new DiagnosticsProperty<Offset>("offset", offset));
         properties.add(new TransformProperty("current transform matrix", getCurrentTransform()));
     }
-
 }
 
 public class RenderAnnotatedRegion<T> : RenderProxyBox
 {
     internal virtual T _value { get; set; } = default!;
     internal virtual bool _sized { get; set; } = default!;
-    // Dart library-private member: distinct from the same name in the base library.
-    public new virtual LayerHandle<AnnotatedRegionLayer<T>> _layerHandle { get; private set; } = default!;
-    private bool __field_alwaysNeedsCompositing = true;
-    public override bool alwaysNeedsCompositing { get => __field_alwaysNeedsCompositing; }
 
-    public RenderAnnotatedRegion(T value, bool sized, RenderBox? child = null) : base(child)
+    // Dart library-private member: distinct from the same name in the base library.
+    public new virtual LayerHandle<AnnotatedRegionLayer<T>> _layerHandle { get; private set; } =
+        default!;
+    private bool __field_alwaysNeedsCompositing = true;
+    public override bool alwaysNeedsCompositing
+    {
+        get => __field_alwaysNeedsCompositing;
+    }
+
+    public RenderAnnotatedRegion(T value, bool sized, RenderBox? child = null)
+        : base(child)
     {
         _value = value;
         _sized = sized;
@@ -4761,9 +5653,14 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
             markNeedsPaint();
         }
     }
+
     public override void paint(PaintingContext context, Offset offset)
     {
-        var layerLocal = new AnnotatedRegionLayer<T>(value, size: sized ? size : null, offset: sized ? offset : null);
+        var layerLocal = new AnnotatedRegionLayer<T>(
+            value,
+            size: sized ? size : null,
+            offset: sized ? offset : null
+        );
         _layerHandle.layer = layerLocal;
         context.pushLayer(layerLocal, base.paint, offset);
     }
@@ -4773,5 +5670,4 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
         _layerHandle.layer = null;
         base.dispose();
     }
-
 }

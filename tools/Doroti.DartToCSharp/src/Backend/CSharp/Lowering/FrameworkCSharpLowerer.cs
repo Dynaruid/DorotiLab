@@ -26,7 +26,8 @@ internal sealed partial class FrameworkCSharpLowerer
         string package,
         string library,
         string inputPath,
-        List<ConverterDiagnostic> diagnostics)
+        List<ConverterDiagnostic> diagnostics
+    )
     {
         var builder = new CsSyntaxBuilder();
         var declarationOrigins = new List<(CoreResolvedDeclaration Declaration, CsOrigin Origin)>();
@@ -35,9 +36,13 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("#nullable enable");
         if (!preservesG31Artifact)
         {
-            builder.AppendLine("#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981");
+            builder.AppendLine(
+                "#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981"
+            );
         }
-        builder.AppendLine($"// Doroti typed semantic compiler {CompilerVersions.Converter}; source: {ArtifactFiles.NormalizePath(inputPath)}");
+        builder.AppendLine(
+            $"// Doroti typed semantic compiler {CompilerVersions.Converter}; source: {ArtifactFiles.NormalizePath(inputPath)}"
+        );
         builder.AppendLine("using System;");
         if (!preservesG31Artifact)
         {
@@ -57,7 +62,9 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("using Match = Doroti.Runtime.DartMatch;");
             if (library.EndsWith("/rendering/binding.dart", StringComparison.Ordinal))
             {
-                builder.AppendLine("using SemanticsBinding = global::Doroti.Framework.Semantics.SemanticsBinding;");
+                builder.AppendLine(
+                    "using SemanticsBinding = global::Doroti.Framework.Semantics.SemanticsBinding;"
+                );
             }
         }
         builder.AppendLine();
@@ -71,9 +78,13 @@ internal sealed partial class FrameworkCSharpLowerer
         _session.EmittingAssignmentLeft = false;
         foreach (var declaration in _currentDeclarations.OrderBy(item => item.Offset))
         {
-            if (declaration.Ast.Kind == CoreNodeKind.FunctionDeclaration &&
-                declaration.Ast.Text(CoreProperty.isSetter) == "true" &&
-                _currentDeclarations.Any(item => item.Name == declaration.Name && item.Ast.Text(CoreProperty.isGetter) == "true"))
+            if (
+                declaration.Ast.Kind == CoreNodeKind.FunctionDeclaration
+                && declaration.Ast.Text(CoreProperty.isSetter) == "true"
+                && _currentDeclarations.Any(item =>
+                    item.Name == declaration.Name && item.Ast.Text(CoreProperty.isGetter) == "true"
+                )
+            )
             {
                 continue;
             }
@@ -81,14 +92,17 @@ internal sealed partial class FrameworkCSharpLowerer
                 ArtifactFiles.NormalizePath(inputPath),
                 declaration.Offset,
                 declaration.Length,
-                declaration.Element.Symbol.Value);
+                declaration.Element.Symbol.Value
+            );
             declarationOrigins.Add((declaration, origin));
             using (builder.BeginRegion(CsSyntaxRegionKind.Declaration, origin))
             {
                 var previousSubstitutions = _session.TypeParameterSubstitutions;
                 var previousDeclaration = _session.ActiveDeclaration;
                 _session.ActiveDeclaration = declaration;
-                _session.TypeParameterSubstitutions = DeclarationTypeParameterSubstitutions(declaration);
+                _session.TypeParameterSubstitutions = DeclarationTypeParameterSubstitutions(
+                    declaration
+                );
                 try
                 {
                     if (TryEmitPinnedG31Declaration(builder, declaration, library))
@@ -98,28 +112,71 @@ internal sealed partial class FrameworkCSharpLowerer
                     switch (declaration.Ast.Kind)
                     {
                         case CoreNodeKind.FunctionDeclaration:
-                            EmitTopLevelFunction(builder, declaration, package, library, inputPath, diagnostics);
+                            EmitTopLevelFunction(
+                                builder,
+                                declaration,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                             break;
                         case CoreNodeKind.ClassDeclaration:
                         case CoreNodeKind.ExtensionTypeDeclaration:
                         case CoreNodeKind.MixinDeclaration:
-                            EmitClass(builder, declaration, package, library, inputPath, diagnostics);
+                            EmitClass(
+                                builder,
+                                declaration,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                             break;
                         case CoreNodeKind.ExtensionDeclaration:
-                            EmitExtension(builder, declaration, package, library, inputPath, diagnostics);
+                            EmitExtension(
+                                builder,
+                                declaration,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                             break;
                         case CoreNodeKind.TopLevelVariableDeclaration:
-                            EmitTopLevelVariable(builder, declaration, package, library, inputPath, diagnostics);
+                            EmitTopLevelVariable(
+                                builder,
+                                declaration,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                             break;
                         case CoreNodeKind.EnumDeclaration:
-                            EmitEnum(builder, declaration, package, library, inputPath, diagnostics);
+                            EmitEnum(
+                                builder,
+                                declaration,
+                                package,
+                                library,
+                                inputPath,
+                                diagnostics
+                            );
                             break;
                         case CoreNodeKind.GenericTypeAlias:
                             EmitTypeAlias(builder, declaration);
                             break;
                         default:
-                            AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, declaration.Ast,
-                                "declaration", "Add a typed declaration visitor before expanding the selected framework closure.");
+                            AddUnsupportedDiagnostic(
+                                diagnostics,
+                                package,
+                                library,
+                                inputPath,
+                                declaration,
+                                declaration.Ast,
+                                "declaration",
+                                "Add a typed declaration visitor before expanding the selected framework closure."
+                            );
                             break;
                     }
                 }
@@ -138,7 +195,9 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    {");
             builder.AppendLine("        public static class CreationLocation");
             builder.AppendLine("        {");
-            builder.AppendLine("            public static global::Doroti.Runtime.CreationLocation? of(object? value) => global::Doroti.Runtime.CreationLocation.of(value);");
+            builder.AppendLine(
+                "            public static global::Doroti.Runtime.CreationLocation? of(object? value) => global::Doroti.Runtime.CreationLocation.of(value);"
+            );
             builder.AppendLine("        }");
             builder.AppendLine("    }");
             builder.AppendLine("}");
@@ -147,19 +206,22 @@ internal sealed partial class FrameworkCSharpLowerer
 
         var printed = new CSharpPrinter().Print(builder.Build());
         var printedByOrigin = printed.Origins.ToDictionary(item => item.Origin);
-        var mappings = declarationOrigins.Select(item =>
-        {
-            var printedOrigin = printedByOrigin[item.Origin];
-            return new SourceMapEntry(
-                inputPath,
-                item.Declaration.Offset,
-                item.Declaration.Length,
-                item.Declaration.Name,
-                string.Empty,
-                printedOrigin.StartLine,
-                printedOrigin.EndLine,
-                "typed-semantic");
-        }).ToArray();
+        var mappings = declarationOrigins
+            .Select(item =>
+            {
+                var printedOrigin = printedByOrigin[item.Origin];
+                return new SourceMapEntry(
+                    inputPath,
+                    item.Declaration.Offset,
+                    item.Declaration.Length,
+                    item.Declaration.Name,
+                    string.Empty,
+                    printedOrigin.StartLine,
+                    printedOrigin.EndLine,
+                    "typed-semantic"
+                );
+            })
+            .ToArray();
         var source = ApplyG53FrameworkCompatibility(library, printed.Text);
         ValidateRenderCustomClipCacheContract(source);
         ValidatePlatformNetworkImageContract(source);
@@ -183,18 +245,23 @@ internal sealed partial class FrameworkCSharpLowerer
             "_clipIsValid = false;",
             "_clipIsValid = true;",
         };
-        if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
-            source.Contains("if (_clip is null)", StringComparison.Ordinal))
+        if (
+            requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal))
+            || source.Contains("if (_clip is null)", StringComparison.Ordinal)
+        )
         {
             throw new InvalidOperationException(
-                "Generated _RenderCustomClip must preserve Dart nullable generic cache semantics for value-type clips.");
+                "Generated _RenderCustomClip must preserve Dart nullable generic cache semantics for value-type clips."
+            );
         }
     }
 
     private void ValidatePlatformNetworkImageContract(string source)
     {
-        if (!IsPrivateCompanionLibrary(_currentLibrary) ||
-            !_currentDeclarations.Any(declaration => declaration.Name == "NetworkImage"))
+        if (
+            !IsPrivateCompanionLibrary(_currentLibrary)
+            || !_currentDeclarations.Any(declaration => declaration.Name == "NetworkImage")
+        )
         {
             return;
         }
@@ -204,11 +271,14 @@ internal sealed partial class FrameworkCSharpLowerer
             "NetworkImage.loadBuffer(NetworkImage key, DecoderBufferCallback decode)",
             "NetworkImage.loadImage(NetworkImage key, ImageDecoderCallback decode)",
         };
-        if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
-            source.Contains("NetworkImage key, Func<", StringComparison.Ordinal))
+        if (
+            requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal))
+            || source.Contains("NetworkImage key, Func<", StringComparison.Ordinal)
+        )
         {
             throw new InvalidOperationException(
-                "Generated platform NetworkImage bridges must preserve the interface callback typedefs.");
+                "Generated platform NetworkImage bridges must preserve the interface callback typedefs."
+            );
         }
     }
 
@@ -222,21 +292,34 @@ internal sealed partial class FrameworkCSharpLowerer
                 "debugDescribeChildren(DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)",
                 "this.traversalParent =",
             };
-            if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
-                source.Contains("((ViewportNotificationMixin)child)._depth", StringComparison.Ordinal) ||
-                source.Contains("((dynamic)SemanticsRole).list", StringComparison.Ordinal))
+            if (
+                requiredFragments.Any(fragment =>
+                    !source.Contains(fragment, StringComparison.Ordinal)
+                )
+                || source.Contains(
+                    "((ViewportNotificationMixin)child)._depth",
+                    StringComparison.Ordinal
+                )
+                || source.Contains("((dynamic)SemanticsRole).list", StringComparison.Ordinal)
+            )
             {
                 throw new InvalidOperationException(
-                    "Generated SemanticsNode must preserve promoted mixins, member scope, and typed enum/collection access.");
+                    "Generated SemanticsNode must preserve promoted mixins, member scope, and typed enum/collection access."
+                );
             }
         }
 
-        if (_currentDeclarations.Any(declaration => declaration.Name == "SemanticsService") &&
-            (!source.Contains("global::Doroti.Ui.DorotiView", StringComparison.Ordinal) ||
-             source.Contains("global::Doroti.Ui.FlutterView", StringComparison.Ordinal)))
+        if (
+            _currentDeclarations.Any(declaration => declaration.Name == "SemanticsService")
+            && (
+                !source.Contains("global::Doroti.Ui.DorotiView", StringComparison.Ordinal)
+                || source.Contains("global::Doroti.Ui.FlutterView", StringComparison.Ordinal)
+            )
+        )
         {
             throw new InvalidOperationException(
-                "Generated semantics services must bind dart:ui FlutterView to the DorotiView runtime contract.");
+                "Generated semantics services must bind dart:ui FlutterView to the DorotiView runtime contract."
+            );
         }
     }
 
@@ -247,17 +330,28 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
 
-        if (!source.Contains("abstract bool shouldReclip(CustomClipper<T> oldClipper)", StringComparison.Ordinal) ||
-            source.Contains("abstract bool shouldReclip(Listenable oldClipper)", StringComparison.Ordinal))
+        if (
+            !source.Contains(
+                "abstract bool shouldReclip(CustomClipper<T> oldClipper)",
+                StringComparison.Ordinal
+            )
+            || source.Contains(
+                "abstract bool shouldReclip(Listenable oldClipper)",
+                StringComparison.Ordinal
+            )
+        )
         {
             throw new InvalidOperationException(
-                "Generated CustomClipper<T> must preserve its covariant generic shouldReclip contract.");
+                "Generated CustomClipper<T> must preserve its covariant generic shouldReclip contract."
+            );
         }
     }
 
     private static void EmitStateRuntimeContract(CsSyntaxBuilder builder)
     {
-        builder.AppendLine("/// <summary>Non-generic CLR contract for Dart's raw State type.</summary>");
+        builder.AppendLine(
+            "/// <summary>Non-generic CLR contract for Dart's raw State type.</summary>"
+        );
         builder.AppendLine("public interface IState");
         builder.AppendLine("{");
         builder.AppendLine("    StatefulWidget? _widget { get; set; }");
@@ -278,5 +372,4 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("}");
         builder.AppendLine();
     }
-
 }

@@ -19,21 +19,33 @@ public class SuggestionSpan
     public override bool Equals(object? other)
     {
         var __other = other as SuggestionSpan;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
         }
-        return (__other is SuggestionSpan) && (__other.range.start == range.start) && (__other.range.end == range.end) && CollectionsLibrary.listEquals(__other.suggestions, suggestions);
+        return (__other is SuggestionSpan)
+            && (__other.range.start == range.start)
+            && (__other.range.end == range.end)
+            && CollectionsLibrary.listEquals(__other.suggestions, suggestions);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(range.start, range.end, FoundationRuntimePorts.ObjectHashAll(suggestions));
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            range.start,
+            range.end,
+            FoundationRuntimePorts.ObjectHashAll(suggestions)
+        );
+
     public override string ToString()
     {
         return $"SuggestionSpan(range: {range}, suggestions: {suggestions})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SpellCheckResults
@@ -50,21 +62,31 @@ public class SpellCheckResults
     public override bool Equals(object? other)
     {
         var __other = other as SpellCheckResults;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
         }
-        return (__other is SpellCheckResults) && (__other.spellCheckedText == spellCheckedText) && CollectionsLibrary.listEquals(__other.suggestionSpans, suggestionSpans);
+        return (__other is SpellCheckResults)
+            && (__other.spellCheckedText == spellCheckedText)
+            && CollectionsLibrary.listEquals(__other.suggestionSpans, suggestionSpans);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(spellCheckedText, FoundationRuntimePorts.ObjectHashAll(suggestionSpans));
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            spellCheckedText,
+            FoundationRuntimePorts.ObjectHashAll(suggestionSpans)
+        );
+
     public override string ToString()
     {
         return $"SpellCheckResults(spellCheckText: {spellCheckedText}, suggestionSpans: {suggestionSpans})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface SpellCheckService
@@ -77,11 +99,12 @@ public class DefaultSpellCheckService : SpellCheckService
     public virtual SpellCheckResults? lastSavedResults { get; set; } = default;
     public virtual MethodChannel spellCheckChannel { get; set; } = default!;
 
-    public DefaultSpellCheckService()
-    {
-    }
+    public DefaultSpellCheckService() { }
 
-    public static List<SuggestionSpan> mergeResults(List<SuggestionSpan> oldResults, List<SuggestionSpan> newResults)
+    public static List<SuggestionSpan> mergeResults(
+        List<SuggestionSpan> oldResults,
+        List<SuggestionSpan> newResults
+    )
     {
         var mergedResults = new List<SuggestionSpan>();
         SuggestionSpan oldSpan = default!;
@@ -118,13 +141,22 @@ public class DefaultSpellCheckService : SpellCheckService
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<List<SuggestionSpan>?> fetchSpellCheckSuggestions(Locale locale, string text)
+    public virtual async Future<List<SuggestionSpan>?> fetchSpellCheckSuggestions(
+        Locale locale,
+        string text
+    )
     {
         List<object> rawResults = default!;
         string languageTag = locale.toLanguageTag();
         try
         {
-            rawResults = ((List<object>?)await spellCheckChannel.invokeMethod<object>("SpellCheck.initiateSpellCheck", new List<string> { languageTag, text }))!;
+            rawResults = (
+                (List<object>?)
+                    await spellCheckChannel.invokeMethod<object>(
+                        "SpellCheck.initiateSpellCheck",
+                        new List<string> { languageTag, text }
+                    )
+            )!;
         }
         catch (Exception)
         {
@@ -134,7 +166,10 @@ public class DefaultSpellCheckService : SpellCheckService
         if (lastSavedResults is not null)
         {
             var textHasNotChanged = lastSavedResults!.spellCheckedText == text;
-            bool spansHaveChanged = CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
+            bool spansHaveChanged = CollectionsLibrary.listEquals(
+                lastSavedResults!.suggestionSpans,
+                suggestionSpans
+            );
             if (textHasNotChanged && spansHaveChanged)
             {
                 suggestionSpans = mergeResults(lastSavedResults!.suggestionSpans, suggestionSpans);
@@ -144,6 +179,4 @@ public class DefaultSpellCheckService : SpellCheckService
         return suggestionSpans;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

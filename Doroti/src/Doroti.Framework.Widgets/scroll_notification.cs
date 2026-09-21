@@ -43,7 +43,12 @@ public class ScrollStartNotification : ScrollNotification
 {
     public virtual DragStartDetails? dragDetails { get; private set; }
 
-    public ScrollStartNotification(ScrollMetrics metrics, BuildContext? context, DragStartDetails? dragDetails = null) : base(metrics: metrics, context: context)
+    public ScrollStartNotification(
+        ScrollMetrics metrics,
+        BuildContext? context,
+        DragStartDetails? dragDetails = null
+    )
+        : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
     }
@@ -56,7 +61,6 @@ public class ScrollStartNotification : ScrollNotification
             description.Add($"{dragDetails}");
         }
     }
-
 }
 
 public class ScrollUpdateNotification : ScrollNotification
@@ -64,7 +68,14 @@ public class ScrollUpdateNotification : ScrollNotification
     public virtual DragUpdateDetails? dragDetails { get; private set; }
     public virtual double? scrollDelta { get; private set; }
 
-    public ScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, DragUpdateDetails? dragDetails = null, double? scrollDelta = null, long? depth = null) : base(metrics: metrics, context: context)
+    public ScrollUpdateNotification(
+        ScrollMetrics metrics,
+        BuildContext context,
+        DragUpdateDetails? dragDetails = null,
+        double? scrollDelta = null,
+        long? depth = null
+    )
+        : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
         this.scrollDelta = scrollDelta;
@@ -84,7 +95,6 @@ public class ScrollUpdateNotification : ScrollNotification
             description.Add($"{dragDetails}");
         }
     }
-
 }
 
 public class OverscrollNotification : ScrollNotification
@@ -93,7 +103,14 @@ public class OverscrollNotification : ScrollNotification
     public virtual double overscroll { get; private set; } = default!;
     public virtual double velocity { get; private set; } = default!;
 
-    public OverscrollNotification(ScrollMetrics metrics, BuildContext context, DragUpdateDetails? dragDetails = null, double overscroll = default!, double velocity = 0.0) : base(metrics: metrics, context: context)
+    public OverscrollNotification(
+        ScrollMetrics metrics,
+        BuildContext context,
+        DragUpdateDetails? dragDetails = null,
+        double overscroll = default!,
+        double velocity = 0.0
+    )
+        : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
         this.overscroll = overscroll;
@@ -112,14 +129,18 @@ public class OverscrollNotification : ScrollNotification
             description.Add($"{dragDetails}");
         }
     }
-
 }
 
 public class ScrollEndNotification : ScrollNotification
 {
     public virtual DragEndDetails? dragDetails { get; private set; }
 
-    public ScrollEndNotification(ScrollMetrics metrics, BuildContext context, DragEndDetails? dragDetails = null) : base(metrics: metrics, context: context)
+    public ScrollEndNotification(
+        ScrollMetrics metrics,
+        BuildContext context,
+        DragEndDetails? dragDetails = null
+    )
+        : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
     }
@@ -132,14 +153,18 @@ public class ScrollEndNotification : ScrollNotification
             description.Add($"{dragDetails}");
         }
     }
-
 }
 
 public class UserScrollNotification : ScrollNotification
 {
     public virtual ScrollDirection direction { get; private set; } = default!;
 
-    public UserScrollNotification(ScrollMetrics metrics, BuildContext context, ScrollDirection direction) : base(metrics: metrics, context: context)
+    public UserScrollNotification(
+        ScrollMetrics metrics,
+        BuildContext context,
+        ScrollDirection direction
+    )
+        : base(metrics: metrics, context: context)
     {
         this.direction = direction;
     }
@@ -149,7 +174,6 @@ public class UserScrollNotification : ScrollNotification
         base.debugFillDescription(description);
         description.Add($"direction: {direction}");
     }
-
 }
 
 public delegate bool ScrollNotificationPredicate(ScrollNotification notification);

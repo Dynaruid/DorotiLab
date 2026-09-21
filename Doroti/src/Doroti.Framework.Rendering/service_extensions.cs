@@ -16,6 +16,5 @@ public enum RenderingServiceExtensions
     debugDumpSemanticsTreeInTraversalOrder,
     debugDumpSemanticsTreeInInverseHitTestOrder,
     profileRenderObjectPaints,
-    profileRenderObjectLayouts
+    profileRenderObjectLayouts,
 }
-

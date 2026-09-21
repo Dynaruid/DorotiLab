@@ -6,7 +6,12 @@ public delegate TResult ComputeCallback<in TMessage, out TResult>(TMessage messa
 
 public static class ComputeImpl
 {
-    public static Task<TResult> compute<TMessage, TResult>(ComputeCallback<TMessage, TResult> callback, TMessage message, string? debugLabel = null, CancellationToken cancellationToken = default)
+    public static Task<TResult> compute<TMessage, TResult>(
+        ComputeCallback<TMessage, TResult> callback,
+        TMessage message,
+        string? debugLabel = null,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(callback);
         _ = debugLabel;
@@ -16,6 +21,10 @@ public static class ComputeImpl
 
 public static class IsolatesLibrary
 {
-    public static Task<TResult> compute<TMessage, TResult>(ComputeCallback<TMessage, TResult> callback, TMessage message, string? debugLabel = null, CancellationToken cancellationToken = default) =>
-        ComputeImpl.compute(callback, message, debugLabel, cancellationToken);
+    public static Task<TResult> compute<TMessage, TResult>(
+        ComputeCallback<TMessage, TResult> callback,
+        TMessage message,
+        string? debugLabel = null,
+        CancellationToken cancellationToken = default
+    ) => ComputeImpl.compute(callback, message, debugLabel, cancellationToken);
 }

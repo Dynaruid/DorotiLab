@@ -6,8 +6,23 @@ internal static unsafe class QtNativeV2
 {
     internal const uint AbiVersion = 4;
     internal static ulong RequiredFeatures =>
-        (QtSkiaSurface.GraphiteEnabled ? (1UL << 10) | (1UL << 11) | (1UL << 12) | (1UL << 13) : (1UL << 0)) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
-        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) | (1UL << 8) | (1UL << 9) | (1UL << 14) | (1UL << 15) | (1UL << 16);
+        (
+            QtSkiaSurface.GraphiteEnabled
+                ? (1UL << 10) | (1UL << 11) | (1UL << 12) | (1UL << 13)
+                : (1UL << 0)
+        )
+        | (1UL << 1)
+        | (1UL << 2)
+        | (1UL << 3)
+        | (1UL << 4)
+        | (1UL << 5)
+        | (1UL << 6)
+        | (1UL << 7)
+        | (1UL << 8)
+        | (1UL << 9)
+        | (1UL << 14)
+        | (1UL << 15)
+        | (1UL << 16);
 
     internal enum Result : int
     {
@@ -32,8 +47,13 @@ internal static unsafe class QtNativeV2
 
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct Configuration(
-        Utf8 title, int logicalWidth, int logicalHeight,
-        uint backdropMode, uint backdropFallback, uint titlebarStyle = 0)
+        Utf8 title,
+        int logicalWidth,
+        int logicalHeight,
+        uint backdropMode,
+        uint backdropFallback,
+        uint titlebarStyle = 0
+    )
     {
         internal readonly uint AbiVersion = QtNativeV2.AbiVersion;
         internal readonly uint StructSize = checked((uint)sizeof(Configuration));
@@ -139,8 +159,14 @@ internal static unsafe class QtNativeV2
 
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct TextConfiguration(
-        uint inputType, uint inputAction, uint capitalization, bool readOnly,
-        bool obscureText, bool autocorrect, bool enableSuggestions)
+        uint inputType,
+        uint inputAction,
+        uint capitalization,
+        bool readOnly,
+        bool obscureText,
+        bool autocorrect,
+        bool enableSuggestions
+    )
     {
         internal readonly uint AbiVersion = QtNativeV2.AbiVersion;
         internal readonly uint StructSize = checked((uint)sizeof(TextConfiguration));
@@ -155,8 +181,13 @@ internal static unsafe class QtNativeV2
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal readonly struct TextState(Utf8 text, int selectionBase, int selectionExtent,
-        int composingBase, int composingExtent)
+    internal readonly struct TextState(
+        Utf8 text,
+        int selectionBase,
+        int selectionExtent,
+        int composingBase,
+        int composingExtent
+    )
     {
         internal readonly uint AbiVersion = QtNativeV2.AbiVersion;
         internal readonly uint StructSize = checked((uint)sizeof(TextState));
@@ -180,9 +211,19 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, Utf8, void> SetClipboardText;
         internal readonly delegate* unmanaged[Cdecl]<nint, ulong, void> RequestClipboardText;
         internal readonly delegate* unmanaged[Cdecl]<nint, uint, void> SetCursor;
-        internal readonly delegate* unmanaged[Cdecl]<nint, TextConfiguration*, TextState*, void> SetTextClient;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            TextConfiguration*,
+            TextState*,
+            void> SetTextClient;
         internal readonly delegate* unmanaged[Cdecl]<nint, TextState*, void> UpdateTextState;
-        internal readonly delegate* unmanaged[Cdecl]<nint, double, double, double, double, void> SetCaretRect;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            double,
+            double,
+            double,
+            double,
+            void> SetCaretRect;
         internal readonly delegate* unmanaged[Cdecl]<nint, void> ClearTextClient;
         internal readonly delegate* unmanaged[Cdecl]<nint, Utf8, void> UpdateSemantics;
         internal readonly delegate* unmanaged[Cdecl]<nint, void> ClearSemantics;
@@ -199,8 +240,20 @@ internal static unsafe class QtNativeV2
         internal readonly nint CallbackContext;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, HostApi*, int> ViewCreated;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, Surface*, ulong, int> Render;
-        internal readonly delegate* unmanaged[Cdecl]<nint, nint, ulong, uint, ulong, long, void> FrameTerminal;
-        internal readonly delegate* unmanaged[Cdecl]<nint, nint, ulong, ulong, void> SurfaceDestroying;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            nint,
+            ulong,
+            uint,
+            ulong,
+            long,
+            void> FrameTerminal;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            nint,
+            ulong,
+            ulong,
+            void> SurfaceDestroying;
         internal readonly delegate* unmanaged[Cdecl]<nint, Utf8, Utf8, void> Diagnostic;
         internal readonly delegate* unmanaged[Cdecl]<nint, int, Utf8, void> Fatal;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, Metrics*, void> MetricsChanged;
@@ -213,8 +266,21 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, TextState*, void> TextEditing;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, uint, void> TextAction;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, ulong, Utf8, void> ClipboardText;
-        internal readonly delegate* unmanaged[Cdecl]<nint, nint, Utf8, uint, uint, uint, void> ConfigurationChanged;
-        internal readonly delegate* unmanaged[Cdecl]<nint, nint, long, long, Utf8, void> SemanticsAction;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            nint,
+            Utf8,
+            uint,
+            uint,
+            uint,
+            void> ConfigurationChanged;
+        internal readonly delegate* unmanaged[Cdecl]<
+            nint,
+            nint,
+            long,
+            long,
+            Utf8,
+            void> SemanticsAction;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, int> PollGpuWork;
 
         internal readonly delegate* unmanaged[Cdecl]<nint, int> PrepareApplication;
@@ -277,17 +343,27 @@ internal static unsafe class QtNativeV2
         RequireOffset<Callbacks>(nameof(Callbacks.CallbackContext), 24);
     }
 
-    private static void RequireSize<T>(int expected) where T : unmanaged
+    private static void RequireSize<T>(int expected)
+        where T : unmanaged
     {
         var actual = Marshal.SizeOf<T>();
         if (actual != expected)
-            throw new TypeLoadException($"Qt ABI v2 {typeof(T).Name} size is {actual}; expected {expected}.");
+        {
+            throw new TypeLoadException(
+                $"Qt ABI v2 {typeof(T).Name} size is {actual}; expected {expected}."
+            );
+        }
     }
 
-    private static void RequireOffset<T>(string field, int expected) where T : unmanaged
+    private static void RequireOffset<T>(string field, int expected)
+        where T : unmanaged
     {
         var actual = Marshal.OffsetOf<T>(field).ToInt32();
         if (actual != expected)
-            throw new TypeLoadException($"Qt ABI v2 {typeof(T).Name}.{field} offset is {actual}; expected {expected}.");
+        {
+            throw new TypeLoadException(
+                $"Qt ABI v2 {typeof(T).Name}.{field} offset is {actual}; expected {expected}."
+            );
+        }
     }
 }

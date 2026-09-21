@@ -43,9 +43,8 @@ public static partial class Popup_menuLibrary
 
 public abstract class PopupMenuEntry<T> : StatefulWidget
 {
-    protected PopupMenuEntry(Key? key = null) : base(key: key)
-    {
-    }
+    protected PopupMenuEntry(Key? key = null)
+        : base(key: key) { }
 
     public abstract double height { get; }
     public abstract bool represents(T? value);
@@ -54,14 +53,26 @@ public abstract class PopupMenuEntry<T> : StatefulWidget
 public class PopupMenuDivider : PopupMenuEntry<dynamic>
 {
     private double __field_height = default!;
-    public override double height { get => __field_height; }
+    public override double height
+    {
+        get => __field_height;
+    }
     public virtual double? thickness { get; private set; }
     public virtual double? indent { get; private set; }
     public virtual double? endIndent { get; private set; }
     public virtual BorderRadiusGeometry? radius { get; private set; }
     public virtual Color? color { get; private set; }
 
-    public PopupMenuDivider(Key? key = null, double? height = null, double? thickness = null, double? indent = null, double? endIndent = null, BorderRadiusGeometry? radius = null, Color? color = null) : base(key: key)
+    public PopupMenuDivider(
+        Key? key = null,
+        double? height = null,
+        double? thickness = null,
+        double? indent = null,
+        double? endIndent = null,
+        BorderRadiusGeometry? radius = null,
+        Color? color = null
+    )
+        : base(key: key)
     {
         double __height = height ?? Popup_menuLibrary._kMenuDividerHeight;
         __field_height = __height;
@@ -73,24 +84,33 @@ public class PopupMenuDivider : PopupMenuEntry<dynamic>
     }
 
     public override bool represents(dynamic? value) => false;
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuDividerState__popup_menu());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuDividerState__popup_menu());
 }
 
 internal class _PopupMenuDividerState__popup_menu : State<PopupMenuDivider>
 {
     public override Widget build(BuildContext context)
     {
-        return new Divider(height: widget.height, thickness: widget.thickness, indent: widget.indent, color: widget.color, endIndent: widget.endIndent, radius: widget.radius);
+        return new Divider(
+            height: widget.height,
+            thickness: widget.thickness,
+            indent: widget.indent,
+            color: widget.color,
+            endIndent: widget.endIndent,
+            radius: widget.radius
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
 {
     public virtual Action<Size> onLayout { get; private set; } = default!;
 
-    internal _MenuItem__popup_menu(Action<Size> onLayout, Widget? child) : base(child: child)
+    internal _MenuItem__popup_menu(Action<Size> onLayout, Widget? child)
+        : base(child: child)
     {
         this.onLayout = onLayout;
     }
@@ -106,14 +126,14 @@ internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
         var __renderObject = (_RenderMenuItem__popup_menu)renderObject;
         __renderObject.onLayout = onLayout;
     }
-
 }
 
 public class _RenderMenuItem__popup_menu : RenderShiftedBox
 {
     public virtual Action<Size> onLayout { get; set; } = default!;
 
-    internal _RenderMenuItem__popup_menu(Action<Size> onLayout, RenderBox? child = null) : base(child)
+    internal _RenderMenuItem__popup_menu(Action<Size> onLayout, RenderBox? child = null)
+        : base(child)
     {
         this.onLayout = onLayout;
     }
@@ -145,7 +165,6 @@ public class _RenderMenuItem__popup_menu : RenderShiftedBox
         }
         onLayout(size);
     }
-
 }
 
 public class PopupMenuItem<T> : PopupMenuEntry<T>
@@ -154,14 +173,29 @@ public class PopupMenuItem<T> : PopupMenuEntry<T>
     public virtual Action? onTap { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
     private double __field_height = default!;
-    public override double height { get => __field_height; }
+    public override double height
+    {
+        get => __field_height;
+    }
     public virtual EdgeInsets? padding { get; private set; }
     public virtual TextStyle? textStyle { get; private set; }
     public virtual WidgetStateProperty<TextStyle?>? labelTextStyle { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual Widget? child { get; private set; }
 
-    public PopupMenuItem(Key? key = null, T? value = default, Action? onTap = null, bool enabled = true, double? height = null, EdgeInsets? padding = null, TextStyle? textStyle = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, MouseCursor? mouseCursor = null, Widget? child = default!) : base(key: key)
+    public PopupMenuItem(
+        Key? key = null,
+        T? value = default,
+        Action? onTap = null,
+        bool enabled = true,
+        double? height = null,
+        EdgeInsets? padding = null,
+        TextStyle? textStyle = null,
+        WidgetStateProperty<TextStyle?>? labelTextStyle = null,
+        MouseCursor? mouseCursor = null,
+        Widget? child = default!
+    )
+        : base(key: key)
     {
         double __height = height ?? ConstantsLibrary.kMinInteractiveDimension;
         this.value = value;
@@ -175,13 +209,20 @@ public class PopupMenuItem<T> : PopupMenuEntry<T>
         this.child = child;
     }
 
-    public override bool represents(T? value) => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(value, this.value));
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuItemState<T, PopupMenuItem<T>>());
+    public override bool represents(T? value) =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            EqualityComparer<T>.Default.Equals(value, this.value)
+        );
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuItemState<T, PopupMenuItem<T>>());
 }
 
-public class PopupMenuItemState<T, W> : State<W> where W : PopupMenuItem<T>
+public class PopupMenuItemState<T, W> : State<W>
+    where W : PopupMenuItem<T>
 {
     public virtual Widget? buildChild() => widget.child;
+
     public virtual void handleTap()
     {
         Navigator.pop(context, widget.value);
@@ -193,44 +234,123 @@ public class PopupMenuItemState<T, W> : State<W> where W : PopupMenuItem<T>
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         PopupMenuThemeData defaults = new _PopupMenuDefaultsM3__popup_menu(context);
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection14434 = new HashSet<WidgetState>(); if (!widget.enabled) { __collection14434.Add(WidgetState.disabled); } return __collection14434; }))();
-        TextStyle styleLocal = (widget.labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)!) ?? defaults.labelTextStyle!.resolve(states)!;
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection14434 = new HashSet<WidgetState>();
+                    if (!widget.enabled)
+                    {
+                        __collection14434.Add(WidgetState.disabled);
+                    }
+                    return __collection14434;
+                }
+            )
+        )();
+        TextStyle styleLocal =
+            (
+                widget.labelTextStyle?.resolve(states)
+                ?? popupMenuTheme.labelTextStyle?.resolve(states)!
+            ) ?? defaults.labelTextStyle!.resolve(states)!;
         if (!widget.enabled && false)
         {
             styleLocal = styleLocal.copyWith(color: theme.disabledColor);
         }
-        EdgeInsetsGeometry paddingLocal = widget.padding ?? _PopupMenuDefaultsM3__popup_menu.menuItemPadding;
-        Widget item = new AnimatedDefaultTextStyle(style: styleLocal, duration: ConstantsLibrary.kThemeChangeDuration, child: new ConstrainedBox(constraints: new BoxConstraints(minHeight: widget.height), child: new Padding(padding: paddingLocal, child: new Align(alignment: AlignmentDirectional.centerStart, child: buildChild()))));
+        EdgeInsetsGeometry paddingLocal =
+            widget.padding ?? _PopupMenuDefaultsM3__popup_menu.menuItemPadding;
+        Widget item = new AnimatedDefaultTextStyle(
+            style: styleLocal,
+            duration: ConstantsLibrary.kThemeChangeDuration,
+            child: new ConstrainedBox(
+                constraints: new BoxConstraints(minHeight: widget.height),
+                child: new Padding(
+                    padding: paddingLocal,
+                    child: new Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: buildChild()
+                    )
+                )
+            )
+        );
         if (!widget.enabled)
         {
             var isDark = Equals(theme.brightness, Brightness.dark);
-            item = IconTheme.merge(data: new IconThemeData(opacity: isDark ? 0.5 : 0.38), child: item);
+            item = IconTheme.merge(
+                data: new IconThemeData(opacity: isDark ? 0.5 : 0.38),
+                child: item
+            );
         }
-        return new MergeSemantics(child: buildSemantics(child: new InkWell(onTap: widget.enabled ? handleTap : null, canRequestFocus: widget.enabled, mouseCursor: new _EffectiveMouseCursor__popup_menu(widget.mouseCursor, popupMenuTheme.mouseCursor), child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, titleTextStyle: styleLocal, child: item))));
+        return new MergeSemantics(
+            child: buildSemantics(
+                child: new InkWell(
+                    onTap: widget.enabled ? handleTap : null,
+                    canRequestFocus: widget.enabled,
+                    mouseCursor: new _EffectiveMouseCursor__popup_menu(
+                        widget.mouseCursor,
+                        popupMenuTheme.mouseCursor
+                    ),
+                    child: ListTileTheme.merge(
+                        contentPadding: EdgeInsets.zero,
+                        titleTextStyle: styleLocal,
+                        child: item
+                    )
+                )
+            )
+        );
     }
 
     public virtual Widget buildSemantics(Widget child)
     {
-        return new Widgets.Semantics(role: SemanticsRole.menuItem, enabled: widget.enabled, button: true, child: child);
+        return new Widgets.Semantics(
+            role: SemanticsRole.menuItem,
+            enabled: widget.enabled,
+            button: true,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CheckedPopupMenuItem<T> : PopupMenuItem<T>
 {
     public virtual bool @checked { get; private set; } = default!;
 
-    public CheckedPopupMenuItem(Key? key = null, T? value = default, bool @checked = false, bool enabled = true, EdgeInsets? padding = null, double? height = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, MouseCursor? mouseCursor = null, Widget? child = null, Action? onTap = null) : base(key: key, value: value, enabled: enabled, padding: padding, height: height ?? ConstantsLibrary.kMinInteractiveDimension, labelTextStyle: labelTextStyle, mouseCursor: mouseCursor, child: child, onTap: onTap)
+    public CheckedPopupMenuItem(
+        Key? key = null,
+        T? value = default,
+        bool @checked = false,
+        bool enabled = true,
+        EdgeInsets? padding = null,
+        double? height = null,
+        WidgetStateProperty<TextStyle?>? labelTextStyle = null,
+        MouseCursor? mouseCursor = null,
+        Widget? child = null,
+        Action? onTap = null
+    )
+        : base(
+            key: key,
+            value: value,
+            enabled: enabled,
+            padding: padding,
+            height: height ?? ConstantsLibrary.kMinInteractiveDimension,
+            labelTextStyle: labelTextStyle,
+            mouseCursor: mouseCursor,
+            child: child,
+            onTap: onTap
+        )
     {
         this.@checked = @checked;
     }
 
     public override Widget? child => base.child;
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CheckedPopupMenuItemState__popup_menu<T>());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CheckedPopupMenuItemState__popup_menu<T>());
 }
 
-internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T, CheckedPopupMenuItem<T>>, SingleTickerProviderStateMixin<CheckedPopupMenuItem<T>>
+internal class _CheckedPopupMenuItemState__popup_menu<T>
+    : PopupMenuItemState<T, CheckedPopupMenuItem<T>>,
+        SingleTickerProviderStateMixin<CheckedPopupMenuItem<T>>
 {
     internal static Duration _fadeDuration = Duration.Create(milliseconds: 150L);
     internal virtual AnimationController _controller { get; set; } = default!;
@@ -238,34 +358,55 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     internal virtual Animation<double> _opacity => _controller.view;
+
     public override void initState()
     {
         base.initState();
-        _controller = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: _fadeDuration, vsync: this);
-    __cascade.value = widget.@checked ? 1.0 : 0.0;
-    __cascade.addListener(() =>
-    {
-        setState(() =>
-        {
-        });
-    });
-    return __cascade;
-}))();
+        _controller = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(duration: _fadeDuration, vsync: this);
+                    __cascade.value = widget.@checked ? 1.0 : 0.0;
+                    __cascade.addListener(() =>
+                    {
+                        setState(() => { });
+                    });
+                    return __cascade;
+                }
+            )
+        )();
     }
 
     public override void dispose()
     {
         _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -286,7 +427,13 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
 
     public override Widget buildSemantics(Widget child)
     {
-        return new Widgets.Semantics(role: SemanticsRole.menuItemCheckbox, enabled: widget.enabled, @checked: widget.@checked, button: true, child: child);
+        return new Widgets.Semantics(
+            role: SemanticsRole.menuItemCheckbox,
+            enabled: widget.enabled,
+            @checked: widget.@checked,
+            button: true,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -295,22 +442,71 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         PopupMenuThemeData defaults = new _PopupMenuDefaultsM3__popup_menu(context);
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection22101 = new HashSet<WidgetState>(); if (widget.@checked) { __collection22101.Add(WidgetState.selected); } return __collection22101; }))();
-        WidgetStateProperty<TextStyle?>? effectiveLabelTextStyle = (widget.labelTextStyle ?? popupMenuTheme.labelTextStyle) ?? defaults.labelTextStyle;
-        return (Widget?)new IgnorePointer(child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, child: new ListTile(enabled: widget.enabled, titleTextStyle: effectiveLabelTextStyle?.resolve(states), leading: new FadeTransition(opacity: _opacity, child: new Icon(_controller.isDismissed ? null : Icons.done)), title: widget.child)));
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection22101 = new HashSet<WidgetState>();
+                    if (widget.@checked)
+                    {
+                        __collection22101.Add(WidgetState.selected);
+                    }
+                    return __collection22101;
+                }
+            )
+        )();
+        WidgetStateProperty<TextStyle?>? effectiveLabelTextStyle =
+            (widget.labelTextStyle ?? popupMenuTheme.labelTextStyle) ?? defaults.labelTextStyle;
+        return (Widget?)
+            new IgnorePointer(
+                child: ListTileTheme.merge(
+                    contentPadding: EdgeInsets.zero,
+                    child: new ListTile(
+                        enabled: widget.enabled,
+                        titleTextStyle: effectiveLabelTextStyle?.resolve(states),
+                        leading: new FadeTransition(
+                            opacity: _opacity,
+                            child: new Icon(_controller.isDismissed ? null : Icons.done)
+                        ),
+                        title: widget.child
+                    )
+                )
+            );
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -349,10 +545,24 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class _PopupMenu__popup_menu<T> : StatefulWidget
@@ -363,7 +573,15 @@ public class _PopupMenu__popup_menu<T> : StatefulWidget
     public virtual BoxConstraints? constraints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    internal _PopupMenu__popup_menu(Key? key = null, List<GlobalKey<IState>> itemKeys = default!, _PopupMenuRoute__popup_menu<T> route = default!, string? semanticLabel = default!, BoxConstraints? constraints = null, Clip clipBehavior = default!) : base(key: key)
+    internal _PopupMenu__popup_menu(
+        Key? key = null,
+        List<GlobalKey<IState>> itemKeys = default!,
+        _PopupMenuRoute__popup_menu<T> route = default!,
+        string? semanticLabel = default!,
+        BoxConstraints? constraints = null,
+        Clip clipBehavior = default!
+    )
+        : base(key: key)
     {
         this.itemKeys = itemKeys;
         this.route = route;
@@ -372,7 +590,8 @@ public class _PopupMenu__popup_menu<T> : StatefulWidget
         this.clipBehavior = clipBehavior;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuState__popup_menu<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuState__popup_menu<T>());
 }
 
 internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
@@ -388,7 +607,10 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
     public override void didUpdateWidget(_PopupMenu__popup_menu<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((checked(oldWidget.route.items.Count) != checked((long)widget.route.items.Count)) || (!Equals(oldWidget.route.animation, widget.route.animation)))
+        if (
+            (checked(oldWidget.route.items.Count) != checked((long)widget.route.items.Count))
+            || (!Equals(oldWidget.route.animation, widget.route.animation))
+        )
         {
             _setOpacities();
         }
@@ -406,7 +628,10 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
         {
             double start = (i + 1L) * unit;
             double end = Dart_uiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
-            var opacityLocal = new CurvedAnimation(parent: widget.route.animation!, curve: new Interval(start, end));
+            var opacityLocal = new CurvedAnimation(
+                parent: widget.route.animation!,
+                curve: new Interval(start, end)
+            );
             newOpacities.Add(opacityLocal);
         }
         _opacities = newOpacities;
@@ -435,26 +660,87 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
             var itemIndex = checked((int)i);
             CurvedAnimation opacityLocal = _opacities[(int)i];
             Widget item = widget.route.items[(int)i];
-            if ((widget.route.initialValue is not null) && widget.route.items[(int)i].represents(widget.route.initialValue))
+            if (
+                (widget.route.initialValue is not null)
+                && widget.route.items[(int)i].represents(widget.route.initialValue)
+            )
             {
-                item = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: Theme.of(context).highlightColor, child: item));
+                item = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ColoredBox(color: Theme.of(context).highlightColor, child: item)
+                );
             }
-            childrenLocal.Add(new _MenuItem__popup_menu(onLayout: (size) =>
-            {
-                widget.route.itemSizes[itemIndex] = size;
-            }, child: new FadeTransition(key: widget.itemKeys[(int)i], opacity: opacityLocal, child: item)));
+            childrenLocal.Add(
+                new _MenuItem__popup_menu(
+                    onLayout: (size) =>
+                    {
+                        widget.route.itemSizes[itemIndex] = size;
+                    },
+                    child: new FadeTransition(
+                        key: widget.itemKeys[(int)i],
+                        opacity: opacityLocal,
+                        child: item
+                    )
+                )
+            );
         }
         var opacityAlternate = new CurveTween(curve: new Interval(0.0, 1.0 / 3.0));
         var width = new CurveTween(curve: new Interval(0.0, unit));
-        var height = new CurveTween(curve: new Interval(0.0, unit * checked(widget.route.items.Count)));
-        Widget childLocal = new ConstrainedBox(constraints: widget.constraints ?? new BoxConstraints(minWidth: Popup_menuLibrary._kMenuMinWidth, maxWidth: Popup_menuLibrary._kMenuMaxWidth), child: new IntrinsicWidth(stepWidth: Popup_menuLibrary._kMenuWidthStep, child: new Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: widget.semanticLabel, child: new SingleChildScrollView(padding: (widget.route.menuPadding ?? popupMenuTheme.menuPadding) ?? defaults.menuPadding, child: new ListBody(children: childrenLocal)))));
-        return new AnimatedBuilder(animation: widget.route.animation!, builder: (context, child) =>
-        {
-            return new FadeTransition(opacity: opacityAlternate.animate(widget.route.animation!), child: new Material(shape: (widget.route.shape ?? popupMenuTheme.shape) ?? defaults.shape, color: (widget.route.color ?? popupMenuTheme.color) ?? defaults.color, clipBehavior: widget.clipBehavior, type: MaterialType.card, elevation: (widget.route.elevation ?? popupMenuTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (widget.route.surfaceTintColor ?? popupMenuTheme.surfaceTintColor) ?? defaults.surfaceTintColor, child: new Align(alignment: AlignmentDirectional.topEnd, widthFactor: width.evaluate(widget.route.animation!), heightFactor: height.evaluate(widget.route.animation!), child: child)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: childLocal);
+        var height = new CurveTween(
+            curve: new Interval(0.0, unit * checked(widget.route.items.Count))
+        );
+        Widget childLocal = new ConstrainedBox(
+            constraints: widget.constraints
+                ?? new BoxConstraints(
+                    minWidth: Popup_menuLibrary._kMenuMinWidth,
+                    maxWidth: Popup_menuLibrary._kMenuMaxWidth
+                ),
+            child: new IntrinsicWidth(
+                stepWidth: Popup_menuLibrary._kMenuWidthStep,
+                child: new Widgets.Semantics(
+                    role: SemanticsRole.menu,
+                    scopesRoute: true,
+                    namesRoute: true,
+                    explicitChildNodes: true,
+                    label: widget.semanticLabel,
+                    child: new SingleChildScrollView(
+                        padding: (widget.route.menuPadding ?? popupMenuTheme.menuPadding)
+                            ?? defaults.menuPadding,
+                        child: new ListBody(children: childrenLocal)
+                    )
+                )
+            )
+        );
+        return new AnimatedBuilder(
+            animation: widget.route.animation!,
+            builder: (context, child) =>
+            {
+                return new FadeTransition(
+                    opacity: opacityAlternate.animate(widget.route.animation!),
+                    child: new Material(
+                        shape: (widget.route.shape ?? popupMenuTheme.shape) ?? defaults.shape,
+                        color: (widget.route.color ?? popupMenuTheme.color) ?? defaults.color,
+                        clipBehavior: widget.clipBehavior,
+                        type: MaterialType.card,
+                        elevation: (widget.route.elevation ?? popupMenuTheme.elevation)
+                            ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                        shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor)
+                            ?? defaults.shadowColor,
+                        surfaceTintColor: (
+                            widget.route.surfaceTintColor ?? popupMenuTheme.surfaceTintColor
+                        ) ?? defaults.surfaceTintColor,
+                        child: new Align(
+                            alignment: AlignmentDirectional.topEnd,
+                            widthFactor: width.evaluate(widget.route.animation!),
+                            heightFactor: height.evaluate(widget.route.animation!),
+                            child: child
+                        )
+                    )
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: childLocal
+        );
     }
-
 }
 
 internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
@@ -466,7 +752,14 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
     public virtual EdgeInsets padding { get; set; } = default!;
     public virtual HashSet<Rect> avoidBounds { get; private set; } = default!;
 
-    internal _PopupMenuRouteLayout__popup_menu(RelativeRect position, List<Size?> itemSizes, long? selectedItemIndex, TextDirection textDirection, EdgeInsets padding, HashSet<Rect> avoidBounds)
+    internal _PopupMenuRouteLayout__popup_menu(
+        RelativeRect position,
+        List<Size?> itemSizes,
+        long? selectedItemIndex,
+        TextDirection textDirection,
+        EdgeInsets padding,
+        HashSet<Rect> avoidBounds
+    )
     {
         this.position = position;
         this.itemSizes = itemSizes;
@@ -478,7 +771,9 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
 
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
-        return BoxConstraints.CreateLoose(constraints.biggest).deflate(EdgeInsets.CreateAll(Popup_menuLibrary._kMenuScreenPadding).op_Add(padding));
+        return BoxConstraints
+            .CreateLoose(constraints.biggest)
+            .deflate(EdgeInsets.CreateAll(Popup_menuLibrary._kMenuScreenPadding).op_Add(padding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -498,12 +793,21 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
             }
             else
             {
-                x = textDirection switch { TextDirection.rtl => size.width - position.right - childSize.width, TextDirection.ltr => position.left, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                x = textDirection switch
+                {
+                    TextDirection.rtl => size.width - position.right - childSize.width,
+                    TextDirection.ltr => position.left,
+                    _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                };
             }
         }
         var wantedPosition = new Offset(x, y);
         Offset originCenter = position.toRect(Offset.zero & size).center;
-        IEnumerable<Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & size, avoidBounds);
+        IEnumerable<Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(
+            Offset.zero & size,
+            avoidBounds
+        );
         Rect subScreen = _closestScreen(subScreens.Cast<Rect>(), originCenter);
         return _fitInsideScreen(subScreen, childSize, wantedPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -533,9 +837,16 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
         }
         else
         {
-            if ((x + childSize.width) > (screen.right - Popup_menuLibrary._kMenuScreenPadding - padding.right))
+            if (
+                (x + childSize.width)
+                > (screen.right - Popup_menuLibrary._kMenuScreenPadding - padding.right)
+            )
             {
-                x = screen.right - childSize.width - Popup_menuLibrary._kMenuScreenPadding - padding.right;
+                x =
+                    screen.right
+                    - childSize.width
+                    - Popup_menuLibrary._kMenuScreenPadding
+                    - padding.right;
             }
         }
         if (y < (screen.top + Popup_menuLibrary._kMenuScreenPadding + padding.top))
@@ -544,9 +855,16 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
         }
         else
         {
-            if ((y + childSize.height) > (screen.bottom - Popup_menuLibrary._kMenuScreenPadding - padding.bottom))
+            if (
+                (y + childSize.height)
+                > (screen.bottom - Popup_menuLibrary._kMenuScreenPadding - padding.bottom)
+            )
             {
-                y = screen.bottom - childSize.height - Popup_menuLibrary._kMenuScreenPadding - padding.bottom;
+                y =
+                    screen.bottom
+                    - childSize.height
+                    - Popup_menuLibrary._kMenuScreenPadding
+                    - padding.bottom;
             }
         }
         return new Offset(x, y);
@@ -556,17 +874,27 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_PopupMenuRouteLayout__popup_menu)oldDelegate;
-        DartRuntimePrimitives.Assert(() => checked(itemSizes.Count) == checked((long)__oldDelegate.itemSizes.Count));
-        return (!Equals(position, __oldDelegate.position)) || (selectedItemIndex != __oldDelegate.selectedItemIndex) || (!Equals(textDirection, __oldDelegate.textDirection)) || !CollectionsLibrary.listEquals(itemSizes, __oldDelegate.itemSizes) || (!Equals(padding, __oldDelegate.padding)) || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds);
+        DartRuntimePrimitives.Assert(() =>
+            checked(itemSizes.Count) == checked((long)__oldDelegate.itemSizes.Count)
+        );
+        return (!Equals(position, __oldDelegate.position))
+            || (selectedItemIndex != __oldDelegate.selectedItemIndex)
+            || (!Equals(textDirection, __oldDelegate.textDirection))
+            || !CollectionsLibrary.listEquals(itemSizes, __oldDelegate.itemSizes)
+            || (!Equals(padding, __oldDelegate.padding))
+            || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
 {
     public virtual RelativeRect? position { get; private set; }
-    public virtual Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder { get; private set; }
+    public virtual Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder
+    {
+        get;
+        private set;
+    }
     public virtual List<PopupMenuEntry<T>> items { get; private set; } = default!;
     public virtual List<GlobalKey<IState>> itemKeys { get; private set; } = default!;
     public virtual List<Size?> itemSizes { get; private set; } = default!;
@@ -582,12 +910,41 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
     public virtual BoxConstraints? constraints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual AnimationStyle? popUpAnimationStyle { get; private set; }
+
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual CurvedAnimation? _animation { get; set; } = default;
     private string? __field_barrierLabel = default!;
-    public override string? barrierLabel { get => __field_barrierLabel; }
+    public override string? barrierLabel
+    {
+        get => __field_barrierLabel;
+    }
 
-    internal _PopupMenuRoute__popup_menu(RelativeRect? position = null, Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, List<GlobalKey<IState>> itemKeys = default!, T? initialValue = default, double? elevation = null, Color? surfaceTintColor = null, Color? shadowColor = null, string barrierLabel = default!, string? semanticLabel = null, ShapeBorder? shape = null, EdgeInsetsGeometry? menuPadding = null, Color? color = null, CapturedThemes capturedThemes = default!, BoxConstraints? constraints = null, Clip clipBehavior = default!, RouteSettings? settings = null, bool? requestFocus = null, AnimationStyle? popUpAnimationStyle = null) : base(settings: settings, requestFocus: requestFocus, traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop)
+    internal _PopupMenuRoute__popup_menu(
+        RelativeRect? position = null,
+        Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null,
+        List<PopupMenuEntry<T>> items = default!,
+        List<GlobalKey<IState>> itemKeys = default!,
+        T? initialValue = default,
+        double? elevation = null,
+        Color? surfaceTintColor = null,
+        Color? shadowColor = null,
+        string barrierLabel = default!,
+        string? semanticLabel = null,
+        ShapeBorder? shape = null,
+        EdgeInsetsGeometry? menuPadding = null,
+        Color? color = null,
+        CapturedThemes capturedThemes = default!,
+        BoxConstraints? constraints = null,
+        Clip clipBehavior = default!,
+        RouteSettings? settings = null,
+        bool? requestFocus = null,
+        AnimationStyle? popUpAnimationStyle = null
+    )
+        : base(
+            settings: settings,
+            requestFocus: requestFocus,
+            traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop
+        )
     {
         this.position = position;
         this.positionBuilder = positionBuilder;
@@ -606,15 +963,22 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         this.constraints = constraints;
         this.clipBehavior = clipBehavior;
         this.popUpAnimationStyle = popUpAnimationStyle;
-        itemSizes = new List<Size?>(Enumerable.Repeat<Size?>(null, checked((int)checked((long)items.Count))));
-        System.Diagnostics.Debug.Assert(position is not null != positionBuilder is not null);
+        itemSizes = new List<Size?>(
+            Enumerable.Repeat<Size?>(null, checked((int)checked((long)items.Count)))
+        );
+        System.Diagnostics.Debug.Assert((position is not null) != (positionBuilder is not null));
     }
 
     public override Animation<double> createAnimation()
     {
         if (!Equals(popUpAnimationStyle, AnimationStyle.noAnimation))
         {
-            return _animation ??= new CurvedAnimation(parent: base.createAnimation(), curve: popUpAnimationStyle?.curve ?? Curves.linear, reverseCurve: popUpAnimationStyle?.reverseCurve ?? new Interval(0.0, Popup_menuLibrary._kMenuCloseIntervalEnd));
+            return _animation ??= new CurvedAnimation(
+                parent: base.createAnimation(),
+                curve: popUpAnimationStyle?.curve ?? Curves.linear,
+                reverseCurve: popUpAnimationStyle?.reverseCurve
+                    ?? new Interval(0.0, Popup_menuLibrary._kMenuCloseIntervalEnd)
+            );
         }
         return base.createAnimation();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -622,24 +986,49 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
 
     public virtual void scrollTo(long selectedItemIndex)
     {
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
-        {
-            if (itemKeys[(int)DartRuntimePrimitives.RequireValue(selectedItemIndex)].currentContext is not null)
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (_) =>
             {
-                DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(itemKeys[(int)DartRuntimePrimitives.RequireValue(selectedItemIndex)].currentContext!));
+                if (
+                    itemKeys[
+                        (int)DartRuntimePrimitives.RequireValue(selectedItemIndex)
+                    ].currentContext
+                    is not null
+                )
+                {
+                    DartRuntimePrimitives.Ignore(
+                        Scrollable.ensureVisible(
+                            itemKeys[
+                                (int)DartRuntimePrimitives.RequireValue(selectedItemIndex)
+                            ].currentContext!
+                        )
+                    );
+                }
             }
-        });
+        );
     }
 
-    public override Duration transitionDuration => DartRuntimePrimitives.ConvertValue<Duration>(popUpAnimationStyle?.duration ?? Popup_menuLibrary._kMenuDuration);
+    public override Duration transitionDuration =>
+        DartRuntimePrimitives.ConvertValue<Duration>(
+            popUpAnimationStyle?.duration ?? Popup_menuLibrary._kMenuDuration
+        );
     public override bool barrierDismissible => true;
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
-    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
+
+    public override Widget buildPage(
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation
+    )
     {
         long? selectedItemIndex = default!;
         if (initialValue is not null)
         {
-            for (var index = 0L; (selectedItemIndex is null) && (index < checked(items.Count)); index += 1L)
+            for (
+                var index = 0L;
+                (selectedItemIndex is null) && (index < checked(items.Count));
+                index += 1L
+            )
             {
                 if (items[(int)index].represents(initialValue))
                 {
@@ -649,16 +1038,49 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         }
         if (selectedItemIndex is not null)
         {
-            long selectedItemIndex__34930__value35194 = DartRuntimePrimitives.RequireValue(selectedItemIndex);
-            scrollTo(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(selectedItemIndex__34930__value35194)));
+            long selectedItemIndex__34930__value35194 = DartRuntimePrimitives.RequireValue(
+                selectedItemIndex
+            );
+            scrollTo(
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(selectedItemIndex__34930__value35194)
+                )
+            );
         }
-        Widget menu = new _PopupMenu__popup_menu<T>(route: this, itemKeys: itemKeys, semanticLabel: semanticLabel, constraints: constraints, clipBehavior: clipBehavior);
+        Widget menu = new _PopupMenu__popup_menu<T>(
+            route: this,
+            itemKeys: itemKeys,
+            semanticLabel: semanticLabel,
+            constraints: constraints,
+            clipBehavior: clipBehavior
+        );
         MediaQueryData mediaQuery = MediaQuery.of(context);
-        return MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new LayoutBuilder(builder: (context, constraints) =>
-        {
-            return new CustomSingleChildLayout(@delegate: new _PopupMenuRouteLayout__popup_menu(positionBuilder is null ? position! : positionBuilder.Invoke(context, constraints), itemSizes, selectedItemIndex, Directionality.of(context), mediaQuery.padding, _avoidBounds(mediaQuery)), child: capturedThemes.wrap(menu));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        return MediaQuery.CreateRemovePadding(
+            context: context,
+            removeTop: true,
+            removeBottom: true,
+            removeLeft: true,
+            removeRight: true,
+            child: new LayoutBuilder(
+                builder: (context, constraints) =>
+                {
+                    return new CustomSingleChildLayout(
+                        @delegate: new _PopupMenuRouteLayout__popup_menu(
+                            positionBuilder is null
+                                ? position!
+                                : positionBuilder.Invoke(context, constraints),
+                            itemSizes,
+                            selectedItemIndex,
+                            Directionality.of(context),
+                            mediaQuery.padding,
+                            _avoidBounds(mediaQuery)
+                        ),
+                        child: capturedThemes.wrap(menu)
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -673,37 +1095,88 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         _animation?.dispose();
         base.dispose();
     }
-
 }
 
-public delegate RelativeRect PopupMenuPositionBuilder(BuildContext context, BoxConstraints constraints);
+public delegate RelativeRect PopupMenuPositionBuilder(
+    BuildContext context,
+    BoxConstraints constraints
+);
 
 public static partial class Popup_menuLibrary
 {
-    public static Future<T?> showMenu<T>(BuildContext context, RelativeRect? position = null, Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, T? initialValue = default, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, ShapeBorder? shape = null, EdgeInsetsGeometry? menuPadding = null, Color? color = null, bool useRootNavigator = false, BoxConstraints? constraints = null, Clip clipBehavior = Clip.none, RouteSettings? routeSettings = null, AnimationStyle? popUpAnimationStyle = null, bool? requestFocus = null)
+    public static Future<T?> showMenu<T>(
+        BuildContext context,
+        RelativeRect? position = null,
+        Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null,
+        List<PopupMenuEntry<T>> items = default!,
+        T? initialValue = default,
+        double? elevation = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        string? semanticLabel = null,
+        ShapeBorder? shape = null,
+        EdgeInsetsGeometry? menuPadding = null,
+        Color? color = null,
+        bool useRootNavigator = false,
+        BoxConstraints? constraints = null,
+        Clip clipBehavior = Clip.none,
+        RouteSettings? routeSettings = null,
+        AnimationStyle? popUpAnimationStyle = null,
+        bool? requestFocus = null
+    )
     {
         DartRuntimePrimitives.Assert(() => Enumerable.Any(items));
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        DartRuntimePrimitives.Assert(() => position is not null != positionBuilder is not null, () => (object?)"Either position or positionBuilder must be provided.");
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
+        DartRuntimePrimitives.Assert(
+            () => (position is not null) != (positionBuilder is not null),
+            () => (object?)"Either position or positionBuilder must be provided."
+        );
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
-                {
-                    semanticLabel ??= MaterialLocalizations.of(context).popupMenuLabel;
-                    break;
-                }
+            {
+                semanticLabel ??= MaterialLocalizations.of(context).popupMenuLabel;
+                break;
+            }
         }
-        var menuItemKeys = DartRuntimePrimitives.CreateList(checked(items.Count), (index) => GlobalKey<IState>.Create());
+        var menuItemKeys = DartRuntimePrimitives.CreateList(
+            checked(items.Count),
+            (index) => GlobalKey<IState>.Create()
+        );
         NavigatorState navigator = Navigator.of(context, rootNavigator: useRootNavigator);
-        return navigator.push(new _PopupMenuRoute__popup_menu<T>(position: position, positionBuilder: positionBuilder, items: items, itemKeys: menuItemKeys, initialValue: initialValue, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, semanticLabel: semanticLabel, barrierLabel: MaterialLocalizations.of(context).menuDismissLabel, shape: shape, menuPadding: menuPadding, color: color, capturedThemes: InheritedTheme.capture(from: context, to: navigator.context), constraints: constraints, clipBehavior: clipBehavior, settings: routeSettings, popUpAnimationStyle: popUpAnimationStyle, requestFocus: requestFocus));
+        return navigator.push(
+            new _PopupMenuRoute__popup_menu<T>(
+                position: position,
+                positionBuilder: positionBuilder,
+                items: items,
+                itemKeys: menuItemKeys,
+                initialValue: initialValue,
+                elevation: elevation,
+                shadowColor: shadowColor,
+                surfaceTintColor: surfaceTintColor,
+                semanticLabel: semanticLabel,
+                barrierLabel: MaterialLocalizations.of(context).menuDismissLabel,
+                shape: shape,
+                menuPadding: menuPadding,
+                color: color,
+                capturedThemes: InheritedTheme.capture(from: context, to: navigator.context),
+                constraints: constraints,
+                clipBehavior: clipBehavior,
+                settings: routeSettings,
+                popUpAnimationStyle: popUpAnimationStyle,
+                requestFocus: requestFocus
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -716,7 +1189,8 @@ public delegate List<PopupMenuEntry<T>> PopupMenuItemBuilder<T>(BuildContext con
 
 public class PopupMenuButton<T> : StatefulWidget
 {
-    public virtual Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder { get; private set; } =
+        default!;
     public virtual T? initialValue { get; private set; }
     public virtual Action? onOpened { get; private set; }
     public virtual Action<T>? onSelected { get; private set; }
@@ -747,7 +1221,40 @@ public class PopupMenuButton<T> : StatefulWidget
     public virtual ButtonStyle? style { get; private set; }
     public virtual bool? requestFocus { get; private set; }
 
-    public PopupMenuButton(Key? key = null, Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!, T? initialValue = default, Action? onOpened = null, Action<T>? onSelected = null, Action? onCanceled = null, string? tooltip = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, EdgeInsetsGeometry padding = default!, EdgeInsetsGeometry? menuPadding = null, Widget? child = null, BorderRadius? borderRadius = null, double? splashRadius = null, Widget? icon = null, double? iconSize = null, Offset offset = default, bool enabled = true, ShapeBorder? shape = null, Color? color = null, Color? iconColor = null, bool? enableFeedback = null, BoxConstraints? constraints = null, PopupMenuPosition? position = null, Clip clipBehavior = Clip.none, bool useRootNavigator = false, AnimationStyle? popUpAnimationStyle = null, RouteSettings? routeSettings = null, ButtonStyle? style = null, bool? requestFocus = null) : base(key: key)
+    public PopupMenuButton(
+        Key? key = null,
+        Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!,
+        T? initialValue = default,
+        Action? onOpened = null,
+        Action<T>? onSelected = null,
+        Action? onCanceled = null,
+        string? tooltip = null,
+        double? elevation = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        EdgeInsetsGeometry padding = default!,
+        EdgeInsetsGeometry? menuPadding = null,
+        Widget? child = null,
+        BorderRadius? borderRadius = null,
+        double? splashRadius = null,
+        Widget? icon = null,
+        double? iconSize = null,
+        Offset offset = default,
+        bool enabled = true,
+        ShapeBorder? shape = null,
+        Color? color = null,
+        Color? iconColor = null,
+        bool? enableFeedback = null,
+        BoxConstraints? constraints = null,
+        PopupMenuPosition? position = null,
+        Clip clipBehavior = Clip.none,
+        bool useRootNavigator = false,
+        AnimationStyle? popUpAnimationStyle = null,
+        RouteSettings? routeSettings = null,
+        ButtonStyle? style = null,
+        bool? requestFocus = null
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.itemBuilder = itemBuilder;
@@ -783,7 +1290,8 @@ public class PopupMenuButton<T> : StatefulWidget
         System.Diagnostics.Debug.Assert(!((child is not null) && (icon is not null)));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuButtonState<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuButtonState<T>());
 }
 
 public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
@@ -813,7 +1321,10 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
             }
             try
             {
-                NavigatorState navigator = Navigator.of(context, rootNavigator: widget.useRootNavigator);
+                NavigatorState navigator = Navigator.of(
+                    context,
+                    rootNavigator: widget.useRootNavigator
+                );
                 RenderObject? overlayRenderObject = navigator.overlay?.context.findRenderObject();
                 if (overlayRenderObject is RenderBox)
                 {
@@ -835,7 +1346,10 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual RelativeRect _positionBuilder(BuildContext __unused0, BoxConstraints constraints)
+    internal virtual RelativeRect _positionBuilder(
+        BuildContext __unused0,
+        BoxConstraints constraints
+    )
     {
         if (!mounted)
         {
@@ -848,26 +1362,36 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
         {
             return _getDefaultPosition(constraints);
         }
-        PopupMenuPosition popupMenuPosition = (widget.position ?? popupMenuTheme.position) ?? PopupMenuPosition.over;
+        PopupMenuPosition popupMenuPosition =
+            (widget.position ?? popupMenuTheme.position) ?? PopupMenuPosition.over;
         Offset offsetLocal = default!;
         switch (popupMenuPosition)
         {
             case var __constant59105 when Equals(__constant59105, PopupMenuPosition.over):
-                {
-                    offsetLocal = widget.offset;
-                    break;
-                }
+            {
+                offsetLocal = widget.offset;
+                break;
+            }
             case var __constant59172 when Equals(__constant59172, PopupMenuPosition.under):
+            {
+                offsetLocal = new Offset(0.0, button.size.height) + widget.offset;
+                if (widget.child is null)
                 {
-                    offsetLocal = new Offset(0.0, button.size.height) + widget.offset;
-                    if (widget.child is null)
-                    {
-                        offsetLocal -= new Offset(0.0, widget.padding.vertical / 2L);
-                    }
-                    break;
+                    offsetLocal -= new Offset(0.0, widget.padding.vertical / 2L);
                 }
+                break;
+            }
         }
-        var positionLocal = RelativeRect.CreateFromRect(Rect.fromPoints(button.localToGlobal(offsetLocal, ancestor: overlay), button.localToGlobal(button.size.bottomRight(Offset.zero) + offsetLocal, ancestor: overlay)), Offset.zero & overlay.size);
+        var positionLocal = RelativeRect.CreateFromRect(
+            Rect.fromPoints(
+                button.localToGlobal(offsetLocal, ancestor: overlay),
+                button.localToGlobal(
+                    button.size.bottomRight(Offset.zero) + offsetLocal,
+                    ancestor: overlay
+                )
+            ),
+            Offset.zero & overlay.size
+        );
         return _lastPosition = positionLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -883,25 +1407,48 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
             {
                 _isMenuExpanded = true;
             });
-            DartRuntimePrimitives.Ignore(Popup_menuLibrary.showMenu(context: context, elevation: widget.elevation, shadowColor: widget.shadowColor, surfaceTintColor: widget.surfaceTintColor, items: itemsLocal, initialValue: widget.initialValue, positionBuilder: _positionBuilder, shape: widget.shape, menuPadding: widget.menuPadding, color: widget.color, constraints: widget.constraints, clipBehavior: widget.clipBehavior, useRootNavigator: widget.useRootNavigator, popUpAnimationStyle: widget.popUpAnimationStyle, routeSettings: widget.routeSettings, requestFocus: widget.requestFocus).then((newValue) =>
-            {
-                if (!mounted)
-                {
-                    _ = (object?)null;
-                    return;
-                }
-                setState(() =>
-                {
-                    _isMenuExpanded = false;
-                });
-                if (newValue is null)
-                {
-                    widget.onCanceled?.Invoke();
-                    _ = (object?)null;
-                    return;
-                }
-                widget.onSelected?.Invoke(newValue);
-            }));
+            DartRuntimePrimitives.Ignore(
+                Popup_menuLibrary
+                    .showMenu(
+                        context: context,
+                        elevation: widget.elevation,
+                        shadowColor: widget.shadowColor,
+                        surfaceTintColor: widget.surfaceTintColor,
+                        items: itemsLocal,
+                        initialValue: widget.initialValue,
+                        positionBuilder: _positionBuilder,
+                        shape: widget.shape,
+                        menuPadding: widget.menuPadding,
+                        color: widget.color,
+                        constraints: widget.constraints,
+                        clipBehavior: widget.clipBehavior,
+                        useRootNavigator: widget.useRootNavigator,
+                        popUpAnimationStyle: widget.popUpAnimationStyle,
+                        routeSettings: widget.routeSettings,
+                        requestFocus: widget.requestFocus
+                    )
+                    .then(
+                        (newValue) =>
+                        {
+                            if (!mounted)
+                            {
+                                _ = (object?)null;
+                                return;
+                            }
+                            setState(() =>
+                            {
+                                _isMenuExpanded = false;
+                            });
+                            if (newValue is null)
+                            {
+                                widget.onCanceled?.Invoke();
+                                _ = (object?)null;
+                                return;
+                            }
+                            widget.onSelected?.Invoke(newValue);
+                        }
+                    )
+            );
         }
     }
 
@@ -909,30 +1456,73 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
     {
         get
         {
-            NavigationMode mode = MediaQuery.maybeNavigationModeOf(context) ?? NavigationMode.traditional;
-            return mode switch { NavigationMode.traditional => widget.enabled, NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            NavigationMode mode =
+                MediaQuery.maybeNavigationModeOf(context) ?? NavigationMode.traditional;
+            return mode switch
+            {
+                NavigationMode.traditional => widget.enabled,
+                NavigationMode.directional => true,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     public override Widget build(BuildContext context)
     {
         IconThemeData iconTheme = IconTheme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-        bool enableFeedbackLocal = (widget.enableFeedback ?? PopupMenuTheme.of(context).enableFeedback) ?? true;
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        bool enableFeedbackLocal =
+            (widget.enableFeedback ?? PopupMenuTheme.of(context).enableFeedback) ?? true;
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         if (widget.child is not null)
         {
-            Widget childLocal = new Tooltip(message: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, child: new InkWell(borderRadius: widget.borderRadius, onTap: widget.enabled ? showButtonMenu : null, canRequestFocus: _canRequestFocus, radius: widget.splashRadius, enableFeedback: enableFeedbackLocal, child: widget.child));
-            MaterialTapTargetSize tapTargetSizeLocal = widget.style?.tapTargetSize ?? MaterialTapTargetSize.shrinkWrap;
+            Widget childLocal = new Tooltip(
+                message: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip,
+                child: new InkWell(
+                    borderRadius: widget.borderRadius,
+                    onTap: widget.enabled ? showButtonMenu : null,
+                    canRequestFocus: _canRequestFocus,
+                    radius: widget.splashRadius,
+                    enableFeedback: enableFeedbackLocal,
+                    child: widget.child
+                )
+            );
+            MaterialTapTargetSize tapTargetSizeLocal =
+                widget.style?.tapTargetSize ?? MaterialTapTargetSize.shrinkWrap;
             if (Equals(tapTargetSizeLocal, MaterialTapTargetSize.padded))
             {
-                return new ConstrainedBox(constraints: new BoxConstraints(minWidth: Widgets.ConstantsLibrary.kMinInteractiveDimension, minHeight: Widgets.ConstantsLibrary.kMinInteractiveDimension), child: childLocal);
+                return new ConstrainedBox(
+                    constraints: new BoxConstraints(
+                        minWidth: Widgets.ConstantsLibrary.kMinInteractiveDimension,
+                        minHeight: Widgets.ConstantsLibrary.kMinInteractiveDimension
+                    ),
+                    child: childLocal
+                );
             }
             return new Widgets.Semantics(expanded: _isMenuExpanded, child: childLocal);
         }
-        return new Widgets.Semantics(child: new IconButton(key: StandardComponentTypeMembers.key(StandardComponentType.moreButton), icon: new Widgets.Semantics(expanded: _isMenuExpanded, child: widget.icon ?? new Icon(Icons.adaptive.more)), padding: widget.padding, splashRadius: widget.splashRadius, iconSize: (widget.iconSize ?? popupMenuTheme.iconSize) ?? iconTheme.size, color: (widget.iconColor ?? popupMenuTheme.iconColor) ?? iconTheme.color, tooltip: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, onPressed: widget.enabled ? showButtonMenu : null, enableFeedback: enableFeedbackLocal, style: widget.style));
+        return new Widgets.Semantics(
+            child: new IconButton(
+                key: StandardComponentTypeMembers.key(StandardComponentType.moreButton),
+                icon: new Widgets.Semantics(
+                    expanded: _isMenuExpanded,
+                    child: widget.icon ?? new Icon(Icons.adaptive.more)
+                ),
+                padding: widget.padding,
+                splashRadius: widget.splashRadius,
+                iconSize: (widget.iconSize ?? popupMenuTheme.iconSize) ?? iconTheme.size,
+                color: (widget.iconColor ?? popupMenuTheme.iconColor) ?? iconTheme.color,
+                tooltip: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip,
+                onPressed: widget.enabled ? showButtonMenu : null,
+                enableFeedback: enableFeedbackLocal,
+                style: widget.style
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _EffectiveMouseCursor__popup_menu : WidgetStateMouseCursor
@@ -940,7 +1530,10 @@ internal class _EffectiveMouseCursor__popup_menu : WidgetStateMouseCursor
     public virtual MouseCursor? widgetCursor { get; private set; }
     public virtual WidgetStateProperty<MouseCursor?>? themeCursor { get; private set; }
 
-    internal _EffectiveMouseCursor__popup_menu(MouseCursor? widgetCursor, WidgetStateProperty<MouseCursor?>? themeCursor)
+    internal _EffectiveMouseCursor__popup_menu(
+        MouseCursor? widgetCursor,
+        WidgetStateProperty<MouseCursor?>? themeCursor
+    )
     {
         this.widgetCursor = widgetCursor;
         this.themeCursor = themeCursor;
@@ -948,7 +1541,10 @@ internal class _EffectiveMouseCursor__popup_menu : WidgetStateMouseCursor
 
     public override MouseCursor resolve(HashSet<WidgetState> states)
     {
-        return (WidgetStateProperty.resolveAs(widgetCursor, states) ?? (themeCursor?.resolve(states))) ?? adaptiveClickable.resolve(states);
+        return (
+                WidgetStateProperty.resolveAs(widgetCursor, states)
+                ?? (themeCursor?.resolve(states))
+            ) ?? adaptiveClickable.resolve(states);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1002,7 +1598,8 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
     }
     public static EdgeInsets menuItemPadding = EdgeInsets.CreateSymmetric(horizontal: 12.0);
 
-    internal _PopupMenuDefaultsM3__popup_menu(BuildContext context) : base(elevation: 3.0)
+    internal _PopupMenuDefaultsM3__popup_menu(BuildContext context)
+        : base(elevation: 3.0)
     {
         this.context = context;
     }
@@ -1011,21 +1608,31 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
     {
         get
         {
-            return (WidgetStateProperty<TextStyle?>?)WidgetStateProperty.resolveWith((states) =>
-            {
-                TextStyle style = _textTheme.labelLarge!;
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return style.apply(color: _colors.onSurface.withOpacity(0.38));
-                }
-                return style.apply(color: _colors.onSurface);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return (WidgetStateProperty<TextStyle?>?)
+                WidgetStateProperty.resolveWith(
+                    (states) =>
+                    {
+                        TextStyle style = _textTheme.labelLarge!;
+                        if (states.Contains(WidgetState.disabled))
+                        {
+                            return style.apply(color: _colors.onSurface.withOpacity(0.38));
+                        }
+                        return style.apply(color: _colors.onSurface);
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                );
         }
     }
-    public override Color? color => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainer);
+    public override Color? color =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainer);
     public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.shadow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))));
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override ShapeBorder? shape =>
+        DartRuntimePrimitives.ConvertValue<ShapeBorder>(
+            new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)))
+        );
     public override EdgeInsets? menuPadding => EdgeInsets.CreateSymmetric(vertical: 8.0);
 }

@@ -7,7 +7,8 @@ internal readonly record struct MauiPaintCompletion(
     long SceneSequence,
     long SurfaceGeneration,
     bool IsNewFrame,
-    DorotiFrameDescriptor Descriptor);
+    DorotiFrameDescriptor Descriptor
+);
 
 public sealed record MauiNativeViewSize(double Width, double Height);
 
@@ -42,7 +43,8 @@ public sealed record MauiSurfaceSnapshot(
     MauiNativeViewSize? NativeEnvironmentPhysicalSize = null,
     ViewPadding RawViewPadding = default,
     ViewPadding RawViewInsets = default,
-    ViewPadding RawSystemGestureInsets = default);
+    ViewPadding RawSystemGestureInsets = default
+);
 
 public sealed record MauiFrameDiagnostics(
     long Submitted,
@@ -67,7 +69,8 @@ public sealed record MauiFrameDiagnostics(
     long PictureRasterCacheHits,
     long PictureRasterCacheMisses,
     long PictureRasterCacheEntries,
-    IReadOnlyList<DorotiFrameTraceEntry> Trace);
+    IReadOnlyList<DorotiFrameTraceEntry> Trace
+);
 
 public sealed record MauiSemanticsDiagnostics(
     long UpdatesReceived,
@@ -83,7 +86,8 @@ public sealed record MauiSemanticsDiagnostics(
     long ElementsReused = 0,
     long TopologyUpdatesApplied = 0,
     long ApplyWorkMicroseconds = 0,
-    long MaxApplyWorkMicroseconds = 0);
+    long MaxApplyWorkMicroseconds = 0
+);
 
 public sealed record MauiHostDiagnostics(
     string ApplicationSource,
@@ -99,7 +103,8 @@ public sealed record MauiHostDiagnostics(
     long NativePointerEvents,
     long FrameRequestsCoalesced,
     MauiSemanticsDiagnostics Semantics,
-    long SoftwareFallbackFrames);
+    long SoftwareFallbackFrames
+);
 
 public interface IMauiSemanticsBridge
 {

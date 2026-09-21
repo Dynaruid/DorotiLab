@@ -10,7 +10,6 @@ public readonly record struct TreeSliverNodesAnimation(long fromIndex, long toIn
 public class TreeSliverNodeParentData : SliverMultiBoxAdaptorParentData
 {
     public virtual long depth { get; set; } = 0L;
-
 }
 
 public class TreeSliverIndentationType
@@ -25,26 +24,39 @@ public class TreeSliverIndentationType
     }
 
     public virtual double value => _value;
+
     public static TreeSliverIndentationType custom(double value)
     {
         DartRuntimePrimitives.Assert(() => value >= 0.0);
         return new TreeSliverIndentationType(value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal delegate void _PaintSegment__sliver_tree();
 
 public class RenderTreeSliver : RenderSliverVariedExtentList
 {
-    internal virtual DartMap<UniqueKey, TreeSliverNodesAnimation> _activeAnimations { get; set; } = default!;
+    internal virtual DartMap<UniqueKey, TreeSliverNodesAnimation> _activeAnimations { get; set; } =
+        default!;
     internal virtual double _indentation { get; set; } = default!;
-    internal virtual DartMap<long, UniqueKey> _animationLeadingIndices { get; private set; } = new DartMap<long, UniqueKey>();
-    internal virtual DartMap<UniqueKey, double> _animationOffsets { get; private set; } = new DartMap<UniqueKey, double>();
-    internal virtual DartMap<UniqueKey, LayerHandle<ClipRectLayer>> _clipHandles { get; private set; } = new DartMap<UniqueKey, LayerHandle<ClipRectLayer>>();
+    internal virtual DartMap<long, UniqueKey> _animationLeadingIndices { get; private set; } =
+        new DartMap<long, UniqueKey>();
+    internal virtual DartMap<UniqueKey, double> _animationOffsets { get; private set; } =
+        new DartMap<UniqueKey, double>();
+    internal virtual DartMap<UniqueKey, LayerHandle<ClipRectLayer>> _clipHandles
+    {
+        get;
+        private set;
+    } = new DartMap<UniqueKey, LayerHandle<ClipRectLayer>>();
 
-    public RenderTreeSliver(RenderSliverBoxChildManager childManager, ItemExtentBuilder itemExtentBuilder, DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations, double indentation) : base(childManager: childManager, itemExtentBuilder: itemExtentBuilder)
+    public RenderTreeSliver(
+        RenderSliverBoxChildManager childManager,
+        ItemExtentBuilder itemExtentBuilder,
+        DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations,
+        double indentation
+    )
+        : base(childManager: childManager, itemExtentBuilder: itemExtentBuilder)
     {
         _activeAnimations = activeAnimations;
         _indentation = indentation;
@@ -79,23 +91,28 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             markNeedsLayout();
         }
     }
+
     internal virtual void _updateAnimationCache()
     {
         _animationLeadingIndices.Clear();
-        _activeAnimations.forEach((key, animation) =>
-        {
-            _animationLeadingIndices[animation.fromIndex - 1L] = key;
-        });
-        _animationOffsets.removeWhere((key, _) => !_activeAnimations.Keys.contains(key));
-        _clipHandles.removeWhere((key, handle) =>
-        {
-            if (!_activeAnimations.Keys.contains(key))
+        _activeAnimations.forEach(
+            (key, animation) =>
             {
-                handle.layer = null;
-                return true;
+                _animationLeadingIndices[animation.fromIndex - 1L] = key;
             }
-            return false;
-        });
+        );
+        _animationOffsets.removeWhere((key, _) => !_activeAnimations.Keys.contains(key));
+        _clipHandles.removeWhere(
+            (key, handle) =>
+            {
+                if (!_activeAnimations.Keys.contains(key))
+                {
+                    handle.layer = null;
+                    return true;
+                }
+                return false;
+            }
+        );
     }
 
     public override void setupParentData(RenderObject child)
@@ -109,11 +126,13 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override void dispose()
     {
-        _clipHandles.removeWhere((key, handle) =>
-        {
-            handle.layer = null;
-            return true;
-        });
+        _clipHandles.removeWhere(
+            (key, handle) =>
+            {
+                handle.layer = null;
+                return true;
+            }
+        );
         base.dispose();
     }
 
@@ -149,7 +168,10 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         long? childCount = childManager.estimatedChildCount;
         while (position < scrollOffset)
         {
-            if ((childCount is not null) && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L)))
+            if (
+                (childCount is not null)
+                && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+            )
             {
                 long childCount__8482__value8577 = DartRuntimePrimitives.RequireValue(childCount);
                 break;
@@ -166,7 +188,16 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                 {
                     _computeAnimationOffsetFor(animationKey, position);
                 }
-                totalAnimationOffset += DartRuntimePrimitives.RequireValue(_animationOffsets.GetValueOrDefault(animationKey)) * (1L - DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(animationKey)).value);
+                totalAnimationOffset +=
+                    DartRuntimePrimitives.RequireValue(
+                        _animationOffsets.GetValueOrDefault(animationKey)
+                    )
+                    * (
+                        1L
+                        - DartRuntimePrimitives
+                            .RequireValue(_activeAnimations.GetValueOrDefault(animationKey))
+                            .value
+                    );
             }
             position += DartRuntimePrimitives.RequireValue(itemExtent) - totalAnimationOffset;
             ++index;
@@ -180,13 +211,19 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         DartRuntimePrimitives.Assert(() => _activeAnimations.ContainsKey(key));
         double targetPosition = constraints.scrollOffset + constraints.remainingCacheExtent;
         var currentPosition = position;
-        long startingIndex = DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(key)).fromIndex;
-        long lastIndex = DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(key)).toIndex;
+        long startingIndex = DartRuntimePrimitives
+            .RequireValue(_activeAnimations.GetValueOrDefault(key))
+            .fromIndex;
+        long lastIndex = DartRuntimePrimitives
+            .RequireValue(_activeAnimations.GetValueOrDefault(key))
+            .toIndex;
         var currentIndex = startingIndex;
         var totalAnimatingOffset = 0.0;
         while ((currentIndex <= lastIndex) && (currentPosition < targetPosition))
         {
-            double itemExtent = DartRuntimePrimitives.RequireValue(itemExtentBuilder(currentIndex, layoutDimensions));
+            double itemExtent = DartRuntimePrimitives.RequireValue(
+                itemExtentBuilder(currentIndex, layoutDimensions)
+            );
             totalAnimatingOffset += itemExtent;
             currentPosition += itemExtent;
             currentIndex++;
@@ -210,7 +247,10 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         long? childCount = childManager.estimatedChildCount;
         while (currentIndex < index)
         {
-            if ((childCount is not null) && (currentIndex > (DartRuntimePrimitives.RequireValue(childCount) - 1L)))
+            if (
+                (childCount is not null)
+                && (currentIndex > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+            )
             {
                 long childCount__11234__value11326 = DartRuntimePrimitives.RequireValue(childCount);
                 break;
@@ -224,7 +264,16 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             {
                 UniqueKey animationKey = _animationLeadingIndices.GetValueOrDefault(currentIndex)!;
                 DartRuntimePrimitives.Assert(() => _animationOffsets.ContainsKey(animationKey));
-                totalAnimationOffset += DartRuntimePrimitives.RequireValue(_animationOffsets.GetValueOrDefault(animationKey)) * (1L - DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(animationKey)).value);
+                totalAnimationOffset +=
+                    DartRuntimePrimitives.RequireValue(
+                        _animationOffsets.GetValueOrDefault(animationKey)
+                    )
+                    * (
+                        1L
+                        - DartRuntimePrimitives
+                            .RequireValue(_activeAnimations.GetValueOrDefault(animationKey))
+                            .value
+                    );
             }
             position += DartRuntimePrimitives.RequireValue(itemExtentLocal);
             currentIndex++;
@@ -247,8 +296,16 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             {
                 double mainAxisDelta = childMainAxisPosition(child);
                 var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
-                Offset childOffset = new Offset(parentDataLocal.depth * indentation, DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - constraints.scrollOffset) + offset;
-                if ((mainAxisDelta < constraints.remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L))
+                Offset childOffset =
+                    new Offset(
+                        parentDataLocal.depth * indentation,
+                        DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset)
+                            - constraints.scrollOffset
+                    ) + offset;
+                if (
+                    (mainAxisDelta < constraints.remainingPaintExtent)
+                    && ((mainAxisDelta + paintExtentOf(child)) > 0L)
+                )
                 {
                     context.paintChild(child, childOffset);
                 }
@@ -262,12 +319,16 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             return;
         }
         long leadingIndexLocal = indexOf(firstChild!);
-        List<long> animationIndices = ((Func<List<long>>)(() =>
-{
-    var __cascade = _animationLeadingIndices.Keys.ToList();
-    __cascade.sort();
-    return __cascade;
-}))();
+        List<long> animationIndices = (
+            (Func<List<long>>)(
+                () =>
+                {
+                    var __cascade = _animationLeadingIndices.Keys.ToList();
+                    __cascade.sort();
+                    return __cascade;
+                }
+            )
+        )();
         var paintSegments = new List<(long leadingIndex, long trailingIndex)>();
         while (checked((long)animationIndices.Count) != 0)
         {
@@ -281,17 +342,32 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         {
             (long leadingIndex, long trailingIndex) segment = paintSegments.removeAt(0L);
             long parentIndex = Math.Max(segment.leadingIndex - 1L, 0L);
-            double leadingOffset = indexToLayoutOffset(0.0, parentIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(parentIndex, layoutDimensions));
-            double trailingOffset = indexToLayoutOffset(0.0, segment.trailingIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(segment.trailingIndex, layoutDimensions));
-            var rect = Rect.fromPoints(new Offset(0.0, leadingOffset), new Offset(constraints.crossAxisExtent, trailingOffset));
+            double leadingOffset =
+                indexToLayoutOffset(0.0, parentIndex)
+                + DartRuntimePrimitives.RequireValue(
+                    itemExtentBuilder(parentIndex, layoutDimensions)
+                );
+            double trailingOffset =
+                indexToLayoutOffset(0.0, segment.trailingIndex)
+                + DartRuntimePrimitives.RequireValue(
+                    itemExtentBuilder(segment.trailingIndex, layoutDimensions)
+                );
+            var rect = Rect.fromPoints(
+                new Offset(0.0, leadingOffset),
+                new Offset(constraints.crossAxisExtent, trailingOffset)
+            );
             UniqueKey key = _animationLeadingIndices.GetValueOrDefault(parentIndex)!;
             var clipHandle = _clipHandles.putIfAbsent(key, () => new LayerHandle<ClipRectLayer>());
-            clipHandle.layer = context.pushClipRect(needsCompositing, offset, rect, (context, offset) =>
-            {
-                paintUpTo(segment.trailingIndex, nextChild, context, offset);
-            }, oldLayer: clipHandle.layer);
+            clipHandle.layer = context.pushClipRect(
+                needsCompositing,
+                offset,
+                rect,
+                (context, offset) =>
+                {
+                    paintUpTo(segment.trailingIndex, nextChild, context, offset);
+                },
+                oldLayer: clipHandle.layer
+            );
         }
     }
-
 }
-

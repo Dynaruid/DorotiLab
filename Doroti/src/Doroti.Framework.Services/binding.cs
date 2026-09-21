@@ -11,15 +11,14 @@ public abstract class ServicesBinding : SchedulerBinding
     internal virtual HardwareKeyboard _keyboard { get; private set; } = default!;
     internal virtual KeyEventManager _keyEventManager { get; private set; } = default!;
     internal virtual BinaryMessenger _defaultBinaryMessenger { get; private set; } = default!;
-    public virtual ValueNotifier<long?> accessibilityFocus { get; private set; } = new ValueNotifier<long?>(null);
+    public virtual ValueNotifier<long?> accessibilityFocus { get; private set; } =
+        new ValueNotifier<long?>(null);
     internal virtual RestorationManager _restorationManager { get; set; } = default!;
     internal virtual Func<bool, Future>? _systemUiChangeCallback { get; set; } = default;
     internal virtual SystemContextMenuClient? _systemContextMenuClient { get; set; } = default;
 
     protected ServicesBinding(PlatformDispatcher? platformDispatcher = null)
-        : base(platformDispatcher)
-    {
-    }
+        : base(platformDispatcher) { }
 
     protected override void initInstances()
     {
@@ -30,7 +29,9 @@ public abstract class ServicesBinding : SchedulerBinding
         _initKeyboard();
         initLicenses();
         SystemChannels.system.setMessageHandler((message) => handleSystemMessage(message!));
-        SystemChannels.accessibility.setMessageHandler((message) => _handleAccessibilityMessage(message!));
+        SystemChannels.accessibility.setMessageHandler(
+            (message) => _handleAccessibilityMessage(message!)
+        );
         SystemChannels.lifecycle.setMessageHandler(_handleLifecycleMessage);
         SystemChannels.platform.setMethodCallHandler(_handlePlatformMessage);
         platformDispatcher.onViewFocusChange = handleViewFocusChanged;
@@ -42,20 +43,26 @@ public abstract class ServicesBinding : SchedulerBinding
     public static new ServicesBinding instance => checkInstance(_instance);
     public virtual HardwareKeyboard keyboard => _keyboard;
     public virtual KeyEventManager keyEventManager => _keyEventManager;
+
     internal virtual void _initKeyboard()
     {
         _keyboard = new HardwareKeyboard();
         _keyEventManager = new KeyEventManager(_keyboard, RawKeyboard.instance);
-        _ = _keyboard.syncKeyboardState().then((_) =>
-        {
-            platformDispatcher.onKeyData = _keyEventManager.handleKeyData;
-            SystemChannels.keyEvent.setMessageHandler(_keyEventManager.handleRawKeyMessage);
-        });
+        _ = _keyboard
+            .syncKeyboardState()
+            .then(
+                (_) =>
+                {
+                    platformDispatcher.onKeyData = _keyEventManager.handleKeyData;
+                    SystemChannels.keyEvent.setMessageHandler(_keyEventManager.handleRawKeyMessage);
+                }
+            );
     }
 
     public virtual BinaryMessenger defaultBinaryMessenger => _defaultBinaryMessenger;
     public static RootIsolateToken? rootIsolateToken => Dart_uiLibrary.RootIsolateToken.instance;
     public virtual ChannelBuffers channelBuffers => Dart_uiLibrary.channelBuffers;
+
     public virtual BinaryMessenger createBinaryMessenger()
     {
         return new _DefaultBinaryMessenger();
@@ -67,17 +74,19 @@ public abstract class ServicesBinding : SchedulerBinding
         Asset_bundleLibrary.rootBundle.clear();
     }
 
-    public async virtual Future handleSystemMessage(object systemMessage)
+    public virtual async Future handleSystemMessage(object systemMessage)
     {
-        var message = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
+        var message = DartRuntimePrimitives.ConvertMap<string, object>(
+            (System.Collections.IDictionary)systemMessage
+        );
         var type = ((string?)message.GetValueOrDefault("type"))!;
         switch (type)
         {
             case var __case6961 when Equals(__case6961, "memoryPressure"):
-                {
-                    handleMemoryPressure();
-                    break;
-                }
+            {
+                handleMemoryPressure();
+                break;
+            }
         }
         return;
     }
@@ -95,15 +104,30 @@ public abstract class ServicesBinding : SchedulerBinding
             string rawLicenses = default!;
             if (ConstantsLibrary.kIsWeb)
             {
-                rawLicenses = await Asset_bundleLibrary.rootBundle.loadString("NOTICES", cache: false);
+                rawLicenses = await Asset_bundleLibrary.rootBundle.loadString(
+                    "NOTICES",
+                    cache: false
+                );
             }
             else
             {
                 ByteData licenseBytes = await Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
-                List<long> unzippedBytes = await IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes.buffer.asUint8List(), debugLabel: "decompressLicenses");
-                rawLicenses = await IsolatesLibrary.compute(Dart_convertLibrary.utf8.decode, unzippedBytes, debugLabel: "utf8DecodeLicenses");
+                List<long> unzippedBytes = await IsolatesLibrary.compute<List<long>, List<long>>(
+                    Dart_ioLibrary.gzip.decode,
+                    licenseBytes.buffer.asUint8List(),
+                    debugLabel: "decompressLicenses"
+                );
+                rawLicenses = await IsolatesLibrary.compute(
+                    Dart_convertLibrary.utf8.decode,
+                    unzippedBytes,
+                    debugLabel: "utf8DecodeLicenses"
+                );
             }
-            List<LicenseEntry> licenses = await IsolatesLibrary.compute(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
+            List<LicenseEntry> licenses = await IsolatesLibrary.compute(
+                _parseLicenses,
+                rawLicenses,
+                debugLabel: "parseLicenses"
+            );
             licenses.forEach(controller.add);
             await controller.close();
         });
@@ -122,19 +146,27 @@ public abstract class ServicesBinding : SchedulerBinding
     {
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
-            {
-                registerStringServiceExtension(name: ServicesServiceExtensions.evict.ToString(), getter: () => "", setter: (value) =>
+        {
+            registerStringServiceExtension(
+                name: ServicesServiceExtensions.evict.ToString(),
+                getter: () => "",
+                setter: (value) =>
                 {
                     evict(value);
-                });
-                return true;
-            });
+                }
+            );
+            return true;
+        });
         if (!ConstantsLibrary.kReleaseMode)
         {
-            registerBoolServiceExtension(name: ServicesServiceExtensions.profilePlatformChannels.ToString(), getter: () => DebugLibrary.debugProfilePlatformChannels, setter: (value) =>
-            {
-                DebugLibrary.debugProfilePlatformChannels = value;
-            });
+            registerBoolServiceExtension(
+                name: ServicesServiceExtensions.profilePlatformChannels.ToString(),
+                getter: () => DebugLibrary.debugProfilePlatformChannels,
+                setter: (value) =>
+                {
+                    DebugLibrary.debugProfilePlatformChannels = value;
+                }
+            );
         }
     }
 
@@ -150,13 +182,19 @@ public abstract class ServicesBinding : SchedulerBinding
         {
             return;
         }
-        DartRuntimePrimitives.Observe(_handleLifecycleMessage(initialState), "ServicesBinding.initialLifecycleState");
+        DartRuntimePrimitives.Observe(
+            _handleLifecycleMessage(initialState),
+            "ServicesBinding.initialLifecycleState"
+        );
     }
 
-    internal async virtual Future<string?> _handleLifecycleMessage(string? message)
+    internal virtual async Future<string?> _handleLifecycleMessage(string? message)
     {
         AppLifecycleState? state = _parseAppLifecycleMessage(message!);
-        List<AppLifecycleState> generated = _generateStateTransitions(lifecycleState, DartRuntimePrimitives.RequireValue(state));
+        List<AppLifecycleState> generated = _generateStateTransitions(
+            lifecycleState,
+            DartRuntimePrimitives.RequireValue(state)
+        );
         foreach (var stateChange in generated)
         {
             handleAppLifecycleStateChanged(stateChange);
@@ -166,7 +204,10 @@ public abstract class ServicesBinding : SchedulerBinding
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<AppLifecycleState> _generateStateTransitions(AppLifecycleState? previousState, AppLifecycleState state)
+    internal virtual List<AppLifecycleState> _generateStateTransitions(
+        AppLifecycleState? previousState,
+        AppLifecycleState state
+    )
     {
         if (Equals(previousState, state))
         {
@@ -179,13 +220,19 @@ public abstract class ServicesBinding : SchedulerBinding
         }
         else
         {
-            long previousStateIndex = Enum.GetValues<AppLifecycleState>().ToList().IndexOf(DartRuntimePrimitives.RequireValue(previousState));
+            long previousStateIndex = Enum.GetValues<AppLifecycleState>()
+                .ToList()
+                .IndexOf(DartRuntimePrimitives.RequireValue(previousState));
             long stateIndex = Enum.GetValues<AppLifecycleState>().ToList().IndexOf(state);
             DartRuntimePrimitives.Assert(() => previousStateIndex != -1L);
             DartRuntimePrimitives.Assert(() => stateIndex != -1L);
             if (Equals(state, AppLifecycleState.detached))
             {
-                for (long i = previousStateIndex + 1L; i < Enum.GetValues<AppLifecycleState>().ToList().Count; ++i)
+                for (
+                    long i = previousStateIndex + 1L;
+                    i < Enum.GetValues<AppLifecycleState>().ToList().Count;
+                    ++i
+                )
                 {
                     stateChanges.Add(Enum.GetValues<AppLifecycleState>().ToList()[(int)i]);
                 }
@@ -197,7 +244,10 @@ public abstract class ServicesBinding : SchedulerBinding
                 {
                     for (var i = stateIndex; i < previousStateIndex; ++i)
                     {
-                        stateChanges.Insert(checked((int)0L), Enum.GetValues<AppLifecycleState>().ToList()[(int)i]);
+                        stateChanges.Insert(
+                            checked((int)0L),
+                            Enum.GetValues<AppLifecycleState>().ToList()[(int)i]
+                        );
                     }
                 }
                 else
@@ -210,23 +260,26 @@ public abstract class ServicesBinding : SchedulerBinding
             }
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            var starting = previousState;
+            foreach (var ending in stateChanges)
             {
-                var starting = previousState;
-                foreach (var ending in stateChanges)
+                if (!_debugVerifyLifecycleChange(starting, ending))
                 {
-                    if (!_debugVerifyLifecycleChange(starting, ending))
-                    {
-                        return false;
-                    }
-                    starting = ending;
+                    return false;
                 }
-                return true;
-            });
+                starting = ending;
+            }
+            return true;
+        });
         return stateChanges;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _debugVerifyLifecycleChange(AppLifecycleState? starting, AppLifecycleState ending)
+    internal static bool _debugVerifyLifecycleChange(
+        AppLifecycleState? starting,
+        AppLifecycleState ending
+    )
     {
         if (starting is null)
         {
@@ -236,92 +289,143 @@ public abstract class ServicesBinding : SchedulerBinding
         {
             return false;
         }
-        return starting switch { var __case13833 when Equals(__case13833, AppLifecycleState.resumed) => Equals(ending, AppLifecycleState.inactive), var __case13906 when Equals(__case13906, AppLifecycleState.detached) => Equals(ending, AppLifecycleState.resumed) || Equals(ending, AppLifecycleState.paused), var __case14025 when Equals(__case14025, AppLifecycleState.inactive) => Equals(ending, AppLifecycleState.resumed) || Equals(ending, AppLifecycleState.hidden), var __case14144 when Equals(__case14144, AppLifecycleState.hidden) => Equals(ending, AppLifecycleState.paused) || Equals(ending, AppLifecycleState.inactive), var __case14262 when Equals(__case14262, AppLifecycleState.paused) => Equals(ending, AppLifecycleState.hidden) || Equals(ending, AppLifecycleState.detached), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return starting switch
+        {
+            var __case13833 when Equals(__case13833, AppLifecycleState.resumed) => Equals(
+                ending,
+                AppLifecycleState.inactive
+            ),
+            var __case13906 when Equals(__case13906, AppLifecycleState.detached) => Equals(
+                ending,
+                AppLifecycleState.resumed
+            ) || Equals(ending, AppLifecycleState.paused),
+            var __case14025 when Equals(__case14025, AppLifecycleState.inactive) => Equals(
+                ending,
+                AppLifecycleState.resumed
+            ) || Equals(ending, AppLifecycleState.hidden),
+            var __case14144 when Equals(__case14144, AppLifecycleState.hidden) => Equals(
+                ending,
+                AppLifecycleState.paused
+            ) || Equals(ending, AppLifecycleState.inactive),
+            var __case14262 when Equals(__case14262, AppLifecycleState.paused) => Equals(
+                ending,
+                AppLifecycleState.hidden
+            ) || Equals(ending, AppLifecycleState.detached),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future _handleAccessibilityMessage(object accessibilityMessage)
+    internal virtual async Future _handleAccessibilityMessage(object accessibilityMessage)
     {
-        DartMap<string, object> message = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)accessibilityMessage).cast<string, object>();
+        DartMap<string, object> message = DartRuntimePrimitives
+            .ConvertMap<object?, object?>((System.Collections.IDictionary)accessibilityMessage)
+            .cast<string, object>();
         var type = ((string?)message.GetValueOrDefault("type"))!;
         switch (type)
         {
             case var __case14829 when Equals(__case14829, "didGainFocus"):
-                {
-                    accessibilityFocus.value = message.GetValueOrDefault("nodeId") is long nodeId
-                        ? nodeId : throw new FormatException("Accessibility focus requires an integer nodeId.");
-                    break;
-                }
+            {
+                accessibilityFocus.value = message.GetValueOrDefault("nodeId") is long nodeId
+                    ? nodeId
+                    : throw new FormatException("Accessibility focus requires an integer nodeId.");
+                break;
+            }
         }
         return;
     }
 
-    public virtual void handleViewFocusChanged(ViewFocusEvent @event)
-    {
-    }
+    public virtual void handleViewFocusChanged(ViewFocusEvent @event) { }
 
-    internal async virtual Future<object> _handlePlatformMessage(MethodCall methodCall)
+    internal virtual async Future<object> _handlePlatformMessage(MethodCall methodCall)
     {
         string method = methodCall.method;
         switch (method)
         {
             case var __case15705 when Equals(__case15705, "ContextMenu.onDismissSystemContextMenu"):
+            {
+                if (_systemContextMenuClient is null)
                 {
-                    if (_systemContextMenuClient is null)
-                    {
-                        DartRuntimePrimitives.Assert(() => false);
-                        return default!;
-                    }
-                    _systemContextMenuClient!.handleSystemHide();
-                    _systemContextMenuClient = null;
-                    break;
+                    DartRuntimePrimitives.Assert(() => false);
+                    return default!;
                 }
+                _systemContextMenuClient!.handleSystemHide();
+                _systemContextMenuClient = null;
+                break;
+            }
             case var __case16083 when Equals(__case16083, "ContextMenu.onPerformCustomAction"):
+            {
+                if (_systemContextMenuClient is null)
                 {
-                    if (_systemContextMenuClient is null)
-                    {
-                        DartRuntimePrimitives.Assert(() => false);
-                        return default!;
-                    }
-                    var args = ((List<object>?)methodCall.arguments)!;
-                    var callbackId = ((string?)args[(int)1L])!;
-                    _systemContextMenuClient!.handleCustomContextMenuAction(callbackId);
-                    break;
+                    DartRuntimePrimitives.Assert(() => false);
+                    return default!;
                 }
+                var args = ((List<object>?)methodCall.arguments)!;
+                var callbackId = ((string?)args[(int)1L])!;
+                _systemContextMenuClient!.handleCustomContextMenuAction(callbackId);
+                break;
+            }
             case var __case16642 when Equals(__case16642, "SystemChrome.systemUIChange"):
+            {
+                var argsLocal = ((List<object>?)methodCall.arguments)!;
+                if (_systemUiChangeCallback is { } callback)
                 {
-                    var argsLocal = ((List<object>?)methodCall.arguments)!;
-                    if (_systemUiChangeCallback is { } callback)
-                        await callback((bool)argsLocal[0]);
-                    break;
+                    await callback((bool)argsLocal[0]);
                 }
+
+                break;
+            }
             case var __case16806 when Equals(__case16806, "System.requestAppExit"):
+            {
+                return new DartMap<string, object>
                 {
-                    return new DartMap<string, object> { ["response"] = (await handleRequestAppExit()).ToString() };
-                }
+                    ["response"] = (await handleRequestAppExit()).ToString(),
+                };
+            }
             default:
-                {
-                    throw new AssertionError($"Method \"{method}\" not handled.");
-                }
+            {
+                throw new AssertionError($"Method \"{method}\" not handled.");
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static AppLifecycleState? _parseAppLifecycleMessage(string message)
     {
-        return message switch { var __case17111 when Equals(__case17111, "AppLifecycleState.resumed") => AppLifecycleState.resumed, var __case17175 when Equals(__case17175, "AppLifecycleState.inactive") => AppLifecycleState.inactive, var __case17241 when Equals(__case17241, "AppLifecycleState.hidden") => AppLifecycleState.hidden, var __case17303 when Equals(__case17303, "AppLifecycleState.paused") => AppLifecycleState.paused, var __case17365 when Equals(__case17365, "AppLifecycleState.detached") => AppLifecycleState.detached, _ => null };
+        return message switch
+        {
+            var __case17111 when Equals(__case17111, "AppLifecycleState.resumed") =>
+                AppLifecycleState.resumed,
+            var __case17175 when Equals(__case17175, "AppLifecycleState.inactive") =>
+                AppLifecycleState.inactive,
+            var __case17241 when Equals(__case17241, "AppLifecycleState.hidden") =>
+                AppLifecycleState.hidden,
+            var __case17303 when Equals(__case17303, "AppLifecycleState.paused") =>
+                AppLifecycleState.paused,
+            var __case17365 when Equals(__case17365, "AppLifecycleState.detached") =>
+                AppLifecycleState.detached,
+            _ => null,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<AppExitResponse> handleRequestAppExit()
+    public virtual async Future<AppExitResponse> handleRequestAppExit()
     {
         return Dart_uiLibrary.AppExitResponse.exit;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<AppExitResponse> exitApplication(AppExitType exitType, long exitCode = 0)
+    public virtual async Future<AppExitResponse> exitApplication(
+        AppExitType exitType,
+        long exitCode = 0
+    )
     {
-        DartMap<string, object?>? result = await SystemChannels.platform.invokeMethod<DartMap<string, object?>>("System.exitApplication", new DartMap<string, object?> { ["type"] = exitType.ToString(), ["exitCode"] = exitCode });
+        DartMap<string, object?>? result = await SystemChannels.platform.invokeMethod<
+            DartMap<string, object?>
+        >(
+            "System.exitApplication",
+            new DartMap<string, object?> { ["type"] = exitType.ToString(), ["exitCode"] = exitCode }
+        );
         if (result is null)
         {
             return Dart_uiLibrary.AppExitResponse.cancel;
@@ -329,19 +433,20 @@ public abstract class ServicesBinding : SchedulerBinding
         switch (result.GetValueOrDefault("response"))
         {
             case var __case21059 when Equals(__case21059, "cancel"):
-                {
-                    return Dart_uiLibrary.AppExitResponse.cancel;
-                }
+            {
+                return Dart_uiLibrary.AppExitResponse.cancel;
+            }
             case var __case21122 when Equals(__case21122, "exit"):
             default:
-                {
-                    return Dart_uiLibrary.AppExitResponse.exit;
-                }
+            {
+                return Dart_uiLibrary.AppExitResponse.exit;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RestorationManager restorationManager => _restorationManager;
+
     public virtual RestorationManager createRestorationManager()
     {
         return new RestorationManager();
@@ -353,7 +458,7 @@ public abstract class ServicesBinding : SchedulerBinding
         _ = _systemUiChangeCallback = callback;
     }
 
-    public async virtual Future initializationComplete()
+    public virtual async Future initializationComplete()
     {
         await SystemChannels.platform.invokeMethod<object>("System.initializationComplete");
     }
@@ -372,37 +477,56 @@ public delegate Future SystemUiChangeCallback(bool systemOverlaysAreVisible);
 
 internal class _DefaultBinaryMessenger : BinaryMessenger
 {
-    internal _DefaultBinaryMessenger()
-    {
-    }
+    internal _DefaultBinaryMessenger() { }
 
-    public async virtual Future handlePlatformMessage(string channel, ByteData? data, Action<ByteData?>? callback)
+    public virtual async Future handlePlatformMessage(
+        string channel,
+        ByteData? data,
+        Action<ByteData?>? callback
+    )
     {
         DartRuntimePrimitives.Observe(
             Dart_uiLibrary.channelBuffers.push(channel, data, (data) => callback?.Invoke(data)),
-            "BinaryMessenger.handlePlatformMessage");
+            "BinaryMessenger.handlePlatformMessage"
+        );
     }
 
     public virtual Future<ByteData?> send(string channel, ByteData? message)
     {
         var completer = new Completer<ByteData?>();
-        Dart_uiLibrary.PlatformDispatcher.instance.sendPlatformMessage(channel, message, (reply) =>
-        {
-            try
+        Dart_uiLibrary.PlatformDispatcher.instance.sendPlatformMessage(
+            channel,
+            message,
+            (reply) =>
             {
-                completer.complete(reply);
+                try
+                {
+                    completer.complete(reply);
+                }
+                catch (Exception exception)
+                {
+                    var stack = new System.Diagnostics.StackTrace();
+                    FlutterError.reportError(
+                        new FlutterErrorDetails(
+                            exception: exception,
+                            stack: stack,
+                            library: "services library",
+                            context: new ErrorDescription(
+                                "during a platform message response callback"
+                            )
+                        )
+                    );
+                }
             }
-            catch (Exception exception)
-            {
-                var stack = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("during a platform message response callback")));
-            }
-        });
+        );
         return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void setMessageHandler(string channel, Func<ByteData?, Future<ByteData?>?>? handler)
+    public virtual void setMessageHandler(
+        string channel,
+        Func<ByteData?, Future<ByteData?>?>? handler
+    )
     {
         if (handler is null)
         {
@@ -410,26 +534,35 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
         }
         else
         {
-            Dart_uiLibrary.channelBuffers.setListener(channel, async (data, callback) =>
-            {
-                ByteData? response = default!;
-                try
+            Dart_uiLibrary.channelBuffers.setListener(
+                channel,
+                async (data, callback) =>
                 {
-                    response = handler(data) is { } handling ? await handling : null;
+                    ByteData? response = default!;
+                    try
+                    {
+                        response = handler(data) is { } handling ? await handling : null;
+                    }
+                    catch (Exception exception)
+                    {
+                        var stack = new System.Diagnostics.StackTrace();
+                        FlutterError.reportError(
+                            new FlutterErrorDetails(
+                                exception: exception,
+                                stack: stack,
+                                library: "services library",
+                                context: new ErrorDescription("during a platform message callback")
+                            )
+                        );
+                    }
+                    finally
+                    {
+                        callback(response);
+                    }
                 }
-                catch (Exception exception)
-                {
-                    var stack = new System.Diagnostics.StackTrace();
-                    FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("during a platform message callback")));
-                }
-                finally
-                {
-                    callback(response);
-                }
-            });
+            );
         }
     }
-
 }
 
 public abstract class SystemContextMenuClient

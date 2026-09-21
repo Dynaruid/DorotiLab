@@ -8,6 +8,7 @@ namespace Doroti.Framework.Widgets;
 internal sealed class RegisteredHtmlElementView(HtmlElementView definition) : StatefulWidget
 {
     internal HtmlElementView Definition { get; } = definition;
+
     public override IState createState() => new RegisteredHtmlElementState();
 }
 
@@ -15,22 +16,43 @@ internal sealed class RegisteredHtmlElementState : State<RegisteredHtmlElementVi
 {
     private readonly long _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
     private PlatformViewRequest? _request;
+
     public override Widget build(BuildContext context)
     {
         var definition = widget.Definition;
         if (definition.hitTestBehavior == PlatformViewHitTestBehavior.translucent)
-            throw new NotSupportedException("DOM direct input does not support translucent framework gesture mediation.");
-        _request ??= new PlatformViewRequest(_id, definition.viewType,
+        {
+            throw new NotSupportedException(
+                "DOM direct input does not support translucent framework gesture mediation."
+            );
+        }
+
+        _request ??= new PlatformViewRequest(
+            _id,
+            definition.viewType,
             PlatformViewComposition.InterleavedComposition,
-            CreationParameters: definition.creationParams is null ? default : new StandardMessageCodec().encodeMessage(definition.creationParams)!.asMemory());
-        return new PlatformView(View.of(context), _request,
-            onCreated: handle => definition.onPlatformViewCreated?.Invoke(handle.InstanceId));
+            CreationParameters: definition.creationParams is null
+                ? default
+                : new StandardMessageCodec().encodeMessage(definition.creationParams)!.asMemory()
+        );
+        return new PlatformView(
+            View.of(context),
+            _request,
+            onCreated: handle => definition.onPlatformViewCreated?.Invoke(handle.InstanceId)
+        );
     }
+
     public override void didUpdateWidget(RegisteredHtmlElementView oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (oldWidget.Definition.viewType != widget.Definition.viewType ||
-            !Equals(oldWidget.Definition.creationParams, widget.Definition.creationParams))
-            throw new InvalidOperationException("Changing an HtmlElementView factory/creation parameters requires a new widget key.");
+        if (
+            oldWidget.Definition.viewType != widget.Definition.viewType
+            || !Equals(oldWidget.Definition.creationParams, widget.Definition.creationParams)
+        )
+        {
+            throw new InvalidOperationException(
+                "Changing an HtmlElementView factory/creation parameters requires a new widget key."
+            );
+        }
     }
 }

@@ -17,7 +17,9 @@ public class Velocity
     }
 
     public virtual Velocity op_Subtract() => new Velocity(pixelsPerSecond: -pixelsPerSecond);
+
     public static Velocity operator -(Velocity value) => value.op_Subtract();
+
     public virtual Velocity op_Subtract(Velocity other)
     {
         return new Velocity(pixelsPerSecond: pixelsPerSecond - other.pixelsPerSecond);
@@ -37,11 +39,15 @@ public class Velocity
         double valueSquared = pixelsPerSecond.distanceSquared;
         if (valueSquared > (maxValue * maxValue))
         {
-            return new Velocity(pixelsPerSecond: pixelsPerSecond / pixelsPerSecond.distance * maxValue);
+            return new Velocity(
+                pixelsPerSecond: pixelsPerSecond / pixelsPerSecond.distance * maxValue
+            );
         }
         if (valueSquared < (minValue * minValue))
         {
-            return new Velocity(pixelsPerSecond: pixelsPerSecond / pixelsPerSecond.distance * minValue);
+            return new Velocity(
+                pixelsPerSecond: pixelsPerSecond / pixelsPerSecond.distance * minValue
+            );
         }
         return this;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -50,13 +56,20 @@ public class Velocity
     public override bool Equals(object? other)
     {
         var __other = other as Velocity;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         return (__other is Velocity) && Equals(__other.pixelsPerSecond, pixelsPerSecond);
     }
 
     public override int GetHashCode() => pixelsPerSecond.GetHashCode();
-    public override string ToString() => $"Velocity({pixelsPerSecond.dx.toStringAsFixed(1L)}, {pixelsPerSecond.dy.toStringAsFixed(1L)})";
+
+    public override string ToString() =>
+        $"Velocity({pixelsPerSecond.dx.toStringAsFixed(1L)}, {pixelsPerSecond.dy.toStringAsFixed(1L)})";
 }
+
 public class VelocityEstimate
 {
     public virtual Offset pixelsPerSecond { get; private set; } = default!;
@@ -64,7 +77,12 @@ public class VelocityEstimate
     public virtual Duration duration { get; private set; } = default!;
     public virtual Offset offset { get; private set; } = default!;
 
-    public VelocityEstimate(Offset pixelsPerSecond, double confidence, Duration duration, Offset offset)
+    public VelocityEstimate(
+        Offset pixelsPerSecond,
+        double confidence,
+        Duration duration,
+        Offset offset
+    )
     {
         this.pixelsPerSecond = pixelsPerSecond;
         this.confidence = confidence;
@@ -72,7 +90,8 @@ public class VelocityEstimate
         this.offset = offset;
     }
 
-    public override string ToString() => $"VelocityEstimate({pixelsPerSecond.dx.toStringAsFixed(1L)}, {pixelsPerSecond.dy.toStringAsFixed(1L)}; offset: {offset}, duration: {duration}, confidence: {confidence.toStringAsFixed(1L)})";
+    public override string ToString() =>
+        $"VelocityEstimate({pixelsPerSecond.dx.toStringAsFixed(1L)}, {pixelsPerSecond.dy.toStringAsFixed(1L)}; offset: {offset}, duration: {duration}, confidence: {confidence.toStringAsFixed(1L)})";
 }
 
 internal class _PointAtTime__velocity_tracker
@@ -97,7 +116,10 @@ public class VelocityTracker
     internal const long _minSampleSize = 3L;
     public virtual PointerDeviceKind kind { get; private set; } = default!;
     internal virtual Stopwatch? _stopwatch { get; set; } = default;
-    internal virtual List<_PointAtTime__velocity_tracker?> _samples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_historySize)));
+    internal virtual List<_PointAtTime__velocity_tracker?> _samples { get; private set; } =
+        new List<_PointAtTime__velocity_tracker?>(
+            Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_historySize))
+        );
     internal virtual long _index { get; set; } = 0L;
 
     public VelocityTracker(PointerDeviceKind kind)
@@ -113,6 +135,7 @@ public class VelocityTracker
             return _stopwatch!;
         }
     }
+
     public virtual void addPosition(Duration time, Offset position)
     {
         // Dart reset() preserves the running state; Stopwatch.Reset() stops it.
@@ -129,7 +152,12 @@ public class VelocityTracker
     {
         if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
         {
-            return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
+            return new VelocityEstimate(
+                pixelsPerSecond: Offset.zero,
+                confidence: 1.0,
+                duration: Duration.zero,
+                offset: Offset.zero
+            );
         }
         var x = new List<double>();
         var y = new List<double>();
@@ -152,7 +180,8 @@ public class VelocityTracker
                 break;
             }
             double age = (newestSample.time - sample.time).inMicroseconds.toDouble() / 1000L;
-            double delta = (sample.time - previousSample.time).inMicroseconds.abs().toDouble() / 1000L;
+            double delta =
+                (sample.time - previousSample.time).inMicroseconds.abs().toDouble() / 1000L;
             previousSample = sample;
             if ((age > _horizonMilliseconds) || (delta > _assumePointerMoveStoppedMilliseconds))
             {
@@ -166,18 +195,30 @@ public class VelocityTracker
             timeLocal.Add(-age);
             index = ((index == 0L) ? _historySize : index) - 1L;
             sampleCount += 1L;
-        }
-        while (sampleCount < _historySize);
+        } while (sampleCount < _historySize);
         if (sampleCount >= _minSampleSize)
         {
             PolynomialFit? xFit = new LeastSquaresSolver(timeLocal, x, w).solve(2L);
             PolynomialFit? yFit = new LeastSquaresSolver(timeLocal, y, w).solve(2L);
             if ((xFit is not null) && (yFit is not null))
             {
-                return new VelocityEstimate(pixelsPerSecond: new Offset(xFit.coefficients[(int)1L] * 1000L, yFit.coefficients[(int)1L] * 1000L), confidence: xFit.confidence * yFit.confidence, duration: newestSample.time - oldestSample.time, offset: newestSample.point - oldestSample.point);
+                return new VelocityEstimate(
+                    pixelsPerSecond: new Offset(
+                        xFit.coefficients[(int)1L] * 1000L,
+                        yFit.coefficients[(int)1L] * 1000L
+                    ),
+                    confidence: xFit.confidence * yFit.confidence,
+                    duration: newestSample.time - oldestSample.time,
+                    offset: newestSample.point - oldestSample.point
+                );
             }
         }
-        return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: newestSample.time - oldestSample.time, offset: newestSample.point - oldestSample.point);
+        return new VelocityEstimate(
+            pixelsPerSecond: Offset.zero,
+            confidence: 1.0,
+            duration: newestSample.time - oldestSample.time,
+            offset: newestSample.point - oldestSample.point
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -191,30 +232,34 @@ public class VelocityTracker
         return new Velocity(pixelsPerSecond: estimate.pixelsPerSecond);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 {
     internal const long _sampleSize = 20L;
-    internal virtual List<_PointAtTime__velocity_tracker?> _touchSamples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_sampleSize)));
+    internal virtual List<_PointAtTime__velocity_tracker?> _touchSamples { get; private set; } =
+        new List<_PointAtTime__velocity_tracker?>(
+            Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_sampleSize))
+        );
 
-    public IOSScrollViewFlingVelocityTracker(PointerDeviceKind kind) : base(kind)
-    {
-    }
+    public IOSScrollViewFlingVelocityTracker(PointerDeviceKind kind)
+        : base(kind) { }
 
     public override void addPosition(Duration time, Offset position)
     {
         _sinceLastSample.Restart();
         DartRuntimePrimitives.Assert(() =>
+        {
+            _PointAtTime__velocity_tracker? previousPoint = _touchSamples[(int)_index];
+            if ((previousPoint is null) || (previousPoint.time <= time))
             {
-                _PointAtTime__velocity_tracker? previousPoint = _touchSamples[(int)_index];
-                if ((previousPoint is null) || (previousPoint.time <= time))
-                {
-                    return true;
-                }
-                throw new FlutterError($"The position being added ({position}) has a smaller timestamp ({time}) " + $"than its predecessor: {previousPoint}.");
-            });
+                return true;
+            }
+            throw new FlutterError(
+                $"The position being added ({position}) has a smaller timestamp ({time}) "
+                    + $"than its predecessor: {previousPoint}."
+            );
+        });
         _index = (_index + 1L) % _sampleSize;
         _touchSamples[(int)_index] = new _PointAtTime__velocity_tracker(position, time);
     }
@@ -232,7 +277,9 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         }
         long dt = (end.time - start.time).inMicroseconds;
         DartRuntimePrimitives.Assert(() => dt >= 0L);
-        return (dt > 0L) ? ((end.point - start.point) * 1000 / (dt.toDouble() / 1000L)) : Offset.zero;
+        return (dt > 0L)
+            ? ((end.point - start.point) * 1000 / (dt.toDouble() / 1000L))
+            : Offset.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -240,9 +287,17 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
     {
         if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
         {
-            return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
+            return new VelocityEstimate(
+                pixelsPerSecond: Offset.zero,
+                confidence: 1.0,
+                duration: Duration.zero,
+                offset: Offset.zero
+            );
         }
-        Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.6) + (_previousVelocityAt(-1L) * 0.35) + (_previousVelocityAt(0L) * 0.05);
+        Offset estimatedVelocity =
+            (_previousVelocityAt(-2L) * 0.6)
+            + (_previousVelocityAt(-1L) * 0.35)
+            + (_previousVelocityAt(0L) * 0.05);
         _PointAtTime__velocity_tracker? newestSample = _touchSamples[(int)_index];
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)
@@ -256,30 +311,46 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         if ((oldestNonNullSample is null) || (newestSample is null))
         {
             DartRuntimePrimitives.Assert(() => false);
-            return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 0.0, duration: Duration.zero, offset: Offset.zero);
+            return new VelocityEstimate(
+                pixelsPerSecond: Offset.zero,
+                confidence: 0.0,
+                duration: Duration.zero,
+                offset: Offset.zero
+            );
         }
         else
         {
-            return new VelocityEstimate(pixelsPerSecond: estimatedVelocity, confidence: 1.0, duration: newestSample.time - oldestNonNullSample.time, offset: newestSample.point - oldestNonNullSample.point);
+            return new VelocityEstimate(
+                pixelsPerSecond: estimatedVelocity,
+                confidence: 1.0,
+                duration: newestSample.time - oldestNonNullSample.time,
+                offset: newestSample.point - oldestNonNullSample.point
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTracker
 {
-    public MacOSScrollViewFlingVelocityTracker(PointerDeviceKind kind) : base(kind)
-    {
-    }
+    public MacOSScrollViewFlingVelocityTracker(PointerDeviceKind kind)
+        : base(kind) { }
 
     public override VelocityEstimate getVelocityEstimate()
     {
         if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
         {
-            return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
+            return new VelocityEstimate(
+                pixelsPerSecond: Offset.zero,
+                confidence: 1.0,
+                duration: Duration.zero,
+                offset: Offset.zero
+            );
         }
-        Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.15) + (_previousVelocityAt(-1L) * 0.65) + (_previousVelocityAt(0L) * 0.2);
+        Offset estimatedVelocity =
+            (_previousVelocityAt(-2L) * 0.15)
+            + (_previousVelocityAt(-1L) * 0.65)
+            + (_previousVelocityAt(0L) * 0.2);
         _PointAtTime__velocity_tracker? newestSample = _touchSamples[(int)_index];
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)
@@ -293,13 +364,22 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
         if ((oldestNonNullSample is null) || (newestSample is null))
         {
             DartRuntimePrimitives.Assert(() => false);
-            return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 0.0, duration: Duration.zero, offset: Offset.zero);
+            return new VelocityEstimate(
+                pixelsPerSecond: Offset.zero,
+                confidence: 0.0,
+                duration: Duration.zero,
+                offset: Offset.zero
+            );
         }
         else
         {
-            return new VelocityEstimate(pixelsPerSecond: estimatedVelocity, confidence: 1.0, duration: newestSample.time - oldestNonNullSample.time, offset: newestSample.point - oldestNonNullSample.point);
+            return new VelocityEstimate(
+                pixelsPerSecond: estimatedVelocity,
+                confidence: 1.0,
+                duration: newestSample.time - oldestNonNullSample.time,
+                offset: newestSample.point - oldestNonNullSample.point
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

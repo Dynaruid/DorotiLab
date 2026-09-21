@@ -13,7 +13,15 @@ public class FlutterLogo : StatelessWidget
     public virtual Duration duration { get; private set; } = default!;
     public virtual Curve curve { get; private set; } = default!;
 
-    public FlutterLogo(Key? key = null, double? size = null, Color textColor = default!, FlutterLogoStyle style = FlutterLogoStyle.markOnly, Duration? duration = null, Curve curve = default!) : base(key: key)
+    public FlutterLogo(
+        Key? key = null,
+        double? size = null,
+        Color textColor = default!,
+        FlutterLogoStyle style = FlutterLogoStyle.markOnly,
+        Duration? duration = null,
+        Curve curve = default!
+    )
+        : base(key: key)
     {
         Color __textColor = textColor ?? new Color(0xFF757575);
         Duration __duration = duration ?? Duration.Create(milliseconds: 750);
@@ -29,9 +37,13 @@ public class FlutterLogo : StatelessWidget
     {
         IconThemeData iconTheme = IconTheme.of(context);
         double? iconSize = size ?? iconTheme.size;
-        return new AnimatedContainer(width: iconSize, height: iconSize, duration: DartRuntimePrimitives.RequireValue(duration), curve: curve, decoration: new FlutterLogoDecoration(style: style, textColor: textColor));
+        return new AnimatedContainer(
+            width: iconSize,
+            height: iconSize,
+            duration: DartRuntimePrimitives.RequireValue(duration),
+            curve: curve,
+            decoration: new FlutterLogoDecoration(style: style, textColor: textColor)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

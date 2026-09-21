@@ -9,7 +9,8 @@ public delegate void HandleEventCallback(PointerEvent @event);
 
 public class PointerEventResampler
 {
-    internal virtual Queue<PointerEvent> _queuedEvents { get; private set; } = new Queue<PointerEvent>();
+    internal virtual Queue<PointerEvent> _queuedEvents { get; private set; } =
+        new Queue<PointerEvent>();
     internal virtual PointerEvent? _last { get; set; } = default;
     internal virtual PointerEvent? _next { get; set; } = default;
     internal virtual Offset _position { get; set; } = Offset.zero;
@@ -18,21 +19,90 @@ public class PointerEventResampler
     internal virtual long _pointerIdentifier { get; set; } = 0L;
     internal virtual long _hasButtons { get; set; } = 0L;
 
-    internal virtual PointerEvent _toHoverEvent(PointerEvent @event, Offset position, Offset delta, Duration timeStamp, long buttons)
+    internal virtual PointerEvent _toHoverEvent(
+        PointerEvent @event,
+        Offset position,
+        Offset delta,
+        Duration timeStamp,
+        long buttons
+    )
     {
-        return new PointerHoverEvent(viewId: @event.viewId, timeStamp: timeStamp, kind: @event.kind, device: @event.device, position: position, delta: delta, buttons: @event.buttons, obscured: @event.obscured, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distance: @event.distance, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, synthesized: @event.synthesized, embedderId: @event.embedderId);
+        return new PointerHoverEvent(
+            viewId: @event.viewId,
+            timeStamp: timeStamp,
+            kind: @event.kind,
+            device: @event.device,
+            position: position,
+            delta: delta,
+            buttons: @event.buttons,
+            obscured: @event.obscured,
+            pressureMin: @event.pressureMin,
+            pressureMax: @event.pressureMax,
+            distance: @event.distance,
+            distanceMax: @event.distanceMax,
+            size: @event.size,
+            radiusMajor: @event.radiusMajor,
+            radiusMinor: @event.radiusMinor,
+            radiusMin: @event.radiusMin,
+            radiusMax: @event.radiusMax,
+            orientation: @event.orientation,
+            tilt: @event.tilt,
+            synthesized: @event.synthesized,
+            embedderId: @event.embedderId
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual PointerEvent _toMoveEvent(PointerEvent @event, Offset position, Offset delta, long pointerIdentifier, Duration timeStamp, long buttons)
+    internal virtual PointerEvent _toMoveEvent(
+        PointerEvent @event,
+        Offset position,
+        Offset delta,
+        long pointerIdentifier,
+        Duration timeStamp,
+        long buttons
+    )
     {
-        return new PointerMoveEvent(viewId: @event.viewId, timeStamp: timeStamp, pointer: pointerIdentifier, kind: @event.kind, device: @event.device, position: position, delta: delta, buttons: buttons, obscured: @event.obscured, pressure: @event.pressure, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, platformData: @event.platformData, synthesized: @event.synthesized, embedderId: @event.embedderId);
+        return new PointerMoveEvent(
+            viewId: @event.viewId,
+            timeStamp: timeStamp,
+            pointer: pointerIdentifier,
+            kind: @event.kind,
+            device: @event.device,
+            position: position,
+            delta: delta,
+            buttons: buttons,
+            obscured: @event.obscured,
+            pressure: @event.pressure,
+            pressureMin: @event.pressureMin,
+            pressureMax: @event.pressureMax,
+            distanceMax: @event.distanceMax,
+            size: @event.size,
+            radiusMajor: @event.radiusMajor,
+            radiusMinor: @event.radiusMinor,
+            radiusMin: @event.radiusMin,
+            radiusMax: @event.radiusMax,
+            orientation: @event.orientation,
+            tilt: @event.tilt,
+            platformData: @event.platformData,
+            synthesized: @event.synthesized,
+            embedderId: @event.embedderId
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual PointerEvent _toMoveOrHoverEvent(PointerEvent @event, Offset position, Offset delta, long pointerIdentifier, Duration timeStamp, bool isDown, long buttons)
+    internal virtual PointerEvent _toMoveOrHoverEvent(
+        PointerEvent @event,
+        Offset position,
+        Offset delta,
+        long pointerIdentifier,
+        Duration timeStamp,
+        bool isDown,
+        long buttons
+    )
     {
-        return isDown ? _toMoveEvent(@event, position, delta, pointerIdentifier, timeStamp, buttons) : _toHoverEvent(@event, position, delta, timeStamp, buttons);
+        return isDown
+            ? _toMoveEvent(@event, position, delta, pointerIdentifier, timeStamp, buttons)
+            : _toHoverEvent(@event, position, delta, timeStamp, buttons);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,7 +146,11 @@ public class PointerEventResampler
         }
     }
 
-    internal virtual void _dequeueAndSampleNonHoverOrMovePointerEventsUntil(Duration sampleTime, Duration nextSampleTime, Action<PointerEvent> callback)
+    internal virtual void _dequeueAndSampleNonHoverOrMovePointerEventsUntil(
+        Duration sampleTime,
+        Duration nextSampleTime,
+        Action<PointerEvent> callback
+    )
     {
         var endTime = sampleTime;
         IEnumerator<PointerEvent> it = _queuedEvents.GetEnumerator();
@@ -119,17 +193,36 @@ public class PointerEventResampler
                 _position = positionLocal;
             }
             long pointerIdentifier = eventLocal.pointer;
-            DartRuntimePrimitives.Assert(() => !wasDown || (_pointerIdentifier == pointerIdentifier));
+            DartRuntimePrimitives.Assert(() =>
+                !wasDown || (_pointerIdentifier == pointerIdentifier)
+            );
             _pointerIdentifier = pointerIdentifier;
             if ((eventLocal is not PointerMoveEvent) && (eventLocal is not PointerHoverEvent))
             {
                 if (!Equals(positionLocal, _position))
                 {
                     Offset deltaLocal = positionLocal - _position;
-                    callback(_toMoveOrHoverEvent(eventLocal, positionLocal, deltaLocal, _pointerIdentifier, sampleTime, wasDown, hadButtons));
+                    callback(
+                        _toMoveOrHoverEvent(
+                            eventLocal,
+                            positionLocal,
+                            deltaLocal,
+                            _pointerIdentifier,
+                            sampleTime,
+                            wasDown,
+                            hadButtons
+                        )
+                    );
                     _position = positionLocal;
                 }
-                callback(eventLocal.copyWith(position: positionLocal, delta: Offset.zero, pointer: pointerIdentifier, timeStamp: sampleTime));
+                callback(
+                    eventLocal.copyWith(
+                        position: positionLocal,
+                        delta: Offset.zero,
+                        pointer: pointerIdentifier,
+                        timeStamp: sampleTime
+                    )
+                );
             }
             _queuedEvents.Dequeue();
         }
@@ -142,7 +235,17 @@ public class PointerEventResampler
         if ((!Equals(position, _position)) && (next is not null))
         {
             Offset delta = position - _position;
-            callback(_toMoveOrHoverEvent(next, position, delta, _pointerIdentifier, sampleTime, _isDown, _hasButtons));
+            callback(
+                _toMoveOrHoverEvent(
+                    next,
+                    position,
+                    delta,
+                    _pointerIdentifier,
+                    sampleTime,
+                    _isDown,
+                    _hasButtons
+                )
+            );
             _position = position;
         }
     }
@@ -152,7 +255,11 @@ public class PointerEventResampler
         _queuedEvents.Enqueue(@event);
     }
 
-    public virtual void sample(Duration sampleTime, Duration nextSampleTime, Action<PointerEvent> callback)
+    public virtual void sample(
+        Duration sampleTime,
+        Duration nextSampleTime,
+        Action<PointerEvent> callback
+    )
     {
         _processPointerEvents(sampleTime);
         _dequeueAndSampleNonHoverOrMovePointerEventsUntil(sampleTime, nextSampleTime, callback);
@@ -180,4 +287,3 @@ public class PointerEventResampler
     public virtual bool isTracked => _isTracked;
     public virtual bool isDown => _isDown;
 }
-

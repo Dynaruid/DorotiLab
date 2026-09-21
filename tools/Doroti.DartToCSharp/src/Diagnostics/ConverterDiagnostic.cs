@@ -14,4 +14,5 @@ public sealed record ConverterDiagnostic(
     string SupportState,
     string ManualAction,
     string? CanonicalElementId = null,
-    string[]? DependencyPath = null);
+    string[]? DependencyPath = null
+);

@@ -14,7 +14,15 @@ public class BottomNavigationBarItem
     public virtual string? tooltip { get; private set; }
     public virtual string? semanticsLabel { get; private set; }
 
-    public BottomNavigationBarItem(Key? key = null, Widget icon = default!, string? label = null, Widget? activeIcon = null, Color? backgroundColor = null, string? tooltip = null, string? semanticsLabel = null)
+    public BottomNavigationBarItem(
+        Key? key = null,
+        Widget icon = default!,
+        string? label = null,
+        Widget? activeIcon = null,
+        Color? backgroundColor = null,
+        string? tooltip = null,
+        string? semanticsLabel = null
+    )
     {
         this.key = key;
         this.icon = icon;
@@ -24,6 +32,4 @@ public class BottomNavigationBarItem
         this.semanticsLabel = semanticsLabel;
         this.activeIcon = activeIcon ?? icon;
     }
-
 }
-

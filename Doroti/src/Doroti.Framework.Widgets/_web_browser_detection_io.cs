@@ -6,4 +6,3 @@ internal class WebBrowserDetectionIo
 {
     public static bool isSafari => false;
 }
-

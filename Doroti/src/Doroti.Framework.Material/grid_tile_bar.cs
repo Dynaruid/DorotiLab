@@ -14,7 +14,15 @@ public class GridTileBar : StatelessWidget
     public virtual Widget? subtitle { get; private set; }
     public virtual Widget? trailing { get; private set; }
 
-    public GridTileBar(Key? key = null, Color? backgroundColor = null, Widget? leading = null, Widget? title = null, Widget? subtitle = null, Widget? trailing = null) : base(key: key)
+    public GridTileBar(
+        Key? key = null,
+        Color? backgroundColor = null,
+        Widget? leading = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        Widget? trailing = null
+    )
+        : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.leading = leading;
@@ -30,10 +38,113 @@ public class GridTileBar : StatelessWidget
         {
             decorationLocal = new BoxDecoration(color: backgroundColor);
         }
-        var paddingLocal = EdgeInsetsDirectional.CreateOnly(start: (leading is not null) ? 8.0 : 16.0, end: (trailing is not null) ? 8.0 : 16.0);
+        var paddingLocal = EdgeInsetsDirectional.CreateOnly(
+            start: (leading is not null) ? 8.0 : 16.0,
+            end: (trailing is not null) ? 8.0 : 16.0
+        );
         var darkTheme = ThemeData.Create();
-        return new Container(padding: paddingLocal, decoration: decorationLocal, height: ((title is not null) && (subtitle is not null)) ? 68.0 : 48.0, child: new Theme(data: darkTheme, child: IconTheme.merge(data: new IconThemeData(color: Colors.white), child: new Row(children: ((Func<List<Widget>>)(() => { var __collection2284 = new List<Widget>(); if (leading is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(end: 8.0), child: leading))); } if ((title is not null) && (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title!)), DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: darkTheme.textTheme.bodySmall!, softWrap: false, overflow: TextOverflow.ellipsis, child: subtitle!)) })))); } else { if ((title is not null) || (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title ?? subtitle!)))); } } if (trailing is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0), child: trailing))); } return __collection2284; }))()))));
+        return new Container(
+            padding: paddingLocal,
+            decoration: decorationLocal,
+            height: ((title is not null) && (subtitle is not null)) ? 68.0 : 48.0,
+            child: new Theme(
+                data: darkTheme,
+                child: IconTheme.merge(
+                    data: new IconThemeData(color: Colors.white),
+                    child: new Row(
+                        children: (
+                            (Func<List<Widget>>)(
+                                () =>
+                                {
+                                    var __collection2284 = new List<Widget>();
+                                    if (leading is not null)
+                                    {
+                                        __collection2284.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Padding(
+                                                    padding: EdgeInsetsDirectional.CreateOnly(
+                                                        end: 8.0
+                                                    ),
+                                                    child: leading
+                                                )
+                                            )
+                                        );
+                                    }
+                                    if ((title is not null) && (subtitle is not null))
+                                    {
+                                        __collection2284.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Expanded(
+                                                    child: new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: new List<Widget>
+                                                        {
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                new DefaultTextStyle(
+                                                                    style: darkTheme
+                                                                        .textTheme
+                                                                        .titleMedium!,
+                                                                    softWrap: false,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    child: title!
+                                                                )
+                                                            ),
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                new DefaultTextStyle(
+                                                                    style: darkTheme
+                                                                        .textTheme
+                                                                        .bodySmall!,
+                                                                    softWrap: false,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    child: subtitle!
+                                                                )
+                                                            ),
+                                                        }
+                                                    )
+                                                )
+                                            )
+                                        );
+                                    }
+                                    else
+                                    {
+                                        if ((title is not null) || (subtitle is not null))
+                                        {
+                                            __collection2284.Add(
+                                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                                    new Expanded(
+                                                        child: new DefaultTextStyle(
+                                                            style: darkTheme.textTheme.titleMedium!,
+                                                            softWrap: false,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            child: title ?? subtitle!
+                                                        )
+                                                    )
+                                                )
+                                            );
+                                        }
+                                    }
+                                    if (trailing is not null)
+                                    {
+                                        __collection2284.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Padding(
+                                                    padding: EdgeInsetsDirectional.CreateOnly(
+                                                        start: 8.0
+                                                    ),
+                                                    child: trailing
+                                                )
+                                            )
+                                        );
+                                    }
+                                    return __collection2284;
+                                }
+                            )
+                        )()
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

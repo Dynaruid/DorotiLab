@@ -49,7 +49,43 @@ public class ExpansionTile : StatefulWidget
     public virtual bool internalAddSemanticForOnTap { get; private set; } = default!;
     public virtual WidgetStatesController? statesController { get; private set; }
 
-    public ExpansionTile(Key? key = null, Widget? leading = null, Widget title = default!, Widget? subtitle = null, Action<bool>? onExpansionChanged = null, List<Widget> children = default!, Widget? trailing = null, bool showTrailingIcon = true, bool initiallyExpanded = false, bool maintainState = false, EdgeInsetsGeometry? tilePadding = null, CrossAxisAlignment? expandedCrossAxisAlignment = null, AlignmentGeometry? expandedAlignment = null, EdgeInsetsGeometry? childrenPadding = null, Color? backgroundColor = null, Color? collapsedBackgroundColor = null, Color? textColor = null, Color? collapsedTextColor = null, Color? iconColor = null, Color? collapsedIconColor = null, ShapeBorder? shape = null, ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, ListTileControlAffinity? controlAffinity = null, ExpansibleController? controller = null, bool? dense = null, Color? splashColor = null, VisualDensity? visualDensity = null, double? minTileHeight = null, bool? enableFeedback = true, bool enabled = true, AnimationStyle? expansionAnimationStyle = null, bool internalAddSemanticForOnTap = false, WidgetStatesController? statesController = null) : base(key: key)
+    public ExpansionTile(
+        Key? key = null,
+        Widget? leading = null,
+        Widget title = default!,
+        Widget? subtitle = null,
+        Action<bool>? onExpansionChanged = null,
+        List<Widget> children = default!,
+        Widget? trailing = null,
+        bool showTrailingIcon = true,
+        bool initiallyExpanded = false,
+        bool maintainState = false,
+        EdgeInsetsGeometry? tilePadding = null,
+        CrossAxisAlignment? expandedCrossAxisAlignment = null,
+        AlignmentGeometry? expandedAlignment = null,
+        EdgeInsetsGeometry? childrenPadding = null,
+        Color? backgroundColor = null,
+        Color? collapsedBackgroundColor = null,
+        Color? textColor = null,
+        Color? collapsedTextColor = null,
+        Color? iconColor = null,
+        Color? collapsedIconColor = null,
+        ShapeBorder? shape = null,
+        ShapeBorder? collapsedShape = null,
+        Clip? clipBehavior = null,
+        ListTileControlAffinity? controlAffinity = null,
+        ExpansibleController? controller = null,
+        bool? dense = null,
+        Color? splashColor = null,
+        VisualDensity? visualDensity = null,
+        double? minTileHeight = null,
+        bool? enableFeedback = true,
+        bool enabled = true,
+        AnimationStyle? expansionAnimationStyle = null,
+        bool internalAddSemanticForOnTap = false,
+        WidgetStatesController? statesController = null
+    )
+        : base(key: key)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.leading = leading;
@@ -85,10 +121,13 @@ public class ExpansionTile : StatefulWidget
         this.expansionAnimationStyle = expansionAnimationStyle;
         this.internalAddSemanticForOnTap = internalAddSemanticForOnTap;
         this.statesController = statesController;
-        System.Diagnostics.Debug.Assert(!Equals(expandedCrossAxisAlignment, CrossAxisAlignment.baseline));
+        System.Diagnostics.Debug.Assert(
+            !Equals(expandedCrossAxisAlignment, CrossAxisAlignment.baseline)
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ExpansionTileState__expansion_tile());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ExpansionTileState__expansion_tile());
 }
 
 internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
@@ -141,28 +180,63 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
     {
         TextDirection textDirectionLocal = WidgetsLocalizations.of(context).textDirection;
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        string stateHint = _tileController.isExpanded ? localizations.collapsedHint : localizations.expandedHint;
+        string stateHint = _tileController.isExpanded
+            ? localizations.collapsedHint
+            : localizations.expandedHint;
         if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
         {
             _timer?.cancel();
-            _timer = new Timer(Duration.Create(seconds: 1L), () =>
-            {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(context), stateHint, textDirectionLocal).catchError((exception, stack) =>
+            _timer = new Timer(
+                Duration.Create(seconds: 1L),
+                () =>
                 {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new ErrorDescription("while sending semantics announcement")));
-                }));
-                _timer?.cancel();
-                _timer = null;
-            });
+                    DartRuntimePrimitives.Ignore(
+                        SemanticsService
+                            .sendAnnouncement(View.of(context), stateHint, textDirectionLocal)
+                            .catchError(
+                                (exception, stack) =>
+                                {
+                                    FlutterError.reportError(
+                                        new FlutterErrorDetails(
+                                            exception: exception,
+                                            stack: stack,
+                                            library: "material library",
+                                            context: new ErrorDescription(
+                                                "while sending semantics announcement"
+                                            )
+                                        )
+                                    );
+                                }
+                            )
+                    );
+                    _timer?.cancel();
+                    _timer = null;
+                }
+            );
         }
         else
         {
             if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(context), stateHint, textDirectionLocal).catchError((exception, stack) =>
-                {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new ErrorDescription("while sending semantics announcement")));
-                }));
+                DartRuntimePrimitives.Ignore(
+                    SemanticsService
+                        .sendAnnouncement(View.of(context), stateHint, textDirectionLocal)
+                        .catchError(
+                            (exception, stack) =>
+                            {
+                                FlutterError.reportError(
+                                    new FlutterErrorDetails(
+                                        exception: exception,
+                                        stack: stack,
+                                        library: "material library",
+                                        context: new ErrorDescription(
+                                            "while sending semantics announcement"
+                                        )
+                                    )
+                                );
+                            }
+                        )
+                );
             }
         }
         widget.onExpansionChanged?.Invoke(_tileController.isExpanded);
@@ -171,18 +245,20 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
     internal virtual ListTileControlAffinity _effectiveAffinity()
     {
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
-        ListTileControlAffinity affinity = (widget.controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.trailing;
+        ListTileControlAffinity affinity =
+            (widget.controlAffinity ?? listTileTheme.controlAffinity)
+            ?? ListTileControlAffinity.trailing;
         switch (affinity)
         {
             case ListTileControlAffinity.leading:
-                {
-                    return ListTileControlAffinity.leading;
-                }
+            {
+                return ListTileControlAffinity.leading;
+            }
             case ListTileControlAffinity.trailing:
             case ListTileControlAffinity.platform:
-                {
-                    return ListTileControlAffinity.trailing;
-                }
+            {
+                return ListTileControlAffinity.trailing;
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -192,7 +268,8 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
     internal virtual Widget? _buildIcon(BuildContext context, Animation<double> animation)
     {
         _iconTurns = animation.drive(_halfTween.chain(_easeInTween));
-        return (Widget?)new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more));
+        return (Widget?)
+            new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,40 +298,137 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
         _iconColor = animation.drive(_iconColorTween.chain(_easeInTween));
         _headerColor = animation.drive(_headerColorTween.chain(_easeInTween));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        string onTapHintLocal = _tileController.isExpanded ? localizations.expansionTileExpandedTapHint : localizations.expansionTileCollapsedTapHint;
-        string semanticsHint = PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.iOS => _tileController.isExpanded ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}" : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}", TargetPlatform.macOS => _tileController.isExpanded ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}" : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}", _ => _tileController.isExpanded ? localizations.collapsedHint : localizations.expandedHint };
-        Widget childLocal = ListTileTheme.merge(iconColor: _iconColor.value ?? _expansionTileTheme.iconColor, textColor: _headerColor.value, child: new ListTile(enabled: widget.enabled, onTap: _tileController.isExpanded ? _tileController.collapse : _tileController.expand, dense: widget.dense, splashColor: widget.splashColor, visualDensity: widget.visualDensity, enableFeedback: widget.enableFeedback, contentPadding: widget.tilePadding ?? _expansionTileTheme.tilePadding, leading: widget.leading ?? _buildLeadingIcon(context, animation), title: widget.title, subtitle: widget.subtitle, trailing: widget.showTrailingIcon ? (widget.trailing ?? _buildTrailingIcon(context, animation)) : null, minTileHeight: widget.minTileHeight, internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap, statesController: widget.statesController));
+        string onTapHintLocal = _tileController.isExpanded
+            ? localizations.expansionTileExpandedTapHint
+            : localizations.expansionTileCollapsedTapHint;
+        string semanticsHint = PlatformLibrary.defaultTargetPlatform switch
+        {
+            TargetPlatform.iOS => _tileController.isExpanded
+                ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}"
+                : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}",
+            TargetPlatform.macOS => _tileController.isExpanded
+                ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}"
+                : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}",
+            _ => _tileController.isExpanded
+                ? localizations.collapsedHint
+                : localizations.expandedHint,
+        };
+        Widget childLocal = ListTileTheme.merge(
+            iconColor: _iconColor.value ?? _expansionTileTheme.iconColor,
+            textColor: _headerColor.value,
+            child: new ListTile(
+                enabled: widget.enabled,
+                onTap: _tileController.isExpanded
+                    ? _tileController.collapse
+                    : _tileController.expand,
+                dense: widget.dense,
+                splashColor: widget.splashColor,
+                visualDensity: widget.visualDensity,
+                enableFeedback: widget.enableFeedback,
+                contentPadding: widget.tilePadding ?? _expansionTileTheme.tilePadding,
+                leading: widget.leading ?? _buildLeadingIcon(context, animation),
+                title: widget.title,
+                subtitle: widget.subtitle,
+                trailing: widget.showTrailingIcon
+                    ? (widget.trailing ?? _buildTrailingIcon(context, animation))
+                    : null,
+                minTileHeight: widget.minTileHeight,
+                internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap,
+                statesController: widget.statesController
+            )
+        );
         if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
         {
-            return new Widgets.Semantics(label: semanticsHint, liveRegion: true, accessibilityFocusBlockType: AccessibilityFocusBlockType.blockNode, child: new Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal));
+            return new Widgets.Semantics(
+                label: semanticsHint,
+                liveRegion: true,
+                accessibilityFocusBlockType: AccessibilityFocusBlockType.blockNode,
+                child: new Widgets.Semantics(
+                    hint: semanticsHint,
+                    onTapHint: onTapHintLocal,
+                    child: childLocal
+                )
+            );
         }
-        return new Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal);
+        return new Widgets.Semantics(
+            hint: semanticsHint,
+            onTapHint: onTapHintLocal,
+            child: childLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Widget _buildBody(BuildContext context, Animation<double> animation)
     {
-        return new Align(alignment: (widget.expandedAlignment ?? _expansionTileTheme.expandedAlignment) ?? Alignment.center, child: new Padding(padding: (widget.childrenPadding ?? _expansionTileTheme.childrenPadding) ?? EdgeInsets.zero, child: new Column(crossAxisAlignment: widget.expandedCrossAxisAlignment ?? CrossAxisAlignment.center, children: widget.children)));
+        return new Align(
+            alignment: (widget.expandedAlignment ?? _expansionTileTheme.expandedAlignment)
+                ?? Alignment.center,
+            child: new Padding(
+                padding: (widget.childrenPadding ?? _expansionTileTheme.childrenPadding)
+                    ?? EdgeInsets.zero,
+                child: new Column(
+                    crossAxisAlignment: widget.expandedCrossAxisAlignment
+                        ?? CrossAxisAlignment.center,
+                    children: widget.children
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildExpansible(BuildContext context, Widget header, Widget body, Animation<double> animation)
+    internal virtual Widget _buildExpansible(
+        BuildContext context,
+        Widget header,
+        Widget body,
+        Animation<double> animation
+    )
     {
         _backgroundColor = animation.drive(_backgroundColorTween.chain(_easeOutTween));
         _border = animation.drive(_borderTween.chain(_easeOutTween));
-        Color backgroundColorLocal = (_backgroundColor.value ?? _expansionTileTheme.backgroundColor) ?? Colors.transparent;
-        ShapeBorder expansionTileBorder = _border.value ?? new Border(top: new BorderSide(color: Colors.transparent), bottom: new BorderSide(color: Colors.transparent));
-        Clip clipBehaviorLocal = (widget.clipBehavior ?? _expansionTileTheme.clipBehavior) ?? Clip.antiAlias;
-        Decoration decorationLocal = new ShapeDecoration(color: backgroundColorLocal, shape: expansionTileBorder);
-        Widget tile = new Padding(padding: decorationLocal.padding, child: new Column(mainAxisSize: MainAxisSize.min, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(header), DartRuntimePrimitives.ConvertValue<Widget>(body) }));
-        bool isShapeProvided = (widget.shape is not null) || (_expansionTileTheme.shape is not null) || (widget.collapsedShape is not null) || (_expansionTileTheme.collapsedShape is not null);
+        Color backgroundColorLocal =
+            (_backgroundColor.value ?? _expansionTileTheme.backgroundColor) ?? Colors.transparent;
+        ShapeBorder expansionTileBorder =
+            _border.value
+            ?? new Border(
+                top: new BorderSide(color: Colors.transparent),
+                bottom: new BorderSide(color: Colors.transparent)
+            );
+        Clip clipBehaviorLocal =
+            (widget.clipBehavior ?? _expansionTileTheme.clipBehavior) ?? Clip.antiAlias;
+        Decoration decorationLocal = new ShapeDecoration(
+            color: backgroundColorLocal,
+            shape: expansionTileBorder
+        );
+        Widget tile = new Padding(
+            padding: decorationLocal.padding,
+            child: new Column(
+                mainAxisSize: MainAxisSize.min,
+                children: new List<Widget>
+                {
+                    DartRuntimePrimitives.ConvertValue<Widget>(header),
+                    DartRuntimePrimitives.ConvertValue<Widget>(body),
+                }
+            )
+        );
+        bool isShapeProvided =
+            (widget.shape is not null)
+            || (_expansionTileTheme.shape is not null)
+            || (widget.collapsedShape is not null)
+            || (_expansionTileTheme.collapsedShape is not null);
         if (isShapeProvided)
         {
-            return new Material(clipBehavior: clipBehaviorLocal, color: backgroundColorLocal, shape: expansionTileBorder, child: tile);
+            return new Material(
+                clipBehavior: clipBehaviorLocal,
+                color: backgroundColorLocal,
+                shape: expansionTileBorder,
+                child: tile
+            );
         }
         if (backgroundColorLocal.a > 0L)
         {
-            tile = DartRuntimePrimitives.ConvertValue<Widget>(new Material(type: MaterialType.transparency, child: tile));
+            tile = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Material(type: MaterialType.transparency, child: tile)
+            );
         }
         return new DecoratedBox(decoration: decorationLocal, child: tile);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -266,19 +440,31 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
         ThemeData theme = Theme.of(context);
         _expansionTileTheme = ExpansionTileTheme.of(context);
         ExpansionTileThemeData defaults = new _ExpansionTileDefaultsM3__expansion_tile(context);
-        if ((!Equals(widget.collapsedShape, oldWidget.collapsedShape)) || (!Equals(widget.shape, oldWidget.shape)))
+        if (
+            (!Equals(widget.collapsedShape, oldWidget.collapsedShape))
+            || (!Equals(widget.shape, oldWidget.shape))
+        )
         {
             _updateShapeBorder(theme);
         }
-        if ((!Equals(widget.collapsedTextColor, oldWidget.collapsedTextColor)) || (!Equals(widget.textColor, oldWidget.textColor)))
+        if (
+            (!Equals(widget.collapsedTextColor, oldWidget.collapsedTextColor))
+            || (!Equals(widget.textColor, oldWidget.textColor))
+        )
         {
             _updateHeaderColor(defaults);
         }
-        if ((!Equals(widget.collapsedIconColor, oldWidget.collapsedIconColor)) || (!Equals(widget.iconColor, oldWidget.iconColor)))
+        if (
+            (!Equals(widget.collapsedIconColor, oldWidget.collapsedIconColor))
+            || (!Equals(widget.iconColor, oldWidget.iconColor))
+        )
         {
             _updateIconColor(defaults);
         }
-        if ((!Equals(widget.backgroundColor, oldWidget.backgroundColor)) || (!Equals(widget.collapsedBackgroundColor, oldWidget.collapsedBackgroundColor)))
+        if (
+            (!Equals(widget.backgroundColor, oldWidget.backgroundColor))
+            || (!Equals(widget.collapsedBackgroundColor, oldWidget.collapsedBackgroundColor))
+        )
         {
             _updateBackgroundColor();
         }
@@ -315,65 +501,128 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
 
     internal virtual void _updateAnimationDuration()
     {
-        _duration = (widget.expansionAnimationStyle?.duration ?? _expansionTileTheme.expansionAnimationStyle?.duration) ?? Duration.Create(milliseconds: 200L);
+        _duration =
+            (
+                widget.expansionAnimationStyle?.duration
+                ?? _expansionTileTheme.expansionAnimationStyle?.duration
+            ) ?? Duration.Create(milliseconds: 200L);
     }
 
     internal virtual void _updateShapeBorder(ThemeData theme)
     {
-        DartRuntimePrimitives.Ignore(((Func<ShapeBorderTween>)(() =>
-{
-    var __cascade = _borderTween;
-    __cascade.begin = (widget.collapsedShape ?? _expansionTileTheme.collapsedShape) ?? new Border(top: new BorderSide(color: Colors.transparent), bottom: new BorderSide(color: Colors.transparent));
-    __cascade.end = (widget.shape ?? _expansionTileTheme.shape) ?? new Border(top: new BorderSide(color: theme.dividerColor), bottom: new BorderSide(color: theme.dividerColor));
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ShapeBorderTween>)(
+                    () =>
+                    {
+                        var __cascade = _borderTween;
+                        __cascade.begin =
+                            (widget.collapsedShape ?? _expansionTileTheme.collapsedShape)
+                            ?? new Border(
+                                top: new BorderSide(color: Colors.transparent),
+                                bottom: new BorderSide(color: Colors.transparent)
+                            );
+                        __cascade.end =
+                            (widget.shape ?? _expansionTileTheme.shape)
+                            ?? new Border(
+                                top: new BorderSide(color: theme.dividerColor),
+                                bottom: new BorderSide(color: theme.dividerColor)
+                            );
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     internal virtual void _updateHeaderColor(ExpansionTileThemeData defaults)
     {
-        DartRuntimePrimitives.Ignore(((Func<ColorTween>)(() =>
-{
-    var __cascade = _headerColorTween;
-    __cascade.begin = (widget.collapsedTextColor ?? _expansionTileTheme.collapsedTextColor) ?? defaults.collapsedTextColor;
-    __cascade.end = (widget.textColor ?? _expansionTileTheme.textColor) ?? defaults.textColor;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ColorTween>)(
+                    () =>
+                    {
+                        var __cascade = _headerColorTween;
+                        __cascade.begin =
+                            (widget.collapsedTextColor ?? _expansionTileTheme.collapsedTextColor)
+                            ?? defaults.collapsedTextColor;
+                        __cascade.end =
+                            (widget.textColor ?? _expansionTileTheme.textColor)
+                            ?? defaults.textColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     internal virtual void _updateIconColor(ExpansionTileThemeData defaults)
     {
-        DartRuntimePrimitives.Ignore(((Func<ColorTween>)(() =>
-{
-    var __cascade = _iconColorTween;
-    __cascade.begin = (widget.collapsedIconColor ?? _expansionTileTheme.collapsedIconColor) ?? defaults.collapsedIconColor;
-    __cascade.end = (widget.iconColor ?? _expansionTileTheme.iconColor) ?? defaults.iconColor;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ColorTween>)(
+                    () =>
+                    {
+                        var __cascade = _iconColorTween;
+                        __cascade.begin =
+                            (widget.collapsedIconColor ?? _expansionTileTheme.collapsedIconColor)
+                            ?? defaults.collapsedIconColor;
+                        __cascade.end =
+                            (widget.iconColor ?? _expansionTileTheme.iconColor)
+                            ?? defaults.iconColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     internal virtual void _updateBackgroundColor()
     {
-        DartRuntimePrimitives.Ignore(((Func<ColorTween>)(() =>
-{
-    var __cascade = _backgroundColorTween;
-    __cascade.begin = widget.collapsedBackgroundColor ?? _expansionTileTheme.collapsedBackgroundColor;
-    __cascade.end = widget.backgroundColor ?? _expansionTileTheme.backgroundColor;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<ColorTween>)(
+                    () =>
+                    {
+                        var __cascade = _backgroundColorTween;
+                        __cascade.begin =
+                            widget.collapsedBackgroundColor
+                            ?? _expansionTileTheme.collapsedBackgroundColor;
+                        __cascade.end =
+                            widget.backgroundColor ?? _expansionTileTheme.backgroundColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     internal virtual void _updateHeightFactorCurve()
     {
-        _curve = (widget.expansionAnimationStyle?.curve ?? _expansionTileTheme.expansionAnimationStyle?.curve) ?? Curves.easeIn;
-        _reverseCurve = widget.expansionAnimationStyle?.reverseCurve ?? _expansionTileTheme.expansionAnimationStyle?.reverseCurve;
+        _curve =
+            (
+                widget.expansionAnimationStyle?.curve
+                ?? _expansionTileTheme.expansionAnimationStyle?.curve
+            ) ?? Curves.easeIn;
+        _reverseCurve =
+            widget.expansionAnimationStyle?.reverseCurve
+            ?? _expansionTileTheme.expansionAnimationStyle?.reverseCurve;
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Expansible(controller: _tileController, curve: _curve, duration: _duration, reverseCurve: _reverseCurve, maintainState: widget.maintainState, headerBuilder: _buildHeader, bodyBuilder: _buildBody, expansibleBuilder: _buildExpansible);
+        return new Expansible(
+            controller: _tileController,
+            curve: _curve,
+            duration: _duration,
+            reverseCurve: _reverseCurve,
+            maintainState: widget.maintainState,
+            headerBuilder: _buildHeader,
+            bodyBuilder: _buildBody,
+            expansibleBuilder: _buildExpansible
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData
@@ -413,8 +662,11 @@ internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData
         this.context = context;
     }
 
-    public override Color? textColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
+    public override Color? textColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
     public override Color? iconColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? collapsedTextColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
-    public override Color? collapsedIconColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
+    public override Color? collapsedTextColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
+    public override Color? collapsedIconColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
 }

@@ -20,13 +20,23 @@ public interface AssetManifest
     {
         if (ConstantsLibrary.kIsWeb)
         {
-            return bundle.loadStructuredData<AssetManifest>(Asset_manifestLibrary._kAssetManifestWebFilename, (jsonData) =>
-            {
-                var message = new ByteData(Dart_convertLibrary.base64.decode(((string?)Dart_convertLibrary.json.decode(jsonData))!));
-                return _AssetManifestBin.CreateFromStandardMessageCodecMessage(message);
-            });
+            return bundle.loadStructuredData<AssetManifest>(
+                Asset_manifestLibrary._kAssetManifestWebFilename,
+                (jsonData) =>
+                {
+                    var message = new ByteData(
+                        Dart_convertLibrary.base64.decode(
+                            ((string?)Dart_convertLibrary.json.decode(jsonData))!
+                        )
+                    );
+                    return _AssetManifestBin.CreateFromStandardMessageCodecMessage(message);
+                }
+            );
         }
-        return bundle.loadStructuredBinaryData<AssetManifest>(Asset_manifestLibrary._kAssetManifestFilename, (arg0) => _AssetManifestBin.CreateFromStandardMessageCodecMessage(arg0));
+        return bundle.loadStructuredBinaryData<AssetManifest>(
+            Asset_manifestLibrary._kAssetManifestFilename,
+            (arg0) => _AssetManifestBin.CreateFromStandardMessageCodecMessage(arg0)
+        );
     }
     public List<string> listAssets();
     public List<AssetMetadata>? getAssetVariants(string key);
@@ -35,7 +45,8 @@ public interface AssetManifest
 internal class _AssetManifestBin : AssetManifest
 {
     internal virtual DartMap<object?, object?> _data { get; private set; } = default!;
-    internal virtual DartMap<string, List<AssetMetadata>> _typeCastedData { get; private set; } = new DartMap<string, List<AssetMetadata>>();
+    internal virtual DartMap<string, List<AssetMetadata>> _typeCastedData { get; private set; } =
+        new DartMap<string, List<AssetMetadata>>();
 
     internal _AssetManifestBin(DartMap<object?, object?> standardMessageData)
     {
@@ -46,7 +57,10 @@ internal class _AssetManifestBin : AssetManifest
     {
         var data = new StandardMessageCodec().decodeMessage(message);
         if (data is not System.Collections.IDictionary entries)
+        {
             throw new FormatException("The asset manifest must decode to a map.");
+        }
+
         return new _AssetManifestBin(DartRuntimePrimitives.ConvertMap<object?, object?>(entries));
     }
 
@@ -59,12 +73,23 @@ internal class _AssetManifestBin : AssetManifest
             {
                 return null;
             }
-            _typeCastedData[key] = ((IEnumerable<object?>?)(_data.GetValueOrDefault(key) ?? new List<object?>()))!.cast<DartMap<object?, object?>>().map((data) =>
-            {
-                var asset = ((string?)data.GetValueOrDefault("asset")!)!;
-                object? dpr = data.GetValueOrDefault("dpr");
-                return new AssetMetadata(key: ((string?)data.GetValueOrDefault("asset")!)!, targetDevicePixelRatio: (double?)dpr, main: key == asset);
-            }).ToList();
+            _typeCastedData[key] = (
+                (IEnumerable<object?>?)(_data.GetValueOrDefault(key) ?? new List<object?>())
+            )!
+                .cast<DartMap<object?, object?>>()
+                .map(
+                    (data) =>
+                    {
+                        var asset = ((string?)data.GetValueOrDefault("asset")!)!;
+                        object? dpr = data.GetValueOrDefault("dpr");
+                        return new AssetMetadata(
+                            key: ((string?)data.GetValueOrDefault("asset")!)!,
+                            targetDevicePixelRatio: (double?)dpr,
+                            main: key == asset
+                        );
+                    }
+                )
+                .ToList();
             _data.remove(key);
         }
         return _typeCastedData.GetValueOrDefault(key)!;
@@ -76,7 +101,6 @@ internal class _AssetManifestBin : AssetManifest
         return new List<string>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AssetMetadata
@@ -91,5 +115,4 @@ public class AssetMetadata
         this.targetDevicePixelRatio = targetDevicePixelRatio;
         this.main = main;
     }
-
 }

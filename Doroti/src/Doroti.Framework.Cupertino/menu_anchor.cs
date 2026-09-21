@@ -8,7 +8,16 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Menu_anchorLibrary
 {
-    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new _FocusUpIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new _FocusDownIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.home)] = new _FocusFirstIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.end)] = new _FocusLastIntent__menu_anchor() };
+    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new _FocusUpIntent__menu_anchor(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new _FocusDownIntent__menu_anchor(),
+        [new SingleActivator(LogicalKeyboardKey.home)] = new _FocusFirstIntent__menu_anchor(),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new _FocusLastIntent__menu_anchor(),
+    };
 }
 
 public static partial class Menu_anchorLibrary
@@ -21,16 +30,16 @@ public static partial class Menu_anchorLibrary
             {
                 case TargetPlatform.iOS:
                 case TargetPlatform.macOS:
-                    {
-                        return true;
-                    }
+                {
+                    return true;
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
-                    {
-                        return false;
-                    }
+                {
+                    return false;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
@@ -100,41 +109,104 @@ internal enum _CupertinoMenuWidth__menu_anchor
     iPadOS,
     iPadOSAccessible,
     iOS,
-    iOSAccessible
+    iOSAccessible,
 }
 
 internal static class _CupertinoMenuWidth__menu_anchorMembers
 {
-    internal static double points(this _CupertinoMenuWidth__menu_anchor value) => value switch
-    {
-        _CupertinoMenuWidth__menu_anchor.iPadOS => 262.0,
-        _CupertinoMenuWidth__menu_anchor.iPadOSAccessible => 343.0,
-        _CupertinoMenuWidth__menu_anchor.iOS => 250.0,
-        _ => 370.0,
-    };
+    internal static double points(this _CupertinoMenuWidth__menu_anchor value) =>
+        value switch
+        {
+            _CupertinoMenuWidth__menu_anchor.iPadOS => 262.0,
+            _CupertinoMenuWidth__menu_anchor.iPadOSAccessible => 343.0,
+            _CupertinoMenuWidth__menu_anchor.iOS => 250.0,
+            _ => 370.0,
+        };
 
-    internal static _CupertinoMenuWidth__menu_anchor CreateFromScreenWidth(bool isLargeTextModeEnabled, double screenWidth) =>
+    internal static _CupertinoMenuWidth__menu_anchor CreateFromScreenWidth(
+        bool isLargeTextModeEnabled,
+        double screenWidth
+    ) =>
         screenWidth >= 768.0
-            ? (isLargeTextModeEnabled ? _CupertinoMenuWidth__menu_anchor.iPadOSAccessible : _CupertinoMenuWidth__menu_anchor.iPadOS)
-            : (isLargeTextModeEnabled ? _CupertinoMenuWidth__menu_anchor.iOSAccessible : _CupertinoMenuWidth__menu_anchor.iOS);
+            ? (
+                isLargeTextModeEnabled
+                    ? _CupertinoMenuWidth__menu_anchor.iPadOSAccessible
+                    : _CupertinoMenuWidth__menu_anchor.iPadOS
+            )
+            : (
+                isLargeTextModeEnabled
+                    ? _CupertinoMenuWidth__menu_anchor.iOSAccessible
+                    : _CupertinoMenuWidth__menu_anchor.iOS
+            );
 }
+
 internal enum _DynamicTypeStyle__menu_anchor
 {
     body,
-    subhead
+    subhead,
 }
 
 internal static class _DynamicTypeStyle__menu_anchorMembers
 {
     private const long _kScaleCount = 12;
-    private static readonly List<long> _normalizedBodyScales = new() { -3, -2, -1, 0, 2, 4, 6, 11, 16, 23, 30, 36 };
-    private static readonly double[] _bodySizes = { 14, 15, 16, 17, 19, 21, 23, 28, 33, 40, 47, 53 };
-    private static readonly double[] _subheadSizes = { 12, 13, 14, 15, 17, 19, 21, 26, 31, 38, 45, 51 };
+    private static readonly List<long> _normalizedBodyScales = new()
+    {
+        -3,
+        -2,
+        -1,
+        0,
+        2,
+        4,
+        6,
+        11,
+        16,
+        23,
+        30,
+        36,
+    };
+    private static readonly double[] _bodySizes =
+    {
+        14,
+        15,
+        16,
+        17,
+        19,
+        21,
+        23,
+        28,
+        33,
+        40,
+        47,
+        53,
+    };
+    private static readonly double[] _subheadSizes =
+    {
+        12,
+        13,
+        14,
+        15,
+        17,
+        19,
+        21,
+        26,
+        31,
+        38,
+        45,
+        51,
+    };
+
     private static List<TextStyle> styles(this _DynamicTypeStyle__menu_anchor value) =>
         (value == _DynamicTypeStyle__menu_anchor.body ? _bodySizes : _subheadSizes)
-            .Select(size => new TextStyle(fontSize: size)).ToList();
-    private static double _interpolateUnits(double value, double min, double max) => (value - min) / (max - min);
-    public static TextStyle resolveTextStyle(this _DynamicTypeStyle__menu_anchor value, TextScaler textScaler)
+            .Select(size => new TextStyle(fontSize: size))
+            .ToList();
+
+    private static double _interpolateUnits(double value, double min, double max) =>
+        (value - min) / (max - min);
+
+    public static TextStyle resolveTextStyle(
+        this _DynamicTypeStyle__menu_anchor value,
+        TextScaler textScaler
+    )
     {
         DartRuntimePrimitives.Assert(() => checked(value.styles().Count) == _kScaleCount);
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
@@ -153,7 +225,11 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
             {
                 return value.styles().First();
             }
-            return TextStyle.lerp(value.styles()[(int)(i - 1L)], value.styles()[(int)i], _interpolateUnits(units, _normalizedBodyScales[(int)(i - 1L)], bodyUnits))!;
+            return TextStyle.lerp(
+                value.styles()[(int)(i - 1L)],
+                value.styles()[(int)i],
+                _interpolateUnits(units, _normalizedBodyScales[(int)(i - 1L)], bodyUnits)
+            )!;
         }
         return value.styles().Last();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -194,7 +270,8 @@ internal class _AnchorScope__menu_anchor : InheritedWidget
 {
     public virtual bool hasLeading { get; private set; } = default!;
 
-    internal _AnchorScope__menu_anchor(bool hasLeading, Widget child) : base(child: child)
+    internal _AnchorScope__menu_anchor(bool hasLeading, Widget child)
+        : base(child: child)
     {
         this.hasLeading = hasLeading;
     }
@@ -205,7 +282,6 @@ internal class _AnchorScope__menu_anchor : InheritedWidget
         return hasLeading != __oldWidget.hasLeading;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public delegate void CupertinoMenuAnimationStatusChangedCallback(AnimationStatus status);
@@ -224,11 +300,33 @@ public class CupertinoMenuAnchor : StatefulWidget
     public virtual bool useRootOverlay { get; private set; } = default!;
     public virtual EdgeInsetsGeometry overlayPadding { get; private set; } = default!;
     public virtual List<Widget> menuChildren { get; private set; } = default!;
-    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
+    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder
+    {
+        get;
+        private set;
+    }
     public virtual Widget? child { get; private set; }
     public virtual FocusNode? childFocusNode { get; private set; }
 
-    public CupertinoMenuAnchor(Key? key = null, MenuController? controller = null, Action? onOpen = null, Action? onClose = null, AnimationStatusListener? onAnimationStatusChanged = null, BoxConstraints? constraints = null, bool constrainCrossAxis = false, bool consumeOutsideTaps = false, bool enableSwipe = true, bool enableLongPressToOpen = false, bool useRootOverlay = false, EdgeInsetsGeometry overlayPadding = default!, List<Widget> menuChildren = default!, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, Widget? child = null, FocusNode? childFocusNode = null) : base(key: key)
+    public CupertinoMenuAnchor(
+        Key? key = null,
+        MenuController? controller = null,
+        Action? onOpen = null,
+        Action? onClose = null,
+        AnimationStatusListener? onAnimationStatusChanged = null,
+        BoxConstraints? constraints = null,
+        bool constrainCrossAxis = false,
+        bool consumeOutsideTaps = false,
+        bool enableSwipe = true,
+        bool enableLongPressToOpen = false,
+        bool useRootOverlay = false,
+        EdgeInsetsGeometry overlayPadding = default!,
+        List<Widget> menuChildren = default!,
+        Func<BuildContext, MenuController, Widget?, Widget>? builder = null,
+        Widget? child = null,
+        FocusNode? childFocusNode = null
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry __overlayPadding = overlayPadding ?? EdgeInsets.CreateAll(8);
         this.controller = controller;
@@ -255,7 +353,9 @@ public class CupertinoMenuAnchor : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuAnchorState__menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuAnchorState__menu_anchor());
+
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return menuChildren.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
@@ -267,33 +367,85 @@ public class CupertinoMenuAnchor : StatefulWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<FocusNode?>("childFocusNode", childFocusNode));
         properties.add(new DiagnosticsProperty<BoxConstraints?>("constraints", constraints));
-        properties.add(new FlagProperty("constrainCrossAxis", value: constrainCrossAxis, ifTrue: "constrains cross axis"));
-        properties.add(new FlagProperty("enableSwipe", value: enableSwipe, ifTrue: "swipe enabled", ifFalse: "swipe disabled"));
-        properties.add(new FlagProperty("consumeOutsideTaps", value: consumeOutsideTaps, ifTrue: "consumes outside taps"));
-        properties.add(new FlagProperty("useRootOverlay", value: useRootOverlay, ifTrue: "uses root overlay"));
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("overlayPadding", overlayPadding));
+        properties.add(
+            new FlagProperty(
+                "constrainCrossAxis",
+                value: constrainCrossAxis,
+                ifTrue: "constrains cross axis"
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "enableSwipe",
+                value: enableSwipe,
+                ifTrue: "swipe enabled",
+                ifFalse: "swipe disabled"
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "consumeOutsideTaps",
+                value: consumeOutsideTaps,
+                ifTrue: "consumes outside taps"
+            )
+        );
+        properties.add(
+            new FlagProperty("useRootOverlay", value: useRootOverlay, ifTrue: "uses root overlay")
+        );
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("overlayPadding", overlayPadding)
+        );
     }
-
 }
 
-internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAnchor>, TickerProviderStateMixin<CupertinoMenuAnchor>
+internal class _CupertinoMenuAnchorState__menu_anchor
+    : State<CupertinoMenuAnchor>,
+        TickerProviderStateMixin<CupertinoMenuAnchor>
 {
     internal static Duration _kLongPressToOpenDuration = Duration.Create(milliseconds: 400L);
     internal static Physics.Tolerance _kSpringTolerance = new Physics.Tolerance(velocity: 0.1);
-    public static Physics.SpringDescription forwardSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 337L), bounce: 0.2);
-    public static Physics.SpringDescription reverseSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 409L));
+    public static Physics.SpringDescription forwardSpring =
+        Physics.SpringDescription.CreateWithDurationAndBounce(
+            duration: Duration.Create(milliseconds: 337L),
+            bounce: 0.2
+        );
+    public static Physics.SpringDescription reverseSpring =
+        Physics.SpringDescription.CreateWithDurationAndBounce(
+            duration: Duration.Create(milliseconds: 409L)
+        );
     internal virtual AnimationController _animationController { get; private set; } = default!;
-    internal virtual FocusScopeNode _menuScopeNode { get; private set; } = new FocusScopeNode(debugLabel: "Menu Scope");
-    internal virtual ValueNotifier<double> _swipeDistanceNotifier { get; private set; } = new ValueNotifier<double>(0);
+    internal virtual FocusScopeNode _menuScopeNode { get; private set; } =
+        new FocusScopeNode(debugLabel: "Menu Scope");
+    internal virtual ValueNotifier<double> _swipeDistanceNotifier { get; private set; } =
+        new ValueNotifier<double>(0);
     internal virtual bool? _hasLeadingWidget { get; set; } = default;
     internal virtual MenuController? _internalMenuController { get; set; } = default;
     internal virtual AnimationStatus _animationStatus { get; set; } = AnimationStatus.dismissed;
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual MenuController _menuController => DartRuntimePrimitives.ConvertValue<MenuController>(widget.controller ?? _internalMenuController!);
-    public virtual bool isOpenOrOpening => AnimationStatusMembers.isForwardOrCompleted(_animationStatus);
-    public virtual bool enableSwipe => DartRuntimePrimitives.ConvertValue<bool>(widget.enableSwipe && (_animationStatus switch { AnimationStatus.forward or AnimationStatus.completed => true, AnimationStatus.dismissed => true, AnimationStatus.reverse => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+    internal virtual MenuController _menuController =>
+        DartRuntimePrimitives.ConvertValue<MenuController>(
+            widget.controller ?? _internalMenuController!
+        );
+    public virtual bool isOpenOrOpening =>
+        AnimationStatusMembers.isForwardOrCompleted(_animationStatus);
+    public virtual bool enableSwipe =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            widget.enableSwipe
+                && (
+                    _animationStatus switch
+                    {
+                        AnimationStatus.forward or AnimationStatus.completed => true,
+                        AnimationStatus.dismissed => true,
+                        AnimationStatus.reverse => false,
+                        _ => throw new InvalidOperationException(
+                            "Non-exhaustive Dart switch value."
+                        ),
+                    }
+                )
+        );
+
     public override void initState()
     {
         base.initState();
@@ -335,29 +487,53 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
     public override void dispose()
     {
         _menuScopeNode.dispose();
-        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _animationController;
-    __cascade.stop();
-    __cascade.dispose();
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = _animationController;
+                        __cascade.stop();
+                        __cascade.dispose();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         _internalMenuController = null;
         _swipeDistanceNotifier.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -365,11 +541,17 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
 
     internal virtual bool _resolveHasLeading()
     {
-        return widget.menuChildren.any((element) =>
-        {
-            return element switch { CupertinoMenuEntry entry => entry.hasLeading(context), _ => false };
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return widget.menuChildren.any(
+            (element) =>
+            {
+                return element switch
+                {
+                    CupertinoMenuEntry entry => entry.hasLeading(context),
+                    _ => false,
+                };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -406,7 +588,27 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
         {
             return;
         }
-        DartRuntimePrimitives.Ignore(_animationController.animateBackWith(new Physics.ClampedSimulation(new Physics.SpringSimulation(reverseSpring, _animationController.value, 0.0, 0.0, tolerance: _kSpringTolerance), xMin: 0.0, xMax: 1.0)).whenComplete(() => { hideMenu(); return default!; }));
+        DartRuntimePrimitives.Ignore(
+            _animationController
+                .animateBackWith(
+                    new Physics.ClampedSimulation(
+                        new Physics.SpringSimulation(
+                            reverseSpring,
+                            _animationController.value,
+                            0.0,
+                            0.0,
+                            tolerance: _kSpringTolerance
+                        ),
+                        xMin: 0.0,
+                        xMax: 1.0
+                    )
+                )
+                .whenComplete(() =>
+                {
+                    hideMenu();
+                    return default!;
+                })
+        );
     }
 
     internal virtual void _handleOpenRequested(Offset? position, Action showOverlay)
@@ -416,30 +618,85 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
         {
             return;
         }
-        _animationController.animateWith(new Physics.SpringSimulation(forwardSpring, _animationController.value, 1, 0.5));
+        _animationController.animateWith(
+            new Physics.SpringSimulation(forwardSpring, _animationController.value, 1, 0.5)
+        );
         FocusScope.of(context).setFirstFocus(_menuScopeNode);
     }
 
     internal virtual Widget _buildMenuOverlay(BuildContext childContext, RawMenuOverlayInfo info)
     {
-        return new ExcludeSemantics(excluding: !isOpenOrOpening, child: new IgnorePointer(ignoring: !isOpenOrOpening, child: new ExcludeFocus(excluding: !isOpenOrOpening, child: new _MenuOverlay__menu_anchor(constrainCrossAxis: widget.constrainCrossAxis, visibilityAnimation: _animationController.view, swipeDistanceListenable: _swipeDistanceNotifier, constraints: widget.constraints, consumeOutsideTaps: widget.consumeOutsideTaps, overlaySize: info.overlaySize, anchorRect: info.anchorRect, anchorPosition: info.position, tapRegionGroupId: info.tapRegionGroupId, focusScopeNode: _menuScopeNode, overlayPadding: widget.overlayPadding, children: widget.menuChildren))));
+        return new ExcludeSemantics(
+            excluding: !isOpenOrOpening,
+            child: new IgnorePointer(
+                ignoring: !isOpenOrOpening,
+                child: new ExcludeFocus(
+                    excluding: !isOpenOrOpening,
+                    child: new _MenuOverlay__menu_anchor(
+                        constrainCrossAxis: widget.constrainCrossAxis,
+                        visibilityAnimation: _animationController.view,
+                        swipeDistanceListenable: _swipeDistanceNotifier,
+                        constraints: widget.constraints,
+                        consumeOutsideTaps: widget.consumeOutsideTaps,
+                        overlaySize: info.overlaySize,
+                        anchorRect: info.anchorRect,
+                        anchorPosition: info.position,
+                        tapRegionGroupId: info.tapRegionGroupId,
+                        focusScopeNode: _menuScopeNode,
+                        overlayPadding: widget.overlayPadding,
+                        children: widget.menuChildren
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildChild(BuildContext context, MenuController controller, Widget? child)
+    internal virtual Widget _buildChild(
+        BuildContext context,
+        MenuController controller,
+        Widget? child
+    )
     {
-        Widget anchor = (widget.builder is null ? widget.child : widget.builder.Invoke(context, _menuController, widget.child)) ?? SizedBox.CreateShrink();
+        Widget anchor =
+            (
+                widget.builder is null
+                    ? widget.child
+                    : widget.builder.Invoke(context, _menuController, widget.child)
+            ) ?? SizedBox.CreateShrink();
         if (!widget.enableLongPressToOpen || !enableSwipe)
         {
             return anchor;
         }
-        return new _SwipeSurface__menu_anchor(onStart: () => _handleAnchorSwipeStart(), delay: _kLongPressToOpenDuration, child: anchor);
+        return new _SwipeSurface__menu_anchor(
+            onStart: () => _handleAnchorSwipeStart(),
+            delay: _kLongPressToOpenDuration,
+            child: anchor
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return new _SwipeRegion__menu_anchor(onDistanceChanged: _handleSwipeDistanceChange, enabled: enableSwipe, child: new _AnchorScope__menu_anchor(hasLeading: DartRuntimePrimitives.RequireValue(_hasLeadingWidget), child: new RawMenuAnchor(useRootOverlay: widget.useRootOverlay, onCloseRequested: _handleCloseRequested, onOpenRequested: _handleOpenRequested, overlayBuilder: _buildMenuOverlay, builder: _buildChild, controller: _menuController, childFocusNode: widget.childFocusNode, consumeOutsideTaps: widget.consumeOutsideTaps, onClose: widget.onClose, onOpen: widget.onOpen)));
+        return new _SwipeRegion__menu_anchor(
+            onDistanceChanged: _handleSwipeDistanceChange,
+            enabled: enableSwipe,
+            child: new _AnchorScope__menu_anchor(
+                hasLeading: DartRuntimePrimitives.RequireValue(_hasLeadingWidget),
+                child: new RawMenuAnchor(
+                    useRootOverlay: widget.useRootOverlay,
+                    onCloseRequested: _handleCloseRequested,
+                    onOpenRequested: _handleOpenRequested,
+                    overlayBuilder: _buildMenuOverlay,
+                    builder: _buildChild,
+                    controller: _menuController,
+                    childFocusNode: widget.childFocusNode,
+                    consumeOutsideTaps: widget.consumeOutsideTaps,
+                    onClose: widget.onClose,
+                    onOpen: widget.onOpen
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -452,13 +709,23 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -507,9 +774,17 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class _MenuOverlay__menu_anchor : StatefulWidget
@@ -527,7 +802,20 @@ public class _MenuOverlay__menu_anchor : StatefulWidget
     public virtual Animation<double> visibilityAnimation { get; private set; } = default!;
     public virtual ValueListenable<double> swipeDistanceListenable { get; private set; } = default!;
 
-    internal _MenuOverlay__menu_anchor(List<Widget> children, FocusScopeNode focusScopeNode, bool consumeOutsideTaps, bool constrainCrossAxis, BoxConstraints? constraints, Size overlaySize, EdgeInsetsGeometry overlayPadding, Rect anchorRect, Offset? anchorPosition, object tapRegionGroupId, Animation<double> visibilityAnimation, ValueListenable<double> swipeDistanceListenable)
+    internal _MenuOverlay__menu_anchor(
+        List<Widget> children,
+        FocusScopeNode focusScopeNode,
+        bool consumeOutsideTaps,
+        bool constrainCrossAxis,
+        BoxConstraints? constraints,
+        Size overlaySize,
+        EdgeInsetsGeometry overlayPadding,
+        Rect anchorRect,
+        Offset? anchorPosition,
+        object tapRegionGroupId,
+        Animation<double> visibilityAnimation,
+        ValueListenable<double> swipeDistanceListenable
+    )
     {
         this.children = children;
         this.focusScopeNode = focusScopeNode;
@@ -543,15 +831,26 @@ public class _MenuOverlay__menu_anchor : StatefulWidget
         this.swipeDistanceListenable = swipeDistanceListenable;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MenuOverlayState__menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MenuOverlayState__menu_anchor());
 }
 
-internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>, TickerProviderStateMixin<_MenuOverlay__menu_anchor>, WidgetsBindingObserver
+internal class _MenuOverlayState__menu_anchor
+    : State<_MenuOverlay__menu_anchor>,
+        TickerProviderStateMixin<_MenuOverlay__menu_anchor>,
+        WidgetsBindingObserver
 {
     internal static Offset _kAttachmentOffset = new Offset(0, 8);
-    internal static DartMap<Type, dynamic> _kActions = new DartMap<Type, dynamic> { [typeof(_FocusDownIntent__menu_anchor)] = new _FocusDownAction__menu_anchor(), [typeof(_FocusUpIntent__menu_anchor)] = new _FocusUpAction__menu_anchor(), [typeof(_FocusFirstIntent__menu_anchor)] = new _FocusFirstAction__menu_anchor(), [typeof(_FocusLastIntent__menu_anchor)] = new _FocusLastAction__menu_anchor() };
+    internal static DartMap<Type, dynamic> _kActions = new DartMap<Type, dynamic>
+    {
+        [typeof(_FocusDownIntent__menu_anchor)] = new _FocusDownAction__menu_anchor(),
+        [typeof(_FocusUpIntent__menu_anchor)] = new _FocusUpAction__menu_anchor(),
+        [typeof(_FocusFirstIntent__menu_anchor)] = new _FocusFirstAction__menu_anchor(),
+        [typeof(_FocusLastIntent__menu_anchor)] = new _FocusLastAction__menu_anchor(),
+    };
     internal virtual AnimationController _swipeAnimationController { get; private set; } = default!;
-    internal virtual ScrollController _scrollController { get; private set; } = new ScrollController();
+    internal virtual ScrollController _scrollController { get; private set; } =
+        new ScrollController();
     internal virtual ProxyAnimation _scaleAnimation { get; private set; } = new ProxyAnimation();
     internal virtual ProxyAnimation _fadeAnimation { get; private set; } = new ProxyAnimation();
     internal virtual ProxyAnimation _sizeAnimation { get; private set; } = new ProxyAnimation();
@@ -600,7 +899,11 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         {
             _resolveMotion();
         }
-        if ((!Equals(oldWidget.anchorRect, widget.anchorRect)) || (!Equals(oldWidget.anchorPosition, widget.anchorPosition)) || (!Equals(oldWidget.overlaySize, widget.overlaySize)))
+        if (
+            (!Equals(oldWidget.anchorRect, widget.anchorRect))
+            || (!Equals(oldWidget.anchorPosition, widget.anchorPosition))
+            || (!Equals(oldWidget.overlaySize, widget.overlaySize))
+        )
         {
             _resolvePosition();
         }
@@ -620,38 +923,68 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
     {
         _scrollController.dispose();
         widget.swipeDistanceListenable.removeListener(_handleSwipeDistanceChanged);
-        DartRuntimePrimitives.Ignore(((Func<Scheduler.Ticker?>)(() =>
-{
-    var __cascade = _swipeTicker;
-    __cascade?.stop();
-    __cascade?.dispose();
-    return __cascade;
-}))());
-        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _swipeAnimationController;
-    __cascade.stop();
-    __cascade.dispose();
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<Scheduler.Ticker?>)(
+                    () =>
+                    {
+                        var __cascade = _swipeTicker;
+                        __cascade?.stop();
+                        __cascade?.dispose();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = _swipeAnimationController;
+                        __cascade.stop();
+                        __cascade.dispose();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         _scaleAnimation.parent = null;
         _fadeAnimation.parent = null;
         _sizeAnimation.parent = null;
         WidgetsBinding.instance.removeObserver(this);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -690,30 +1023,51 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
 
     internal virtual void _resolveMotion()
     {
-        AccessibilityFeatures accessibilityFeaturesLocal = View.of(context).platformDispatcher.accessibilityFeatures;
+        AccessibilityFeatures accessibilityFeaturesLocal = View.of(
+            context
+        ).platformDispatcher.accessibilityFeatures;
         switch (accessibilityFeaturesLocal)
         {
             case AccessibilityFeatures { disableAnimations: true } __object32475:
-                {
-                    _scaleAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    _fadeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    break;
-                }
+            {
+                _scaleAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                _fadeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                break;
+            }
             case AccessibilityFeatures { reduceMotion: true } __object32712:
-                {
-                    _scaleAnimation.parent = _swipeAnimationController.view.drive(new Tween<double>(begin: 0.8, end: 1));
-                    _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
-                    break;
-                }
+            {
+                _scaleAnimation.parent = _swipeAnimationController.view.drive(
+                    new Tween<double>(begin: 0.8, end: 1)
+                );
+                _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                _fadeAnimation.parent = widget.visibilityAnimation.drive(
+                    new CurveTween(curve: Curves.easeIn).chain(
+                        new _ClampTween__menu_anchor(begin: 0, end: 1)
+                    )
+                );
+                break;
+            }
             default:
-                {
-                    _scaleAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new _AnimationProduct__menu_anchor(first: widget.visibilityAnimation, next: _swipeAnimationController.view.drive(new Tween<double>(begin: 0.8, end: 1))));
-                    _sizeAnimation.parent = widget.visibilityAnimation.drive(new Tween<double>(begin: 0.8, end: 1));
-                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
-                    break;
-                }
+            {
+                _scaleAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                    new _AnimationProduct__menu_anchor(
+                        first: widget.visibilityAnimation,
+                        next: _swipeAnimationController.view.drive(
+                            new Tween<double>(begin: 0.8, end: 1)
+                        )
+                    )
+                );
+                _sizeAnimation.parent = widget.visibilityAnimation.drive(
+                    new Tween<double>(begin: 0.8, end: 1)
+                );
+                _fadeAnimation.parent = widget.visibilityAnimation.drive(
+                    new CurveTween(curve: Curves.easeIn).chain(
+                        new _ClampTween__menu_anchor(begin: 0, end: 1)
+                    )
+                );
+                break;
+            }
         }
     }
 
@@ -722,7 +1076,9 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         Offset anchorMidpoint = default!;
         if (widget.anchorPosition is not null)
         {
-            anchorMidpoint = widget.anchorRect.topLeft + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
+            anchorMidpoint =
+                widget.anchorRect.topLeft
+                + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
         }
         else
         {
@@ -731,23 +1087,34 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         double xMidpointRatio = anchorMidpoint.dx / widget.overlaySize.width;
         double yMidpointRatio = anchorMidpoint.dy / widget.overlaySize.height;
         double dyLocal = (yMidpointRatio < 0.55) ? 1 : -1;
-        double dxLocal = xMidpointRatio switch { < 0.4 => -1.0, > 0.6 => 1.0, _ => 0.0 };
+        double dxLocal = xMidpointRatio switch
+        {
+            < 0.4 => -1.0,
+            > 0.6 => 1.0,
+            _ => 0.0,
+        };
         _menuAlignment = new Alignment(dxLocal, -dyLocal);
         Offset transformOrigin = default!;
         if (widget.anchorPosition is not null)
         {
-            _attachmentPoint = widget.anchorRect.topLeft + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
+            _attachmentPoint =
+                widget.anchorRect.topLeft
+                + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
             transformOrigin = _attachmentPoint;
         }
         else
         {
             Offset offset = _kAttachmentOffset * dyLocal;
-            _attachmentPoint = new Alignment(dxLocal, dyLocal).withinRect(widget.anchorRect) + offset;
+            _attachmentPoint =
+                new Alignment(dxLocal, dyLocal).withinRect(widget.anchorRect) + offset;
             transformOrigin = new Alignment(0, dyLocal).withinRect(widget.anchorRect) + offset;
         }
         double xOriginRatio = transformOrigin.dx / widget.overlaySize.width;
         double yOriginRatio = transformOrigin.dy / widget.overlaySize.height;
-        _attachmentPointAlignment = new Alignment((xOriginRatio * 2L) - 1L, (yOriginRatio * 2L) - 1L);
+        _attachmentPointAlignment = new Alignment(
+            (xOriginRatio * 2L) - 1L,
+            (yOriginRatio * 2L) - 1L
+        );
     }
 
     internal virtual void _handleOutsideTap(Gestures.PointerDownEvent @event)
@@ -757,7 +1124,11 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
 
     internal virtual void _handleSwipeDistanceChanged()
     {
-        _swipeTargetDistance = Dart_uiLibrary.clampDouble(widget.swipeDistanceListenable.value, 0, 150);
+        _swipeTargetDistance = Dart_uiLibrary.clampDouble(
+            widget.swipeDistanceListenable.value,
+            0,
+            150
+        );
         if (_swipeCurrentDistance == _swipeTargetDistance)
         {
             return;
@@ -800,7 +1171,12 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
 
     internal virtual Widget _buildAlign(BuildContext context, Widget? child)
     {
-        return new Align(heightFactor: _sizeAnimation.value, widthFactor: 1.0, alignment: Alignment.topCenter, child: child);
+        return new Align(
+            heightFactor: _sizeAnimation.value,
+            widthFactor: 1.0,
+            alignment: Alignment.topCenter,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -815,21 +1191,110 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         {
             bool isLargeTextModeEnabledLocal = Menu_anchorLibrary._largeTextModeEnabled(context);
             double screenWidthLocal = MediaQuery.widthOf(context);
-            var menuWidth = _CupertinoMenuWidth__menu_anchorMembers.CreateFromScreenWidth(isLargeTextModeEnabled: isLargeTextModeEnabledLocal, screenWidth: screenWidthLocal);
+            var menuWidth = _CupertinoMenuWidth__menu_anchorMembers.CreateFromScreenWidth(
+                isLargeTextModeEnabled: isLargeTextModeEnabledLocal,
+                screenWidth: screenWidthLocal
+            );
             constraintsLocal = BoxConstraints.CreateTightFor(width: menuWidth.points());
         }
-        Widget childLocal = new _SwipeSurface__menu_anchor(child: new TapRegion(groupId: widget.tapRegionGroupId, consumeOutsideTaps: widget.consumeOutsideTaps, onTapOutside: _handleOutsideTap, child: new Actions(actions: _kActions, child: new Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new FocusScope(node: widget.focusScopeNode, descendantsAreFocusable: true, descendantsAreTraversable: true, canRequestFocus: true, child: new CustomPaint(painter: new _ShadowPainter__menu_anchor(brightness: CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light, repaint: _fadeAnimation), child: new FadeTransition(opacity: _fadeAnimation, alwaysIncludeSemantics: true, child: new CupertinoPopupSurface(child: new AnimatedBuilder(animation: _sizeAnimation, builder: _buildAlign, child: new Widgets.Semantics(explicitChildNodes: true, scopesRoute: true, child: new ConstrainedBox(constraints: constraintsLocal, child: new SingleChildScrollView(clipBehavior: Clip.none, child: new Column(mainAxisSize: MainAxisSize.min, children: _children)))))))))))));
+        Widget childLocal = new _SwipeSurface__menu_anchor(
+            child: new TapRegion(
+                groupId: widget.tapRegionGroupId,
+                consumeOutsideTaps: widget.consumeOutsideTaps,
+                onTapOutside: _handleOutsideTap,
+                child: new Actions(
+                    actions: _kActions,
+                    child: new Shortcuts(
+                        shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts,
+                        child: new FocusScope(
+                            node: widget.focusScopeNode,
+                            descendantsAreFocusable: true,
+                            descendantsAreTraversable: true,
+                            canRequestFocus: true,
+                            child: new CustomPaint(
+                                painter: new _ShadowPainter__menu_anchor(
+                                    brightness: CupertinoTheme.maybeBrightnessOf(context)
+                                        ?? Brightness.light,
+                                    repaint: _fadeAnimation
+                                ),
+                                child: new FadeTransition(
+                                    opacity: _fadeAnimation,
+                                    alwaysIncludeSemantics: true,
+                                    child: new CupertinoPopupSurface(
+                                        child: new AnimatedBuilder(
+                                            animation: _sizeAnimation,
+                                            builder: _buildAlign,
+                                            child: new Widgets.Semantics(
+                                                explicitChildNodes: true,
+                                                scopesRoute: true,
+                                                child: new ConstrainedBox(
+                                                    constraints: constraintsLocal,
+                                                    child: new SingleChildScrollView(
+                                                        clipBehavior: Clip.none,
+                                                        child: new Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: _children
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         if (!widget.constrainCrossAxis)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new UnconstrainedBox(clipBehavior: Clip.hardEdge, alignment: AlignmentDirectional.centerStart, constrainedAxis: Axis.vertical, child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new UnconstrainedBox(
+                    clipBehavior: Clip.hardEdge,
+                    alignment: AlignmentDirectional.centerStart,
+                    constrainedAxis: Axis.vertical,
+                    child: childLocal
+                )
+            );
         }
-        return new ConstrainedBox(constraints: BoxConstraints.CreateLoose(widget.overlaySize), child: new ScaleTransition(scale: _scaleAnimation, alignment: _attachmentPointAlignment, child: new ValueListenableBuilder<double>(valueListenable: _sizeAnimation, child: childLocal, builder: (context, value, child) =>
-        {
-            Rect effectiveAnchorRect = (widget.anchorPosition is not null) ? (_attachmentPoint & Size.zero) : widget.anchorRect;
-            List<DisplayFeature>? displayFeatures = MediaQuery.maybeDisplayFeaturesOf(context);
-            return new CustomSingleChildLayout(@delegate: new _MenuLayoutDelegate__menu_anchor(anchorRect: effectiveAnchorRect, attachmentPoint: _attachmentPoint, avoidBounds: (displayFeatures is not null) ? avoidBounds(displayFeatures) : new HashSet<Rect>(), heightFactor: value, menuAlignment: _menuAlignment, overlayPadding: widget.overlayPadding.resolve(_textDirection)), child: child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        return new ConstrainedBox(
+            constraints: BoxConstraints.CreateLoose(widget.overlaySize),
+            child: new ScaleTransition(
+                scale: _scaleAnimation,
+                alignment: _attachmentPointAlignment,
+                child: new ValueListenableBuilder<double>(
+                    valueListenable: _sizeAnimation,
+                    child: childLocal,
+                    builder: (context, value, child) =>
+                    {
+                        Rect effectiveAnchorRect =
+                            (widget.anchorPosition is not null)
+                                ? (_attachmentPoint & Size.zero)
+                                : widget.anchorRect;
+                        List<DisplayFeature>? displayFeatures = MediaQuery.maybeDisplayFeaturesOf(
+                            context
+                        );
+                        return new CustomSingleChildLayout(
+                            @delegate: new _MenuLayoutDelegate__menu_anchor(
+                                anchorRect: effectiveAnchorRect,
+                                attachmentPoint: _attachmentPoint,
+                                avoidBounds: (displayFeatures is not null)
+                                    ? avoidBounds(displayFeatures)
+                                    : new HashSet<Rect>(),
+                                heightFactor: value,
+                                menuAlignment: _menuAlignment,
+                                overlayPadding: widget.overlayPadding.resolve(_textDirection)
+                            ),
+                            child: child
+                        );
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -838,7 +1303,10 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         var boundsLocal = new HashSet<Rect>();
         foreach (var feature in displayFeatures)
         {
-            if ((feature.bounds.shortestSide > 0L) || Equals(feature.state, DisplayFeatureState.postureHalfOpened))
+            if (
+                (feature.bounds.shortestSide > 0L)
+                || Equals(feature.state, DisplayFeatureState.postureHalfOpened)
+            )
             {
                 boundsLocal.Add(feature.bounds);
             }
@@ -856,13 +1324,23 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -911,9 +1389,17 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _ShadowPainter__menu_anchor : CustomPainter
@@ -923,13 +1409,15 @@ internal class _ShadowPainter__menu_anchor : CustomPainter
     public virtual Animation<double> repaint { get; private set; } = default!;
     public virtual Brightness brightness { get; private set; } = default!;
 
-    internal _ShadowPainter__menu_anchor(Brightness brightness, Animation<double> repaint) : base(repaint: repaint)
+    internal _ShadowPainter__menu_anchor(Brightness brightness, Animation<double> repaint)
+        : base(repaint: repaint)
     {
         this.brightness = brightness;
         this.repaint = repaint;
     }
 
     public virtual double shadowAnimation => Dart_uiLibrary.clampDouble(repaint.value, 0, 1);
+
     public override void paint(Canvas canvas, Size size)
     {
         DartRuntimePrimitives.Assert(() => (shadowAnimation >= 0L) && (shadowAnimation <= 1L));
@@ -937,36 +1425,56 @@ internal class _ShadowPainter__menu_anchor : CustomPainter
         var rect = Rect.fromCenter(center: centerLocal, width: size.width, height: size.height);
         var roundedRect = RSuperellipse.fromRectAndRadius(rect, _kRadius);
         double blurSigma = shadowAnimation * 50L;
-        var shadowPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
-    __cascade.color = Color.fromRGBO(0L, 0L, 10L, shadowAnimation * shadowAnimation * _kShadowOpacity);
-    return __cascade;
-}))();
-        var maskPath = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.fillType = PathFillType.evenOdd;
-    __cascade.addRect(rect.inflate(200));
-    __cascade.addRRect(RRect.fromRectAndRadius(rect, _kRadius));
-    return __cascade;
-}))();
-        DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{
-    var __cascade = canvas;
-    __cascade.save();
-    __cascade.clipPath(maskPath);
-    __cascade.drawRSuperellipse(roundedRect.inflate(50), shadowPaint);
-    __cascade.restore();
-    return __cascade;
-}))());
+        var shadowPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
+                    __cascade.color = Color.fromRGBO(
+                        0L,
+                        0L,
+                        10L,
+                        shadowAnimation * shadowAnimation * _kShadowOpacity
+                    );
+                    return __cascade;
+                }
+            )
+        )();
+        var maskPath = (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.fillType = PathFillType.evenOdd;
+                    __cascade.addRect(rect.inflate(200));
+                    __cascade.addRRect(RRect.fromRectAndRadius(rect, _kRadius));
+                    return __cascade;
+                }
+            )
+        )();
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<Canvas>)(
+                    () =>
+                    {
+                        var __cascade = canvas;
+                        __cascade.save();
+                        __cascade.clipPath(maskPath);
+                        __cascade.drawRSuperellipse(roundedRect.inflate(50), shadowPaint);
+                        __cascade.restore();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_ShadowPainter__menu_anchor)oldDelegate;
-        return (!Equals(__oldDelegate.brightness, brightness)) || (!Equals(__oldDelegate.repaint, repaint));
+        return (!Equals(__oldDelegate.brightness, brightness))
+            || (!Equals(__oldDelegate.repaint, repaint));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -982,7 +1490,14 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
     public virtual Alignment menuAlignment { get; private set; } = default!;
     public virtual EdgeInsets overlayPadding { get; private set; } = default!;
 
-    internal _MenuLayoutDelegate__menu_anchor(Rect anchorRect, Offset attachmentPoint, HashSet<Rect> avoidBounds, double heightFactor, Alignment menuAlignment, EdgeInsets overlayPadding)
+    internal _MenuLayoutDelegate__menu_anchor(
+        Rect anchorRect,
+        Offset attachmentPoint,
+        HashSet<Rect> avoidBounds,
+        double heightFactor,
+        Alignment menuAlignment,
+        EdgeInsets overlayPadding
+    )
     {
         this.anchorRect = anchorRect;
         this.attachmentPoint = attachmentPoint;
@@ -1013,11 +1528,18 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             return new Offset(finalPosition.dx, finalPosition.dy + dyLocal);
         }
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
-        return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor));
+        return DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Offset _positionChild(Rect screen, Size childSize, Offset position, Rect anchor)
+    internal virtual Offset _positionChild(
+        Rect screen,
+        Size childSize,
+        Offset position,
+        Rect anchor
+    )
     {
         double xLocal = position.dx;
         double yLocal = position.dy;
@@ -1129,9 +1651,16 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Rect _findClosestScreen(Size parentSize, Offset point, HashSet<Rect> avoidBounds)
+    internal virtual Rect _findClosestScreen(
+        Size parentSize,
+        Offset point,
+        HashSet<Rect> avoidBounds
+    )
     {
-        IEnumerable<Rect> screens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & parentSize, avoidBounds);
+        IEnumerable<Rect> screens = DisplayFeatureSubScreen.subScreensInBounds(
+            Offset.zero & parentSize,
+            avoidBounds
+        );
         Rect? closest = default!;
         double closestSquaredDistance = 0;
         foreach (var screen in screens)
@@ -1143,10 +1672,16 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             if (closest is null)
             {
                 closest = screen;
-                closestSquaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(point, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(closest)));
+                closestSquaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
+                    point,
+                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(closest))
+                );
                 continue;
             }
-            double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(point, screen);
+            double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
+                point,
+                screen
+            );
             if (squaredDistance < closestSquaredDistance)
             {
                 closest = screen;
@@ -1160,47 +1695,55 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_MenuLayoutDelegate__menu_anchor)oldDelegate;
-        return (!Equals(anchorRect, __oldDelegate.anchorRect)) || (!Equals(attachmentPoint, __oldDelegate.attachmentPoint)) || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds) || (heightFactor != __oldDelegate.heightFactor) || (!Equals(menuAlignment, __oldDelegate.menuAlignment)) || (!Equals(overlayPadding, __oldDelegate.overlayPadding));
+        return (!Equals(anchorRect, __oldDelegate.anchorRect))
+            || (!Equals(attachmentPoint, __oldDelegate.attachmentPoint))
+            || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds)
+            || (heightFactor != __oldDelegate.heightFactor)
+            || (!Equals(menuAlignment, __oldDelegate.menuAlignment))
+            || (!Equals(overlayPadding, __oldDelegate.overlayPadding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _FocusUpIntent__menu_anchor : DirectionalFocusIntent
 {
-    internal _FocusUpIntent__menu_anchor() : base(TraversalDirection.up)
-    {
-    }
-
+    internal _FocusUpIntent__menu_anchor()
+        : base(TraversalDirection.up) { }
 }
 
 internal class _FocusDownIntent__menu_anchor : DirectionalFocusIntent
 {
-    internal _FocusDownIntent__menu_anchor() : base(TraversalDirection.down)
-    {
-    }
-
+    internal _FocusDownIntent__menu_anchor()
+        : base(TraversalDirection.down) { }
 }
 
 internal class _FocusUpAction__menu_anchor : ContextAction<DirectionalFocusIntent>
 {
-    internal _FocusUpAction__menu_anchor()
-    {
-    }
+    internal _FocusUpAction__menu_anchor() { }
 
     public override object? invoke(DirectionalFocusIntent intent, BuildContext? context = null)
     {
-        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusTraversalPolicy policy =
+            FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
         if (Menu_anchorLibrary._isCupertino && !Foundation.ConstantsLibrary.kIsWeb)
         {
             policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
             return default!;
         }
-        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
-        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode? firstFocus = policy.findFirstFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
+        FocusNode lastFocus = policy.findLastFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
         if (lastFocus.context is not null)
         {
-            if (Equals(Focus_managerLibrary.primaryFocus, lastFocus.enclosingScope) || Equals(Focus_managerLibrary.primaryFocus, firstFocus))
+            if (
+                Equals(Focus_managerLibrary.primaryFocus, lastFocus.enclosingScope)
+                || Equals(Focus_managerLibrary.primaryFocus, firstFocus)
+            )
             {
                 policy.requestFocusCallback(lastFocus);
                 return default!;
@@ -1209,28 +1752,35 @@ internal class _FocusUpAction__menu_anchor : ContextAction<DirectionalFocusInten
         policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _FocusDownAction__menu_anchor : ContextAction<DirectionalFocusIntent>
 {
-    internal _FocusDownAction__menu_anchor()
-    {
-    }
+    internal _FocusDownAction__menu_anchor() { }
 
     public override object? invoke(DirectionalFocusIntent intent, BuildContext? context = null)
     {
-        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusTraversalPolicy policy =
+            FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
         if (Menu_anchorLibrary._isCupertino && !Foundation.ConstantsLibrary.kIsWeb)
         {
             policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
             return default!;
         }
-        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
-        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode? firstFocus = policy.findFirstFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
+        FocusNode lastFocus = policy.findLastFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
         if (firstFocus?.context is not null)
         {
-            if (Equals(Focus_managerLibrary.primaryFocus, firstFocus!.enclosingScope) || Equals(Focus_managerLibrary.primaryFocus, lastFocus))
+            if (
+                Equals(Focus_managerLibrary.primaryFocus, firstFocus!.enclosingScope)
+                || Equals(Focus_managerLibrary.primaryFocus, lastFocus)
+            )
             {
                 policy.requestFocusCallback(firstFocus);
                 return default!;
@@ -1239,27 +1789,28 @@ internal class _FocusDownAction__menu_anchor : ContextAction<DirectionalFocusInt
         policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _FocusFirstIntent__menu_anchor : Intent
 {
-    internal _FocusFirstIntent__menu_anchor()
-    {
-    }
-
+    internal _FocusFirstIntent__menu_anchor() { }
 }
 
 internal class _FocusFirstAction__menu_anchor : ContextAction<_FocusFirstIntent__menu_anchor>
 {
-    internal _FocusFirstAction__menu_anchor()
-    {
-    }
+    internal _FocusFirstAction__menu_anchor() { }
 
-    public override object? invoke(_FocusFirstIntent__menu_anchor intent, BuildContext? context = null)
+    public override object? invoke(
+        _FocusFirstIntent__menu_anchor intent,
+        BuildContext? context = null
+    )
     {
-        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
-        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusTraversalPolicy policy =
+            FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusNode? firstFocus = policy.findFirstFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
         if ((firstFocus is null) || (firstFocus.context is null))
         {
             return default!;
@@ -1267,27 +1818,28 @@ internal class _FocusFirstAction__menu_anchor : ContextAction<_FocusFirstIntent_
         policy.requestFocusCallback(firstFocus);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _FocusLastIntent__menu_anchor : Intent
 {
-    internal _FocusLastIntent__menu_anchor()
-    {
-    }
-
+    internal _FocusLastIntent__menu_anchor() { }
 }
 
 internal class _FocusLastAction__menu_anchor : ContextAction<_FocusLastIntent__menu_anchor>
 {
-    internal _FocusLastAction__menu_anchor()
-    {
-    }
+    internal _FocusLastAction__menu_anchor() { }
 
-    public override object? invoke(_FocusLastIntent__menu_anchor intent, BuildContext? context = null)
+    public override object? invoke(
+        _FocusLastIntent__menu_anchor intent,
+        BuildContext? context = null
+    )
     {
-        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
-        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusTraversalPolicy policy =
+            FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusNode lastFocus = policy.findLastFocus(
+            Focus_managerLibrary.primaryFocus!,
+            ignoreCurrentFocus: true
+        );
         if (lastFocus.context is null)
         {
             return default!;
@@ -1295,48 +1847,65 @@ internal class _FocusLastAction__menu_anchor : ContextAction<_FocusLastIntent__m
         policy.requestFocusCallback(lastFocus);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CupertinoMenuImplicitDivider__menu_anchor : StatelessWidget
 {
-    public static CupertinoDynamicColor kOverlayColor = new CupertinoDynamicColor(color: Color.fromRGBO(140L, 140L, 140L, 0.3), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25));
-    public static CupertinoDynamicColor kDividerColor = new CupertinoDynamicColor(color: Color.fromRGBO(0L, 0L, 0L, 0.25), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25));
+    public static CupertinoDynamicColor kOverlayColor = new CupertinoDynamicColor(
+        color: Color.fromRGBO(140L, 140L, 140L, 0.3),
+        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25)
+    );
+    public static CupertinoDynamicColor kDividerColor = new CupertinoDynamicColor(
+        color: Color.fromRGBO(0L, 0L, 0L, 0.25),
+        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25)
+    );
 
-    internal _CupertinoMenuImplicitDivider__menu_anchor()
-    {
-    }
+    internal _CupertinoMenuImplicitDivider__menu_anchor() { }
 
     public override Widget build(BuildContext context)
     {
         double pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
         double displacement = 1L / pixelRatio;
-        return new CustomPaint(size: new Size(double.PositiveInfinity, displacement), painter: new _CupertinoDividerPainter__menu_anchor(color: CupertinoDynamicColor.resolve(kDividerColor, context), overlayColor: CupertinoDynamicColor.resolve(kOverlayColor, context), antiAlias: pixelRatio < 1.0));
+        return new CustomPaint(
+            size: new Size(double.PositiveInfinity, displacement),
+            painter: new _CupertinoDividerPainter__menu_anchor(
+                color: CupertinoDynamicColor.resolve(kDividerColor, context),
+                overlayColor: CupertinoDynamicColor.resolve(kOverlayColor, context),
+                antiAlias: pixelRatio < 1.0
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CupertinoMenuDivider : StatelessWidget, CupertinoMenuEntry
 {
     public virtual Color color { get; private set; } = default!;
-    public static CupertinoDynamicColor kDefaultColor = new CupertinoDynamicColor(color: Color.fromRGBO(0L, 0L, 0L, 0.08), darkColor: Color.fromRGBO(0L, 0L, 0L, 0.16));
+    public static CupertinoDynamicColor kDefaultColor = new CupertinoDynamicColor(
+        color: Color.fromRGBO(0L, 0L, 0L, 0.08),
+        darkColor: Color.fromRGBO(0L, 0L, 0L, 0.16)
+    );
     internal const double _kDividerHeight = 8.0;
 
-    public CupertinoMenuDivider(Key? key = null, Color color = default!) : base(key: key)
+    public CupertinoMenuDivider(Key? key = null, Color color = default!)
+        : base(key: key)
     {
         Color __color = color ?? kDefaultColor;
         this.color = __color;
     }
 
     public virtual bool isDivider => true;
+
     public virtual bool hasLeading(BuildContext context) => false;
+
     public override Widget build(BuildContext context)
     {
-        return new ColoredBox(color: CupertinoDynamicColor.resolve(color, context), child: new SizedBox(height: _kDividerHeight, width: double.PositiveInfinity));
+        return new ColoredBox(
+            color: CupertinoDynamicColor.resolve(color, context),
+            child: new SizedBox(height: _kDividerHeight, width: double.PositiveInfinity)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CupertinoDividerPainter__menu_anchor : CustomPainter
@@ -1345,7 +1914,11 @@ internal class _CupertinoDividerPainter__menu_anchor : CustomPainter
     public virtual Color overlayColor { get; private set; } = default!;
     public virtual bool antiAlias { get; private set; } = default!;
 
-    internal _CupertinoDividerPainter__menu_anchor(Color color, Color overlayColor, bool antiAlias = false)
+    internal _CupertinoDividerPainter__menu_anchor(
+        Color color,
+        Color overlayColor,
+        bool antiAlias = false
+    )
     {
         this.color = color;
         this.overlayColor = overlayColor;
@@ -1358,35 +1931,44 @@ internal class _CupertinoDividerPainter__menu_anchor : CustomPainter
         Offset p2 = size.centerRight(Offset.zero);
         if (!Foundation.ConstantsLibrary.kIsWeb)
         {
-            var overlayPainter = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.color = overlayColor;
-    __cascade.isAntiAlias = antiAlias;
-    __cascade.blendMode = BlendMode.overlay;
-    return __cascade;
-}))();
+            var overlayPainter = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.style = PaintingStyle.stroke;
+                        __cascade.color = overlayColor;
+                        __cascade.isAntiAlias = antiAlias;
+                        __cascade.blendMode = BlendMode.overlay;
+                        return __cascade;
+                    }
+                )
+            )();
             canvas.drawLine(p1, p2, overlayPainter);
         }
-        var colorPainter = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.color = color;
-    __cascade.isAntiAlias = antiAlias;
-    return __cascade;
-}))();
+        var colorPainter = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.stroke;
+                    __cascade.color = color;
+                    __cascade.isAntiAlias = antiAlias;
+                    return __cascade;
+                }
+            )
+        )();
         canvas.drawLine(p1, p2, colorPainter);
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_CupertinoDividerPainter__menu_anchor)oldDelegate;
-        return (!Equals(color, __oldDelegate.color)) || (!Equals(overlayColor, __oldDelegate.overlayColor)) || (antiAlias != __oldDelegate.antiAlias);
+        return (!Equals(color, __oldDelegate.color))
+            || (!Equals(overlayColor, __oldDelegate.overlayColor))
+            || (antiAlias != __oldDelegate.antiAlias);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
@@ -1412,22 +1994,99 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
     public virtual AlignmentGeometry? leadingMidpointAlignment { get; private set; }
     public virtual AlignmentGeometry? trailingMidpointAlignment { get; private set; }
     public virtual BoxConstraints? constraints { get; private set; }
-    public static WidgetStateProperty<BoxDecoration> kDefaultDecoration = WidgetStateProperty<BoxDecoration>.CreateFromMap(new DartMap<WidgetStatesConstraint, BoxDecoration> { [WidgetState.dragged.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.pressed.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.focused.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.075), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.075))), [WidgetState.hovered.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.05), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.05))), [WidgetStateMembers.any] = new BoxDecoration() });
-    internal static WidgetStateProperty<MouseCursor> _kDefaultCursor = WidgetStateProperty.resolveWith((states) =>
-    {
-        return (!states.Contains(WidgetState.disabled) && Foundation.ConstantsLibrary.kIsWeb) ? SystemMouseCursors.click : MouseCursor.defer;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-    internal static Color _kDefaultTextColor = new CupertinoDynamicColor(color: Color.from(alpha: 0.96, red: 0, green: 0, blue: 0), darkColor: Color.from(alpha: 0.96, red: 1, green: 1, blue: 1));
-    internal static Color _kDefaultSubtitleTextColor = new CupertinoDynamicColor(color: Color.from(alpha: 0.55, red: 0, green: 0, blue: 0), darkColor: Color.from(alpha: 0.4, red: 1, green: 1, blue: 1));
+    public static WidgetStateProperty<BoxDecoration> kDefaultDecoration =
+        WidgetStateProperty<BoxDecoration>.CreateFromMap(
+            new DartMap<WidgetStatesConstraint, BoxDecoration>
+            {
+                [WidgetState.dragged.asConstraint()] = new BoxDecoration(
+                    color: new CupertinoDynamicColor(
+                        color: Color.fromRGBO(50L, 50L, 50L, 0.1),
+                        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1)
+                    )
+                ),
+                [WidgetState.pressed.asConstraint()] = new BoxDecoration(
+                    color: new CupertinoDynamicColor(
+                        color: Color.fromRGBO(50L, 50L, 50L, 0.1),
+                        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1)
+                    )
+                ),
+                [WidgetState.focused.asConstraint()] = new BoxDecoration(
+                    color: new CupertinoDynamicColor(
+                        color: Color.fromRGBO(50L, 50L, 50L, 0.075),
+                        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.075)
+                    )
+                ),
+                [WidgetState.hovered.asConstraint()] = new BoxDecoration(
+                    color: new CupertinoDynamicColor(
+                        color: Color.fromRGBO(50L, 50L, 50L, 0.05),
+                        darkColor: Color.fromRGBO(255L, 255L, 255L, 0.05)
+                    )
+                ),
+                [WidgetStateMembers.any] = new BoxDecoration(),
+            }
+        );
+    internal static WidgetStateProperty<MouseCursor> _kDefaultCursor =
+        WidgetStateProperty.resolveWith(
+            (states) =>
+            {
+                return (
+                    !states.Contains(WidgetState.disabled) && Foundation.ConstantsLibrary.kIsWeb
+                )
+                    ? SystemMouseCursors.click
+                    : MouseCursor.defer;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+    internal static Color _kDefaultTextColor = new CupertinoDynamicColor(
+        color: Color.from(alpha: 0.96, red: 0, green: 0, blue: 0),
+        darkColor: Color.from(alpha: 0.96, red: 1, green: 1, blue: 1)
+    );
+    internal static Color _kDefaultSubtitleTextColor = new CupertinoDynamicColor(
+        color: Color.from(alpha: 0.55, red: 0, green: 0, blue: 0),
+        darkColor: Color.from(alpha: 0.4, red: 1, green: 1, blue: 1)
+    );
     internal const long _kDefaultMaxLines = 2L;
     internal const long _kDefaultLargeTextModeMaxLines = 100L;
-    internal static TextStyle _kLeadingDefaultTextStyle = new TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
-    internal static IconThemeData _kLeadingDefaultIconTheme = new IconThemeData(size: 15, weight: 600, applyTextScaling: true);
+    internal static TextStyle _kLeadingDefaultTextStyle = new TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600
+    );
+    internal static IconThemeData _kLeadingDefaultIconTheme = new IconThemeData(
+        size: 15,
+        weight: 600,
+        applyTextScaling: true
+    );
     internal static TextStyle _kTrailingDefaultTextStyle = new TextStyle(fontSize: 21);
-    internal static IconThemeData _kTrailingDefaultIconTheme = new IconThemeData(size: 21, applyTextScaling: true);
+    internal static IconThemeData _kTrailingDefaultIconTheme = new IconThemeData(
+        size: 21,
+        applyTextScaling: true
+    );
 
-    public CupertinoMenuItem(Key? key = null, Widget child = default!, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, EdgeInsetsGeometry? padding = null, BoxConstraints? constraints = null, bool autofocus = false, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, Action<bool>? onHover = null, Action? onPressed = null, WidgetStateProperty<BoxDecoration>? decoration = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, HitTestBehavior behavior = HitTestBehavior.opaque, bool requestCloseOnActivate = true, bool requestFocusOnHover = true, bool isDestructiveAction = false) : base(key: key)
+    public CupertinoMenuItem(
+        Key? key = null,
+        Widget child = default!,
+        Widget? subtitle = null,
+        Widget? leading = null,
+        double? leadingWidth = null,
+        AlignmentGeometry? leadingMidpointAlignment = null,
+        Widget? trailing = null,
+        double? trailingWidth = null,
+        AlignmentGeometry? trailingMidpointAlignment = null,
+        EdgeInsetsGeometry? padding = null,
+        BoxConstraints? constraints = null,
+        bool autofocus = false,
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        Action<bool>? onHover = null,
+        Action? onPressed = null,
+        WidgetStateProperty<BoxDecoration>? decoration = null,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        HitTestBehavior behavior = HitTestBehavior.opaque,
+        bool requestCloseOnActivate = true,
+        bool requestFocusOnHover = true,
+        bool isDestructiveAction = false
+    )
+        : base(key: key)
     {
         this.child = child;
         this.subtitle = subtitle;
@@ -1452,8 +2111,11 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
         this.isDestructiveAction = isDestructiveAction;
     }
 
-    public virtual bool hasLeading(BuildContext context) => DartRuntimePrimitives.ConvertValue<bool>(leading is not null);
+    public virtual bool hasLeading(BuildContext context) =>
+        DartRuntimePrimitives.ConvertValue<bool>(leading is not null);
+
     public virtual bool isDivider => false;
+
     internal virtual TextStyle _resolveDefaultTextStyle(BuildContext context, TextScaler textScaler)
     {
         Color colorLocal = default!;
@@ -1472,20 +2134,38 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
                 colorLocal = _kDefaultTextColor;
             }
         }
-        return _DynamicTypeStyle__menu_anchor.body.resolveTextStyle(textScaler).copyWith(fontSize: 17, color: CupertinoDynamicColor.resolve(colorLocal, context));
+        return _DynamicTypeStyle__menu_anchor
+            .body.resolveTextStyle(textScaler)
+            .copyWith(fontSize: 17, color: CupertinoDynamicColor.resolve(colorLocal, context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TextStyle _resolveDefaultSubtitleStyle(BuildContext context, TextScaler textScaler)
+    internal virtual TextStyle _resolveDefaultSubtitleStyle(
+        BuildContext context,
+        TextScaler textScaler
+    )
     {
         var isDark = Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.dark);
-        return _DynamicTypeStyle__menu_anchor.subhead.resolveTextStyle(textScaler).copyWith(fontSize: 15, textBaseline: TextBaseline.alphabetic, foreground: ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.blendMode = isDark ? BlendMode.plus : BlendMode.hardLight;
-    __cascade.color = CupertinoDynamicColor.resolve(_kDefaultSubtitleTextColor, context);
-    return __cascade;
-}))());
+        return _DynamicTypeStyle__menu_anchor
+            .subhead.resolveTextStyle(textScaler)
+            .copyWith(
+                fontSize: 15,
+                textBaseline: TextBaseline.alphabetic,
+                foreground: (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.blendMode = isDark ? BlendMode.plus : BlendMode.hardLight;
+                            __cascade.color = CupertinoDynamicColor.resolve(
+                                _kDefaultSubtitleTextColor,
+                                context
+                            );
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1500,20 +2180,77 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
 
     public override Widget build(BuildContext context)
     {
-        TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.CreateLinear(MediaQuery.maybeTextScaleFactorOf(context) ?? 1);
+        TextScaler textScaler =
+            MediaQuery.maybeTextScalerOf(context)
+            ?? TextScaler.CreateLinear(MediaQuery.maybeTextScaleFactorOf(context) ?? 1);
         TextStyle defaultTextStyle = _resolveDefaultTextStyle(context, textScaler);
         bool isLargeTextModeEnabled = Menu_anchorLibrary._largeTextModeEnabled(context);
         Widget? leadingWidget = default!;
         Widget? trailingWidget = default!;
         if (leading is not null)
         {
-            leadingWidget = DefaultTextStyle.merge(style: _kLeadingDefaultTextStyle, child: IconTheme.merge(data: _kLeadingDefaultIconTheme, child: leading!));
+            leadingWidget = DefaultTextStyle.merge(
+                style: _kLeadingDefaultTextStyle,
+                child: IconTheme.merge(data: _kLeadingDefaultIconTheme, child: leading!)
+            );
         }
         if ((trailing is not null) && !isLargeTextModeEnabled)
         {
-            trailingWidget = DefaultTextStyle.merge(style: _kTrailingDefaultTextStyle, child: IconTheme.merge(data: _kTrailingDefaultIconTheme, child: trailing!));
+            trailingWidget = DefaultTextStyle.merge(
+                style: _kTrailingDefaultTextStyle,
+                child: IconTheme.merge(data: _kTrailingDefaultIconTheme, child: trailing!)
+            );
         }
-        return MediaQuery.withClampedTextScaling(minScaleFactor: Menu_anchorLibrary._kMinimumTextScaleFactor, maxScaleFactor: Menu_anchorLibrary._kMaximumTextScaleFactor, child: new _CupertinoMenuItemInteractionHandler__menu_anchor(mouseCursor: mouseCursor ?? _kDefaultCursor, requestFocusOnHover: requestFocusOnHover, onPressed: (onPressed is not null) ? (() => { _handleSelect(context); }) : null, onHover: onHover, onFocusChange: onFocusChange, autofocus: autofocus, focusNode: focusNode, decoration: decoration ?? kDefaultDecoration, behavior: behavior, child: DefaultTextStyle.merge(maxLines: isLargeTextModeEnabled ? _kDefaultLargeTextModeMaxLines : _kDefaultMaxLines, overflow: TextOverflow.ellipsis, softWrap: true, style: new TextStyle(color: defaultTextStyle.color), child: IconTheme.merge(data: new IconThemeData(color: defaultTextStyle.color), child: new _CupertinoMenuItemLabel__menu_anchor(padding: padding, constraints: constraints, trailing: trailingWidget, leading: leadingWidget, leadingMidpointAlignment: leadingMidpointAlignment, trailingMidpointAlignment: trailingMidpointAlignment, leadingWidth: leadingWidth, trailingWidth: trailingWidth, subtitle: (subtitle is not null) ? DefaultTextStyle.merge(style: _resolveDefaultSubtitleStyle(context, textScaler), child: subtitle!) : null, child: DefaultTextStyle.merge(style: defaultTextStyle, child: child))))));
+        return MediaQuery.withClampedTextScaling(
+            minScaleFactor: Menu_anchorLibrary._kMinimumTextScaleFactor,
+            maxScaleFactor: Menu_anchorLibrary._kMaximumTextScaleFactor,
+            child: new _CupertinoMenuItemInteractionHandler__menu_anchor(
+                mouseCursor: mouseCursor ?? _kDefaultCursor,
+                requestFocusOnHover: requestFocusOnHover,
+                onPressed: (onPressed is not null)
+                    ? (
+                        () =>
+                        {
+                            _handleSelect(context);
+                        }
+                    )
+                    : null,
+                onHover: onHover,
+                onFocusChange: onFocusChange,
+                autofocus: autofocus,
+                focusNode: focusNode,
+                decoration: decoration ?? kDefaultDecoration,
+                behavior: behavior,
+                child: DefaultTextStyle.merge(
+                    maxLines: isLargeTextModeEnabled
+                        ? _kDefaultLargeTextModeMaxLines
+                        : _kDefaultMaxLines,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: new TextStyle(color: defaultTextStyle.color),
+                    child: IconTheme.merge(
+                        data: new IconThemeData(color: defaultTextStyle.color),
+                        child: new _CupertinoMenuItemLabel__menu_anchor(
+                            padding: padding,
+                            constraints: constraints,
+                            trailing: trailingWidget,
+                            leading: leadingWidget,
+                            leadingMidpointAlignment: leadingMidpointAlignment,
+                            trailingMidpointAlignment: trailingMidpointAlignment,
+                            leadingWidth: leadingWidth,
+                            trailingWidth: trailingWidth,
+                            subtitle: (subtitle is not null)
+                                ? DefaultTextStyle.merge(
+                                    style: _resolveDefaultSubtitleStyle(context, textScaler),
+                                    child: subtitle!
+                                )
+                                : null,
+                            child: DefaultTextStyle.merge(style: defaultTextStyle, child: child)
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1521,11 +2258,31 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Widget?>("child", child));
-        properties.add(new FlagProperty("requestCloseOnActivate", value: requestCloseOnActivate, ifTrue: "closes on press", ifFalse: "does not close on press", defaultValue: true));
-        properties.add(new FlagProperty("requestFocusOnHover", value: requestFocusOnHover, ifFalse: "does not request focus on hover", ifTrue: "requests focus on hover", defaultValue: true));
+        properties.add(
+            new FlagProperty(
+                "requestCloseOnActivate",
+                value: requestCloseOnActivate,
+                ifTrue: "closes on press",
+                ifFalse: "does not close on press",
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "requestFocusOnHover",
+                value: requestFocusOnHover,
+                ifFalse: "does not request focus on hover",
+                ifTrue: "requests focus on hover",
+                defaultValue: true
+            )
+        );
         properties.add(new EnumProperty<HitTestBehavior>("hitTestBehavior", behavior));
-        properties.add(new DiagnosticsProperty<FocusNode?>("focusNode", focusNode, defaultValue: null));
-        properties.add(new FlagProperty("enabled", value: onPressed is not null, ifFalse: "DISABLED"));
+        properties.add(
+            new DiagnosticsProperty<FocusNode?>("focusNode", focusNode, defaultValue: null)
+        );
+        properties.add(
+            new FlagProperty("enabled", value: onPressed is not null, ifFalse: "DISABLED")
+        );
         if (subtitle is not null)
         {
             properties.add(new DiagnosticsProperty<Widget?>("subtitle", subtitle));
@@ -1539,7 +2296,6 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
             properties.add(new DiagnosticsProperty<Widget?>("trailing", trailing));
         }
     }
-
 }
 
 internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
@@ -1564,7 +2320,18 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
     public virtual EdgeInsetsGeometry? padding { get; private set; }
     internal virtual BoxConstraints? _constraints { get; private set; }
 
-    internal _CupertinoMenuItemLabel__menu_anchor(Widget child, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, BoxConstraints? constraints = null, EdgeInsetsGeometry? padding = null)
+    internal _CupertinoMenuItemLabel__menu_anchor(
+        Widget child,
+        Widget? subtitle = null,
+        Widget? leading = null,
+        double? leadingWidth = null,
+        AlignmentGeometry? leadingMidpointAlignment = null,
+        Widget? trailing = null,
+        double? trailingWidth = null,
+        AlignmentGeometry? trailingMidpointAlignment = null,
+        BoxConstraints? constraints = null,
+        EdgeInsetsGeometry? padding = null
+    )
     {
         this.child = child;
         this.subtitle = subtitle;
@@ -1578,7 +2345,11 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         _constraints = constraints;
     }
 
-    internal virtual double _resolveLeadingWidth(TextScaler textScaler, double pixelRatio, double lineHeight)
+    internal virtual double _resolveLeadingWidth(
+        TextScaler textScaler,
+        double pixelRatio,
+        double lineHeight
+    )
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kLeadingWidthSlope * units) + _kLeadingWidthYIntercept;
@@ -1586,7 +2357,11 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _resolveTrailingWidth(TextScaler textScaler, double pixelRatio, double lineHeight)
+    internal virtual double _resolveTrailingWidth(
+        TextScaler textScaler,
+        double pixelRatio,
+        double lineHeight
+    )
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kTrailingWidthSlope * units) + _kTrailingWidthYIntercept;
@@ -1597,37 +2372,50 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
     internal virtual AlignmentGeometry _resolveTrailingAlignment(double trailingWidth)
     {
         double horizontalOffset = (DartRuntimePrimitives.RequireValue(trailingWidth) / 2L) + 6L;
-        double horizontalRatio = (DartRuntimePrimitives.RequireValue(trailingWidth) - horizontalOffset) / DartRuntimePrimitives.RequireValue(trailingWidth);
-        double horizontalAlignment = horizontalRatio * 2L - 1L;
+        double horizontalRatio =
+            (DartRuntimePrimitives.RequireValue(trailingWidth) - horizontalOffset)
+            / DartRuntimePrimitives.RequireValue(trailingWidth);
+        double horizontalAlignment = (horizontalRatio * 2L) - 1L;
         return new AlignmentDirectional(horizontalAlignment, 0.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual AlignmentGeometry _resolveLeadingAlignment(double leadingWidth, TextScaler textScaler)
+    internal virtual AlignmentGeometry _resolveLeadingAlignment(
+        double leadingWidth,
+        TextScaler textScaler
+    )
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double horizontalRatio = (_kLeadingMidpointSlope * units) + _kLeadingMidpointYIntercept;
-        double horizontalAlignment = horizontalRatio * 2L - 1L;
+        double horizontalAlignment = (horizontalRatio * 2L) - 1L;
         return new AlignmentDirectional(horizontalAlignment, 0.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _resolveFirstBaselineToTop(double lineHeight, double pixelRatio)
     {
-        return Menu_anchorLibrary._roundToDivisible(lineHeight * _kFirstBaselineToTopSlope, to: 1L / pixelRatio);
+        return Menu_anchorLibrary._roundToDivisible(
+            lineHeight * _kFirstBaselineToTopSlope,
+            to: 1L / pixelRatio
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _resolveLastBaselineToBottom(double lineHeight, double pixelRatio)
     {
-        return Menu_anchorLibrary._roundToDivisible(lineHeight * _kLastBaselineToBottomSlope, to: 1L / pixelRatio);
+        return Menu_anchorLibrary._roundToDivisible(
+            lineHeight * _kLastBaselineToBottomSlope,
+            to: 1L / pixelRatio
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual EdgeInsets _resolvePadding(double minimumHeight, double lineHeight)
     {
         double padding = Math.Max(0, minimumHeight - lineHeight);
-        return EdgeInsets.CreateSymmetric(vertical: DartRuntimePrimitives.RequireValue(padding) / 2L);
+        return EdgeInsets.CreateSymmetric(
+            vertical: DartRuntimePrimitives.RequireValue(padding) / 2L
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1636,55 +2424,196 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         TextDirection textDirectionLocal = Directionality.maybeOf(context) ?? TextDirection.ltr;
         TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.noScaling;
         double pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
-        TextStyle dynamicBodyText = _DynamicTypeStyle__menu_anchor.body.resolveTextStyle(textScaler);
-        DartRuntimePrimitives.Assert(() => (dynamicBodyText.fontSize is not null) && (dynamicBodyText.height is not null));
-        double lineHeight = DartRuntimePrimitives.RequireValue(dynamicBodyText.fontSize) * DartRuntimePrimitives.RequireValue(dynamicBodyText.height);
-        bool showLeadingWidget = (leading is not null) || (CupertinoMenuAnchor.maybeHasLeadingOf(context) ?? false);
-        double minimumHeight = _resolveFirstBaselineToTop(lineHeight, pixelRatio) + _resolveLastBaselineToBottom(lineHeight, pixelRatio);
-        BoxConstraints constraintsLocal = _constraints ?? new BoxConstraints(minHeight: minimumHeight);
+        TextStyle dynamicBodyText = _DynamicTypeStyle__menu_anchor.body.resolveTextStyle(
+            textScaler
+        );
+        DartRuntimePrimitives.Assert(() =>
+            (dynamicBodyText.fontSize is not null) && (dynamicBodyText.height is not null)
+        );
+        double lineHeight =
+            DartRuntimePrimitives.RequireValue(dynamicBodyText.fontSize)
+            * DartRuntimePrimitives.RequireValue(dynamicBodyText.height);
+        bool showLeadingWidget =
+            (leading is not null) || (CupertinoMenuAnchor.maybeHasLeadingOf(context) ?? false);
+        double minimumHeight =
+            _resolveFirstBaselineToTop(lineHeight, pixelRatio)
+            + _resolveLastBaselineToBottom(lineHeight, pixelRatio);
+        BoxConstraints constraintsLocal =
+            _constraints ?? new BoxConstraints(minHeight: minimumHeight);
         EdgeInsetsGeometry resolvedPadding = padding ?? _resolvePadding(minimumHeight, lineHeight);
-        double resolvedLeadingWidth = leadingWidth ?? (showLeadingWidget ? _resolveLeadingWidth(textScaler, pixelRatio, lineHeight) : _kDefaultHorizontalWidth);
-        double resolvedTrailingWidth = trailingWidth ?? ((trailing is not null) ? _resolveTrailingWidth(textScaler, pixelRatio, lineHeight) : _kDefaultHorizontalWidth);
-        return new ConstrainedBox(constraints: constraintsLocal, child: new Padding(padding: resolvedPadding, child: new Stack(children: ((Func<List<Widget>>)(() => { var __collection83239 = new List<Widget>(); if (showLeadingWidget) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, start: 0, top: 0, bottom: 0, width: resolvedLeadingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _leadingAlignment ?? _resolveLeadingAlignment(resolvedLeadingWidth, textScaler), child: leading)))); } __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: resolvedLeadingWidth, end: resolvedTrailingWidth), child: (subtitle is null) ? new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: child) : new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 1)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(subtitle!) })))); if (trailing is not null) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, end: 0, top: 0, bottom: 0, width: resolvedTrailingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _trailingAlignment ?? _resolveTrailingAlignment(resolvedTrailingWidth), child: trailing)))); } return __collection83239; }))())));
+        double resolvedLeadingWidth =
+            leadingWidth
+            ?? (
+                showLeadingWidget
+                    ? _resolveLeadingWidth(textScaler, pixelRatio, lineHeight)
+                    : _kDefaultHorizontalWidth
+            );
+        double resolvedTrailingWidth =
+            trailingWidth
+            ?? (
+                (trailing is not null)
+                    ? _resolveTrailingWidth(textScaler, pixelRatio, lineHeight)
+                    : _kDefaultHorizontalWidth
+            );
+        return new ConstrainedBox(
+            constraints: constraintsLocal,
+            child: new Padding(
+                padding: resolvedPadding,
+                child: new Stack(
+                    children: (
+                        (Func<List<Widget>>)(
+                            () =>
+                            {
+                                var __collection83239 = new List<Widget>();
+                                if (showLeadingWidget)
+                                {
+                                    __collection83239.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            Positioned.CreateDirectional(
+                                                textDirection: textDirectionLocal,
+                                                start: 0,
+                                                top: 0,
+                                                bottom: 0,
+                                                width: resolvedLeadingWidth,
+                                                child: new _AlignMidpoint__menu_anchor(
+                                                    alignment: _leadingAlignment
+                                                        ?? _resolveLeadingAlignment(
+                                                            resolvedLeadingWidth,
+                                                            textScaler
+                                                        ),
+                                                    child: leading
+                                                )
+                                            )
+                                        )
+                                    );
+                                }
+                                __collection83239.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new Padding(
+                                            padding: EdgeInsetsDirectional.CreateOnly(
+                                                start: resolvedLeadingWidth,
+                                                end: resolvedTrailingWidth
+                                            ),
+                                            child: (subtitle is null)
+                                                ? new global::Doroti.Framework.Widgets.Align(
+                                                    alignment: global::Doroti
+                                                        .Framework
+                                                        .Painting
+                                                        .AlignmentDirectional
+                                                        .centerStart,
+                                                    child: child
+                                                )
+                                                : new global::Doroti.Framework.Widgets.Column(
+                                                    mainAxisSize: global::Doroti
+                                                        .Framework
+                                                        .Rendering
+                                                        .MainAxisSize
+                                                        .min,
+                                                    crossAxisAlignment: global::Doroti
+                                                        .Framework
+                                                        .Rendering
+                                                        .CrossAxisAlignment
+                                                        .stretch,
+                                                    mainAxisAlignment: global::Doroti
+                                                        .Framework
+                                                        .Rendering
+                                                        .MainAxisAlignment
+                                                        .center,
+                                                    children: new List<global::Doroti.Framework.Widgets.Widget>
+                                                    {
+                                                        DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(
+                                                            child
+                                                        ),
+                                                        DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(
+                                                            new global::Doroti.Framework.Widgets.SizedBox(
+                                                                height: 1
+                                                            )
+                                                        ),
+                                                        DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(
+                                                            subtitle!
+                                                        ),
+                                                    }
+                                                )
+                                        )
+                                    )
+                                );
+                                if (trailing is not null)
+                                {
+                                    __collection83239.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            Positioned.CreateDirectional(
+                                                textDirection: textDirectionLocal,
+                                                end: 0,
+                                                top: 0,
+                                                bottom: 0,
+                                                width: resolvedTrailingWidth,
+                                                child: new _AlignMidpoint__menu_anchor(
+                                                    alignment: _trailingAlignment
+                                                        ?? _resolveTrailingAlignment(
+                                                            resolvedTrailingWidth
+                                                        ),
+                                                    child: trailing
+                                                )
+                                            )
+                                        )
+                                    );
+                                }
+                                return __collection83239;
+                            }
+                        )
+                    )()
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _AlignMidpoint__menu_anchor : SingleChildRenderObjectWidget
 {
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
 
-    internal _AlignMidpoint__menu_anchor(AlignmentGeometry alignment, Widget? child) : base(child: child)
+    internal _AlignMidpoint__menu_anchor(AlignmentGeometry alignment, Widget? child)
+        : base(child: child)
     {
         this.alignment = alignment;
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderAlignMidpoint__menu_anchor(alignment: alignment, textDirection: Directionality.maybeOf(context));
+        return new _RenderAlignMidpoint__menu_anchor(
+            alignment: alignment,
+            textDirection: Directionality.maybeOf(context)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderAlignMidpoint__menu_anchor)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderAlignMidpoint__menu_anchor>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.alignment = alignment;
-    __cascade.textDirection = Directionality.maybeOf(context);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderAlignMidpoint__menu_anchor>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.alignment = alignment;
+                        __cascade.textDirection = Directionality.maybeOf(context);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderAlignMidpoint__menu_anchor : RenderPositionedBox
 {
-    internal _RenderAlignMidpoint__menu_anchor(AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection)
-    {
-    }
+    internal _RenderAlignMidpoint__menu_anchor(
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null
+    )
+        : base(alignment: alignment ?? Alignment.center, textDirection: textDirection) { }
 
     public override void alignChild()
     {
@@ -1694,11 +2623,18 @@ public class _RenderAlignMidpoint__menu_anchor : RenderPositionedBox
         DartRuntimePrimitives.Assert(() => hasSize);
         var childParentData = ((BoxParentData?)child!.parentData!)!;
         Offset offsetLocal = resolvedAlignment.alongSize(size) - child!.size.center(Offset.zero);
-        double dxLocal = Dart_uiLibrary.clampDouble(offsetLocal.dx, 0.0, size.width - child!.size.width);
-        double dyLocal = Dart_uiLibrary.clampDouble(offsetLocal.dy, 0.0, size.height - child!.size.height);
+        double dxLocal = Dart_uiLibrary.clampDouble(
+            offsetLocal.dx,
+            0.0,
+            size.width - child!.size.width
+        );
+        double dyLocal = Dart_uiLibrary.clampDouble(
+            offsetLocal.dy,
+            0.0,
+            size.height - child!.size.height
+        );
         childParentData.offset = new Offset(dxLocal, dyLocal);
     }
-
 }
 
 public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
@@ -1714,7 +2650,18 @@ public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
     public virtual WidgetStateProperty<BoxDecoration> decoration { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _CupertinoMenuItemInteractionHandler__menu_anchor(Action<bool>? onHover, Action? onPressed, Action<bool>? onFocusChange, FocusNode? focusNode, bool autofocus, bool requestFocusOnHover, HitTestBehavior behavior, WidgetStateProperty<MouseCursor> mouseCursor, WidgetStateProperty<BoxDecoration> decoration, Widget child)
+    internal _CupertinoMenuItemInteractionHandler__menu_anchor(
+        Action<bool>? onHover,
+        Action? onPressed,
+        Action<bool>? onFocusChange,
+        FocusNode? focusNode,
+        bool autofocus,
+        bool requestFocusOnHover,
+        HitTestBehavior behavior,
+        WidgetStateProperty<MouseCursor> mouseCursor,
+        WidgetStateProperty<BoxDecoration> decoration,
+        Widget child
+    )
     {
         this.onHover = onHover;
         this.onPressed = onPressed;
@@ -1728,10 +2675,14 @@ public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuItemInteractionHandlerState__menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _CupertinoMenuItemInteractionHandlerState__menu_anchor()
+        );
 }
 
-internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_CupertinoMenuItemInteractionHandler__menu_anchor>
+internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor
+    : State<_CupertinoMenuItemInteractionHandler__menu_anchor>
 {
     private bool __late__actions_initialized;
     private DartMap<Type, dynamic> __late__actions = default!;
@@ -1741,7 +2692,15 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         {
             if (!__late__actions_initialized)
             {
-                __late__actions = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: _handleActivation), [typeof(ButtonActivateIntent)] = new CallbackAction<ButtonActivateIntent>(onInvoke: _handleActivation) };
+                __late__actions = new DartMap<Type, dynamic>
+                {
+                    [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(
+                        onInvoke: _handleActivation
+                    ),
+                    [typeof(ButtonActivateIntent)] = new CallbackAction<ButtonActivateIntent>(
+                        onInvoke: _handleActivation
+                    ),
+                };
                 __late__actions_initialized = true;
             }
             return __late__actions;
@@ -1750,9 +2709,11 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
     internal virtual DartMap<Type, dynamic>? _gestures { get; set; } = default;
     internal virtual Gestures.DeviceGestureSettings? _gestureSettings { get; set; } = default;
     internal virtual FocusNode? _internalFocusNode { get; set; } = default;
-    internal virtual WidgetStatesController _statesController { get; private set; } = new WidgetStatesController();
+    internal virtual WidgetStatesController _statesController { get; private set; } =
+        new WidgetStatesController();
 
-    internal virtual FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _internalFocusNode!);
+    internal virtual FocusNode _focusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _internalFocusNode!);
     public virtual bool isHovered
     {
         get => _statesController.value.Contains(WidgetState.hovered);
@@ -1786,7 +2747,10 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         set
         {
             var __value = value;
-            _statesController.update(DartRuntimePrimitives.RequireValue(WidgetState.focused), __value);
+            _statesController.update(
+                DartRuntimePrimitives.RequireValue(WidgetState.focused),
+                __value
+            );
         }
     }
     public virtual bool isEnabled
@@ -1798,6 +2762,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
             _statesController.update(WidgetState.disabled, !__value);
         }
     }
+
     public override void initState()
     {
         base.initState();
@@ -1809,7 +2774,9 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         isFocused = _focusNode.hasPrimaryFocus;
     }
 
-    public override void didUpdateWidget(_CupertinoMenuItemInteractionHandler__menu_anchor oldWidget)
+    public override void didUpdateWidget(
+        _CupertinoMenuItemInteractionHandler__menu_anchor oldWidget
+    )
     {
         base.didUpdateWidget(oldWidget);
         if (!Equals(widget.focusNode, oldWidget.focusNode))
@@ -1913,17 +2880,17 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         {
             case TargetPlatform.iOS:
             case TargetPlatform.android:
-                {
-                    DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
-                    break;
-                }
+            {
+                DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
+                break;
+            }
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
             case TargetPlatform.macOS:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
         isSwiped = true;
     }
@@ -1944,18 +2911,47 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         }
     }
 
-    internal virtual Widget _buildStatefulAppearance(BuildContext context, HashSet<WidgetState> value, Widget? child)
+    internal virtual Widget _buildStatefulAppearance(
+        BuildContext context,
+        HashSet<WidgetState> value,
+        Widget? child
+    )
     {
         MouseCursor cursorLocal = widget.mouseCursor.resolve(value);
         BoxDecoration decorationLocal = widget.decoration.resolve(value);
-        bool hasBackground = (decorationLocal.color is not null) || (decorationLocal.gradient is not null);
-        return new MouseRegion(onHover: isEnabled ? _handlePointerHover : null, onExit: isEnabled ? _handlePointerExit : null, hitTestBehavior: HitTestBehavior.deferToChild, cursor: cursorLocal, child: new DecoratedBox(decoration: decorationLocal.copyWith(color: CupertinoDynamicColor.maybeResolve(decorationLocal.color, context), backgroundBlendMode: (Foundation.ConstantsLibrary.kIsWeb || !hasBackground || (decorationLocal.backgroundBlendMode is not null)) ? decorationLocal.backgroundBlendMode : (Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.light) ? BlendMode.multiply : BlendMode.plus)), child: child));
+        bool hasBackground =
+            (decorationLocal.color is not null) || (decorationLocal.gradient is not null);
+        return new MouseRegion(
+            onHover: isEnabled ? _handlePointerHover : null,
+            onExit: isEnabled ? _handlePointerExit : null,
+            hitTestBehavior: HitTestBehavior.deferToChild,
+            cursor: cursorLocal,
+            child: new DecoratedBox(
+                decoration: decorationLocal.copyWith(
+                    color: CupertinoDynamicColor.maybeResolve(decorationLocal.color, context),
+                    backgroundBlendMode: (
+                        Foundation.ConstantsLibrary.kIsWeb
+                        || !hasBackground
+                        || (decorationLocal.backgroundBlendMode is not null)
+                    )
+                        ? decorationLocal.backgroundBlendMode
+                        : (
+                            Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.light)
+                                ? BlendMode.multiply
+                                : BlendMode.plus
+                        )
+                ),
+                child: child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        Gestures.DeviceGestureSettings? newGestureSettings = MediaQuery.maybeGestureSettingsOf(context);
+        Gestures.DeviceGestureSettings? newGestureSettings = MediaQuery.maybeGestureSettingsOf(
+            context
+        );
         if (!Equals(_gestureSettings, newGestureSettings))
         {
             _gestureSettings = newGestureSettings;
@@ -1963,23 +2959,63 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_C
         }
         _gestures ??= new DartMap<Type, dynamic>
         {
-            [typeof(Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<Gestures.TapGestureRecognizer>(() => new Gestures.TapGestureRecognizer(debugOwner: this), (instance) =>
-            {
-                DartRuntimePrimitives.Ignore(((Func<Gestures.TapGestureRecognizer>)(() =>
-                {
-                    var __cascade = instance;
-                    __cascade.onTapDown = _handleTapDown;
-                    __cascade.onTapUp = _handleTapUp;
-                    __cascade.onTapCancel = _handleTapCancel;
-                    __cascade.gestureSettings = _gestureSettings;
-                    return __cascade;
-                }))());
-            })
+            [typeof(Gestures.TapGestureRecognizer)] =
+                new GestureRecognizerFactoryWithHandlers<Gestures.TapGestureRecognizer>(
+                    () => new Gestures.TapGestureRecognizer(debugOwner: this),
+                    (instance) =>
+                    {
+                        DartRuntimePrimitives.Ignore(
+                            (
+                                (Func<Gestures.TapGestureRecognizer>)(
+                                    () =>
+                                    {
+                                        var __cascade = instance;
+                                        __cascade.onTapDown = _handleTapDown;
+                                        __cascade.onTapUp = _handleTapUp;
+                                        __cascade.onTapCancel = _handleTapCancel;
+                                        __cascade.gestureSettings = _gestureSettings;
+                                        return __cascade;
+                                    }
+                                )
+                            )()
+                        );
+                    }
+                ),
         };
-        return new MergeSemantics(child: Widgets.Semantics.CreateFromProperties(properties: new Semantics.SemanticsProperties(enabled: isEnabled, onDismiss: isEnabled ? _handleDismissMenu : null), child: new Actions(actions: isEnabled ? _actions : new DartMap<Type, dynamic>(), child: new Focus(autofocus: isEnabled && widget.autofocus, focusNode: _focusNode, canRequestFocus: isEnabled, skipTraversal: !isEnabled, onFocusChange: value => _handleFocusChange(value), child: new _SwipeTarget__menu_anchor(onEnter: () => _handleSwipeEnter(), onExit: () => _handleSwipeExit(), onCompletion: () => _handleSwipeCompleted(), child: new ValueListenableBuilder<HashSet<WidgetState>>(valueListenable: _statesController, builder: _buildStatefulAppearance, child: new RawGestureDetector(behavior: widget.behavior, gestures: isEnabled ? _gestures! : new DartMap<Type, dynamic>(), child: widget.child)))))));
+        return new MergeSemantics(
+            child: Widgets.Semantics.CreateFromProperties(
+                properties: new Semantics.SemanticsProperties(
+                    enabled: isEnabled,
+                    onDismiss: isEnabled ? _handleDismissMenu : null
+                ),
+                child: new Actions(
+                    actions: isEnabled ? _actions : new DartMap<Type, dynamic>(),
+                    child: new Focus(
+                        autofocus: isEnabled && widget.autofocus,
+                        focusNode: _focusNode,
+                        canRequestFocus: isEnabled,
+                        skipTraversal: !isEnabled,
+                        onFocusChange: value => _handleFocusChange(value),
+                        child: new _SwipeTarget__menu_anchor(
+                            onEnter: () => _handleSwipeEnter(),
+                            onExit: () => _handleSwipeExit(),
+                            onCompletion: () => _handleSwipeCompleted(),
+                            child: new ValueListenableBuilder<HashSet<WidgetState>>(
+                                valueListenable: _statesController,
+                                builder: _buildStatefulAppearance,
+                                child: new RawGestureDetector(
+                                    behavior: widget.behavior,
+                                    gestures: isEnabled ? _gestures! : new DartMap<Type, dynamic>(),
+                                    child: widget.child
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SwipeTarget__menu_anchor : StatelessWidget
@@ -1989,7 +3025,12 @@ internal class _SwipeTarget__menu_anchor : StatelessWidget
     public virtual Action? onCompletion { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    internal _SwipeTarget__menu_anchor(Action? onEnter, Action? onExit, Action? onCompletion, Widget child)
+    internal _SwipeTarget__menu_anchor(
+        Action? onEnter,
+        Action? onExit,
+        Action? onCompletion,
+        Widget child
+    )
     {
         this.onEnter = onEnter;
         this.onExit = onExit;
@@ -1998,19 +3039,20 @@ internal class _SwipeTarget__menu_anchor : StatelessWidget
     }
 
     public virtual bool isOpaque => true;
+
     public override Widget build(BuildContext context)
     {
         return new MetaData(metaData: this, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SwipeScope__menu_anchor : InheritedWidget
 {
     public virtual _SwipeRegionState__menu_anchor state { get; private set; } = default!;
 
-    internal _SwipeScope__menu_anchor(Widget child, _SwipeRegionState__menu_anchor state) : base(child: child)
+    internal _SwipeScope__menu_anchor(Widget child, _SwipeRegionState__menu_anchor state)
+        : base(child: child)
     {
         this.state = state;
     }
@@ -2021,7 +3063,6 @@ internal class _SwipeScope__menu_anchor : InheritedWidget
         return !Equals(state, __oldWidget.state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _SwipeRegion__menu_anchor : StatefulWidget
@@ -2030,7 +3071,11 @@ public class _SwipeRegion__menu_anchor : StatefulWidget
     public virtual Action<double> onDistanceChanged { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _SwipeRegion__menu_anchor(bool enabled = true, Action<double> onDistanceChanged = default!, Widget child = default!)
+    internal _SwipeRegion__menu_anchor(
+        bool enabled = true,
+        Action<double> onDistanceChanged = default!,
+        Widget child = default!
+    )
     {
         this.enabled = enabled;
         this.onDistanceChanged = onDistanceChanged;
@@ -2039,21 +3084,26 @@ public class _SwipeRegion__menu_anchor : StatefulWidget
 
     public static _SwipeRegionState__menu_anchor? of(BuildContext context)
     {
-        _SwipeScope__menu_anchor? scope = context.dependOnInheritedWidgetOfExactType<_SwipeScope__menu_anchor>();
+        _SwipeScope__menu_anchor? scope =
+            context.dependOnInheritedWidgetOfExactType<_SwipeScope__menu_anchor>();
         return scope?.state;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SwipeRegionState__menu_anchor());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SwipeRegionState__menu_anchor());
 }
 
 public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
 {
-    internal virtual HashSet<_RenderSwipeSurface__menu_anchor> _surfaces { get; private set; } = new HashSet<_RenderSwipeSurface__menu_anchor>();
+    internal virtual HashSet<_RenderSwipeSurface__menu_anchor> _surfaces { get; private set; } =
+        new HashSet<_RenderSwipeSurface__menu_anchor>();
     internal virtual Gestures.MultiDragGestureRecognizer? _recognizer { get; set; } = default;
     internal virtual Offset? _position { get; set; } = default;
 
-    public virtual bool isSwiping => DartRuntimePrimitives.ConvertValue<bool>(_position is not null);
+    public virtual bool isSwiping =>
+        DartRuntimePrimitives.ConvertValue<bool>(_position is not null);
+
     public override void didUpdateWidget(_SwipeRegion__menu_anchor oldWidget)
     {
         base.didUpdateWidget(oldWidget);
@@ -2093,7 +3143,11 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         _surfaces.Remove(surface);
     }
 
-    public virtual void beginSwipe(Gestures.PointerDownEvent @event, Duration delay = default, Action? onStart = null)
+    public virtual void beginSwipe(
+        Gestures.PointerDownEvent @event,
+        Duration delay = default,
+        Action? onStart = null
+    )
     {
         if (isSwiping || !widget.enabled)
         {
@@ -2109,21 +3163,40 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         }
         if (Equals(delay, Duration.zero))
         {
-            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(((Func<Gestures.ImmediateMultiDragGestureRecognizer>)(() =>
-{
-    var __cascade = new Gestures.ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
-    __cascade.onStart = handleStart;
-    return __cascade;
-}))());
+            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(
+                (
+                    (Func<Gestures.ImmediateMultiDragGestureRecognizer>)(
+                        () =>
+                        {
+                            var __cascade = new Gestures.ImmediateMultiDragGestureRecognizer(
+                                allowedButtonsFilter: (button) =>
+                                    button == Gestures.EventsLibrary.kPrimaryButton
+                            );
+                            __cascade.onStart = handleStart;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
         else
         {
-            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(((Func<Gestures.DelayedMultiDragGestureRecognizer>)(() =>
-{
-    var __cascade = new Gestures.DelayedMultiDragGestureRecognizer(delay: delay, allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
-    __cascade.onStart = handleStart;
-    return __cascade;
-}))());
+            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(
+                (
+                    (Func<Gestures.DelayedMultiDragGestureRecognizer>)(
+                        () =>
+                        {
+                            var __cascade = new Gestures.DelayedMultiDragGestureRecognizer(
+                                delay: delay,
+                                allowedButtonsFilter: (button) =>
+                                    button == Gestures.EventsLibrary.kPrimaryButton
+                            );
+                            __cascade.onStart = handleStart;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
         _recognizer!.gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
         _recognizer!.addPointer(@event);
@@ -2131,9 +3204,18 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
 
     internal virtual Gestures.Drag _createSwipeHandle(Offset position)
     {
-        DartRuntimePrimitives.Assert(() => !isSwiping, () => (object?)"A new swipe should not begin while a swipe is active.");
+        DartRuntimePrimitives.Assert(
+            () => !isSwiping,
+            () => (object?)"A new swipe should not begin while a swipe is active."
+        );
         _position = position;
-        return new _SwipeHandle__menu_anchor(viewId: checked((long)View.of(context).viewId), initialPosition: position, onSwipeUpdate: _handleSwipeUpdate, onSwipeEnd: _handleSwipeEnd, onSwipeCanceled: () => _handleSwipeCancel());
+        return new _SwipeHandle__menu_anchor(
+            viewId: checked((long)View.of(context).viewId),
+            initialPosition: position,
+            onSwipeUpdate: _handleSwipeUpdate,
+            onSwipeEnd: _handleSwipeEnd,
+            onSwipeCanceled: () => _handleSwipeCancel()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2143,7 +3225,10 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         double minimumSquaredDistance = double.MaxValue;
         foreach (_RenderSwipeSurface__menu_anchor surface in _surfaces)
         {
-            double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(DartRuntimePrimitives.RequireValue(_position), surface.computeRect());
+            double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
+                DartRuntimePrimitives.RequireValue(_position),
+                surface.computeRect()
+            );
             if (squaredDistance.floor() == 0L)
             {
                 widget.onDistanceChanged(0);
@@ -2151,7 +3236,8 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
             }
             minimumSquaredDistance = Math.Min(squaredDistance, minimumSquaredDistance);
         }
-        double distance = (minimumSquaredDistance == 0L) ? 0 : Dart_mathLibrary.sqrt(minimumSquaredDistance);
+        double distance =
+            (minimumSquaredDistance == 0L) ? 0 : Dart_mathLibrary.sqrt(minimumSquaredDistance);
         widget.onDistanceChanged(distance);
     }
 
@@ -2181,7 +3267,6 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         return new _SwipeScope__menu_anchor(state: this, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SwipeSurface__menu_anchor : SingleChildRenderObjectWidget
@@ -2189,7 +3274,12 @@ internal class _SwipeSurface__menu_anchor : SingleChildRenderObjectWidget
     public virtual Duration delay { get; private set; } = default!;
     public virtual Action? onStart { get; private set; }
 
-    internal _SwipeSurface__menu_anchor(Widget? child, Duration delay = default, Action? onStart = null) : base(child: child)
+    internal _SwipeSurface__menu_anchor(
+        Widget? child,
+        Duration delay = default,
+        Action? onStart = null
+    )
+        : base(child: child)
     {
         this.delay = delay;
         this.onStart = onStart;
@@ -2197,23 +3287,32 @@ internal class _SwipeSurface__menu_anchor : SingleChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSwipeSurface__menu_anchor(region: _SwipeRegion__menu_anchor.of(context)!, delay: delay, onStart: onStart);
+        return new _RenderSwipeSurface__menu_anchor(
+            region: _SwipeRegion__menu_anchor.of(context)!,
+            delay: delay,
+            onStart: onStart
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSwipeSurface__menu_anchor)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSwipeSurface__menu_anchor>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.region = _SwipeRegion__menu_anchor.of(context)!;
-    __cascade.delay = delay;
-    __cascade.onStart = onStart;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSwipeSurface__menu_anchor>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.region = _SwipeRegion__menu_anchor.of(context)!;
+                        __cascade.delay = delay;
+                        __cascade.onStart = onStart;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavior
@@ -2222,7 +3321,12 @@ public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavio
     public virtual Duration delay { get; set; } = default!;
     public virtual Action? onStart { get; set; } = default;
 
-    internal _RenderSwipeSurface__menu_anchor(_SwipeRegionState__menu_anchor region, Duration delay, Action? onStart) : base(behavior: HitTestBehavior.opaque)
+    internal _RenderSwipeSurface__menu_anchor(
+        _SwipeRegionState__menu_anchor region,
+        Duration delay,
+        Action? onStart
+    )
+        : base(behavior: HitTestBehavior.opaque)
     {
         this.delay = delay;
         this.onStart = onStart;
@@ -2244,7 +3348,10 @@ public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavio
             }
         }
     }
-    public virtual Rect computeRect() => DartRuntimePrimitives.ConvertValue<Rect>(localToGlobal(Offset.zero) & size);
+
+    public virtual Rect computeRect() =>
+        DartRuntimePrimitives.ConvertValue<Rect>(localToGlobal(Offset.zero) & size);
+
     public override void detach()
     {
         _region.detachSurface(this);
@@ -2257,7 +3364,10 @@ public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavio
         base.dispose();
     }
 
-    public override void handleEvent(Gestures.PointerEvent @event, Gestures.HitTestEntry<Gestures.HitTestTarget> entry)
+    public override void handleEvent(
+        Gestures.PointerEvent @event,
+        Gestures.HitTestEntry<Gestures.HitTestTarget> entry
+    )
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
         if (@event is Gestures.PointerDownEvent)
@@ -2266,19 +3376,26 @@ public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavio
             _region.beginSwipe(@event__as103538, delay: delay, onStart: onStart);
         }
     }
-
 }
 
 internal class _SwipeHandle__menu_anchor : Gestures.Drag
 {
     public virtual long viewId { get; private set; } = default!;
-    internal virtual List<_SwipeTarget__menu_anchor> _enteredTargets { get; private set; } = new List<_SwipeTarget__menu_anchor>();
-    public virtual Action<Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } = default!;
+    internal virtual List<_SwipeTarget__menu_anchor> _enteredTargets { get; private set; } =
+        new List<_SwipeTarget__menu_anchor>();
+    public virtual Action<Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } =
+        default!;
     public virtual Action<Gestures.DragEndDetails> onSwipeEnd { get; private set; } = default!;
     public virtual Action onSwipeCanceled { get; private set; } = default!;
     internal virtual Offset _position { get; set; } = default!;
 
-    internal _SwipeHandle__menu_anchor(Offset initialPosition, long viewId, Action<Gestures.DragEndDetails> onSwipeEnd, Action<Gestures.DragUpdateDetails> onSwipeUpdate, Action onSwipeCanceled)
+    internal _SwipeHandle__menu_anchor(
+        Offset initialPosition,
+        long viewId,
+        Action<Gestures.DragEndDetails> onSwipeEnd,
+        Action<Gestures.DragUpdateDetails> onSwipeUpdate,
+        Action onSwipeCanceled
+    )
     {
         this.viewId = viewId;
         this.onSwipeEnd = onSwipeEnd;
@@ -2318,21 +3435,28 @@ internal class _SwipeHandle__menu_anchor : Gestures.Drag
         var targets = new List<_SwipeTarget__menu_anchor>();
         foreach (Gestures.HitTestEntry<Gestures.HitTestTarget> entry in result.path)
         {
-            if (entry.target is RenderMetaData { metaData: _SwipeTarget__menu_anchor metaDataLocal } __object105049)
+            if (
+                entry.target is RenderMetaData
+                {
+                    metaData: _SwipeTarget__menu_anchor metaDataLocal
+                } __object105049
+            )
             {
                 targets.Add(metaDataLocal);
             }
         }
-        _enteredTargets.removeWhere((target) =>
-        {
-            if (!targets.Contains(target))
+        _enteredTargets.removeWhere(
+            (target) =>
             {
-                target.onExit?.Invoke();
-                return true;
+                if (!targets.Contains(target))
+                {
+                    target.onExit?.Invoke();
+                    return true;
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        );
         var hitTargets = new HashSet<_SwipeTarget__menu_anchor>();
         var newlyEnteredTargets = new List<_SwipeTarget__menu_anchor>();
         var hitExistingTarget = false;
@@ -2365,13 +3489,19 @@ internal class _SwipeHandle__menu_anchor : Gestures.Drag
         {
             targetNested.onEnter?.Invoke();
         }
-        DartRuntimePrimitives.Ignore(((Func<List<_SwipeTarget__menu_anchor>>)(() =>
-{
-    var __cascade = _enteredTargets;
-    __cascade.Clear();
-    __cascade.AddRange(hitTargets);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<List<_SwipeTarget__menu_anchor>>)(
+                    () =>
+                    {
+                        var __cascade = _enteredTargets;
+                        __cascade.Clear();
+                        __cascade.AddRange(hitTargets);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     internal virtual void _leaveAllEntered(bool pointerUp = false)
@@ -2387,16 +3517,15 @@ internal class _SwipeHandle__menu_anchor : Gestures.Drag
         }
         _enteredTargets.Clear();
     }
-
 }
 
 internal class _AnimationProduct__menu_anchor : CompoundAnimation<double>
 {
-    internal _AnimationProduct__menu_anchor(Animation<double> first, Animation<double> next) : base(first: first, next: next)
-    {
-    }
+    internal _AnimationProduct__menu_anchor(Animation<double> first, Animation<double> next)
+        : base(first: first, next: next) { }
 
-    public override double value => DartRuntimePrimitives.ConvertValue<double>(base.first.value * base.next.value);
+    public override double value =>
+        DartRuntimePrimitives.ConvertValue<double>(base.first.value * base.next.value);
 }
 
 internal class _ClampTween__menu_anchor : Animatable<double>
@@ -2423,5 +3552,4 @@ internal class _ClampTween__menu_anchor : Animatable<double>
         return t;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

@@ -13,17 +13,15 @@ public sealed record DorotiLaunchContext(
     string Target,
     string RuntimeIdentifier,
     IReadOnlyList<string> Arguments,
-    Uri? BaseUri = null)
+    Uri? BaseUri = null
+)
 {
     public static DorotiLaunchContext Create(
         string target,
         string runtimeIdentifier,
         IEnumerable<string>? arguments = null,
-        Uri? baseUri = null) => new(
-            target,
-            runtimeIdentifier,
-            (arguments ?? []).ToArray(),
-            baseUri);
+        Uri? baseUri = null
+    ) => new(target, runtimeIdentifier, (arguments ?? []).ToArray(), baseUri);
 }
 
 /// <summary>Generated registration for a target adapter such as a browser JavaScript plugin.</summary>
@@ -32,7 +30,8 @@ public sealed record DorotiApplicationPluginRegistration(
     string Channel,
     string Adapter,
     string Module,
-    string ExportName);
+    string ExportName
+);
 
 /// <summary>Immutable application definition shared by every native or browser host.</summary>
 public sealed record DorotiApplicationDescriptor(
@@ -42,7 +41,8 @@ public sealed record DorotiApplicationDescriptor(
     DorotiViewConfiguration ViewConfiguration,
     DorotiLaunchContext LaunchContext,
     IReadOnlyList<DorotiApplicationPluginRegistration> PluginRegistrations,
-    IReadOnlyList<IDorotiNativePluginHandler> NativePluginHandlers);
+    IReadOnlyList<IDorotiNativePluginHandler> NativePluginHandlers
+);
 
 public sealed class DorotiApplicationBuilder
 {
@@ -57,30 +57,41 @@ public sealed class DorotiApplicationBuilder
     public DorotiApplicationBuilder(
         Assembly applicationAssembly,
         DorotiLaunchContext launchContext,
-        Assembly? manifestAssembly = null)
+        Assembly? manifestAssembly = null
+    )
     {
-        _applicationAssembly = applicationAssembly ?? throw new ArgumentNullException(nameof(applicationAssembly));
+        _applicationAssembly =
+            applicationAssembly ?? throw new ArgumentNullException(nameof(applicationAssembly));
         _manifestAssembly = manifestAssembly ?? applicationAssembly;
         _launchContext = launchContext ?? throw new ArgumentNullException(nameof(launchContext));
     }
 
     public DorotiApplicationBuilder UseEntrypoint(Func<IDorotiViewEntrypoint> entrypointFactory)
     {
-        _entrypointFactory = entrypointFactory ?? throw new ArgumentNullException(nameof(entrypointFactory));
+        _entrypointFactory =
+            entrypointFactory ?? throw new ArgumentNullException(nameof(entrypointFactory));
         return this;
     }
 
     public DorotiApplicationBuilder UseView(DorotiViewConfiguration configuration)
     {
-        _viewConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _viewConfiguration =
+            configuration ?? throw new ArgumentNullException(nameof(configuration));
         return this;
     }
 
     public DorotiApplicationBuilder AddPlugin(DorotiApplicationPluginRegistration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
-        if (_plugins.Any(item => item.Id == registration.Id || item.Channel == registration.Channel))
-            throw new InvalidOperationException($"Doroti plugin id/channel is duplicated: {registration.Id}/{registration.Channel}.");
+        if (
+            _plugins.Any(item => item.Id == registration.Id || item.Channel == registration.Channel)
+        )
+        {
+            throw new InvalidOperationException(
+                $"Doroti plugin id/channel is duplicated: {registration.Id}/{registration.Channel}."
+            );
+        }
+
         _plugins.Add(registration);
         return this;
     }
@@ -89,7 +100,12 @@ public sealed class DorotiApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(handler);
         if (_nativePluginHandlers.Any(item => item.PluginId == handler.PluginId))
-            throw new InvalidOperationException($"Doroti native plugin handler is duplicated: {handler.PluginId}.");
+        {
+            throw new InvalidOperationException(
+                $"Doroti native plugin handler is duplicated: {handler.PluginId}."
+            );
+        }
+
         _nativePluginHandlers.Add(handler);
         return this;
     }
@@ -97,9 +113,19 @@ public sealed class DorotiApplicationBuilder
     public DorotiApplicationDescriptor Build()
     {
         if (_entrypointFactory is null)
-            throw new InvalidOperationException($"{nameof(UseEntrypoint)} must be called by the Doroti startup.");
+        {
+            throw new InvalidOperationException(
+                $"{nameof(UseEntrypoint)} must be called by the Doroti startup."
+            );
+        }
+
         if (_viewConfiguration is null)
-            throw new InvalidOperationException($"{nameof(UseView)} must be called by the Doroti startup.");
+        {
+            throw new InvalidOperationException(
+                $"{nameof(UseView)} must be called by the Doroti startup."
+            );
+        }
+
         return new(
             _entrypointFactory,
             _applicationAssembly,
@@ -107,7 +133,8 @@ public sealed class DorotiApplicationBuilder
             _viewConfiguration,
             _launchContext,
             _plugins.ToArray(),
-            _nativePluginHandlers.ToArray());
+            _nativePluginHandlers.ToArray()
+        );
     }
 }
 
@@ -118,14 +145,27 @@ public static class DorotiApplicationFactory
         DorotiLaunchContext launchContext,
         IEnumerable<DorotiApplicationPluginRegistration>? plugins = null,
         Assembly? manifestAssembly = null,
-        IEnumerable<IDorotiNativePluginHandler>? nativePluginHandlers = null)
+        IEnumerable<IDorotiNativePluginHandler>? nativePluginHandlers = null
+    )
         where TStartup : IDorotiApplicationStartup, new()
     {
         ArgumentNullException.ThrowIfNull(launchContext);
-        var builder = new DorotiApplicationBuilder(typeof(TStartup).Assembly, launchContext, manifestAssembly);
+        var builder = new DorotiApplicationBuilder(
+            typeof(TStartup).Assembly,
+            launchContext,
+            manifestAssembly
+        );
         new TStartup().Configure(builder);
-        foreach (var plugin in plugins ?? []) builder.AddPlugin(plugin);
-        foreach (var handler in nativePluginHandlers ?? []) builder.AddNativePluginHandler(handler);
+        foreach (var plugin in plugins ?? [])
+        {
+            builder.AddPlugin(plugin);
+        }
+
+        foreach (var handler in nativePluginHandlers ?? [])
+        {
+            builder.AddNativePluginHandler(handler);
+        }
+
         return builder.Build();
     }
 }

@@ -9,14 +9,14 @@ public enum PlatformViewHitTestBehavior
 {
     opaque,
     translucent,
-    transparent
+    transparent,
 }
 
 internal enum _PlatformViewState__platform_view
 {
     uninitialized,
     resizing,
-    ready
+    ready,
 }
 
 public static partial class Platform_viewLibrary
@@ -47,14 +47,26 @@ public static partial class Platform_viewLibrary
 
 public class RenderAndroidView : PlatformViewRenderBox
 {
-    internal virtual _PlatformViewState__platform_view _state { get; set; } = _PlatformViewState__platform_view.uninitialized;
+    internal virtual _PlatformViewState__platform_view _state { get; set; } =
+        _PlatformViewState__platform_view.uninitialized;
     internal virtual Size? _currentTextureSize { get; set; } = default;
     internal virtual bool _isDisposed { get; set; } = false;
     internal virtual AndroidViewController _viewController { get; set; } = default!;
     internal virtual Clip _clipBehavior { get; set; } = Clip.hardEdge;
-    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
+    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } =
+        new LayerHandle<ClipRectLayer>();
 
-    public RenderAndroidView(AndroidViewController viewController, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Clip clipBehavior = Clip.hardEdge) : base(controller: viewController, hitTestBehavior: hitTestBehavior, gestureRecognizers: gestureRecognizers)
+    public RenderAndroidView(
+        AndroidViewController viewController,
+        PlatformViewHitTestBehavior hitTestBehavior,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(
+            controller: viewController,
+            hitTestBehavior: hitTestBehavior,
+            gestureRecognizers: gestureRecognizers
+        )
     {
         _viewController = viewController;
         _clipBehavior = clipBehavior;
@@ -97,6 +109,7 @@ public class RenderAndroidView : PlatformViewRenderBox
             }
         }
     }
+
     internal virtual void _onPlatformViewCreated(long id)
     {
         DartRuntimePrimitives.Assert(() => !_isDisposed);
@@ -106,6 +119,7 @@ public class RenderAndroidView : PlatformViewRenderBox
     public override bool sizedByParent => true;
     public override bool alwaysNeedsCompositing => true;
     public override bool isRepaintBoundary => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
@@ -118,7 +132,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         _ = _sizePlatformView();
     }
 
-    internal async virtual Future _sizePlatformView()
+    internal virtual async Future _sizePlatformView()
     {
         if (Equals(_state, _PlatformViewState__platform_view.resizing) || size.isEmpty)
         {
@@ -135,37 +149,51 @@ public class RenderAndroidView : PlatformViewRenderBox
             {
                 return;
             }
-        }
-        while (!Equals(size, targetSize));
+        } while (!Equals(size, targetSize));
         _state = _PlatformViewState__platform_view.ready;
         markNeedsPaint();
     }
 
     internal virtual void _setOffset()
     {
-        SchedulerBinding.instance.addPostFrameCallback(async (_) =>
-        {
-            if (!_isDisposed)
+        SchedulerBinding.instance.addPostFrameCallback(
+            async (_) =>
             {
-                if (attached)
+                if (!_isDisposed)
                 {
-                    await _viewController.setOffset(localToGlobal(Offset.zero));
+                    if (attached)
+                    {
+                        await _viewController.setOffset(localToGlobal(Offset.zero));
+                    }
+                    _setOffset();
                 }
-                _setOffset();
-            }
-        }, debugLabel: "RenderAndroidView.setOffset");
+            },
+            debugLabel: "RenderAndroidView.setOffset"
+        );
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((_viewController.textureId is null) && !_viewController.requiresViewComposition || (_currentTextureSize is null))
+        if (
+            ((_viewController.textureId is null) && !_viewController.requiresViewComposition)
+            || (_currentTextureSize is null)
+        )
         {
             return;
         }
-        bool isTextureLargerThanWidget = (DartRuntimePrimitives.RequireValue(_currentTextureSize).width > size.width) || (DartRuntimePrimitives.RequireValue(_currentTextureSize).height > size.height);
+        bool isTextureLargerThanWidget =
+            (DartRuntimePrimitives.RequireValue(_currentTextureSize).width > size.width)
+            || (DartRuntimePrimitives.RequireValue(_currentTextureSize).height > size.height);
         if (isTextureLargerThanWidget && (!Equals(clipBehavior, Clip.none)))
         {
-            _clipRectLayer.layer = context.pushClipRect(true, offset, offset & size, _paintTexture, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
+            _clipRectLayer.layer = context.pushClipRect(
+                true,
+                offset,
+                offset & size,
+                _paintTexture,
+                clipBehavior: clipBehavior,
+                oldLayer: _clipRectLayer.layer
+            );
             return;
         }
         _clipRectLayer.layer = null;
@@ -188,10 +216,20 @@ public class RenderAndroidView : PlatformViewRenderBox
         }
         if (_viewController.requiresViewComposition)
         {
-            context.addLayer(new PlatformViewLayer(rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize), viewId: _viewController.viewId));
+            context.addLayer(
+                new PlatformViewLayer(
+                    rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize),
+                    viewId: _viewController.viewId
+                )
+            );
             return;
         }
-        context.addLayer(new TextureLayer(rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize), textureId: DartRuntimePrimitives.RequireValue(_viewController.textureId)));
+        context.addLayer(
+            new TextureLayer(
+                rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize),
+                textureId: DartRuntimePrimitives.RequireValue(_viewController.textureId)
+            )
+        );
     }
 
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
@@ -203,17 +241,22 @@ public class RenderAndroidView : PlatformViewRenderBox
             config.hitTestBehavior = Dart_uiLibrary.SemanticsHitTestBehavior.transparent;
         }
     }
-
 }
 
-public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPlatformViewController
+public abstract class RenderDarwinPlatformView<T> : RenderBox
+    where T : DarwinPlatformViewController
 {
     internal virtual T _viewController { get; set; } = default!;
     public virtual PlatformViewHitTestBehavior hitTestBehavior { get; set; } = default!;
     internal virtual PointerEvent? _lastPointerDownEvent { get; set; } = default;
-    internal virtual _UiKitViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } = default;
+    internal virtual _UiKitViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } =
+        default;
 
-    protected RenderDarwinPlatformView(T viewController, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
+    protected RenderDarwinPlatformView(
+        T viewController,
+        PlatformViewHitTestBehavior hitTestBehavior,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
     {
         this.hitTestBehavior = hitTestBehavior;
         _viewController = viewController;
@@ -241,6 +284,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
     public override bool sizedByParent => true;
     public override bool alwaysNeedsCompositing => true;
     public override bool isRepaintBoundary => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
@@ -254,7 +298,10 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if (Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent) || !size.contains(DartRuntimePrimitives.RequireValue(position)))
+        if (
+            Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent)
+            || !size.contains(DartRuntimePrimitives.RequireValue(position))
+        )
         {
             return false;
         }
@@ -263,7 +310,9 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestSelf(Offset position) => !Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent);
+    public override bool hitTestSelf(Offset position) =>
+        !Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent);
+
     internal virtual void _handleGlobalPointerEvent(PointerEvent @event)
     {
         if (!hasSize)
@@ -274,7 +323,11 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
         {
             return;
         }
-        if (!(Offset.zero & size).contains(globalToLocal(DartRuntimePrimitives.RequireValue(@event.position))))
+        if (
+            !(Offset.zero & size).contains(
+                globalToLocal(DartRuntimePrimitives.RequireValue(@event.position))
+            )
+        )
         {
             return;
         }
@@ -305,25 +358,46 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
         base.detach();
     }
 
-    public abstract void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers);
+    public abstract void updateGestureRecognizers(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    );
 }
 
 public class RenderUiKitView : RenderDarwinPlatformView<UiKitViewController>
 {
+    public RenderUiKitView(
+        UiKitViewController viewController,
+        PlatformViewHitTestBehavior hitTestBehavior,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
+        : base(
+            viewController: viewController,
+            hitTestBehavior: hitTestBehavior,
+            gestureRecognizers: gestureRecognizers
+        ) { }
 
-    public RenderUiKitView(UiKitViewController viewController, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers) : base(viewController: viewController, hitTestBehavior: hitTestBehavior, gestureRecognizers: gestureRecognizers)
+    public override void updateGestureRecognizers(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
     {
-    }
-
-    public override void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
-    {
-        DartRuntimePrimitives.Assert(() => checked(Platform_viewLibrary._factoriesTypeSet(gestureRecognizers).Count) == checked((long)gestureRecognizers.Count));
-        if (Platform_viewLibrary._factoryTypesSetEquals(gestureRecognizers, _gestureRecognizer?.gestureRecognizerFactories))
+        DartRuntimePrimitives.Assert(() =>
+            checked(Platform_viewLibrary._factoriesTypeSet(gestureRecognizers).Count)
+            == checked((long)gestureRecognizers.Count)
+        );
+        if (
+            Platform_viewLibrary._factoryTypesSetEquals(
+                gestureRecognizers,
+                _gestureRecognizer?.gestureRecognizerFactories
+            )
+        )
         {
             return;
         }
         _gestureRecognizer?.dispose();
-        _gestureRecognizer = new _UiKitViewGestureRecognizer__platform_view(viewController, gestureRecognizers);
+        _gestureRecognizer = new _UiKitViewGestureRecognizer__platform_view(
+            viewController,
+            gestureRecognizers
+        );
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -347,28 +421,41 @@ public class RenderUiKitView : RenderDarwinPlatformView<UiKitViewController>
         _gestureRecognizer?.dispose();
         base.dispose();
     }
-
 }
 
 public class RenderAppKitView : RenderDarwinPlatformView<AppKitViewController>
 {
-    public RenderAppKitView(AppKitViewController viewController, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers) : base(viewController: viewController, hitTestBehavior: hitTestBehavior, gestureRecognizers: gestureRecognizers)
-    {
-    }
+    public RenderAppKitView(
+        AppKitViewController viewController,
+        PlatformViewHitTestBehavior hitTestBehavior,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
+        : base(
+            viewController: viewController,
+            hitTestBehavior: hitTestBehavior,
+            gestureRecognizers: gestureRecognizers
+        ) { }
 
-    public override void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
-    {
-    }
-
+    public override void updateGestureRecognizers(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    ) { }
 }
 
 internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRecognizer
 {
-    public virtual HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories { get; private set; } = default!;
-    internal virtual HashSet<OneSequenceGestureRecognizer> _gestureRecognizers { get; set; } = default!;
+    public virtual HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories
+    {
+        get;
+        private set;
+    } = default!;
+    internal virtual HashSet<OneSequenceGestureRecognizer> _gestureRecognizers { get; set; } =
+        default!;
     public virtual UiKitViewController controller { get; private set; } = default!;
 
-    internal _UiKitViewGestureRecognizer__platform_view(UiKitViewController controller, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories)
+    internal _UiKitViewGestureRecognizer__platform_view(
+        UiKitViewController controller,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories
+    )
     {
         this.controller = controller;
         this.gestureRecognizerFactories = gestureRecognizerFactories;
@@ -384,9 +471,8 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
     }
 
     public override string debugDescription => "UIKit view";
-    public override void didStopTrackingLastPointer(long pointer)
-    {
-    }
+
+    public override void didStopTrackingLastPointer(long pointer) { }
 
     public override void handleEvent(PointerEvent @event)
     {
@@ -407,7 +493,6 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
     {
         resolve(GestureDisposition.rejected);
     }
-
 }
 
 internal delegate Future _HandlePointerEvent__platform_view(PointerEvent @event);
@@ -415,12 +500,21 @@ internal delegate Future _HandlePointerEvent__platform_view(PointerEvent @event)
 public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureRecognizer
 {
     internal virtual Func<PointerEvent, Future> _handlePointerEvent { get; set; } = default!;
-    public virtual DartMap<long, List<PointerEvent>> cachedEvents { get; private set; } = new DartMap<long, List<PointerEvent>>();
+    public virtual DartMap<long, List<PointerEvent>> cachedEvents { get; private set; } =
+        new DartMap<long, List<PointerEvent>>();
     public virtual HashSet<long> forwardedPointers { get; private set; } = new HashSet<long>();
-    public virtual HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories { get; private set; } = default!;
-    internal virtual HashSet<OneSequenceGestureRecognizer> _gestureRecognizers { get; set; } = default!;
+    public virtual HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories
+    {
+        get;
+        private set;
+    } = default!;
+    internal virtual HashSet<OneSequenceGestureRecognizer> _gestureRecognizers { get; set; } =
+        default!;
 
-    internal _PlatformViewGestureRecognizer__platform_view(Func<PointerEvent, Future> handlePointerEvent, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories)
+    internal _PlatformViewGestureRecognizer__platform_view(
+        Func<PointerEvent, Future> handlePointerEvent,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories
+    )
     {
         this.gestureRecognizerFactories = gestureRecognizerFactories;
     }
@@ -435,9 +529,8 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
     }
 
     public override string debugDescription => "Platform view";
-    public override void didStopTrackingLastPointer(long pointer)
-    {
-    }
+
+    public override void didStopTrackingLastPointer(long pointer) { }
 
     public override void handleEvent(PointerEvent @event)
     {
@@ -475,7 +568,14 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
 
     internal virtual void _flushPointerCache(long pointer)
     {
-        cachedEvents.remove(pointer)?.forEach((__item) => { _ = _handlePointerEvent(__item); });
+        cachedEvents
+            .remove(pointer)
+            ?.forEach(
+                (__item) =>
+                {
+                    _ = _handlePointerEvent(__item);
+                }
+            );
     }
 
     public override void stopTrackingPointer(long pointer)
@@ -492,7 +592,6 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
         cachedEvents.Clear();
         resolve(GestureDisposition.rejected);
     }
-
 }
 
 public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platform_view
@@ -500,9 +599,14 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
     internal virtual PlatformViewController _controller { get; set; } = default!;
     public virtual PlatformViewHitTestBehavior? _hitTestBehavior { get; set; } = default;
     public virtual Func<PointerEvent, Future>? _handlePointerEvent { get; set; } = default;
-    public virtual _PlatformViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } = default;
+    public virtual _PlatformViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } =
+        default;
 
-    public PlatformViewRenderBox(PlatformViewController controller, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
+    public PlatformViewRenderBox(
+        PlatformViewController controller,
+        PlatformViewHitTestBehavior hitTestBehavior,
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
     {
         _controller = controller;
         System.Diagnostics.Debug.Assert(controller.viewId > -1L);
@@ -528,14 +632,42 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
             }
         }
     }
-    public virtual void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
+
+    public virtual void updateGestureRecognizers(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers
+    )
     {
-        _updateGestureRecognizersWithCallBack(gestureRecognizers, (__event) => _controller.dispatchPointerEvent(Ui.PointerEvent.FromFrameworkEvent(__event is Gestures.PointerDownEvent ? 1L : __event is Gestures.PointerUpEvent ? 2L : __event is Gestures.PointerCancelEvent ? 3L : __event is Gestures.PointerHoverEvent ? 4L : __event is Gestures.PointerMoveEvent ? 5L : 0L, __event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, __event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor)));
+        _updateGestureRecognizersWithCallBack(
+            gestureRecognizers,
+            (__event) =>
+                _controller.dispatchPointerEvent(
+                    Ui.PointerEvent.FromFrameworkEvent(
+                        __event is Gestures.PointerDownEvent ? 1L
+                            : __event is Gestures.PointerUpEvent ? 2L
+                            : __event is Gestures.PointerCancelEvent ? 3L
+                            : __event is Gestures.PointerHoverEvent ? 4L
+                            : __event is Gestures.PointerMoveEvent ? 5L
+                            : 0L,
+                        __event.pointer,
+                        __event.embedderId,
+                        __event.platformData,
+                        __event.timeStamp,
+                        __event.position,
+                        __event.kind,
+                        __event.orientation,
+                        __event.pressure,
+                        __event.size,
+                        __event.radiusMajor,
+                        __event.radiusMinor
+                    )
+                )
+        );
     }
 
     public override bool sizedByParent => true;
     public override bool alwaysNeedsCompositing => true;
     public override bool isRepaintBoundary => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
@@ -570,21 +702,39 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
             }
         }
     }
-    public virtual void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<PointerEvent, Future> handlePointerEvent)
+
+    public virtual void _updateGestureRecognizersWithCallBack(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+        Func<PointerEvent, Future> handlePointerEvent
+    )
     {
-        DartRuntimePrimitives.Assert(() => checked(Platform_viewLibrary._factoriesTypeSet(gestureRecognizers).Count) == checked((long)gestureRecognizers.Count));
-        if (Platform_viewLibrary._factoryTypesSetEquals(gestureRecognizers, _gestureRecognizer?.gestureRecognizerFactories))
+        DartRuntimePrimitives.Assert(() =>
+            checked(Platform_viewLibrary._factoriesTypeSet(gestureRecognizers).Count)
+            == checked((long)gestureRecognizers.Count)
+        );
+        if (
+            Platform_viewLibrary._factoryTypesSetEquals(
+                gestureRecognizers,
+                _gestureRecognizer?.gestureRecognizerFactories
+            )
+        )
         {
             return;
         }
         _gestureRecognizer?.dispose();
-        _gestureRecognizer = new _PlatformViewGestureRecognizer__platform_view(handlePointerEvent, gestureRecognizers);
+        _gestureRecognizer = new _PlatformViewGestureRecognizer__platform_view(
+            handlePointerEvent,
+            gestureRecognizers
+        );
         _ = _handlePointerEvent = handlePointerEvent;
     }
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if (Equals(_hitTestBehavior, PlatformViewHitTestBehavior.transparent) || !size.contains(position))
+        if (
+            Equals(_hitTestBehavior, PlatformViewHitTestBehavior.transparent)
+            || !size.contains(position)
+        )
         {
             return false;
         }
@@ -593,11 +743,15 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestSelf(Offset position) => !Equals(_hitTestBehavior, PlatformViewHitTestBehavior.transparent);
+    public override bool hitTestSelf(Offset position) =>
+        !Equals(_hitTestBehavior, PlatformViewHitTestBehavior.transparent);
+
     public virtual Action<Gestures.PointerEnterEvent>? onEnter => null;
     public virtual Action<Gestures.PointerExitEvent>? onExit => null;
-    public virtual MouseCursor cursor => Foundation.ConstantsLibrary.kIsWeb ? MouseCursor.defer : MouseCursor.uncontrolled;
+    public virtual MouseCursor cursor =>
+        Foundation.ConstantsLibrary.kIsWeb ? MouseCursor.defer : MouseCursor.uncontrolled;
     public virtual bool validForMouseTracker => true;
+
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         if (@event is Gestures.PointerDownEvent)
@@ -621,7 +775,6 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         _gestureRecognizer?.dispose();
         base.dispose();
     }
-
 }
 
 public interface _PlatformViewGestureMixin__platform_view
@@ -631,7 +784,10 @@ public interface _PlatformViewGestureMixin__platform_view
     _PlatformViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; }
 
     public PlatformViewHitTestBehavior hitTestBehavior { set; }
-    public void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<PointerEvent, Future> handlePointerEvent);
+    public void _updateGestureRecognizersWithCallBack(
+        HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+        Func<PointerEvent, Future> handlePointerEvent
+    );
     public bool hitTest(BoxHitTestResult result, Offset position);
     public bool hitTestSelf(Offset position);
     public Action<Gestures.PointerEnterEvent>? onEnter { get; }
@@ -642,4 +798,3 @@ public interface _PlatformViewGestureMixin__platform_view
     public void detach();
     public void dispose();
 }
-

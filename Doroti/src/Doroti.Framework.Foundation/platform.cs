@@ -18,8 +18,9 @@ public static class PlatformLibrary
 {
     private static TargetPlatform? _debugDefaultTargetPlatformOverride;
 
-    public static TargetPlatform defaultTargetPlatform => _debugDefaultTargetPlatformOverride ??
-        PlatformEnvironmentContext.current.operatingSystem switch
+    public static TargetPlatform defaultTargetPlatform =>
+        _debugDefaultTargetPlatformOverride
+        ?? PlatformEnvironmentContext.current.operatingSystem switch
         {
             HostOperatingSystem.android => TargetPlatform.android,
             HostOperatingSystem.fuchsia => TargetPlatform.fuchsia,
@@ -31,7 +32,8 @@ public static class PlatformLibrary
                 DorotiCapabilityIds.PlatformEnvironment,
                 null,
                 DartUiInvocation.Managed("dart:io#Platform.operatingSystem"),
-                "the host platform is not represented by Flutter TargetPlatform"),
+                "the host platform is not represented by Flutter TargetPlatform"
+            ),
         };
 
     public static TargetPlatform? debugDefaultTargetPlatformOverride
@@ -41,7 +43,9 @@ public static class PlatformLibrary
         {
             if (!ConstantsLibrary.kDebugMode)
             {
-                throw new FlutterError("Cannot modify debugDefaultTargetPlatformOverride in non-debug builds.");
+                throw new FlutterError(
+                    "Cannot modify debugDefaultTargetPlatformOverride in non-debug builds."
+                );
             }
             _debugDefaultTargetPlatformOverride = value;
         }

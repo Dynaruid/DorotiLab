@@ -16,25 +16,48 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
     private readonly Dictionary<long, CancellationTokenSource> _creating = [];
     private bool _disposed;
     public event Action<Exception>? CallbackFailed;
-    public PlatformViewChannelAdapter(IPlatformViewHostCapability host, IPlatformMessageHostCapability fallback)
+
+    public PlatformViewChannelAdapter(
+        IPlatformViewHostCapability host,
+        IPlatformMessageHostCapability fallback
+    )
     {
         _host = host;
         _fallback = fallback;
         _host.ViewFocused += OnFocused;
     }
-    private static bool IsPlatformChannel(string channel) => channel is "flutter/platform_views" or "flutter/platform_views_2";
-    public async ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default)
+
+    private static bool IsPlatformChannel(string channel) =>
+        channel is "flutter/platform_views" or "flutter/platform_views_2";
+
+    public async ValueTask<ReadOnlyMemory<byte>?> SendAsync(
+        string channel,
+        ReadOnlyMemory<byte>? data,
+        CancellationToken cancellationToken = default
+    )
     {
-        if (!IsPlatformChannel(channel)) return await _fallback.SendAsync(channel, data, cancellationToken);
+        if (!IsPlatformChannel(channel))
+        {
+            return await _fallback.SendAsync(channel, data, cancellationToken);
+        }
+
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
-        if (data is null) return null;
+        if (data is null)
+        {
+            return null;
+        }
+
         var call = _codec.decodeMethodCall((ByteData)data.Value);
         try
         {
             if (channel == "flutter/platform_views_2")
             {
-                if (call.method == "isSurfaceControlEnabled") return _codec.encodeSuccessEnvelope(false).asMemory();
+                if (call.method == "isSurfaceControlEnabled")
+                {
+                    return _codec.encodeSuccessEnvelope(false).asMemory();
+                }
+
                 throw Unsupported("SurfaceControl/HCPP strategy is not implemented");
             }
             object? result = null;
@@ -43,12 +66,30 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
             switch (call.method)
             {
                 case "create":
-                    if (args is null || args["viewType"] is not string viewType) throw new FormatException("create requires id and viewType");
+                    if (args is null || args["viewType"] is not string viewType)
+                    {
+                        throw new FormatException("create requires id and viewType");
+                    }
                     // Android texture controllers expect a texture id and texture-backed resize.
-                    if (args.Contains("hybridFallback") || args.Contains("width") || args.Contains("height") || args["hybrid"] is false)
-                        throw Unsupported("texture/virtual-display Android strategy is not implemented");
+                    if (
+                        args.Contains("hybridFallback")
+                        || args.Contains("width")
+                        || args.Contains("height")
+                        || args["hybrid"] is false
+                    )
+                    {
+                        throw Unsupported(
+                            "texture/virtual-display Android strategy is not implemented"
+                        );
+                    }
+
                     if (args.Contains("direction") && Convert.ToInt64(args["direction"]) != 0)
-                        throw Unsupported("native layout direction is not implemented by this bridge");
+                    {
+                        throw Unsupported(
+                            "native layout direction is not implemented by this bridge"
+                        );
+                    }
+
                     ReadOnlyMemory<byte> parameters = args["params"] switch
                     {
                         null => default,
@@ -56,26 +97,56 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
                         byte[] bytes => bytes,
                         _ => throw new FormatException("creation parameters require encoded bytes"),
                     };
-                    using (var pending = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                    using (
+                        var pending = CancellationTokenSource.CreateLinkedTokenSource(
+                            cancellationToken
+                        )
+                    )
                     {
                         lock (_gate)
                         {
                             ObjectDisposedException.ThrowIf(_disposed, this);
-                            if (_creating.ContainsKey(id) || _handles.ContainsKey(id)) throw Unsupported($"duplicate legacy id {id}");
+                            if (_creating.ContainsKey(id) || _handles.ContainsKey(id))
+                            {
+                                throw Unsupported($"duplicate legacy id {id}");
+                            }
+
                             _creating.Add(id, pending);
                         }
                         try
                         {
-                            var handle = await _host.CreateAsync(new PlatformViewRequest(id, viewType, CreationParameters: parameters), pending.Token);
+                            var handle = await _host.CreateAsync(
+                                new PlatformViewRequest(
+                                    id,
+                                    viewType,
+                                    CreationParameters: parameters
+                                ),
+                                pending.Token
+                            );
                             bool dispose;
                             lock (_gate)
                             {
                                 dispose = _disposed || pending.IsCancellationRequested;
-                                if (!dispose) _handles[id] = handle;
+                                if (!dispose)
+                                {
+                                    _handles[id] = handle;
+                                }
                             }
-                            if (dispose) { await _host.DisposeAsync(handle); throw new OperationCanceledException("Native creation was removed before attachment."); }
+                            if (dispose)
+                            {
+                                await _host.DisposeAsync(handle);
+                                throw new OperationCanceledException(
+                                    "Native creation was removed before attachment."
+                                );
+                            }
                         }
-                        finally { lock (_gate) _creating.Remove(id); }
+                        finally
+                        {
+                            lock (_gate)
+                            {
+                                _creating.Remove(id);
+                            }
+                        }
                     }
                     break;
                 case "dispose":
@@ -83,8 +154,15 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
                     lock (_gate)
                     {
                         // Cancel before create replies; the coordinator reclaims a late native success.
-                        if (_creating.TryGetValue(id, out var pending)) pending.Cancel();
-                        if (!_handles.Remove(id, out removed)) break;
+                        if (_creating.TryGetValue(id, out var pending))
+                        {
+                            pending.Cancel();
+                        }
+
+                        if (!_handles.Remove(id, out removed))
+                        {
+                            break;
+                        }
                     }
                     await _host.DisposeAsync(removed);
                     break;
@@ -92,57 +170,128 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
                     await _host.SetFocusAsync(Resolve(id), false, cancellationToken);
                     break;
                 default:
-                    throw Unsupported($"legacy method '{call.method}' is unsupported; placement requires the typed scene path");
+                    throw Unsupported(
+                        $"legacy method '{call.method}' is unsupported; placement requires the typed scene path"
+                    );
             }
             return _codec.encodeSuccessEnvelope(result).asMemory();
         }
         catch (DorotiCapabilityException exception)
         {
-            return _codec.encodeErrorEnvelope("platform.views.unsupported", exception.Message,
-                new DartMap<string, object> { ["ownerViewId"] = checked((long)_host.OwnerViewId), ["channel"] = channel }).asMemory();
+            return _codec
+                .encodeErrorEnvelope(
+                    "platform.views.unsupported",
+                    exception.Message,
+                    new DartMap<string, object>
+                    {
+                        ["ownerViewId"] = checked((long)_host.OwnerViewId),
+                        ["channel"] = channel,
+                    }
+                )
+                .asMemory();
         }
     }
+
     private PlatformViewHandle Resolve(long id)
     {
-        lock (_gate) return _handles.TryGetValue(id, out var handle) ? handle : throw Unsupported($"unknown legacy id {id}");
+        lock (_gate)
+        {
+            return _handles.TryGetValue(id, out var handle)
+                ? handle
+                : throw Unsupported($"unknown legacy id {id}");
+        }
     }
+
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler)
     {
-        if (!IsPlatformChannel(channel)) { _fallback.SetMessageHandler(channel, handler); return; }
+        if (!IsPlatformChannel(channel))
+        {
+            _fallback.SetMessageHandler(channel, handler);
+            return;
+        }
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (handler is null) _handlers.Remove(channel); else _handlers[channel] = handler;
+            if (handler is null)
+            {
+                _handlers.Remove(channel);
+            }
+            else
+            {
+                _handlers[channel] = handler;
+            }
         }
     }
+
     private void OnFocused(PlatformViewHandle handle)
     {
         PlatformMessageHandler? callback;
         lock (_gate)
         {
-            if (_disposed || !_handles.TryGetValue(handle.InstanceId, out var current) || current != handle) return;
+            if (
+                _disposed
+                || !_handles.TryGetValue(handle.InstanceId, out var current)
+                || current != handle
+            )
+            {
+                return;
+            }
+
             callback = _handlers.GetValueOrDefault("flutter/platform_views");
         }
-        if (callback is not null) _ = DispatchFocusAsync(callback, handle);
+        if (callback is not null)
+        {
+            _ = DispatchFocusAsync(callback, handle);
+        }
     }
-    private async Task DispatchFocusAsync(PlatformMessageHandler callback, PlatformViewHandle handle)
+
+    private async Task DispatchFocusAsync(
+        PlatformMessageHandler callback,
+        PlatformViewHandle handle
+    )
     {
-        try { await callback(_codec.encodeMethodCall(new MethodCall("viewFocused", handle.InstanceId)).asMemory(), default); }
-        catch (Exception exception) { CallbackFailed?.Invoke(exception); }
+        try
+        {
+            await callback(
+                _codec
+                    .encodeMethodCall(new MethodCall("viewFocused", handle.InstanceId))
+                    .asMemory(),
+                default
+            );
+        }
+        catch (Exception exception)
+        {
+            CallbackFailed?.Invoke(exception);
+        }
     }
+
     public void Dispose()
     {
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _disposed = true;
             _host.ViewFocused -= OnFocused;
-            foreach (var pending in _creating.Values) pending.Cancel();
+            foreach (var pending in _creating.Values)
+            {
+                pending.Cancel();
+            }
+
             _handlers.Clear();
             _handles.Clear();
             CallbackFailed = null;
         }
     }
-    private DorotiCapabilityException Unsupported(string reason) => new(DorotiCapabilityIds.PlatformViews,
-        _host.OwnerViewId, DartUiInvocation.Managed("flutter/platform_views"), reason);
+
+    private DorotiCapabilityException Unsupported(string reason) =>
+        new(
+            DorotiCapabilityIds.PlatformViews,
+            _host.OwnerViewId,
+            DartUiInvocation.Managed("flutter/platform_views"),
+            reason
+        );
 }

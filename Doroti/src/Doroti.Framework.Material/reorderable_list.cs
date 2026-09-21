@@ -14,7 +14,11 @@ public class ReorderableListView : StatefulWidget
     public virtual Action<long, long>? onReorderItem { get; private set; }
     public virtual Action<long>? onReorderStart { get; private set; }
     public virtual Action<long>? onReorderEnd { get; private set; }
-    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator
+    {
+        get;
+        private set;
+    }
     public virtual bool buildDefaultDragHandles { get; private set; } = default!;
     public virtual EdgeInsets? padding { get; private set; }
     public virtual Widget? header { get; private set; }
@@ -36,10 +40,46 @@ public class ReorderableListView : StatefulWidget
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
     public virtual Widget? prototypeItem { get; private set; }
     public virtual double? autoScrollerVelocityScalar { get; private set; }
-    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
+    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider
+    {
+        get;
+        private set;
+    }
     public virtual MouseCursor? mouseCursor { get; private set; }
 
-    public ReorderableListView(Key? key = null, List<Widget> children = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, bool buildDefaultDragHandles = true, EdgeInsets? padding = null, Widget? header = null, Widget? footer = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? scrollController = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, MouseCursor? mouseCursor = null) : base(key: key)
+    public ReorderableListView(
+        Key? key = null,
+        List<Widget> children = default!,
+        Action<long, long>? onReorder = null,
+        Action<long, long>? onReorderItem = null,
+        Action<long>? onReorderStart = null,
+        Action<long>? onReorderEnd = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null,
+        bool buildDefaultDragHandles = true,
+        EdgeInsets? padding = null,
+        Widget? header = null,
+        Widget? footer = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? scrollController = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        double anchor = 0.0,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        double? autoScrollerVelocityScalar = null,
+        Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null,
+        MouseCursor? mouseCursor = null
+    )
+        : base(key: key)
     {
         this.onReorder = onReorder;
         this.onReorderItem = onReorderItem;
@@ -71,14 +111,84 @@ public class ReorderableListView : StatefulWidget
         this.mouseCursor = mouseCursor;
         itemBuilder = (context, index) => children[(int)index];
         itemCount = checked(children.Count);
-        System.Diagnostics.Debug.Assert((itemExtent is null) && (prototypeItem is null) || (itemExtent is null) && (itemExtentBuilder is null) || (prototypeItem is null) && (itemExtentBuilder is null));
+        System.Diagnostics.Debug.Assert(
+            ((itemExtent is null) && (prototypeItem is null))
+                || ((itemExtent is null) && (itemExtentBuilder is null))
+                || ((prototypeItem is null) && (itemExtentBuilder is null))
+        );
         System.Diagnostics.Debug.Assert(children.All((w) => w.key is not null));
-        System.Diagnostics.Debug.Assert((onReorderItem is not null) && (onReorder is null) || (onReorderItem is null) && (onReorder is not null));
+        System.Diagnostics.Debug.Assert(
+            ((onReorderItem is not null) && (onReorder is null))
+                || ((onReorderItem is null) && (onReorder is not null))
+        );
     }
 
-    public static ReorderableListView CreateBuilder(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, bool buildDefaultDragHandles = true, EdgeInsets? padding = null, Widget? header = null, Widget? footer = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? scrollController = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, MouseCursor? mouseCursor = null)
+    public static ReorderableListView CreateBuilder(
+        Key? key = null,
+        Func<BuildContext, long, Widget> itemBuilder = default!,
+        long itemCount = default!,
+        Action<long, long>? onReorder = null,
+        Action<long, long>? onReorderItem = null,
+        Action<long>? onReorderStart = null,
+        Action<long>? onReorderEnd = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null,
+        bool buildDefaultDragHandles = true,
+        EdgeInsets? padding = null,
+        Widget? header = null,
+        Widget? footer = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? scrollController = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        double anchor = 0.0,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        double? autoScrollerVelocityScalar = null,
+        Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null,
+        MouseCursor? mouseCursor = null
+    )
     {
-        var __instance = new ReorderableListView(key: key, children: default!, onReorder: onReorder, onReorderItem: onReorderItem, onReorderStart: onReorderStart, onReorderEnd: onReorderEnd, itemExtent: itemExtent, itemExtentBuilder: itemExtentBuilder, prototypeItem: prototypeItem, proxyDecorator: proxyDecorator, buildDefaultDragHandles: buildDefaultDragHandles, padding: padding, header: header, footer: footer, scrollDirection: scrollDirection, reverse: reverse, scrollController: scrollController, primary: primary, physics: physics, shrinkWrap: shrinkWrap, anchor: anchor, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, autoScrollerVelocityScalar: autoScrollerVelocityScalar, dragBoundaryProvider: dragBoundaryProvider, mouseCursor: mouseCursor);
+        var __instance = new ReorderableListView(
+            key: key,
+            children: default!,
+            onReorder: onReorder,
+            onReorderItem: onReorderItem,
+            onReorderStart: onReorderStart,
+            onReorderEnd: onReorderEnd,
+            itemExtent: itemExtent,
+            itemExtentBuilder: itemExtentBuilder,
+            prototypeItem: prototypeItem,
+            proxyDecorator: proxyDecorator,
+            buildDefaultDragHandles: buildDefaultDragHandles,
+            padding: padding,
+            header: header,
+            footer: footer,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            scrollController: scrollController,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            anchor: anchor,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            autoScrollerVelocityScalar: autoScrollerVelocityScalar,
+            dragBoundaryProvider: dragBoundaryProvider,
+            mouseCursor: mouseCursor
+        );
         __instance.itemBuilder = itemBuilder;
         __instance.itemCount = itemCount;
         __instance.onReorder = onReorder;
@@ -112,25 +222,34 @@ public class ReorderableListView : StatefulWidget
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ReorderableListViewState__reorderable_list());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _ReorderableListViewState__reorderable_list()
+        );
 }
 
 internal class _ReorderableListViewState__reorderable_list : State<ReorderableListView>
 {
-    internal virtual ValueNotifier<bool> _dragging { get; private set; } = new ValueNotifier<bool>(false);
+    internal virtual ValueNotifier<bool> _dragging { get; private set; } =
+        new ValueNotifier<bool>(false);
 
     internal virtual Widget _itemBuilder(BuildContext context, long index)
     {
         Widget item = widget.itemBuilder(context, index);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (item.key is null)
             {
-                if (item.key is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Every item of ReorderableListView must have a key."));
-                }
-                return true;
-            });
-        Key itemGlobalKey = new _ReorderableListViewChildGlobalKey__reorderable_list(item.key!, this);
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create("Every item of ReorderableListView must have a key.")
+                );
+            }
+            return true;
+        });
+        Key itemGlobalKey = new _ReorderableListViewChildGlobalKey__reorderable_list(
+            item.key!,
+            this
+        );
         if (widget.buildDefaultDragHandles)
         {
             switch (Theme.of(context).platform)
@@ -138,33 +257,110 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
                 case TargetPlatform.macOS:
-                    {
-                        var dragHandle = new ListenableBuilder(listenable: _dragging, builder: (context, child) =>
+                {
+                    var dragHandle = new ListenableBuilder(
+                        listenable: _dragging,
+                        builder: (context, child) =>
                         {
-                            MouseCursor effectiveMouseCursor = WidgetStateProperty.resolveAs(widget.mouseCursor ?? WidgetStateMouseCursor.CreateFromMap(new DartMap<WidgetStatesConstraint, MouseCursor> { [WidgetState.dragged.asConstraint()] = SystemMouseCursors.grabbing, [WidgetStateMembers.any] = SystemMouseCursors.grab }), ((Func<HashSet<WidgetState>>)(() => { var __collection15120 = new HashSet<WidgetState>(); if (_dragging.value) { __collection15120.Add(WidgetState.dragged); } return __collection15120; }))());
+                            MouseCursor effectiveMouseCursor = WidgetStateProperty.resolveAs(
+                                widget.mouseCursor
+                                    ?? WidgetStateMouseCursor.CreateFromMap(
+                                        new DartMap<WidgetStatesConstraint, MouseCursor>
+                                        {
+                                            [WidgetState.dragged.asConstraint()] =
+                                                SystemMouseCursors.grabbing,
+                                            [WidgetStateMembers.any] = SystemMouseCursors.grab,
+                                        }
+                                    ),
+                                (
+                                    (Func<HashSet<WidgetState>>)(
+                                        () =>
+                                        {
+                                            var __collection15120 = new HashSet<WidgetState>();
+                                            if (_dragging.value)
+                                            {
+                                                __collection15120.Add(WidgetState.dragged);
+                                            }
+                                            return __collection15120;
+                                        }
+                                    )
+                                )()
+                            );
                             return new MouseRegion(cursor: effectiveMouseCursor, child: child);
-                            throw new InvalidOperationException("Dart closure completed without a value.");
-                        }, child: new Icon(Icons.drag_handle));
-                        switch (widget.scrollDirection)
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        },
+                        child: new Icon(Icons.drag_handle)
+                    );
+                    switch (widget.scrollDirection)
+                    {
+                        case Axis.horizontal:
                         {
-                            case Axis.horizontal:
+                            return Stack.Create(
+                                key: itemGlobalKey,
+                                children: new List<Widget>
                                 {
-                                    return Stack.Create(key: itemGlobalKey, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(item), DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: Directionality.of(context), start: 0, end: 0, bottom: 8, child: new Align(alignment: AlignmentDirectional.bottomCenter, child: new ReorderableDragStartListener(index: index, child: dragHandle)))) });
+                                    DartRuntimePrimitives.ConvertValue<Widget>(item),
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        Positioned.CreateDirectional(
+                                            textDirection: Directionality.of(context),
+                                            start: 0,
+                                            end: 0,
+                                            bottom: 8,
+                                            child: new Align(
+                                                alignment: AlignmentDirectional.bottomCenter,
+                                                child: new ReorderableDragStartListener(
+                                                    index: index,
+                                                    child: dragHandle
+                                                )
+                                            )
+                                        )
+                                    ),
                                 }
-                            case Axis.vertical:
-                                {
-                                    return Stack.Create(key: itemGlobalKey, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(item), DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: Directionality.of(context), top: 0, bottom: 0, end: 8, child: new Align(alignment: AlignmentDirectional.centerEnd, child: new ReorderableDragStartListener(index: index, child: dragHandle)))) });
-                                }
-                            default:
-                                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                            );
                         }
+                        case Axis.vertical:
+                        {
+                            return Stack.Create(
+                                key: itemGlobalKey,
+                                children: new List<Widget>
+                                {
+                                    DartRuntimePrimitives.ConvertValue<Widget>(item),
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        Positioned.CreateDirectional(
+                                            textDirection: Directionality.of(context),
+                                            top: 0,
+                                            bottom: 0,
+                                            end: 8,
+                                            child: new Align(
+                                                alignment: AlignmentDirectional.centerEnd,
+                                                child: new ReorderableDragStartListener(
+                                                    index: index,
+                                                    child: dragHandle
+                                                )
+                                            )
+                                        )
+                                    ),
+                                }
+                            );
+                        }
+                        default:
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            );
                     }
+                }
                 case TargetPlatform.iOS:
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
-                    {
-                        return new ReorderableDelayedDragStartListener(key: itemGlobalKey, index: index, child: item);
-                    }
+                {
+                    return new ReorderableDelayedDragStartListener(
+                        key: itemGlobalKey,
+                        index: index,
+                        child: item
+                    );
+                }
             }
         }
         return new KeyedSubtree(key: itemGlobalKey, child: item);
@@ -173,13 +369,19 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
 
     internal virtual Widget _proxyDecorator(Widget child, long index, Animation<double> animation)
     {
-        return new AnimatedBuilder(animation: animation, builder: (context, child) =>
-        {
-            double animValue = Curves.easeInOut.transform(animation.value);
-            double elevationLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, 6L, animValue));
-            return new Material(elevation: elevationLocal, child: child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: child);
+        return new AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) =>
+            {
+                double animValue = Curves.easeInOut.transform(animation.value);
+                double elevationLocal = DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(0L, 6L, animValue)
+                );
+                return new Material(elevation: elevationLocal, child: child);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -191,7 +393,9 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasOverlay(context));
         EdgeInsets paddingLocal = widget.padding ?? EdgeInsets.zero;
         double? start = (widget.header is null) ? null : 0.0;
@@ -203,26 +407,119 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
         EdgeInsets startPadding = default!;
         EdgeInsets endPadding = default!;
         EdgeInsets listPadding = default!;
-        DartRuntimePrimitives.Ignore((startPadding, endPadding, listPadding) = widget.scrollDirection switch { Axis.horizontal or Axis.vertical when (start ?? end) is null => ((EdgeInsets, EdgeInsets, EdgeInsets))(EdgeInsets.zero, EdgeInsets.zero, paddingLocal), Axis.horizontal => ((EdgeInsets, EdgeInsets, EdgeInsets))(paddingLocal.copyWith(left: 0), paddingLocal.copyWith(right: 0), paddingLocal.copyWith(left: start, right: end)), Axis.vertical => ((EdgeInsets, EdgeInsets, EdgeInsets))(paddingLocal.copyWith(top: 0), paddingLocal.copyWith(bottom: 0), paddingLocal.copyWith(top: start, bottom: end)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var (headerPadding, footerPadding) = widget.reverse ? (((EdgeInsets, EdgeInsets))(startPadding, endPadding)) : (((EdgeInsets, EdgeInsets))(endPadding, startPadding));
-        ScrollCacheExtent? scrollCacheExtentLocal = widget.scrollCacheExtent ?? ((widget.cacheExtent is null) ? null : ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(widget.cacheExtent)));
-        return new CustomScrollView(scrollDirection: widget.scrollDirection, reverse: widget.reverse, controller: widget.scrollController, primary: widget.primary, physics: widget.physics, shrinkWrap: widget.shrinkWrap, anchor: widget.anchor, scrollCacheExtent: scrollCacheExtentLocal, dragStartBehavior: widget.dragStartBehavior, keyboardDismissBehavior: widget.keyboardDismissBehavior, restorationId: widget.restorationId, clipBehavior: widget.clipBehavior, slivers: ((Func<List<Widget>>)(() =>
-        {
-            var __collection19473 = new List<Widget>(); if (widget.header is not null) { __collection19473.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: headerPadding, sliver: new SliverToBoxAdapter(child: widget.header)))); }
-            __collection19473.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: listPadding, sliver: new SliverReorderableList(itemBuilder: _itemBuilder, itemExtent: widget.itemExtent, itemExtentBuilder: widget.itemExtentBuilder, prototypeItem: widget.prototypeItem, itemCount: widget.itemCount, onReorder: widget.onReorder, onReorderItem: widget.onReorderItem, onReorderStart: (index) =>
+        DartRuntimePrimitives.Ignore(
+            (startPadding, endPadding, listPadding) = widget.scrollDirection switch
             {
-                _dragging.value = true;
-                widget.onReorderStart?.Invoke(index);
-            }, onReorderEnd: (index) =>
-            {
-                _dragging.value = false;
-                widget.onReorderEnd?.Invoke(index);
-            }, proxyDecorator: widget.proxyDecorator ?? _proxyDecorator, autoScrollerVelocityScalar: widget.autoScrollerVelocityScalar, dragBoundaryProvider: widget.dragBoundaryProvider)))); if (widget.footer is not null) { __collection19473.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: footerPadding, sliver: new SliverToBoxAdapter(child: widget.footer)))); }
-            return __collection19473;
-        }))());
+                Axis.horizontal or Axis.vertical when (start ?? end) is null => ((
+                    EdgeInsets,
+                    EdgeInsets,
+                    EdgeInsets
+                ))
+                    (EdgeInsets.zero, EdgeInsets.zero, paddingLocal),
+                Axis.horizontal => ((EdgeInsets, EdgeInsets, EdgeInsets))
+                    (
+                        paddingLocal.copyWith(left: 0),
+                        paddingLocal.copyWith(right: 0),
+                        paddingLocal.copyWith(left: start, right: end)
+                    ),
+                Axis.vertical => ((EdgeInsets, EdgeInsets, EdgeInsets))
+                    (
+                        paddingLocal.copyWith(top: 0),
+                        paddingLocal.copyWith(bottom: 0),
+                        paddingLocal.copyWith(top: start, bottom: end)
+                    ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
+        var (headerPadding, footerPadding) = widget.reverse
+            ? (((EdgeInsets, EdgeInsets))(startPadding, endPadding))
+            : (((EdgeInsets, EdgeInsets))(endPadding, startPadding));
+        ScrollCacheExtent? scrollCacheExtentLocal =
+            widget.scrollCacheExtent
+            ?? (
+                (widget.cacheExtent is null)
+                    ? null
+                    : ScrollCacheExtent.CreatePixels(
+                        DartRuntimePrimitives.RequireValue(widget.cacheExtent)
+                    )
+            );
+        return new CustomScrollView(
+            scrollDirection: widget.scrollDirection,
+            reverse: widget.reverse,
+            controller: widget.scrollController,
+            primary: widget.primary,
+            physics: widget.physics,
+            shrinkWrap: widget.shrinkWrap,
+            anchor: widget.anchor,
+            scrollCacheExtent: scrollCacheExtentLocal,
+            dragStartBehavior: widget.dragStartBehavior,
+            keyboardDismissBehavior: widget.keyboardDismissBehavior,
+            restorationId: widget.restorationId,
+            clipBehavior: widget.clipBehavior,
+            slivers: (
+                (Func<List<Widget>>)(
+                    () =>
+                    {
+                        var __collection19473 = new List<Widget>();
+                        if (widget.header is not null)
+                        {
+                            __collection19473.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new SliverPadding(
+                                        padding: headerPadding,
+                                        sliver: new SliverToBoxAdapter(child: widget.header)
+                                    )
+                                )
+                            );
+                        }
+                        __collection19473.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new SliverPadding(
+                                    padding: listPadding,
+                                    sliver: new SliverReorderableList(
+                                        itemBuilder: _itemBuilder,
+                                        itemExtent: widget.itemExtent,
+                                        itemExtentBuilder: widget.itemExtentBuilder,
+                                        prototypeItem: widget.prototypeItem,
+                                        itemCount: widget.itemCount,
+                                        onReorder: widget.onReorder,
+                                        onReorderItem: widget.onReorderItem,
+                                        onReorderStart: (index) =>
+                                        {
+                                            _dragging.value = true;
+                                            widget.onReorderStart?.Invoke(index);
+                                        },
+                                        onReorderEnd: (index) =>
+                                        {
+                                            _dragging.value = false;
+                                            widget.onReorderEnd?.Invoke(index);
+                                        },
+                                        proxyDecorator: widget.proxyDecorator ?? _proxyDecorator,
+                                        autoScrollerVelocityScalar: widget.autoScrollerVelocityScalar,
+                                        dragBoundaryProvider: widget.dragBoundaryProvider
+                                    )
+                                )
+                            )
+                        );
+                        if (widget.footer is not null)
+                        {
+                            __collection19473.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new SliverPadding(
+                                        padding: footerPadding,
+                                        sliver: new SliverToBoxAdapter(child: widget.footer)
+                                    )
+                                )
+                            );
+                        }
+                        return __collection19473;
+                    }
+                )
+            )()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ReorderableListViewChildGlobalKey__reorderable_list : GlobalObjectKey<IState>
@@ -230,7 +527,8 @@ internal class _ReorderableListViewChildGlobalKey__reorderable_list : GlobalObje
     public virtual Key subKey { get; private set; } = default!;
     public virtual IState state { get; private set; } = default!;
 
-    internal _ReorderableListViewChildGlobalKey__reorderable_list(Key subKey, IState state) : base(subKey)
+    internal _ReorderableListViewChildGlobalKey__reorderable_list(Key subKey, IState state)
+        : base(subKey)
     {
         this.subKey = subKey;
         this.state = state;
@@ -239,13 +537,20 @@ internal class _ReorderableListViewChildGlobalKey__reorderable_list : GlobalObje
     public override bool Equals(object? other)
     {
         var __other = other as _ReorderableListViewChildGlobalKey__reorderable_list;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is _ReorderableListViewChildGlobalKey__reorderable_list) && Equals(__other.subKey, subKey) && Equals(__other.state, state);
+        return (__other is _ReorderableListViewChildGlobalKey__reorderable_list)
+            && Equals(__other.subKey, subKey)
+            && Equals(__other.state, state);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(subKey, state));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(subKey, state));
 }

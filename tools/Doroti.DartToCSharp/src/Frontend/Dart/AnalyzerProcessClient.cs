@@ -7,21 +7,26 @@ internal sealed record AnalyzerTelemetry(int InvocationCount, int CacheHits, int
 
 internal sealed class AnalyzerProcessClient(string analyzerRoot, CompilerProfiler profiler)
 {
-    private readonly ConcurrentDictionary<string, object> _cacheLocks = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, object> _cacheLocks = new(
+        StringComparer.OrdinalIgnoreCase
+    );
     private int _invocationCount;
     private int _cacheHits;
     private int _cacheMisses;
 
-    public AnalyzerTelemetry Telemetry => new(
-        Volatile.Read(ref _invocationCount),
-        Volatile.Read(ref _cacheHits),
-        Volatile.Read(ref _cacheMisses));
+    public AnalyzerTelemetry Telemetry =>
+        new(
+            Volatile.Read(ref _invocationCount),
+            Volatile.Read(ref _cacheHits),
+            Volatile.Read(ref _cacheMisses)
+        );
 
     public string Analyze(
         string inputPath,
         string? cacheDirectory,
         bool syntaxOnly,
-        bool useFrameworkPackageConfig)
+        bool useFrameworkPackageConfig
+    )
     {
         var packageConfigPath = useFrameworkPackageConfig
             ? Path.Combine(analyzerRoot, "flutter_package_config.json")
@@ -29,7 +34,12 @@ internal sealed class AnalyzerProcessClient(string analyzerRoot, CompilerProfile
         string cacheKey;
         using (profiler.MeasureLibrary("cache-key", inputPath))
         {
-            cacheKey = AnalyzerCacheKey.Create(analyzerRoot, inputPath, syntaxOnly, packageConfigPath);
+            cacheKey = AnalyzerCacheKey.Create(
+                analyzerRoot,
+                inputPath,
+                syntaxOnly,
+                packageConfigPath
+            );
         }
         var cachePath = string.IsNullOrWhiteSpace(cacheDirectory)
             ? null
@@ -49,11 +59,18 @@ internal sealed class AnalyzerProcessClient(string analyzerRoot, CompilerProfile
 
             Interlocked.Increment(ref _cacheMisses);
             profiler.RecordCacheMiss();
-            var arguments = syntaxOnly
-                ? new[] { "run", "entrypoints/extract.dart", inputPath, "--syntax-only" }
+            var arguments =
+                syntaxOnly ? new[] { "run", "entrypoints/extract.dart", inputPath, "--syntax-only" }
                 : packageConfigPath is not null
-                    ? new[] { "run", "entrypoints/extract.dart", inputPath, "--packages", packageConfigPath }
-                    : new[] { "run", "entrypoints/extract.dart", inputPath };
+                    ? new[]
+                    {
+                        "run",
+                        "entrypoints/extract.dart",
+                        inputPath,
+                        "--packages",
+                        packageConfigPath,
+                    }
+                : new[] { "run", "entrypoints/extract.dart", inputPath };
             Interlocked.Increment(ref _invocationCount);
             profiler.RecordDartProcess();
             profiler.RecordAnalysisContext();

@@ -11,12 +11,23 @@ public class GlowingOverscrollIndicator : StatefulWidget
     public virtual bool showTrailing { get; private set; } = default!;
     public virtual AxisDirection axisDirection { get; private set; } = default!;
     public virtual Color color { get; private set; } = default!;
-    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
+    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } =
+        default!;
     public virtual Widget? child { get; private set; }
 
-    public GlowingOverscrollIndicator(Key? key = null, bool showLeading = true, bool showTrailing = true, AxisDirection axisDirection = default!, Color color = default!, Func<ScrollNotification, bool> notificationPredicate = default!, Widget? child = null) : base(key: key)
+    public GlowingOverscrollIndicator(
+        Key? key = null,
+        bool showLeading = true,
+        bool showTrailing = true,
+        AxisDirection axisDirection = default!,
+        Color color = default!,
+        Func<ScrollNotification, bool> notificationPredicate = default!,
+        Widget? child = null
+    )
+        : base(key: key)
     {
-        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate =
+            notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         this.showLeading = showLeading;
         this.showTrailing = showTrailing;
         this.axisDirection = axisDirection;
@@ -26,34 +37,59 @@ public class GlowingOverscrollIndicator : StatefulWidget
     }
 
     public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _GlowingOverscrollIndicatorState__overscroll_indicator());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _GlowingOverscrollIndicatorState__overscroll_indicator()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
-        string showDescription = (showLeading, showTrailing) switch { (true, true) => "both sides", (true, false) => "leading side only", (false, true) => "trailing side only", (false, false) => "neither side (!)" };
+        string showDescription = (showLeading, showTrailing) switch
+        {
+            (true, true) => "both sides",
+            (true, false) => "leading side only",
+            (false, true) => "trailing side only",
+            (false, false) => "neither side (!)",
+        };
         properties.add(new MessageProperty("show", showDescription));
         properties.add(new ColorProperty("color", color, showName: false));
     }
-
 }
 
-internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<GlowingOverscrollIndicator>, TickerProviderStateMixin<GlowingOverscrollIndicator>
+internal class _GlowingOverscrollIndicatorState__overscroll_indicator
+    : State<GlowingOverscrollIndicator>,
+        TickerProviderStateMixin<GlowingOverscrollIndicator>
 {
-    internal virtual _GlowController__overscroll_indicator? _leadingController { get; set; } = default;
-    internal virtual _GlowController__overscroll_indicator? _trailingController { get; set; } = default;
+    internal virtual _GlowController__overscroll_indicator? _leadingController { get; set; } =
+        default;
+    internal virtual _GlowController__overscroll_indicator? _trailingController { get; set; } =
+        default;
     internal virtual Listenable? _leadingAndTrailingListener { get; set; } = default;
     internal virtual Type? _lastNotificationType { get; set; } = default;
-    internal virtual DartMap<bool, bool> _accepted { get; private set; } = new DartMap<bool, bool> { [false] = true, [true] = true };
+    internal virtual DartMap<bool, bool> _accepted { get; private set; } =
+        new DartMap<bool, bool> { [false] = true, [true] = true };
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _leadingController = new _GlowController__overscroll_indicator(vsync: this, color: widget.color, axis: widget.axis);
-        _trailingController = new _GlowController__overscroll_indicator(vsync: this, color: widget.color, axis: widget.axis);
-        _leadingAndTrailingListener = Listenable.CreateMerge(new List<Listenable> { _leadingController!, _trailingController! }.Cast<Listenable?>());
+        _leadingController = new _GlowController__overscroll_indicator(
+            vsync: this,
+            color: widget.color,
+            axis: widget.axis
+        );
+        _trailingController = new _GlowController__overscroll_indicator(
+            vsync: this,
+            color: widget.color,
+            axis: widget.axis
+        );
+        _leadingAndTrailingListener = Listenable.CreateMerge(
+            new List<Listenable> { _leadingController!, _trailingController! }.Cast<Listenable?>()
+        );
     }
 
     public override void didUpdateWidget(GlowingOverscrollIndicator oldWidget)
@@ -78,8 +114,14 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         {
             return false;
         }
-        _leadingController!._paintOffsetScrollPixels = -Math.Min(notification.metrics.pixels - notification.metrics.minScrollExtent, _leadingController!._paintOffset);
-        _trailingController!._paintOffsetScrollPixels = -Math.Min(notification.metrics.maxScrollExtent - notification.metrics.pixels, _trailingController!._paintOffset);
+        _leadingController!._paintOffsetScrollPixels = -Math.Min(
+            notification.metrics.pixels - notification.metrics.minScrollExtent,
+            _leadingController!._paintOffset
+        );
+        _trailingController!._paintOffsetScrollPixels = -Math.Min(
+            notification.metrics.maxScrollExtent - notification.metrics.pixels,
+            _trailingController!._paintOffset
+        );
         if (notification is OverscrollNotification)
         {
             OverscrollNotification notification__as9386 = (OverscrollNotification)notification;
@@ -102,16 +144,26 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
             var isLeading = Equals(controller, _leadingController);
             if (!Equals(_lastNotificationType, typeof(OverscrollNotification)))
             {
-                var confirmationNotification = new OverscrollIndicatorNotification(leading: isLeading);
+                var confirmationNotification = new OverscrollIndicatorNotification(
+                    leading: isLeading
+                );
                 confirmationNotification.dispatch(context);
                 _accepted[isLeading] = confirmationNotification.accepted;
-                if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)))
+                if (
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
+                    )
+                )
                 {
                     controller!._paintOffset = confirmationNotification.paintOffset;
                 }
             }
             DartRuntimePrimitives.Assert(() => controller is not null);
-            if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)))
+            if (
+                DartRuntimePrimitives.RequireValue(
+                    DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
+                )
+            )
             {
                 if (notification__as9386.velocity != 0.0)
                 {
@@ -123,22 +175,36 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
                     DartRuntimePrimitives.Assert(() => notification__as9386.overscroll != 0.0);
                     if (notification__as9386.dragDetails is not null)
                     {
-                        var renderer = ((RenderBox?)notification__as9386.context!.findRenderObject()!)!;
+                        var renderer = (
+                            (RenderBox?)notification__as9386.context!.findRenderObject()!
+                        )!;
                         DartRuntimePrimitives.Assert(() => renderer.hasSize);
                         Size sizeLocal = renderer.size;
-                        Offset position = renderer.globalToLocal(notification__as9386.dragDetails!.globalPosition);
+                        Offset position = renderer.globalToLocal(
+                            notification__as9386.dragDetails!.globalPosition
+                        );
                         switch (notification__as9386.metrics.axis)
                         {
                             case Axis.horizontal:
-                                {
-                                    controller!.pull(notification__as9386.overscroll.abs(), sizeLocal.width, Dart_uiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height), sizeLocal.height);
-                                    break;
-                                }
+                            {
+                                controller!.pull(
+                                    notification__as9386.overscroll.abs(),
+                                    sizeLocal.width,
+                                    Dart_uiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height),
+                                    sizeLocal.height
+                                );
+                                break;
+                            }
                             case Axis.vertical:
-                                {
-                                    controller!.pull(notification__as9386.overscroll.abs(), sizeLocal.height, Dart_uiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width), sizeLocal.width);
-                                    break;
-                                }
+                            {
+                                controller!.pull(
+                                    notification__as9386.overscroll.abs(),
+                                    sizeLocal.height,
+                                    Dart_uiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width),
+                                    sizeLocal.width
+                                );
+                                break;
+                            }
                         }
                     }
                 }
@@ -146,7 +212,16 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         }
         else
         {
-            if ((notification is ScrollEndNotification) && (((ScrollEndNotification)notification).dragDetails is not null) || (notification is ScrollUpdateNotification) && (((ScrollUpdateNotification)notification).dragDetails is not null))
+            if (
+                (
+                    (notification is ScrollEndNotification)
+                    && (((ScrollEndNotification)notification).dragDetails is not null)
+                )
+                || (
+                    (notification is ScrollUpdateNotification)
+                    && (((ScrollUpdateNotification)notification).dragDetails is not null)
+                )
+            )
             {
                 _leadingController!.scrollEnd();
                 _trailingController!.scrollEnd();
@@ -162,20 +237,38 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         _leadingController!.dispose();
         _trailingController!.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -183,7 +276,20 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
 
     public override Widget build(BuildContext context)
     {
-        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new RepaintBoundary(child: new CustomPaint(foregroundPainter: new _GlowingOverscrollIndicatorPainter__overscroll_indicator(leadingController: widget.showLeading ? _leadingController : null, trailingController: widget.showTrailing ? _trailingController : null, axisDirection: widget.axisDirection, repaint: _leadingAndTrailingListener), child: new RepaintBoundary(child: widget.child))));
+        return new NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: new RepaintBoundary(
+                child: new CustomPaint(
+                    foregroundPainter: new _GlowingOverscrollIndicatorPainter__overscroll_indicator(
+                        leadingController: widget.showLeading ? _leadingController : null,
+                        trailingController: widget.showTrailing ? _trailingController : null,
+                        axisDirection: widget.axisDirection,
+                        repaint: _leadingAndTrailingListener
+                    ),
+                    child: new RepaintBoundary(child: widget.child)
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -196,13 +302,23 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -251,9 +367,17 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal enum _GlowState__overscroll_indicator
@@ -261,20 +385,23 @@ internal enum _GlowState__overscroll_indicator
     idle,
     absorb,
     pull,
-    recede
+    recede,
 }
 
 public class _GlowController__overscroll_indicator : ChangeNotifier
 {
-    internal virtual _GlowState__overscroll_indicator _state { get; set; } = _GlowState__overscroll_indicator.idle;
+    internal virtual _GlowState__overscroll_indicator _state { get; set; } =
+        _GlowState__overscroll_indicator.idle;
     internal virtual AnimationController _glowController { get; private set; } = default!;
     internal virtual Timer? _pullRecedeTimer { get; set; } = default;
     internal virtual double _paintOffset { get; set; } = 0.0;
     internal virtual double _paintOffsetScrollPixels { get; set; } = 0.0;
     internal virtual CurvedAnimation _decelerator { get; private set; } = default!;
-    internal virtual Tween<double> _glowOpacityTween { get; private set; } = new Tween<double>(begin: 0.0, end: 0.0);
+    internal virtual Tween<double> _glowOpacityTween { get; private set; } =
+        new Tween<double>(begin: 0.0, end: 0.0);
     internal virtual Animation<double> _glowOpacity { get; private set; } = default!;
-    internal virtual Tween<double> _glowSizeTween { get; private set; } = new Tween<double>(begin: 0.0, end: 0.0);
+    internal virtual Tween<double> _glowSizeTween { get; private set; } =
+        new Tween<double>(begin: 0.0, end: 0.0);
     internal virtual Animation<double> _glowSize { get; private set; } = default!;
     internal virtual Scheduler.Ticker _displacementTicker { get; private set; } = default!;
     internal virtual Duration? _displacementTickerLastElapsed { get; set; } = default;
@@ -287,7 +414,9 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
     internal static Duration _pullTime = Duration.Create(milliseconds: 167L);
     internal static Duration _pullHoldTime = Duration.Create(milliseconds: 167L);
     internal static Duration _pullDecayTime = Duration.Create(milliseconds: 2000L);
-    internal static Duration _crossAxisHalfTime = Duration.Create(microseconds: (Duration.microsecondsPerSecond / 60.0).round());
+    internal static Duration _crossAxisHalfTime = Duration.Create(
+        microseconds: (Duration.microsecondsPerSecond / 60.0).round()
+    );
     internal const double _maxOpacity = 0.5;
     internal const double _pullOpacityGlowFactor = 0.8;
     internal const double _velocityGlowFactor = 0.00006;
@@ -296,7 +425,11 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
     internal const double _minVelocity = 100.0;
     internal const double _maxVelocity = 10000.0;
 
-    internal _GlowController__overscroll_indicator(Scheduler.TickerProvider vsync, Color color, Axis axis)
+    internal _GlowController__overscroll_indicator(
+        Scheduler.TickerProvider vsync,
+        Color color,
+        Axis axis
+    )
     {
         _color = color;
         _axis = axis;
@@ -330,6 +463,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
             notifyListeners();
         }
     }
+
     public override void dispose()
     {
         _glowController.dispose();
@@ -345,25 +479,44 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         _pullRecedeTimer?.cancel();
         _pullRecedeTimer = null;
         velocity = Dart_uiLibrary.clampDouble(velocity, _minVelocity, _maxVelocity);
-        _glowOpacityTween.begin = Equals(_state, _GlowState__overscroll_indicator.idle) ? 0.3 : _glowOpacity.value;
-        _glowOpacityTween.end = Dart_uiLibrary.clampDouble(velocity * _velocityGlowFactor, DartRuntimePrimitives.RequireValue(_glowOpacityTween.begin), _maxOpacity);
+        _glowOpacityTween.begin = Equals(_state, _GlowState__overscroll_indicator.idle)
+            ? 0.3
+            : _glowOpacity.value;
+        _glowOpacityTween.end = Dart_uiLibrary.clampDouble(
+            velocity * _velocityGlowFactor,
+            DartRuntimePrimitives.RequireValue(_glowOpacityTween.begin),
+            _maxOpacity
+        );
         _glowSizeTween.begin = _glowSize.value;
         _glowSizeTween.end = Math.Min(0.025 + (7.5e-7 * velocity * velocity), 1.0);
-        _glowController.duration = Duration.Create(milliseconds: (0.15 + (velocity * 0.02)).round());
+        _glowController.duration = Duration.Create(
+            milliseconds: (0.15 + (velocity * 0.02)).round()
+        );
         _glowController.forward(from: 0.0);
         _displacement = 0.5;
         _state = _GlowState__overscroll_indicator.absorb;
     }
 
-    public virtual void pull(double overscroll, double extent, double crossAxisOffset, double crossExtent)
+    public virtual void pull(
+        double overscroll,
+        double extent,
+        double crossAxisOffset,
+        double crossExtent
+    )
     {
         _pullRecedeTimer?.cancel();
         _pullDistance += overscroll / 200.0;
         _glowOpacityTween.begin = _glowOpacity.value;
-        _glowOpacityTween.end = Math.Min(_glowOpacity.value + (overscroll / extent * _pullOpacityGlowFactor), _maxOpacity);
+        _glowOpacityTween.end = Math.Min(
+            _glowOpacity.value + (overscroll / extent * _pullOpacityGlowFactor),
+            _maxOpacity
+        );
         double height = Math.Min(extent, crossExtent * _widthToHeightFactor);
         _glowSizeTween.begin = _glowSize.value;
-        _glowSizeTween.end = Math.Max(1.0 - (1.0 / (0.7 * Dart_mathLibrary.sqrt(_pullDistance * height))), _glowSize.value);
+        _glowSizeTween.end = Math.Max(
+            1.0 - (1.0 / (0.7 * Dart_mathLibrary.sqrt(_pullDistance * height))),
+            _glowSize.value
+        );
         _displacementTarget = crossAxisOffset / crossExtent;
         if (_displacementTarget != _displacement)
         {
@@ -392,7 +545,13 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
                 notifyListeners();
             }
         }
-        _pullRecedeTimer = new Timer(_pullHoldTime, () => { _recede(_pullDecayTime); });
+        _pullRecedeTimer = new Timer(
+            _pullHoldTime,
+            () =>
+            {
+                _recede(_pullDecayTime);
+            }
+        );
     }
 
     public virtual void scrollEnd()
@@ -412,27 +571,30 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         switch (_state)
         {
             case _GlowState__overscroll_indicator.absorb:
-                {
-                    _recede(_recedeTime);
-                    break;
-                }
+            {
+                _recede(_recedeTime);
+                break;
+            }
             case _GlowState__overscroll_indicator.recede:
-                {
-                    _state = _GlowState__overscroll_indicator.idle;
-                    _pullDistance = 0.0;
-                    break;
-                }
+            {
+                _state = _GlowState__overscroll_indicator.idle;
+                _pullDistance = 0.0;
+                break;
+            }
             case _GlowState__overscroll_indicator.pull:
             case _GlowState__overscroll_indicator.idle:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
     internal virtual void _recede(Duration duration)
     {
-        if (Equals(_state, _GlowState__overscroll_indicator.recede) || Equals(_state, _GlowState__overscroll_indicator.idle))
+        if (
+            Equals(_state, _GlowState__overscroll_indicator.recede)
+            || Equals(_state, _GlowState__overscroll_indicator.idle)
+        )
         {
             return;
         }
@@ -451,11 +613,25 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
     {
         if (_displacementTickerLastElapsed is not null)
         {
-            double t = (elapsed.inMicroseconds - DartRuntimePrimitives.RequireValue(_displacementTickerLastElapsed).inMicroseconds).toDouble();
-            _displacement = _displacementTarget - ((_displacementTarget - _displacement) * Dart_mathLibrary.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds));
+            double t = (
+                elapsed.inMicroseconds
+                - DartRuntimePrimitives.RequireValue(_displacementTickerLastElapsed).inMicroseconds
+            ).toDouble();
+            _displacement =
+                _displacementTarget
+                - (
+                    (_displacementTarget - _displacement)
+                    * Dart_mathLibrary.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds)
+                );
             notifyListeners();
         }
-        if (Physics.UtilsLibrary.nearEqual(_displacementTarget, _displacement, Physics.Tolerance.defaultTolerance.distance))
+        if (
+            Physics.UtilsLibrary.nearEqual(
+                _displacementTarget,
+                _displacement,
+                Physics.Tolerance.defaultTolerance.distance
+            )
+        )
         {
             _displacementTicker.stop();
             _displacementTickerLastElapsed = null;
@@ -478,12 +654,16 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         double scaleY = _glowSize.value * baseGlowScale;
         var rect = Rect.fromLTWH(0.0, 0.0, size.width, heightLocal);
         var center = new Offset(size.width / 2.0 * (0.5 + _displacement), heightLocal - radius);
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = color.withOpacity(_glowOpacity.value);
-    return __cascade;
-}))();
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = color.withOpacity(_glowOpacity.value);
+                    return __cascade;
+                }
+            )
+        )();
         canvas.save();
         canvas.translate(0.0, _paintOffset + _paintOffsetScrollPixels);
         canvas.scale(1.0, scaleY);
@@ -497,7 +677,6 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         return $"_GlowController(color: {color}, axis: {axis.ToString()})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : CustomPainter
@@ -507,14 +686,26 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
     public virtual AxisDirection axisDirection { get; private set; } = default!;
     public static double piOver2 = Dart_mathLibrary.pi / 2.0;
 
-    internal _GlowingOverscrollIndicatorPainter__overscroll_indicator(_GlowController__overscroll_indicator? leadingController = null, _GlowController__overscroll_indicator? trailingController = null, AxisDirection axisDirection = default!, Listenable? repaint = null) : base(repaint: repaint)
+    internal _GlowingOverscrollIndicatorPainter__overscroll_indicator(
+        _GlowController__overscroll_indicator? leadingController = null,
+        _GlowController__overscroll_indicator? trailingController = null,
+        AxisDirection axisDirection = default!,
+        Listenable? repaint = null
+    )
+        : base(repaint: repaint)
     {
         this.leadingController = leadingController;
         this.trailingController = trailingController;
         this.axisDirection = axisDirection;
     }
 
-    internal virtual void _paintSide(Canvas canvas, Size size, _GlowController__overscroll_indicator? controller, AxisDirection axisDirection, GrowthDirection growthDirection)
+    internal virtual void _paintSide(
+        Canvas canvas,
+        Size size,
+        _GlowController__overscroll_indicator? controller,
+        AxisDirection axisDirection,
+        GrowthDirection growthDirection
+    )
     {
         if (controller is null)
         {
@@ -523,37 +714,37 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
         switch (SliverLibrary.applyGrowthDirectionToAxisDirection(axisDirection, growthDirection))
         {
             case AxisDirection.up:
-                {
-                    controller.paint(canvas, size);
-                    break;
-                }
+            {
+                controller.paint(canvas, size);
+                break;
+            }
             case AxisDirection.down:
-                {
-                    canvas.save();
-                    canvas.translate(0.0, size.height);
-                    canvas.scale(1.0, -1.0);
-                    controller.paint(canvas, size);
-                    canvas.restore();
-                    break;
-                }
+            {
+                canvas.save();
+                canvas.translate(0.0, size.height);
+                canvas.scale(1.0, -1.0);
+                controller.paint(canvas, size);
+                canvas.restore();
+                break;
+            }
             case AxisDirection.left:
-                {
-                    canvas.save();
-                    canvas.rotate(piOver2);
-                    canvas.scale(1.0, -1.0);
-                    controller.paint(canvas, new Size(size.height, size.width));
-                    canvas.restore();
-                    break;
-                }
+            {
+                canvas.save();
+                canvas.rotate(piOver2);
+                canvas.scale(1.0, -1.0);
+                controller.paint(canvas, new Size(size.height, size.width));
+                canvas.restore();
+                break;
+            }
             case AxisDirection.right:
-                {
-                    canvas.save();
-                    canvas.translate(size.width, 0.0);
-                    canvas.rotate(piOver2);
-                    controller.paint(canvas, new Size(size.height, size.width));
-                    canvas.restore();
-                    break;
-                }
+            {
+                canvas.save();
+                canvas.translate(size.width, 0.0);
+                canvas.rotate(piOver2);
+                controller.paint(canvas, new Size(size.height, size.width));
+                canvas.restore();
+                break;
+            }
         }
     }
 
@@ -566,7 +757,8 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_GlowingOverscrollIndicatorPainter__overscroll_indicator)oldDelegate;
-        return (!Equals(__oldDelegate.leadingController, leadingController)) || (!Equals(__oldDelegate.trailingController, trailingController));
+        return (!Equals(__oldDelegate.leadingController, leadingController))
+            || (!Equals(__oldDelegate.trailingController, trailingController));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -575,19 +767,27 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
         return $"_GlowingOverscrollIndicatorPainter({leadingController}, {trailingController})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class StretchingOverscrollIndicator : StatefulWidget
 {
     public virtual AxisDirection axisDirection { get; private set; } = default!;
-    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
+    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } =
+        default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public StretchingOverscrollIndicator(Key? key = null, AxisDirection axisDirection = default!, Func<ScrollNotification, bool> notificationPredicate = default!, Clip clipBehavior = Clip.hardEdge, Widget? child = null) : base(key: key)
+    public StretchingOverscrollIndicator(
+        Key? key = null,
+        AxisDirection axisDirection = default!,
+        Func<ScrollNotification, bool> notificationPredicate = default!,
+        Clip clipBehavior = Clip.hardEdge,
+        Widget? child = null
+    )
+        : base(key: key)
     {
-        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate =
+            notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         this.axisDirection = axisDirection;
         this.notificationPredicate = __notificationPredicate;
         this.clipBehavior = clipBehavior;
@@ -595,16 +795,22 @@ public class StretchingOverscrollIndicator : StatefulWidget
     }
 
     public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StretchingOverscrollIndicatorState__overscroll_indicator());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _StretchingOverscrollIndicatorState__overscroll_indicator()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
     }
-
 }
 
-internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State<StretchingOverscrollIndicator>, TickerProviderStateMixin<StretchingOverscrollIndicator>
+internal class _StretchingOverscrollIndicatorState__overscroll_indicator
+    : State<StretchingOverscrollIndicator>,
+        TickerProviderStateMixin<StretchingOverscrollIndicator>
 {
     private bool __late__stretchController_initialized;
     private _StretchController__overscroll_indicator __late__stretchController = default!;
@@ -614,7 +820,9 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
         {
             if (!__late__stretchController_initialized)
             {
-                __late__stretchController = new _StretchController__overscroll_indicator(vsync: this);
+                __late__stretchController = new _StretchController__overscroll_indicator(
+                    vsync: this
+                );
                 __late__stretchController_initialized = true;
             }
             return __late__stretchController;
@@ -649,9 +857,16 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
             {
                 OverscrollNotification notification__as27182 = (OverscrollNotification)notification;
                 _lastOverscrollNotification = notification__as27182;
-                if (!Equals(DartRuntimePrimitives.RuntimeType(_lastNotification), typeof(OverscrollNotification)))
+                if (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(_lastNotification),
+                        typeof(OverscrollNotification)
+                    )
+                )
                 {
-                    var confirmationNotification = new OverscrollIndicatorNotification(leading: notification__as27182.overscroll < 0.0);
+                    var confirmationNotification = new OverscrollIndicatorNotification(
+                        leading: notification__as27182.overscroll < 0.0
+                    );
                     confirmationNotification.dispatch(context);
                     _accepted = confirmationNotification.accepted;
                 }
@@ -660,7 +875,9 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
                     _totalOverscroll += notification__as27182.overscroll;
                     if (notification__as27182.velocity != 0.0)
                     {
-                        DartRuntimePrimitives.Assert(() => notification__as27182.dragDetails is null);
+                        DartRuntimePrimitives.Assert(() =>
+                            notification__as27182.dragDetails is null
+                        );
                         _stretchController.absorbImpact(notification__as27182.velocity);
                     }
                     else
@@ -668,9 +885,15 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
                         DartRuntimePrimitives.Assert(() => notification__as27182.overscroll != 0.0);
                         if (notification__as27182.dragDetails is not null)
                         {
-                            double viewportDimensionLocal = notification__as27182.metrics.viewportDimension;
+                            double viewportDimensionLocal = notification__as27182
+                                .metrics
+                                .viewportDimension;
                             double distanceForPull = _totalOverscroll / viewportDimensionLocal;
-                            double clampedOverscroll = Dart_uiLibrary.clampDouble(distanceForPull, -1.0, 1.0);
+                            double clampedOverscroll = Dart_uiLibrary.clampDouble(
+                                distanceForPull,
+                                -1.0,
+                                1.0
+                            );
                             _stretchController.pull(clampedOverscroll);
                         }
                     }
@@ -680,9 +903,30 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
             {
                 if (notification is ScrollEndNotification)
                 {
-                    ScrollEndNotification notification__as28637 = (ScrollEndNotification)notification;
-                    double velocityLocal = widget.axis switch { Axis.vertical => notification__as28637.dragDetails?.velocity.pixelsPerSecond.dy ?? 0.0, Axis.horizontal => notification__as28637.dragDetails?.velocity.pixelsPerSecond.dx ?? 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                    if (Equals(notification__as28637.metrics.axisDirection, AxisDirection.left) || Equals(notification__as28637.metrics.axisDirection, AxisDirection.up))
+                    ScrollEndNotification notification__as28637 =
+                        (ScrollEndNotification)notification;
+                    double velocityLocal = widget.axis switch
+                    {
+                        Axis.vertical => notification__as28637
+                            .dragDetails
+                            ?.velocity
+                            .pixelsPerSecond
+                            .dy
+                            ?? 0.0,
+                        Axis.horizontal => notification__as28637
+                            .dragDetails
+                            ?.velocity
+                            .pixelsPerSecond
+                            .dx
+                            ?? 0.0,
+                        _ => throw new InvalidOperationException(
+                            "Non-exhaustive Dart switch value."
+                        ),
+                    };
+                    if (
+                        Equals(notification__as28637.metrics.axisDirection, AxisDirection.left)
+                        || Equals(notification__as28637.metrics.axisDirection, AxisDirection.up)
+                    )
                     {
                         velocityLocal = -velocityLocal;
                     }
@@ -696,7 +940,8 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
                 {
                     if (notification is ScrollUpdateNotification)
                     {
-                        ScrollUpdateNotification notification__as29426 = (ScrollUpdateNotification)notification;
+                        ScrollUpdateNotification notification__as29426 =
+                            (ScrollUpdateNotification)notification;
                         _totalOverscroll = 0.0;
                         _stretchController.scrollEnd(0.0);
                     }
@@ -712,20 +957,38 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
     {
         _stretchController.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -733,33 +996,52 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
 
     public override Widget build(BuildContext context)
     {
-        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new AnimatedBuilder(animation: _stretchController, builder: (context, child) =>
-        {
-            double stretch = _stretchController.overscroll;
-            double mainAxisSize = default!;
-            switch (widget.axis)
-            {
-                case Axis.horizontal:
+        return new NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: new AnimatedBuilder(
+                animation: _stretchController,
+                builder: (context, child) =>
+                {
+                    double stretch = _stretchController.overscroll;
+                    double mainAxisSize = default!;
+                    switch (widget.axis)
                     {
-                        mainAxisSize = MediaQuery.widthOf(context);
-                        break;
+                        case Axis.horizontal:
+                        {
+                            mainAxisSize = MediaQuery.widthOf(context);
+                            break;
+                        }
+                        case Axis.vertical:
+                        {
+                            mainAxisSize = MediaQuery.heightOf(context);
+                            break;
+                        }
                     }
-                case Axis.vertical:
+                    double viewportDimensionLocal =
+                        _lastOverscrollNotification?.metrics.viewportDimension ?? mainAxisSize;
+                    double overscrollLocal = -stretch;
+                    if (
+                        Equals(widget.axisDirection, AxisDirection.up)
+                        || Equals(widget.axisDirection, AxisDirection.left)
+                    )
                     {
-                        mainAxisSize = MediaQuery.heightOf(context);
-                        break;
+                        overscrollLocal = -overscrollLocal;
                     }
-            }
-            double viewportDimensionLocal = _lastOverscrollNotification?.metrics.viewportDimension ?? mainAxisSize;
-            double overscrollLocal = -stretch;
-            if (Equals(widget.axisDirection, AxisDirection.up) || Equals(widget.axisDirection, AxisDirection.left))
-            {
-                overscrollLocal = -overscrollLocal;
-            }
-            Widget transform = new StretchEffect(stretchStrength: overscrollLocal, axis: widget.axis, child: widget.child ?? SizedBox.CreateShrink());
-            return new ClipRect(clipBehavior: ((stretch != 0.0) && (viewportDimensionLocal != mainAxisSize)) ? widget.clipBehavior : Clip.none, child: transform);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+                    Widget transform = new StretchEffect(
+                        stretchStrength: overscrollLocal,
+                        axis: widget.axis,
+                        child: widget.child ?? SizedBox.CreateShrink()
+                    );
+                    return new ClipRect(
+                        clipBehavior: ((stretch != 0.0) && (viewportDimensionLocal != mainAxisSize))
+                            ? widget.clipBehavior
+                            : Clip.none,
+                        child: transform
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -772,13 +1054,23 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -827,16 +1119,25 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _StretchController__overscroll_indicator : Listenable
 {
     public virtual Scheduler.TickerProvider vsync { get; private set; } = default!;
     internal virtual AnimationController? _controller { get; set; } = default;
-    internal virtual ValueNotifier<double> _overscrollNotifier { get; private set; } = new ValueNotifier<double>(0.0);
+    internal virtual ValueNotifier<double> _overscrollNotifier { get; private set; } =
+        new ValueNotifier<double>(0.0);
     internal virtual double _interruptedOverscroll { get; set; } = 0.0;
     internal static double _exponentialScalar = Dart_mathLibrary.e / 0.33;
     internal const double _stretchIntensity = 0.016;
@@ -850,7 +1151,12 @@ internal class _StretchController__overscroll_indicator : Listenable
     public const double kDampingRatio = 0.98;
     public const double kTimeCorrectionFactor = 0.8;
     public static double kStiffness = kNaturalFrequency * kNaturalFrequency;
-    internal static Physics.SpringDescription _kStretchSpringDescription = Physics.SpringDescription.CreateWithDampingRatio(mass: 1, stiffness: kStiffness * kTimeCorrectionFactor * kTimeCorrectionFactor, ratio: kDampingRatio);
+    internal static Physics.SpringDescription _kStretchSpringDescription =
+        Physics.SpringDescription.CreateWithDampingRatio(
+            mass: 1,
+            stiffness: kStiffness * kTimeCorrectionFactor * kTimeCorrectionFactor,
+            ratio: kDampingRatio
+        );
 
     internal _StretchController__overscroll_indicator(Scheduler.TickerProvider vsync)
     {
@@ -863,9 +1169,14 @@ internal class _StretchController__overscroll_indicator : Listenable
         set
         {
             var newValue = value;
-            _overscrollNotifier.value = Dart_uiLibrary.clampDouble(newValue, minOverscroll, maxOverscroll);
+            _overscrollNotifier.value = Dart_uiLibrary.clampDouble(
+                newValue,
+                minOverscroll,
+                maxOverscroll
+            );
         }
     }
+
     public virtual void addListener(Action listener)
     {
         _overscrollNotifier.addListener(listener);
@@ -878,7 +1189,12 @@ internal class _StretchController__overscroll_indicator : Listenable
 
     internal virtual Physics.SpringSimulation _createStretchSimulation(double velocity)
     {
-        return new Physics.SpringSimulation(_kStretchSpringDescription, overscroll, 0.0, velocity * kTimeCorrectionFactor);
+        return new Physics.SpringSimulation(
+            _kStretchSpringDescription,
+            overscroll,
+            0.0,
+            velocity * kTimeCorrectionFactor
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -888,7 +1204,11 @@ internal class _StretchController__overscroll_indicator : Listenable
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble(velocity * _absorbImpactVelocityFriction, -_maxAbsorbImpactVelocity, _maxAbsorbImpactVelocity);
+        double scaledVelocity = Dart_uiLibrary.clampDouble(
+            velocity * _absorbImpactVelocityFriction,
+            -_maxAbsorbImpactVelocity,
+            _maxAbsorbImpactVelocity
+        );
         animate(_createStretchSimulation(scaledVelocity));
     }
 
@@ -898,7 +1218,11 @@ internal class _StretchController__overscroll_indicator : Listenable
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble(-(velocity * _flingVelocityFriction), -_maxFlingVelocity, _maxFlingVelocity);
+        double scaledVelocity = Dart_uiLibrary.clampDouble(
+            -(velocity * _flingVelocityFriction),
+            -_maxFlingVelocity,
+            _maxFlingVelocity
+        );
         if (_controller is null)
         {
             animate(_createStretchSimulation(scaledVelocity));
@@ -907,27 +1231,35 @@ internal class _StretchController__overscroll_indicator : Listenable
 
     public virtual void animate(Physics.Simulation simulation)
     {
-        var controller = ((Func<AnimationController>)(() =>
-{
-    var __cascade = AnimationController.CreateUnbounded(vsync: vsync);
-    __cascade.addListener(() =>
-    {
-        double newOverscroll = _controller?.value ?? 0.0;
-        overscroll = newOverscroll;
-    });
-    return __cascade;
-}))();
-        DartRuntimePrimitives.Ignore(controller.animateWith(simulation).whenComplete(() =>
-        {
-            if (Equals(_controller, controller))
-            {
-                overscroll = 0.0;
-                _interruptedOverscroll = 0.0;
-                controller.dispose();
-                _controller = null;
-            }
-            return default!;
-        }));
+        var controller = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = AnimationController.CreateUnbounded(vsync: vsync);
+                    __cascade.addListener(() =>
+                    {
+                        double newOverscroll = _controller?.value ?? 0.0;
+                        overscroll = newOverscroll;
+                    });
+                    return __cascade;
+                }
+            )
+        )();
+        DartRuntimePrimitives.Ignore(
+            controller
+                .animateWith(simulation)
+                .whenComplete(() =>
+                {
+                    if (Equals(_controller, controller))
+                    {
+                        overscroll = 0.0;
+                        _interruptedOverscroll = 0.0;
+                        controller.dispose();
+                        _controller = null;
+                    }
+                    return default!;
+                })
+        );
         _controller?.dispose();
         _controller = controller;
     }
@@ -943,7 +1275,8 @@ internal class _StretchController__overscroll_indicator : Listenable
         var pullDistance = normalizedOverscroll;
         double absDistance = pullDistance.abs();
         double linearIntensity = _stretchIntensity * absDistance;
-        double exponentialIntensity = _stretchIntensity * (1L - Dart_mathLibrary.exp(-absDistance * _exponentialScalar));
+        double exponentialIntensity =
+            _stretchIntensity * (1L - Dart_mathLibrary.exp(-absDistance * _exponentialScalar));
         double directionSign = Math.Sign(pullDistance);
         double newOverscroll = directionSign * (linearIntensity + exponentialIntensity);
         overscroll = newOverscroll + _interruptedOverscroll;

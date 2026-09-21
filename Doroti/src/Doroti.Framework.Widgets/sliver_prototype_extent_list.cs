@@ -8,51 +8,91 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
 {
     public virtual Widget prototypeItem { get; private set; } = default!;
 
-    public SliverPrototypeExtentList(Key? key = null, SliverChildDelegate @delegate = default!, Widget prototypeItem = default!) : base(key: key, @delegate: @delegate)
+    public SliverPrototypeExtentList(
+        Key? key = null,
+        SliverChildDelegate @delegate = default!,
+        Widget prototypeItem = default!
+    )
+        : base(key: key, @delegate: @delegate)
     {
         this.prototypeItem = prototypeItem;
     }
 
-    public static SliverPrototypeExtentList CreateBuilder(Key? key = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Widget prototypeItem = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
+    public static SliverPrototypeExtentList CreateBuilder(
+        Key? key = null,
+        Func<BuildContext, long, Widget?> itemBuilder = default!,
+        Widget prototypeItem = default!,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long? itemCount = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true
+    )
     {
-        return new SliverPrototypeExtentList(key, new SliverChildBuilderDelegate(
-            itemBuilder,
-            findChildIndexCallback,
-            itemCount,
-            addAutomaticKeepAlives,
-            addRepaintBoundaries,
-            addSemanticIndexes), prototypeItem);
+        return new SliverPrototypeExtentList(
+            key,
+            new SliverChildBuilderDelegate(
+                itemBuilder,
+                findChildIndexCallback,
+                itemCount,
+                addAutomaticKeepAlives,
+                addRepaintBoundaries,
+                addSemanticIndexes
+            ),
+            prototypeItem
+        );
     }
 
-    public static SliverPrototypeExtentList CreateList(Key? key = null, List<Widget> children = default!, Widget prototypeItem = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
+    public static SliverPrototypeExtentList CreateList(
+        Key? key = null,
+        List<Widget> children = default!,
+        Widget prototypeItem = default!,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true
+    )
     {
-        return new SliverPrototypeExtentList(key, new SliverChildListDelegate(
-            children ?? [],
-            addAutomaticKeepAlives: addAutomaticKeepAlives,
-            addRepaintBoundaries: addRepaintBoundaries,
-            addSemanticIndexes: addSemanticIndexes), prototypeItem);
+        return new SliverPrototypeExtentList(
+            key,
+            new SliverChildListDelegate(
+                children ?? [],
+                addAutomaticKeepAlives: addAutomaticKeepAlives,
+                addRepaintBoundaries: addRepaintBoundaries,
+                addSemanticIndexes: addSemanticIndexes
+            ),
+            prototypeItem
+        );
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
         var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)context)!;
-        return new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element);
+        return new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(
+            childManager: element
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override SliverMultiBoxAdaptorElement createElement() => DartRuntimePrimitives.ConvertValue<SliverMultiBoxAdaptorElement>(new _SliverPrototypeExtentListElement__sliver_prototype_extent_list(this));
+    public override SliverMultiBoxAdaptorElement createElement() =>
+        DartRuntimePrimitives.ConvertValue<SliverMultiBoxAdaptorElement>(
+            new _SliverPrototypeExtentListElement__sliver_prototype_extent_list(this)
+        );
 }
 
-public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : SliverMultiBoxAdaptorElement
+public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list
+    : SliverMultiBoxAdaptorElement
 {
     internal virtual Element? _prototype { get; set; } = default;
     internal static object _prototypeSlot = new object();
 
-    internal _SliverPrototypeExtentListElement__sliver_prototype_extent_list(SliverPrototypeExtentList widget) : base(widget)
-    {
-    }
+    internal _SliverPrototypeExtentListElement__sliver_prototype_extent_list(
+        SliverPrototypeExtentList widget
+    )
+        : base(widget) { }
 
-    public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject => (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
+    public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject =>
+        (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
+
     public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         if (Equals(slot, _prototypeSlot))
@@ -62,7 +102,12 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
         else
         {
-            base.insertRenderObjectChild(child, slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot)));
+            base.insertRenderObjectChild(
+                child,
+                slot is long indexslot
+                    ? indexslot
+                    : throw new ArgumentException("A sliver child requires an index.", nameof(slot))
+            );
         }
     }
 
@@ -83,7 +128,21 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
         else
         {
-            base.moveRenderObjectChild(__child, oldSlot is long indexoldSlot ? indexoldSlot : throw new ArgumentException("A sliver child requires an index.", nameof(oldSlot)), newSlot is long indexnewSlot ? indexnewSlot : throw new ArgumentException("A sliver child requires an index.", nameof(newSlot)));
+            base.moveRenderObjectChild(
+                __child,
+                oldSlot is long indexoldSlot
+                    ? indexoldSlot
+                    : throw new ArgumentException(
+                        "A sliver child requires an index.",
+                        nameof(oldSlot)
+                    ),
+                newSlot is long indexnewSlot
+                    ? indexnewSlot
+                    : throw new ArgumentException(
+                        "A sliver child requires an index.",
+                        nameof(newSlot)
+                    )
+            );
         }
     }
 
@@ -96,7 +155,12 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
         else
         {
-            base.removeRenderObjectChild(__child, slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot)));
+            base.removeRenderObjectChild(
+                __child,
+                slot is long indexslot
+                    ? indexslot
+                    : throw new ArgumentException("A sliver child requires an index.", nameof(slot))
+            );
         }
     }
 
@@ -112,7 +176,11 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        _prototype = updateChild(_prototype, ((SliverPrototypeExtentList?)widget)!.prototypeItem, _prototypeSlot);
+        _prototype = updateChild(
+            _prototype,
+            ((SliverPrototypeExtentList?)widget)!.prototypeItem,
+            _prototypeSlot
+        );
     }
 
     public override void update(Widget newWidget)
@@ -120,18 +188,23 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         var __newWidget = (SliverPrototypeExtentList)newWidget;
         base.update(__newWidget);
         DartRuntimePrimitives.Assert(() => Equals(widget, __newWidget));
-        _prototype = updateChild(_prototype, ((SliverPrototypeExtentList?)widget)!.prototypeItem, _prototypeSlot);
+        _prototype = updateChild(
+            _prototype,
+            ((SliverPrototypeExtentList?)widget)!.prototypeItem,
+            _prototypeSlot
+        );
     }
-
 }
 
-public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : RenderSliverFixedExtentBoxAdaptor
+public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list
+    : RenderSliverFixedExtentBoxAdaptor
 {
     internal virtual RenderBox? _child { get; set; } = default;
 
-    internal _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(_SliverPrototypeExtentListElement__sliver_prototype_extent_list childManager) : base(childManager: childManager)
-    {
-    }
+    internal _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(
+        _SliverPrototypeExtentListElement__sliver_prototype_extent_list childManager
+    )
+        : base(childManager: childManager) { }
 
     public virtual RenderBox? child
     {
@@ -151,6 +224,7 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : Re
             markNeedsLayout();
         }
     }
+
     public override void performLayout()
     {
         child!.layout(constraints.asBoxConstraints(), parentUsesSize: true);

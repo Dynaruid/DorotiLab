@@ -15,6 +15,7 @@ public interface IDartEnumIndex
 public static class FoundationRuntimePorts
 {
     public static Duration kLongPressTimeout => Duration.Create(milliseconds: 500);
+
     /// <summary>Host mapping for Dart bool.fromEnvironment('dart.vm.product').</summary>
     public static bool kReleaseMode =>
 #if DEBUG
@@ -30,12 +31,15 @@ public static class FoundationRuntimePorts
     public static long EnumIndex(object? value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        if (value is IDartEnumIndex indexed) return indexed.DartEnumIndex;
+        if (value is IDartEnumIndex indexed)
+        {
+            return indexed.DartEnumIndex;
+        }
+
         return Convert.ToInt64(value, CultureInfo.InvariantCulture);
     }
 
-    public static long? EnumIndexNullable(object? value) =>
-        value is null ? null : EnumIndex(value);
+    public static long? EnumIndexNullable(object? value) => value is null ? null : EnumIndex(value);
 
     public static int ObjectHash(params object?[] values)
     {
@@ -47,23 +51,30 @@ public static class FoundationRuntimePorts
         return hash.ToHashCode();
     }
 
-    public static int ObjectHashAll<T>(IEnumerable<T> values) => ObjectHash(values.Cast<object?>().ToArray());
+    public static int ObjectHashAll<T>(IEnumerable<T> values) =>
+        ObjectHash(values.Cast<object?>().ToArray());
 
-    public static int Length(object? value) => value switch
-    {
-        string text => text.Length,
-        ICollection collection => collection.Count,
-        IEnumerable sequence => sequence.Cast<object?>().Count(),
-        null => throw new NullReferenceException("Dart length was read from null."),
-        _ => throw new InvalidOperationException($"{value.GetType().FullName} has no Dart length contract."),
-    };
+    public static int Length(object? value) =>
+        value switch
+        {
+            string text => text.Length,
+            ICollection collection => collection.Count,
+            IEnumerable sequence => sequence.Cast<object?>().Count(),
+            null => throw new NullReferenceException("Dart length was read from null."),
+            _ => throw new InvalidOperationException(
+                $"{value.GetType().FullName} has no Dart length contract."
+            ),
+        };
 
-    public static object? Index(object? value, object? index) => value switch
-    {
-        string text => text[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
-        IList list => list[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
-        IDictionary map => map[index!],
-        null => throw new NullReferenceException("Dart index access targeted null."),
-        _ => throw new InvalidOperationException($"{value.GetType().FullName} is not Dart-indexable."),
-    };
+    public static object? Index(object? value, object? index) =>
+        value switch
+        {
+            string text => text[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
+            IList list => list[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
+            IDictionary map => map[index!],
+            null => throw new NullReferenceException("Dart index access targeted null."),
+            _ => throw new InvalidOperationException(
+                $"{value.GetType().FullName} is not Dart-indexable."
+            ),
+        };
 }

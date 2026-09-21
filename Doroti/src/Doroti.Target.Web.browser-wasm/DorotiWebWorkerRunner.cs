@@ -18,32 +18,60 @@ public static class DorotiWebWorkerRunner
 
     public static async Task<string> RunAsync<TStartup>(
         System.Reflection.Assembly manifestAssembly,
-        IEnumerable<DorotiApplicationPluginRegistration>? plugins = null)
+        IEnumerable<DorotiApplicationPluginRegistration>? plugins = null
+    )
         where TStartup : IDorotiApplicationStartup, new()
     {
-        if (_session is not null) return "already-running";
+        if (_session is not null)
+        {
+            return "already-running";
+        }
+
         await BrowserHostRuntime.EnsureInitializedAsync();
         _timeProvider = new BrowserTimeProvider();
-        using var timeScope = global::Doroti.Runtime.DartAsyncRuntime.enterTimeProvider(_timeProvider);
+        using var timeScope = global::Doroti.Runtime.DartAsyncRuntime.enterTimeProvider(
+            _timeProvider
+        );
         var baseAddress = new Uri(BrowserHostRuntime.ResolveResourceUrl("./"));
         var descriptor = DorotiApplicationFactory.Create<TStartup>(
             DorotiLaunchContext.Create("Web", "browser-wasm", [], baseAddress),
-            plugins, manifestAssembly);
+            plugins,
+            manifestAssembly
+        );
         _target = new BrowserWasmTarget();
         _http = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
         var fontUrl = BrowserHostRuntime.ResolveResourceUrl(FallbackFontUrl);
-        using (var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider))
+        using (
+            var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider)
+        )
+        {
             _target.RegisterFont(await _http.GetByteArrayAsync(fontUrl, fontTimeout.Token));
+        }
+
         _session = new DorotiHostSession(descriptor.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);
-        var browserPlugins = descriptor.PluginRegistrations.Select(item =>
-            new BrowserJavaScriptPluginDescriptor(
-                item.Id, item.Channel, item.Adapter, item.Module, item.ExportName));
+        var browserPlugins = descriptor.PluginRegistrations.Select(
+            item => new BrowserJavaScriptPluginDescriptor(
+                item.Id,
+                item.Channel,
+                item.Adapter,
+                item.Module,
+                item.ExportName
+            )
+        );
         _boundary = _target.LoadApplicationBoundary(
-            descriptor.ManifestAssembly, descriptor.ApplicationAssembly, browserPlugins);
+            descriptor.ManifestAssembly,
+            descriptor.ApplicationAssembly,
+            browserPlugins
+        );
         _view = _target.CreateView(
-            _session, ViewId, "doroti-surface", descriptor.ViewConfiguration, _boundary);
+            _session,
+            ViewId,
+            "doroti-surface",
+            descriptor.ViewConfiguration,
+            _boundary
+        );
         BrowserHostRuntime.SetApplicationTitle(1, descriptor.ViewConfiguration.title);
         DorotiWebWorkerSurface.Initialize(_target, ViewId);
         _view.Show();
@@ -53,7 +81,11 @@ public static class DorotiWebWorkerRunner
 
     public static void Dispose()
     {
-        if (_session is null && _timeProvider is null) return;
+        if (_session is null && _timeProvider is null)
+        {
+            return;
+        }
+
         using var dispatcherScope = _session?.dispatcher.EnterScope();
         try
         {

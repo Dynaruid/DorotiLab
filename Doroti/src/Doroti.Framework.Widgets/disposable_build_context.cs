@@ -9,7 +9,8 @@ public interface IDisposableBuildContext
     BuildContext? context { get; }
 }
 
-public class DisposableBuildContext<T> : IDisposableBuildContext where T : IState
+public class DisposableBuildContext<T> : IDisposableBuildContext
+    where T : IState
 {
     internal virtual T? _state { get; set; } = default;
 
@@ -27,18 +28,25 @@ public class DisposableBuildContext<T> : IDisposableBuildContext where T : IStat
             return _state?.context;
         }
     }
+
     internal virtual bool _debugValidate()
     {
-        DartRuntimePrimitives.Assert(() => (_state is null) || _state!.mounted, () => (object?)"A DisposableBuildContext tried to access the BuildContext of a disposed " + "State object. This can happen when the creator of this " + "DisposableBuildContext fails to call dispose when it is disposed.");
+        DartRuntimePrimitives.Assert(
+            () => (_state is null) || _state!.mounted,
+            () =>
+                (object?)"A DisposableBuildContext tried to access the BuildContext of a disposed "
+                + "State object. This can happen when the creator of this "
+                + "DisposableBuildContext fails to call dispose when it is disposed."
+        );
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _state = default(T);
     }
-
 }
-

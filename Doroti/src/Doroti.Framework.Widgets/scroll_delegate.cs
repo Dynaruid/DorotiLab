@@ -8,24 +8,30 @@ public delegate long? SemanticIndexCallback(Widget widget, long localIndex);
 
 public static partial class Scroll_delegateLibrary
 {
-    internal static long _kDefaultSemanticIndexCallback(Widget __unused0, long localIndex) => localIndex;
+    internal static long _kDefaultSemanticIndexCallback(Widget __unused0, long localIndex) =>
+        localIndex;
 }
 
 public abstract class SliverChildDelegate
 {
-    protected SliverChildDelegate()
-    {
-    }
+    protected SliverChildDelegate() { }
 
     public abstract Widget? build(BuildContext context, long index);
     public virtual long? estimatedChildCount => null;
-    public virtual double? estimateMaxScrollOffset(long firstIndex, long lastIndex, double leadingScrollOffset, double trailingScrollOffset) => null;
-    public virtual void didFinishLayout(long firstIndex, long lastIndex)
-    {
-    }
+
+    public virtual double? estimateMaxScrollOffset(
+        long firstIndex,
+        long lastIndex,
+        double leadingScrollOffset,
+        double trailingScrollOffset
+    ) => null;
+
+    public virtual void didFinishLayout(long firstIndex, long lastIndex) { }
 
     public abstract bool shouldRebuild(SliverChildDelegate oldDelegate);
+
     public virtual long? findIndexByKey(Key key) => null;
+
     public override string ToString()
     {
         var description = new List<string>();
@@ -42,23 +48,24 @@ public abstract class SliverChildDelegate
             if (children is not null)
             {
                 long children__9813__value9855 = DartRuntimePrimitives.RequireValue(children);
-                description.Add($"estimated child count: {DartRuntimePrimitives.RequireValue(children__9813__value9855)}");
+                description.Add(
+                    $"estimated child count: {DartRuntimePrimitives.RequireValue(children__9813__value9855)}"
+                );
             }
         }
         catch (Exception e)
         {
-            description.Add($"estimated child count: EXCEPTION ({DartRuntimePrimitives.RuntimeType(e)})");
+            description.Add(
+                $"estimated child count: EXCEPTION ({DartRuntimePrimitives.RuntimeType(e)})"
+            );
         }
     }
-
 }
 
 internal class _SaltedValueKey__scroll_delegate : ValueKey<Key>
 {
-    internal _SaltedValueKey__scroll_delegate(Key value) : base(value)
-    {
-    }
-
+    internal _SaltedValueKey__scroll_delegate(Key value)
+        : base(value) { }
 }
 
 public delegate long? ChildIndexGetter(Key key);
@@ -74,9 +81,23 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
     public virtual Func<Widget, long, long?> semanticIndexCallback { get; private set; } = default!;
     public virtual Func<Key, long?>? findChildIndexCallback { get; private set; }
 
-    public SliverChildBuilderDelegate(Func<BuildContext, long, Widget?> builder, Func<Key, long?>? findChildIndexCallback = null, long? childCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0)
+    public SliverChildBuilderDelegate(
+        Func<BuildContext, long, Widget?> builder,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long? childCount = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        Func<Widget, long, long?> semanticIndexCallback = default!,
+        long semanticIndexOffset = 0
+    )
     {
-        Func<Widget, long, long?> __semanticIndexCallback = semanticIndexCallback ?? ((widget, index) => Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index));
+        Func<Widget, long, long?> __semanticIndexCallback =
+            semanticIndexCallback
+            ?? (
+                (widget, index) =>
+                    Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index)
+            );
         this.builder = builder;
         this.findChildIndexCallback = findChildIndexCallback;
         this.childCount = childCount;
@@ -110,7 +131,13 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
 
     public override Widget? build(BuildContext context, long index)
     {
-        if ((index < 0L) || (childCount is not null) && (index >= DartRuntimePrimitives.RequireValue(childCount)))
+        if (
+            (index < 0L)
+            || (
+                (childCount is not null)
+                && (index >= DartRuntimePrimitives.RequireValue(childCount))
+            )
+        )
         {
             return null;
         }
@@ -128,29 +155,47 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
         {
             return null;
         }
-        Key? keyLocal = (childLocal.key is not null) ? new _SaltedValueKey__scroll_delegate(childLocal.key!) : null;
+        Key? keyLocal =
+            (childLocal.key is not null)
+                ? new _SaltedValueKey__scroll_delegate(childLocal.key!)
+                : null;
         if (addRepaintBoundaries)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RepaintBoundary(child: childLocal)
+            );
         }
         if (addSemanticIndexes)
         {
             long? semanticIndex = semanticIndexCallback(childLocal, index);
             if (semanticIndex is not null)
             {
-                long semanticIndex__23314__value23377 = DartRuntimePrimitives.RequireValue(semanticIndex);
-                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedSemantics(index: DartRuntimePrimitives.RequireValue(semanticIndex__23314__value23377) + semanticIndexOffset, child: childLocal));
+                long semanticIndex__23314__value23377 = DartRuntimePrimitives.RequireValue(
+                    semanticIndex
+                );
+                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new IndexedSemantics(
+                        index: DartRuntimePrimitives.RequireValue(semanticIndex__23314__value23377)
+                            + semanticIndexOffset,
+                        child: childLocal
+                    )
+                );
             }
         }
         if (addAutomaticKeepAlives)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AutomaticKeepAlive(
+                    child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)
+                )
+            );
         }
         return (Widget?)new KeyedSubtree(key: keyLocal, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? estimatedChildCount => childCount;
+
     public override bool shouldRebuild(SliverChildDelegate oldDelegate) => true;
 }
 
@@ -164,9 +209,21 @@ public class SliverChildListDelegate : SliverChildDelegate
     public virtual List<Widget> children { get; private set; } = default!;
     internal virtual DartMap<Key?, long>? _keyToIndex { get; private set; }
 
-    public SliverChildListDelegate(List<Widget> children, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0)
+    public SliverChildListDelegate(
+        List<Widget> children,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        Func<Widget, long, long?> semanticIndexCallback = default!,
+        long semanticIndexOffset = 0
+    )
     {
-        Func<Widget, long, long?> __semanticIndexCallback = semanticIndexCallback ?? ((widget, index) => Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index));
+        Func<Widget, long, long?> __semanticIndexCallback =
+            semanticIndexCallback
+            ?? (
+                (widget, index) =>
+                    Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index)
+            );
         this.children = children;
         this.addAutomaticKeepAlives = addAutomaticKeepAlives;
         this.addRepaintBoundaries = addRepaintBoundaries;
@@ -176,10 +233,29 @@ public class SliverChildListDelegate : SliverChildDelegate
         _keyToIndex = new DartMap<Key?, long> { [null] = 0L }.cast<Key?, long>();
     }
 
-    public static SliverChildListDelegate CreateFixed(List<Widget> children, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0)
+    public static SliverChildListDelegate CreateFixed(
+        List<Widget> children,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        Func<Widget, long, long?> semanticIndexCallback = default!,
+        long semanticIndexOffset = 0
+    )
     {
-        var __instance = new SliverChildListDelegate(children, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, semanticIndexCallback, semanticIndexOffset);
-        Func<Widget, long, long?> __semanticIndexCallback = semanticIndexCallback ?? ((widget, index) => Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index));
+        var __instance = new SliverChildListDelegate(
+            children,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes,
+            semanticIndexCallback,
+            semanticIndexOffset
+        );
+        Func<Widget, long, long?> __semanticIndexCallback =
+            semanticIndexCallback
+            ?? (
+                (widget, index) =>
+                    Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index)
+            );
         __instance.children = children;
         __instance.addAutomaticKeepAlives = addAutomaticKeepAlives;
         __instance.addRepaintBoundaries = addRepaintBoundaries;
@@ -190,7 +266,9 @@ public class SliverChildListDelegate : SliverChildDelegate
         return __instance;
     }
 
-    internal virtual bool _isConstantInstance => DartRuntimePrimitives.ConvertValue<bool>(_keyToIndex is null);
+    internal virtual bool _isConstantInstance =>
+        DartRuntimePrimitives.ConvertValue<bool>(_keyToIndex is null);
+
     internal virtual long? _findChildIndex(Key key)
     {
         if (_isConstantInstance)
@@ -199,7 +277,9 @@ public class SliverChildListDelegate : SliverChildDelegate
         }
         if (!_keyToIndex!.ContainsKey(key))
         {
-            long index = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<long>(_keyToIndex, null));
+            long index = DartRuntimePrimitives.RequireValue(
+                DartCollectionRuntime.NullableMapValue<long>(_keyToIndex, null)
+            );
             while (index < checked(children.Count))
             {
                 Widget child = children[(int)index];
@@ -248,36 +328,53 @@ public class SliverChildListDelegate : SliverChildDelegate
             return null;
         }
         Widget childLocal = children[(int)index];
-        Key? keyLocal = (childLocal.key is not null) ? new _SaltedValueKey__scroll_delegate(childLocal.key!) : null;
+        Key? keyLocal =
+            (childLocal.key is not null)
+                ? new _SaltedValueKey__scroll_delegate(childLocal.key!)
+                : null;
         if (addRepaintBoundaries)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RepaintBoundary(child: childLocal)
+            );
         }
         if (addSemanticIndexes)
         {
             long? semanticIndex = semanticIndexCallback(childLocal, index);
             if (semanticIndex is not null)
             {
-                long semanticIndex__31496__value31559 = DartRuntimePrimitives.RequireValue(semanticIndex);
-                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedSemantics(index: DartRuntimePrimitives.RequireValue(semanticIndex__31496__value31559) + semanticIndexOffset, child: childLocal));
+                long semanticIndex__31496__value31559 = DartRuntimePrimitives.RequireValue(
+                    semanticIndex
+                );
+                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new IndexedSemantics(
+                        index: DartRuntimePrimitives.RequireValue(semanticIndex__31496__value31559)
+                            + semanticIndexOffset,
+                        child: childLocal
+                    )
+                );
             }
         }
         if (addAutomaticKeepAlives)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AutomaticKeepAlive(
+                    child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)
+                )
+            );
         }
         return (Widget?)new KeyedSubtree(key: keyLocal, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? estimatedChildCount => checked(children.Count);
+
     public override bool shouldRebuild(SliverChildDelegate oldDelegate)
     {
         var __oldDelegate = (SliverChildListDelegate)oldDelegate;
         return !Equals(children, __oldDelegate.children);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SelectionKeepAlive__scroll_delegate : StatefulWidget
@@ -289,10 +386,14 @@ internal class _SelectionKeepAlive__scroll_delegate : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionKeepAliveState__scroll_delegate());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SelectionKeepAliveState__scroll_delegate());
 }
 
-internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepAlive__scroll_delegate>, AutomaticKeepAliveClientMixin<_SelectionKeepAlive__scroll_delegate>, SelectionRegistrar
+internal class _SelectionKeepAliveState__scroll_delegate
+    : State<_SelectionKeepAlive__scroll_delegate>,
+        AutomaticKeepAliveClientMixin<_SelectionKeepAlive__scroll_delegate>,
+        SelectionRegistrar
 {
     internal virtual HashSet<Selectable>? _selectablesWithSelections { get; set; } = default;
     internal virtual DartMap<Selectable, Action>? _selectableAttachments { get; set; } = default;
@@ -313,6 +414,7 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
             }
         }
     }
+
     public virtual Action listensTo(Selectable selectable)
     {
         return () =>
@@ -341,7 +443,12 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         {
             _selectablesWithSelections?.Remove(selectable);
         }
-        wantKeepAlive = (_selectablesWithSelections is { } __items33618 ? System.Linq.Enumerable.Any(__items33618) : (bool?)null) ?? false;
+        wantKeepAlive =
+            (
+                _selectablesWithSelections is { } __items33618
+                    ? System.Linq.Enumerable.Any(__items33618)
+                    : (bool?)null
+            ) ?? false;
     }
 
     public override void didChangeDependencies()
@@ -352,12 +459,16 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         {
             if (_registrar is not null)
             {
-                _selectableAttachments?.Keys.forEach((__arg0) => ((Action<Selectable>)_registrar!.remove)(__arg0));
+                _selectableAttachments?.Keys.forEach(
+                    (__arg0) => ((Action<Selectable>)_registrar!.remove)(__arg0)
+                );
             }
             _registrar = newRegistrar;
             if (_registrar is not null)
             {
-                _selectableAttachments?.Keys.forEach((__arg0) => ((Action<Selectable>)_registrar!.add)(__arg0));
+                _selectableAttachments?.Keys.forEach(
+                    (__arg0) => ((Action<Selectable>)_registrar!.add)(__arg0)
+                );
             }
         }
     }
@@ -465,14 +576,21 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         }
         base.deactivate();
     }
-
 }
 
 public static partial class Scroll_delegateLibrary
 {
-    internal static Widget _createErrorWidget(object exception, System.Diagnostics.StackTrace stackTrace)
+    internal static Widget _createErrorWidget(
+        object exception,
+        System.Diagnostics.StackTrace stackTrace
+    )
     {
-        var details = new FlutterErrorDetails(exception: exception, stack: stackTrace, library: "widgets library", context: new ErrorDescription("building"));
+        var details = new FlutterErrorDetails(
+            exception: exception,
+            stack: stackTrace,
+            library: "widgets library",
+            context: new ErrorDescription("building")
+        );
         FlutterError.reportError(details);
         return ErrorWidget.builder(details);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -481,9 +599,7 @@ public static partial class Scroll_delegateLibrary
 
 public abstract class TwoDimensionalChildDelegate : ChangeNotifier
 {
-    protected TwoDimensionalChildDelegate()
-    {
-    }
+    protected TwoDimensionalChildDelegate() { }
 
     public abstract Widget? build(BuildContext context, ChildVicinity vicinity);
     public abstract bool shouldRebuild(TwoDimensionalChildDelegate oldDelegate);
@@ -491,13 +607,20 @@ public abstract class TwoDimensionalChildDelegate : ChangeNotifier
 
 public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
 {
-    public virtual Func<BuildContext, ChildVicinity, Widget?> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, ChildVicinity, Widget?> builder { get; private set; } =
+        default!;
     internal virtual long? _maxXIndex { get; set; } = default;
     internal virtual long? _maxYIndex { get; set; } = default;
     public virtual bool addRepaintBoundaries { get; private set; } = default!;
     public virtual bool addAutomaticKeepAlives { get; private set; } = default!;
 
-    public TwoDimensionalChildBuilderDelegate(Func<BuildContext, ChildVicinity, Widget?> builder, long? maxXIndex = null, long? maxYIndex = null, bool addRepaintBoundaries = true, bool addAutomaticKeepAlives = true)
+    public TwoDimensionalChildBuilderDelegate(
+        Func<BuildContext, ChildVicinity, Widget?> builder,
+        long? maxXIndex = null,
+        long? maxYIndex = null,
+        bool addRepaintBoundaries = true,
+        bool addAutomaticKeepAlives = true
+    )
     {
         this.builder = builder;
         this.addRepaintBoundaries = addRepaintBoundaries;
@@ -538,13 +661,26 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
             notifyListeners();
         }
     }
+
     public override Widget? build(BuildContext context, ChildVicinity vicinity)
     {
-        if ((vicinity.xIndex < 0L) || (maxXIndex is not null) && (vicinity.xIndex > DartRuntimePrimitives.RequireValue(maxXIndex)))
+        if (
+            (vicinity.xIndex < 0L)
+            || (
+                (maxXIndex is not null)
+                && (vicinity.xIndex > DartRuntimePrimitives.RequireValue(maxXIndex))
+            )
+        )
         {
             return null;
         }
-        if ((vicinity.yIndex < 0L) || (maxYIndex is not null) && (vicinity.yIndex > DartRuntimePrimitives.RequireValue(maxYIndex)))
+        if (
+            (vicinity.yIndex < 0L)
+            || (
+                (maxYIndex is not null)
+                && (vicinity.yIndex > DartRuntimePrimitives.RequireValue(maxYIndex))
+            )
+        )
         {
             return null;
         }
@@ -564,11 +700,17 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
         }
         if (addRepaintBoundaries)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RepaintBoundary(child: childLocal)
+            );
         }
         if (addAutomaticKeepAlives)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AutomaticKeepAlive(
+                    child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)
+                )
+            );
         }
         return childLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -583,7 +725,11 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
     public virtual bool addRepaintBoundaries { get; private set; } = default!;
     public virtual bool addAutomaticKeepAlives { get; private set; } = default!;
 
-    public TwoDimensionalChildListDelegate(bool addRepaintBoundaries = true, bool addAutomaticKeepAlives = true, List<List<Widget>> children = default!)
+    public TwoDimensionalChildListDelegate(
+        bool addRepaintBoundaries = true,
+        bool addAutomaticKeepAlives = true,
+        List<List<Widget>> children = default!
+    )
     {
         this.addRepaintBoundaries = addRepaintBoundaries;
         this.addAutomaticKeepAlives = addAutomaticKeepAlives;
@@ -596,18 +742,27 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
         {
             return null;
         }
-        if ((vicinity.xIndex < 0L) || (vicinity.xIndex >= checked(children[(int)vicinity.yIndex].Count)))
+        if (
+            (vicinity.xIndex < 0L)
+            || (vicinity.xIndex >= checked(children[(int)vicinity.yIndex].Count))
+        )
         {
             return null;
         }
         Widget childLocal = children[(int)vicinity.yIndex][(int)vicinity.xIndex];
         if (addRepaintBoundaries)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RepaintBoundary(child: childLocal)
+            );
         }
         if (addAutomaticKeepAlives)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AutomaticKeepAlive(
+                    child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)
+                )
+            );
         }
         return childLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -619,5 +774,4 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
         return !Equals(children, __oldDelegate.children);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

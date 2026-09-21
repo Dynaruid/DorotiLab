@@ -9,7 +9,7 @@ namespace Doroti.Framework.Material;
 internal enum _RadioType__radio
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public static partial class RadioLibrary
@@ -47,7 +47,30 @@ public class Radio<T> : StatefulWidget
     public virtual BorderSide? side { get; private set; }
     public virtual WidgetStateProperty<double?>? innerRadius { get; private set; }
 
-    public Radio(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null) : base(key: key)
+    public Radio(
+        Key? key = null,
+        T value = default!,
+        T? groupValue = default,
+        Action<T?>? onChanged = null,
+        MouseCursor? mouseCursor = null,
+        bool toggleable = false,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        bool? enabled = null,
+        RadioGroupRegistry<T>? groupRegistry = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        BorderSide? side = null,
+        WidgetStateProperty<double?>? innerRadius = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -73,9 +96,54 @@ public class Radio<T> : StatefulWidget
         useCupertinoCheckmarkStyle = false;
     }
 
-    public static Radio<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool useCupertinoCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null)
+    public static Radio<T> CreateAdaptive(
+        Key? key = null,
+        T value = default!,
+        T? groupValue = default,
+        Action<T?>? onChanged = null,
+        MouseCursor? mouseCursor = null,
+        bool toggleable = false,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        bool useCupertinoCheckmarkStyle = false,
+        bool? enabled = null,
+        RadioGroupRegistry<T>? groupRegistry = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        BorderSide? side = null,
+        WidgetStateProperty<double?>? innerRadius = null
+    )
     {
-        var __instance = new Radio<T>(key: key, value: value, groupValue: groupValue, onChanged: onChanged, mouseCursor: mouseCursor, toggleable: toggleable, activeColor: activeColor, fillColor: fillColor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, visualDensity: visualDensity, focusNode: focusNode, autofocus: autofocus, enabled: enabled, groupRegistry: groupRegistry, backgroundColor: backgroundColor, side: side, innerRadius: innerRadius);
+        var __instance = new Radio<T>(
+            key: key,
+            value: value,
+            groupValue: groupValue,
+            onChanged: onChanged,
+            mouseCursor: mouseCursor,
+            toggleable: toggleable,
+            activeColor: activeColor,
+            fillColor: fillColor,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            materialTapTargetSize: materialTapTargetSize,
+            visualDensity: visualDensity,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            enabled: enabled,
+            groupRegistry: groupRegistry,
+            backgroundColor: backgroundColor,
+            side: side,
+            innerRadius: innerRadius
+        );
         __instance.value = value;
         __instance.groupValue = groupValue;
         __instance.onChanged = onChanged;
@@ -101,7 +169,8 @@ public class Radio<T> : StatefulWidget
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioState__radio<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RadioState__radio<T>());
 }
 
 internal class _RadioState__radio<T> : State<Radio<T>>
@@ -109,8 +178,19 @@ internal class _RadioState__radio<T> : State<Radio<T>>
     internal virtual FocusNode? _internalFocusNode { get; set; } = default;
     internal virtual _RadioRegistry__radio<T>? _internalRadioRegistry { get; set; } = default;
 
-    internal virtual FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new FocusNode()));
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>(widget.enabled ?? (widget.onChanged is not null) || (widget.groupRegistry is not null) || (RadioGroup.maybeOf<T>(context) is not null));
+    internal virtual FocusNode _focusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(
+            widget.focusNode ?? (_internalFocusNode ??= new FocusNode())
+        );
+    internal virtual bool _enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            widget.enabled
+                ?? (
+                    (widget.onChanged is not null)
+                    || (widget.groupRegistry is not null)
+                    || (RadioGroup.maybeOf<T>(context) is not null)
+                )
+        );
     internal virtual RadioGroupRegistry<T> _effectiveRegistry
     {
         get
@@ -127,6 +207,7 @@ internal class _RadioState__radio<T> : State<Radio<T>>
             return _internalRadioRegistry ??= new _RadioRegistry__radio<T>(this);
         }
     }
+
     public override void dispose()
     {
         _internalFocusNode?.dispose();
@@ -135,51 +216,101 @@ internal class _RadioState__radio<T> : State<Radio<T>>
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => !(widget.enabled ?? false) || (widget.onChanged is not null) || (widget.groupRegistry is not null) || (RadioGroup.maybeOf<T>(context) is not null), () => (object?)"Radio is enabled but has no Radio.onChange or registry above");
+        DartRuntimePrimitives.Assert(
+            () =>
+                !(widget.enabled ?? false)
+                || (widget.onChanged is not null)
+                || (widget.groupRegistry is not null)
+                || (RadioGroup.maybeOf<T>(context) is not null),
+            () => (object?)"Radio is enabled but has no Radio.onChange or registry above"
+        );
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         switch (widget._radioType)
         {
             case _RadioType__radio.material:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case _RadioType__radio.adaptive:
+            {
+                ThemeData theme = Theme.of(context);
+                switch (theme.platform)
                 {
-                    ThemeData theme = Theme.of(context);
-                    switch (theme.platform)
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.windows:
                     {
-                        case TargetPlatform.android:
-                        case TargetPlatform.fuchsia:
-                        case TargetPlatform.linux:
-                        case TargetPlatform.windows:
-                            {
-                                break;
-                            }
-                        case TargetPlatform.iOS:
-                        case TargetPlatform.macOS:
-                            {
-                                return new CupertinoRadio<T>(value: widget.value, groupValue: widget.groupValue, onChanged: widget.onChanged, mouseCursor: widget.mouseCursor, toggleable: widget.toggleable, activeColor: widget.activeColor, focusColor: widget.focusColor, focusNode: _focusNode, autofocus: widget.autofocus, useCheckmarkStyle: widget.useCupertinoCheckmarkStyle, groupRegistry: _effectiveRegistry, enabled: _enabled);
-                            }
-                        default:
-                            throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        break;
                     }
-                    break;
+                    case TargetPlatform.iOS:
+                    case TargetPlatform.macOS:
+                    {
+                        return new CupertinoRadio<T>(
+                            value: widget.value,
+                            groupValue: widget.groupValue,
+                            onChanged: widget.onChanged,
+                            mouseCursor: widget.mouseCursor,
+                            toggleable: widget.toggleable,
+                            activeColor: widget.activeColor,
+                            focusColor: widget.focusColor,
+                            focusNode: _focusNode,
+                            autofocus: widget.autofocus,
+                            useCheckmarkStyle: widget.useCupertinoCheckmarkStyle,
+                            groupRegistry: _effectiveRegistry,
+                            enabled: _enabled
+                        );
+                    }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
+                break;
+            }
         }
         RadioThemeData radioTheme = RadioTheme.of(context);
-        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith((states) =>
-        {
-            return (WidgetStateProperty.resolveAs(widget.mouseCursor, states) ?? (radioTheme.mouseCursor?.resolve(states))) ?? WidgetStateProperty.resolveAs<MouseCursor>(WidgetStateMouseCursor.adaptiveClickable, states);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-        return new RawRadio<T>(value: widget.value, mouseCursor: effectiveMouseCursor, toggleable: widget.toggleable, focusNode: _focusNode, autofocus: widget.autofocus, groupRegistry: _effectiveRegistry, enabled: _enabled, builder: (context, state) =>
-        {
-            return new _RadioPaint__radio(toggleableState: state, activeColor: widget.activeColor, fillColor: widget.fillColor, hoverColor: widget.hoverColor, focusColor: widget.focusColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, visualDensity: widget.visualDensity, materialTapTargetSize: widget.materialTapTargetSize, backgroundColor: widget.backgroundColor, side: widget.side, innerRadius: widget.innerRadius);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith(
+            (states) =>
+            {
+                return (
+                        WidgetStateProperty.resolveAs(widget.mouseCursor, states)
+                        ?? (radioTheme.mouseCursor?.resolve(states))
+                    )
+                    ?? WidgetStateProperty.resolveAs<MouseCursor>(
+                        WidgetStateMouseCursor.adaptiveClickable,
+                        states
+                    );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+        return new RawRadio<T>(
+            value: widget.value,
+            mouseCursor: effectiveMouseCursor,
+            toggleable: widget.toggleable,
+            focusNode: _focusNode,
+            autofocus: widget.autofocus,
+            groupRegistry: _effectiveRegistry,
+            enabled: _enabled,
+            builder: (context, state) =>
+            {
+                return new _RadioPaint__radio(
+                    toggleableState: state,
+                    activeColor: widget.activeColor,
+                    fillColor: widget.fillColor,
+                    hoverColor: widget.hoverColor,
+                    focusColor: widget.focusColor,
+                    overlayColor: widget.overlayColor,
+                    splashRadius: widget.splashRadius,
+                    visualDensity: widget.visualDensity,
+                    materialTapTargetSize: widget.materialTapTargetSize,
+                    backgroundColor: widget.backgroundColor,
+                    side: widget.side,
+                    innerRadius: widget.innerRadius
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
@@ -192,15 +323,12 @@ internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
     }
 
     public virtual T? groupValue => state.widget.groupValue;
-    public virtual Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
-    public virtual void registerClient(RadioClient<T> radio)
-    {
-    }
+    public virtual Action<T?> onChanged =>
+        DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
 
-    public virtual void unregisterClient(RadioClient<T> radio)
-    {
-    }
+    public virtual void registerClient(RadioClient<T> radio) { }
 
+    public virtual void unregisterClient(RadioClient<T> radio) { }
 }
 
 internal class _RadioPaint__radio : StatefulWidget
@@ -218,7 +346,20 @@ internal class _RadioPaint__radio : StatefulWidget
     public virtual BorderSide? side { get; private set; }
     public virtual WidgetStateProperty<double?>? innerRadius { get; private set; }
 
-    internal _RadioPaint__radio(IToggleableState toggleableState, Color? activeColor, WidgetStateProperty<Color?>? fillColor, Color? hoverColor, Color? focusColor, WidgetStateProperty<Color?>? overlayColor, double? splashRadius, VisualDensity? visualDensity, MaterialTapTargetSize? materialTapTargetSize, WidgetStateProperty<Color?>? backgroundColor, BorderSide? side, WidgetStateProperty<double?>? innerRadius)
+    internal _RadioPaint__radio(
+        IToggleableState toggleableState,
+        Color? activeColor,
+        WidgetStateProperty<Color?>? fillColor,
+        Color? hoverColor,
+        Color? focusColor,
+        WidgetStateProperty<Color?>? overlayColor,
+        double? splashRadius,
+        VisualDensity? visualDensity,
+        MaterialTapTargetSize? materialTapTargetSize,
+        WidgetStateProperty<Color?>? backgroundColor,
+        BorderSide? side,
+        WidgetStateProperty<double?>? innerRadius
+    )
     {
         this.toggleableState = toggleableState;
         this.activeColor = activeColor;
@@ -234,12 +375,14 @@ internal class _RadioPaint__radio : StatefulWidget
         this.innerRadius = innerRadius;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioPaintState__radio());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RadioPaintState__radio());
 }
 
 internal class _RadioPaintState__radio : State<_RadioPaint__radio>
 {
-    internal virtual _RadioPainter__radio _painter { get; private set; } = new _RadioPainter__radio();
+    internal virtual _RadioPainter__radio _painter { get; private set; } =
+        new _RadioPainter__radio();
 
     public override void dispose()
     {
@@ -251,27 +394,32 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return null;
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.activeColor;
+                    }
                     return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.activeColor;
-                }
-                return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
+
     internal virtual BorderSide? _resolveSide(BorderSide? side, HashSet<WidgetState> states)
     {
         if (side is WidgetStateProperty<object>)
         {
             WidgetStateProperty<object> side__as22874 = (WidgetStateProperty<object>)side;
-            return DartRuntimePrimitives.ConvertValue<BorderSide?>(WidgetStateProperty.resolveAs<object>(side__as22874, states));
+            return DartRuntimePrimitives.ConvertValue<BorderSide?>(
+                WidgetStateProperty.resolveAs<object>(side__as22874, states)
+            );
         }
         if (!states.Contains(WidgetState.selected))
         {
@@ -285,93 +433,220 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
     {
         RadioThemeData radioTheme = RadioTheme.of(context);
         RadioThemeData defaults = new _RadioDefaultsM3__radio(context);
-        var defaultBackgroundColor = defaults.backgroundColor ?? throw new InvalidOperationException("The built-in radio theme must provide backgroundColor.");
-        var defaultFillColor = defaults.fillColor ?? throw new InvalidOperationException("The built-in radio theme must provide fillColor.");
-        var defaultOverlayColor = defaults.overlayColor ?? throw new InvalidOperationException("The built-in radio theme must provide overlayColor.");
-        HashSet<WidgetState> activeStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Add(WidgetState.selected);
-    return __cascade;
-}))();
-        HashSet<WidgetState> inactiveStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Remove(WidgetState.selected);
-    return __cascade;
-}))();
-        Color? activeColorLocal = (widget.fillColor?.resolve(activeStates) ?? _widgetFillColor.resolve(activeStates)) ?? (radioTheme.fillColor?.resolve(activeStates));
+        var defaultBackgroundColor =
+            defaults.backgroundColor
+            ?? throw new InvalidOperationException(
+                "The built-in radio theme must provide backgroundColor."
+            );
+        var defaultFillColor =
+            defaults.fillColor
+            ?? throw new InvalidOperationException(
+                "The built-in radio theme must provide fillColor."
+            );
+        var defaultOverlayColor =
+            defaults.overlayColor
+            ?? throw new InvalidOperationException(
+                "The built-in radio theme must provide overlayColor."
+            );
+        HashSet<WidgetState> activeStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Add(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        HashSet<WidgetState> inactiveStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Remove(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        Color? activeColorLocal =
+            (widget.fillColor?.resolve(activeStates) ?? _widgetFillColor.resolve(activeStates))
+            ?? (radioTheme.fillColor?.resolve(activeStates));
         Color effectiveActiveColor = activeColorLocal ?? defaultFillColor.resolve(activeStates)!;
-        Color? inactiveColorLocal = (widget.fillColor?.resolve(inactiveStates) ?? _widgetFillColor.resolve(inactiveStates)) ?? (radioTheme.fillColor?.resolve(inactiveStates));
-        Color effectiveInactiveColor = inactiveColorLocal ?? defaultFillColor.resolve(inactiveStates)!;
-        Color activeBackgroundColorLocal = (widget.backgroundColor?.resolve(activeStates) ?? (radioTheme.backgroundColor?.resolve(activeStates))) ?? defaultBackgroundColor.resolve(activeStates)!;
-        Color inactiveBackgroundColorLocal = (widget.backgroundColor?.resolve(inactiveStates) ?? (radioTheme.backgroundColor?.resolve(inactiveStates))) ?? defaultBackgroundColor.resolve(inactiveStates)!;
-        HashSet<WidgetState> focusedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Add(WidgetState.focused);
-    return __cascade;
-}))();
-        Color effectiveFocusOverlayColor = ((widget.overlayColor?.resolve(focusedStates) ?? widget.focusColor) ?? (radioTheme.overlayColor?.resolve(focusedStates))) ?? defaultOverlayColor.resolve(focusedStates)!;
-        HashSet<WidgetState> hoveredStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Add(WidgetState.hovered);
-    return __cascade;
-}))();
-        Color effectiveHoverOverlayColor = ((widget.overlayColor?.resolve(hoveredStates) ?? widget.hoverColor) ?? (radioTheme.overlayColor?.resolve(hoveredStates))) ?? defaultOverlayColor.resolve(hoveredStates)!;
-        var activePressedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = activeStates;
-    __cascade.Add(WidgetState.pressed);
-    return __cascade;
-}))();
-        Color effectiveActivePressedOverlayColor = ((widget.overlayColor?.resolve(activePressedStates) ?? (radioTheme.overlayColor?.resolve(activePressedStates))) ?? activeColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? defaultOverlayColor.resolve(activePressedStates)!;
-        var inactivePressedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = inactiveStates;
-    __cascade.Add(WidgetState.pressed);
-    return __cascade;
-}))();
-        Color effectiveInactivePressedOverlayColor = ((widget.overlayColor?.resolve(inactivePressedStates) ?? (radioTheme.overlayColor?.resolve(inactivePressedStates))) ?? inactiveColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? defaultOverlayColor.resolve(inactivePressedStates)!;
+        Color? inactiveColorLocal =
+            (widget.fillColor?.resolve(inactiveStates) ?? _widgetFillColor.resolve(inactiveStates))
+            ?? (radioTheme.fillColor?.resolve(inactiveStates));
+        Color effectiveInactiveColor =
+            inactiveColorLocal ?? defaultFillColor.resolve(inactiveStates)!;
+        Color activeBackgroundColorLocal =
+            (
+                widget.backgroundColor?.resolve(activeStates)
+                ?? (radioTheme.backgroundColor?.resolve(activeStates))
+            ) ?? defaultBackgroundColor.resolve(activeStates)!;
+        Color inactiveBackgroundColorLocal =
+            (
+                widget.backgroundColor?.resolve(inactiveStates)
+                ?? (radioTheme.backgroundColor?.resolve(inactiveStates))
+            ) ?? defaultBackgroundColor.resolve(inactiveStates)!;
+        HashSet<WidgetState> focusedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Add(WidgetState.focused);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveFocusOverlayColor =
+            (
+                (widget.overlayColor?.resolve(focusedStates) ?? widget.focusColor)
+                ?? (radioTheme.overlayColor?.resolve(focusedStates))
+            ) ?? defaultOverlayColor.resolve(focusedStates)!;
+        HashSet<WidgetState> hoveredStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Add(WidgetState.hovered);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveHoverOverlayColor =
+            (
+                (widget.overlayColor?.resolve(hoveredStates) ?? widget.hoverColor)
+                ?? (radioTheme.overlayColor?.resolve(hoveredStates))
+            ) ?? defaultOverlayColor.resolve(hoveredStates)!;
+        var activePressedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = activeStates;
+                    __cascade.Add(WidgetState.pressed);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveActivePressedOverlayColor =
+            (
+                (
+                    widget.overlayColor?.resolve(activePressedStates)
+                    ?? (radioTheme.overlayColor?.resolve(activePressedStates))
+                ) ?? activeColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)
+            ) ?? defaultOverlayColor.resolve(activePressedStates)!;
+        var inactivePressedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = inactiveStates;
+                    __cascade.Add(WidgetState.pressed);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveInactivePressedOverlayColor =
+            (
+                (
+                    widget.overlayColor?.resolve(inactivePressedStates)
+                    ?? (radioTheme.overlayColor?.resolve(inactivePressedStates))
+                ) ?? inactiveColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)
+            ) ?? defaultOverlayColor.resolve(inactivePressedStates)!;
         if (widget.toggleableState.downPosition is not null)
         {
-            effectiveHoverOverlayColor = widget.toggleableState.states.Contains(WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor;
-            effectiveFocusOverlayColor = widget.toggleableState.states.Contains(WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor;
+            effectiveHoverOverlayColor = widget.toggleableState.states.Contains(
+                WidgetState.selected
+            )
+                ? effectiveActivePressedOverlayColor
+                : effectiveInactivePressedOverlayColor;
+            effectiveFocusOverlayColor = widget.toggleableState.states.Contains(
+                WidgetState.selected
+            )
+                ? effectiveActivePressedOverlayColor
+                : effectiveInactivePressedOverlayColor;
         }
-        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(widget.materialTapTargetSize ?? radioTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
-        VisualDensity effectiveVisualDensity = (widget.visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!;
-        Size sizeLocal = effectiveMaterialTapTargetSize switch { var __constant26966 when Equals(__constant26966, MaterialTapTargetSize.padded) => new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension, Widgets.ConstantsLibrary.kMinInteractiveDimension), var __constant27093 when Equals(__constant27093, MaterialTapTargetSize.shrinkWrap) => new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0, Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(
+            widget.materialTapTargetSize
+                ?? radioTheme.materialTapTargetSize
+                ?? defaults.materialTapTargetSize
+        );
+        VisualDensity effectiveVisualDensity =
+            (widget.visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!;
+        Size sizeLocal = effectiveMaterialTapTargetSize switch
+        {
+            var __constant26966 when Equals(__constant26966, MaterialTapTargetSize.padded) =>
+                new Size(
+                    Widgets.ConstantsLibrary.kMinInteractiveDimension,
+                    Widgets.ConstantsLibrary.kMinInteractiveDimension
+                ),
+            var __constant27093 when Equals(__constant27093, MaterialTapTargetSize.shrinkWrap) =>
+                new Size(
+                    Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0,
+                    Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0
+                ),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         sizeLocal += effectiveVisualDensity.baseSizeAdjustment;
-        BorderSide activeSideLocal = (_resolveSide(widget.side, activeStates) ?? _resolveSide(radioTheme.side, activeStates)) ?? new BorderSide(color: effectiveActiveColor, width: 2.0, strokeAlign: BorderSide.strokeAlignCenter);
-        BorderSide inactiveSideLocal = (_resolveSide(widget.side, inactiveStates) ?? _resolveSide(radioTheme.side, inactiveStates)) ?? new BorderSide(color: effectiveInactiveColor, width: 2.0, strokeAlign: BorderSide.strokeAlignCenter);
-        double innerRadiusLocal = (widget.innerRadius?.resolve(activeStates) ?? radioTheme.innerRadius?.resolve(activeStates)) ?? RadioLibrary._kInnerRadius;
-        return new CustomPaint(size: sizeLocal, painter: ((Func<_RadioPainter__radio>)(() =>
-{
-    var __cascade = _painter;
-    __cascade.position = widget.toggleableState.position;
-    __cascade.reaction = widget.toggleableState.reaction;
-    __cascade.reactionFocusFade = widget.toggleableState.reactionFocusFade;
-    __cascade.reactionHoverFade = widget.toggleableState.reactionHoverFade;
-    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
-    __cascade.reactionColor = effectiveActivePressedOverlayColor;
-    __cascade.hoverColor = effectiveHoverOverlayColor;
-    __cascade.focusColor = effectiveFocusOverlayColor;
-    __cascade.splashRadius = (widget.splashRadius ?? radioTheme.splashRadius) ?? ConstantsLibrary.kRadialReactionRadius;
-    __cascade.downPosition = widget.toggleableState.downPosition;
-    __cascade.isFocused = widget.toggleableState.states.Contains(WidgetState.focused);
-    __cascade.isHovered = widget.toggleableState.states.Contains(WidgetState.hovered);
-    __cascade.activeColor = effectiveActiveColor;
-    __cascade.inactiveColor = effectiveInactiveColor;
-    __cascade.activeBackgroundColor = activeBackgroundColorLocal;
-    __cascade.inactiveBackgroundColor = inactiveBackgroundColorLocal;
-    __cascade.activeSide = activeSideLocal;
-    __cascade.inactiveSide = inactiveSideLocal;
-    __cascade.innerRadius = innerRadiusLocal;
-    return __cascade;
-}))());
+        BorderSide activeSideLocal =
+            (_resolveSide(widget.side, activeStates) ?? _resolveSide(radioTheme.side, activeStates))
+            ?? new BorderSide(
+                color: effectiveActiveColor,
+                width: 2.0,
+                strokeAlign: BorderSide.strokeAlignCenter
+            );
+        BorderSide inactiveSideLocal =
+            (
+                _resolveSide(widget.side, inactiveStates)
+                ?? _resolveSide(radioTheme.side, inactiveStates)
+            )
+            ?? new BorderSide(
+                color: effectiveInactiveColor,
+                width: 2.0,
+                strokeAlign: BorderSide.strokeAlignCenter
+            );
+        double innerRadiusLocal =
+            (
+                widget.innerRadius?.resolve(activeStates)
+                ?? radioTheme.innerRadius?.resolve(activeStates)
+            ) ?? RadioLibrary._kInnerRadius;
+        return new CustomPaint(
+            size: sizeLocal,
+            painter: (
+                (Func<_RadioPainter__radio>)(
+                    () =>
+                    {
+                        var __cascade = _painter;
+                        __cascade.position = widget.toggleableState.position;
+                        __cascade.reaction = widget.toggleableState.reaction;
+                        __cascade.reactionFocusFade = widget.toggleableState.reactionFocusFade;
+                        __cascade.reactionHoverFade = widget.toggleableState.reactionHoverFade;
+                        __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
+                        __cascade.reactionColor = effectiveActivePressedOverlayColor;
+                        __cascade.hoverColor = effectiveHoverOverlayColor;
+                        __cascade.focusColor = effectiveFocusOverlayColor;
+                        __cascade.splashRadius =
+                            (widget.splashRadius ?? radioTheme.splashRadius)
+                            ?? ConstantsLibrary.kRadialReactionRadius;
+                        __cascade.downPosition = widget.toggleableState.downPosition;
+                        __cascade.isFocused = widget.toggleableState.states.Contains(
+                            WidgetState.focused
+                        );
+                        __cascade.isHovered = widget.toggleableState.states.Contains(
+                            WidgetState.hovered
+                        );
+                        __cascade.activeColor = effectiveActiveColor;
+                        __cascade.inactiveColor = effectiveInactiveColor;
+                        __cascade.activeBackgroundColor = activeBackgroundColorLocal;
+                        __cascade.inactiveBackgroundColor = inactiveBackgroundColorLocal;
+                        __cascade.activeSide = activeSideLocal;
+                        __cascade.inactiveSide = inactiveSideLocal;
+                        __cascade.innerRadius = innerRadiusLocal;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
 internal class _RadioPainter__radio : ToggleablePainter
@@ -452,35 +727,58 @@ internal class _RadioPainter__radio : ToggleablePainter
             notifyListeners();
         }
     }
+
     public override void paint(Canvas canvas, Size size)
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
         Rect rect = Offset.zero & size;
         Offset centerLocal = rect.center;
-        Rect effectiveRect = (centerLocal & new Size(RadioLibrary._kOuterRadius * 2L)).translate(-RadioLibrary._kOuterRadius, -RadioLibrary._kOuterRadius);
-        var backgroundPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Dart_uiLibrary.Color.lerp(inactiveBackgroundColor, activeBackgroundColor, position.value)!;
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))();
+        Rect effectiveRect = (centerLocal & new Size(RadioLibrary._kOuterRadius * 2L)).translate(
+            -RadioLibrary._kOuterRadius,
+            -RadioLibrary._kOuterRadius
+        );
+        var backgroundPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = Dart_uiLibrary.Color.lerp(
+                        inactiveBackgroundColor,
+                        activeBackgroundColor,
+                        position.value
+                    )!;
+                    __cascade.style = PaintingStyle.fill;
+                    return __cascade;
+                }
+            )
+        )();
         canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius, backgroundPaint);
-        BorderSide sideLocal = BorderSide.lerp(inactiveSide, activeSide, DartRuntimePrimitives.RequireValue(position.value));
+        BorderSide sideLocal = BorderSide.lerp(
+            inactiveSide,
+            activeSide,
+            DartRuntimePrimitives.RequireValue(position.value)
+        );
         new CircleBorder(side: sideLocal).paint(canvas, effectiveRect);
         if (!position.isDismissed)
         {
-            var innerCirclePaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = Dart_uiLibrary.Color.lerp(inactiveColor, activeColor, position.value)!;
-    return __cascade;
-}))();
+            var innerCirclePaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.style = PaintingStyle.fill;
+                        __cascade.color = Dart_uiLibrary.Color.lerp(
+                            inactiveColor,
+                            activeColor,
+                            position.value
+                        )!;
+                        return __cascade;
+                    }
+                )
+            )();
             canvas.drawCircle(centerLocal, innerRadius * position.value, innerCirclePaint);
         }
     }
-
 }
 
 internal class _RadioDefaultsM3__radio : RadioThemeData
@@ -524,89 +822,96 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.disabled))
+                        {
+                            return _colors.onSurface.withOpacity(0.38);
+                        }
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary;
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary;
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary;
+                        }
+                        return _colors.primary;
+                    }
                     if (states.Contains(WidgetState.disabled))
                     {
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return _colors.primary;
+                        return _colors.onSurface;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.primary;
+                        return _colors.onSurface;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.primary;
+                        return _colors.onSurface;
                     }
-                    return _colors.primary;
+                    return _colors.onSurfaceVariant;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return _colors.onSurface.withOpacity(0.38);
-                }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.onSurface;
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurface;
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurface;
-                }
-                return _colors.onSurfaceVariant;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override WidgetStateProperty<Color> overlayColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onSurface.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        return Colors.transparent;
+                    }
                     if (states.Contains(WidgetState.pressed))
-                    {
-                        return _colors.onSurface.withOpacity(0.1);
-                    }
-                    if (states.Contains(WidgetState.hovered))
-                    {
-                        return _colors.primary.withOpacity(0.08);
-                    }
-                    if (states.Contains(WidgetState.focused))
                     {
                         return _colors.primary.withOpacity(0.1);
                     }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.onSurface.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.onSurface.withOpacity(0.1);
+                    }
                     return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.primary.withOpacity(0.1);
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurface.withOpacity(0.08);
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                return Colors.transparent;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override MaterialTapTargetSize? materialTapTargetSize => _theme.materialTapTargetSize;
     public override VisualDensity visualDensity => _theme.visualDensity;
-    public override WidgetStateProperty<Color> backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(WidgetStateProperty.all(Colors.transparent));
+    public override WidgetStateProperty<Color> backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            WidgetStateProperty.all(Colors.transparent)
+        );
 }

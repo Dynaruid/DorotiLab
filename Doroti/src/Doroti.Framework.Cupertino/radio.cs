@@ -28,27 +28,42 @@ public static partial class RadioLibrary
 
 public static partial class RadioLibrary
 {
-    internal static Color _kDisabledInnerColor = new CupertinoDynamicColor(color: Color.fromARGB(64L, 0L, 0L, 0L), darkColor: Color.fromARGB(64L, 255L, 255L, 255L));
+    internal static Color _kDisabledInnerColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(64L, 0L, 0L, 0L),
+        darkColor: Color.fromARGB(64L, 255L, 255L, 255L)
+    );
 }
 
 public static partial class RadioLibrary
 {
-    internal static Color _kDisabledBorderColor = new CupertinoDynamicColor(color: Color.fromARGB(64L, 0L, 0L, 0L), darkColor: Color.fromARGB(64L, 0L, 0L, 0L));
+    internal static Color _kDisabledBorderColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(64L, 0L, 0L, 0L),
+        darkColor: Color.fromARGB(64L, 0L, 0L, 0L)
+    );
 }
 
 public static partial class RadioLibrary
 {
-    internal static CupertinoDynamicColor _kDefaultBorderColor = new CupertinoDynamicColor(color: Color.fromARGB(255L, 209L, 209L, 214L), darkColor: Color.fromARGB(64L, 0L, 0L, 0L));
+    internal static CupertinoDynamicColor _kDefaultBorderColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(255L, 209L, 209L, 214L),
+        darkColor: Color.fromARGB(64L, 0L, 0L, 0L)
+    );
 }
 
 public static partial class RadioLibrary
 {
-    internal static CupertinoDynamicColor _kDefaultInnerColor = new CupertinoDynamicColor(color: CupertinoColors.white, darkColor: Color.fromARGB(255L, 222L, 232L, 248L));
+    internal static CupertinoDynamicColor _kDefaultInnerColor = new CupertinoDynamicColor(
+        color: CupertinoColors.white,
+        darkColor: Color.fromARGB(255L, 222L, 232L, 248L)
+    );
 }
 
 public static partial class RadioLibrary
 {
-    internal static CupertinoDynamicColor _kDefaultOuterColor = new CupertinoDynamicColor(color: CupertinoColors.activeBlue, darkColor: Color.fromARGB(255L, 50L, 100L, 215L));
+    internal static CupertinoDynamicColor _kDefaultOuterColor = new CupertinoDynamicColor(
+        color: CupertinoColors.activeBlue,
+        darkColor: Color.fromARGB(255L, 50L, 100L, 215L)
+    );
 }
 
 public static partial class RadioLibrary
@@ -98,7 +113,24 @@ public class CupertinoRadio<T> : StatefulWidget
     public virtual RadioGroupRegistry<T>? groupRegistry { get; private set; }
     public virtual bool? enabled { get; private set; }
 
-    public CupertinoRadio(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, Color? inactiveColor = null, Color? fillColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, bool useCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null) : base(key: key)
+    public CupertinoRadio(
+        Key? key = null,
+        T value = default!,
+        T? groupValue = default,
+        Action<T?>? onChanged = null,
+        MouseCursor? mouseCursor = null,
+        bool toggleable = false,
+        Color? activeColor = null,
+        Color? inactiveColor = null,
+        Color? fillColor = null,
+        Color? focusColor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        bool useCheckmarkStyle = false,
+        bool? enabled = null,
+        RadioGroupRegistry<T>? groupRegistry = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -116,7 +148,8 @@ public class CupertinoRadio<T> : StatefulWidget
         this.groupRegistry = groupRegistry;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoRadioState__radio<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoRadioState__radio<T>());
 }
 
 internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
@@ -124,8 +157,19 @@ internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
     internal virtual FocusNode? _internalFocusNode { get; set; } = default;
     internal virtual _RadioRegistry__radio<T>? _internalRadioRegistry { get; set; } = default;
 
-    internal virtual FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new FocusNode()));
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>(widget.enabled ?? (widget.onChanged is not null) || (widget.groupRegistry is not null) || (RadioGroup.maybeOf<T>(context) is not null));
+    internal virtual FocusNode _effectiveFocusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(
+            widget.focusNode ?? (_internalFocusNode ??= new FocusNode())
+        );
+    internal virtual bool _enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            widget.enabled
+                ?? (
+                    (widget.onChanged is not null)
+                    || (widget.groupRegistry is not null)
+                    || (RadioGroup.maybeOf<T>(context) is not null)
+                )
+        );
     internal virtual RadioGroupRegistry<T> _effectiveRegistry
     {
         get
@@ -142,6 +186,7 @@ internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
             return _internalRadioRegistry ??= new _RadioRegistry__radio<T>(this);
         }
     }
+
     public override void dispose()
     {
         _internalFocusNode?.dispose();
@@ -150,20 +195,56 @@ internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => !(widget.enabled ?? false) || (widget.onChanged is not null) || (widget.groupRegistry is not null) || (RadioGroup.maybeOf<T>(context) is not null), () => (object?)"Radio is enabled but has no CupertinoRadio.onChange, " + "CupertinoRadio.groupRegistry, or RadioGroup above");
-        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith((states) =>
-        {
-            return WidgetStateProperty.resolveAs(widget.mouseCursor, states) ?? ((!states.Contains(WidgetState.disabled) && Foundation.ConstantsLibrary.kIsWeb) ? SystemMouseCursors.click : SystemMouseCursors.basic);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-        return new RawRadio<T>(value: widget.value, groupRegistry: _effectiveRegistry, mouseCursor: effectiveMouseCursor, toggleable: widget.toggleable, focusNode: _effectiveFocusNode, autofocus: widget.autofocus, enabled: _enabled, builder: (context, state) =>
-        {
-            return new _RadioPaint__radio(activeColor: widget.activeColor, inactiveColor: widget.inactiveColor, fillColor: widget.fillColor, focusColor: widget.focusColor, useCheckmarkStyle: widget.useCheckmarkStyle, isActive: _enabled, toggleableState: state, focused: _effectiveFocusNode.hasFocus);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        DartRuntimePrimitives.Assert(
+            () =>
+                !(widget.enabled ?? false)
+                || (widget.onChanged is not null)
+                || (widget.groupRegistry is not null)
+                || (RadioGroup.maybeOf<T>(context) is not null),
+            () =>
+                (object?)"Radio is enabled but has no CupertinoRadio.onChange, "
+                + "CupertinoRadio.groupRegistry, or RadioGroup above"
+        );
+        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith(
+            (states) =>
+            {
+                return WidgetStateProperty.resolveAs(widget.mouseCursor, states)
+                    ?? (
+                        (
+                            !states.Contains(WidgetState.disabled)
+                            && Foundation.ConstantsLibrary.kIsWeb
+                        )
+                            ? SystemMouseCursors.click
+                            : SystemMouseCursors.basic
+                    );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+        return new RawRadio<T>(
+            value: widget.value,
+            groupRegistry: _effectiveRegistry,
+            mouseCursor: effectiveMouseCursor,
+            toggleable: widget.toggleable,
+            focusNode: _effectiveFocusNode,
+            autofocus: widget.autofocus,
+            enabled: _enabled,
+            builder: (context, state) =>
+            {
+                return new _RadioPaint__radio(
+                    activeColor: widget.activeColor,
+                    inactiveColor: widget.inactiveColor,
+                    fillColor: widget.fillColor,
+                    focusColor: widget.focusColor,
+                    useCheckmarkStyle: widget.useCheckmarkStyle,
+                    isActive: _enabled,
+                    toggleableState: state,
+                    focused: _effectiveFocusNode.hasFocus
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
@@ -176,15 +257,12 @@ internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
     }
 
     public virtual T? groupValue => state.widget.groupValue;
-    public virtual Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
-    public virtual void registerClient(RadioClient<T> radio)
-    {
-    }
+    public virtual Action<T?> onChanged =>
+        DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
 
-    public virtual void unregisterClient(RadioClient<T> radio)
-    {
-    }
+    public virtual void registerClient(RadioClient<T> radio) { }
 
+    public virtual void unregisterClient(RadioClient<T> radio) { }
 }
 
 internal class _RadioPaint__radio : StatefulWidget
@@ -198,7 +276,16 @@ internal class _RadioPaint__radio : StatefulWidget
     public virtual bool isActive { get; private set; } = default!;
     public virtual bool focused { get; private set; } = default!;
 
-    internal _RadioPaint__radio(bool focused, IToggleableState toggleableState, Color? activeColor, Color? inactiveColor, Color? fillColor, Color? focusColor, bool useCheckmarkStyle, bool isActive)
+    internal _RadioPaint__radio(
+        bool focused,
+        IToggleableState toggleableState,
+        Color? activeColor,
+        Color? inactiveColor,
+        Color? fillColor,
+        Color? focusColor,
+        bool useCheckmarkStyle,
+        bool isActive
+    )
     {
         this.focused = focused;
         this.toggleableState = toggleableState;
@@ -210,12 +297,14 @@ internal class _RadioPaint__radio : StatefulWidget
         this.isActive = isActive;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioPaintState__radio());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RadioPaintState__radio());
 }
 
 internal class _RadioPaintState__radio : State<_RadioPaint__radio>
 {
-    internal virtual _RadioPainter__radio _painter { get; private set; } = new _RadioPainter__radio();
+    internal virtual _RadioPainter__radio _painter { get; private set; } =
+        new _RadioPainter__radio();
 
     public override void dispose()
     {
@@ -227,100 +316,158 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return CupertinoDynamicColor.resolve(RadioLibrary._kDisabledOuterColor, context);
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return CupertinoDynamicColor.resolve(
+                            RadioLibrary._kDisabledOuterColor,
+                            context
+                        );
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.activeColor
+                            ?? CupertinoDynamicColor.resolve(
+                                RadioLibrary._kDefaultOuterColor,
+                                context
+                            );
+                    }
+                    return widget.inactiveColor ?? CupertinoColors.white;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.activeColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultOuterColor, context);
-                }
-                return widget.inactiveColor ?? CupertinoColors.white;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual WidgetStateProperty<Color> _defaultInnerColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled) && states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDisabledInnerColor, context);
+                    if (
+                        states.Contains(WidgetState.disabled)
+                        && states.Contains(WidgetState.selected)
+                    )
+                    {
+                        return widget.fillColor
+                            ?? CupertinoDynamicColor.resolve(
+                                RadioLibrary._kDisabledInnerColor,
+                                context
+                            );
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.fillColor
+                            ?? CupertinoDynamicColor.resolve(
+                                RadioLibrary._kDefaultInnerColor,
+                                context
+                            );
+                    }
+                    return CupertinoColors.white;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultInnerColor, context);
-                }
-                return CupertinoColors.white;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual WidgetStateProperty<Color> _defaultBorderColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if ((states.Contains(WidgetState.selected) || states.Contains(WidgetState.focused)) && !states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return CupertinoColors.transparent;
+                    if (
+                        (
+                            states.Contains(WidgetState.selected)
+                            || states.Contains(WidgetState.focused)
+                        ) && !states.Contains(WidgetState.disabled)
+                    )
+                    {
+                        return CupertinoColors.transparent;
+                    }
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return CupertinoDynamicColor.resolve(
+                            CheckboxLibrary._kDisabledBorderColor,
+                            context
+                        );
+                    }
+                    return CupertinoDynamicColor.resolve(
+                        CheckboxLibrary._kDefaultBorderColor,
+                        context
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, context);
-                }
-                return CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, context);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
+
     public override Widget build(BuildContext context)
     {
-        HashSet<WidgetState> activeStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Add(WidgetState.selected);
-    return __cascade;
-}))();
-        HashSet<WidgetState> inactiveStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = widget.toggleableState.states;
-    __cascade.Remove(WidgetState.selected);
-    return __cascade;
-}))();
+        HashSet<WidgetState> activeStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Add(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        HashSet<WidgetState> inactiveStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = widget.toggleableState.states;
+                    __cascade.Remove(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
         HashSet<WidgetState> currentStates = widget.toggleableState.states;
         Color effectiveActiveColor = _defaultOuterColor.resolve(activeStates);
         Color effectiveInactiveColor = _defaultOuterColor.resolve(inactiveStates);
-        Color effectiveFocusOverlayColor = widget.focusColor ?? HSLColor.CreateFromColor(effectiveActiveColor.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor();
+        Color effectiveFocusOverlayColor =
+            widget.focusColor
+            ?? HSLColor
+                .CreateFromColor(
+                    effectiveActiveColor.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)
+                )
+                .withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness)
+                .withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation)
+                .toColor();
         Color effectiveFillColor = _defaultInnerColor.resolve(currentStates);
         Color effectiveBorderColor = _defaultBorderColor.resolve(currentStates);
-        return new CustomPaint(size: RadioLibrary._size, painter: ((Func<_RadioPainter__radio>)(() =>
-{
-    var __cascade = _painter;
-    __cascade.position = widget.toggleableState.position;
-    __cascade.reaction = widget.toggleableState.reaction;
-    __cascade.focusColor = effectiveFocusOverlayColor;
-    __cascade.downPosition = widget.toggleableState.downPosition;
-    __cascade.isFocused = widget.focused;
-    __cascade.activeColor = effectiveActiveColor;
-    __cascade.inactiveColor = effectiveInactiveColor;
-    __cascade.fillColor = effectiveFillColor;
-    __cascade.value = widget.toggleableState.value;
-    __cascade.checkmarkStyle = widget.useCheckmarkStyle;
-    __cascade.isActive = widget.isActive;
-    __cascade.borderColor = effectiveBorderColor;
-    __cascade.brightness = CupertinoTheme.of(context).brightness;
-    return __cascade;
-}))());
+        return new CustomPaint(
+            size: RadioLibrary._size,
+            painter: (
+                (Func<_RadioPainter__radio>)(
+                    () =>
+                    {
+                        var __cascade = _painter;
+                        __cascade.position = widget.toggleableState.position;
+                        __cascade.reaction = widget.toggleableState.reaction;
+                        __cascade.focusColor = effectiveFocusOverlayColor;
+                        __cascade.downPosition = widget.toggleableState.downPosition;
+                        __cascade.isFocused = widget.focused;
+                        __cascade.activeColor = effectiveActiveColor;
+                        __cascade.inactiveColor = effectiveInactiveColor;
+                        __cascade.fillColor = effectiveFillColor;
+                        __cascade.value = widget.toggleableState.value;
+                        __cascade.checkmarkStyle = widget.useCheckmarkStyle;
+                        __cascade.isActive = widget.isActive;
+                        __cascade.borderColor = effectiveBorderColor;
+                        __cascade.brightness = CupertinoTheme.of(context).brightness;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RadioPainter__radio : ToggleablePainter
@@ -369,7 +516,9 @@ internal class _RadioPainter__radio : ToggleablePainter
             {
                 return;
             }
-            _checkmarkStyle = DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value));
+            _checkmarkStyle = DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(__value)
+            );
             notifyListeners();
         }
     }
@@ -401,45 +550,79 @@ internal class _RadioPainter__radio : ToggleablePainter
             notifyListeners();
         }
     }
+
     internal virtual void _drawPressedOverlay(Canvas canvas, Offset center, double radius)
     {
-        var pressedPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Equals(brightness, Brightness.light) ? CupertinoColors.black.withOpacity(CheckboxLibrary._kPressedOverlayOpacity) : CupertinoColors.white.withOpacity(CheckboxLibrary._kPressedOverlayOpacity);
-    return __cascade;
-}))();
+        var pressedPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = Equals(brightness, Brightness.light)
+                        ? CupertinoColors.black.withOpacity(CheckboxLibrary._kPressedOverlayOpacity)
+                        : CupertinoColors.white.withOpacity(
+                            CheckboxLibrary._kPressedOverlayOpacity
+                        );
+                    return __cascade;
+                }
+            )
+        )();
         canvas.drawCircle(center, radius, pressedPaint);
     }
 
-    internal virtual void _drawFillGradient(Canvas canvas, Offset center, double radius, Color topColor, Color bottomColor)
+    internal virtual void _drawFillGradient(
+        Canvas canvas,
+        Offset center,
+        double radius,
+        Color topColor,
+        Color bottomColor
+    )
     {
-        var fillGradient = new LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: new List<Color> { topColor, bottomColor });
+        var fillGradient = new LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: new List<Color> { topColor, bottomColor }
+        );
         var circleRect = Rect.fromCircle(center: center, radius: radius);
-        var gradientPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.shader = fillGradient.createShader(circleRect);
-    return __cascade;
-}))();
-        canvas.drawPath(((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addOval(circleRect);
-    return __cascade;
-}))(), gradientPaint);
+        var gradientPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.shader = fillGradient.createShader(circleRect);
+                    return __cascade;
+                }
+            )
+        )();
+        canvas.drawPath(
+            (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addOval(circleRect);
+                        return __cascade;
+                    }
+                )
+            )(),
+            gradientPaint
+        );
     }
 
     internal virtual void _drawOuterBorder(Canvas canvas, Offset center)
     {
-        var borderPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.color = borderColor;
-    __cascade.strokeWidth = RadioLibrary._kBorderOutlineStrokeWidth;
-    return __cascade;
-}))();
+        var borderPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.stroke;
+                    __cascade.color = borderColor;
+                    __cascade.strokeWidth = RadioLibrary._kBorderOutlineStrokeWidth;
+                    return __cascade;
+                }
+            )
+        )();
         canvas.drawCircle(center, RadioLibrary._kOuterRadius, borderPaint);
     }
 
@@ -451,17 +634,24 @@ internal class _RadioPainter__radio : ToggleablePainter
             if (value ?? false)
             {
                 var path = new Path();
-                var checkPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = activeColor;
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = RadioLibrary._kCheckmarkStrokeWidth;
-    __cascade.strokeCap = StrokeCap.round;
-    return __cascade;
-}))();
+                var checkPaint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = activeColor;
+                            __cascade.style = PaintingStyle.stroke;
+                            __cascade.strokeWidth = RadioLibrary._kCheckmarkStrokeWidth;
+                            __cascade.strokeCap = StrokeCap.round;
+                            return __cascade;
+                        }
+                    )
+                )();
                 double widthLocal = RadioLibrary._size.width;
-                var origin = new Offset(centerLocal.dx - widthLocal / 2L, centerLocal.dy - widthLocal / 2L);
+                var origin = new Offset(
+                    centerLocal.dx - (widthLocal / 2L),
+                    centerLocal.dy - (widthLocal / 2L)
+                );
                 var start = new Offset(widthLocal * 0.25, widthLocal * 0.52);
                 var mid = new Offset(widthLocal * 0.46, widthLocal * 0.75);
                 var end = new Offset(widthLocal * 0.85, widthLocal * 0.29);
@@ -477,15 +667,33 @@ internal class _RadioPainter__radio : ToggleablePainter
         {
             if (value ?? false)
             {
-                var outerPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = activeColor;
-    return __cascade;
-}))();
+                var outerPaint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = activeColor;
+                            return __cascade;
+                        }
+                    )
+                )();
                 if (Equals(brightness, Brightness.dark) && !isActive)
                 {
-                    _drawFillGradient(canvas, centerLocal, RadioLibrary._kOuterRadius, outerPaint.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)0L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]), outerPaint.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)1L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]));
+                    _drawFillGradient(
+                        canvas,
+                        centerLocal,
+                        RadioLibrary._kOuterRadius,
+                        outerPaint.color.withOpacity(
+                            isActive
+                                ? CheckboxLibrary._kDarkGradientOpacities[(int)0L]
+                                : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]
+                        ),
+                        outerPaint.color.withOpacity(
+                            isActive
+                                ? CheckboxLibrary._kDarkGradientOpacities[(int)1L]
+                                : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]
+                        )
+                    );
                 }
                 else
                 {
@@ -495,12 +703,16 @@ internal class _RadioPainter__radio : ToggleablePainter
                 {
                     _drawPressedOverlay(canvas, centerLocal, RadioLibrary._kOuterRadius);
                 }
-                var innerPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = fillColor;
-    return __cascade;
-}))();
+                var innerPaint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = fillColor;
+                            return __cascade;
+                        }
+                    )
+                )();
                 canvas.drawCircle(centerLocal, RadioLibrary._kInnerRadius, innerPaint);
                 if (!isActive)
                 {
@@ -513,7 +725,21 @@ internal class _RadioPainter__radio : ToggleablePainter
                 paintLocal.color = isActive ? inactiveColor : RadioLibrary._kDisabledOuterColor;
                 if (Equals(brightness, Brightness.dark))
                 {
-                    _drawFillGradient(canvas, centerLocal, RadioLibrary._kOuterRadius, paintLocal.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)0L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]), paintLocal.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)1L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]));
+                    _drawFillGradient(
+                        canvas,
+                        centerLocal,
+                        RadioLibrary._kOuterRadius,
+                        paintLocal.color.withOpacity(
+                            isActive
+                                ? CheckboxLibrary._kDarkGradientOpacities[(int)0L]
+                                : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]
+                        ),
+                        paintLocal.color.withOpacity(
+                            isActive
+                                ? CheckboxLibrary._kDarkGradientOpacities[(int)1L]
+                                : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]
+                        )
+                    );
                 }
                 else
                 {
@@ -528,16 +754,23 @@ internal class _RadioPainter__radio : ToggleablePainter
         }
         if (isFocused)
         {
-            var focusPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.color = focusColor;
-    __cascade.strokeWidth = RadioLibrary._kFocusOutlineStrokeWidth;
-    return __cascade;
-}))();
-            canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius + (RadioLibrary._kFocusOutlineStrokeWidth / 2L), focusPaint);
+            var focusPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.style = PaintingStyle.stroke;
+                        __cascade.color = focusColor;
+                        __cascade.strokeWidth = RadioLibrary._kFocusOutlineStrokeWidth;
+                        return __cascade;
+                    }
+                )
+            )();
+            canvas.drawCircle(
+                centerLocal,
+                RadioLibrary._kOuterRadius + (RadioLibrary._kFocusOutlineStrokeWidth / 2L),
+                focusPaint
+            );
         }
     }
-
 }

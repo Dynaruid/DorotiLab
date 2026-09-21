@@ -1,15 +1,16 @@
+using Doroti.Framework.Foundation;
+using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Runtime;
 using Doroti.Ui;
-using Doroti.Framework.Foundation;
-using Doroti.Framework.Widgets;
-using Material = Doroti.Framework.Material;
 using Locale = Doroti.Ui.Locale;
+using Material = Doroti.Framework.Material;
 using Rect = Doroti.Ui.Rect;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
-internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
+internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia)
+    : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
     private Doroti.Framework.DorotiWidgetEntrypoint? _widgetEntrypoint;
@@ -47,7 +48,10 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             FirstFrameworkError ??= details;
             Console.Error.WriteLine(details.exceptionThrown);
         };
-        _widgetEntrypoint = new Doroti.Framework.DorotiWidgetEntrypoint(() => RootApp, PrepareResourcesAsync);
+        _widgetEntrypoint = new Doroti.Framework.DorotiWidgetEntrypoint(
+            () => RootApp,
+            PrepareResourcesAsync
+        );
         _widgetEntrypoint.Bootstrap(dispatcher);
         _binding = (WidgetsFlutterBinding)WidgetsFlutterBinding.ensureInitialized();
     }
@@ -56,7 +60,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     {
         if (_binding is null)
         {
-            throw new InvalidOperationException("The Material framework binding was not bootstrapped.");
+            throw new InvalidOperationException(
+                "The Material framework binding was not bootstrapped."
+            );
         }
         if (_view is not null)
         {
@@ -72,17 +78,33 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     internal static async Task PrepareSampleResourcesAsync()
     {
-        using var stream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream("MaterialSample.icons.otf")
-            ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
-        using var bytes = new MemoryStream(); stream.CopyTo(bytes);
-        await Dart_uiLibrary.loadFontFromList(new Uint8List(bytes.ToArray()), fontFamily: "MaterialIcons");
+        using var stream =
+            typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream(
+                "MaterialSample.icons.otf"
+            ) ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
+        using var bytes = new MemoryStream();
+        stream.CopyTo(bytes);
+        await Dart_uiLibrary.loadFontFromList(
+            new Uint8List(bytes.ToArray()),
+            fontFamily: "MaterialIcons"
+        );
         // Flutter Web registers its regular Roboto fallback; native hosts also use weight faces.
-        foreach (var weight in Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? new[] { "regular" } : new[] { "medium", "bold", "regular" })
+        foreach (
+            var weight in Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb
+                ? new[] { "regular" }
+                : new[] { "medium", "bold", "regular" }
+        )
         {
-            using var fontStream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream($"MaterialSample.Roboto-{weight}.ttf")
-                ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");
-            using var fontBytes = new MemoryStream(); fontStream.CopyTo(fontBytes);
-            await Dart_uiLibrary.loadFontFromList(new Uint8List(fontBytes.ToArray()), fontFamily: "Roboto");
+            using var fontStream =
+                typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream(
+                    $"MaterialSample.Roboto-{weight}.ttf"
+                ) ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");
+            using var fontBytes = new MemoryStream();
+            fontStream.CopyTo(fontBytes);
+            await Dart_uiLibrary.loadFontFromList(
+                new Uint8List(fontBytes.ToArray()),
+                fontFamily: "Roboto"
+            );
         }
     }
 
@@ -96,7 +118,10 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     }
 
     internal void ExerciseAll() =>
-        (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted.")).ExerciseAll();
+        (
+            GalleryState
+            ?? throw new InvalidOperationException("The Material gallery State is not mounted.")
+        ).ExerciseAll();
 
     internal void RequestFrame()
     {
@@ -105,27 +130,48 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             galleryState.PulseFrame();
             return;
         }
-        (_binding ?? throw new InvalidOperationException("The Material binding is not initialized.")).scheduleFrame();
+        (
+            _binding
+            ?? throw new InvalidOperationException("The Material binding is not initialized.")
+        ).scheduleFrame();
     }
 
     internal IReadOnlyList<string> HitTestTargetsAt(double x, double y)
     {
-        var binding = _binding ?? throw new InvalidOperationException("The Material binding is not initialized.");
+        var binding =
+            _binding
+            ?? throw new InvalidOperationException("The Material binding is not initialized.");
         var result = new Doroti.Framework.Gestures.HitTestResult();
         binding.hitTestInView(
             result,
             new Offset(x, y),
-            checked((long)(_view ?? throw new InvalidOperationException("The Doroti view is not attached.")).viewId));
-        return result.path.Select(entry => entry.target.GetType().FullName ?? entry.target.GetType().Name).ToArray();
+            checked(
+                (long)
+                    (
+                        _view
+                        ?? throw new InvalidOperationException("The Doroti view is not attached.")
+                    ).viewId
+            )
+        );
+        return result
+            .path.Select(entry => entry.target.GetType().FullName ?? entry.target.GetType().Name)
+            .ToArray();
     }
 
     internal Rect BackdropPanelPhysicalBounds()
     {
         var view = _view ?? throw new InvalidOperationException("The Doroti view is not attached.");
-        var logical = (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted."))
-            .BackdropPanelBounds();
+        var logical = (
+            GalleryState
+            ?? throw new InvalidOperationException("The Material gallery State is not mounted.")
+        ).BackdropPanelBounds();
         var scale = view.devicePixelRatio;
-        return new Rect(logical.left * scale, logical.top * scale, logical.right * scale, logical.bottom * scale);
+        return new Rect(
+            logical.left * scale,
+            logical.top * scale,
+            logical.right * scale,
+            logical.bottom * scale
+        );
     }
 
     public void Shutdown()
@@ -140,94 +186,161 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     private Widget CreateRootApp()
     {
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "webview-workload")
-            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new WebViewWorkloadFixture());
+        {
+            return new Material.MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: new WebViewWorkloadFixture()
+            );
+        }
+
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-effects")
-            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new PlatformEffectFixture());
+        {
+            return new Material.MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: new PlatformEffectFixture()
+            );
+        }
+
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-views")
-            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new PlatformViewFixture());
+        {
+            return new Material.MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: new PlatformViewFixture()
+            );
+        }
+
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "media-query")
-            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new MediaQueryFixture());
-        if (App.SampleEnabled) return new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
-        Widget Gallery() => new MaterialGallery(
-            state => GalleryState = state,
-            scaffold => RootScaffold = scaffold);
+        {
+            return new Material.MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: new MediaQueryFixture()
+            );
+        }
+
+        if (App.SampleEnabled)
+        {
+            return new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
+        }
+
+        Widget Gallery() =>
+            new MaterialGallery(state => GalleryState = state, scaffold => RootScaffold = scaffold);
 
         return EntryMode == DemoEntryMode.Builder
             ? new Material.MaterialApp(
                 title: "Doroti Material Testbed",
                 color: new UiColor(0xff6750a4L),
-                themeFactory: () => DemoTheme.Create(
-                    Brightness.light, App.AcrylicEnabled),
-                darkThemeFactory: () => DemoTheme.Create(
-                    Brightness.dark, App.AcrylicEnabled),
+                themeFactory: () => DemoTheme.Create(Brightness.light, App.AcrylicEnabled),
+                darkThemeFactory: () => DemoTheme.Create(Brightness.dark, App.AcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
-                builder: (_, _) => new Overlay(initialEntries:
-                [
-                    new OverlayEntry(builder: _ => Gallery()),
-                ]))
+                builder: (_, _) =>
+                    new Overlay(initialEntries: [new OverlayEntry(builder: _ => Gallery())])
+            )
             : new Material.MaterialApp(
                 title: "Doroti Material Testbed",
                 color: new UiColor(0xff6750a4L),
-                themeFactory: () => DemoTheme.Create(
-                    Brightness.light, App.AcrylicEnabled),
-                darkThemeFactory: () => DemoTheme.Create(
-                    Brightness.dark, App.AcrylicEnabled),
+                themeFactory: () => DemoTheme.Create(Brightness.light, App.AcrylicEnabled),
+                darkThemeFactory: () => DemoTheme.Create(Brightness.dark, App.AcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
-                home: Gallery());
+                home: Gallery()
+            );
     }
 }
 
-internal enum DemoEntryMode { Builder, Home }
+internal enum DemoEntryMode
+{
+    Builder,
+    Home,
+}
 
 internal static class App
 {
     internal static Func<IDorotiViewEntrypoint> Definition =>
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 
-    internal static bool ExperimentalAcrylicEnabled => string.Equals(
-        Environment.GetEnvironmentVariable("DOROTI_DEMO_EXPERIMENTAL_ACRYLIC"),
-        "1", StringComparison.Ordinal);
+    internal static bool ExperimentalAcrylicEnabled =>
+        string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_DEMO_EXPERIMENTAL_ACRYLIC"),
+            "1",
+            StringComparison.Ordinal
+        );
 
     internal static bool SampleEnabled =>
-        string.Equals(Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE"), "sample", StringComparison.OrdinalIgnoreCase);
+        string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE"),
+            "sample",
+            StringComparison.OrdinalIgnoreCase
+        );
 
     internal static bool SampleAcrylicAvailable =>
-        OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100) || OperatingSystem.IsLinux() ||
-        OperatingSystem.IsMacOS();
+        OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100)
+        || OperatingSystem.IsLinux()
+        || OperatingSystem.IsMacOS();
 
-    internal static bool MacOSLiquidGlassRequested => OperatingSystem.IsMacOS() &&
-        string.Equals(Environment.GetEnvironmentVariable("DOROTI_MACOS_BACKDROP"), "liquidGlass", StringComparison.OrdinalIgnoreCase);
+    internal static bool MacOSLiquidGlassRequested =>
+        OperatingSystem.IsMacOS()
+        && string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_MACOS_BACKDROP"),
+            "liquidGlass",
+            StringComparison.OrdinalIgnoreCase
+        );
 
     internal static WindowTitlebarStyle TitlebarStyle =>
-        string.Equals(Environment.GetEnvironmentVariable("DOROTI_TITLEBAR") ?? Environment.GetEnvironmentVariable("DOROTI_MACOS_TITLEBAR"), "solid", StringComparison.OrdinalIgnoreCase)
-            ? WindowTitlebarStyle.solid : WindowTitlebarStyle.unified;
+        string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_TITLEBAR")
+                ?? Environment.GetEnvironmentVariable("DOROTI_MACOS_TITLEBAR"),
+            "solid",
+            StringComparison.OrdinalIgnoreCase
+        )
+            ? WindowTitlebarStyle.solid
+            : WindowTitlebarStyle.unified;
 
-    internal static string WindowEffectLabel => OperatingSystem.IsMacOS()
-        ? MacOSLiquidGlassRequested && OperatingSystem.IsMacOSVersionAtLeast(26) ? "Liquid Glass" : "Window blur"
-        : "Acrylic window";
+    internal static string WindowEffectLabel =>
+        OperatingSystem.IsMacOS()
+            ? MacOSLiquidGlassRequested && OperatingSystem.IsMacOSVersionAtLeast(26)
+                ? "Liquid Glass"
+                : "Window blur"
+            : "Acrylic window";
 
-    internal static bool AcrylicEnabled => SampleEnabled
-        ? SampleAcrylicAvailable
-        : OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || ExperimentalAcrylicEnabled;
+    internal static bool AcrylicEnabled =>
+        SampleEnabled
+            ? SampleAcrylicAvailable
+            : OperatingSystem.IsWindows()
+                || OperatingSystem.IsLinux()
+                || OperatingSystem.IsMacOS()
+                || ExperimentalAcrylicEnabled;
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
-        new("Doroti Material Testbed", SampleEnabled ? new Size(1280, 900) : new Size(720, 640),
+        new(
+            "Doroti Material Testbed",
+            SampleEnabled ? new Size(1280, 900) : new Size(720, 640),
             // Prepare the native backdrop at startup. The sample toggles its
             // Scaffold between opaque and translucent without recreating the window.
             // A transparent renderer base avoids applying the surface tint twice.
             AcrylicEnabled
-                ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xfffffbfeL : 0xccfffbfeL),
+                ? new UiColor(0x00000000L)
+                : new UiColor(SampleEnabled ? 0xfffffbfeL : 0xccfffbfeL),
             AcrylicEnabled
-                ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xff141218L : 0xcc141218L),
+                ? new UiColor(0x00000000L)
+                : new UiColor(SampleEnabled ? 0xff141218L : 0xcc141218L),
             terminateAfterLastWindowClosed: true,
             appearance: new WindowAppearanceOptions(
                 backdrop: SampleEnabled && !SampleAcrylicAvailable
                     ? new(WindowBackdropMode.solid)
-                    : new(ExperimentalAcrylicEnabled ? WindowBackdropMode.experimentalAcrylic : WindowBackdropMode.acrylic),
+                    : new(
+                        ExperimentalAcrylicEnabled
+                            ? WindowBackdropMode.experimentalAcrylic
+                            : WindowBackdropMode.acrylic
+                    ),
                 titlebarStyle: TitlebarStyle,
-                macOSBackdrop: new(MacOSLiquidGlassRequested ? WindowBackdropMode.liquidGlass : WindowBackdropMode.acrylic)));
+                macOSBackdrop: new(
+                    MacOSLiquidGlassRequested
+                        ? WindowBackdropMode.liquidGlass
+                        : WindowBackdropMode.acrylic
+                )
+            )
+        );
 }

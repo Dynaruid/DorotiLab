@@ -12,7 +12,16 @@ public class TextSelection : TextRange
     public virtual TextAffinity affinity { get; private set; } = default!;
     public virtual bool isDirectional { get; private set; } = default!;
 
-    public TextSelection(long baseOffset, long extentOffset, TextAffinity affinity = TextAffinity.downstream, bool isDirectional = false) : base(start: (baseOffset < extentOffset) ? baseOffset : extentOffset, end: (baseOffset < extentOffset) ? extentOffset : baseOffset)
+    public TextSelection(
+        long baseOffset,
+        long extentOffset,
+        TextAffinity affinity = TextAffinity.downstream,
+        bool isDirectional = false
+    )
+        : base(
+            start: (baseOffset < extentOffset) ? baseOffset : extentOffset,
+            end: (baseOffset < extentOffset) ? extentOffset : baseOffset
+        )
     {
         this.baseOffset = baseOffset;
         this.extentOffset = extentOffset;
@@ -20,7 +29,10 @@ public class TextSelection : TextRange
         this.isDirectional = isDirectional;
     }
 
-    public static TextSelection CreateCollapsed(long offset, TextAffinity affinity = TextAffinity.downstream)
+    public static TextSelection CreateCollapsed(
+        long offset,
+        TextAffinity affinity = TextAffinity.downstream
+    )
     {
         var __instance = new TextSelection(default!, default!, affinity, default!);
         __instance.baseOffset = offset;
@@ -85,6 +97,7 @@ public class TextSelection : TextRange
             return new TextPosition(offset: extentOffset, affinity: affinity);
         }
     }
+
     public override string ToString()
     {
         string typeName = objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSelection");
@@ -92,14 +105,20 @@ public class TextSelection : TextRange
         {
             return $"{typeName}.invalid";
         }
-        return isCollapsed ? $"{typeName}.collapsed(offset: {baseOffset}, affinity: {affinity}, isDirectional: {isDirectional})" : $"{typeName}(baseOffset: {baseOffset}, extentOffset: {extentOffset}, isDirectional: {isDirectional})";
+        return isCollapsed
+            ? $"{typeName}.collapsed(offset: {baseOffset}, affinity: {affinity}, isDirectional: {isDirectional})"
+            : $"{typeName}(baseOffset: {baseOffset}, extentOffset: {extentOffset}, isDirectional: {isDirectional})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as TextSelection;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -112,21 +131,46 @@ public class TextSelection : TextRange
         {
             return !__other.isValid;
         }
-        return (__other.baseOffset == baseOffset) && (__other.extentOffset == extentOffset) && (!isCollapsed || Equals(__other.affinity, affinity)) && (__other.isDirectional == isDirectional);
+        return (__other.baseOffset == baseOffset)
+            && (__other.extentOffset == extentOffset)
+            && (!isCollapsed || Equals(__other.affinity, affinity))
+            && (__other.isDirectional == isDirectional);
     }
 
     public override int GetHashCode()
     {
         if (!isValid)
         {
-            return FoundationRuntimePorts.ObjectHash(-1L.GetHashCode(), -1L.GetHashCode(), TextAffinity.downstream.GetHashCode());
+            return FoundationRuntimePorts.ObjectHash(
+                -1L.GetHashCode(),
+                -1L.GetHashCode(),
+                TextAffinity.downstream.GetHashCode()
+            );
         }
-        var affinityHash = isCollapsed ? affinity.GetHashCode() : TextAffinity.downstream.GetHashCode();
-        return FoundationRuntimePorts.ObjectHash(baseOffset.GetHashCode(), extentOffset.GetHashCode(), affinityHash, isDirectional.GetHashCode());
+        var affinityHash = isCollapsed
+            ? affinity.GetHashCode()
+            : TextAffinity.downstream.GetHashCode();
+        return FoundationRuntimePorts.ObjectHash(
+            baseOffset.GetHashCode(),
+            extentOffset.GetHashCode(),
+            affinityHash,
+            isDirectional.GetHashCode()
+        );
     }
-    public virtual TextSelection copyWith(long? baseOffset = null, long? extentOffset = null, TextAffinity? affinity = null, bool? isDirectional = null)
+
+    public virtual TextSelection copyWith(
+        long? baseOffset = null,
+        long? extentOffset = null,
+        TextAffinity? affinity = null,
+        bool? isDirectional = null
+    )
     {
-        return new TextSelection(baseOffset: baseOffset ?? this.baseOffset, extentOffset: extentOffset ?? this.extentOffset, affinity: affinity ?? this.affinity, isDirectional: isDirectional ?? this.isDirectional);
+        return new TextSelection(
+            baseOffset: baseOffset ?? this.baseOffset,
+            extentOffset: extentOffset ?? this.extentOffset,
+            affinity: affinity ?? this.affinity,
+            isDirectional: isDirectional ?? this.isDirectional
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -141,15 +185,29 @@ public class TextSelection : TextRange
         {
             if (extentAtIndex)
             {
-                return copyWith(baseOffset: end, extentOffset: position.offset, affinity: position.affinity);
+                return copyWith(
+                    baseOffset: end,
+                    extentOffset: position.offset,
+                    affinity: position.affinity
+                );
             }
-            return copyWith(baseOffset: normalized ? position.offset : baseOffset, extentOffset: normalized ? extentOffset : position.offset);
+            return copyWith(
+                baseOffset: normalized ? position.offset : baseOffset,
+                extentOffset: normalized ? extentOffset : position.offset
+            );
         }
         if (extentAtIndex)
         {
-            return copyWith(baseOffset: start, extentOffset: position.offset, affinity: position.affinity);
+            return copyWith(
+                baseOffset: start,
+                extentOffset: position.offset,
+                affinity: position.affinity
+            );
         }
-        return copyWith(baseOffset: normalized ? baseOffset : position.offset, extentOffset: normalized ? position.offset : extentOffset);
+        return copyWith(
+            baseOffset: normalized ? baseOffset : position.offset,
+            extentOffset: normalized ? position.offset : extentOffset
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -162,6 +220,4 @@ public class TextSelection : TextRange
         return copyWith(extentOffset: position.offset, affinity: position.affinity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

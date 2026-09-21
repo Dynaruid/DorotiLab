@@ -13,18 +13,28 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public virtual double scale { get; private set; } = default!;
     public virtual DartMap<string, string>? headers { get; private set; }
     public virtual WebHtmlElementStrategy webHtmlElementStrategy { get; private set; } = default!;
-    internal static Runtime.HttpClient _sharedHttpClient = ((Func<Runtime.HttpClient>)(() =>
-{
-    var __cascade = new Runtime.HttpClient();
-    __cascade.autoUncompress = false;
-    return __cascade;
-}))();
+    internal static Runtime.HttpClient _sharedHttpClient = (
+        (Func<Runtime.HttpClient>)(
+            () =>
+            {
+                var __cascade = new Runtime.HttpClient();
+                __cascade.autoUncompress = false;
+                return __cascade;
+            }
+        )
+    )();
+
     public NetworkImageIo() { }
 
-
-    public NetworkImageIo(string url, double scale = 1.0, DartMap<string, string>? headers = null, WebHtmlElementStrategy? webHtmlElementStrategy = null)
+    public NetworkImageIo(
+        string url,
+        double scale = 1.0,
+        DartMap<string, string>? headers = null,
+        WebHtmlElementStrategy? webHtmlElementStrategy = null
+    )
     {
-        WebHtmlElementStrategy __webHtmlElementStrategy = webHtmlElementStrategy ?? WebHtmlElementStrategy.never;
+        WebHtmlElementStrategy __webHtmlElementStrategy =
+            webHtmlElementStrategy ?? WebHtmlElementStrategy.never;
         this.url = url;
         this.scale = scale;
         this.headers = headers;
@@ -37,17 +47,53 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ImageStreamCompleter loadBuffer(NetworkImageIo key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode)
+    public override ImageStreamCompleter loadBuffer(
+        NetworkImageIo key,
+        Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode
+    )
     {
         var chunkEventsLocal = new StreamController<ImageChunkEvent>();
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEventsLocal, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), chunkEvents: chunkEventsLocal.stream, scale: key.scale, debugLabel: key.url, informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) });
+        return new MultiFrameImageStreamCompleter(
+            codec: _loadAsync(
+                ((NetworkImageIo?)(object?)key)!,
+                chunkEventsLocal,
+                decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)
+            ),
+            chunkEvents: chunkEventsLocal.stream,
+            scale: key.scale,
+            debugLabel: key.url,
+            informationCollector: () =>
+                new List<DiagnosticsNode>
+                {
+                    new DiagnosticsProperty<dynamic>("Image provider", this),
+                    new DiagnosticsProperty<NetworkImageIo>("Image key", key),
+                }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ImageStreamCompleter loadImage(NetworkImageIo key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode)
+    public override ImageStreamCompleter loadImage(
+        NetworkImageIo key,
+        Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode
+    )
     {
         var chunkEventsLocal = new StreamController<ImageChunkEvent>();
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEventsLocal, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), chunkEvents: chunkEventsLocal.stream, scale: key.scale, debugLabel: key.url, informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) });
+        return new MultiFrameImageStreamCompleter(
+            codec: _loadAsync(
+                ((NetworkImageIo?)(object?)key)!,
+                chunkEventsLocal,
+                decode: (ImmutableBuffer __buffer) => decode(__buffer, null)
+            ),
+            chunkEvents: chunkEventsLocal.stream,
+            scale: key.scale,
+            debugLabel: key.url,
+            informationCollector: () =>
+                new List<DiagnosticsNode>
+                {
+                    new DiagnosticsProperty<dynamic>("Image provider", this),
+                    new DiagnosticsProperty<NetworkImageIo>("Image key", key),
+                }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -57,37 +103,52 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         {
             Runtime.HttpClient? client = default!;
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (DebugLibrary.debugNetworkImageHttpClientProvider is not null)
                 {
-                    if (DebugLibrary.debugNetworkImageHttpClientProvider is not null)
-                    {
-                        client = DebugLibrary.debugNetworkImageHttpClientProvider!();
-                    }
-                    return true;
-                });
+                    client = DebugLibrary.debugNetworkImageHttpClientProvider!();
+                }
+                return true;
+            });
             return client ?? _sharedHttpClient;
         }
     }
-    internal async virtual Future<Codec> _loadAsync(NetworkImageIo key, StreamController<ImageChunkEvent> chunkEvents, Func<ImmutableBuffer, Future<Codec>> decode)
+
+    internal virtual async Future<Codec> _loadAsync(
+        NetworkImageIo key,
+        StreamController<ImageChunkEvent> chunkEvents,
+        Func<ImmutableBuffer, Future<Codec>> decode
+    )
     {
         try
         {
             DartRuntimePrimitives.Assert(() => Equals(key, this));
             DartUri resolved = DartUri.@base.resolve(key.url);
             HttpClientRequest request = await _httpClient.getUrl(resolved);
-            headers?.forEach((name, value) =>
-            {
-                request.headers.add(name, value);
-            });
+            headers?.forEach(
+                (name, value) =>
+                {
+                    request.headers.add(name, value);
+                }
+            );
             HttpClientResponse response = await request.close();
             if (response.statusCode != HttpStatus.ok)
             {
                 await response.drain(new List<long>());
                 throw new NetworkImageLoadException(statusCode: response.statusCode, uri: resolved);
             }
-            Uint8List bytes = await Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response, onBytesReceived: (cumulative, total) =>
-            {
-                chunkEvents.add(new ImageChunkEvent(cumulativeBytesLoaded: cumulative, expectedTotalBytes: total));
-            });
+            Uint8List bytes = await Consolidate_responseLibrary.consolidateHttpClientResponseBytes(
+                response,
+                onBytesReceived: (cumulative, total) =>
+                {
+                    chunkEvents.add(
+                        new ImageChunkEvent(
+                            cumulativeBytesLoaded: cumulative,
+                            expectedTotalBytes: total
+                        )
+                    );
+                }
+            );
             if (bytes.lengthInBytes == 0L)
             {
                 throw new Exception($"NetworkImage is an empty file: {resolved}");
@@ -108,19 +169,38 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public override bool Equals(object? other)
     {
         var __other = other as NetworkImageIo;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is NetworkImageIo) && (__other.url == url) && (__other.scale == scale) && CollectionsLibrary.mapEquals(__other.headers, headers);
+        return (__other is NetworkImageIo)
+            && (__other.url == url)
+            && (__other.scale == scale)
+            && CollectionsLibrary.mapEquals(__other.headers, headers);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(url, scale, new MapEquality<string, string>().hash(headers));
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage")}(\"{url}\", scale: {scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {headers})";
-    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>
-        loadBuffer((NetworkImageIo)key, decode);
-    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) =>
-        loadImage((NetworkImageIo)key, decode);
-}
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            url,
+            scale,
+            new MapEquality<string, string>().hash(headers)
+        );
 
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage")}(\"{url}\", scale: {scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {headers})";
+
+    ImageStreamCompleter NetworkImage.loadBuffer(
+        NetworkImage key,
+        Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode
+    ) => loadBuffer((NetworkImageIo)key, decode);
+
+    ImageStreamCompleter NetworkImage.loadImage(
+        NetworkImage key,
+        Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode
+    ) => loadImage((NetworkImageIo)key, decode);
+}

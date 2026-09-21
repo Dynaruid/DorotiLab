@@ -12,18 +12,27 @@ public sealed record BrowserGpuIdentity(
     string Renderer,
     bool Hardware,
     bool SoftwareFallbackUsed,
-    long ContextGeneration = 0);
+    long ContextGeneration = 0
+);
 
 // Transport DTOs contain only wire fields. Ui.Rect also exposes computed aliases
 // (IsFinite/isFinite, Size.flipped, etc.) that are not JSON schema members.
 public sealed record BrowserFeatureBounds(double Left, double Top, double Right, double Bottom);
+
 public sealed record BrowserDisplayFeature(BrowserFeatureBounds Bounds, int Type, int State)
 {
     public DisplayFeature ToDisplayFeature()
     {
         var bounds = new Rect(Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom);
-        if (!bounds.IsFinite || !Enum.IsDefined((DisplayFeatureType)Type) || !Enum.IsDefined((DisplayFeatureState)State))
+        if (
+            !bounds.IsFinite
+            || !Enum.IsDefined((DisplayFeatureType)Type)
+            || !Enum.IsDefined((DisplayFeatureState)State)
+        )
+        {
             throw new InvalidDataException("Invalid browser display feature.");
+        }
+
         return new(bounds, (DisplayFeatureType)Type, (DisplayFeatureState)State);
     }
 }
@@ -51,23 +60,28 @@ public sealed record BrowserHostSnapshot(
     bool InvertColors = false,
     long EnvironmentGeneration = 0,
     IReadOnlyList<BrowserDisplayFeature>? DisplayFeatures = null,
-    bool PlatformBackdrop = false);
+    bool PlatformBackdrop = false
+);
 
 public sealed record BrowserJavaScriptPluginDescriptor(
     string Id,
     string Channel,
     string AbiVersion,
     string ModuleUrl,
-    string ExportName);
+    string ExportName
+);
 
 /// <summary>Browser-only JavaScript boundary. DOM and WebGL types never leave this project.</summary>
 [SupportedOSPlatform("browser")]
 internal static partial class BrowserInterop
 {
     [JSExport]
-    internal static void DispatchPlatformEvent(int hostId, string json) => BrowserPlatformViewHost.Dispatch(hostId, json);
+    internal static void DispatchPlatformEvent(int hostId, string json) =>
+        BrowserPlatformViewHost.Dispatch(hostId, json);
+
     [JSExport]
     internal static Task DrainPlatformViews() => BrowserPlatformViewHost.DrainAsync();
+
     private const string Module = "doroti.web";
 
     [JSImport("createHost", Module)]
@@ -75,7 +89,8 @@ internal static partial class BrowserInterop
         int hostId,
         string canvasId,
         double logicalWidth,
-        double logicalHeight);
+        double logicalHeight
+    );
 
     [JSImport("initializeManagedCallbacks", Module)]
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
@@ -88,21 +103,35 @@ internal static partial class BrowserInterop
     internal static partial string ShowHost(int hostId);
 
     [JSImport("resizeHost", Module)]
-    internal static partial string ResizeHost(int hostId, double logicalWidth, double logicalHeight);
+    internal static partial string ResizeHost(
+        int hostId,
+        double logicalWidth,
+        double logicalHeight
+    );
 
     [JSImport("requestFrame", Module)]
     internal static partial void RequestFrame(int hostId, int callbackId);
 
     [JSImport("recordManagedRaster", Module)]
     internal static partial void RecordManagedRaster(
-        int hostId, string phase, int surfaceWidth, int surfaceHeight, double durationMicroseconds);
+        int hostId,
+        string phase,
+        int surfaceWidth,
+        int surfaceHeight,
+        double durationMicroseconds
+    );
 
     [JSImport("requestPresent", Module)]
     internal static partial void RequestPresent(
-        string canvasId, [JSMarshalAs<JSType.Number>] long generation,
-        double logicalWidth, double logicalHeight,
-        int physicalWidth, int physicalHeight, double devicePixelRatio,
-        [JSMarshalAs<JSType.Number>] long timestampMicroseconds);
+        string canvasId,
+        [JSMarshalAs<JSType.Number>] long generation,
+        double logicalWidth,
+        double logicalHeight,
+        int physicalWidth,
+        int physicalHeight,
+        double devicePixelRatio,
+        [JSMarshalAs<JSType.Number>] long timestampMicroseconds
+    );
 
     [JSImport("captureResizeTrace", Module)]
     internal static partial string CaptureResizeTrace(int hostId);
@@ -121,26 +150,55 @@ internal static partial class BrowserInterop
 
     [JSImport("setTextInputState", Module)]
     internal static partial void SetTextInputState(
-        int hostId, string text, int selectionBase, int selectionExtent,
-        string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
-        string autocapitalize, bool autocorrect, int inputAction, bool multiline, bool attach,
-        bool enableInteractiveSelection);
+        int hostId,
+        string text,
+        int selectionBase,
+        int selectionExtent,
+        string inputMode,
+        string enterKeyHint,
+        bool readOnly,
+        bool obscureText,
+        string autocapitalize,
+        bool autocorrect,
+        int inputAction,
+        bool multiline,
+        bool attach,
+        bool enableInteractiveSelection
+    );
 
     [JSImport("updateTextInputConfiguration", Module)]
     internal static partial void UpdateTextInputConfiguration(
-        int hostId, string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
-        string autocapitalize, bool autocorrect, int inputAction, bool multiline,
-        bool enableInteractiveSelection);
+        int hostId,
+        string inputMode,
+        string enterKeyHint,
+        bool readOnly,
+        bool obscureText,
+        string autocapitalize,
+        bool autocorrect,
+        int inputAction,
+        bool multiline,
+        bool enableInteractiveSelection
+    );
 
     [JSImport("setTextInputStyle", Module)]
     internal static partial void SetTextInputStyle(int hostId, string styleJson);
 
     [JSImport("setEditableSizeAndTransform", Module)]
     internal static partial void SetEditableSizeAndTransform(
-        int hostId, double width, double height, string transformJson);
+        int hostId,
+        double width,
+        double height,
+        string transformJson
+    );
 
     [JSImport("setCaretRect", Module)]
-    internal static partial void SetCaretRect(int hostId, double left, double top, double width, double height);
+    internal static partial void SetCaretRect(
+        int hostId,
+        double left,
+        double top,
+        double width,
+        double height
+    );
 
     [JSImport("setContextMenuEnabled", Module)]
     internal static partial void SetContextMenuEnabled(int hostId, bool enabled);
@@ -175,11 +233,15 @@ internal static partial class BrowserInterop
         string exportName,
         string channel,
         string codec,
-        string payloadBase64);
+        string payloadBase64
+    );
 
     [JSExport]
-    internal static void DispatchAnimationFrame(int hostId, int callbackId, double timestampMilliseconds) =>
-        BrowserHostAdapter.DispatchAnimationFrame(hostId, callbackId, timestampMilliseconds);
+    internal static void DispatchAnimationFrame(
+        int hostId,
+        int callbackId,
+        double timestampMilliseconds
+    ) => BrowserHostAdapter.DispatchAnimationFrame(hostId, callbackId, timestampMilliseconds);
 
     [JSExport]
     internal static void DispatchSnapshot(int hostId, string json) =>
@@ -195,52 +257,132 @@ internal static partial class BrowserInterop
         int physicalWidth,
         int physicalHeight,
         double devicePixelRatio,
-        [JSMarshalAs<JSType.Number>] long timestampMicroseconds) =>
+        [JSMarshalAs<JSType.Number>] long timestampMicroseconds
+    ) =>
         BrowserHostAdapter.DispatchResizeEpoch(
-            hostId, hostGeneration,
+            hostId,
+            hostGeneration,
             new DorotiResizeEpoch(
-                generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
-                devicePixelRatio, timestampMicroseconds));
+                generation,
+                logicalWidth,
+                logicalHeight,
+                physicalWidth,
+                physicalHeight,
+                devicePixelRatio,
+                timestampMicroseconds
+            )
+        );
 
     [JSExport]
     internal static void DispatchPointerBatch(
-        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
+        int hostId,
+        int phase,
+        int kind,
+        int pointerId,
+        int buttons,
+        int modifiers,
         [JSMarshalAs<JSType.Number>] long inputSequence,
-        [JSMarshalAs<JSType.Array<JSType.Number>>] double[] samples) =>
-        BrowserHostAdapter.DispatchPointerBatch(hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples);
+        [JSMarshalAs<JSType.Array<JSType.Number>>] double[] samples
+    ) =>
+        BrowserHostAdapter.DispatchPointerBatch(
+            hostId,
+            phase,
+            kind,
+            pointerId,
+            buttons,
+            modifiers,
+            inputSequence,
+            samples
+        );
 
     [JSExport]
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
-        [JSMarshalAs<JSType.Number>] long inputSequence, int signalKind, double scale) =>
-        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind, inputSequence, signalKind, scale);
+        int hostId,
+        double x,
+        double y,
+        double deltaX,
+        double deltaY,
+        double timestampMilliseconds,
+        int kind,
+        [JSMarshalAs<JSType.Number>] long inputSequence,
+        int signalKind,
+        double scale
+    ) =>
+        BrowserHostAdapter.DispatchWheel(
+            hostId,
+            x,
+            y,
+            deltaX,
+            deltaY,
+            timestampMilliseconds,
+            kind,
+            inputSequence,
+            signalKind,
+            scale
+        );
 
     [JSExport]
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchKey(hostId, down, repeat, synthesized, code, key, timestampMilliseconds, inputSequence);
+        int hostId,
+        bool down,
+        bool repeat,
+        bool synthesized,
+        string code,
+        string key,
+        double timestampMilliseconds,
+        [JSMarshalAs<JSType.Number>] long inputSequence
+    ) =>
+        BrowserHostAdapter.DispatchKey(
+            hostId,
+            down,
+            repeat,
+            synthesized,
+            code,
+            key,
+            timestampMilliseconds,
+            inputSequence
+        );
 
     [JSExport]
-    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchFocus(hostId, focused, timestampMilliseconds, inputSequence);
+    internal static void DispatchFocus(
+        int hostId,
+        bool focused,
+        double timestampMilliseconds,
+        [JSMarshalAs<JSType.Number>] long inputSequence
+    ) => BrowserHostAdapter.DispatchFocus(hostId, focused, timestampMilliseconds, inputSequence);
 
     [JSExport]
     internal static void DispatchTextEditing(
-        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchTextEditing(hostId, text, selectionBase, selectionExtent, composingBase, composingExtent, inputSequence);
+        int hostId,
+        string text,
+        int selectionBase,
+        int selectionExtent,
+        int composingBase,
+        int composingExtent,
+        [JSMarshalAs<JSType.Number>] long inputSequence
+    ) =>
+        BrowserHostAdapter.DispatchTextEditing(
+            hostId,
+            text,
+            selectionBase,
+            selectionExtent,
+            composingBase,
+            composingExtent,
+            inputSequence
+        );
 
     [JSExport]
-    internal static void DispatchTextAction(int hostId, int action,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchTextAction(hostId, action, inputSequence);
+    internal static void DispatchTextAction(
+        int hostId,
+        int action,
+        [JSMarshalAs<JSType.Number>] long inputSequence
+    ) => BrowserHostAdapter.DispatchTextAction(hostId, action, inputSequence);
 
     [JSExport]
-    internal static void DispatchTextConnectionClosed(int hostId,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchTextConnectionClosed(hostId, inputSequence);
+    internal static void DispatchTextConnectionClosed(
+        int hostId,
+        [JSMarshalAs<JSType.Number>] long inputSequence
+    ) => BrowserHostAdapter.DispatchTextConnectionClosed(hostId, inputSequence);
 
     [JSExport]
     internal static void DispatchSemanticsAction(
@@ -248,20 +390,27 @@ internal static partial class BrowserInterop
         [JSMarshalAs<JSType.Number>] long nodeId,
         [JSMarshalAs<JSType.Number>] long action,
         [JSMarshalAs<JSType.Number>] long inputSequence,
-        string argumentsJson) =>
-        BrowserHostAdapter.DispatchSemanticsAction(hostId, nodeId, action, inputSequence, argumentsJson);
+        string argumentsJson
+    ) =>
+        BrowserHostAdapter.DispatchSemanticsAction(
+            hostId,
+            nodeId,
+            action,
+            inputSequence,
+            argumentsJson
+        );
 
     internal static BrowserHostSnapshot ParseSnapshot(string json) =>
-        JsonSerializer.Deserialize<BrowserHostSnapshot>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException("The browser host returned an empty snapshot.");
+        JsonSerializer.Deserialize<BrowserHostSnapshot>(
+            json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        ) ?? throw new InvalidDataException("The browser host returned an empty snapshot.");
 
     internal static IReadOnlyList<DorotiResizeTraceEntry> ParseResizeTrace(string json) =>
-        JsonSerializer.Deserialize<DorotiResizeTraceEntry[]>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException("The browser host returned an empty resize trace.");
+        JsonSerializer.Deserialize<DorotiResizeTraceEntry[]>(
+            json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        ) ?? throw new InvalidDataException("The browser host returned an empty resize trace.");
 }
 
 [SupportedOSPlatform("browser")]
@@ -272,11 +421,19 @@ public static class BrowserHostRuntime
 
     public static async ValueTask EnsureInitializedAsync()
     {
-        if (_initialized) return;
+        if (_initialized)
+        {
+            return;
+        }
+
         await InitializationGate.WaitAsync();
         try
         {
-            if (_initialized) return;
+            if (_initialized)
+            {
+                return;
+            }
+
             await JSHost.ImportAsync("doroti.web", "../_content/Doroti.Host.Web/doroti.web.js");
             await BrowserInterop.InitializeManagedCallbacksAsync();
             _initialized = true;
@@ -297,16 +454,16 @@ public static class BrowserHostRuntime
 }
 
 [SupportedOSPlatform("browser")]
-public sealed class BrowserHostAdapter :
-    IViewHostCapability,
-    IFrameHostCapability,
-    ILatestMetricsFrameHostCapability,
-    IPlatformEnvironmentHostCapability,
-    IInputHostCapability,
-    IViewFocusRequestCapability,
-    IPlatformServicesHostCapability,
-    IUrlLauncherHostCapability,
-    ITextInputHostCapability
+public sealed class BrowserHostAdapter
+    : IViewHostCapability,
+        IFrameHostCapability,
+        ILatestMetricsFrameHostCapability,
+        IPlatformEnvironmentHostCapability,
+        IInputHostCapability,
+        IViewFocusRequestCapability,
+        IPlatformServicesHostCapability,
+        IUrlLauncherHostCapability,
+        ITextInputHostCapability
 {
     private static readonly object RegistryGate = new();
     private static readonly Dictionary<int, WeakReference<BrowserHostAdapter>> Registry = [];
@@ -329,25 +486,48 @@ public sealed class BrowserHostAdapter :
     public BrowserHostAdapter(ulong viewId, string canvasId, Size logicalSize)
     {
         if (!OperatingSystem.IsBrowser())
-            throw new PlatformNotSupportedException("Doroti.Host.Web requires a browser-wasm process.");
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Host.Web requires a browser-wasm process."
+            );
+        }
+
         ArgumentException.ThrowIfNullOrWhiteSpace(canvasId);
         ArgumentNullException.ThrowIfNull(logicalSize);
         if (!logicalSize.IsFinite || logicalSize.IsEmpty)
+        {
             throw new ArgumentOutOfRangeException(nameof(logicalSize));
+        }
 
         _viewId = viewId;
         HostId = Interlocked.Increment(ref _nextHostId);
-        lock (RegistryGate) Registry.Add(HostId, new(this));
+        lock (RegistryGate)
+        {
+            Registry.Add(HostId, new(this));
+        }
+
         try
         {
-            _snapshot = Validate(BrowserInterop.ParseSnapshot(
-                BrowserInterop.CreateHost(HostId, canvasId, logicalSize.width, logicalSize.height)));
+            _snapshot = Validate(
+                BrowserInterop.ParseSnapshot(
+                    BrowserInterop.CreateHost(
+                        HostId,
+                        canvasId,
+                        logicalSize.width,
+                        logicalSize.height
+                    )
+                )
+            );
             _configuration = ToConfiguration(_snapshot);
             _inputSequence = _snapshot.InputSequence;
         }
         catch
         {
-            lock (RegistryGate) Registry.Remove(HostId);
+            lock (RegistryGate)
+            {
+                Registry.Remove(HostId);
+            }
+
             throw;
         }
     }
@@ -355,11 +535,13 @@ public sealed class BrowserHostAdapter :
     public int HostId { get; }
     public BrowserGpuIdentity Gpu => _snapshot.Gpu;
     public BrowserHostSnapshot Snapshot => _snapshot;
+
     public IReadOnlyList<DorotiResizeTraceEntry> CaptureResizeTrace()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return BrowserInterop.ParseResizeTrace(BrowserInterop.CaptureResizeTrace(HostId));
     }
+
     public ViewMetrics Metrics => ToMetrics(_snapshot);
     public DorotiViewEpoch ViewEpoch
     {
@@ -377,7 +559,8 @@ public sealed class BrowserHostAdapter :
                 epoch.PhysicalHeight,
                 epoch.DeviceScaleX,
                 epoch.DeviceScaleY,
-                epoch.TimestampMicroseconds);
+                epoch.TimestampMicroseconds
+            );
         }
     }
     public PlatformConfiguration Configuration => _configuration;
@@ -411,11 +594,18 @@ public sealed class BrowserHostAdapter :
 
     internal void RecordRaster(string phase, int width, int height, TimeSpan? duration = null) =>
         BrowserInterop.RecordManagedRaster(
-            HostId, phase, width, height, duration?.Ticks / 10.0 ?? 0);
+            HostId,
+            phase,
+            width,
+            height,
+            (duration?.Ticks / 10.0) ?? 0
+        );
 
     internal event Action<long, long, string>? SemanticsAction;
 
-    public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
+    public async ValueTask<string?> GetClipboardTextAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         var value = await BrowserInterop.ReadClipboardTextAsync();
@@ -423,31 +613,49 @@ public sealed class BrowserHostAdapter :
         return value;
     }
 
-    public async ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
+    public async ValueTask SetClipboardTextAsync(
+        string text,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         await BrowserInterop.WriteClipboardTextAsync(text ?? string.Empty);
         cancellationToken.ThrowIfCancellationRequested();
     }
 
-    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(
+        string absoluteUrl,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         var status = await BrowserInterop.LaunchExternalUrlAsync(absoluteUrl);
-        return status == "opened" ? new(UrlLaunchStatus.opened) : new(UrlLaunchStatus.blocked, "The browser blocked the new tab. Allow popups and retry the link.");
+        return status == "opened"
+            ? new(UrlLaunchStatus.opened)
+            : new(
+                UrlLaunchStatus.blocked,
+                "The browser blocked the new tab. Allow popups and retry the link."
+            );
     }
 
-    public void SetCursor(DorotiMouseCursorKind cursor) => BrowserInterop.SetCursor(HostId, CursorName(cursor));
+    public void SetCursor(DorotiMouseCursorKind cursor) =>
+        BrowserInterop.SetCursor(HostId, CursorName(cursor));
 
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
         _ = direction;
         ObjectDisposedException.ThrowIf(_disposed, this);
-        ApplySnapshot(BrowserInterop.ParseSnapshot(
-            BrowserInterop.RequestFocus(HostId, state == ViewFocusState.focused)));
+        ApplySnapshot(
+            BrowserInterop.ParseSnapshot(
+                BrowserInterop.RequestFocus(HostId, state == ViewFocusState.focused)
+            )
+        );
     }
 
-    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
+    public void SetClient(
+        DorotiTextInputConfiguration configuration,
+        DorotiTextEditingState initialState
+    )
     {
         _textInputConfiguration = configuration;
         SetTextInputState(initialState, attach: true);
@@ -466,7 +674,8 @@ public sealed class BrowserHostAdapter :
             configuration.autocorrect && configuration.enableSuggestions,
             (int)configuration.inputAction,
             configuration.inputType == DorotiTextInputType.multiline,
-            configuration.enableInteractiveSelection);
+            configuration.enableInteractiveSelection
+        );
     }
 
     public void UpdateState(DorotiTextEditingState state)
@@ -479,46 +688,65 @@ public sealed class BrowserHostAdapter :
         ArgumentNullException.ThrowIfNull(logicalSize);
         ArgumentNullException.ThrowIfNull(transform);
         BrowserInterop.SetEditableSizeAndTransform(
-            HostId, logicalSize.width, logicalSize.height,
-            JsonSerializer.Serialize(transform.storage.ToArray()));
+            HostId,
+            logicalSize.width,
+            logicalSize.height,
+            JsonSerializer.Serialize(transform.storage.ToArray())
+        );
     }
 
-    public void SetStyle(DorotiTextInputStyle style) => BrowserInterop.SetTextInputStyle(
-        HostId,
-        JsonSerializer.Serialize(new
-        {
-            style.fontFamily,
-            style.fontSize,
-            fontWeight = style.fontWeight?.value,
-            textDirection = style.textDirection == TextDirection.rtl ? "rtl" : "ltr",
-            textAlign = style.textAlign switch
-            {
-                TextAlign.left => "left",
-                TextAlign.right => "right",
-                TextAlign.center => "center",
-                TextAlign.justify => "justify",
-                TextAlign.end => "end",
-                _ => "start",
-            },
-            style.letterSpacing,
-            style.wordSpacing,
-            style.lineHeight,
-        }));
+    public void SetStyle(DorotiTextInputStyle style) =>
+        BrowserInterop.SetTextInputStyle(
+            HostId,
+            JsonSerializer.Serialize(
+                new
+                {
+                    style.fontFamily,
+                    style.fontSize,
+                    fontWeight = style.fontWeight?.value,
+                    textDirection = style.textDirection == TextDirection.rtl ? "rtl" : "ltr",
+                    textAlign = style.textAlign switch
+                    {
+                        TextAlign.left => "left",
+                        TextAlign.right => "right",
+                        TextAlign.center => "center",
+                        TextAlign.justify => "justify",
+                        TextAlign.end => "end",
+                        _ => "start",
+                    },
+                    style.letterSpacing,
+                    style.wordSpacing,
+                    style.lineHeight,
+                }
+            )
+        );
 
     private void SetTextInputState(DorotiTextEditingState state, bool attach) =>
         BrowserInterop.SetTextInputState(
-            HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
-            InputMode(_textInputConfiguration.inputType), EnterKeyHint(_textInputConfiguration.inputAction),
-            _textInputConfiguration.readOnly, _textInputConfiguration.obscureText,
+            HostId,
+            state.text,
+            state.selection.baseOffset,
+            state.selection.extentOffset,
+            InputMode(_textInputConfiguration.inputType),
+            EnterKeyHint(_textInputConfiguration.inputAction),
+            _textInputConfiguration.readOnly,
+            _textInputConfiguration.obscureText,
             AutoCapitalize(_textInputConfiguration.textCapitalization),
             _textInputConfiguration.autocorrect && _textInputConfiguration.enableSuggestions,
             (int)_textInputConfiguration.inputAction,
             _textInputConfiguration.inputType == DorotiTextInputType.multiline,
             attach,
-            _textInputConfiguration.enableInteractiveSelection);
+            _textInputConfiguration.enableInteractiveSelection
+        );
 
-    public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
-        HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);
+    public void SetCaretRect(Rect logicalRect) =>
+        BrowserInterop.SetCaretRect(
+            HostId,
+            logicalRect.left,
+            logicalRect.top,
+            logicalRect.width,
+            logicalRect.height
+        );
 
     internal void SetBrowserContextMenuEnabled(bool enabled)
     {
@@ -539,9 +767,15 @@ public sealed class BrowserHostAdapter :
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(logicalSize);
         if (!logicalSize.IsFinite || logicalSize.IsEmpty)
+        {
             throw new ArgumentOutOfRangeException(nameof(logicalSize));
-        ApplySnapshot(BrowserInterop.ParseSnapshot(
-            BrowserInterop.ResizeHost(HostId, logicalSize.width, logicalSize.height)));
+        }
+
+        ApplySnapshot(
+            BrowserInterop.ParseSnapshot(
+                BrowserInterop.ResizeHost(HostId, logicalSize.width, logicalSize.height)
+            )
+        );
     }
 
     public void ScheduleFrame(Action<TimeSpan> callback)
@@ -553,22 +787,32 @@ public sealed class BrowserHostAdapter :
     public void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan> callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        ScheduleFrame(expectedEpoch, (timestamp, admittedEpoch) =>
-        {
-            if (admittedEpoch == expectedEpoch) callback(timestamp);
-        });
+        ScheduleFrame(
+            expectedEpoch,
+            (timestamp, admittedEpoch) =>
+            {
+                if (admittedEpoch == expectedEpoch)
+                {
+                    callback(timestamp);
+                }
+            }
+        );
     }
 
     public void ScheduleFrame(
         DorotiViewEpoch expectedEpoch,
-        Action<TimeSpan, DorotiViewEpoch> callback)
+        Action<TimeSpan, DorotiViewEpoch> callback
+    )
     {
         ArgumentNullException.ThrowIfNull(expectedEpoch);
         ArgumentNullException.ThrowIfNull(callback);
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (expectedEpoch.ViewId != _viewId)
+        {
             throw new InvalidOperationException(
-                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}.");
+                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}."
+            );
+        }
 
         int callbackId;
         lock (_gate)
@@ -583,33 +827,56 @@ public sealed class BrowserHostAdapter :
         if (Environment.CurrentManagedThreadId != _ownerThreadId)
         {
             if (_ownerContext is null)
-                throw new InvalidOperationException("The browser host has no JS owner synchronization context.");
+            {
+                throw new InvalidOperationException(
+                    "The browser host has no JS owner synchronization context."
+                );
+            }
+
             _ownerContext.Post(_ => RequestFrameOnOwner(callbackId), null);
         }
-        else RequestFrameOnOwner(callbackId);
+        else
+        {
+            RequestFrameOnOwner(callbackId);
+        }
     }
 
     private void RequestFrameOnOwner(int callbackId)
     {
         lock (_gate)
         {
-            if (_disposed || _pendingFrameId != callbackId || _pendingFrame is null) return;
+            if (_disposed || _pendingFrameId != callbackId || _pendingFrame is null)
+            {
+                return;
+            }
         }
         BrowserInterop.RequestFrame(HostId, callbackId);
     }
 
     public void Close()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         CloseRequested?.Invoke();
         Dispose();
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
-        lock (RegistryGate) Registry.Remove(HostId);
+        lock (RegistryGate)
+        {
+            Registry.Remove(HostId);
+        }
+
         lock (_gate)
         {
             _pendingFrame = null;
@@ -619,13 +886,25 @@ public sealed class BrowserHostAdapter :
         Closed?.Invoke();
     }
 
-    internal static void DispatchAnimationFrame(int hostId, int callbackId, double timestampMilliseconds)
+    internal static void DispatchAnimationFrame(
+        int hostId,
+        int callbackId,
+        double timestampMilliseconds
+    )
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         Action<TimeSpan, DorotiViewEpoch>? callback;
         lock (host._gate)
         {
-            if (host._pendingFrameId != callbackId) return;
+            if (host._pendingFrameId != callbackId)
+            {
+                return;
+            }
+
             callback = host._pendingFrame;
             host._pendingFrame = null;
             host._pendingFrameId = 0;
@@ -639,22 +918,40 @@ public sealed class BrowserHostAdapter :
 
     internal static void DispatchSnapshot(int hostId, string json)
     {
-        if (TryGet(hostId, out var host)) host.ApplySnapshot(BrowserInterop.ParseSnapshot(json));
+        if (TryGet(hostId, out var host))
+        {
+            host.ApplySnapshot(BrowserInterop.ParseSnapshot(json));
+        }
     }
 
     internal static void DispatchResizeEpoch(
         int hostId,
         long hostGeneration,
-        DorotiResizeEpoch resizeEpoch)
+        DorotiResizeEpoch resizeEpoch
+    )
     {
-        if (TryGet(hostId, out var host)) host.ApplyResizeEpoch(hostGeneration, resizeEpoch);
+        if (TryGet(hostId, out var host))
+        {
+            host.ApplyResizeEpoch(hostGeneration, resizeEpoch);
+        }
     }
 
     internal static void DispatchPointerBatch(
-        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
-        long inputSequence, double[] samples)
+        int hostId,
+        int phase,
+        int kind,
+        int pointerId,
+        int buttons,
+        int modifiers,
+        long inputSequence,
+        double[] samples
+    )
     {
-        if (!TryGet(hostId, out var host) || samples.Length == 0 || samples.Length % 7 != 0) return;
+        if (!TryGet(hostId, out var host) || samples.Length == 0 || samples.Length % 7 != 0)
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(samples[^1]));
         var ratio = host._snapshot.DevicePixelRatio;
         var pointer = checked((ulong)Math.Max(0, pointerId));
@@ -674,87 +971,181 @@ public sealed class BrowserHostAdapter :
                 6 => PointerChange.remove,
                 _ => PointerChange.move,
             };
-            data.Add(new(
-                host._viewId,
-                TimeSpan.FromMilliseconds(samples[index + 6]),
-                change,
-                kind switch { 0 => PointerDeviceKind.mouse, 1 => PointerDeviceKind.touch, 2 => PointerDeviceKind.stylus, _ => PointerDeviceKind.unknown },
-                pointer,
-                x,
-                y,
-                !hasPrevious || change is PointerChange.add or PointerChange.remove or PointerChange.cancel ? 0 : x - previous.X,
-                !hasPrevious || change is PointerChange.add or PointerChange.remove or PointerChange.cancel ? 0 : y - previous.Y,
-                buttons,
-                pointerIdentifier: pointer,
-                pressure: samples[index + 2],
-                pressureMin: 0,
-                pressureMax: 1,
-                orientation: samples[index + 5],
-                tilt: Math.Sqrt((samples[index + 3] * samples[index + 3]) + (samples[index + 4] * samples[index + 4]))));
-            if (change is PointerChange.remove or PointerChange.cancel) host._pointerPositions.Remove(pointer);
-            else host._pointerPositions[pointer] = (x, y);
+            data.Add(
+                new(
+                    host._viewId,
+                    TimeSpan.FromMilliseconds(samples[index + 6]),
+                    change,
+                    kind switch
+                    {
+                        0 => PointerDeviceKind.mouse,
+                        1 => PointerDeviceKind.touch,
+                        2 => PointerDeviceKind.stylus,
+                        _ => PointerDeviceKind.unknown,
+                    },
+                    pointer,
+                    x,
+                    y,
+                    !hasPrevious
+                    || change is PointerChange.add or PointerChange.remove or PointerChange.cancel
+                        ? 0
+                        : x - previous.X,
+                    !hasPrevious
+                    || change is PointerChange.add or PointerChange.remove or PointerChange.cancel
+                        ? 0
+                        : y - previous.Y,
+                    buttons,
+                    pointerIdentifier: pointer,
+                    pressure: samples[index + 2],
+                    pressureMin: 0,
+                    pressureMax: 1,
+                    orientation: samples[index + 5],
+                    tilt: Math.Sqrt(
+                        (samples[index + 3] * samples[index + 3])
+                            + (samples[index + 4] * samples[index + 4])
+                    )
+                )
+            );
+            if (change is PointerChange.remove or PointerChange.cancel)
+            {
+                host._pointerPositions.Remove(pointer);
+            }
+            else
+            {
+                host._pointerPositions[pointer] = (x, y);
+            }
         }
         host.PointerData?.Invoke(new(data));
     }
 
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
-        long inputSequence, int signalKind = 1, double scale = 1)
+        int hostId,
+        double x,
+        double y,
+        double deltaX,
+        double deltaY,
+        double timestampMilliseconds,
+        int kind,
+        long inputSequence,
+        int signalKind = 1,
+        double scale = 1
+    )
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
         var ratio = host._snapshot.DevicePixelRatio;
-        host.PointerData?.Invoke(new([
-            new(host._viewId, TimeSpan.FromMilliseconds(timestampMilliseconds), PointerChange.hover,
-                kind == 3 ? PointerDeviceKind.trackpad : PointerDeviceKind.mouse,
-                0, x * ratio, y * ratio, 0, 0, 0,
-                deltaX * ratio, deltaY * ratio,
-                signalKind == 3 ? PointerSignalKind.scale : PointerSignalKind.scroll, scale: scale),
-        ]));
+        host.PointerData?.Invoke(
+            new([
+                new(
+                    host._viewId,
+                    TimeSpan.FromMilliseconds(timestampMilliseconds),
+                    PointerChange.hover,
+                    kind == 3 ? PointerDeviceKind.trackpad : PointerDeviceKind.mouse,
+                    0,
+                    x * ratio,
+                    y * ratio,
+                    0,
+                    0,
+                    0,
+                    deltaX * ratio,
+                    deltaY * ratio,
+                    signalKind == 3 ? PointerSignalKind.scale : PointerSignalKind.scroll,
+                    scale: scale
+                ),
+            ])
+        );
     }
 
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds,
-        long inputSequence)
+        int hostId,
+        bool down,
+        bool repeat,
+        bool synthesized,
+        string code,
+        string key,
+        double timestampMilliseconds,
+        long inputSequence
+    )
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
-        host.KeyData?.Invoke(new(
-            host._viewId,
-            TimeSpan.FromMilliseconds(timestampMilliseconds),
-            down ? (repeat ? KeyEventType.repeat : KeyEventType.down) : KeyEventType.up,
-            BrowserKeyMap.Physical(code),
-            BrowserKeyMap.Logical(code, key),
-            synthesized,
-            down ? BrowserKeyMap.Character(key) : null));
+        host.KeyData?.Invoke(
+            new(
+                host._viewId,
+                TimeSpan.FromMilliseconds(timestampMilliseconds),
+                down ? (repeat ? KeyEventType.repeat : KeyEventType.down) : KeyEventType.up,
+                BrowserKeyMap.Physical(code),
+                BrowserKeyMap.Logical(code, key),
+                synthesized,
+                down ? BrowserKeyMap.Character(key) : null
+            )
+        );
     }
 
     internal static void DispatchSemanticsAction(
-        int hostId, long nodeId, long action, long inputSequence, string argumentsJson)
+        int hostId,
+        long nodeId,
+        long action,
+        long inputSequence,
+        string argumentsJson
+    )
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
         host.SemanticsAction?.Invoke(nodeId, action, argumentsJson);
     }
 
-    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds, long inputSequence)
+    internal static void DispatchFocus(
+        int hostId,
+        bool focused,
+        double timestampMilliseconds,
+        long inputSequence
+    )
     {
         if (TryGet(hostId, out var host))
         {
-            host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
-            host.FocusData?.Invoke(new(host._viewId, focused, TimeSpan.FromMilliseconds(timestampMilliseconds)));
+            host.AcceptInputSequence(
+                inputSequence,
+                TimeSpan.FromMilliseconds(timestampMilliseconds)
+            );
+            host.FocusData?.Invoke(
+                new(host._viewId, focused, TimeSpan.FromMilliseconds(timestampMilliseconds))
+            );
         }
     }
 
     internal static void DispatchTextEditing(
-        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent,
-        long inputSequence)
+        int hostId,
+        string text,
+        int selectionBase,
+        int selectionExtent,
+        int composingBase,
+        int composingExtent,
+        long inputSequence
+    )
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
-        DorotiTextSelection? composing = composingBase >= 0 && composingExtent >= composingBase
-            ? new DorotiTextSelection(composingBase, composingExtent)
-            : null;
+        DorotiTextSelection? composing =
+            composingBase >= 0 && composingExtent >= composingBase
+                ? new DorotiTextSelection(composingBase, composingExtent)
+                : null;
         host.EditingStateChanged?.Invoke(new(text, new(selectionBase, selectionExtent), composing));
     }
 
@@ -769,18 +1160,30 @@ public sealed class BrowserHostAdapter :
 
     internal static void DispatchTextConnectionClosed(int hostId, long inputSequence)
     {
-        if (!TryGet(hostId, out var host)) return;
+        if (!TryGet(hostId, out var host))
+        {
+            return;
+        }
+
         host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
         host.ConnectionClosed?.Invoke();
     }
 
     private void AcceptInputSequence(long sequence, TimeSpan timestamp)
     {
-        if (sequence <= 0) throw new InvalidDataException("Browser input sequence must be positive.");
+        if (sequence <= 0)
+        {
+            throw new InvalidDataException("Browser input sequence must be positive.");
+        }
+
         var previous = Interlocked.Read(ref _inputSequence);
         if (sequence != previous + 1)
+        {
             throw new InvalidDataException(
-                $"Browser input sequence is not contiguous: previous={previous}, received={sequence}.");
+                $"Browser input sequence is not contiguous: previous={previous}, received={sequence}."
+            );
+        }
+
         Interlocked.Exchange(ref _inputSequence, sequence);
         InputReceived?.Invoke(sequence, timestamp);
     }
@@ -789,7 +1192,13 @@ public sealed class BrowserHostAdapter :
     {
         lock (RegistryGate)
         {
-            if (Registry.TryGetValue(hostId, out var reference) && reference.TryGetTarget(out host!)) return true;
+            if (
+                Registry.TryGetValue(hostId, out var reference) && reference.TryGetTarget(out host!)
+            )
+            {
+                return true;
+            }
+
             Registry.Remove(hostId);
             host = null!;
             return false;
@@ -801,19 +1210,38 @@ public sealed class BrowserHostAdapter :
         FrameworkWorkCounters.Add(FrameworkWork.HostSnapshotApply);
         next = Validate(next);
         var previous = _snapshot;
-        if (next.Generation < previous.Generation || next.EnvironmentGeneration < previous.EnvironmentGeneration) return;
+        if (
+            next.Generation < previous.Generation
+            || next.EnvironmentGeneration < previous.EnvironmentGeneration
+        )
+        {
+            return;
+        }
+
         _snapshot = next;
-        if (!ToMetrics(previous).HasSameEnvironment(ToMetrics(next)) || previous.SurfaceGeneration != next.SurfaceGeneration)
+        if (
+            !ToMetrics(previous).HasSameEnvironment(ToMetrics(next))
+            || previous.SurfaceGeneration != next.SurfaceGeneration
+        )
         {
             FrameworkWorkCounters.Add(FrameworkWork.HostMetricsNotified);
             MetricsChanged?.Invoke(ToMetrics(next));
         }
         var previousState = Lifecycle(previous);
         var nextState = Lifecycle(next);
-        if (previousState != nextState) LifecycleChanged?.Invoke(nextState);
+        if (previousState != nextState)
+        {
+            LifecycleChanged?.Invoke(nextState);
+        }
+
         var nextConfiguration = ToConfiguration(next);
-        if (previous.LanguageTag != next.LanguageTag || previous.Brightness != next.Brightness ||
-            previous.ReduceMotion != next.ReduceMotion || previous.HighContrast != next.HighContrast || previous.InvertColors != next.InvertColors)
+        if (
+            previous.LanguageTag != next.LanguageTag
+            || previous.Brightness != next.Brightness
+            || previous.ReduceMotion != next.ReduceMotion
+            || previous.HighContrast != next.HighContrast
+            || previous.InvertColors != next.InvertColors
+        )
         {
             _configuration = nextConfiguration;
             ConfigurationChanged?.Invoke(nextConfiguration);
@@ -822,48 +1250,87 @@ public sealed class BrowserHostAdapter :
 
     private void ApplyResizeEpoch(long hostGeneration, DorotiResizeEpoch next)
     {
-        if (next.Generation <= _snapshot.ResizeEpoch.Generation) return;
-        if (next.LogicalWidth <= 0 || next.LogicalHeight <= 0 ||
-            !double.IsFinite(next.LogicalWidth) || !double.IsFinite(next.LogicalHeight) ||
-            next.PhysicalWidth <= 0 || next.PhysicalHeight <= 0 ||
-            next.DevicePixelRatio <= 0 || !double.IsFinite(next.DevicePixelRatio))
-            throw new InvalidDataException("The browser returned an invalid resize epoch.");
-        ApplySnapshot(_snapshot with
+        if (next.Generation <= _snapshot.ResizeEpoch.Generation)
         {
-            LogicalWidth = next.LogicalWidth,
-            LogicalHeight = next.LogicalHeight,
-            DevicePixelRatio = next.DevicePixelRatio,
-            Generation = Math.Max(_snapshot.Generation, hostGeneration),
-            ResizeEpoch = next,
-        });
+            return;
+        }
+
+        if (
+            next.LogicalWidth <= 0
+            || next.LogicalHeight <= 0
+            || !double.IsFinite(next.LogicalWidth)
+            || !double.IsFinite(next.LogicalHeight)
+            || next.PhysicalWidth <= 0
+            || next.PhysicalHeight <= 0
+            || next.DevicePixelRatio <= 0
+            || !double.IsFinite(next.DevicePixelRatio)
+        )
+        {
+            throw new InvalidDataException("The browser returned an invalid resize epoch.");
+        }
+
+        ApplySnapshot(
+            _snapshot with
+            {
+                LogicalWidth = next.LogicalWidth,
+                LogicalHeight = next.LogicalHeight,
+                DevicePixelRatio = next.DevicePixelRatio,
+                Generation = Math.Max(_snapshot.Generation, hostGeneration),
+                ResizeEpoch = next,
+            }
+        );
     }
 
     private static BrowserHostSnapshot Validate(BrowserHostSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        if (snapshot.LogicalWidth <= 0 || snapshot.LogicalHeight <= 0 ||
-            !double.IsFinite(snapshot.LogicalWidth) || !double.IsFinite(snapshot.LogicalHeight) ||
-            snapshot.DevicePixelRatio <= 0 || !double.IsFinite(snapshot.DevicePixelRatio))
+        if (
+            snapshot.LogicalWidth <= 0
+            || snapshot.LogicalHeight <= 0
+            || !double.IsFinite(snapshot.LogicalWidth)
+            || !double.IsFinite(snapshot.LogicalHeight)
+            || snapshot.DevicePixelRatio <= 0
+            || !double.IsFinite(snapshot.DevicePixelRatio)
+        )
+        {
             throw new InvalidDataException("The browser returned invalid canvas metrics.");
+        }
+
         if (snapshot.Gpu.Api is not ("webgl2" or "webgpu"))
+        {
             throw new PlatformNotSupportedException(
-                $"A WebGL2 or WebGPU canvas is required; browser reported '{snapshot.Gpu.Api}/{snapshot.Gpu.Renderer}'.");
+                $"A WebGL2 or WebGPU canvas is required; browser reported '{snapshot.Gpu.Api}/{snapshot.Gpu.Renderer}'."
+            );
+        }
+
         ToMetrics(snapshot).Validate();
         return snapshot;
     }
 
-    private static ViewMetrics ToMetrics(BrowserHostSnapshot snapshot) => new(
-        new Size(snapshot.ResizeEpoch.PhysicalWidth, snapshot.ResizeEpoch.PhysicalHeight),
-        snapshot.DevicePixelRatio, Physical(snapshot.ViewPadding, snapshot.DevicePixelRatio),
-        Physical(snapshot.ViewInsets, snapshot.DevicePixelRatio), Physical(snapshot.SystemGestureInsets, snapshot.DevicePixelRatio),
-        Lifecycle(snapshot), snapshot.Generation, snapshot.SurfaceGeneration)
-        { displayFeatures = snapshot.DisplayFeatures?.Select(feature => feature.ToDisplayFeature()).ToArray() ?? Array.Empty<DisplayFeature>() };
+    private static ViewMetrics ToMetrics(BrowserHostSnapshot snapshot) =>
+        new(
+            new Size(snapshot.ResizeEpoch.PhysicalWidth, snapshot.ResizeEpoch.PhysicalHeight),
+            snapshot.DevicePixelRatio,
+            Physical(snapshot.ViewPadding, snapshot.DevicePixelRatio),
+            Physical(snapshot.ViewInsets, snapshot.DevicePixelRatio),
+            Physical(snapshot.SystemGestureInsets, snapshot.DevicePixelRatio),
+            Lifecycle(snapshot),
+            snapshot.Generation,
+            snapshot.SurfaceGeneration
+        )
+        {
+            displayFeatures =
+                snapshot.DisplayFeatures?.Select(feature => feature.ToDisplayFeature()).ToArray()
+                ?? Array.Empty<DisplayFeature>(),
+        };
 
     private static ViewPadding Physical(ViewPadding value, double ratio) =>
         new(value.left * ratio, value.top * ratio, value.right * ratio, value.bottom * ratio);
 
     private static AppLifecycleState Lifecycle(BrowserHostSnapshot snapshot) =>
-        snapshot.Visible ? (snapshot.Focused ? AppLifecycleState.resumed : AppLifecycleState.inactive) : AppLifecycleState.hidden;
+        snapshot.Visible
+            ? (snapshot.Focused ? AppLifecycleState.resumed : AppLifecycleState.inactive)
+            : AppLifecycleState.hidden;
 
     private static PlatformConfiguration ToConfiguration(BrowserHostSnapshot snapshot)
     {
@@ -884,61 +1351,79 @@ public sealed class BrowserHostAdapter :
             "windows" => HostOperatingSystem.windows,
             _ => HostOperatingSystem.web,
         };
-        return new([locale], snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
-            false, false, operatingSystem, accessibilityFeatures: new(false, snapshot.InvertColors,
-                snapshot.ReduceMotion, false, snapshot.HighContrast, false, false, snapshot.ReduceMotion));
+        return new(
+            [locale],
+            snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
+            false,
+            false,
+            operatingSystem,
+            accessibilityFeatures: new(
+                false,
+                snapshot.InvertColors,
+                snapshot.ReduceMotion,
+                false,
+                snapshot.HighContrast,
+                false,
+                false,
+                snapshot.ReduceMotion
+            )
+        );
     }
 
-    private static string InputMode(DorotiTextInputType type) => type switch
-    {
-        DorotiTextInputType.number => "decimal",
-        DorotiTextInputType.phone => "tel",
-        DorotiTextInputType.emailAddress => "email",
-        DorotiTextInputType.url => "url",
-        DorotiTextInputType.none => "none",
-        DorotiTextInputType.webSearch => "search",
-        _ => "text",
-    };
+    private static string InputMode(DorotiTextInputType type) =>
+        type switch
+        {
+            DorotiTextInputType.number => "decimal",
+            DorotiTextInputType.phone => "tel",
+            DorotiTextInputType.emailAddress => "email",
+            DorotiTextInputType.url => "url",
+            DorotiTextInputType.none => "none",
+            DorotiTextInputType.webSearch => "search",
+            _ => "text",
+        };
 
-    private static string EnterKeyHint(DorotiTextInputAction action) => action switch
-    {
-        DorotiTextInputAction.done => "done",
-        DorotiTextInputAction.go => "go",
-        DorotiTextInputAction.search => "search",
-        DorotiTextInputAction.send => "send",
-        DorotiTextInputAction.next => "next",
-        DorotiTextInputAction.previous => "previous",
-        DorotiTextInputAction.newline => "enter",
-        _ => string.Empty,
-    };
+    private static string EnterKeyHint(DorotiTextInputAction action) =>
+        action switch
+        {
+            DorotiTextInputAction.done => "done",
+            DorotiTextInputAction.go => "go",
+            DorotiTextInputAction.search => "search",
+            DorotiTextInputAction.send => "send",
+            DorotiTextInputAction.next => "next",
+            DorotiTextInputAction.previous => "previous",
+            DorotiTextInputAction.newline => "enter",
+            _ => string.Empty,
+        };
 
-    private static string AutoCapitalize(DorotiTextCapitalization capitalization) => capitalization switch
-    {
-        DorotiTextCapitalization.words => "words",
-        DorotiTextCapitalization.sentences => "sentences",
-        DorotiTextCapitalization.characters => "characters",
-        _ => "none",
-    };
+    private static string AutoCapitalize(DorotiTextCapitalization capitalization) =>
+        capitalization switch
+        {
+            DorotiTextCapitalization.words => "words",
+            DorotiTextCapitalization.sentences => "sentences",
+            DorotiTextCapitalization.characters => "characters",
+            _ => "none",
+        };
 
-    private static string CursorName(DorotiMouseCursorKind cursor) => cursor switch
-    {
-        DorotiMouseCursorKind.click => "pointer",
-        DorotiMouseCursorKind.forbidden or DorotiMouseCursorKind.noDrop => "not-allowed",
-        DorotiMouseCursorKind.wait => "wait",
-        DorotiMouseCursorKind.progress => "progress",
-        DorotiMouseCursorKind.text => "text",
-        DorotiMouseCursorKind.verticalText => "vertical-text",
-        DorotiMouseCursorKind.precise => "crosshair",
-        DorotiMouseCursorKind.move or DorotiMouseCursorKind.allScroll => "move",
-        DorotiMouseCursorKind.grab => "grab",
-        DorotiMouseCursorKind.grabbing => "grabbing",
-        DorotiMouseCursorKind.resizeLeftRight => "ew-resize",
-        DorotiMouseCursorKind.resizeUpDown => "ns-resize",
-        DorotiMouseCursorKind.resizeUpLeftDownRight => "nwse-resize",
-        DorotiMouseCursorKind.resizeUpRightDownLeft => "nesw-resize",
-        DorotiMouseCursorKind.none => "none",
-        _ => "default",
-    };
+    private static string CursorName(DorotiMouseCursorKind cursor) =>
+        cursor switch
+        {
+            DorotiMouseCursorKind.click => "pointer",
+            DorotiMouseCursorKind.forbidden or DorotiMouseCursorKind.noDrop => "not-allowed",
+            DorotiMouseCursorKind.wait => "wait",
+            DorotiMouseCursorKind.progress => "progress",
+            DorotiMouseCursorKind.text => "text",
+            DorotiMouseCursorKind.verticalText => "vertical-text",
+            DorotiMouseCursorKind.precise => "crosshair",
+            DorotiMouseCursorKind.move or DorotiMouseCursorKind.allScroll => "move",
+            DorotiMouseCursorKind.grab => "grab",
+            DorotiMouseCursorKind.grabbing => "grabbing",
+            DorotiMouseCursorKind.resizeLeftRight => "ew-resize",
+            DorotiMouseCursorKind.resizeUpDown => "ns-resize",
+            DorotiMouseCursorKind.resizeUpLeftDownRight => "nwse-resize",
+            DorotiMouseCursorKind.resizeUpRightDownLeft => "nesw-resize",
+            DorotiMouseCursorKind.none => "none",
+            _ => "default",
+        };
 }
 
 [SupportedOSPlatform("browser")]
@@ -958,22 +1443,33 @@ public sealed class BrowserJavaScriptPluginHandler : IDorotiNativePluginHandler
         string channel,
         string codec,
         ReadOnlyMemory<byte>? message,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (channel != _descriptor.Channel)
-            throw new InvalidOperationException($"Plugin '{PluginId}' does not own channel '{channel}'.");
+        {
+            throw new InvalidOperationException(
+                $"Plugin '{PluginId}' does not own channel '{channel}'."
+            );
+        }
+
         var json = await BrowserInterop.InvokePluginAsync(
             _descriptor.ModuleUrl,
             _descriptor.ExportName,
             channel,
             codec,
-            message is null ? string.Empty : Convert.ToBase64String(message.Value.Span));
+            message is null ? string.Empty : Convert.ToBase64String(message.Value.Span)
+        );
         cancellationToken.ThrowIfCancellationRequested();
-        var response = JsonSerializer.Deserialize<PluginResponse>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException($"Plugin '{PluginId}' returned an invalid response envelope.");
+        var response =
+            JsonSerializer.Deserialize<PluginResponse>(
+                json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            )
+            ?? throw new InvalidDataException(
+                $"Plugin '{PluginId}' returned an invalid response envelope."
+            );
         return response.HasValue ? Convert.FromBase64String(response.Base64) : null;
     }
 }

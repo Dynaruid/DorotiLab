@@ -5,7 +5,5 @@ namespace Doroti.Host.Maui;
 
 /// <summary>MAUI creates and owns the UIWindow for each connected UIKit scene.</summary>
 [Register("DorotiMauiSceneDelegate")]
-public sealed class DorotiMauiSceneDelegate : Microsoft.Maui.MauiUISceneDelegate
-{
-}
+public sealed class DorotiMauiSceneDelegate : Microsoft.Maui.MauiUISceneDelegate { }
 #endif

@@ -1,9 +1,9 @@
 using Doroti.Framework;
-using Doroti.Hosting;
-using Doroti.Ui;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Locale = Doroti.Ui.Locale;
 using Material = Doroti.Framework.Material;
 using Size = Doroti.Ui.Size;
@@ -17,8 +17,12 @@ public static class App
         () => new DorotiWidgetEntrypoint(CreateRootWidget);
 
     public static DorotiViewConfiguration ViewConfiguration { get; } =
-        new("Doroti C# App", new Size(720, 640),
-            new UiColor(0xfffffbfeL), new UiColor(0xff141218L));
+        new(
+            "Doroti C# App",
+            new Size(720, 640),
+            new UiColor(0xfffffbfeL),
+            new UiColor(0xff141218L)
+        );
 
     private static Widget CreateRootWidget()
     {
@@ -30,7 +34,8 @@ public static class App
             themeMode: Material.ThemeMode.system,
             locale: new Locale("en", "US"),
             debugShowCheckedModeBanner: false,
-            home: new CounterPage());
+            home: new CounterPage()
+        );
     }
 }
 
@@ -50,10 +55,12 @@ public static class AppTheme
             surface: new UiColor(isDark ? 0xff141218L : 0xfffffbfeL),
             surfaceContainer: new UiColor(isDark ? 0xff211f26L : 0xfff3edf7L),
             surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
-            outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
+            outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL)
+        );
         return Material.ThemeData.Create(
             colorScheme: palette,
-            scaffoldBackgroundColor: palette.surface);
+            scaffoldBackgroundColor: palette.surface
+        );
     }
 }
 
@@ -75,8 +82,9 @@ public sealed class CounterPageState : State<CounterPage>
         """;
 
     private int _count;
-    private readonly FragmentShader _counterShader =
-        FragmentProgram.fromSource(CounterShaderSource, "doroti-template-counter").fragmentShader();
+    private readonly FragmentShader _counterShader = FragmentProgram
+        .fromSource(CounterShaderSource, "doroti-template-counter")
+        .fragmentShader();
 
     public override Widget build(BuildContext context)
     {
@@ -85,7 +93,8 @@ public sealed class CounterPageState : State<CounterPage>
             appBar: new Material.AppBar(
                 title: new Text("Doroti C# single-project app"),
                 backgroundColor: palette.primaryContainer,
-                foregroundColor: palette.onPrimaryContainer),
+                foregroundColor: palette.onPrimaryContainer
+            ),
             body: new Center(
                 child: new Column(
                     mainAxisAlignment: Doroti.Framework.Rendering.MainAxisAlignment.center,
@@ -102,10 +111,15 @@ public sealed class CounterPageState : State<CounterPage>
                                 _counterShader.setFloat(2, _count * 0.4);
                                 return _counterShader;
                             },
-                            child: new Text($"Custom SkSL count: {_count}")),
+                            child: new Text($"Custom SkSL count: {_count}")
+                        ),
                         new Material.ElevatedButton(
                             onPressed: () => setState(() => _count++),
-                            child: new Text("Increment")),
-                    ])));
+                            child: new Text("Increment")
+                        ),
+                    ]
+                )
+            )
+        );
     }
 }

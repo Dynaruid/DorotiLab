@@ -98,27 +98,41 @@ internal sealed class WebViewSampleState : State<WebViewSample>
     internal static bool UsesNativeOverlay(BuildContext context)
     {
         var owner = View.of(context);
-        if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews)) return false;
+        if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews))
+        {
+            return false;
+        }
+
         var host = owner.RequireCapability<IPlatformViewHostCapability>(
             DorotiCapabilityIds.PlatformViews,
-            DartUiInvocation.Managed("WebViewSample.support"));
+            DartUiInvocation.Managed("WebViewSample.support")
+        );
         var interleaved = Query(host, PlatformViewComposition.InterleavedComposition);
-        var support = interleaved.Supported ? interleaved : Query(host, PlatformViewComposition.NativeOverlay);
+        var support = interleaved.Supported
+            ? interleaved
+            : Query(host, PlatformViewComposition.NativeOverlay);
         return support.Supported && support.Composition == PlatformViewComposition.NativeOverlay;
     }
 
-    private static PlatformViewSupport Query(IPlatformViewHostCapability host, PlatformViewComposition composition) =>
-        host.QuerySupport(new PlatformViewRequest(0, "doroti/webview", composition));
+    private static PlatformViewSupport Query(
+        IPlatformViewHostCapability host,
+        PlatformViewComposition composition
+    ) => host.QuerySupport(new PlatformViewRequest(0, "doroti/webview", composition));
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        if (_initialized) return;
+        if (_initialized)
+        {
+            return;
+        }
+
         _initialized = true;
         _owner = View.of(context);
         if (!_owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews))
         {
-            _unavailable = "This runner does not register platform views, so the WebView sample is unavailable.";
+            _unavailable =
+                "This runner does not register platform views, so the WebView sample is unavailable.";
             return;
         }
 
@@ -126,11 +140,17 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         {
             var host = _owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("WebViewSample.create"));
+                DartUiInvocation.Managed("WebViewSample.create")
+            );
             var interleaved = Query(host, PlatformViewComposition.InterleavedComposition);
-            var support = interleaved.Supported ? interleaved : Query(host, PlatformViewComposition.NativeOverlay);
-            _panelSupported = interleaved.Supported && interleaved.NativeBackdropBlur &&
-                interleaved.Capabilities?.Effect is { LiveSourceSampling: true, MaximumEffects: > 0, MaximumSigma: >= 10 };
+            var support = interleaved.Supported
+                ? interleaved
+                : Query(host, PlatformViewComposition.NativeOverlay);
+            _panelSupported =
+                interleaved.Supported
+                && interleaved.NativeBackdropBlur
+                && interleaved.Capabilities?.Effect
+                    is { LiveSourceSampling: true, MaximumEffects: > 0, MaximumSigma: >= 10 };
             if (!support.Supported)
             {
                 _unavailable = support.Reason ?? "This runner does not support the WebView sample.";
@@ -141,9 +161,19 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             {
                 // Explicit qualification option for old emulator providers which
                 // cannot isolate transient profiles. Never silently weaken the default.
-                var profile = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_WEBVIEW_PROFILE") == "shared"
-                    ? WebViewProfile.SharedPersistent : WebViewProfile.Ephemeral;
-                _controller = new WebViewController(_owner, new WebViewOptions(Html: InitialHtml, Profile: OperatingSystem.IsBrowser() ? WebViewProfile.BrowserDefault : profile));
+                var profile =
+                    Environment.GetEnvironmentVariable("DOROTI_SAMPLE_WEBVIEW_PROFILE") == "shared"
+                        ? WebViewProfile.SharedPersistent
+                        : WebViewProfile.Ephemeral;
+                _controller = new WebViewController(
+                    _owner,
+                    new WebViewOptions(
+                        Html: InitialHtml,
+                        Profile: OperatingSystem.IsBrowser()
+                            ? WebViewProfile.BrowserDefault
+                            : profile
+                    )
+                );
                 _controller.Changed += WebViewChanged;
                 _ = InitializeControllerAsync(_controller);
             }
@@ -153,7 +183,8 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                     "doroti/webview",
                     Encoding.UTF8.GetBytes(InitialHtml),
                     PlatformViewStrategyPolicy.RequireRequested,
-                    support.Composition);
+                    support.Composition
+                );
                 _status = "Interactive local HTML · basic attachment API";
             }
         }
@@ -168,8 +199,12 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         try
         {
             await controller.Ready.ConfigureAwait(false);
-            var features = await controller.ExecuteAsync(new(WebViewOperation.Features)).ConfigureAwait(false);
-            var state = await controller.ExecuteAsync(new(WebViewOperation.State)).ConfigureAwait(false);
+            var features = await controller
+                .ExecuteAsync(new(WebViewOperation.Features))
+                .ConfigureAwait(false);
+            var state = await controller
+                .ExecuteAsync(new(WebViewOperation.State))
+                .ConfigureAwait(false);
             Update(() =>
             {
                 _features = features.Features;
@@ -178,7 +213,10 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             });
         }
         catch (ObjectDisposedException) { }
-        catch (Exception exception) { Update(() => _error = exception.Message); }
+        catch (Exception exception)
+        {
+            Update(() => _error = exception.Message);
+        }
     }
 
     private void WebViewChanged(WebViewEvent value)
@@ -197,42 +235,83 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             };
             _error = value.Error;
         });
-        if (value.Kind is WebViewEventKind.Committed or WebViewEventKind.Completed or WebViewEventKind.Failed)
+        if (
+            value.Kind
+            is WebViewEventKind.Committed
+                or WebViewEventKind.Completed
+                or WebViewEventKind.Failed
+        )
+        {
             _ = RefreshStateAsync();
+        }
     }
 
     private async Task RefreshStateAsync()
     {
         var controller = _controller;
-        if (controller is null) return;
+        if (controller is null)
+        {
+            return;
+        }
+
         try
         {
-            var state = await controller.ExecuteAsync(new(WebViewOperation.State)).ConfigureAwait(false);
+            var state = await controller
+                .ExecuteAsync(new(WebViewOperation.State))
+                .ConfigureAwait(false);
             Update(() => ApplyState(state));
         }
         catch (ObjectDisposedException) { }
-        catch (Exception exception) { Update(() => _error = exception.Message); }
+        catch (Exception exception)
+        {
+            Update(() => _error = exception.Message);
+        }
     }
 
     private void ApplyState(WebViewResult value)
     {
         _state = value;
-        if (!string.IsNullOrWhiteSpace(value.Url) && value.Url != "about:blank") _address.text = value.Url;
+        if (!string.IsNullOrWhiteSpace(value.Url) && value.Url != "about:blank")
+        {
+            _address.text = value.Url;
+        }
     }
 
     private void Update(Action change)
     {
         var owner = _owner;
-        if (owner is null) return;
-        try { owner.DispatchPlatformEvent(() => { if (mounted) setState(change); }); }
+        if (owner is null)
+        {
+            return;
+        }
+
+        try
+        {
+            owner.DispatchPlatformEvent(() =>
+            {
+                if (mounted)
+                {
+                    setState(change);
+                }
+            });
+        }
         catch (ObjectDisposedException) { }
     }
 
     private async void Run(WebViewOperation operation, string? text = null)
     {
         var controller = _controller;
-        if (controller is null || _busy) return;
-        setState(() => { _busy = true; _error = null; _scriptResult = null; });
+        if (controller is null || _busy)
+        {
+            return;
+        }
+
+        setState(() =>
+        {
+            _busy = true;
+            _error = null;
+            _scriptResult = null;
+        });
         try
         {
             var result = await controller.ExecuteAsync(new(operation, text)).ConfigureAwait(false);
@@ -240,18 +319,35 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             {
                 ApplyState(result);
                 if (operation == WebViewOperation.EvaluateJavaScript)
+                {
                     _scriptResult = result.IsUndefined ? "undefined" : result.Json;
+                }
+
                 _busy = false;
             });
         }
-        catch (Exception exception) { Update(() => { _error = exception.Message; _busy = false; }); }
+        catch (Exception exception)
+        {
+            Update(() =>
+            {
+                _error = exception.Message;
+                _busy = false;
+            });
+        }
     }
 
     private void Navigate()
     {
         var text = _address.text.Trim();
-        if (!text.Contains("://", StringComparison.Ordinal)) text = "https://" + text;
-        if (!Uri.TryCreate(text, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+        if (!text.Contains("://", StringComparison.Ordinal))
+        {
+            text = "https://" + text;
+        }
+
+        if (
+            !Uri.TryCreate(text, UriKind.Absolute, out var uri)
+            || uri.Scheme is not ("http" or "https")
+        )
         {
             setState(() => _error = "Enter an absolute HTTP or HTTPS URL.");
             return;
@@ -260,168 +356,447 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         Run(WebViewOperation.Navigate, uri.AbsoluteUri);
     }
 
-    private void ReloadFallback() => setState(() => { _generation++; _error = null; });
+    private void ReloadFallback() =>
+        setState(() =>
+        {
+            _generation++;
+            _error = null;
+        });
 
     private Widget ControllerToolbar()
     {
         var navigation = _features?.Navigation == true && !_busy;
-        return new Padding(padding: EdgeInsets.CreateAll(12), child: new Column(mainAxisSize: MainAxisSize.min, children:
-        [
-            new Row(children:
-            [
-                new M.IconButton(tooltip: "Back", onPressed: navigation && _state?.CanGoBack == true ? () => Run(WebViewOperation.Back) : null, icon: new Icon(M.Icons.arrow_back)),
-                new M.IconButton(tooltip: "Forward", onPressed: navigation && _state?.CanGoForward == true ? () => Run(WebViewOperation.Forward) : null, icon: new Icon(M.Icons.arrow_forward)),
-                new M.IconButton(tooltip: "Reload", onPressed: navigation ? () => Run(WebViewOperation.Reload) : null, icon: new Icon(M.Icons.refresh)),
-                new M.IconButton(tooltip: "Local sample", onPressed: navigation ? () => Run(WebViewOperation.LoadHtml, InitialHtml) : null, icon: new Icon(M.Icons.home)),
-                new Expanded(child: new M.TextField(
-                    controller: _address,
-                    enabled: navigation,
-                    textInputAction: TextInputAction.go,
-                    onSubmitted: _ => Navigate(),
-                    decoration: new M.InputDecoration(
-                        labelText: "Address",
-                        prefixIcon: new Icon(M.Icons.language),
-                        border: new M.OutlineInputBorder()))),
-                new SizedBox(width: 8),
-                new M.FilledButton(onPressed: navigation ? Navigate : null, child: new Text("Go")),
-            ]),
-            new SizedBox(height: 8),
-            new Row(children:
-            [
-                new Expanded(child: new Text(_state?.Title is { Length: > 0 } title ? title : _status, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                new M.TextButton(
-                    onPressed: _features?.JavaScript == true && _state?.IsLoading != true && !_busy
-                        ? () => Run(WebViewOperation.EvaluateJavaScript, "document.title") : null,
-                    child: new Text("Read title with JS")),
-                .. _panelSupported ? new Widget[] { PanelToggle() } : [],
-            ]),
-        ]));
+        return new Padding(
+            padding: EdgeInsets.CreateAll(12),
+            child: new Column(
+                mainAxisSize: MainAxisSize.min,
+                children:
+                [
+                    new Row(
+                        children:
+                        [
+                            new M.IconButton(
+                                tooltip: "Back",
+                                onPressed: navigation && _state?.CanGoBack == true
+                                    ? () => Run(WebViewOperation.Back)
+                                    : null,
+                                icon: new Icon(M.Icons.arrow_back)
+                            ),
+                            new M.IconButton(
+                                tooltip: "Forward",
+                                onPressed: navigation && _state?.CanGoForward == true
+                                    ? () => Run(WebViewOperation.Forward)
+                                    : null,
+                                icon: new Icon(M.Icons.arrow_forward)
+                            ),
+                            new M.IconButton(
+                                tooltip: "Reload",
+                                onPressed: navigation ? () => Run(WebViewOperation.Reload) : null,
+                                icon: new Icon(M.Icons.refresh)
+                            ),
+                            new M.IconButton(
+                                tooltip: "Local sample",
+                                onPressed: navigation
+                                    ? () => Run(WebViewOperation.LoadHtml, InitialHtml)
+                                    : null,
+                                icon: new Icon(M.Icons.home)
+                            ),
+                            new Expanded(
+                                child: new M.TextField(
+                                    controller: _address,
+                                    enabled: navigation,
+                                    textInputAction: TextInputAction.go,
+                                    onSubmitted: _ => Navigate(),
+                                    decoration: new M.InputDecoration(
+                                        labelText: "Address",
+                                        prefixIcon: new Icon(M.Icons.language),
+                                        border: new M.OutlineInputBorder()
+                                    )
+                                )
+                            ),
+                            new SizedBox(width: 8),
+                            new M.FilledButton(
+                                onPressed: navigation ? Navigate : null,
+                                child: new Text("Go")
+                            ),
+                        ]
+                    ),
+                    new SizedBox(height: 8),
+                    new Row(
+                        children:
+                        [
+                            new Expanded(
+                                child: new Text(
+                                    _state?.Title is { Length: > 0 } title ? title : _status,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis
+                                )
+                            ),
+                            new M.TextButton(
+                                onPressed: _features?.JavaScript == true
+                                && _state?.IsLoading != true
+                                && !_busy
+                                    ? () =>
+                                        Run(WebViewOperation.EvaluateJavaScript, "document.title")
+                                    : null,
+                                child: new Text("Read title with JS")
+                            ),
+                            .. _panelSupported ? new Widget[] { PanelToggle() } : [],
+                        ]
+                    ),
+                ]
+            )
+        );
     }
 
-    private Widget FallbackToolbar() => new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 10),
-        child: new Row(children:
-        [
-            new Icon(M.Icons.language),
-            new SizedBox(width: 12),
-            new Expanded(child: new Text(_status)),
-            new M.TextButton(onPressed: ReloadFallback, child: new Text("Reset page")),
-            .. _panelSupported ? new Widget[] { PanelToggle() } : [],
-        ]));
+    private Widget FallbackToolbar() =>
+        new Padding(
+            padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 10),
+            child: new Row(
+                children:
+                [
+                    new Icon(M.Icons.language),
+                    new SizedBox(width: 12),
+                    new Expanded(child: new Text(_status)),
+                    new M.TextButton(onPressed: ReloadFallback, child: new Text("Reset page")),
+                    .. _panelSupported ? new Widget[] { PanelToggle() } : [],
+                ]
+            )
+        );
 
-    private void TogglePanel() => setState(() => { _panelVisible = !_panelVisible; _draggingPanel.value = false; });
+    private void TogglePanel() =>
+        setState(() =>
+        {
+            _panelVisible = !_panelVisible;
+            _draggingPanel.value = false;
+        });
 
-    private Widget PanelToggle() => new M.TextButton(onPressed: TogglePanel,
-        child: new Row(mainAxisSize: MainAxisSize.min, children:
-        [
-            new Icon(M.Icons.blur_on, size: 18),
-            new SizedBox(width: 6),
-            new Text(_panelVisible ? "Hide panel" : "Show panel"),
-        ]));
+    private Widget PanelToggle() =>
+        new M.TextButton(
+            onPressed: TogglePanel,
+            child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children:
+                [
+                    new Icon(M.Icons.blur_on, size: 18),
+                    new SizedBox(width: 6),
+                    new Text(_panelVisible ? "Hide panel" : "Show panel"),
+                ]
+            )
+        );
 
-    private Widget WebViewSurface(Widget webView) => new LayoutBuilder(builder: (context, constraints) =>
-    {
-        var width = Math.Min(320, constraints.maxWidth);
-        var height = Math.Min(180, constraints.maxHeight);
-        var maxX = Math.Max(0, constraints.maxWidth - width);
-        var maxY = Math.Max(0, constraints.maxHeight - height);
-        var pixelRatio = MediaQuery.devicePixelRatioOf(context);
-        var theme = M.Theme.of(context);
-        return new Stack(children:
-        [
-            // Keep this slot stable so toggling/moving the panel preserves the browser.
-            new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new RepaintBoundary(child: webView)),
-            .. _panelSupported && _panelVisible && width >= 180 && height >= 112 ? new Widget[]
+    private Widget WebViewSurface(Widget webView) =>
+        new LayoutBuilder(
+            builder: (context, constraints) =>
             {
-                // Only the transform listens to motion; keep layout, pictures and the browser stable.
-                // The outer boundary must cover the travel area: a panel-sized parent
-                // rejects new pointer downs after the translated child leaves its bounds.
-                new Positioned(left: 0, top: 0, right: 0, bottom: 0,
-                    child: new RepaintBoundary(child: new Align(alignment: Alignment.topLeft,
-                    child: new ValueListenableBuilder<Offset>(valueListenable: _panelOffset,
-                        builder: (_, offset, child) => Transform.CreateTranslate(
-                            // Keep the panel's raster phase stable while moving; the
-                            // native host can then move its cached pixels directly.
-                            offset: new Offset(Math.Clamp(Math.Round(offset.dx * pixelRatio) / pixelRatio, 0, maxX),
-                                Math.Clamp(Math.Round(offset.dy * pixelRatio) / pixelRatio, 0, maxY)),
-                            child: child),
-                    child: new SizedBox(width: width, height: height,
-                    child: new RepaintBoundary(child: new PointerInterceptor(new PlatformEffect(
-                        style: new(Strength: .625, Tint: theme.brightness == Brightness.dark ? 0x99211f26u : 0x99ffffffu),
-                        child: new M.Material(type: M.MaterialType.transparency,
-                            child: new Container(
-                                decoration: new BoxDecoration(border: Border.CreateAll(color: theme.colorScheme.outlineVariant)),
-                                child: new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children:
-                                [
-                                    new Row(children:
-                                    [
-                                        new Expanded(child: new ValueListenableBuilder<bool>(
-                                            valueListenable: _draggingPanel,
-                                            builder: (_, dragging, child) => new MouseRegion(
-                                                cursor: dragging ? SystemMouseCursors.grabbing : SystemMouseCursors.grab, child: child),
-                                            child: new GestureDetector(
-                                                behavior: HitTestBehavior.opaque,
-                                                onPanStart: details =>
-                                                {
-                                                    _draggingPanel.value = true;
-                                                    _panelDragOrigin = new Offset(Math.Clamp(_panelOffset.value.dx, 0, maxX), Math.Clamp(_panelOffset.value.dy, 0, maxY));
-                                                    _pointerDragOrigin = details.globalPosition;
-                                                },
-                                                onPanUpdate: details =>
-                                                {
-                                                    var delta = details.globalPosition - _pointerDragOrigin;
-                                                    _panelOffset.value = new Offset(
-                                                        Math.Clamp(_panelDragOrigin.dx + delta.dx, 0, maxX),
-                                                        Math.Clamp(_panelDragOrigin.dy + delta.dy, 0, maxY));
-                                                },
-                                                onPanEnd: _ => _draggingPanel.value = false,
-                                                onPanCancel: () => _draggingPanel.value = false,
-                                                child: new SizedBox(height: 48, child: new Padding(
-                                                    padding: EdgeInsets.CreateSymmetric(horizontal: 12),
-                                                    child: new Row(children:
-                                                    [
-                                                        new Icon(M.Icons.drag_indicator, size: 20),
-                                                        new SizedBox(width: 8),
-                                                        new Expanded(child: new Text("Floating panel", maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall)),
-                                                    ])))))),
-                                        new M.IconButton(tooltip: "Hide panel", onPressed: TogglePanel, icon: new Icon(M.Icons.close)),
-                                    ]),
-                                    new M.Divider(height: 1),
-                                    new Expanded(child: new SingleChildScrollView(child: new Padding(
-                                        padding: EdgeInsets.CreateAll(16),
-                                        child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children:
-                                        [
-                                            new Text("Backdrop blur", style: theme.textTheme.titleMedium),
-                                            new SizedBox(height: 8),
-                                            new Text("Drag the header to move this panel. The page remains interactive outside it."),
-                                        ])))),
-                                ])))))))))))
-            } : [],
-        ]);
-    });
+                var width = Math.Min(320, constraints.maxWidth);
+                var height = Math.Min(180, constraints.maxHeight);
+                var maxX = Math.Max(0, constraints.maxWidth - width);
+                var maxY = Math.Max(0, constraints.maxHeight - height);
+                var pixelRatio = MediaQuery.devicePixelRatioOf(context);
+                var theme = M.Theme.of(context);
+                return new Stack(
+                    children:
+                    [
+                        // Keep this slot stable so toggling/moving the panel preserves the browser.
+                        new Positioned(
+                            left: 0,
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: new RepaintBoundary(child: webView)
+                        ),
+                        .. _panelSupported && _panelVisible && width >= 180 && height >= 112
+                            ? new Widget[]
+                            {
+                                // Only the transform listens to motion; keep layout, pictures and the browser stable.
+                                // The outer boundary must cover the travel area: a panel-sized parent
+                                // rejects new pointer downs after the translated child leaves its bounds.
+                                new Positioned(
+                                    left: 0,
+                                    top: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    child: new RepaintBoundary(
+                                        child: new Align(
+                                            alignment: Alignment.topLeft,
+                                            child: new ValueListenableBuilder<Offset>(
+                                                valueListenable: _panelOffset,
+                                                builder: (_, offset, child) =>
+                                                    Transform.CreateTranslate(
+                                                        // Keep the panel's raster phase stable while moving; the
+                                                        // native host can then move its cached pixels directly.
+                                                        offset: new Offset(
+                                                            Math.Clamp(
+                                                                Math.Round(offset.dx * pixelRatio)
+                                                                    / pixelRatio,
+                                                                0,
+                                                                maxX
+                                                            ),
+                                                            Math.Clamp(
+                                                                Math.Round(offset.dy * pixelRatio)
+                                                                    / pixelRatio,
+                                                                0,
+                                                                maxY
+                                                            )
+                                                        ),
+                                                        child: child
+                                                    ),
+                                                child: new SizedBox(
+                                                    width: width,
+                                                    height: height,
+                                                    child: new RepaintBoundary(
+                                                        child: new PointerInterceptor(
+                                                            new PlatformEffect(
+                                                                style: new(
+                                                                    Strength: .625,
+                                                                    Tint: theme.brightness
+                                                                    == Brightness.dark
+                                                                        ? 0x99211f26u
+                                                                        : 0x99ffffffu
+                                                                ),
+                                                                child: new M.Material(
+                                                                    type: M.MaterialType.transparency,
+                                                                    child: new Container(
+                                                                        decoration: new BoxDecoration(
+                                                                            border: Border.CreateAll(
+                                                                                color: theme
+                                                                                    .colorScheme
+                                                                                    .outlineVariant
+                                                                            )
+                                                                        ),
+                                                                        child: new Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                            children:
+                                                                            [
+                                                                                new Row(
+                                                                                    children:
+                                                                                    [
+                                                                                        new Expanded(
+                                                                                            child: new ValueListenableBuilder<bool>(
+                                                                                                valueListenable: _draggingPanel,
+                                                                                                builder: (
+                                                                                                    _,
+                                                                                                    dragging,
+                                                                                                    child
+                                                                                                ) =>
+                                                                                                    new MouseRegion(
+                                                                                                        cursor: dragging
+                                                                                                            ? SystemMouseCursors.grabbing
+                                                                                                            : SystemMouseCursors.grab,
+                                                                                                        child: child
+                                                                                                    ),
+                                                                                                child: new GestureDetector(
+                                                                                                    behavior: HitTestBehavior.opaque,
+                                                                                                    onPanStart: details =>
+                                                                                                    {
+                                                                                                        _draggingPanel.value =
+                                                                                                            true;
+                                                                                                        _panelDragOrigin =
+                                                                                                            new Offset(
+                                                                                                                Math.Clamp(
+                                                                                                                    _panelOffset
+                                                                                                                        .value
+                                                                                                                        .dx,
+                                                                                                                    0,
+                                                                                                                    maxX
+                                                                                                                ),
+                                                                                                                Math.Clamp(
+                                                                                                                    _panelOffset
+                                                                                                                        .value
+                                                                                                                        .dy,
+                                                                                                                    0,
+                                                                                                                    maxY
+                                                                                                                )
+                                                                                                            );
+                                                                                                        _pointerDragOrigin =
+                                                                                                            details.globalPosition;
+                                                                                                    },
+                                                                                                    onPanUpdate: details =>
+                                                                                                    {
+                                                                                                        var delta =
+                                                                                                            details.globalPosition
+                                                                                                            - _pointerDragOrigin;
+                                                                                                        _panelOffset.value =
+                                                                                                            new Offset(
+                                                                                                                Math.Clamp(
+                                                                                                                    _panelDragOrigin.dx
+                                                                                                                        + delta.dx,
+                                                                                                                    0,
+                                                                                                                    maxX
+                                                                                                                ),
+                                                                                                                Math.Clamp(
+                                                                                                                    _panelDragOrigin.dy
+                                                                                                                        + delta.dy,
+                                                                                                                    0,
+                                                                                                                    maxY
+                                                                                                                )
+                                                                                                            );
+                                                                                                    },
+                                                                                                    onPanEnd: _ =>
+                                                                                                        _draggingPanel.value =
+                                                                                                            false,
+                                                                                                    onPanCancel: () =>
+                                                                                                        _draggingPanel.value =
+                                                                                                            false,
+                                                                                                    child: new SizedBox(
+                                                                                                        height: 48,
+                                                                                                        child: new Padding(
+                                                                                                            padding: EdgeInsets.CreateSymmetric(
+                                                                                                                horizontal: 12
+                                                                                                            ),
+                                                                                                            child: new Row(
+                                                                                                                children:
+                                                                                                                [
+                                                                                                                    new Icon(
+                                                                                                                        M.Icons.drag_indicator,
+                                                                                                                        size: 20
+                                                                                                                    ),
+                                                                                                                    new SizedBox(
+                                                                                                                        width: 8
+                                                                                                                    ),
+                                                                                                                    new Expanded(
+                                                                                                                        child: new Text(
+                                                                                                                            "Floating panel",
+                                                                                                                            maxLines: 1,
+                                                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                                                            style: theme
+                                                                                                                                .textTheme
+                                                                                                                                .titleSmall
+                                                                                                                        )
+                                                                                                                    ),
+                                                                                                                ]
+                                                                                                            )
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        ),
+                                                                                        new M.IconButton(
+                                                                                            tooltip: "Hide panel",
+                                                                                            onPressed: TogglePanel,
+                                                                                            icon: new Icon(
+                                                                                                M.Icons.close
+                                                                                            )
+                                                                                        ),
+                                                                                    ]
+                                                                                ),
+                                                                                new M.Divider(
+                                                                                    height: 1
+                                                                                ),
+                                                                                new Expanded(
+                                                                                    child: new SingleChildScrollView(
+                                                                                        child: new Padding(
+                                                                                            padding: EdgeInsets.CreateAll(
+                                                                                                16
+                                                                                            ),
+                                                                                            child: new Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                children:
+                                                                                                [
+                                                                                                    new Text(
+                                                                                                        "Backdrop blur",
+                                                                                                        style: theme
+                                                                                                            .textTheme
+                                                                                                            .titleMedium
+                                                                                                    ),
+                                                                                                    new SizedBox(
+                                                                                                        height: 8
+                                                                                                    ),
+                                                                                                    new Text(
+                                                                                                        "Drag the header to move this panel. The page remains interactive outside it."
+                                                                                                    ),
+                                                                                                ]
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                ),
+                                                                            ]
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                            }
+                            : [],
+                    ]
+                );
+            }
+        );
 
     public override Widget build(BuildContext context)
     {
         if (_unavailable is { } unavailable)
-            return new Center(child: new Padding(padding: EdgeInsets.CreateAll(32), child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [new Icon(M.Icons.web_asset_outlined, size: 48), new SizedBox(height: 16), new Text("WebView unavailable"), new SizedBox(height: 8), new Text(unavailable)])));
+        {
+            return new Center(
+                child: new Padding(
+                    padding: EdgeInsets.CreateAll(32),
+                    child: new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children:
+                        [
+                            new Icon(M.Icons.web_asset_outlined, size: 48),
+                            new SizedBox(height: 16),
+                            new Text("WebView unavailable"),
+                            new SizedBox(height: 8),
+                            new Text(unavailable),
+                        ]
+                    )
+                )
+            );
+        }
 
-        var webView = _controller is { } controller
-            ? (Widget)new WebViewWidget(controller)
+        var webView =
+            _controller is { } controller ? (Widget)new WebViewWidget(controller)
             : _fallback is { } fallback && _owner is { } owner
                 ? new PlatformView(owner, fallback, key: new ValueKey<int>(_generation))
-                : new Center(child: new M.CircularProgressIndicator());
+            : new Center(child: new M.CircularProgressIndicator());
         // Toolbar/ink animations must not invalidate the surrounding app bar and
         // navigation raster while a native browser is interleaved with this page.
-        return new RepaintBoundary(child: new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children:
-        [
-            new ClipRect(child: new RepaintBoundary(child: _controller is null ? FallbackToolbar() : ControllerToolbar())),
-            .. _busy ? new Widget[] { new M.LinearProgressIndicator() } : [],
-            .. _error is { } error ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text(error)) } : [],
-            .. _scriptResult is { } result ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text($"JavaScript result: {result}")) } : [],
-            new Expanded(child: new Padding(padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12), child: new ClipRect(child: WebViewSurface(webView)))),
-        ]));
+        return new RepaintBoundary(
+            child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children:
+                [
+                    new ClipRect(
+                        child: new RepaintBoundary(
+                            child: _controller is null ? FallbackToolbar() : ControllerToolbar()
+                        )
+                    ),
+                    .. _busy ? new Widget[] { new M.LinearProgressIndicator() } : [],
+                    .. _error is { } error
+                        ? new Widget[]
+                        {
+                            new Padding(
+                                padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6),
+                                child: new Text(error)
+                            ),
+                        }
+                        : [],
+                    .. _scriptResult is { } result
+                        ? new Widget[]
+                        {
+                            new Padding(
+                                padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6),
+                                child: new Text($"JavaScript result: {result}")
+                            ),
+                        }
+                        : [],
+                    new Expanded(
+                        child: new Padding(
+                            padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12),
+                            child: new ClipRect(child: WebViewSurface(webView))
+                        )
+                    ),
+                ]
+            )
+        );
     }
 
     public override void dispose()

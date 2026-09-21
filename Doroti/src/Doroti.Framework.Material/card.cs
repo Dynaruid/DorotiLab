@@ -10,7 +10,7 @@ internal enum _CardVariant__card
 {
     elevated,
     filled,
-    outlined
+    outlined,
 }
 
 public class Card : StatelessWidget
@@ -27,7 +27,20 @@ public class Card : StatelessWidget
     public virtual Widget? child { get; private set; }
     internal virtual _CardVariant__card _variant { get; private set; } = default!;
 
-    public Card(Key? key = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, ShapeBorder? shape = null, bool borderOnForeground = true, EdgeInsetsGeometry? margin = null, Clip? clipBehavior = null, Widget? child = null, bool semanticContainer = true) : base(key: key)
+    public Card(
+        Key? key = null,
+        Color? color = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        bool borderOnForeground = true,
+        EdgeInsetsGeometry? margin = null,
+        Clip? clipBehavior = null,
+        Widget? child = null,
+        bool semanticContainer = true
+    )
+        : base(key: key)
     {
         this.color = color;
         this.shadowColor = shadowColor;
@@ -43,9 +56,33 @@ public class Card : StatelessWidget
         System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
     }
 
-    public static Card CreateFilled(Key? key = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, ShapeBorder? shape = null, bool borderOnForeground = true, EdgeInsetsGeometry? margin = null, Clip? clipBehavior = null, Widget? child = null, bool semanticContainer = true)
+    public static Card CreateFilled(
+        Key? key = null,
+        Color? color = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        bool borderOnForeground = true,
+        EdgeInsetsGeometry? margin = null,
+        Clip? clipBehavior = null,
+        Widget? child = null,
+        bool semanticContainer = true
+    )
     {
-        var __instance = new Card(key: key, color: color, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, elevation: elevation, shape: shape, borderOnForeground: borderOnForeground, margin: margin, clipBehavior: clipBehavior, child: child, semanticContainer: semanticContainer);
+        var __instance = new Card(
+            key: key,
+            color: color,
+            shadowColor: shadowColor,
+            surfaceTintColor: surfaceTintColor,
+            elevation: elevation,
+            shape: shape,
+            borderOnForeground: borderOnForeground,
+            margin: margin,
+            clipBehavior: clipBehavior,
+            child: child,
+            semanticContainer: semanticContainer
+        );
         __instance.color = color;
         __instance.shadowColor = shadowColor;
         __instance.surfaceTintColor = surfaceTintColor;
@@ -60,9 +97,33 @@ public class Card : StatelessWidget
         return __instance;
     }
 
-    public static Card CreateOutlined(Key? key = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, ShapeBorder? shape = null, bool borderOnForeground = true, EdgeInsetsGeometry? margin = null, Clip? clipBehavior = null, Widget? child = null, bool semanticContainer = true)
+    public static Card CreateOutlined(
+        Key? key = null,
+        Color? color = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        bool borderOnForeground = true,
+        EdgeInsetsGeometry? margin = null,
+        Clip? clipBehavior = null,
+        Widget? child = null,
+        bool semanticContainer = true
+    )
     {
-        var __instance = new Card(key: key, color: color, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, elevation: elevation, shape: shape, borderOnForeground: borderOnForeground, margin: margin, clipBehavior: clipBehavior, child: child, semanticContainer: semanticContainer);
+        var __instance = new Card(
+            key: key,
+            color: color,
+            shadowColor: shadowColor,
+            surfaceTintColor: surfaceTintColor,
+            elevation: elevation,
+            shape: shape,
+            borderOnForeground: borderOnForeground,
+            margin: margin,
+            clipBehavior: clipBehavior,
+            child: child,
+            semanticContainer: semanticContainer
+        );
         __instance.color = color;
         __instance.shadowColor = shadowColor;
         __instance.surfaceTintColor = surfaceTintColor;
@@ -82,11 +143,45 @@ public class Card : StatelessWidget
         CardThemeData cardTheme = CardTheme.of(context);
         CardThemeData defaults = default!;
         {
-            defaults = _variant switch { _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM3__card(context)), _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _FilledCardDefaultsM3__card(context)), _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _OutlinedCardDefaultsM3__card(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            defaults = _variant switch
+            {
+                _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(
+                    new _CardDefaultsM3__card(context)
+                ),
+                _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(
+                    new _FilledCardDefaultsM3__card(context)
+                ),
+                _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(
+                    new _OutlinedCardDefaultsM3__card(context)
+                ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
-        return new Widgets.Semantics(container: semanticContainer, child: new Padding(padding: (margin ?? cardTheme.margin) ?? defaults.margin!, child: new Material(type: MaterialType.card, color: (color ?? cardTheme.color) ?? defaults.color, shadowColor: (shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (surfaceTintColor ?? cardTheme.surfaceTintColor) ?? defaults.surfaceTintColor, elevation: (elevation ?? cardTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shape: (shape ?? cardTheme.shape) ?? defaults.shape, borderOnForeground: borderOnForeground, clipBehavior: (clipBehavior ?? cardTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior), child: new Widgets.Semantics(explicitChildNodes: !semanticContainer, child: child))));
+        return new Widgets.Semantics(
+            container: semanticContainer,
+            child: new Padding(
+                padding: (margin ?? cardTheme.margin) ?? defaults.margin!,
+                child: new Material(
+                    type: MaterialType.card,
+                    color: (color ?? cardTheme.color) ?? defaults.color,
+                    shadowColor: (shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor,
+                    surfaceTintColor: (surfaceTintColor ?? cardTheme.surfaceTintColor)
+                        ?? defaults.surfaceTintColor,
+                    elevation: (elevation ?? cardTheme.elevation)
+                        ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                    shape: (shape ?? cardTheme.shape) ?? defaults.shape,
+                    borderOnForeground: borderOnForeground,
+                    clipBehavior: (clipBehavior ?? cardTheme.clipBehavior)
+                        ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior),
+                    child: new Widgets.Semantics(
+                        explicitChildNodes: !semanticContainer,
+                        child: child
+                    )
+                )
+            )
+        );
     }
-
 }
 
 internal class _CardDefaultsM3__card : CardThemeData
@@ -107,15 +202,21 @@ internal class _CardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _CardDefaultsM3__card(BuildContext context) : base(clipBehavior: Clip.none, elevation: 1.0, margin: EdgeInsets.CreateAll(4.0))
+    internal _CardDefaultsM3__card(BuildContext context)
+        : base(clipBehavior: Clip.none, elevation: 1.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
 
-    public override Color? color => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerLow);
+    public override Color? color =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerLow);
     public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.shadow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))));
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override ShapeBorder? shape =>
+        DartRuntimePrimitives.ConvertValue<ShapeBorder>(
+            new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0)))
+        );
 }
 
 internal class _FilledCardDefaultsM3__card : CardThemeData
@@ -136,15 +237,21 @@ internal class _FilledCardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _FilledCardDefaultsM3__card(BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
+    internal _FilledCardDefaultsM3__card(BuildContext context)
+        : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
 
-    public override Color? color => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerHighest);
+    public override Color? color =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerHighest);
     public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.shadow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))));
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override ShapeBorder? shape =>
+        DartRuntimePrimitives.ConvertValue<ShapeBorder>(
+            new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0)))
+        );
 }
 
 internal class _OutlinedCardDefaultsM3__card : CardThemeData
@@ -165,13 +272,20 @@ internal class _OutlinedCardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _OutlinedCardDefaultsM3__card(BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
+    internal _OutlinedCardDefaultsM3__card(BuildContext context)
+        : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
 
     public override Color? color => DartRuntimePrimitives.ConvertValue<Color>(_colors.surface);
     public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.shadow);
-    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
-    public override ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))).copyWith(side: new BorderSide(color: _colors.outlineVariant)));
+    public override Color? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override ShapeBorder? shape =>
+        DartRuntimePrimitives.ConvertValue<ShapeBorder>(
+            new RoundedRectangleBorder(
+                borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))
+            ).copyWith(side: new BorderSide(color: _colors.outlineVariant))
+        );
 }

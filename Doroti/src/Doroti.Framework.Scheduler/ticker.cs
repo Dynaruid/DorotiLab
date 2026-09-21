@@ -78,16 +78,26 @@ public class Ticker
         }
     }
     public virtual bool isActive => _future is not null;
+
     public virtual TickerFuture start()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (isActive)
             {
-                if (isActive)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A ticker was started twice."), new ErrorDescription("A ticker that is already active cannot be started again without first stopping it."), describeForError("The affected ticker was") });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary("A ticker was started twice."),
+                        new ErrorDescription(
+                            "A ticker that is already active cannot be started again without first stopping it."
+                        ),
+                        describeForError("The affected ticker was"),
+                    }
+                );
+            }
+            return true;
+        });
         DartRuntimePrimitives.Assert(() => _startTime is null);
         _future = new TickerFuture();
         RecordAnimationPhase(DorotiFramePhase.animationStart);
@@ -95,7 +105,16 @@ public class Ticker
         {
             scheduleTick();
         }
-        if ((FoundationRuntimePorts.EnumIndex(SchedulerBinding.instance.schedulerPhase) > FoundationRuntimePorts.EnumIndex(SchedulerPhase.idle)) && (FoundationRuntimePorts.EnumIndex(SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(SchedulerPhase.postFrameCallbacks)))
+        if (
+            (
+                FoundationRuntimePorts.EnumIndex(SchedulerBinding.instance.schedulerPhase)
+                > FoundationRuntimePorts.EnumIndex(SchedulerPhase.idle)
+            )
+            && (
+                FoundationRuntimePorts.EnumIndex(SchedulerBinding.instance.schedulerPhase)
+                < FoundationRuntimePorts.EnumIndex(SchedulerPhase.postFrameCallbacks)
+            )
+        )
         {
             _startTime = SchedulerBinding.instance.currentFrameTimeStamp;
         }
@@ -105,7 +124,11 @@ public class Ticker
 
     public virtual DiagnosticsNode describeForError(string name)
     {
-        return new DiagnosticsProperty<Ticker>(name, this, description: ToString(debugIncludeStack: true));
+        return new DiagnosticsProperty<Ticker>(
+            name,
+            this,
+            description: ToString(debugIncludeStack: true)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -133,6 +156,7 @@ public class Ticker
 
     public virtual bool scheduled => _animationId is not null;
     public virtual bool shouldScheduleTick => !muted && isActive && !scheduled;
+
     internal virtual void _tick(Duration timeStamp)
     {
         DartRuntimePrimitives.Assert(() => isTicking);
@@ -153,7 +177,11 @@ public class Ticker
         // The MAUI host can service an invalidation synchronously. Register the
         // callback first so that a frame cannot be painted before the ticker is
         // visible to the scheduler.
-        _animationId = SchedulerBinding.instance.scheduleFrameCallback(_tick, rescheduling: rescheduling, scheduleNewFrame: false);
+        _animationId = SchedulerBinding.instance.scheduleFrameCallback(
+            _tick,
+            rescheduling: rescheduling,
+            scheduleNewFrame: false
+        );
         if (forceFrames)
         {
             SchedulerBinding.instance.scheduleForcedFrame();
@@ -168,7 +196,9 @@ public class Ticker
     {
         if (scheduled)
         {
-            SchedulerBinding.instance.cancelFrameCallbackWithId(DartRuntimePrimitives.RequireValue(_animationId));
+            SchedulerBinding.instance.cancelFrameCallbackWithId(
+                DartRuntimePrimitives.RequireValue(_animationId)
+            );
             _animationId = null;
         }
         DartRuntimePrimitives.Assert(() => !shouldScheduleTick);
@@ -180,7 +210,9 @@ public class Ticker
         DartRuntimePrimitives.Assert(() => _future is null);
         DartRuntimePrimitives.Assert(() => _startTime is null);
         DartRuntimePrimitives.Assert(() => _animationId is null);
-        DartRuntimePrimitives.Assert(() => originalTicker._future is not null || originalTicker._startTime is null);
+        DartRuntimePrimitives.Assert(() =>
+            originalTicker._future is not null || originalTicker._startTime is null
+        );
         if (originalTicker._future is not null)
         {
             _future = originalTicker._future;
@@ -197,7 +229,9 @@ public class Ticker
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         if (_future is not null)
         {
             TickerFuture localFuture = _future!;
@@ -208,9 +242,9 @@ public class Ticker
             localFuture._cancel(this);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _startTime = Duration.zero;
-                return true;
+        {
+            _startTime = Duration.zero;
+            return true;
         });
     }
 
@@ -219,7 +253,8 @@ public class Ticker
         SchedulerBinding.instance.platformDispatcher.frameTrace.RecordTicker(
             phase,
             System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this),
-            debugLabel ?? _onTick.Target?.GetType().Name ?? "Ticker");
+            debugLabel ?? _onTick.Target?.GetType().Name ?? "Ticker"
+        );
     }
 
     public override string ToString() => ToString(false);
@@ -229,25 +264,26 @@ public class Ticker
         var buffer = new StringBuffer();
         buffer.write($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker")}(");
         DartRuntimePrimitives.Assert(() =>
-            {
-                buffer.write(debugLabel ?? "");
-                return true;
-            });
+        {
+            buffer.write(debugLabel ?? "");
+            return true;
+        });
         buffer.write(")");
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (debugIncludeStack)
             {
-                if (debugIncludeStack)
-                {
-                    buffer.writeln();
-                    buffer.writeln($"The stack trace when the {GetType()} was actually created was:");
-                    FlutterError.defaultStackFilter(_debugCreationStack.ToString().trimRight().split("\n")).forEach(buffer.writeln);
-                }
-                return true;
-            });
+                buffer.writeln();
+                buffer.writeln($"The stack trace when the {GetType()} was actually created was:");
+                FlutterError
+                    .defaultStackFilter(_debugCreationStack.ToString().trimRight().split("\n"))
+                    .forEach(buffer.writeln);
+            }
+            return true;
+        });
         return buffer.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TickerFuture : Future
@@ -256,11 +292,11 @@ public class TickerFuture : Future
     internal virtual Completer<object?>? _secondaryCompleter { get; set; } = default;
     internal virtual bool? _completed { get; set; } = default;
 
-    public TickerFuture() : this(new Completer<object?>())
-    {
-    }
+    public TickerFuture()
+        : this(new Completer<object?>()) { }
 
-    private TickerFuture(Completer<object?> completer) : base(completer.future.asTask())
+    private TickerFuture(Completer<object?> completer)
+        : base(completer.future.asTask())
     {
         _primaryCompleter = completer;
     }
@@ -318,6 +354,7 @@ public class TickerFuture : Future
             return _secondaryCompleter!.future;
         }
     }
+
     public virtual Stream<object?> asStream()
     {
         return _primaryCompleter.future.asStream();
@@ -348,7 +385,8 @@ public class TickerFuture : Future
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
+    public override string ToString() =>
+        $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
 }
 
 public class TickerCanceled : Exception
@@ -369,5 +407,4 @@ public class TickerCanceled : Exception
         return "The ticker was canceled before the \"orCancel\" property was first used.";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

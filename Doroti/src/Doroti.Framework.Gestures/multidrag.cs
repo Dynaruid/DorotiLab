@@ -18,7 +18,11 @@ public abstract class MultiDragPointerState
     internal virtual Duration? _lastPendingEventTimestamp { get; set; } = default;
     internal virtual GestureArenaEntry? _arenaEntry { get; set; } = default;
 
-    protected MultiDragPointerState(Offset initialPosition, PointerDeviceKind kind, DeviceGestureSettings? gestureSettings)
+    protected MultiDragPointerState(
+        Offset initialPosition,
+        PointerDeviceKind kind,
+        DeviceGestureSettings? gestureSettings
+    )
     {
         this.initialPosition = initialPosition;
         this.kind = kind;
@@ -27,6 +31,7 @@ public abstract class MultiDragPointerState
     }
 
     public virtual Offset? pendingDelta => _pendingDelta;
+
     internal virtual void _setArenaEntry(GestureArenaEntry entry)
     {
         DartRuntimePrimitives.Assert(() => _arenaEntry is null);
@@ -50,7 +55,13 @@ public abstract class MultiDragPointerState
         if (_client is not null)
         {
             DartRuntimePrimitives.Assert(() => pendingDelta is null);
-            _client!.update(new DragUpdateDetails(sourceTimeStamp: @event.timeStamp, delta: @event.delta, globalPosition: @event.position));
+            _client!.update(
+                new DragUpdateDetails(
+                    sourceTimeStamp: @event.timeStamp,
+                    delta: @event.delta,
+                    globalPosition: @event.position
+                )
+            );
         }
         else
         {
@@ -61,11 +72,10 @@ public abstract class MultiDragPointerState
         }
     }
 
-    public virtual void checkForResolutionAfterMove()
-    {
-    }
+    public virtual void checkForResolutionAfterMove() { }
 
     public abstract void accepted(Func<Offset, Drag?> starter);
+
     public virtual void rejected()
     {
         DartRuntimePrimitives.Assert(() => _arenaEntry is not null);
@@ -82,7 +92,11 @@ public abstract class MultiDragPointerState
         DartRuntimePrimitives.Assert(() => _client is null);
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         _client = client;
-        var details = new DragUpdateDetails(sourceTimeStamp: _lastPendingEventTimestamp, delta: DartRuntimePrimitives.RequireValue(pendingDelta), globalPosition: initialPosition);
+        var details = new DragUpdateDetails(
+            sourceTimeStamp: _lastPendingEventTimestamp,
+            delta: DartRuntimePrimitives.RequireValue(pendingDelta),
+            globalPosition: initialPosition
+        );
         _pendingDelta = null;
         _lastPendingEventTimestamp = null;
         _client!.update(details);
@@ -127,28 +141,39 @@ public abstract class MultiDragPointerState
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _arenaEntry?.resolve(GestureDisposition.rejected);
         _arenaEntry = null;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _pendingDelta = null;
-                return true;
-            });
+        {
+            _pendingDelta = null;
+            return true;
+        });
     }
-
 }
 
 public abstract class MultiDragGestureRecognizer : GestureRecognizer
 {
     public virtual Func<Offset, Drag?>? onStart { get; set; } = default;
-    internal virtual DartMap<long, MultiDragPointerState>? _pointers { get; set; } = new DartMap<long, MultiDragPointerState>();
+    internal virtual DartMap<long, MultiDragPointerState>? _pointers { get; set; } =
+        new DartMap<long, MultiDragPointerState>();
 
-    protected MultiDragGestureRecognizer(object? debugOwner, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool>? allowedButtonsFilter = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
-    {
-    }
+    protected MultiDragGestureRecognizer(
+        object? debugOwner,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool>? allowedButtonsFilter = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior
+        ) { }
 
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => buttons == EventsLibrary.kPrimaryButton;
+    internal static new bool _defaultButtonAcceptBehavior(long buttons) =>
+        buttons == EventsLibrary.kPrimaryButton;
+
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _pointers is not null);
@@ -160,6 +185,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
     }
 
     public abstract MultiDragPointerState createNewPointerState(PointerDownEvent @event);
+
     internal virtual void _handleEvent(PointerEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _pointers is not null);
@@ -261,19 +287,24 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
         _pointers = null;
         base.dispose();
     }
-
 }
 
 internal class _ImmediatePointerState__multidrag : MultiDragPointerState
 {
-    internal _ImmediatePointerState__multidrag(Offset initialPosition, PointerDeviceKind kind, DeviceGestureSettings? gestureSettings) : base(initialPosition, kind, gestureSettings)
-    {
-    }
+    internal _ImmediatePointerState__multidrag(
+        Offset initialPosition,
+        PointerDeviceKind kind,
+        DeviceGestureSettings? gestureSettings
+    )
+        : base(initialPosition, kind, gestureSettings) { }
 
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-        if (DartRuntimePrimitives.RequireValue(pendingDelta).distance > EventsLibrary.computeHitSlop(kind, gestureSettings))
+        if (
+            DartRuntimePrimitives.RequireValue(pendingDelta).distance
+            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+        )
         {
             resolve(GestureDisposition.accepted);
         }
@@ -283,14 +314,20 @@ internal class _ImmediatePointerState__multidrag : MultiDragPointerState
     {
         starter(initialPosition);
     }
-
 }
 
 public class ImmediateMultiDragGestureRecognizer : MultiDragGestureRecognizer
 {
-    public ImmediateMultiDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool>? allowedButtonsFilter = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter)
-    {
-    }
+    public ImmediateMultiDragGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool>? allowedButtonsFilter = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter
+        ) { }
 
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
@@ -303,14 +340,20 @@ public class ImmediateMultiDragGestureRecognizer : MultiDragGestureRecognizer
 
 internal class _HorizontalPointerState__multidrag : MultiDragPointerState
 {
-    internal _HorizontalPointerState__multidrag(Offset initialPosition, PointerDeviceKind kind, DeviceGestureSettings? gestureSettings) : base(initialPosition, kind, gestureSettings)
-    {
-    }
+    internal _HorizontalPointerState__multidrag(
+        Offset initialPosition,
+        PointerDeviceKind kind,
+        DeviceGestureSettings? gestureSettings
+    )
+        : base(initialPosition, kind, gestureSettings) { }
 
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-        if (DartRuntimePrimitives.RequireValue(pendingDelta).dx.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings))
+        if (
+            DartRuntimePrimitives.RequireValue(pendingDelta).dx.abs()
+            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+        )
         {
             resolve(GestureDisposition.accepted);
         }
@@ -320,18 +363,28 @@ internal class _HorizontalPointerState__multidrag : MultiDragPointerState
     {
         starter(initialPosition);
     }
-
 }
 
 public class HorizontalMultiDragGestureRecognizer : MultiDragGestureRecognizer
 {
-    public HorizontalMultiDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool>? allowedButtonsFilter = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter)
-    {
-    }
+    public HorizontalMultiDragGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool>? allowedButtonsFilter = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter
+        ) { }
 
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
-        return new _HorizontalPointerState__multidrag(@event.position, @event.kind, gestureSettings);
+        return new _HorizontalPointerState__multidrag(
+            @event.position,
+            @event.kind,
+            gestureSettings
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -340,14 +393,20 @@ public class HorizontalMultiDragGestureRecognizer : MultiDragGestureRecognizer
 
 internal class _VerticalPointerState__multidrag : MultiDragPointerState
 {
-    internal _VerticalPointerState__multidrag(Offset initialPosition, PointerDeviceKind kind, DeviceGestureSettings? gestureSettings) : base(initialPosition, kind, gestureSettings)
-    {
-    }
+    internal _VerticalPointerState__multidrag(
+        Offset initialPosition,
+        PointerDeviceKind kind,
+        DeviceGestureSettings? gestureSettings
+    )
+        : base(initialPosition, kind, gestureSettings) { }
 
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-        if (DartRuntimePrimitives.RequireValue(pendingDelta).dy.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings))
+        if (
+            DartRuntimePrimitives.RequireValue(pendingDelta).dy.abs()
+            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+        )
         {
             resolve(GestureDisposition.accepted);
         }
@@ -357,14 +416,20 @@ internal class _VerticalPointerState__multidrag : MultiDragPointerState
     {
         starter(initialPosition);
     }
-
 }
 
 public class VerticalMultiDragGestureRecognizer : MultiDragGestureRecognizer
 {
-    public VerticalMultiDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool>? allowedButtonsFilter = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter)
-    {
-    }
+    public VerticalMultiDragGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool>? allowedButtonsFilter = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter
+        ) { }
 
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
@@ -380,15 +445,22 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
     internal virtual Timer? _timer { get; set; } = default;
     internal virtual Func<Offset, Drag?>? _starter { get; set; } = default;
 
-    internal _DelayedPointerState__multidrag(Offset initialPosition, Duration delay, PointerDeviceKind kind, DeviceGestureSettings? gestureSettings) : base(initialPosition, kind, gestureSettings)
-    {
-    }
+    internal _DelayedPointerState__multidrag(
+        Offset initialPosition,
+        Duration delay,
+        PointerDeviceKind kind,
+        DeviceGestureSettings? gestureSettings
+    )
+        : base(initialPosition, kind, gestureSettings) { }
 
     internal virtual void _delayPassed()
     {
         DartRuntimePrimitives.Assert(() => _timer is not null);
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(pendingDelta).distance <= EventsLibrary.computeHitSlop(kind, gestureSettings));
+        DartRuntimePrimitives.Assert(() =>
+            DartRuntimePrimitives.RequireValue(pendingDelta).distance
+            <= EventsLibrary.computeHitSlop(kind, gestureSettings)
+        );
         _timer = null;
         if (_starter is not null)
         {
@@ -429,7 +501,10 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
             return;
         }
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-        if (DartRuntimePrimitives.RequireValue(pendingDelta).distance > EventsLibrary.computeHitSlop(kind, gestureSettings))
+        if (
+            DartRuntimePrimitives.RequireValue(pendingDelta).distance
+            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+        )
         {
             resolve(GestureDisposition.rejected);
             _ensureTimerStopped();
@@ -441,14 +516,23 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
         _ensureTimerStopped();
         base.dispose();
     }
-
 }
 
 public class DelayedMultiDragGestureRecognizer : MultiDragGestureRecognizer
 {
     public virtual Duration delay { get; private set; } = default!;
 
-    public DelayedMultiDragGestureRecognizer(Duration? delay = null, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool>? allowedButtonsFilter = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter)
+    public DelayedMultiDragGestureRecognizer(
+        Duration? delay = null,
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool>? allowedButtonsFilter = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter
+        )
     {
         Duration __delay = delay ?? ConstantsLibrary.kLongPressTimeout;
         this.delay = __delay;
@@ -456,10 +540,14 @@ public class DelayedMultiDragGestureRecognizer : MultiDragGestureRecognizer
 
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
-        return new _DelayedPointerState__multidrag(@event.position, DartRuntimePrimitives.RequireValue(delay), @event.kind, gestureSettings);
+        return new _DelayedPointerState__multidrag(
+            @event.position,
+            DartRuntimePrimitives.RequireValue(delay),
+            @event.kind,
+            gestureSettings
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string debugDescription => "long multidrag";
 }
-

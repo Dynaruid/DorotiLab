@@ -9,9 +9,7 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
 {
     public virtual RenderSliver? _child { get; set; } = default;
 
-    protected RenderProxySliver(RenderSliver? child = null)
-    {
-    }
+    protected RenderProxySliver(RenderSliver? child = null) { }
 
     public override Rect semanticBounds
     {
@@ -24,6 +22,7 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
             return base.semanticBounds;
         }
     }
+
     public override void setupParentData(RenderObject child)
     {
         if (child.parentData is not SliverPhysicalParentData)
@@ -47,9 +46,19 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
         }
     }
 
-    public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTestChildren(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
-        return (child is not null) && (child!.geometry!.hitTestExtent > 0L) && child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+        return (child is not null)
+            && (child!.geometry!.hitTestExtent > 0L)
+            && child!.hitTest(
+                result,
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -70,13 +79,40 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderSliver)
             {
-                if (child is not RenderSliver)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderSliver)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -98,6 +134,7 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -128,10 +165,14 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RenderSliverOpacity : RenderProxySliver
@@ -140,7 +181,11 @@ public class RenderSliverOpacity : RenderProxySliver
     internal virtual double _opacity { get; set; } = default!;
     internal virtual bool _alwaysIncludeSemantics { get; set; } = default!;
 
-    public RenderSliverOpacity(double opacity = 1.0, bool alwaysIncludeSemantics = false, RenderSliver? sliver = null)
+    public RenderSliverOpacity(
+        double opacity = 1.0,
+        bool alwaysIncludeSemantics = false,
+        RenderSliver? sliver = null
+    )
     {
         _opacity = opacity;
         _alwaysIncludeSemantics = alwaysIncludeSemantics;
@@ -189,6 +234,7 @@ public class RenderSliverOpacity : RenderProxySliver
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void paint(PaintingContext context, Offset offset)
     {
         if ((child is not null) && child!.geometry!.visible)
@@ -199,12 +245,17 @@ public class RenderSliverOpacity : RenderProxySliver
                 return;
             }
             DartRuntimePrimitives.Assert(() => needsCompositing);
-            layer = context.pushOpacity(offset, _alpha, base.paint, oldLayer: ((OpacityLayer?)layer)!);
+            layer = context.pushOpacity(
+                offset,
+                _alpha,
+                base.paint,
+                oldLayer: ((OpacityLayer?)layer)!
+            );
             DartRuntimePrimitives.Assert(() =>
-                {
-                    layer!.debugCreator = debugCreator;
-                    return true;
-                });
+            {
+                layer!.debugCreator = debugCreator;
+                return true;
+            });
         }
     }
 
@@ -220,9 +271,14 @@ public class RenderSliverOpacity : RenderProxySliver
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("opacity", opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(
+            new FlagProperty(
+                "alwaysIncludeSemantics",
+                value: alwaysIncludeSemantics,
+                ifTrue: "alwaysIncludeSemantics"
+            )
+        );
     }
-
 }
 
 public class RenderSliverIgnorePointer : RenderProxySliver
@@ -230,7 +286,11 @@ public class RenderSliverIgnorePointer : RenderProxySliver
     internal virtual bool _ignoring { get; set; } = default!;
     internal virtual bool? _ignoringSemantics { get; set; } = default;
 
-    public RenderSliverIgnorePointer(RenderSliver? sliver = null, bool ignoring = true, bool? ignoringSemantics = null)
+    public RenderSliverIgnorePointer(
+        RenderSliver? sliver = null,
+        bool ignoring = true,
+        bool? ignoringSemantics = null
+    )
     {
         _ignoring = ignoring;
         _ignoringSemantics = ignoringSemantics;
@@ -267,9 +327,19 @@ public class RenderSliverIgnorePointer : RenderProxySliver
             markNeedsSemanticsUpdate();
         }
     }
-    public override bool hitTest(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+
+    public override bool hitTest(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
-        return !ignoring && base.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+        return !ignoring
+            && base.hitTest(
+                result,
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,9 +362,14 @@ public class RenderSliverIgnorePointer : RenderProxySliver
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("ignoring", ignoring));
-        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", ignoringSemantics, description: (ignoringSemantics is null) ? null : $"implicitly {ignoringSemantics}"));
+        properties.add(
+            new DiagnosticsProperty<bool?>(
+                "ignoringSemantics",
+                ignoringSemantics,
+                description: (ignoringSemantics is null) ? null : $"implicitly {ignoringSemantics}"
+            )
+        );
     }
-
 }
 
 public class RenderSliverOffstage : RenderProxySliver
@@ -320,6 +395,7 @@ public class RenderSliverOffstage : RenderProxySliver
             markNeedsLayoutForSizedByParentChange();
         }
     }
+
     public override void performLayout()
     {
         DartRuntimePrimitives.Assert(() => child is not null);
@@ -334,15 +410,35 @@ public class RenderSliverOffstage : RenderProxySliver
         }
     }
 
-    public override bool hitTest(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTest(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
-        return !offstage && base.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+        return !offstage
+            && base.hitTest(
+                result,
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTestChildren(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
-        return !offstage && (child is not null) && (child!.geometry!.hitTestExtent > 0L) && child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+        return !offstage
+            && (child is not null)
+            && (child!.geometry!.hitTestExtent > 0L)
+            && child!.hitTest(
+                result,
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -376,27 +472,40 @@ public class RenderSliverOffstage : RenderProxySliver
         {
             return new List<DiagnosticsNode>();
         }
-        return new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child", style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse) };
+        return new List<DiagnosticsNode>
+        {
+            ((Diagnosticable)child!).toDiagnosticsNode(
+                name: "child",
+                style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse
+            ),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpacityMixin<RenderSliver>
+public class RenderSliverAnimatedOpacity
+    : RenderProxySliver,
+        RenderAnimatedOpacityMixin<RenderSliver>
 {
     public virtual long? _alpha { get; set; } = default;
     public virtual bool? _currentlyIsRepaintBoundary { get; set; } = default;
     public virtual Animation<double>? _opacity { get; set; } = default;
     public virtual bool? _alwaysIncludeSemantics { get; set; } = default;
 
-    public RenderSliverAnimatedOpacity(Animation<double> opacity, bool alwaysIncludeSemantics = false, RenderSliver? sliver = null)
+    public RenderSliverAnimatedOpacity(
+        Animation<double> opacity,
+        bool alwaysIncludeSemantics = false,
+        RenderSliver? sliver = null
+    )
     {
         this.opacity = opacity;
         this.alwaysIncludeSemantics = alwaysIncludeSemantics;
         child = sliver;
     }
 
-    public override bool isRepaintBoundary => (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+    public override bool isRepaintBoundary =>
+        (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (OpacityLayer)oldLayer;
@@ -442,6 +551,7 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -503,9 +613,14 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Animation<double>>("opacity", opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(
+            new FlagProperty(
+                "alwaysIncludeSemantics",
+                value: alwaysIncludeSemantics,
+                ifTrue: "alwaysIncludeSemantics"
+            )
+        );
     }
-
 }
 
 public class RenderSliverConstrainedCrossAxis : RenderProxySliver
@@ -532,15 +647,22 @@ public class RenderSliverConstrainedCrossAxis : RenderProxySliver
             markNeedsLayout();
         }
     }
+
     public override void performLayout()
     {
         DartRuntimePrimitives.Assert(() => child is not null);
         DartRuntimePrimitives.Assert(() => maxExtent >= 0.0);
-        child!.layout(constraints.copyWith(crossAxisExtent: Math.Min(_maxExtent, constraints.crossAxisExtent)), parentUsesSize: true);
+        child!.layout(
+            constraints.copyWith(
+                crossAxisExtent: Math.Min(_maxExtent, constraints.crossAxisExtent)
+            ),
+            parentUsesSize: true
+        );
         SliverGeometry childLayoutGeometry = child!.geometry!;
-        geometry = childLayoutGeometry.copyWith(crossAxisExtent: Math.Min(_maxExtent, constraints.crossAxisExtent));
+        geometry = childLayoutGeometry.copyWith(
+            crossAxisExtent: Math.Min(_maxExtent, constraints.crossAxisExtent)
+        );
     }
-
 }
 
 public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnnotationsMixin
@@ -558,11 +680,27 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
     public virtual AttributedString? _attributedHint { get; set; } = default;
     public virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderSliverSemanticsAnnotations(RenderSliver? child = null, SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
-    {
-    }
+    public RenderSliverSemanticsAnnotations(
+        RenderSliver? child = null,
+        SemanticsProperties properties = default!,
+        bool container = false,
+        bool explicitChildNodes = false,
+        bool excludeSemantics = false,
+        bool blockUserActions = false,
+        Locale? localeForSubtree = null,
+        TextDirection? textDirection = null
+    )
+        : base(child) { }
 
-    public virtual void initSemanticsAnnotations(SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection)
+    public virtual void initSemanticsAnnotations(
+        SemanticsProperties properties,
+        bool container,
+        bool explicitChildNodes,
+        bool excludeSemantics,
+        bool blockUserActions,
+        Locale? localeForSubtree,
+        TextDirection? textDirection
+    )
     {
         _properties = properties;
         _container = container;
@@ -659,6 +797,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
             markNeedsSemanticsUpdate();
         }
     }
+
     public virtual void _updateAttributedFields(SemanticsProperties value)
     {
         _attributedLabel = _effectiveAttributedLabel(value);
@@ -670,31 +809,40 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
 
     public virtual AttributedString? _effectiveAttributedLabel(SemanticsProperties value)
     {
-        return value.attributedLabel ?? ((value.label is null) ? null : new AttributedString(value.label!));
+        return value.attributedLabel
+            ?? ((value.label is null) ? null : new AttributedString(value.label!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedValue(SemanticsProperties value)
     {
-        return value.attributedValue ?? ((value.value is null) ? null : new AttributedString(value.value!));
+        return value.attributedValue
+            ?? ((value.value is null) ? null : new AttributedString(value.value!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedIncreasedValue(SemanticsProperties value)
     {
-        return value.attributedIncreasedValue ?? ((value.increasedValue is null) ? null : new AttributedString(value.increasedValue!));
+        return value.attributedIncreasedValue
+            ?? (
+                (value.increasedValue is null) ? null : new AttributedString(value.increasedValue!)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedDecreasedValue(SemanticsProperties value)
     {
-        return properties.attributedDecreasedValue ?? ((value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!));
+        return properties.attributedDecreasedValue
+            ?? (
+                (value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedHint(SemanticsProperties value)
     {
-        return value.attributedHint ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
+        return value.attributedHint
+            ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -712,6 +860,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
             markNeedsSemanticsUpdate();
         }
     }
+
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (excludeSemantics)
@@ -731,8 +880,13 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         {
             config.localeForSubtree = localeForSubtree;
         }
-        DartRuntimePrimitives.Assert(() => (_properties.scopesRoute ?? false) && explicitChildNodes || !(_properties.scopesRoute ?? false));
-        DartRuntimePrimitives.Assert(() => !((_properties.toggled ?? false) && (_properties.@checked ?? false)));
+        DartRuntimePrimitives.Assert(() =>
+            ((_properties.scopesRoute ?? false) && explicitChildNodes)
+            || !(_properties.scopesRoute ?? false)
+        );
+        DartRuntimePrimitives.Assert(() =>
+            !((_properties.toggled ?? false) && (_properties.@checked ?? false))
+        );
         if (_properties.enabled is not null)
         {
             config.isEnabled = _properties.enabled;
@@ -803,11 +957,15 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.accessibilityFocusBlockType is not null)
         {
-            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(_properties.accessibilityFocusBlockType);
+            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+                _properties.accessibilityFocusBlockType
+            );
         }
         if (_properties.inMutuallyExclusiveGroup is not null)
         {
-            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(_properties.inMutuallyExclusiveGroup);
+            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+                _properties.inMutuallyExclusiveGroup
+            );
         }
         if (_properties.obscured is not null)
         {
@@ -915,7 +1073,9 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.hitTestBehavior is not null)
         {
-            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(_properties.hitTestBehavior);
+            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+                _properties.hitTestBehavior
+            );
         }
         if (_properties.inputType is not null)
         {
@@ -1141,5 +1301,4 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
     {
         _properties.onCollapse?.Invoke();
     }
-
 }

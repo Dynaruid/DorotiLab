@@ -20,7 +20,21 @@ public class Badge : StatelessWidget
     public virtual bool isLabelVisible { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public Badge(Key? key = null, Color? backgroundColor = null, Color? textColor = null, double? smallSize = null, double? largeSize = null, TextStyle? textStyle = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, Offset? offset = null, Widget? label = null, bool isLabelVisible = true, Widget? child = null) : base(key: key)
+    public Badge(
+        Key? key = null,
+        Color? backgroundColor = null,
+        Color? textColor = null,
+        double? smallSize = null,
+        double? largeSize = null,
+        TextStyle? textStyle = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        Offset? offset = null,
+        Widget? label = null,
+        bool isLabelVisible = true,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.textColor = textColor;
@@ -35,9 +49,35 @@ public class Badge : StatelessWidget
         this.child = child;
     }
 
-    public static Badge CreateCount(Key? key = null, Color? backgroundColor = null, Color? textColor = null, double? smallSize = null, double? largeSize = null, TextStyle? textStyle = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, Offset? offset = null, long count = default!, long maxCount = 999, bool isLabelVisible = true, Widget? child = null)
+    public static Badge CreateCount(
+        Key? key = null,
+        Color? backgroundColor = null,
+        Color? textColor = null,
+        double? smallSize = null,
+        double? largeSize = null,
+        TextStyle? textStyle = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        Offset? offset = null,
+        long count = default!,
+        long maxCount = 999,
+        bool isLabelVisible = true,
+        Widget? child = null
+    )
     {
-        var __instance = new Badge(key: key, backgroundColor: backgroundColor, textColor: textColor, smallSize: smallSize, largeSize: largeSize, textStyle: textStyle, padding: padding, alignment: alignment, offset: offset, isLabelVisible: isLabelVisible, child: child);
+        var __instance = new Badge(
+            key: key,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            smallSize: smallSize,
+            largeSize: largeSize,
+            textStyle: textStyle,
+            padding: padding,
+            alignment: alignment,
+            offset: offset,
+            isLabelVisible: isLabelVisible,
+            child: child
+        );
         __instance.backgroundColor = backgroundColor;
         __instance.textColor = textColor;
         __instance.smallSize = smallSize;
@@ -60,32 +100,83 @@ public class Badge : StatelessWidget
         }
         BadgeThemeData badgeTheme = BadgeTheme.of(context);
         BadgeThemeData defaults = new _BadgeDefaultsM3__badge(context);
-        Decoration effectiveDecoration = new ShapeDecoration(color: (backgroundColor ?? badgeTheme.backgroundColor) ?? defaults.backgroundColor!, shape: new StadiumBorder());
+        Decoration effectiveDecoration = new ShapeDecoration(
+            color: (backgroundColor ?? badgeTheme.backgroundColor) ?? defaults.backgroundColor!,
+            shape: new StadiumBorder()
+        );
         double effectiveWidthOffset = default!;
         Widget badge = default!;
         var hasLabelLocal = label is not null;
         if (hasLabelLocal)
         {
-            double minSizeLocal = effectiveWidthOffset = (largeSize ?? badgeTheme.largeSize) ?? DartRuntimePrimitives.RequireValue(defaults.largeSize);
-            badge = DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: ((textStyle ?? badgeTheme.textStyle) ?? defaults.textStyle!).copyWith(color: (textColor ?? badgeTheme.textColor) ?? defaults.textColor!), child: new _IntrinsicHorizontalStadium__badge(minSize: minSizeLocal, child: new Container(clipBehavior: Clip.antiAlias, decoration: effectiveDecoration, padding: (padding ?? badgeTheme.padding) ?? defaults.padding!, alignment: Alignment.center, child: label))));
+            double minSizeLocal = effectiveWidthOffset =
+                (largeSize ?? badgeTheme.largeSize)
+                ?? DartRuntimePrimitives.RequireValue(defaults.largeSize);
+            badge = DartRuntimePrimitives.ConvertValue<Widget>(
+                new DefaultTextStyle(
+                    style: ((textStyle ?? badgeTheme.textStyle) ?? defaults.textStyle!).copyWith(
+                        color: (textColor ?? badgeTheme.textColor) ?? defaults.textColor!
+                    ),
+                    child: new _IntrinsicHorizontalStadium__badge(
+                        minSize: minSizeLocal,
+                        child: new Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: effectiveDecoration,
+                            padding: (padding ?? badgeTheme.padding) ?? defaults.padding!,
+                            alignment: Alignment.center,
+                            child: label
+                        )
+                    )
+                )
+            );
         }
         else
         {
-            double effectiveSmallSize = effectiveWidthOffset = (smallSize ?? badgeTheme.smallSize) ?? DartRuntimePrimitives.RequireValue(defaults.smallSize);
-            badge = DartRuntimePrimitives.ConvertValue<Widget>(new Container(width: effectiveSmallSize, height: effectiveSmallSize, clipBehavior: Clip.antiAlias, decoration: effectiveDecoration));
+            double effectiveSmallSize = effectiveWidthOffset =
+                (smallSize ?? badgeTheme.smallSize)
+                ?? DartRuntimePrimitives.RequireValue(defaults.smallSize);
+            badge = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Container(
+                    width: effectiveSmallSize,
+                    height: effectiveSmallSize,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: effectiveDecoration
+                )
+            );
         }
         if (child is null)
         {
             return badge;
         }
-        AlignmentGeometry effectiveAlignment = (alignment ?? badgeTheme.alignment) ?? defaults.alignment!;
+        AlignmentGeometry effectiveAlignment =
+            (alignment ?? badgeTheme.alignment) ?? defaults.alignment!;
         TextDirection textDirectionLocal = Directionality.of(context);
-        var defaultOffset = Equals(textDirectionLocal, TextDirection.ltr) ? new Offset(4, -4) : new Offset(-4, -4);
-        Offset effectiveOffset = ((offset ?? badgeTheme.offset) ?? defaultOffset) + new Offset(0, 8);
-        return new Stack(clipBehavior: Clip.none, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(child!), DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateFill(child: new _Badge__badge(alignment: effectiveAlignment, offset: hasLabelLocal ? effectiveOffset : Offset.zero, hasLabel: hasLabelLocal, widthOffset: effectiveWidthOffset, textDirection: textDirectionLocal, child: badge))) });
+        var defaultOffset = Equals(textDirectionLocal, TextDirection.ltr)
+            ? new Offset(4, -4)
+            : new Offset(-4, -4);
+        Offset effectiveOffset =
+            ((offset ?? badgeTheme.offset) ?? defaultOffset) + new Offset(0, 8);
+        return new Stack(
+            clipBehavior: Clip.none,
+            children: new List<Widget>
+            {
+                DartRuntimePrimitives.ConvertValue<Widget>(child!),
+                DartRuntimePrimitives.ConvertValue<Widget>(
+                    Positioned.CreateFill(
+                        child: new _Badge__badge(
+                            alignment: effectiveAlignment,
+                            offset: hasLabelLocal ? effectiveOffset : Offset.zero,
+                            hasLabel: hasLabelLocal,
+                            widthOffset: effectiveWidthOffset,
+                            textDirection: textDirectionLocal,
+                            child: badge
+                        )
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _Badge__badge : SingleChildRenderObjectWidget
@@ -96,7 +187,15 @@ internal class _Badge__badge : SingleChildRenderObjectWidget
     public virtual TextDirection textDirection { get; private set; } = default!;
     public virtual bool hasLabel { get; private set; } = default!;
 
-    internal _Badge__badge(AlignmentGeometry alignment, Offset offset, double widthOffset, TextDirection textDirection, bool hasLabel, Widget? child = null) : base(child: child)
+    internal _Badge__badge(
+        AlignmentGeometry alignment,
+        Offset offset,
+        double widthOffset,
+        TextDirection textDirection,
+        bool hasLabel,
+        Widget? child = null
+    )
+        : base(child: child)
     {
         this.alignment = alignment;
         this.offset = offset;
@@ -107,23 +206,35 @@ internal class _Badge__badge : SingleChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderBadge__badge(alignment: alignment, widthOffset: widthOffset, hasLabel: hasLabel, offset: offset, textDirection: Directionality.maybeOf(context));
+        return new _RenderBadge__badge(
+            alignment: alignment,
+            widthOffset: widthOffset,
+            hasLabel: hasLabel,
+            offset: offset,
+            textDirection: Directionality.maybeOf(context)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderBadge__badge)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderBadge__badge>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.alignment = alignment;
-    __cascade.offset = offset;
-    __cascade.widthOffset = widthOffset;
-    __cascade.hasLabel = hasLabel;
-    __cascade.textDirection = Directionality.maybeOf(context);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderBadge__badge>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.alignment = alignment;
+                        __cascade.offset = offset;
+                        __cascade.widthOffset = widthOffset;
+                        __cascade.hasLabel = hasLabel;
+                        __cascade.textDirection = Directionality.maybeOf(context);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -132,7 +243,6 @@ internal class _Badge__badge : SingleChildRenderObjectWidget
         properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
         properties.add(new DiagnosticsProperty<Offset>("offset", offset));
     }
-
 }
 
 public class _RenderBadge__badge : RenderAligningShiftedBox
@@ -141,7 +251,14 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
     internal virtual bool _hasLabel { get; set; } = default!;
     internal virtual double _widthOffset { get; set; } = default!;
 
-    internal _RenderBadge__badge(TextDirection? textDirection = null, AlignmentGeometry alignment = default!, Offset offset = default!, bool hasLabel = default!, double widthOffset = default!) : base(textDirection: textDirection, alignment: alignment ?? Alignment.center)
+    internal _RenderBadge__badge(
+        TextDirection? textDirection = null,
+        AlignmentGeometry alignment = default!,
+        Offset offset = default!,
+        bool hasLabel = default!,
+        double widthOffset = default!
+    )
+        : base(textDirection: textDirection, alignment: alignment ?? Alignment.center)
     {
         _offset = offset;
         _hasLabel = hasLabel;
@@ -190,6 +307,7 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
             markNeedsLayout();
         }
     }
+
     public override void performLayout()
     {
         BoxConstraints constraintsLocal = constraints;
@@ -200,7 +318,9 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
         double badgeSize = child!.size.height;
         Alignment resolvedAlignment = alignment.resolve(textDirection);
         var childParentData = ((BoxParentData?)child!.parentData!)!;
-        Offset badgeLocation = offset + resolvedAlignment.alongOffset(new Offset(size.width - widthOffset, size.height));
+        Offset badgeLocation =
+            offset
+            + resolvedAlignment.alongOffset(new Offset(size.width - widthOffset, size.height));
         if (hasLabel)
         {
             badgeLocation = badgeLocation - new Offset(0, badgeSize / 2L);
@@ -230,7 +350,9 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
         Size mySize = getDryLayout(constraints);
         Alignment resolvedAlignment = alignment.resolve(textDirection);
         Size childSize = childLocal.getDryLayout(childConstraints);
-        Offset badgeLocation = offset + resolvedAlignment.alongOffset(new Offset(mySize.width - widthOffset, mySize.height));
+        Offset badgeLocation =
+            offset
+            + resolvedAlignment.alongOffset(new Offset(mySize.width - widthOffset, mySize.height));
         if (hasLabel)
         {
             badgeLocation -= new Offset(0, childSize.height / 2L);
@@ -238,14 +360,14 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
         return DartRuntimePrimitives.RequireValue(childBaseline) + badgeLocation.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _IntrinsicHorizontalStadium__badge : SingleChildRenderObjectWidget
 {
     public virtual double minSize { get; private set; } = default!;
 
-    internal _IntrinsicHorizontalStadium__badge(Widget? child = null, double minSize = default!) : base(child: child)
+    internal _IntrinsicHorizontalStadium__badge(Widget? child = null, double minSize = default!)
+        : base(child: child)
     {
         this.minSize = minSize;
     }
@@ -255,14 +377,17 @@ internal class _IntrinsicHorizontalStadium__badge : SingleChildRenderObjectWidge
         return new _RenderIntrinsicHorizontalStadium__badge(minSize: minSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
 {
     internal virtual double _minSize { get; set; } = default!;
 
-    internal _RenderIntrinsicHorizontalStadium__badge(RenderBox? child = null, double minSize = default!) : base(child)
+    internal _RenderIntrinsicHorizontalStadium__badge(
+        RenderBox? child = null,
+        double minSize = default!
+    )
+        : base(child)
     {
         _minSize = minSize;
     }
@@ -281,6 +406,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         return getMaxIntrinsicWidth(height);
@@ -289,7 +415,10 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return Math.Max(getMaxIntrinsicHeight(double.PositiveInfinity), base.computeMaxIntrinsicWidth(height));
+        return Math.Max(
+            getMaxIntrinsicHeight(double.PositiveInfinity),
+            base.computeMaxIntrinsicWidth(height)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -313,7 +442,10 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(Func<RenderBox, BoxConstraints, Size> layoutChild, BoxConstraints constraints)
+    internal virtual Size _computeSize(
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        BoxConstraints constraints
+    )
     {
         RenderBox childLocal = child!;
         Size childSize = layoutChild(childLocal, _childConstraints(childLocal, constraints));
@@ -327,7 +459,10 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(
+            layoutChild: ChildLayoutHelper.dryLayoutChild,
+            constraints: constraints
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -342,7 +477,6 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
     {
         size = _computeSize(layoutChild: ChildLayoutHelper.layoutChild, constraints: constraints);
     }
-
 }
 
 internal class _BadgeDefaultsM3__badge : BadgeThemeData
@@ -377,12 +511,19 @@ internal class _BadgeDefaultsM3__badge : BadgeThemeData
         }
     }
 
-    internal _BadgeDefaultsM3__badge(BuildContext context) : base(smallSize: 6.0, largeSize: 16.0, padding: EdgeInsets.CreateSymmetric(horizontal: 4), alignment: AlignmentDirectional.topEnd)
+    internal _BadgeDefaultsM3__badge(BuildContext context)
+        : base(
+            smallSize: 6.0,
+            largeSize: 16.0,
+            padding: EdgeInsets.CreateSymmetric(horizontal: 4),
+            alignment: AlignmentDirectional.topEnd
+        )
     {
         this.context = context;
     }
 
-    public override Color? backgroundColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.error);
+    public override Color? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.error);
     public override Color? textColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onError);
     public override TextStyle? textStyle => Theme.of(context).textTheme.labelSmall;
 }

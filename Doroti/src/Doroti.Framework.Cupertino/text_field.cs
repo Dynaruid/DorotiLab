@@ -8,32 +8,59 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Text_fieldLibrary
 {
-    internal static TextStyle _kDefaultPlaceholderStyle = new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
+    internal static TextStyle _kDefaultPlaceholderStyle = new TextStyle(
+        fontWeight: FontWeight.w400,
+        color: CupertinoColors.placeholderText
+    );
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static BorderSide _kDefaultRoundedBorderSide = new BorderSide(color: new CupertinoDynamicColor(color: new Color(855638016L), darkColor: new Color(872415231L)), width: 0.0);
+    internal static BorderSide _kDefaultRoundedBorderSide = new BorderSide(
+        color: new CupertinoDynamicColor(
+            color: new Color(855638016L),
+            darkColor: new Color(872415231L)
+        ),
+        width: 0.0
+    );
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static Border _kDefaultRoundedBorder = new Border(top: _kDefaultRoundedBorderSide, bottom: _kDefaultRoundedBorderSide, left: _kDefaultRoundedBorderSide, right: _kDefaultRoundedBorderSide);
+    internal static Border _kDefaultRoundedBorder = new Border(
+        top: _kDefaultRoundedBorderSide,
+        bottom: _kDefaultRoundedBorderSide,
+        left: _kDefaultRoundedBorderSide,
+        right: _kDefaultRoundedBorderSide
+    );
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static BoxDecoration _kDefaultRoundedBorderDecoration = new BoxDecoration(color: new CupertinoDynamicColor(color: CupertinoColors.white, darkColor: CupertinoColors.black), border: _kDefaultRoundedBorder, borderRadius: BorderRadius.CreateAll(Radius.circular(5.0)));
+    internal static BoxDecoration _kDefaultRoundedBorderDecoration = new BoxDecoration(
+        color: new CupertinoDynamicColor(
+            color: CupertinoColors.white,
+            darkColor: CupertinoColors.black
+        ),
+        border: _kDefaultRoundedBorder,
+        borderRadius: BorderRadius.CreateAll(Radius.circular(5.0))
+    );
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static Color _kDisabledBackground = new CupertinoDynamicColor(color: new Color(4294638330L), darkColor: new Color(4278519045L));
+    internal static Color _kDisabledBackground = new CupertinoDynamicColor(
+        color: new Color(4294638330L),
+        darkColor: new Color(4278519045L)
+    );
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static CupertinoDynamicColor _kClearButtonColor = new CupertinoDynamicColor(color: new Color(855638016L), darkColor: new Color(872415231L));
+    internal static CupertinoDynamicColor _kClearButtonColor = new CupertinoDynamicColor(
+        color: new Color(855638016L),
+        darkColor: new Color(872415231L)
+    );
 }
 
 public static partial class Text_fieldLibrary
@@ -46,14 +73,18 @@ public enum OverlayVisibilityMode
     never,
     editing,
     notEditing,
-    always
+    always,
 }
 
-internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : TextSelectionGestureDetectorBuilder
+internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field
+    : TextSelectionGestureDetectorBuilder
 {
     internal virtual _CupertinoTextFieldState__text_field _state { get; private set; } = default!;
 
-    internal _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field(_CupertinoTextFieldState__text_field state) : base(@delegate: state)
+    internal _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field(
+        _CupertinoTextFieldState__text_field state
+    )
+        : base(@delegate: state)
     {
         _state = state;
     }
@@ -62,7 +93,9 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
     {
         if (_state._clearGlobalKey.currentContext is not null)
         {
-            var renderBox = ((RenderBox?)_state._clearGlobalKey.currentContext!.findRenderObject()!)!;
+            var renderBox = (
+                (RenderBox?)_state._clearGlobalKey.currentContext!.findRenderObject()!
+            )!;
             Offset localOffset = renderBox.globalToLocal(details.globalPosition);
             if (renderBox.hitTest(new BoxHitTestResult(), position: localOffset))
             {
@@ -78,7 +111,6 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
         _state._requestKeyboard();
         base.onDragSelectionEnd(details);
     }
-
 }
 
 public class CupertinoTextField : StatefulWidget
@@ -150,46 +182,145 @@ public class CupertinoTextField : StatefulWidget
     public virtual bool stylusHandwritingEnabled { get; private set; } = default!;
     public virtual bool enableIMEPersonalizedLearning { get; private set; } = default!;
     public virtual bool? enableInlinePrediction { get; private set; }
-    public virtual ContentInsertionConfiguration? contentInsertionConfiguration { get; private set; }
-    public virtual Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder { get; private set; }
+    public virtual ContentInsertionConfiguration? contentInsertionConfiguration
+    {
+        get;
+        private set;
+    }
+    public virtual Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder
+    {
+        get;
+        private set;
+    }
     public virtual TextMagnifierConfiguration? magnifierConfiguration { get; private set; }
     public virtual SpellCheckConfiguration? spellCheckConfiguration { get; private set; }
-    public static TextStyle cupertinoMisspelledTextStyle = new TextStyle(decoration: TextDecoration.underline, decorationColor: CupertinoColors.systemRed, decorationStyle: TextDecorationStyle.dotted);
+    public static TextStyle cupertinoMisspelledTextStyle = new TextStyle(
+        decoration: TextDecoration.underline,
+        decorationColor: CupertinoColors.systemRed,
+        decorationStyle: TextDecorationStyle.dotted
+    );
     public static Color kMisspelledSelectionColor = new Color(1660917401L);
     public virtual UndoHistoryController? undoController { get; private set; }
-    internal static TextMagnifierConfiguration _iosMagnifierConfiguration = new TextMagnifierConfiguration(magnifierBuilder: (context, controller, magnifierInfo) =>
-    {
-        switch (PlatformLibrary.defaultTargetPlatform)
-        {
-            case TargetPlatform.android:
-            case TargetPlatform.iOS:
+    internal static TextMagnifierConfiguration _iosMagnifierConfiguration =
+        new TextMagnifierConfiguration(
+            magnifierBuilder: (context, controller, magnifierInfo) =>
+            {
+                switch (PlatformLibrary.defaultTargetPlatform)
                 {
-                    return (Widget?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo);
+                    case TargetPlatform.android:
+                    case TargetPlatform.iOS:
+                    {
+                        return (Widget?)
+                            new CupertinoTextMagnifier(
+                                controller: controller,
+                                magnifierInfo: magnifierInfo
+                            );
+                    }
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.macOS:
+                    case TargetPlatform.windows:
+                    {
+                        return null;
+                    }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
-            case TargetPlatform.fuchsia:
-            case TargetPlatform.linux:
-            case TargetPlatform.macOS:
-            case TargetPlatform.windows:
-                {
-                    return null;
-                }
-            default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
-        }
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
 
-    public CupertinoTextField(Key? key = null, object groupId = default!, TextEditingController? controller = null, FocusNode? focusNode = null, UndoHistoryController? undoController = null, BoxDecoration? decoration = default!, EdgeInsetsGeometry padding = default!, string? placeholder = null, TextStyle? placeholderStyle = default!, Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, TextStyle? style = null, Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = true, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, MaxLengthEnforcement? maxLengthEnforcement = null, Action<string>? onChanged = null, Action? onEditingComplete = null, Action<string>? onSubmitted = null, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, EdgeInsets scrollPadding = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, TextSelectionControls? selectionControls = null, Action? onTap = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool? stylusHandwritingEnabled = null, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration? magnifierConfiguration = null) : base(key: key)
+    public CupertinoTextField(
+        Key? key = null,
+        object groupId = default!,
+        TextEditingController? controller = null,
+        FocusNode? focusNode = null,
+        UndoHistoryController? undoController = null,
+        BoxDecoration? decoration = default!,
+        EdgeInsetsGeometry padding = default!,
+        string? placeholder = null,
+        TextStyle? placeholderStyle = default!,
+        Widget? prefix = null,
+        OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always,
+        Widget? suffix = null,
+        OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always,
+        CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
+        OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never,
+        string? clearButtonSemanticLabel = null,
+        TextInputType? keyboardType = null,
+        TextInputAction? textInputAction = null,
+        TextCapitalization textCapitalization = TextCapitalization.none,
+        TextStyle? style = null,
+        Painting.StrutStyle? strutStyle = null,
+        TextAlign textAlign = TextAlign.start,
+        TextAlignVertical? textAlignVertical = null,
+        TextDirection? textDirection = null,
+        bool readOnly = false,
+        ToolbarOptions? toolbarOptions = null,
+        bool? showCursor = null,
+        bool autofocus = false,
+        string obscuringCharacter = "•",
+        bool obscureText = false,
+        bool? autocorrect = true,
+        SmartDashesType? smartDashesType = null,
+        SmartQuotesType? smartQuotesType = null,
+        bool enableSuggestions = true,
+        long? maxLines = 1,
+        long? minLines = null,
+        bool expands = false,
+        long? maxLength = null,
+        MaxLengthEnforcement? maxLengthEnforcement = null,
+        Action<string>? onChanged = null,
+        Action? onEditingComplete = null,
+        Action<string>? onSubmitted = null,
+        Action<Gestures.PointerDownEvent>? onTapOutside = null,
+        Action<Gestures.PointerDownEvent>? onTapUpOutside = null,
+        List<TextInputFormatter>? inputFormatters = null,
+        bool enabled = true,
+        double cursorWidth = 2.0,
+        double? cursorHeight = null,
+        Radius? cursorRadius = null,
+        bool cursorOpacityAnimates = true,
+        Color? cursorColor = null,
+        BoxHeightStyle? selectionHeightStyle = null,
+        BoxWidthStyle? selectionWidthStyle = null,
+        Brightness? keyboardAppearance = null,
+        EdgeInsets scrollPadding = default!,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        bool? enableInteractiveSelection = null,
+        bool? selectAllOnFocus = null,
+        TextSelectionControls? selectionControls = null,
+        Action? onTap = null,
+        ScrollController? scrollController = null,
+        ScrollPhysics? scrollPhysics = null,
+        IEnumerable<string>? autofillHints = default!,
+        ContentInsertionConfiguration? contentInsertionConfiguration = null,
+        Clip clipBehavior = Clip.hardEdge,
+        string? restorationId = null,
+        bool scribbleEnabled = true,
+        bool? stylusHandwritingEnabled = null,
+        bool enableIMEPersonalizedLearning = true,
+        bool? enableInlinePrediction = null,
+        Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!,
+        SpellCheckConfiguration? spellCheckConfiguration = null,
+        TextMagnifierConfiguration? magnifierConfiguration = null
+    )
+        : base(key: key)
     {
         object __groupId = groupId ?? typeof(EditableText);
-        BoxDecoration? __decoration = decoration ?? Text_fieldLibrary._kDefaultRoundedBorderDecoration;
+        BoxDecoration? __decoration =
+            decoration ?? Text_fieldLibrary._kDefaultRoundedBorderDecoration;
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
-        TextStyle? __placeholderStyle = placeholderStyle ?? new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
+        TextStyle? __placeholderStyle =
+            placeholderStyle
+            ?? new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
         Radius __cursorRadius = cursorRadius ?? Radius.CreateCircular(2.0);
         EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         IEnumerable<string>? __autofillHints = autofillHints ?? new List<string>();
-        bool __stylusHandwritingEnabled = stylusHandwritingEnabled ?? EditableText.defaultStylusHandwritingEnabled;
-        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        bool __stylusHandwritingEnabled =
+            stylusHandwritingEnabled ?? EditableText.defaultStylusHandwritingEnabled;
+        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder =
+            contextMenuBuilder ?? _defaultContextMenuBuilder;
         this.groupId = __groupId;
         this.controller = controller;
         this.focusNode = focusNode;
@@ -258,30 +389,197 @@ public class CupertinoTextField : StatefulWidget
         this.contextMenuBuilder = __contextMenuBuilder;
         this.spellCheckConfiguration = spellCheckConfiguration;
         this.magnifierConfiguration = magnifierConfiguration;
-        this.smartDashesType = smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled);
-        this.smartQuotesType = smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled);
-        this.keyboardType = keyboardType ?? ((maxLines == 1L) ? TextInputType.text : TextInputType.multiline);
-        this.enableInteractiveSelection = enableInteractiveSelection ?? !readOnly || !obscureText;
+        this.smartDashesType =
+            smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled);
+        this.smartQuotesType =
+            smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled);
+        this.keyboardType =
+            keyboardType ?? ((maxLines == 1L) ? TextInputType.text : TextInputType.multiline);
+        this.enableInteractiveSelection = enableInteractiveSelection ?? (!readOnly || !obscureText);
         System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
-        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
-        System.Diagnostics.Debug.Assert((minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L));
-        System.Diagnostics.Debug.Assert(maxLines is null || minLines is null || maxLines >= DartRuntimePrimitives.RequireValue(minLines));
-        System.Diagnostics.Debug.Assert(!expands || (maxLines is null) && (minLines is null));
+        System.Diagnostics.Debug.Assert(
+            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            maxLines is null
+                || minLines is null
+                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+        );
+        System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
-        System.Diagnostics.Debug.Assert((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L));
-        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(textInputAction, TextInputAction.newline) || (maxLines == 1L) || !DartRuntimePrimitives.Identical(keyboardType, TextInputType.text));
+        System.Diagnostics.Debug.Assert(
+            (maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            !DartRuntimePrimitives.Identical(textInputAction, TextInputAction.newline)
+                || (maxLines == 1L)
+                || !DartRuntimePrimitives.Identical(keyboardType, TextInputType.text)
+        );
     }
 
-    public static CupertinoTextField CreateBorderless(Key? key = null, object groupId = default!, TextEditingController? controller = null, FocusNode? focusNode = null, UndoHistoryController? undoController = null, BoxDecoration? decoration = null, EdgeInsetsGeometry padding = default!, string? placeholder = null, TextStyle? placeholderStyle = default!, Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, TextStyle? style = null, Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = null, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, MaxLengthEnforcement? maxLengthEnforcement = null, Action<string>? onChanged = null, Action? onEditingComplete = null, Action<string>? onSubmitted = null, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, EdgeInsets scrollPadding = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, TextSelectionControls? selectionControls = null, Action? onTap = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool stylusHandwritingEnabled = true, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration? magnifierConfiguration = null)
+    public static CupertinoTextField CreateBorderless(
+        Key? key = null,
+        object groupId = default!,
+        TextEditingController? controller = null,
+        FocusNode? focusNode = null,
+        UndoHistoryController? undoController = null,
+        BoxDecoration? decoration = null,
+        EdgeInsetsGeometry padding = default!,
+        string? placeholder = null,
+        TextStyle? placeholderStyle = default!,
+        Widget? prefix = null,
+        OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always,
+        Widget? suffix = null,
+        OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always,
+        CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
+        OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never,
+        string? clearButtonSemanticLabel = null,
+        TextInputType? keyboardType = null,
+        TextInputAction? textInputAction = null,
+        TextCapitalization textCapitalization = TextCapitalization.none,
+        TextStyle? style = null,
+        Painting.StrutStyle? strutStyle = null,
+        TextAlign textAlign = TextAlign.start,
+        TextAlignVertical? textAlignVertical = null,
+        TextDirection? textDirection = null,
+        bool readOnly = false,
+        ToolbarOptions? toolbarOptions = null,
+        bool? showCursor = null,
+        bool autofocus = false,
+        string obscuringCharacter = "•",
+        bool obscureText = false,
+        bool? autocorrect = null,
+        SmartDashesType? smartDashesType = null,
+        SmartQuotesType? smartQuotesType = null,
+        bool enableSuggestions = true,
+        long? maxLines = 1,
+        long? minLines = null,
+        bool expands = false,
+        long? maxLength = null,
+        MaxLengthEnforcement? maxLengthEnforcement = null,
+        Action<string>? onChanged = null,
+        Action? onEditingComplete = null,
+        Action<string>? onSubmitted = null,
+        Action<Gestures.PointerDownEvent>? onTapOutside = null,
+        Action<Gestures.PointerDownEvent>? onTapUpOutside = null,
+        List<TextInputFormatter>? inputFormatters = null,
+        bool enabled = true,
+        double cursorWidth = 2.0,
+        double? cursorHeight = null,
+        Radius? cursorRadius = null,
+        bool cursorOpacityAnimates = true,
+        Color? cursorColor = null,
+        BoxHeightStyle? selectionHeightStyle = null,
+        BoxWidthStyle? selectionWidthStyle = null,
+        Brightness? keyboardAppearance = null,
+        EdgeInsets scrollPadding = default!,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        bool? enableInteractiveSelection = null,
+        bool? selectAllOnFocus = null,
+        TextSelectionControls? selectionControls = null,
+        Action? onTap = null,
+        ScrollController? scrollController = null,
+        ScrollPhysics? scrollPhysics = null,
+        IEnumerable<string>? autofillHints = default!,
+        ContentInsertionConfiguration? contentInsertionConfiguration = null,
+        Clip clipBehavior = Clip.hardEdge,
+        string? restorationId = null,
+        bool scribbleEnabled = true,
+        bool stylusHandwritingEnabled = true,
+        bool enableIMEPersonalizedLearning = true,
+        bool? enableInlinePrediction = null,
+        Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!,
+        SpellCheckConfiguration? spellCheckConfiguration = null,
+        TextMagnifierConfiguration? magnifierConfiguration = null
+    )
     {
-        var __instance = new CupertinoTextField(key: key, groupId: groupId, controller: controller, focusNode: focusNode, undoController: undoController, decoration: decoration, padding: padding, placeholder: placeholder, placeholderStyle: placeholderStyle, prefix: prefix, prefixMode: prefixMode, suffix: suffix, suffixMode: suffixMode, crossAxisAlignment: crossAxisAlignment, clearButtonMode: clearButtonMode, clearButtonSemanticLabel: clearButtonSemanticLabel, keyboardType: keyboardType, textInputAction: textInputAction, textCapitalization: textCapitalization, style: style, strutStyle: strutStyle, textAlign: textAlign, textAlignVertical: textAlignVertical, textDirection: textDirection, readOnly: readOnly, toolbarOptions: toolbarOptions, showCursor: showCursor, autofocus: autofocus, obscuringCharacter: obscuringCharacter, obscureText: obscureText, autocorrect: autocorrect, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, enableSuggestions: enableSuggestions, maxLines: maxLines, minLines: minLines, expands: expands, maxLength: maxLength, maxLengthEnforcement: maxLengthEnforcement, onChanged: onChanged, onEditingComplete: onEditingComplete, onSubmitted: onSubmitted, onTapOutside: onTapOutside, onTapUpOutside: onTapUpOutside, inputFormatters: inputFormatters, enabled: enabled, cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorRadius: cursorRadius, cursorOpacityAnimates: cursorOpacityAnimates, cursorColor: cursorColor, selectionHeightStyle: selectionHeightStyle, selectionWidthStyle: selectionWidthStyle, keyboardAppearance: keyboardAppearance, scrollPadding: scrollPadding, dragStartBehavior: dragStartBehavior, enableInteractiveSelection: enableInteractiveSelection, selectAllOnFocus: selectAllOnFocus, selectionControls: selectionControls, onTap: onTap, scrollController: scrollController, scrollPhysics: scrollPhysics, autofillHints: autofillHints, contentInsertionConfiguration: contentInsertionConfiguration, clipBehavior: clipBehavior, restorationId: restorationId, scribbleEnabled: scribbleEnabled, stylusHandwritingEnabled: stylusHandwritingEnabled, enableIMEPersonalizedLearning: enableIMEPersonalizedLearning, enableInlinePrediction: enableInlinePrediction, contextMenuBuilder: contextMenuBuilder, spellCheckConfiguration: spellCheckConfiguration, magnifierConfiguration: magnifierConfiguration);
+        var __instance = new CupertinoTextField(
+            key: key,
+            groupId: groupId,
+            controller: controller,
+            focusNode: focusNode,
+            undoController: undoController,
+            decoration: decoration,
+            padding: padding,
+            placeholder: placeholder,
+            placeholderStyle: placeholderStyle,
+            prefix: prefix,
+            prefixMode: prefixMode,
+            suffix: suffix,
+            suffixMode: suffixMode,
+            crossAxisAlignment: crossAxisAlignment,
+            clearButtonMode: clearButtonMode,
+            clearButtonSemanticLabel: clearButtonSemanticLabel,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            textCapitalization: textCapitalization,
+            style: style,
+            strutStyle: strutStyle,
+            textAlign: textAlign,
+            textAlignVertical: textAlignVertical,
+            textDirection: textDirection,
+            readOnly: readOnly,
+            toolbarOptions: toolbarOptions,
+            showCursor: showCursor,
+            autofocus: autofocus,
+            obscuringCharacter: obscuringCharacter,
+            obscureText: obscureText,
+            autocorrect: autocorrect,
+            smartDashesType: smartDashesType,
+            smartQuotesType: smartQuotesType,
+            enableSuggestions: enableSuggestions,
+            maxLines: maxLines,
+            minLines: minLines,
+            expands: expands,
+            maxLength: maxLength,
+            maxLengthEnforcement: maxLengthEnforcement,
+            onChanged: onChanged,
+            onEditingComplete: onEditingComplete,
+            onSubmitted: onSubmitted,
+            onTapOutside: onTapOutside,
+            onTapUpOutside: onTapUpOutside,
+            inputFormatters: inputFormatters,
+            enabled: enabled,
+            cursorWidth: cursorWidth,
+            cursorHeight: cursorHeight,
+            cursorRadius: cursorRadius,
+            cursorOpacityAnimates: cursorOpacityAnimates,
+            cursorColor: cursorColor,
+            selectionHeightStyle: selectionHeightStyle,
+            selectionWidthStyle: selectionWidthStyle,
+            keyboardAppearance: keyboardAppearance,
+            scrollPadding: scrollPadding,
+            dragStartBehavior: dragStartBehavior,
+            enableInteractiveSelection: enableInteractiveSelection,
+            selectAllOnFocus: selectAllOnFocus,
+            selectionControls: selectionControls,
+            onTap: onTap,
+            scrollController: scrollController,
+            scrollPhysics: scrollPhysics,
+            autofillHints: autofillHints,
+            contentInsertionConfiguration: contentInsertionConfiguration,
+            clipBehavior: clipBehavior,
+            restorationId: restorationId,
+            scribbleEnabled: scribbleEnabled,
+            stylusHandwritingEnabled: stylusHandwritingEnabled,
+            enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+            enableInlinePrediction: enableInlinePrediction,
+            contextMenuBuilder: contextMenuBuilder,
+            spellCheckConfiguration: spellCheckConfiguration,
+            magnifierConfiguration: magnifierConfiguration
+        );
         object __groupId = groupId ?? typeof(EditableText);
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
-        TextStyle? __placeholderStyle = placeholderStyle ?? Text_fieldLibrary._kDefaultPlaceholderStyle;
+        TextStyle? __placeholderStyle =
+            placeholderStyle ?? Text_fieldLibrary._kDefaultPlaceholderStyle;
         Radius __cursorRadius = cursorRadius ?? Radius.CreateCircular(2.0);
         EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         IEnumerable<string>? __autofillHints = autofillHints ?? new List<string>();
-        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder =
+            contextMenuBuilder ?? _defaultContextMenuBuilder;
         __instance.groupId = __groupId;
         __instance.controller = controller;
         __instance.focusNode = focusNode;
@@ -350,112 +648,317 @@ public class CupertinoTextField : StatefulWidget
         __instance.contextMenuBuilder = __contextMenuBuilder;
         __instance.spellCheckConfiguration = spellCheckConfiguration;
         __instance.magnifierConfiguration = magnifierConfiguration;
-        __instance.smartDashesType = smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled);
-        __instance.smartQuotesType = smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled);
-        __instance.keyboardType = keyboardType ?? ((maxLines == 1L) ? TextInputType.text : TextInputType.multiline);
-        __instance.enableInteractiveSelection = enableInteractiveSelection ?? !readOnly || !obscureText;
+        __instance.smartDashesType =
+            smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled);
+        __instance.smartQuotesType =
+            smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled);
+        __instance.keyboardType =
+            keyboardType ?? ((maxLines == 1L) ? TextInputType.text : TextInputType.multiline);
+        __instance.enableInteractiveSelection =
+            enableInteractiveSelection ?? (!readOnly || !obscureText);
         return __instance;
     }
 
     public virtual bool selectionEnabled => enableInteractiveSelection;
-    internal static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState)
+
+    internal static Widget _defaultContextMenuBuilder(
+        BuildContext context,
+        EditableTextState editableTextState
+    )
     {
         if (SystemContextMenu.isSupportedByField(editableTextState))
         {
             return SystemContextMenu.CreateEditableText(editableTextState: editableTextState);
         }
-        return CupertinoAdaptiveTextSelectionToolbar.CreateEditableText(editableTextState: editableTextState);
+        return CupertinoAdaptiveTextSelectionToolbar.CreateEditableText(
+            editableTextState: editableTextState
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget defaultSpellCheckSuggestionsToolbarBuilder(BuildContext context, EditableTextState editableTextState)
+    public static Widget defaultSpellCheckSuggestionsToolbarBuilder(
+        BuildContext context,
+        EditableTextState editableTextState
+    )
     {
-        return CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(editableTextState: editableTextState);
+        return CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(
+            editableTextState: editableTextState
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextFieldState__text_field());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextFieldState__text_field());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<TextEditingController>("controller", controller, defaultValue: null));
-        properties.add(new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null));
-        properties.add(new DiagnosticsProperty<UndoHistoryController>("undoController", undoController, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<TextEditingController>(
+                "controller",
+                controller,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<UndoHistoryController>(
+                "undoController",
+                undoController,
+                defaultValue: null
+            )
+        );
         properties.add(new DiagnosticsProperty<BoxDecoration>("decoration", decoration));
         properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
         properties.add(new StringProperty("placeholder", placeholder));
         properties.add(new DiagnosticsProperty<TextStyle>("placeholderStyle", placeholderStyle));
-        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("prefix", (prefix is null) ? null : prefixMode));
-        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("suffix", (suffix is null) ? null : suffixMode));
-        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("clearButtonMode", clearButtonMode));
-        properties.add(new DiagnosticsProperty<string>("clearButtonSemanticLabel", clearButtonSemanticLabel));
-        properties.add(new DiagnosticsProperty<TextInputType>("keyboardType", keyboardType, defaultValue: TextInputType.text));
+        properties.add(
+            new DiagnosticsProperty<OverlayVisibilityMode>(
+                "prefix",
+                (prefix is null) ? null : prefixMode
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<OverlayVisibilityMode>(
+                "suffix",
+                (suffix is null) ? null : suffixMode
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<OverlayVisibilityMode>("clearButtonMode", clearButtonMode)
+        );
+        properties.add(
+            new DiagnosticsProperty<string>("clearButtonSemanticLabel", clearButtonSemanticLabel)
+        );
+        properties.add(
+            new DiagnosticsProperty<TextInputType>(
+                "keyboardType",
+                keyboardType,
+                defaultValue: TextInputType.text
+            )
+        );
         properties.add(new DiagnosticsProperty<TextStyle>("style", style, defaultValue: null));
         properties.add(new DiagnosticsProperty<bool>("autofocus", autofocus, defaultValue: false));
-        properties.add(new DiagnosticsProperty<string>("obscuringCharacter", obscuringCharacter, defaultValue: "•"));
-        properties.add(new DiagnosticsProperty<bool>("obscureText", obscureText, defaultValue: false));
-        properties.add(new DiagnosticsProperty<bool>("autocorrect", autocorrect, defaultValue: null));
-        properties.add(new EnumProperty<SmartDashesType>("smartDashesType", smartDashesType, defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled));
-        properties.add(new EnumProperty<SmartQuotesType>("smartQuotesType", smartQuotesType, defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled));
-        properties.add(new DiagnosticsProperty<bool>("enableSuggestions", enableSuggestions, defaultValue: true));
+        properties.add(
+            new DiagnosticsProperty<string>(
+                "obscuringCharacter",
+                obscuringCharacter,
+                defaultValue: "•"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>("obscureText", obscureText, defaultValue: false)
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>("autocorrect", autocorrect, defaultValue: null)
+        );
+        properties.add(
+            new EnumProperty<SmartDashesType>(
+                "smartDashesType",
+                smartDashesType,
+                defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled
+            )
+        );
+        properties.add(
+            new EnumProperty<SmartQuotesType>(
+                "smartQuotesType",
+                smartQuotesType,
+                defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>(
+                "enableSuggestions",
+                enableSuggestions,
+                defaultValue: true
+            )
+        );
         properties.add(new IntProperty("maxLines", maxLines, defaultValue: 1L));
         properties.add(new IntProperty("minLines", minLines, defaultValue: null));
         properties.add(new DiagnosticsProperty<bool>("expands", expands, defaultValue: false));
         properties.add(new IntProperty("maxLength", maxLength, defaultValue: null));
-        properties.add(new EnumProperty<MaxLengthEnforcement>("maxLengthEnforcement", maxLengthEnforcement, defaultValue: null));
+        properties.add(
+            new EnumProperty<MaxLengthEnforcement>(
+                "maxLengthEnforcement",
+                maxLengthEnforcement,
+                defaultValue: null
+            )
+        );
         properties.add(new DoubleProperty("cursorWidth", cursorWidth, defaultValue: 2.0));
         properties.add(new DoubleProperty("cursorHeight", cursorHeight, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Radius>("cursorRadius", DartRuntimePrimitives.RequireValue(cursorRadius), defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("cursorOpacityAnimates", cursorOpacityAnimates, defaultValue: true));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("cursorColor", cursorColor, defaultValue: null));
-        properties.add(new FlagProperty("selectionEnabled", value: selectionEnabled, defaultValue: true, ifFalse: "selection disabled"));
-        properties.add(new DiagnosticsProperty<TextSelectionControls>("selectionControls", selectionControls, defaultValue: null));
-        properties.add(new DiagnosticsProperty<ScrollController>("scrollController", scrollController, defaultValue: null));
-        properties.add(new DiagnosticsProperty<ScrollPhysics>("scrollPhysics", scrollPhysics, defaultValue: null));
-        properties.add(new EnumProperty<TextAlign>("textAlign", textAlign, defaultValue: TextAlign.start));
-        properties.add(new DiagnosticsProperty<TextAlignVertical>("textAlignVertical", textAlignVertical, defaultValue: null));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
-        properties.add(new DiagnosticsProperty<bool>("scribbleEnabled", scribbleEnabled, defaultValue: true));
-        properties.add(new DiagnosticsProperty<bool>("stylusHandwritingEnabled", DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled), defaultValue: EditableText.defaultStylusHandwritingEnabled));
-        properties.add(new DiagnosticsProperty<bool>("enableIMEPersonalizedLearning", enableIMEPersonalizedLearning, defaultValue: true));
-        properties.add(new DiagnosticsProperty<bool?>("enableInlinePrediction", enableInlinePrediction, defaultValue: null));
-        properties.add(new DiagnosticsProperty<SpellCheckConfiguration>("spellCheckConfiguration", spellCheckConfiguration, defaultValue: null));
-        properties.add(new DiagnosticsProperty<List<string>>("contentCommitMimeTypes", contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>(), defaultValue: (contentInsertionConfiguration is null) ? new List<string>() : Editable_textLibrary.kDefaultContentInsertionMimeTypes));
+        properties.add(
+            new DiagnosticsProperty<Radius>(
+                "cursorRadius",
+                DartRuntimePrimitives.RequireValue(cursorRadius),
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>(
+                "cursorOpacityAnimates",
+                cursorOpacityAnimates,
+                defaultValue: true
+            )
+        );
+        properties.add(
+            ColorsLibrary.createCupertinoColorProperty(
+                "cursorColor",
+                cursorColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "selectionEnabled",
+                value: selectionEnabled,
+                defaultValue: true,
+                ifFalse: "selection disabled"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<TextSelectionControls>(
+                "selectionControls",
+                selectionControls,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<ScrollController>(
+                "scrollController",
+                scrollController,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<ScrollPhysics>(
+                "scrollPhysics",
+                scrollPhysics,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new EnumProperty<TextAlign>("textAlign", textAlign, defaultValue: TextAlign.start)
+        );
+        properties.add(
+            new DiagnosticsProperty<TextAlignVertical>(
+                "textAlignVertical",
+                textAlignVertical,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge)
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>("scribbleEnabled", scribbleEnabled, defaultValue: true)
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>(
+                "stylusHandwritingEnabled",
+                DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled),
+                defaultValue: EditableText.defaultStylusHandwritingEnabled
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool>(
+                "enableIMEPersonalizedLearning",
+                enableIMEPersonalizedLearning,
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<bool?>(
+                "enableInlinePrediction",
+                enableInlinePrediction,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<SpellCheckConfiguration>(
+                "spellCheckConfiguration",
+                spellCheckConfiguration,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<List<string>>(
+                "contentCommitMimeTypes",
+                contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>(),
+                defaultValue: (contentInsertionConfiguration is null)
+                    ? new List<string>()
+                    : Editable_textLibrary.kDefaultContentInsertionMimeTypes
+            )
+        );
     }
 
-    public static SpellCheckConfiguration inferIOSSpellCheckConfiguration(SpellCheckConfiguration? configuration)
+    public static SpellCheckConfiguration inferIOSSpellCheckConfiguration(
+        SpellCheckConfiguration? configuration
+    )
     {
-        if ((configuration is null) || Equals(configuration, SpellCheckConfiguration.CreateDisabled()))
+        if (
+            (configuration is null)
+            || Equals(configuration, SpellCheckConfiguration.CreateDisabled())
+        )
         {
             return SpellCheckConfiguration.CreateDisabled();
         }
-        return configuration.copyWith(misspelledTextStyle: configuration.misspelledTextStyle ?? cupertinoMisspelledTextStyle, misspelledSelectionColor: configuration.misspelledSelectionColor ?? kMisspelledSelectionColor, spellCheckSuggestionsToolbarBuilder: configuration.spellCheckSuggestionsToolbarBuilder ?? defaultSpellCheckSuggestionsToolbarBuilder);
+        return configuration.copyWith(
+            misspelledTextStyle: configuration.misspelledTextStyle ?? cupertinoMisspelledTextStyle,
+            misspelledSelectionColor: configuration.misspelledSelectionColor
+                ?? kMisspelledSelectionColor,
+            spellCheckSuggestionsToolbarBuilder: configuration.spellCheckSuggestionsToolbarBuilder
+                ?? defaultSpellCheckSuggestionsToolbarBuilder
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>, RestorationMixin<CupertinoTextField>, AutomaticKeepAliveClientMixin<CupertinoTextField>, TextSelectionGestureDetectorBuilderDelegate, AutofillClient
+internal class _CupertinoTextFieldState__text_field
+    : State<CupertinoTextField>,
+        RestorationMixin<CupertinoTextField>,
+        AutomaticKeepAliveClientMixin<CupertinoTextField>,
+        TextSelectionGestureDetectorBuilderDelegate,
+        AutofillClient
 {
-    internal virtual GlobalKey<IState> _clearGlobalKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _clearGlobalKey { get; private set; } =
+        GlobalKey<IState>.Create();
     internal virtual RestorableTextEditingController? _controller { get; set; } = default;
     internal virtual FocusNode? _focusNode { get; set; } = default;
     internal virtual bool _showSelectionHandles { get; set; } = false;
-    internal virtual _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field _selectionGestureDetectorBuilder { get; set; } = default!;
-    public virtual GlobalKey<EditableTextState> editableTextKey { get; private set; } = GlobalKey<EditableTextState>.Create();
+    internal virtual _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field _selectionGestureDetectorBuilder { get; set; } =
+        default!;
+    public virtual GlobalKey<EditableTextState> editableTextKey { get; private set; } =
+        GlobalKey<EditableTextState>.Create();
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
 
-    internal virtual TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<TextEditingController>(widget.controller ?? _controller!.value);
-    internal virtual FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_focusNode ??= new FocusNode()));
-    internal virtual MaxLengthEnforcement _effectiveMaxLengthEnforcement => DartRuntimePrimitives.ConvertValue<MaxLengthEnforcement>(widget.maxLengthEnforcement ?? LengthLimitingTextInputFormatter.getDefaultMaxLengthEnforcement());
+    internal virtual TextEditingController _effectiveController =>
+        DartRuntimePrimitives.ConvertValue<TextEditingController>(
+            widget.controller ?? _controller!.value
+        );
+    internal virtual FocusNode _effectiveFocusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(
+            widget.focusNode ?? (_focusNode ??= new FocusNode())
+        );
+    internal virtual MaxLengthEnforcement _effectiveMaxLengthEnforcement =>
+        DartRuntimePrimitives.ConvertValue<MaxLengthEnforcement>(
+            widget.maxLengthEnforcement
+                ?? LengthLimitingTextInputFormatter.getDefaultMaxLengthEnforcement()
+        );
     public virtual bool forcePressEnabled => true;
     public virtual bool selectionEnabled => widget.selectionEnabled;
+
     public override void initState()
     {
         base.initState();
@@ -463,7 +966,8 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         {
             _ensureKeepAlive();
         }
-        _selectionGestureDetectorBuilder = new _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field(state: this);
+        _selectionGestureDetectorBuilder =
+            new _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field(state: this);
         if (widget.controller is null)
         {
             _createLocalController();
@@ -515,7 +1019,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
     internal virtual void _createLocalController(TextEditingValue? value = null)
     {
         DartRuntimePrimitives.Assert(() => _controller is null);
-        _controller = (value is null) ? RestorableTextEditingController.Create() : new RestorableTextEditingController(value);
+        _controller =
+            (value is null)
+                ? RestorableTextEditingController.Create()
+                : new RestorableTextEditingController(value);
         if (!restorePending)
         {
             _registerController();
@@ -523,24 +1030,29 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
     }
 
     public virtual string? restorationId => widget.restorationId;
+
     public override void dispose()
     {
         _effectiveFocusNode.removeListener(_handleFocusChanged);
         _focusNode?.dispose();
         _controller?.dispose();
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
     }
 
-    internal virtual EditableTextState _editableText => DartRuntimePrimitives.ConvertValue<EditableTextState>(editableTextKey.currentState!);
+    internal virtual EditableTextState _editableText =>
+        DartRuntimePrimitives.ConvertValue<EditableTextState>(editableTextKey.currentState!);
+
     internal virtual void _requestKeyboard()
     {
         _editableText.requestKeyboard();
@@ -548,14 +1060,15 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
 
     internal virtual void _handleFocusChanged()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     internal virtual bool _shouldShowSelectionHandles(SelectionChangedCause? cause)
     {
-        if (!_selectionGestureDetectorBuilder.shouldShowSelectionToolbar || !_selectionGestureDetectorBuilder.shouldShowSelectionHandles)
+        if (
+            !_selectionGestureDetectorBuilder.shouldShowSelectionToolbar
+            || !_selectionGestureDetectorBuilder.shouldShowSelectionHandles
+        )
         {
             return false;
         }
@@ -579,7 +1092,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleSelectionChanged(TextSelection selection, SelectionChangedCause? cause)
+    internal virtual void _handleSelectionChanged(
+        TextSelection selection,
+        SelectionChangedCause? cause
+    )
     {
         bool willShowSelectionHandles = _shouldShowSelectionHandles(cause);
         if (willShowSelectionHandles != _showSelectionHandles)
@@ -597,39 +1113,50 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
             case TargetPlatform.windows:
             case TargetPlatform.fuchsia:
             case TargetPlatform.android:
+            {
+                if (Equals(cause, SelectionChangedCause.longPress))
                 {
-                    if (Equals(cause, SelectionChangedCause.longPress))
-                    {
-                        _editableText.bringIntoView(selection.extent);
-                    }
-                    break;
+                    _editableText.bringIntoView(selection.extent);
                 }
+                break;
+            }
         }
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
             case TargetPlatform.fuchsia:
             case TargetPlatform.android:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case TargetPlatform.macOS:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
+            {
+                if (Equals(cause, SelectionChangedCause.drag))
                 {
-                    if (Equals(cause, SelectionChangedCause.drag))
-                    {
-                        _editableText.hideToolbar();
-                    }
-                    break;
+                    _editableText.hideToolbar();
                 }
+                break;
+            }
         }
     }
 
-    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>(_controller is not null && _controller.value.text.Length != 0);
+    public virtual bool wantKeepAlive =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _controller is not null && _controller.value.text.Length != 0
+        );
+
     internal static bool _shouldShowAttachment(OverlayVisibilityMode attachment, bool hasText)
     {
-        return attachment switch { OverlayVisibilityMode.never => false, OverlayVisibilityMode.always => true, OverlayVisibilityMode.editing => hasText, OverlayVisibilityMode.notEditing => !hasText, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return attachment switch
+        {
+            OverlayVisibilityMode.never => false,
+            OverlayVisibilityMode.always => true,
+            OverlayVisibilityMode.editing => hasText,
+            OverlayVisibilityMode.notEditing => !hasText,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -637,7 +1164,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
     {
         get
         {
-            return (widget.placeholder is not null) || (!Equals(widget.clearButtonMode, OverlayVisibilityMode.never)) || (widget.prefix is not null) || (widget.suffix is not null);
+            return (widget.placeholder is not null)
+                || (!Equals(widget.clearButtonMode, OverlayVisibilityMode.never))
+                || (widget.prefix is not null)
+                || (widget.suffix is not null);
         }
     }
     internal virtual TextAlignVertical _textAlignVertical
@@ -651,6 +1181,7 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
             return _hasDecoration ? TextAlignVertical.center : TextAlignVertical.top;
         }
     }
+
     internal virtual void _onClearButtonTapped()
     {
         bool hadText = _effectiveController.text.Length != 0;
@@ -663,50 +1194,187 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
 
     internal virtual Widget _buildClearButton()
     {
-        string clearLabel = widget.clearButtonSemanticLabel ?? CupertinoLocalizations.of(context).clearButtonLabel;
-        return new Widgets.Semantics(button: true, label: clearLabel, child: new GestureDetector(key: _clearGlobalKey, onTap: widget.enabled ? _onClearButtonTapped : null, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 6.0), child: new Icon(CupertinoIcons.clear_thick_circled, size: 18.0, color: CupertinoDynamicColor.resolve(Text_fieldLibrary._kClearButtonColor, context)))));
+        string clearLabel =
+            widget.clearButtonSemanticLabel ?? CupertinoLocalizations.of(context).clearButtonLabel;
+        return new Widgets.Semantics(
+            button: true,
+            label: clearLabel,
+            child: new GestureDetector(
+                key: _clearGlobalKey,
+                onTap: widget.enabled ? _onClearButtonTapped : null,
+                child: new Padding(
+                    padding: EdgeInsets.CreateSymmetric(horizontal: 6.0),
+                    child: new Icon(
+                        CupertinoIcons.clear_thick_circled,
+                        size: 18.0,
+                        color: CupertinoDynamicColor.resolve(
+                            Text_fieldLibrary._kClearButtonColor,
+                            context
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _addTextDependentAttachments(Widget editableText, TextStyle textStyle, TextStyle placeholderStyle)
+    internal virtual Widget _addTextDependentAttachments(
+        Widget editableText,
+        TextStyle textStyle,
+        TextStyle placeholderStyle
+    )
     {
         if (!_hasDecoration)
         {
             return editableText;
         }
-        return new ValueListenableBuilder<TextEditingValue>(valueListenable: _effectiveController, child: editableText, builder: (Func<BuildContext, TextEditingValue, Widget?, Row>)((context, text, child) =>
-        {
-            bool hasTextLocal = text.text.Length != 0;
-            string? placeholderText = widget.placeholder;
-            Widget? placeholderLocal = (placeholderText is null) ? null : new Visibility(maintainAnimation: true, maintainSize: true, maintainState: true, visible: !hasTextLocal, child: new SizedBox(width: double.PositiveInfinity, child: new Padding(padding: widget.padding, child: new Text(placeholderText, maxLines: hasTextLocal ? 1L : widget.maxLines, overflow: placeholderStyle.overflow, style: placeholderStyle, textAlign: widget.textAlign))));
-            Widget? prefixWidget = _shouldShowAttachment(attachment: widget.prefixMode, hasText: hasTextLocal) ? widget.prefix : null;
-            bool showUserSuffix = _shouldShowAttachment(attachment: widget.suffixMode, hasText: hasTextLocal);
-            bool showClearButton = _shouldShowAttachment(attachment: widget.clearButtonMode, hasText: hasTextLocal);
-            Widget? suffixWidget = (showUserSuffix, showClearButton) switch { (false, false) => DartRuntimePrimitives.ConvertValue<Widget>(null), (true, false) => widget.suffix, (true, true) => widget.suffix ?? _buildClearButton(), (false, true) => _buildClearButton() };
-            return new Row(crossAxisAlignment: widget.crossAxisAlignment, children: ((Func<List<Widget>>)(() => { var __collection51543 = new List<Widget>(); var __collectionElement51686 = prefixWidget; if (__collectionElement51686 is { } __nonNullCollectionElement51686) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement51686)); } __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Directionality(textDirection: widget.textDirection ?? Directionality.of(context), child: new _BaselineAlignedStack__text_field(placeholder: placeholderLocal, editableText: editableText, textAlignVertical: _textAlignVertical, editableTextBaseline: textStyle.textBaseline ?? TextBaseline.alphabetic, placeholderBaseline: placeholderStyle.textBaseline ?? TextBaseline.alphabetic))))); var __collectionElement52402 = suffixWidget; if (__collectionElement52402 is { } __nonNullCollectionElement52402) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement52402)); } return __collection51543; }))());
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        return new ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _effectiveController,
+            child: editableText,
+            builder: (Func<BuildContext, TextEditingValue, Widget?, Row>)(
+                (context, text, child) =>
+                {
+                    bool hasTextLocal = text.text.Length != 0;
+                    string? placeholderText = widget.placeholder;
+                    Widget? placeholderLocal =
+                        (placeholderText is null)
+                            ? null
+                            : new Visibility(
+                                maintainAnimation: true,
+                                maintainSize: true,
+                                maintainState: true,
+                                visible: !hasTextLocal,
+                                child: new SizedBox(
+                                    width: double.PositiveInfinity,
+                                    child: new Padding(
+                                        padding: widget.padding,
+                                        child: new Text(
+                                            placeholderText,
+                                            maxLines: hasTextLocal ? 1L : widget.maxLines,
+                                            overflow: placeholderStyle.overflow,
+                                            style: placeholderStyle,
+                                            textAlign: widget.textAlign
+                                        )
+                                    )
+                                )
+                            );
+                    Widget? prefixWidget = _shouldShowAttachment(
+                        attachment: widget.prefixMode,
+                        hasText: hasTextLocal
+                    )
+                        ? widget.prefix
+                        : null;
+                    bool showUserSuffix = _shouldShowAttachment(
+                        attachment: widget.suffixMode,
+                        hasText: hasTextLocal
+                    );
+                    bool showClearButton = _shouldShowAttachment(
+                        attachment: widget.clearButtonMode,
+                        hasText: hasTextLocal
+                    );
+                    Widget? suffixWidget = (showUserSuffix, showClearButton) switch
+                    {
+                        (false, false) => DartRuntimePrimitives.ConvertValue<Widget>(null),
+                        (true, false) => widget.suffix,
+                        (true, true) => widget.suffix ?? _buildClearButton(),
+                        (false, true) => _buildClearButton(),
+                    };
+                    return new Row(
+                        crossAxisAlignment: widget.crossAxisAlignment,
+                        children: (
+                            (Func<List<Widget>>)(
+                                () =>
+                                {
+                                    var __collection51543 = new List<Widget>();
+                                    var __collectionElement51686 = prefixWidget;
+                                    if (
+                                        __collectionElement51686 is
+                                        { } __nonNullCollectionElement51686
+                                    )
+                                    {
+                                        __collection51543.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                __nonNullCollectionElement51686
+                                            )
+                                        );
+                                    }
+                                    __collection51543.Add(
+                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                            new Expanded(
+                                                child: new Directionality(
+                                                    textDirection: widget.textDirection
+                                                        ?? Directionality.of(context),
+                                                    child: new _BaselineAlignedStack__text_field(
+                                                        placeholder: placeholderLocal,
+                                                        editableText: editableText,
+                                                        textAlignVertical: _textAlignVertical,
+                                                        editableTextBaseline: textStyle.textBaseline
+                                                            ?? TextBaseline.alphabetic,
+                                                        placeholderBaseline: placeholderStyle.textBaseline
+                                                            ?? TextBaseline.alphabetic
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    );
+                                    var __collectionElement52402 = suffixWidget;
+                                    if (
+                                        __collectionElement52402 is
+                                        { } __nonNullCollectionElement52402
+                                    )
+                                    {
+                                        __collection51543.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                __nonNullCollectionElement52402
+                                            )
+                                        );
+                                    }
+                                    return __collection51543;
+                                }
+                            )
+                        )()
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string autofillId => _editableText.autofillId;
-    public virtual void autofill(TextEditingValue newEditingValue) => _editableText.autofill(newEditingValue);
+
+    public virtual void autofill(TextEditingValue newEditingValue) =>
+        _editableText.autofill(newEditingValue);
+
     public virtual TextInputConfiguration textInputConfiguration
     {
         get
         {
             List<string>? autofillHintsLocal = widget.autofillHints?.ToList().ToList();
-            AutofillConfiguration autofillConfigurationLocal = (autofillHintsLocal is not null) ? new AutofillConfiguration(uniqueIdentifier: autofillId, autofillHints: autofillHintsLocal, currentEditingValue: _effectiveController.value, hintText: widget.placeholder) : AutofillConfiguration.disabled;
-            return _editableText.textInputConfiguration.copyWith(autofillConfiguration: autofillConfigurationLocal);
+            AutofillConfiguration autofillConfigurationLocal =
+                (autofillHintsLocal is not null)
+                    ? new AutofillConfiguration(
+                        uniqueIdentifier: autofillId,
+                        autofillHints: autofillHintsLocal,
+                        currentEditingValue: _effectiveController.value,
+                        hintText: widget.placeholder
+                    )
+                    : AutofillConfiguration.disabled;
+            return _editableText.textInputConfiguration.copyWith(
+                autofillConfiguration: autofillConfigurationLocal
+            );
         }
     }
+
     public override Widget build(BuildContext context)
     {
         if (wantKeepAlive && (_keepAliveHandle is null))
         {
             _ensureKeepAlive();
         }
-        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() =>
+            Widgets.DebugLibrary.debugCheckHasDirectionality(context)
+        );
         TextEditingController controllerLocal = _effectiveController;
         TextSelectionControls? textSelectionControls = widget.selectionControls;
         Action? handleDidGainAccessibilityFocus = default!;
@@ -716,82 +1384,284 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
             case TargetPlatform.iOS:
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
-                {
-                    textSelectionControls ??= Text_selectionLibrary.cupertinoTextSelectionHandleControls;
-                    break;
-                }
+            {
+                textSelectionControls ??=
+                    Text_selectionLibrary.cupertinoTextSelectionHandleControls;
+                break;
+            }
             case TargetPlatform.linux:
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
+            {
+                textSelectionControls ??=
+                    Desktop_text_selectionLibrary.cupertinoDesktopTextSelectionHandleControls;
+                handleDidGainAccessibilityFocus = () =>
                 {
-                    textSelectionControls ??= Desktop_text_selectionLibrary.cupertinoDesktopTextSelectionHandleControls;
-                    handleDidGainAccessibilityFocus = () =>
+                    if (!_effectiveFocusNode.hasFocus && _effectiveFocusNode.canRequestFocus)
                     {
-                        if (!_effectiveFocusNode.hasFocus && _effectiveFocusNode.canRequestFocus)
-                        {
-                            _effectiveFocusNode.requestFocus();
-                        }
-                    };
-                    handleDidLoseAccessibilityFocus = () =>
-                    {
-                        _effectiveFocusNode.unfocus();
-                    };
-                    break;
-                }
+                        _effectiveFocusNode.requestFocus();
+                    }
+                };
+                handleDidLoseAccessibilityFocus = () =>
+                {
+                    _effectiveFocusNode.unfocus();
+                };
+                break;
+            }
         }
         bool enabledLocal = widget.enabled;
-        var cursorOffsetLocal = new Offset(Text_fieldLibrary._iOSHorizontalCursorOffsetPixels / MediaQuery.devicePixelRatioOf(context), 0);
-        var formatters = ((Func<List<TextInputFormatter>>)(() => { var __collection54739 = new List<TextInputFormatter>(); var __collectionSpread54767 = widget.inputFormatters; if (__collectionSpread54767 is not null) { __collection54739.AddRange(__collectionSpread54767); } if (widget.maxLength is not null) { __collection54739.Add(new LengthLimitingTextInputFormatter(widget.maxLength, maxLengthEnforcement: _effectiveMaxLengthEnforcement)); } return __collection54739; }))();
+        var cursorOffsetLocal = new Offset(
+            Text_fieldLibrary._iOSHorizontalCursorOffsetPixels
+                / MediaQuery.devicePixelRatioOf(context),
+            0
+        );
+        var formatters = (
+            (Func<List<TextInputFormatter>>)(
+                () =>
+                {
+                    var __collection54739 = new List<TextInputFormatter>();
+                    var __collectionSpread54767 = widget.inputFormatters;
+                    if (__collectionSpread54767 is not null)
+                    {
+                        __collection54739.AddRange(__collectionSpread54767);
+                    }
+                    if (widget.maxLength is not null)
+                    {
+                        __collection54739.Add(
+                            new LengthLimitingTextInputFormatter(
+                                widget.maxLength,
+                                maxLengthEnforcement: _effectiveMaxLengthEnforcement
+                            )
+                        );
+                    }
+                    return __collection54739;
+                }
+            )
+        )();
         CupertinoThemeData themeData = CupertinoTheme.of(context);
-        TextStyle? resolvedStyle = widget.style?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.style?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.style?.backgroundColor, context));
+        TextStyle? resolvedStyle = widget.style?.copyWith(
+            color: CupertinoDynamicColor.maybeResolve(widget.style?.color, context),
+            backgroundColor: CupertinoDynamicColor.maybeResolve(
+                widget.style?.backgroundColor,
+                context
+            )
+        );
         TextStyle textStyleLocal = themeData.textTheme.textStyle.merge(resolvedStyle);
-        TextStyle? resolvedPlaceholderStyle = widget.placeholderStyle?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.backgroundColor, context));
+        TextStyle? resolvedPlaceholderStyle = widget.placeholderStyle?.copyWith(
+            color: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.color, context),
+            backgroundColor: CupertinoDynamicColor.maybeResolve(
+                widget.placeholderStyle?.backgroundColor,
+                context
+            )
+        );
         TextStyle placeholderStyleLocal = textStyleLocal.merge(resolvedPlaceholderStyle);
-        Brightness keyboardAppearanceLocal = widget.keyboardAppearance ?? CupertinoTheme.brightnessOf(context);
-        Color cursorColorLocal = CupertinoDynamicColor.maybeResolve(widget.cursorColor ?? DefaultSelectionStyle.of(context).cursorColor, context) ?? themeData.primaryColor;
-        Color disabledColor = CupertinoDynamicColor.resolve(Text_fieldLibrary._kDisabledBackground, context);
-        Color? decorationColor = CupertinoDynamicColor.maybeResolve(widget.decoration?.color, context);
+        Brightness keyboardAppearanceLocal =
+            widget.keyboardAppearance ?? CupertinoTheme.brightnessOf(context);
+        Color cursorColorLocal =
+            CupertinoDynamicColor.maybeResolve(
+                widget.cursorColor ?? DefaultSelectionStyle.of(context).cursorColor,
+                context
+            ) ?? themeData.primaryColor;
+        Color disabledColor = CupertinoDynamicColor.resolve(
+            Text_fieldLibrary._kDisabledBackground,
+            context
+        );
+        Color? decorationColor = CupertinoDynamicColor.maybeResolve(
+            widget.decoration?.color,
+            context
+        );
         BoxBorder? borderLocal = widget.decoration?.border;
         var resolvedBorder = ((Border?)borderLocal)!;
         if (borderLocal is Border border__56361__as56449)
         {
             BorderSide resolveBorderSide(BorderSide side)
             {
-                return Equals(side, BorderSide.none) ? side : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
+                return Equals(side, BorderSide.none)
+                    ? side
+                    : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            resolvedBorder = (!Equals(DartRuntimePrimitives.RuntimeType(border__56361__as56449), typeof(Border))) ? border__56361__as56449 : new Border(top: resolveBorderSide(border__56361__as56449.top), left: resolveBorderSide(border__56361__as56449.left), bottom: resolveBorderSide(border__56361__as56449.bottom), right: resolveBorderSide(border__56361__as56449.right));
+            resolvedBorder =
+                (!Equals(DartRuntimePrimitives.RuntimeType(border__56361__as56449), typeof(Border)))
+                    ? border__56361__as56449
+                    : new Border(
+                        top: resolveBorderSide(border__56361__as56449.top),
+                        left: resolveBorderSide(border__56361__as56449.left),
+                        bottom: resolveBorderSide(border__56361__as56449.bottom),
+                        right: resolveBorderSide(border__56361__as56449.right)
+                    );
         }
-        BoxDecoration? effectiveDecoration = widget.decoration?.copyWith(border: resolvedBorder, color: enabledLocal ? decorationColor : (Equals(widget.decoration, Text_fieldLibrary._kDefaultRoundedBorderDecoration) ? disabledColor : widget.decoration?.color));
-        Color selectionColorLocal = CupertinoDynamicColor.maybeResolve(DefaultSelectionStyle.of(context).selectionColor, context) ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
-        SpellCheckConfiguration spellCheckConfigurationLocal = CupertinoTextField.inferIOSSpellCheckConfiguration(widget.spellCheckConfiguration);
-        Widget paddedEditable = new Padding(padding: widget.padding, child: new RepaintBoundary(child: new UnmanagedRestorationScope(bucket: bucket, child: new EditableText(key: editableTextKey, controller: controllerLocal, undoController: widget.undoController, readOnly: widget.readOnly || !enabledLocal, toolbarOptions: widget.toolbarOptions, showCursor: widget.showCursor, showSelectionHandles: _showSelectionHandles, focusNode: _effectiveFocusNode, keyboardType: widget.keyboardType, textInputAction: widget.textInputAction, textCapitalization: widget.textCapitalization, style: textStyleLocal, strutStyle: widget.strutStyle, textAlign: widget.textAlign, textDirection: widget.textDirection, autofocus: widget.autofocus, obscuringCharacter: widget.obscuringCharacter, obscureText: widget.obscureText, autocorrect: widget.autocorrect, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType, enableSuggestions: widget.enableSuggestions, maxLines: widget.maxLines, minLines: widget.minLines, expands: widget.expands, magnifierConfiguration: widget.magnifierConfiguration ?? CupertinoTextField._iosMagnifierConfiguration, selectionColor: _effectiveFocusNode.hasFocus ? selectionColorLocal : null, selectionControls: widget.selectionEnabled ? textSelectionControls : null, groupId: widget.groupId, onChanged: widget.onChanged, onSelectionChanged: _handleSelectionChanged, onEditingComplete: widget.onEditingComplete, onSubmitted: widget.onSubmitted, onTapOutside: widget.onTapOutside, inputFormatters: formatters, rendererIgnoresPointer: true, cursorWidth: widget.cursorWidth, cursorHeight: widget.cursorHeight, cursorRadius: widget.cursorRadius, cursorColor: cursorColorLocal, cursorOpacityAnimates: widget.cursorOpacityAnimates, cursorOffset: cursorOffsetLocal, paintCursorAboveText: true, autocorrectionTextRectColor: selectionColorLocal, backgroundCursorColor: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context), selectionHeightStyle: widget.selectionHeightStyle, selectionWidthStyle: widget.selectionWidthStyle, scrollPadding: widget.scrollPadding, keyboardAppearance: keyboardAppearanceLocal, dragStartBehavior: widget.dragStartBehavior, scrollController: widget.scrollController, scrollPhysics: widget.scrollPhysics, enableInteractiveSelection: widget.enableInteractiveSelection, selectAllOnFocus: widget.selectAllOnFocus, autofillClient: this, clipBehavior: widget.clipBehavior, restorationId: "editable", scribbleEnabled: widget.scribbleEnabled, stylusHandwritingEnabled: widget.stylusHandwritingEnabled, enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning, enableInlinePrediction: widget.enableInlinePrediction, contentInsertionConfiguration: widget.contentInsertionConfiguration, contextMenuBuilder: widget.contextMenuBuilder, spellCheckConfiguration: spellCheckConfigurationLocal))));
-        return new Widgets.Semantics(enabled: enabledLocal, onTap: (!enabledLocal || widget.readOnly) ? null : (() =>
-        {
-            if (!controllerLocal.selection.isValid)
-            {
-                controllerLocal.selection = TextSelection.CreateCollapsed(offset: controllerLocal.text.Length);
-            }
-            _requestKeyboard();
-        }), onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus(), onDidLoseAccessibilityFocus: () => handleDidLoseAccessibilityFocus(), onFocus: enabledLocal ? (() =>
-        {
-            DartRuntimePrimitives.Assert(() => _effectiveFocusNode.canRequestFocus, () => (object?)"Received SemanticsAction.focus from the engine. However, the FocusNode " + "of this text field cannot gain focus. This likely indicates a bug. " + "If this text field cannot be focused (e.g. because it is not " + "enabled), then its corresponding semantics node must be configured " + "such that the assistive technology cannot request focus on it.");
-            if (_effectiveFocusNode.canRequestFocus && !_effectiveFocusNode.hasFocus)
-            {
-                _effectiveFocusNode.requestFocus();
-            }
-            else
-            {
-                if (!widget.readOnly)
-                {
-                    _requestKeyboard();
-                }
-            }
-        }) : null, child: new TextFieldTapRegion(child: new IgnorePointer(ignoring: !enabledLocal, child: new Container(decoration: effectiveDecoration, color: (!enabledLocal && (effectiveDecoration is null)) ? disabledColor : null, child: _selectionGestureDetectorBuilder.buildGestureDetector(behavior: HitTestBehavior.translucent, child: new Align(alignment: new Alignment(-1.0, _textAlignVertical.y), widthFactor: 1.0, heightFactor: 1.0, child: _addTextDependentAttachments(paddedEditable, textStyleLocal, placeholderStyleLocal)))))));
+        BoxDecoration? effectiveDecoration = widget.decoration?.copyWith(
+            border: resolvedBorder,
+            color: enabledLocal
+                ? decorationColor
+                : (
+                    Equals(widget.decoration, Text_fieldLibrary._kDefaultRoundedBorderDecoration)
+                        ? disabledColor
+                        : widget.decoration?.color
+                )
+        );
+        Color selectionColorLocal =
+            CupertinoDynamicColor.maybeResolve(
+                DefaultSelectionStyle.of(context).selectionColor,
+                context
+            ) ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
+        SpellCheckConfiguration spellCheckConfigurationLocal =
+            CupertinoTextField.inferIOSSpellCheckConfiguration(widget.spellCheckConfiguration);
+        Widget paddedEditable = new Padding(
+            padding: widget.padding,
+            child: new RepaintBoundary(
+                child: new UnmanagedRestorationScope(
+                    bucket: bucket,
+                    child: new EditableText(
+                        key: editableTextKey,
+                        controller: controllerLocal,
+                        undoController: widget.undoController,
+                        readOnly: widget.readOnly || !enabledLocal,
+                        toolbarOptions: widget.toolbarOptions,
+                        showCursor: widget.showCursor,
+                        showSelectionHandles: _showSelectionHandles,
+                        focusNode: _effectiveFocusNode,
+                        keyboardType: widget.keyboardType,
+                        textInputAction: widget.textInputAction,
+                        textCapitalization: widget.textCapitalization,
+                        style: textStyleLocal,
+                        strutStyle: widget.strutStyle,
+                        textAlign: widget.textAlign,
+                        textDirection: widget.textDirection,
+                        autofocus: widget.autofocus,
+                        obscuringCharacter: widget.obscuringCharacter,
+                        obscureText: widget.obscureText,
+                        autocorrect: widget.autocorrect,
+                        smartDashesType: widget.smartDashesType,
+                        smartQuotesType: widget.smartQuotesType,
+                        enableSuggestions: widget.enableSuggestions,
+                        maxLines: widget.maxLines,
+                        minLines: widget.minLines,
+                        expands: widget.expands,
+                        magnifierConfiguration: widget.magnifierConfiguration
+                            ?? CupertinoTextField._iosMagnifierConfiguration,
+                        selectionColor: _effectiveFocusNode.hasFocus ? selectionColorLocal : null,
+                        selectionControls: widget.selectionEnabled ? textSelectionControls : null,
+                        groupId: widget.groupId,
+                        onChanged: widget.onChanged,
+                        onSelectionChanged: _handleSelectionChanged,
+                        onEditingComplete: widget.onEditingComplete,
+                        onSubmitted: widget.onSubmitted,
+                        onTapOutside: widget.onTapOutside,
+                        inputFormatters: formatters,
+                        rendererIgnoresPointer: true,
+                        cursorWidth: widget.cursorWidth,
+                        cursorHeight: widget.cursorHeight,
+                        cursorRadius: widget.cursorRadius,
+                        cursorColor: cursorColorLocal,
+                        cursorOpacityAnimates: widget.cursorOpacityAnimates,
+                        cursorOffset: cursorOffsetLocal,
+                        paintCursorAboveText: true,
+                        autocorrectionTextRectColor: selectionColorLocal,
+                        backgroundCursorColor: CupertinoDynamicColor.resolve(
+                            CupertinoColors.inactiveGray,
+                            context
+                        ),
+                        selectionHeightStyle: widget.selectionHeightStyle,
+                        selectionWidthStyle: widget.selectionWidthStyle,
+                        scrollPadding: widget.scrollPadding,
+                        keyboardAppearance: keyboardAppearanceLocal,
+                        dragStartBehavior: widget.dragStartBehavior,
+                        scrollController: widget.scrollController,
+                        scrollPhysics: widget.scrollPhysics,
+                        enableInteractiveSelection: widget.enableInteractiveSelection,
+                        selectAllOnFocus: widget.selectAllOnFocus,
+                        autofillClient: this,
+                        clipBehavior: widget.clipBehavior,
+                        restorationId: "editable",
+                        scribbleEnabled: widget.scribbleEnabled,
+                        stylusHandwritingEnabled: widget.stylusHandwritingEnabled,
+                        enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
+                        enableInlinePrediction: widget.enableInlinePrediction,
+                        contentInsertionConfiguration: widget.contentInsertionConfiguration,
+                        contextMenuBuilder: widget.contextMenuBuilder,
+                        spellCheckConfiguration: spellCheckConfigurationLocal
+                    )
+                )
+            )
+        );
+        return new Widgets.Semantics(
+            enabled: enabledLocal,
+            onTap: (!enabledLocal || widget.readOnly)
+                ? null
+                : (
+                    () =>
+                    {
+                        if (!controllerLocal.selection.isValid)
+                        {
+                            controllerLocal.selection = TextSelection.CreateCollapsed(
+                                offset: controllerLocal.text.Length
+                            );
+                        }
+                        _requestKeyboard();
+                    }
+                ),
+            onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus(),
+            onDidLoseAccessibilityFocus: () => handleDidLoseAccessibilityFocus(),
+            onFocus: enabledLocal
+                ? (
+                    () =>
+                    {
+                        DartRuntimePrimitives.Assert(
+                            () => _effectiveFocusNode.canRequestFocus,
+                            () =>
+                                (object?)
+                                    "Received SemanticsAction.focus from the engine. However, the FocusNode "
+                                + "of this text field cannot gain focus. This likely indicates a bug. "
+                                + "If this text field cannot be focused (e.g. because it is not "
+                                + "enabled), then its corresponding semantics node must be configured "
+                                + "such that the assistive technology cannot request focus on it."
+                        );
+                        if (_effectiveFocusNode.canRequestFocus && !_effectiveFocusNode.hasFocus)
+                        {
+                            _effectiveFocusNode.requestFocus();
+                        }
+                        else
+                        {
+                            if (!widget.readOnly)
+                            {
+                                _requestKeyboard();
+                            }
+                        }
+                    }
+                )
+                : null,
+            child: new TextFieldTapRegion(
+                child: new IgnorePointer(
+                    ignoring: !enabledLocal,
+                    child: new Container(
+                        decoration: effectiveDecoration,
+                        color: (!enabledLocal && (effectiveDecoration is null))
+                            ? disabledColor
+                            : null,
+                        child: _selectionGestureDetectorBuilder.buildGestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            child: new Align(
+                                alignment: new Alignment(-1.0, _textAlignVertical.y),
+                                widthFactor: 1.0,
+                                heightFactor: 1.0,
+                                child: _addTextDependentAttachments(
+                                    paddedEditable,
+                                    textStyleLocal,
+                                    placeholderStyleLocal
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -799,10 +1669,22 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -817,17 +1699,21 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -845,7 +1731,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -867,17 +1756,25 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -892,28 +1789,65 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection41817 = new List<DiagnosticsNode>();
+                                    __collection41817.Add(
+                                        new ErrorSummary(
+                                            "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                                        )
+                                    );
+                                    __collection41817.Add(
+                                        new ErrorDescription(
+                                            $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                                + "\"restoreState\" was called:"
+                                        )
+                                    );
+                                    __collection41817.AddRange(
+                                        _debugPropertiesWaitingForReregistration!.map<
+                                            IRestorableProperty,
+                                            DiagnosticsNode
+                                        >(
+                                            (property) =>
+                                                new ErrorDescription(
+                                                    $" * {property._restorationId}"
+                                                )
+                                        )
+                                    );
+                                    return __collection41817;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -921,7 +1855,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -945,7 +1882,9 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -969,10 +1908,10 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
         property.removeListener(listener);
         property._unregister();
     }
@@ -1016,16 +1955,16 @@ internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>,
         }
         base.deactivate();
     }
-
 }
 
 public enum _BaselineAlignedStackSlot__text_field
 {
     placeholder,
-    editableText
+    editableText,
 }
 
-internal class _BaselineAlignedStack__text_field : SlottedMultiChildRenderObjectWidget<_BaselineAlignedStackSlot__text_field, RenderBox>
+internal class _BaselineAlignedStack__text_field
+    : SlottedMultiChildRenderObjectWidget<_BaselineAlignedStackSlot__text_field, RenderBox>
 {
     public virtual TextBaseline editableTextBaseline { get; private set; } = default!;
     public virtual TextBaseline placeholderBaseline { get; private set; } = default!;
@@ -1033,7 +1972,13 @@ internal class _BaselineAlignedStack__text_field : SlottedMultiChildRenderObject
     public virtual Widget editableText { get; private set; } = default!;
     public virtual Widget? placeholder { get; private set; }
 
-    internal _BaselineAlignedStack__text_field(TextBaseline editableTextBaseline, TextBaseline placeholderBaseline, TextAlignVertical textAlignVertical, Widget editableText, Widget? placeholder = null)
+    internal _BaselineAlignedStack__text_field(
+        TextBaseline editableTextBaseline,
+        TextBaseline placeholderBaseline,
+        TextAlignVertical textAlignVertical,
+        Widget editableText,
+        Widget? placeholder = null
+    )
     {
         this.editableTextBaseline = editableTextBaseline;
         this.placeholderBaseline = placeholderBaseline;
@@ -1042,46 +1987,71 @@ internal class _BaselineAlignedStack__text_field : SlottedMultiChildRenderObject
         this.placeholder = placeholder;
     }
 
-    public override IEnumerable<_BaselineAlignedStackSlot__text_field> slots => DartRuntimePrimitives.ConvertValue<IEnumerable<_BaselineAlignedStackSlot__text_field>>(Enum.GetValues<_BaselineAlignedStackSlot__text_field>().ToList());
+    public override IEnumerable<_BaselineAlignedStackSlot__text_field> slots =>
+        DartRuntimePrimitives.ConvertValue<IEnumerable<_BaselineAlignedStackSlot__text_field>>(
+            Enum.GetValues<_BaselineAlignedStackSlot__text_field>().ToList()
+        );
+
     public override Widget? childForSlot(_BaselineAlignedStackSlot__text_field slot)
     {
-        return slot switch { _BaselineAlignedStackSlot__text_field.placeholder => placeholder, _BaselineAlignedStackSlot__text_field.editableText => editableText, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return slot switch
+        {
+            _BaselineAlignedStackSlot__text_field.placeholder => placeholder,
+            _BaselineAlignedStackSlot__text_field.editableText => editableText,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderBaselineAlignedStack__text_field(textAlignVertical: textAlignVertical, editableTextBaseline: editableTextBaseline, placeholderBaseline: placeholderBaseline);
+        return new _RenderBaselineAlignedStack__text_field(
+            textAlignVertical: textAlignVertical,
+            editableTextBaseline: editableTextBaseline,
+            placeholderBaseline: placeholderBaseline
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderBaselineAlignedStack__text_field)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderBaselineAlignedStack__text_field>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.textAlignVertical = textAlignVertical;
-    __cascade.editableTextBaseline = editableTextBaseline;
-    __cascade.placeholderBaseline = placeholderBaseline;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderBaselineAlignedStack__text_field>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.textAlignVertical = textAlignVertical;
+                        __cascade.editableTextBaseline = editableTextBaseline;
+                        __cascade.placeholderBaseline = placeholderBaseline;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
-internal class _BaselineAlignedStackParentData__text_field : ContainerBoxParentData<RenderBox>
-{
-}
+internal class _BaselineAlignedStackParentData__text_field : ContainerBoxParentData<RenderBox> { }
 
-public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContainerRenderObjectMixin<_BaselineAlignedStackSlot__text_field, RenderBox>
+public class _RenderBaselineAlignedStack__text_field
+    : RenderBox,
+        SlottedContainerRenderObjectMixin<_BaselineAlignedStackSlot__text_field, RenderBox>
 {
     internal virtual TextAlignVertical _textAlignVertical { get; set; } = default!;
     internal virtual TextBaseline _editableTextBaseline { get; set; } = default!;
     internal virtual TextBaseline _placeholderBaseline { get; set; } = default!;
-    public virtual DartMap<_BaselineAlignedStackSlot__text_field, RenderBox> _slotToChild { get; set; } = new DartMap<_BaselineAlignedStackSlot__text_field, RenderBox>();
+    public virtual DartMap<
+        _BaselineAlignedStackSlot__text_field,
+        RenderBox
+    > _slotToChild { get; set; } = new DartMap<_BaselineAlignedStackSlot__text_field, RenderBox>();
 
-    internal _RenderBaselineAlignedStack__text_field(TextAlignVertical textAlignVertical, TextBaseline editableTextBaseline, TextBaseline placeholderBaseline)
+    internal _RenderBaselineAlignedStack__text_field(
+        TextAlignVertical textAlignVertical,
+        TextBaseline editableTextBaseline,
+        TextBaseline placeholderBaseline
+    )
     {
         _textAlignVertical = textAlignVertical;
         _editableTextBaseline = editableTextBaseline;
@@ -1130,6 +2100,7 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
             markNeedsLayout();
         }
     }
+
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)child;
@@ -1141,10 +2112,7 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
 
     internal virtual RenderBox? _placeholderChild
     {
-        get
-        {
-            return childForSlot(_BaselineAlignedStackSlot__text_field.placeholder);
-        }
+        get { return childForSlot(_BaselineAlignedStackSlot__text_field.placeholder); }
     }
     internal virtual RenderBox _editableTextChild
     {
@@ -1155,27 +2123,40 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
             return child!;
         }
     }
+
     public override double computeMinIntrinsicHeight(double width)
     {
-        return Math.Max(_placeholderChild?.getMinIntrinsicHeight(width) ?? 0.0, _editableTextChild.getMinIntrinsicHeight(width));
+        return Math.Max(
+            _placeholderChild?.getMinIntrinsicHeight(width) ?? 0.0,
+            _editableTextChild.getMinIntrinsicHeight(width)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return Math.Max(_placeholderChild?.getMaxIntrinsicHeight(width) ?? 0.0, _editableTextChild.getMaxIntrinsicHeight(width));
+        return Math.Max(
+            _placeholderChild?.getMaxIntrinsicHeight(width) ?? 0.0,
+            _editableTextChild.getMaxIntrinsicHeight(width)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return Math.Max(_placeholderChild?.getMinIntrinsicWidth(height) ?? 0.0, _editableTextChild.getMinIntrinsicWidth(height));
+        return Math.Max(
+            _placeholderChild?.getMinIntrinsicWidth(height) ?? 0.0,
+            _editableTextChild.getMinIntrinsicWidth(height)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return Math.Max(_placeholderChild?.getMaxIntrinsicWidth(height) ?? 0.0, _editableTextChild.getMaxIntrinsicWidth(height));
+        return Math.Max(
+            _placeholderChild?.getMaxIntrinsicWidth(height) ?? 0.0,
+            _editableTextChild.getMaxIntrinsicWidth(height)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1184,13 +2165,32 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
         DartRuntimePrimitives.Assert(() => constraints.hasTightWidth);
         RenderBox? placeholder = _placeholderChild;
         RenderBox editableText = _editableTextChild;
-        var editableTextParentData = ((_BaselineAlignedStackParentData__text_field?)editableText.parentData!)!;
-        var placeholderParentData = ((_BaselineAlignedStackParentData__text_field?)placeholder?.parentData)!;
-        size = _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.layoutChild, getBaseline: ChildLayoutHelper.getBaseline);
-        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(editableText.getDistanceToBaseline(editableTextBaseline));
+        var editableTextParentData = (
+            (_BaselineAlignedStackParentData__text_field?)editableText.parentData!
+        )!;
+        var placeholderParentData = (
+            (_BaselineAlignedStackParentData__text_field?)placeholder?.parentData
+        )!;
+        size = _computeSize(
+            constraints: constraints,
+            layoutChild: ChildLayoutHelper.layoutChild,
+            getBaseline: ChildLayoutHelper.getBaseline
+        );
+        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(
+            editableText.getDistanceToBaseline(editableTextBaseline)
+        );
         double? placeholderBaselineValue = placeholder?.getDistanceToBaseline(placeholderBaseline);
-        DartRuntimePrimitives.Assert(() => (placeholder is not null) || (placeholderBaselineValue is null));
-        Offset baselineDiff = (placeholderBaselineValue is not null) ? new Offset(0.0, editableTextBaselineValue - DartRuntimePrimitives.RequireValue(placeholderBaselineValue)) : Offset.zero;
+        DartRuntimePrimitives.Assert(() =>
+            (placeholder is not null) || (placeholderBaselineValue is null)
+        );
+        Offset baselineDiff =
+            (placeholderBaselineValue is not null)
+                ? new Offset(
+                    0.0,
+                    editableTextBaselineValue
+                        - DartRuntimePrimitives.RequireValue(placeholderBaselineValue)
+                )
+                : Offset.zero;
         var verticalAlignment = new Alignment(0.0, textAlignVertical.y);
         editableTextParentData.offset = verticalAlignment.alongOffset(size - editableText.size);
         placeholderParentData?.offset = editableTextParentData.offset + baselineDiff;
@@ -1202,26 +2202,40 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
         RenderBox editableText = _editableTextChild;
         if (placeholder is not null)
         {
-            var placeholderParentData = ((_BaselineAlignedStackParentData__text_field?)placeholder.parentData!)!;
+            var placeholderParentData = (
+                (_BaselineAlignedStackParentData__text_field?)placeholder.parentData!
+            )!;
             context.paintChild(placeholder, offset + placeholderParentData.offset);
         }
-        var editableTextParentData = ((_BaselineAlignedStackParentData__text_field?)editableText.parentData!)!;
+        var editableTextParentData = (
+            (_BaselineAlignedStackParentData__text_field?)editableText.parentData!
+        )!;
         context.paintChild(editableText, offset + editableTextParentData.offset);
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild, getBaseline: ChildLayoutHelper.getDryBaseline);
+        return _computeSize(
+            constraints: constraints,
+            layoutChild: ChildLayoutHelper.dryLayoutChild,
+            getBaseline: ChildLayoutHelper.getDryBaseline
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
+    internal virtual Size _computeSize(
+        BoxConstraints constraints,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline
+    )
     {
         double widthLocal = constraints.minWidth;
         double heightLocal = constraints.minHeight;
         RenderBox editableText = _editableTextChild;
         Size editableTextSize = layoutChild(editableText, constraints);
-        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(getBaseline(editableText, constraints, editableTextBaseline));
+        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(
+            getBaseline(editableText, constraints, editableTextBaseline)
+        );
         double editableTextDescent = editableTextSize.height - editableTextBaselineValue;
         Size? placeholderSize = default!;
         double? placeholderBaselineValue = default!;
@@ -1231,8 +2245,14 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
             placeholderSize = layoutChild(placeholder, constraints);
             widthLocal = Math.Max(widthLocal, placeholderSize.width);
             placeholderBaselineValue = getBaseline(placeholder, constraints, placeholderBaseline);
-            double placeholderDescent = placeholderSize.height - DartRuntimePrimitives.RequireValue(placeholderBaselineValue);
-            double maxExtentBaseline = Math.Max(editableTextBaselineValue, DartRuntimePrimitives.RequireValue(placeholderBaselineValue)) + Math.Max(editableTextDescent, placeholderDescent);
+            double placeholderDescent =
+                placeholderSize.height
+                - DartRuntimePrimitives.RequireValue(placeholderBaselineValue);
+            double maxExtentBaseline =
+                Math.Max(
+                    editableTextBaselineValue,
+                    DartRuntimePrimitives.RequireValue(placeholderBaselineValue)
+                ) + Math.Max(editableTextDescent, placeholderDescent);
             heightLocal = Math.Max(heightLocal, maxExtentBaseline);
         }
         heightLocal = Math.Max(heightLocal, editableTextSize.height);
@@ -1246,18 +2266,29 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         RenderBox editableText = _editableTextChild;
-        var editableTextParentData = ((_BaselineAlignedStackParentData__text_field?)editableText.parentData!)!;
-        return result.addWithPaintOffset(offset: editableTextParentData.offset, position: position, hitTest: (result, transformed) =>
-        {
-            DartRuntimePrimitives.Assert(() => Equals(transformed, position - editableTextParentData.offset));
-            return editableText.hitTest(result, position: transformed);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        var editableTextParentData = (
+            (_BaselineAlignedStackParentData__text_field?)editableText.parentData!
+        )!;
+        return result.addWithPaintOffset(
+            offset: editableTextParentData.offset,
+            position: position,
+            hitTest: (result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    Equals(transformed, position - editableTextParentData.offset)
+                );
+                return editableText.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RenderBox? childForSlot(_BaselineAlignedStackSlot__text_field slot) => _slotToChild.GetValueOrDefault(slot);
+    public virtual RenderBox? childForSlot(_BaselineAlignedStackSlot__text_field slot) =>
+        _slotToChild.GetValueOrDefault(slot);
+
     public virtual IEnumerable<RenderBox> children => _slotToChild.Values;
+
     public virtual string debugNameForSlot(_BaselineAlignedStackSlot__text_field slot)
     {
         return slot.ToString();
@@ -1284,21 +2315,42 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach(
+            (__arg0) =>
+                ((Action<RenderObject>)redepthChild)(
+                    DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)
+                )
+        );
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach(
+            (__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0))
+        );
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var value = new List<DiagnosticsNode>();
-        var childToSlot = new DartMap<RenderBox, _BaselineAlignedStackSlot__text_field>(_slotToChild.Values, _slotToChild.Keys);
+        var childToSlot = new DartMap<RenderBox, _BaselineAlignedStackSlot__text_field>(
+            _slotToChild.Values,
+            _slotToChild.Keys
+        );
         foreach (RenderBox child in children)
         {
-            _addDiagnostics(child, value, debugNameForSlot(DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<_BaselineAlignedStackSlot__text_field>(childToSlot, child))));
+            _addDiagnostics(
+                child,
+                value,
+                debugNameForSlot(
+                    DartRuntimePrimitives.RequireValue(
+                        DartCollectionRuntime.NullableMapValue<_BaselineAlignedStackSlot__text_field>(
+                            childToSlot,
+                            child
+                        )
+                    )
+                )
+            );
         }
         return value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1324,7 +2376,11 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
         }
     }
 
-    public virtual void _moveChild(RenderBox child, _BaselineAlignedStackSlot__text_field slot, _BaselineAlignedStackSlot__text_field oldSlot)
+    public virtual void _moveChild(
+        RenderBox child,
+        _BaselineAlignedStackSlot__text_field slot,
+        _BaselineAlignedStackSlot__text_field oldSlot
+    )
     {
         DartRuntimePrimitives.Assert(() => !Equals(slot, oldSlot));
         RenderBox? oldChild = _slotToChild.GetValueOrDefault(oldSlot);
@@ -1334,5 +2390,4 @@ public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContain
         }
         _setChild(child, slot);
     }
-
 }

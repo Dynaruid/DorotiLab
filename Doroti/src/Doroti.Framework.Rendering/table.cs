@@ -11,19 +11,21 @@ public class TableCellParentData : BoxParentData
     public virtual long? x { get; set; } = default;
     public virtual long? y { get; set; } = default;
 
-    public override string ToString() => $"{base.ToString()}; {((verticalAlignment is null) ? "default vertical alignment" : $"{verticalAlignment}")}";
+    public override string ToString() =>
+        $"{base.ToString()}; {((verticalAlignment is null) ? "default vertical alignment" : $"{verticalAlignment}")}";
 }
 
 public abstract class TableColumnWidth
 {
-    protected TableColumnWidth()
-    {
-    }
+    protected TableColumnWidth() { }
 
     public abstract double minIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth);
     public abstract double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth);
+
     public virtual double? flex(IEnumerable<RenderBox> cells) => null;
-    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "TableColumnWidth");
+
+    public override string ToString() =>
+        objectRuntimeTypeFunctions.objectRuntimeType(this, "TableColumnWidth");
 }
 
 public class IntrinsicColumnWidth : TableColumnWidth
@@ -58,7 +60,9 @@ public class IntrinsicColumnWidth : TableColumnWidth
     }
 
     public override double? flex(IEnumerable<RenderBox> cells) => _flex;
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "IntrinsicColumnWidth")}(flex: {_flex?.toStringAsFixed(1L)})";
+
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "IntrinsicColumnWidth")}(flex: {_flex?.toStringAsFixed(1L)})";
 }
 
 public class FixedColumnWidth : TableColumnWidth
@@ -82,7 +86,8 @@ public class FixedColumnWidth : TableColumnWidth
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedColumnWidth")}({Foundation.DebugLibrary.debugFormatDouble(value)})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedColumnWidth")}({Foundation.DebugLibrary.debugFormatDouble(value)})";
 }
 
 public class FractionColumnWidth : TableColumnWidth
@@ -114,7 +119,8 @@ public class FractionColumnWidth : TableColumnWidth
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FractionColumnWidth")}({value})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FractionColumnWidth")}({value})";
 }
 
 public class FlexColumnWidth : TableColumnWidth
@@ -144,7 +150,8 @@ public class FlexColumnWidth : TableColumnWidth
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FlexColumnWidth")}({Foundation.DebugLibrary.debugFormatDouble(value)})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FlexColumnWidth")}({Foundation.DebugLibrary.debugFormatDouble(value)})";
 }
 
 public class MaxColumnWidth : TableColumnWidth
@@ -160,13 +167,19 @@ public class MaxColumnWidth : TableColumnWidth
 
     public override double minIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
-        return Math.Max(a.minIntrinsicWidth(cells, containerWidth), b.minIntrinsicWidth(cells, containerWidth));
+        return Math.Max(
+            a.minIntrinsicWidth(cells, containerWidth),
+            b.minIntrinsicWidth(cells, containerWidth)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
-        return Math.Max(a.maxIntrinsicWidth(cells, containerWidth), b.maxIntrinsicWidth(cells, containerWidth));
+        return Math.Max(
+            a.maxIntrinsicWidth(cells, containerWidth),
+            b.maxIntrinsicWidth(cells, containerWidth)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -185,11 +198,15 @@ public class MaxColumnWidth : TableColumnWidth
                 return DartRuntimePrimitives.RequireValue(aFlex);
             }
         }
-        return Math.Max(DartRuntimePrimitives.RequireValue(aFlex), DartRuntimePrimitives.RequireValue(bFlex));
+        return Math.Max(
+            DartRuntimePrimitives.RequireValue(aFlex),
+            DartRuntimePrimitives.RequireValue(bFlex)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MaxColumnWidth")}({a}, {b})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MaxColumnWidth")}({a}, {b})";
 }
 
 public class MinColumnWidth : TableColumnWidth
@@ -205,13 +222,19 @@ public class MinColumnWidth : TableColumnWidth
 
     public override double minIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
-        return Math.Min(a.minIntrinsicWidth(cells, containerWidth), b.minIntrinsicWidth(cells, containerWidth));
+        return Math.Min(
+            a.minIntrinsicWidth(cells, containerWidth),
+            b.minIntrinsicWidth(cells, containerWidth)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
-        return Math.Min(a.maxIntrinsicWidth(cells, containerWidth), b.maxIntrinsicWidth(cells, containerWidth));
+        return Math.Min(
+            a.maxIntrinsicWidth(cells, containerWidth),
+            b.maxIntrinsicWidth(cells, containerWidth)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -230,11 +253,15 @@ public class MinColumnWidth : TableColumnWidth
                 return DartRuntimePrimitives.RequireValue(aFlex);
             }
         }
-        return Math.Min(DartRuntimePrimitives.RequireValue(aFlex), DartRuntimePrimitives.RequireValue(bFlex));
+        return Math.Min(
+            DartRuntimePrimitives.RequireValue(aFlex),
+            DartRuntimePrimitives.RequireValue(bFlex)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MinColumnWidth")}({a}, {b})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MinColumnWidth")}({a}, {b})";
 }
 
 public enum TableCellVerticalAlignment
@@ -244,7 +271,7 @@ public enum TableCellVerticalAlignment
     bottom,
     baseline,
     fill,
-    intrinsicHeight
+    intrinsicHeight,
 }
 
 public class RenderTable : RenderBox
@@ -261,20 +288,41 @@ public class RenderTable : RenderBox
     internal virtual ImageConfiguration _configuration { get; set; } = default!;
     internal virtual TableCellVerticalAlignment _defaultVerticalAlignment { get; set; } = default!;
     internal virtual TextBaseline? _textBaseline { get; set; } = default;
-    internal virtual DartMap<long, _Index__table> _idToIndexMap { get; private set; } = new DartMap<long, _Index__table>();
-    internal virtual DartMap<long, SemanticsNode> _cachedRows { get; private set; } = new DartMap<long, SemanticsNode>();
-    internal virtual DartMap<_Index__table, SemanticsNode> _cachedCells { get; private set; } = new DartMap<_Index__table, SemanticsNode>();
+    internal virtual DartMap<long, _Index__table> _idToIndexMap { get; private set; } =
+        new DartMap<long, _Index__table>();
+    internal virtual DartMap<long, SemanticsNode> _cachedRows { get; private set; } =
+        new DartMap<long, SemanticsNode>();
+    internal virtual DartMap<_Index__table, SemanticsNode> _cachedCells { get; private set; } =
+        new DartMap<_Index__table, SemanticsNode>();
     internal virtual double? _baselineDistance { get; set; } = default;
     internal virtual List<double> _rowTops { get; private set; } = new List<double>();
     internal virtual IEnumerable<double>? _columnLefts { get; set; } = default;
     internal virtual double _tableWidth { get; set; } = default!;
 
-    public RenderTable(long? columns = null, long? rows = null, DartMap<long, TableColumnWidth>? columnWidths = null, TableColumnWidth defaultColumnWidth = default!, TextDirection textDirection = default!, TableBorder? border = null, List<Decoration?>? rowDecorations = null, ImageConfiguration configuration = default!, TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null, List<List<RenderBox>>? children = null)
+    public RenderTable(
+        long? columns = null,
+        long? rows = null,
+        DartMap<long, TableColumnWidth>? columnWidths = null,
+        TableColumnWidth defaultColumnWidth = default!,
+        TextDirection textDirection = default!,
+        TableBorder? border = null,
+        List<Decoration?>? rowDecorations = null,
+        ImageConfiguration configuration = default!,
+        TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top,
+        TextBaseline? textBaseline = null,
+        List<List<RenderBox>>? children = null
+    )
     {
         TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new FlexColumnWidth();
         ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         _textDirection = textDirection;
-        _columns = columns ?? (((children is not null) && (checked((long)children.Count) != 0)) ? checked(children.First().Count) : 0L);
+        _columns =
+            columns
+            ?? (
+                ((children is not null) && (checked((long)children.Count) != 0))
+                    ? checked(children.First().Count)
+                    : 0L
+            );
         _rows = rows ?? 0L;
         _columnWidths = columnWidths ?? new DartMap<long, TableColumnWidth>();
         _defaultColumnWidth = __defaultColumnWidth;
@@ -285,7 +333,9 @@ public class RenderTable : RenderBox
         System.Diagnostics.Debug.Assert((columns is null) || (columns >= 0L));
         System.Diagnostics.Debug.Assert((rows is null) || (rows >= 0L));
         System.Diagnostics.Debug.Assert((rows is null) || (children is null));
-        _children = new List<RenderBox?>(Enumerable.Repeat<RenderBox?>(null, checked((int)(_columns * _rows))));
+        _children = new List<RenderBox?>(
+            Enumerable.Repeat<RenderBox?>(null, checked((int)(_columns * _rows)))
+        );
         this.rowDecorations = rowDecorations;
         children?.forEach(row => addRow(new List<RenderBox?>(row)));
     }
@@ -304,7 +354,9 @@ public class RenderTable : RenderBox
             long oldColumns = columns;
             List<RenderBox?> oldChildren = _children;
             _columns = DartRuntimePrimitives.RequireValue(__value);
-            _children = new List<RenderBox?>(Enumerable.Repeat<RenderBox?>(null, checked((int)(columns * rows))));
+            _children = new List<RenderBox?>(
+                Enumerable.Repeat<RenderBox?>(null, checked((int)(columns * rows)))
+            );
             long columnsToCopy = Math.Min(columns, oldColumns);
             for (var y = 0L; y < rows; y += 1L)
             {
@@ -343,7 +395,11 @@ public class RenderTable : RenderBox
             }
             if (_rows > DartRuntimePrimitives.RequireValue(__value))
             {
-                for (long xy = columns * DartRuntimePrimitives.RequireValue(__value); xy < checked(_children.Count); xy += 1L)
+                for (
+                    long xy = columns * DartRuntimePrimitives.RequireValue(__value);
+                    xy < checked(_children.Count);
+                    xy += 1L
+                )
                 {
                     if (_children[(int)xy] is not null)
                     {
@@ -374,6 +430,7 @@ public class RenderTable : RenderBox
             markNeedsLayout();
         }
     }
+
     public virtual void setColumnWidth(long column, TableColumnWidth value)
     {
         if (Equals(_columnWidths.GetValueOrDefault(column), value))
@@ -426,6 +483,7 @@ public class RenderTable : RenderBox
             markNeedsPaint();
         }
     }
+
     [System.Diagnostics.CodeAnalysis.AllowNull]
     public virtual List<Decoration?> rowDecorations
     {
@@ -445,7 +503,15 @@ public class RenderTable : RenderBox
                     painter?.dispose();
                 }
             }
-            _rowDecorationPainters = (_rowDecorations is not null) ? new List<BoxPainter?>(Enumerable.Repeat<BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count)))) : null;
+            _rowDecorationPainters =
+                (_rowDecorations is not null)
+                    ? new List<BoxPainter?>(
+                        Enumerable.Repeat<BoxPainter?>(
+                            null,
+                            checked((int)checked((long)_rowDecorations!.Count))
+                        )
+                    )
+                    : null;
         }
     }
     public virtual ImageConfiguration configuration
@@ -490,6 +556,7 @@ public class RenderTable : RenderBox
             markNeedsLayout();
         }
     }
+
     public override void setupParentData(RenderObject child)
     {
         if (child.parentData is not TableCellParentData)
@@ -513,13 +580,33 @@ public class RenderTable : RenderBox
         _cachedCells.Clear();
     }
 
-    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
+    public override void assembleSemanticsNode(
+        SemanticsNode node,
+        SemanticsConfiguration config,
+        IEnumerable<SemanticsNode> children
+    )
     {
         var rows = new List<SemanticsNode>();
-        var rawCells = new List<List<List<SemanticsNode>>>(Enumerable.Select(Enumerable.Range(0, checked((int)_rows)), (rowIndex) => new List<List<SemanticsNode>>(Enumerable.Select(Enumerable.Range(0, checked((int)_columns)), (columnIndex) => new List<SemanticsNode>()))));
+        var rawCells = new List<List<List<SemanticsNode>>>(
+            Enumerable.Select(
+                Enumerable.Range(0, checked((int)_rows)),
+                (rowIndex) =>
+                    new List<List<SemanticsNode>>(
+                        Enumerable.Select(
+                            Enumerable.Range(0, checked((int)_columns)),
+                            (columnIndex) => new List<SemanticsNode>()
+                        )
+                    )
+            )
+        );
         Rect rectWithOffset(SemanticsNode node)
         {
-            Offset offset = ((node.transform is not null) ? MatrixUtils.getAsTranslation(node.transform!) : null) ?? Offset.zero;
+            Offset offset =
+                (
+                    (node.transform is not null)
+                        ? MatrixUtils.getAsTranslation(node.transform!)
+                        : null
+                ) ?? Offset.zero;
             return node.rect.shift(offset);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
@@ -554,8 +641,17 @@ public class RenderTable : RenderBox
         void shiftTransform(SemanticsNode node, double dx, double dy)
         {
             Matrix4? previousTransform = node.transform;
-            Offset offsetLocal = ((previousTransform is not null) ? MatrixUtils.getAsTranslation(previousTransform) : null) ?? Offset.zero;
-            var newTransform = Matrix4.translationValues(offsetLocal.dx + dx, offsetLocal.dy + dy, 0);
+            Offset offsetLocal =
+                (
+                    (previousTransform is not null)
+                        ? MatrixUtils.getAsTranslation(previousTransform)
+                        : null
+                ) ?? Offset.zero;
+            var newTransform = Matrix4.translationValues(
+                offsetLocal.dx + dx,
+                offsetLocal.dy + dy,
+                0
+            );
             node.transform = newTransform;
         }
         foreach (var child in children)
@@ -588,10 +684,14 @@ public class RenderTable : RenderBox
             {
                 continue;
             }
-            SemanticsNode newRow = _cachedRows.GetValueOrDefault(yNested) ?? (_cachedRows[yNested] = new SemanticsNode(showOnScreen: () =>
-            {
-                showOnScreen(descendant: this, rect: rowBox);
-            }));
+            SemanticsNode newRow =
+                _cachedRows.GetValueOrDefault(yNested)
+                ?? (
+                    _cachedRows[yNested] = new SemanticsNode(showOnScreen: () =>
+                    {
+                        showOnScreen(descendant: this, rect: rowBox);
+                    })
+                );
             var cells = new List<SemanticsNode>();
             for (var xNested = 0L; xNested < columns; xNested++)
             {
@@ -600,7 +700,12 @@ public class RenderTable : RenderBox
                 {
                     continue;
                 }
-                bool addCellWrapper = (checked(rawChildrens.Count) > 1L) || (!Equals(rawChildrens.Single().role, SemanticsRole.cell)) && (!Equals(rawChildrens.Single().role, SemanticsRole.columnHeader));
+                bool addCellWrapper =
+                    (checked(rawChildrens.Count) > 1L)
+                    || (
+                        (!Equals(rawChildrens.Single().role, SemanticsRole.cell))
+                        && (!Equals(rawChildrens.Single().role, SemanticsRole.columnHeader))
+                    );
                 SemanticsNode cellLocal = default!;
                 if (!addCellWrapper)
                 {
@@ -609,39 +714,78 @@ public class RenderTable : RenderBox
                 else
                 {
                     var indexLocal = new _Index__table(yNested, xNested);
-                    cellLocal = ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = _cachedCells.putIfAbsent(indexLocal, () => new SemanticsNode());
-    __cascade.updateWith(config: ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = new SemanticsConfiguration();
-    __cascade.role = SemanticsRole.cell;
-    return __cascade;
-}))(), childrenInInversePaintOrder: rawChildrens);
-    return __cascade;
-}))();
+                    cellLocal = (
+                        (Func<SemanticsNode>)(
+                            () =>
+                            {
+                                var __cascade = _cachedCells.putIfAbsent(
+                                    indexLocal,
+                                    () => new SemanticsNode()
+                                );
+                                __cascade.updateWith(
+                                    config: (
+                                        (Func<SemanticsConfiguration>)(
+                                            () =>
+                                            {
+                                                var __cascade = new SemanticsConfiguration();
+                                                __cascade.role = SemanticsRole.cell;
+                                                return __cascade;
+                                            }
+                                        )
+                                    )(),
+                                    childrenInInversePaintOrder: rawChildrens
+                                );
+                                return __cascade;
+                            }
+                        )
+                    )();
                 }
-                double cellWidth = (xNested == (_columns - 1L)) ? (rowBox.width - _columnLefts!.elementAt(xNested)) : (_columnLefts!.elementAt(xNested + 1L) - _columnLefts!.elementAt(xNested));
+                double cellWidth =
+                    (xNested == (_columns - 1L))
+                        ? (rowBox.width - _columnLefts!.elementAt(xNested))
+                        : (
+                            _columnLefts!.elementAt(xNested + 1L) - _columnLefts!.elementAt(xNested)
+                        );
                 if (cellWidth <= 0.0)
                 {
                     continue;
                 }
                 if (addCellWrapper)
                 {
-                    ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = cellLocal;
-    __cascade.transform = Matrix4.translationValues(_columnLefts!.elementAt(xNested), 0, 0);
-    __cascade.rect = Rect.fromLTWH(0, 0, cellWidth, rowBox.height);
-    return __cascade;
-}))();
+                    (
+                        (Func<SemanticsNode>)(
+                            () =>
+                            {
+                                var __cascade = cellLocal;
+                                __cascade.transform = Matrix4.translationValues(
+                                    _columnLefts!.elementAt(xNested),
+                                    0,
+                                    0
+                                );
+                                __cascade.rect = Rect.fromLTWH(0, 0, cellWidth, rowBox.height);
+                                return __cascade;
+                            }
+                        )
+                    )();
                 }
                 foreach (var childLocal in rawChildrens)
                 {
                     _idToIndexMap[childLocal.id] = new _Index__table(yNested, xNested);
                     Rect localRect = rectWithOffset(childLocal);
-                    double dyLocal = (localRect.bottom > (rowBox.height + Foundation.ConstantsLibrary.precisionErrorTolerance)) ? -_rowTops.elementAt(yNested) : 0.0;
-                    double dxLocal = addCellWrapper ? ((localRect.left >= cellWidth) ? -_columnLefts!.elementAt(xNested) : 0.0) : ((localRect.right <= _columnLefts!.elementAt(xNested)) ? _columnLefts!.elementAt(xNested) : 0.0);
+                    double dyLocal =
+                        (
+                            localRect.bottom
+                            > (rowBox.height + Foundation.ConstantsLibrary.precisionErrorTolerance)
+                        )
+                            ? -_rowTops.elementAt(yNested)
+                            : 0.0;
+                    double dxLocal = addCellWrapper
+                        ? ((localRect.left >= cellWidth) ? -_columnLefts!.elementAt(xNested) : 0.0)
+                        : (
+                            (localRect.right <= _columnLefts!.elementAt(xNested))
+                                ? _columnLefts!.elementAt(xNested)
+                                : 0.0
+                        );
                     if ((dxLocal != 0L) || (dyLocal != 0L))
                     {
                         shiftTransform(childLocal, dxLocal, dyLocal);
@@ -650,20 +794,31 @@ public class RenderTable : RenderBox
                 cellLocal.indexInParent = xNested;
                 cells.Add(cellLocal);
             }
-            ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = newRow;
-    __cascade.updateWith(config: ((Func<SemanticsConfiguration>)(() =>
-{
-    var __cascade = new SemanticsConfiguration();
-    __cascade.indexInParent = yNested;
-    __cascade.role = SemanticsRole.row;
-    return __cascade;
-}))(), childrenInInversePaintOrder: cells);
-    __cascade.transform = Matrix4.translationValues(rowBox.left, rowBox.top, 0);
-    __cascade.rect = Rect.fromLTWH(0, 0, rowBox.width, rowBox.height);
-    return __cascade;
-}))();
+            (
+                (Func<SemanticsNode>)(
+                    () =>
+                    {
+                        var __cascade = newRow;
+                        __cascade.updateWith(
+                            config: (
+                                (Func<SemanticsConfiguration>)(
+                                    () =>
+                                    {
+                                        var __cascade = new SemanticsConfiguration();
+                                        __cascade.indexInParent = yNested;
+                                        __cascade.role = SemanticsRole.row;
+                                        return __cascade;
+                                    }
+                                )
+                            )(),
+                            childrenInInversePaintOrder: cells
+                        );
+                        __cascade.transform = Matrix4.translationValues(rowBox.left, rowBox.top, 0);
+                        __cascade.rect = Rect.fromLTWH(0, 0, rowBox.width, rowBox.height);
+                        return __cascade;
+                    }
+                )
+            )();
             rows.Add(newRow);
         }
         node.updateWith(config: config, childrenInInversePaintOrder: rows);
@@ -676,7 +831,9 @@ public class RenderTable : RenderBox
             return;
         }
         DartRuntimePrimitives.Assert(() => columns >= 0L);
-        if ((DartRuntimePrimitives.RequireValue(columns) == 0L) || (checked((long)cells.Count) == 0))
+        if (
+            (DartRuntimePrimitives.RequireValue(columns) == 0L) || (checked((long)cells.Count) == 0)
+        )
         {
             DartRuntimePrimitives.Assert(() => checked((long)cells.Count) == 0);
             _columns = DartRuntimePrimitives.RequireValue(columns);
@@ -697,7 +854,9 @@ public class RenderTable : RenderBox
             markNeedsLayout();
             return;
         }
-        DartRuntimePrimitives.Assert(() => (checked(cells.Count) % DartRuntimePrimitives.RequireValue(columns)) == 0L);
+        DartRuntimePrimitives.Assert(() =>
+            (checked(cells.Count) % DartRuntimePrimitives.RequireValue(columns)) == 0L
+        );
         HashSet<RenderBox> lostChildren = new HashSet<RenderBox>();
         for (var y = 0L; y < _rows; y += 1L)
         {
@@ -705,7 +864,15 @@ public class RenderTable : RenderBox
             {
                 long xyOld = x + (y * _columns);
                 long xyNew = x + (y * DartRuntimePrimitives.RequireValue(columns));
-                if ((xyOld < checked(_children.Count)) && (_children[(int)xyOld] is not null) && ((x >= DartRuntimePrimitives.RequireValue(columns)) || (xyNew >= checked(cells.Count)) || (!Equals(_children[(int)xyOld], cells[(int)xyNew]))))
+                if (
+                    (xyOld < checked(_children.Count))
+                    && (_children[(int)xyOld] is not null)
+                    && (
+                        (x >= DartRuntimePrimitives.RequireValue(columns))
+                        || (xyNew >= checked(cells.Count))
+                        || (!Equals(_children[(int)xyOld], cells[(int)xyNew]))
+                    )
+                )
                 {
                     lostChildren.Add(_children[(int)xyOld]!);
                 }
@@ -714,11 +881,23 @@ public class RenderTable : RenderBox
         var yLocal = 0L;
         while ((yLocal * DartRuntimePrimitives.RequireValue(columns)) < checked(cells.Count))
         {
-            for (var xLocal = 0L; xLocal < DartRuntimePrimitives.RequireValue(columns); xLocal += 1L)
+            for (
+                var xLocal = 0L;
+                xLocal < DartRuntimePrimitives.RequireValue(columns);
+                xLocal += 1L
+            )
             {
                 long xyNewLocal = xLocal + (yLocal * DartRuntimePrimitives.RequireValue(columns));
                 long xyOldLocal = xLocal + (yLocal * _columns);
-                if ((cells[(int)xyNewLocal] is { } newChild) && ((xLocal >= _columns) || (yLocal >= _rows) || (xyOldLocal >= checked(_children.Count)) || (!Equals(_children[(int)xyOldLocal], cells[(int)xyNewLocal]))))
+                if (
+                    (cells[(int)xyNewLocal] is { } newChild)
+                    && (
+                        (xLocal >= _columns)
+                        || (yLocal >= _rows)
+                        || (xyOldLocal >= checked(_children.Count))
+                        || (!Equals(_children[(int)xyOldLocal], cells[(int)xyNewLocal]))
+                    )
+                )
                 {
                     if (!lostChildren.Remove(newChild))
                     {
@@ -732,7 +911,9 @@ public class RenderTable : RenderBox
         _columns = DartRuntimePrimitives.RequireValue(columns);
         _rows = checked(checked(cells.Count) / DartRuntimePrimitives.RequireValue(columns));
         _children = new List<RenderBox?>(cells);
-        DartRuntimePrimitives.Assert(() => checked(_children.Count) == (rows * DartRuntimePrimitives.RequireValue(columns)));
+        DartRuntimePrimitives.Assert(() =>
+            checked(_children.Count) == (rows * DartRuntimePrimitives.RequireValue(columns))
+        );
         markNeedsLayout();
     }
 
@@ -812,7 +993,12 @@ public class RenderTable : RenderBox
             {
                 painter?.dispose();
             }
-            _rowDecorationPainters = new List<BoxPainter?>(Enumerable.Repeat<BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count))));
+            _rowDecorationPainters = new List<BoxPainter?>(
+                Enumerable.Repeat<BoxPainter?>(
+                    null,
+                    checked((int)checked((long)_rowDecorations!.Count))
+                )
+            );
         }
         foreach (RenderBox? child in _children)
         {
@@ -880,7 +1066,9 @@ public class RenderTable : RenderBox
         {
             return 0.0;
         }
-        List<double> widths = _computeColumnWidths(BoxConstraints.CreateTightForFinite(width: width));
+        List<double> widths = _computeColumnWidths(
+            BoxConstraints.CreateTightForFinite(width: width)
+        );
         var rowTop = 0.0;
         for (var y = 0L; y < rows; y += 1L)
         {
@@ -953,12 +1141,18 @@ public class RenderTable : RenderBox
         {
             TableColumnWidth columnWidth = _columnWidths.GetValueOrDefault(x) ?? defaultColumnWidth;
             IEnumerable<RenderBox> columnCells = column(x);
-            double maxIntrinsicWidthLocal = columnWidth.maxIntrinsicWidth(columnCells, constraints.maxWidth);
+            double maxIntrinsicWidthLocal = columnWidth.maxIntrinsicWidth(
+                columnCells,
+                constraints.maxWidth
+            );
             DartRuntimePrimitives.Assert(() => double.IsFinite(maxIntrinsicWidthLocal));
             DartRuntimePrimitives.Assert(() => maxIntrinsicWidthLocal >= 0.0);
             widths[(int)x] = maxIntrinsicWidthLocal;
             tableWidth += maxIntrinsicWidthLocal;
-            double minIntrinsicWidthLocal = columnWidth.minIntrinsicWidth(columnCells, constraints.maxWidth);
+            double minIntrinsicWidthLocal = columnWidth.minIntrinsicWidth(
+                columnCells,
+                constraints.maxWidth
+            );
             DartRuntimePrimitives.Assert(() => double.IsFinite(minIntrinsicWidthLocal));
             DartRuntimePrimitives.Assert(() => minIntrinsicWidthLocal >= 0.0);
             minWidths[(int)x] = minIntrinsicWidthLocal;
@@ -967,8 +1161,12 @@ public class RenderTable : RenderBox
             if (flexLocal is not null)
             {
                 double flex__38095__value38143 = DartRuntimePrimitives.RequireValue(flexLocal);
-                DartRuntimePrimitives.Assert(() => double.IsFinite(DartRuntimePrimitives.RequireValue(flex__38095__value38143)));
-                DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(flex__38095__value38143) > 0.0);
+                DartRuntimePrimitives.Assert(() =>
+                    double.IsFinite(DartRuntimePrimitives.RequireValue(flex__38095__value38143))
+                );
+                DartRuntimePrimitives.Assert(() =>
+                    DartRuntimePrimitives.RequireValue(flex__38095__value38143) > 0.0
+                );
                 flexes[(int)x] = DartRuntimePrimitives.RequireValue(flex__38095__value38143);
                 totalFlex += DartRuntimePrimitives.RequireValue(flex__38095__value38143);
             }
@@ -999,7 +1197,10 @@ public class RenderTable : RenderBox
                 {
                     if (flexes[(int)xLocal] is not null)
                     {
-                        double flexedWidth = remainingWidth * DartRuntimePrimitives.RequireValue(flexes[(int)xLocal]) / totalFlex;
+                        double flexedWidth =
+                            remainingWidth
+                            * DartRuntimePrimitives.RequireValue(flexes[(int)xLocal])
+                            / totalFlex;
                         DartRuntimePrimitives.Assert(() => double.IsFinite(flexedWidth));
                         DartRuntimePrimitives.Assert(() => flexedWidth >= 0.0);
                         if (widths[(int)xLocal] < flexedWidth)
@@ -1010,7 +1211,10 @@ public class RenderTable : RenderBox
                         }
                     }
                 }
-                DartRuntimePrimitives.Assert(() => (tableWidth + Foundation.ConstantsLibrary.precisionErrorTolerance) >= targetWidth);
+                DartRuntimePrimitives.Assert(() =>
+                    (tableWidth + Foundation.ConstantsLibrary.precisionErrorTolerance)
+                    >= targetWidth
+                );
             }
         }
         else
@@ -1029,14 +1233,23 @@ public class RenderTable : RenderBox
         {
             double deficit = tableWidth - maxWidthConstraint;
             long availableColumns = columns;
-            while ((deficit > Foundation.ConstantsLibrary.precisionErrorTolerance) && (totalFlex > Foundation.ConstantsLibrary.precisionErrorTolerance))
+            while (
+                (deficit > Foundation.ConstantsLibrary.precisionErrorTolerance)
+                && (totalFlex > Foundation.ConstantsLibrary.precisionErrorTolerance)
+            )
             {
                 var newTotalFlex = 0.0;
                 for (var xNested = 0L; xNested < columns; xNested += 1L)
                 {
                     if (flexes[(int)xNested] is not null)
                     {
-                        double newWidth = widths[(int)xNested] - (deficit * DartRuntimePrimitives.RequireValue(flexes[(int)xNested]) / totalFlex);
+                        double newWidth =
+                            widths[(int)xNested]
+                            - (
+                                deficit
+                                * DartRuntimePrimitives.RequireValue(flexes[(int)xNested])
+                                / totalFlex
+                            );
                         DartRuntimePrimitives.Assert(() => double.IsFinite(newWidth));
                         if (newWidth <= minWidths[(int)xNested])
                         {
@@ -1049,14 +1262,19 @@ public class RenderTable : RenderBox
                         {
                             deficit -= widths[(int)xNested] - newWidth;
                             widths[(int)xNested] = newWidth;
-                            newTotalFlex += DartRuntimePrimitives.RequireValue(flexes[(int)xNested]);
+                            newTotalFlex += DartRuntimePrimitives.RequireValue(
+                                flexes[(int)xNested]
+                            );
                         }
                         DartRuntimePrimitives.Assert(() => widths[(int)xNested] >= 0.0);
                     }
                 }
                 totalFlex = newTotalFlex;
             }
-            while ((deficit > Foundation.ConstantsLibrary.precisionErrorTolerance) && (availableColumns > 0L))
+            while (
+                (deficit > Foundation.ConstantsLibrary.precisionErrorTolerance)
+                && (availableColumns > 0L)
+            )
             {
                 double deltaAlternate = deficit / availableColumns;
                 DartRuntimePrimitives.Assert(() => deltaAlternate != 0L);
@@ -1112,11 +1330,39 @@ public class RenderTable : RenderBox
                 continue;
             }
             var childParentData = ((TableCellParentData?)child.parentData!)!;
-            double? childBaseline = (childParentData.verticalAlignment ?? defaultVerticalAlignment) switch { TableCellVerticalAlignment.baseline => child.getDryBaseline(childConstraints, baseline), TableCellVerticalAlignment.baseline or TableCellVerticalAlignment.top or TableCellVerticalAlignment.middle or TableCellVerticalAlignment.bottom or TableCellVerticalAlignment.fill => null, TableCellVerticalAlignment.intrinsicHeight => null, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-            if ((childBaseline is not null) && ((baselineOffset is null) || (DartRuntimePrimitives.RequireValue(baselineOffset) < DartRuntimePrimitives.RequireValue(childBaseline))))
+            double? childBaseline = (
+                childParentData.verticalAlignment ?? defaultVerticalAlignment
+            ) switch
             {
-                double childBaseline__44477__value44974 = DartRuntimePrimitives.RequireValue(childBaseline);
-                baselineOffset = DartRuntimePrimitives.RequireValue(childBaseline__44477__value44974);
+                TableCellVerticalAlignment.baseline => child.getDryBaseline(
+                    childConstraints,
+                    baseline
+                ),
+                TableCellVerticalAlignment.baseline
+                or TableCellVerticalAlignment.top
+                or TableCellVerticalAlignment.middle
+                or TableCellVerticalAlignment.bottom
+                or TableCellVerticalAlignment.fill => null,
+                TableCellVerticalAlignment.intrinsicHeight => null,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
+            if (
+                (childBaseline is not null)
+                && (
+                    (baselineOffset is null)
+                    || (
+                        DartRuntimePrimitives.RequireValue(baselineOffset)
+                        < DartRuntimePrimitives.RequireValue(childBaseline)
+                    )
+                )
+            )
+            {
+                double childBaseline__44477__value44974 = DartRuntimePrimitives.RequireValue(
+                    childBaseline
+                );
+                baselineOffset = DartRuntimePrimitives.RequireValue(
+                    childBaseline__44477__value44974
+                );
             }
         }
         return baselineOffset;
@@ -1145,23 +1391,29 @@ public class RenderTable : RenderBox
                     switch (childParentData.verticalAlignment ?? defaultVerticalAlignment)
                     {
                         case TableCellVerticalAlignment.baseline:
-                            {
-                                DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: "TableCellVerticalAlignment.baseline requires a full layout for baseline metrics to be available."));
-                                return Size.zero;
-                            }
+                        {
+                            DartRuntimePrimitives.Assert(() =>
+                                debugCannotComputeDryLayout(
+                                    reason: "TableCellVerticalAlignment.baseline requires a full layout for baseline metrics to be available."
+                                )
+                            );
+                            return Size.zero;
+                        }
                         case TableCellVerticalAlignment.top:
                         case TableCellVerticalAlignment.middle:
                         case TableCellVerticalAlignment.bottom:
                         case TableCellVerticalAlignment.intrinsicHeight:
-                            {
-                                Size childSize = child.getDryLayout(BoxConstraints.CreateTightFor(width: widths[(int)x]));
-                                rowHeight = Math.Max(rowHeight, childSize.height);
-                                break;
-                            }
+                        {
+                            Size childSize = child.getDryLayout(
+                                BoxConstraints.CreateTightFor(width: widths[(int)x])
+                            );
+                            rowHeight = Math.Max(rowHeight, childSize.height);
+                            break;
+                        }
                         case TableCellVerticalAlignment.fill:
-                            {
-                                break;
-                            }
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -1176,39 +1428,62 @@ public class RenderTable : RenderBox
         BoxConstraints constraintsLocal = constraints;
         long rowsLocal = rows;
         long columnsLocal = columns;
-        DartRuntimePrimitives.Assert(() => checked(_children.Count) == (DartRuntimePrimitives.RequireValue(rowsLocal) * DartRuntimePrimitives.RequireValue(columnsLocal)));
-        if ((DartRuntimePrimitives.RequireValue(rowsLocal) * DartRuntimePrimitives.RequireValue(columnsLocal)) == 0L)
+        DartRuntimePrimitives.Assert(() =>
+            checked(_children.Count)
+            == (
+                DartRuntimePrimitives.RequireValue(rowsLocal)
+                * DartRuntimePrimitives.RequireValue(columnsLocal)
+            )
+        );
+        if (
+            (
+                DartRuntimePrimitives.RequireValue(rowsLocal)
+                * DartRuntimePrimitives.RequireValue(columnsLocal)
+            ) == 0L
+        )
         {
             _tableWidth = 0.0;
             size = constraintsLocal.constrain(Size.zero);
             return;
         }
         List<double> widths = _computeColumnWidths(constraintsLocal);
-        var positions = new List<double>(Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
+        var positions = new List<double>(
+            Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal)))
+        );
         switch (textDirection)
         {
             case TextDirection.rtl:
+            {
+                positions[(int)(columnsLocal - 1L)] = 0.0;
+                for (
+                    long xLocal = DartRuntimePrimitives.RequireValue(columnsLocal) - 2L;
+                    xLocal >= 0L;
+                    xLocal -= 1L
+                )
                 {
-                    positions[(int)(columnsLocal - 1L)] = 0.0;
-                    for (long xLocal = DartRuntimePrimitives.RequireValue(columnsLocal) - 2L; xLocal >= 0L; xLocal -= 1L)
-                    {
-                        positions[(int)xLocal] = positions[(int)(xLocal + 1L)] + widths[(int)(xLocal + 1L)];
-                    }
-                    _columnLefts = Enumerable.Reverse(positions);
-                    _tableWidth = positions.First() + widths.First();
-                    break;
+                    positions[(int)xLocal] =
+                        positions[(int)(xLocal + 1L)] + widths[(int)(xLocal + 1L)];
                 }
+                _columnLefts = Enumerable.Reverse(positions);
+                _tableWidth = positions.First() + widths.First();
+                break;
+            }
             case TextDirection.ltr:
+            {
+                positions[(int)0L] = 0.0;
+                for (
+                    var xAlternate = 1L;
+                    xAlternate < DartRuntimePrimitives.RequireValue(columnsLocal);
+                    xAlternate += 1L
+                )
                 {
-                    positions[(int)0L] = 0.0;
-                    for (var xAlternate = 1L; xAlternate < DartRuntimePrimitives.RequireValue(columnsLocal); xAlternate += 1L)
-                    {
-                        positions[(int)xAlternate] = positions[(int)(xAlternate - 1L)] + widths[(int)(xAlternate - 1L)];
-                    }
-                    _columnLefts = positions;
-                    _tableWidth = positions.Last() + widths.Last();
-                    break;
+                    positions[(int)xAlternate] =
+                        positions[(int)(xAlternate - 1L)] + widths[(int)(xAlternate - 1L)];
                 }
+                _columnLefts = positions;
+                _tableWidth = positions.Last() + widths.Last();
+                break;
+            }
         }
         _rowTops.Clear();
         _baselineDistance = null;
@@ -1220,8 +1495,17 @@ public class RenderTable : RenderBox
             var haveBaseline = false;
             var beforeBaselineDistance = 0.0;
             var afterBaselineDistance = 0.0;
-            var baselines = new List<double>(Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
-            for (var xNested = 0L; xNested < DartRuntimePrimitives.RequireValue(columnsLocal); xNested += 1L)
+            var baselines = new List<double>(
+                Enumerable.Repeat(
+                    0.0,
+                    checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))
+                )
+            );
+            for (
+                var xNested = 0L;
+                xNested < DartRuntimePrimitives.RequireValue(columnsLocal);
+                xNested += 1L
+            )
             {
                 long xy = xNested + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
                 RenderBox? child = _children[(int)xy];
@@ -1233,38 +1517,64 @@ public class RenderTable : RenderBox
                     switch (childParentData.verticalAlignment ?? defaultVerticalAlignment)
                     {
                         case TableCellVerticalAlignment.baseline:
+                        {
+                            DartRuntimePrimitives.Assert(() => textBaseline is not null);
+                            child.layout(
+                                BoxConstraints.CreateTightFor(width: widths[(int)xNested]),
+                                parentUsesSize: true
+                            );
+                            double? childBaseline = child.getDistanceToBaseline(
+                                DartRuntimePrimitives.RequireValue(textBaseline),
+                                onlyReal: true
+                            );
+                            if (childBaseline is not null)
                             {
-                                DartRuntimePrimitives.Assert(() => textBaseline is not null);
-                                child.layout(BoxConstraints.CreateTightFor(width: widths[(int)xNested]), parentUsesSize: true);
-                                double? childBaseline = child.getDistanceToBaseline(DartRuntimePrimitives.RequireValue(textBaseline), onlyReal: true);
-                                if (childBaseline is not null)
-                                {
-                                    double childBaseline__49094__value49237 = DartRuntimePrimitives.RequireValue(childBaseline);
-                                    beforeBaselineDistance = Math.Max(beforeBaselineDistance, DartRuntimePrimitives.RequireValue(childBaseline__49094__value49237));
-                                    afterBaselineDistance = Math.Max(afterBaselineDistance, child.size.height - DartRuntimePrimitives.RequireValue(childBaseline__49094__value49237));
-                                    baselines[(int)xNested] = DartRuntimePrimitives.RequireValue(childBaseline__49094__value49237);
-                                    haveBaseline = true;
-                                }
-                                else
-                                {
-                                    rowHeight = Math.Max(rowHeight, child.size.height);
-                                    childParentData.offset = new Offset(positions[(int)xNested], rowTop);
-                                }
-                                break;
+                                double childBaseline__49094__value49237 =
+                                    DartRuntimePrimitives.RequireValue(childBaseline);
+                                beforeBaselineDistance = Math.Max(
+                                    beforeBaselineDistance,
+                                    DartRuntimePrimitives.RequireValue(
+                                        childBaseline__49094__value49237
+                                    )
+                                );
+                                afterBaselineDistance = Math.Max(
+                                    afterBaselineDistance,
+                                    child.size.height
+                                        - DartRuntimePrimitives.RequireValue(
+                                            childBaseline__49094__value49237
+                                        )
+                                );
+                                baselines[(int)xNested] = DartRuntimePrimitives.RequireValue(
+                                    childBaseline__49094__value49237
+                                );
+                                haveBaseline = true;
                             }
+                            else
+                            {
+                                rowHeight = Math.Max(rowHeight, child.size.height);
+                                childParentData.offset = new Offset(
+                                    positions[(int)xNested],
+                                    rowTop
+                                );
+                            }
+                            break;
+                        }
                         case TableCellVerticalAlignment.top:
                         case TableCellVerticalAlignment.middle:
                         case TableCellVerticalAlignment.bottom:
                         case TableCellVerticalAlignment.intrinsicHeight:
-                            {
-                                child.layout(BoxConstraints.CreateTightFor(width: widths[(int)xNested]), parentUsesSize: true);
-                                rowHeight = Math.Max(rowHeight, child.size.height);
-                                break;
-                            }
+                        {
+                            child.layout(
+                                BoxConstraints.CreateTightFor(width: widths[(int)xNested]),
+                                parentUsesSize: true
+                            );
+                            rowHeight = Math.Max(rowHeight, child.size.height);
+                            break;
+                        }
                         case TableCellVerticalAlignment.fill:
-                            {
-                                break;
-                            }
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -1276,9 +1586,14 @@ public class RenderTable : RenderBox
                 }
                 rowHeight = Math.Max(rowHeight, beforeBaselineDistance + afterBaselineDistance);
             }
-            for (var xCurrent = 0L; xCurrent < DartRuntimePrimitives.RequireValue(columnsLocal); xCurrent += 1L)
+            for (
+                var xCurrent = 0L;
+                xCurrent < DartRuntimePrimitives.RequireValue(columnsLocal);
+                xCurrent += 1L
+            )
             {
-                long xyLocal = xCurrent + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
+                long xyLocal =
+                    xCurrent + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
                 RenderBox? childLocal = _children[(int)xyLocal];
                 if (childLocal is not null)
                 {
@@ -1286,32 +1601,52 @@ public class RenderTable : RenderBox
                     switch (childParentDataLocal.verticalAlignment ?? defaultVerticalAlignment)
                     {
                         case TableCellVerticalAlignment.baseline:
-                            {
-                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + beforeBaselineDistance - baselines[(int)xCurrent]);
-                                break;
-                            }
+                        {
+                            childParentDataLocal.offset = new Offset(
+                                positions[(int)xCurrent],
+                                rowTop + beforeBaselineDistance - baselines[(int)xCurrent]
+                            );
+                            break;
+                        }
                         case TableCellVerticalAlignment.top:
-                            {
-                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop);
-                                break;
-                            }
+                        {
+                            childParentDataLocal.offset = new Offset(
+                                positions[(int)xCurrent],
+                                rowTop
+                            );
+                            break;
+                        }
                         case TableCellVerticalAlignment.middle:
-                            {
-                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + ((rowHeight - childLocal.size.height) / 2.0));
-                                break;
-                            }
+                        {
+                            childParentDataLocal.offset = new Offset(
+                                positions[(int)xCurrent],
+                                rowTop + ((rowHeight - childLocal.size.height) / 2.0)
+                            );
+                            break;
+                        }
                         case TableCellVerticalAlignment.bottom:
-                            {
-                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + rowHeight - childLocal.size.height);
-                                break;
-                            }
+                        {
+                            childParentDataLocal.offset = new Offset(
+                                positions[(int)xCurrent],
+                                rowTop + rowHeight - childLocal.size.height
+                            );
+                            break;
+                        }
                         case TableCellVerticalAlignment.fill:
                         case TableCellVerticalAlignment.intrinsicHeight:
-                            {
-                                childLocal.layout(BoxConstraints.CreateTightFor(width: widths[(int)xCurrent], height: rowHeight));
-                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop);
-                                break;
-                            }
+                        {
+                            childLocal.layout(
+                                BoxConstraints.CreateTightFor(
+                                    width: widths[(int)xCurrent],
+                                    height: rowHeight
+                                )
+                            );
+                            childParentDataLocal.offset = new Offset(
+                                positions[(int)xCurrent],
+                                rowTop
+                            );
+                            break;
+                        }
                     }
                 }
             }
@@ -1319,7 +1654,9 @@ public class RenderTable : RenderBox
         }
         _rowTops.Add(rowTop);
         size = constraintsLocal.constrain(new Size(_tableWidth, rowTop));
-        DartRuntimePrimitives.Assert(() => checked(_rowTops.Count) == (DartRuntimePrimitives.RequireValue(rowsLocal) + 1L));
+        DartRuntimePrimitives.Assert(() =>
+            checked(_rowTops.Count) == (DartRuntimePrimitives.RequireValue(rowsLocal) + 1L)
+        );
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -1331,11 +1668,17 @@ public class RenderTable : RenderBox
             if (child is not null)
             {
                 var childParentData = ((BoxParentData?)child.parentData!)!;
-                bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
-                {
-                    DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
-                    return child.hitTest(result, position: transformed);
-                });
+                bool isHit = result.addWithPaintOffset(
+                    offset: childParentData.offset,
+                    position: position,
+                    hitTest: (result, transformed) =>
+                    {
+                        DartRuntimePrimitives.Assert(() =>
+                            Equals(transformed, position - childParentData.offset)
+                        );
+                        return child.hitTest(result, position: transformed);
+                    }
+                );
                 if (isHit)
                 {
                     return true;
@@ -1354,14 +1697,21 @@ public class RenderTable : RenderBox
             if (border is not null)
             {
                 var borderRect = Rect.fromLTWH(offset.dx, offset.dy, _tableWidth, 0.0);
-                border!.paint(context.canvas, borderRect, rows: new List<double>(), columns: new List<double>());
+                border!.paint(
+                    context.canvas,
+                    borderRect,
+                    rows: new List<double>(),
+                    columns: new List<double>()
+                );
             }
             return;
         }
         DartRuntimePrimitives.Assert(() => checked(_rowTops.Count) == (rows + 1L));
         if (_rowDecorations is not null)
         {
-            DartRuntimePrimitives.Assert(() => checked(_rowDecorations!.Count) == checked((long)_rowDecorationPainters!.Count));
+            DartRuntimePrimitives.Assert(() =>
+                checked(_rowDecorations!.Count) == checked((long)_rowDecorationPainters!.Count)
+            );
             Canvas canvasLocal = context.canvas;
             for (var y = 0L; y < rows; y += 1L)
             {
@@ -1371,8 +1721,16 @@ public class RenderTable : RenderBox
                 }
                 if (_rowDecorations![(int)y] is not null)
                 {
-                    _rowDecorationPainters![(int)y] ??= _rowDecorations![(int)y]!.createBoxPainter(markNeedsPaint);
-                    _rowDecorationPainters![(int)y]!.paint(canvasLocal, new Offset(offset.dx, offset.dy + _rowTops[(int)y]), configuration.copyWith(size: new Size(size.width, _rowTops[(int)(y + 1L)] - _rowTops[(int)y])));
+                    _rowDecorationPainters![(int)y] ??= _rowDecorations![(int)y]!.createBoxPainter(
+                        markNeedsPaint
+                    );
+                    _rowDecorationPainters![(int)y]!.paint(
+                        canvasLocal,
+                        new Offset(offset.dx, offset.dy + _rowTops[(int)y]),
+                        configuration.copyWith(
+                            size: new Size(size.width, _rowTops[(int)(y + 1L)] - _rowTops[(int)y])
+                        )
+                    );
                 }
             }
         }
@@ -1400,11 +1758,33 @@ public class RenderTable : RenderBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<TableBorder>("border", border, defaultValue: null));
-        properties.add(new DiagnosticsProperty<DartMap<long, TableColumnWidth>>("specified column widths", _columnWidths, level: (checked((long)_columnWidths.Count) == 0) ? DiagnosticLevel.hidden : DiagnosticLevel.info));
-        properties.add(new DiagnosticsProperty<TableColumnWidth>("default column width", defaultColumnWidth));
+        properties.add(
+            new DiagnosticsProperty<DartMap<long, TableColumnWidth>>(
+                "specified column widths",
+                _columnWidths,
+                level: (checked((long)_columnWidths.Count) == 0)
+                    ? DiagnosticLevel.hidden
+                    : DiagnosticLevel.info
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<TableColumnWidth>("default column width", defaultColumnWidth)
+        );
         properties.add(new MessageProperty("table size", $"{columns}×{rows}"));
-        properties.add(new IterableProperty<string>("column offsets", _columnLefts?.map(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
-        properties.add(new IterableProperty<string>("row offsets", _rowTops.map(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
+        properties.add(
+            new IterableProperty<string>(
+                "column offsets",
+                _columnLefts?.map(value => Foundation.DebugLibrary.debugFormatDouble(value)),
+                ifNull: "unknown"
+            )
+        );
+        properties.add(
+            new IterableProperty<string>(
+                "row offsets",
+                _rowTops.map(value => Foundation.DebugLibrary.debugFormatDouble(value)),
+                ifNull: "unknown"
+            )
+        );
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1416,7 +1796,6 @@ public class RenderTable : RenderBox
         return new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _Index__table
@@ -1433,7 +1812,11 @@ internal class _Index__table
     public override bool Equals(object? other)
     {
         var __other = other as _Index__table;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;

@@ -7,7 +7,8 @@ internal sealed record DartFunctionDeclaration(
     SymbolId Symbol,
     string Name,
     DartFunctionType FunctionType,
-    DartStatement Body) : DartDeclaration(Origin, Symbol, Name);
+    DartStatement Body
+) : DartDeclaration(Origin, Symbol, Name);
 
 internal sealed record DartClassDeclaration(
     SourceOrigin Origin,
@@ -17,7 +18,8 @@ internal sealed record DartClassDeclaration(
     SymbolId[] Mixins,
     SymbolId[] Interfaces,
     DartDeclaration[] Members,
-    bool IsAbstract = false) : DartDeclaration(Origin, Symbol, Name);
+    bool IsAbstract = false
+) : DartDeclaration(Origin, Symbol, Name);
 
 internal sealed record DartFieldDeclaration(
     SourceOrigin Origin,
@@ -26,9 +28,11 @@ internal sealed record DartFieldDeclaration(
     DartType Type,
     DartExpression? Initializer,
     bool IsStatic,
-    bool IsFinal) : DartDeclaration(Origin, Symbol, Name);
+    bool IsFinal
+) : DartDeclaration(Origin, Symbol, Name);
 
 internal sealed record DartProgram(
     LibraryId Library,
     DartDeclaration[] Declarations,
-    IReadOnlyDictionary<SymbolId, DartDeclaration> Symbols);
+    IReadOnlyDictionary<SymbolId, DartDeclaration> Symbols
+);

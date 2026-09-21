@@ -16,7 +16,16 @@ public class BouncingScrollSimulation : Physics.Simulation
     internal virtual double _springTime { get; set; } = default!;
     internal virtual double _timeOffset { get; set; } = 0.0;
 
-    public BouncingScrollSimulation(double position, double velocity, double leadingExtent, double trailingExtent, Physics.SpringDescription spring, double constantDeceleration = 0, Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
+    public BouncingScrollSimulation(
+        double position,
+        double velocity,
+        double leadingExtent,
+        double trailingExtent,
+        Physics.SpringDescription spring,
+        double constantDeceleration = 0,
+        Physics.Tolerance tolerance = default!
+    )
+        : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.leadingExtent = leadingExtent;
         this.trailingExtent = trailingExtent;
@@ -35,14 +44,19 @@ public class BouncingScrollSimulation : Physics.Simulation
         else
         {
             _frictionSimulation = new Physics.FrictionSimulation(
-                0.135, position, velocity, constantDeceleration: constantDeceleration);
+                0.135,
+                position,
+                velocity,
+                constantDeceleration: constantDeceleration
+            );
             var finalX = _frictionSimulation.finalX;
             if (velocity > 0.0 && finalX > trailingExtent)
             {
                 _springTime = _frictionSimulation.timeAtX(trailingExtent);
                 _springSimulation = _overscrollSimulation(
                     trailingExtent,
-                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity));
+                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity)
+                );
                 System.Diagnostics.Debug.Assert(double.IsFinite(_springTime));
             }
             else if (velocity < 0.0 && finalX < leadingExtent)
@@ -50,7 +64,8 @@ public class BouncingScrollSimulation : Physics.Simulation
                 _springTime = _frictionSimulation.timeAtX(leadingExtent);
                 _springSimulation = _underscrollSimulation(
                     leadingExtent,
-                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity));
+                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity)
+                );
                 System.Diagnostics.Debug.Assert(double.IsFinite(_springTime));
             }
             else
@@ -83,26 +98,34 @@ public class BouncingScrollSimulation : Physics.Simulation
         else
         {
             _timeOffset = 0.0;
-            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(_frictionSimulation);
+            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(
+                _frictionSimulation
+            );
         }
-        return ((Func<Physics.Simulation>)(() =>
-{
-    var __cascade = simulation;
-    __cascade.tolerance = tolerance;
-    return __cascade;
-}))();
+        return (
+            (Func<Physics.Simulation>)(
+                () =>
+                {
+                    var __cascade = simulation;
+                    __cascade.tolerance = tolerance;
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double x(double time) => _simulation(time).x(time - _timeOffset);
+
     public override double dx(double time) => _simulation(time).dx(time - _timeOffset);
+
     public override bool isDone(double time) => _simulation(time).isDone(time - _timeOffset);
+
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation")}(leadingExtent: {leadingExtent}, trailingExtent: {trailingExtent})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ClampingScrollSimulation : Physics.Simulation
@@ -112,11 +135,18 @@ public class ClampingScrollSimulation : Physics.Simulation
     public virtual double friction { get; private set; } = default!;
     internal virtual double _duration { get; set; } = default!;
     internal virtual double _distance { get; set; } = default!;
-    internal static double _kDecelerationRate = Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9);
+    internal static double _kDecelerationRate =
+        Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9);
     internal const double _kInflexion = 0.35;
     internal static double _physicalCoeff = 9.80665 * 39.37 * 160.0 * 0.84;
 
-    public ClampingScrollSimulation(double position, double velocity, double friction = 0.015, Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
+    public ClampingScrollSimulation(
+        double position,
+        double velocity,
+        double friction = 0.015,
+        Physics.Tolerance tolerance = default!
+    )
+        : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.position = position;
         this.velocity = velocity;
@@ -128,7 +158,11 @@ public class ClampingScrollSimulation : Physics.Simulation
     internal virtual double _flingDuration()
     {
         double referenceVelocity = friction * _physicalCoeff / _kInflexion;
-        var androidDuration = (double)Dart_mathLibrary.pow(velocity.abs() / referenceVelocity, 1L / (_kDecelerationRate - 1.0));
+        var androidDuration = (double)
+            Dart_mathLibrary.pow(
+                velocity.abs() / referenceVelocity,
+                1L / (_kDecelerationRate - 1.0)
+            );
         return _kDecelerationRate * _kInflexion * androidDuration;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -137,13 +171,18 @@ public class ClampingScrollSimulation : Physics.Simulation
     {
         double distanceLocal = velocity * _duration / _kDecelerationRate;
         DartRuntimePrimitives.Assert(() =>
-            {
-                double referenceVelocity = friction * _physicalCoeff / _kInflexion;
-                double logVelocity = Dart_mathLibrary.log(velocity.abs() / referenceVelocity);
-                double distanceAgain = friction * _physicalCoeff * Dart_mathLibrary.exp(logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0));
-                return (distanceLocal.abs() - distanceAgain).abs() < tolerance.distance;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            double referenceVelocity = friction * _physicalCoeff / _kInflexion;
+            double logVelocity = Dart_mathLibrary.log(velocity.abs() / referenceVelocity);
+            double distanceAgain =
+                friction
+                * _physicalCoeff
+                * Dart_mathLibrary.exp(
+                    logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0)
+                );
+            return (distanceLocal.abs() - distanceAgain).abs() < tolerance.distance;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return distanceLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -167,5 +206,4 @@ public class ClampingScrollSimulation : Physics.Simulation
         return time >= _duration;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

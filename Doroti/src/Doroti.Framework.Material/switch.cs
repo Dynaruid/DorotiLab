@@ -9,7 +9,7 @@ namespace Doroti.Framework.Material;
 public enum _SwitchType__switch
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public class Switch : StatelessWidget
@@ -22,9 +22,17 @@ public class Switch : StatelessWidget
     public virtual Color? inactiveThumbColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
     public virtual IImageProvider? activeThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual IImageProvider? inactiveThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual WidgetStateProperty<Color?>? thumbColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackOutlineColor { get; private set; }
@@ -44,7 +52,37 @@ public class Switch : StatelessWidget
     public virtual bool autofocus { get; private set; } = default!;
     public virtual EdgeInsetsGeometry? padding { get; private set; }
 
-    public Switch(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null) : base(key: key)
+    public Switch(
+        Key? key = null,
+        bool value = default!,
+        Action<bool>? onChanged = default!,
+        Color? activeColor = null,
+        Color? activeThumbColor = null,
+        Color? activeTrackColor = null,
+        Color? inactiveThumbColor = null,
+        Color? inactiveTrackColor = null,
+        IImageProvider? activeThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null,
+        IImageProvider? inactiveThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null,
+        WidgetStateProperty<Color?>? thumbColor = null,
+        WidgetStateProperty<Color?>? trackColor = null,
+        WidgetStateProperty<Color?>? trackOutlineColor = null,
+        WidgetStateProperty<double?>? trackOutlineWidth = null,
+        WidgetStateProperty<Icon?>? thumbIcon = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        MouseCursor? mouseCursor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        EdgeInsetsGeometry? padding = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -75,13 +113,76 @@ public class Switch : StatelessWidget
         this.padding = padding;
         _switchType = _SwitchType__switch.material;
         applyCupertinoTheme = false;
-        System.Diagnostics.Debug.Assert((activeThumbImage is not null) || (onActiveThumbImageError is null));
-        System.Diagnostics.Debug.Assert((inactiveThumbImage is not null) || (onInactiveThumbImageError is null));
+        System.Diagnostics.Debug.Assert(
+            (activeThumbImage is not null) || (onActiveThumbImageError is null)
+        );
+        System.Diagnostics.Debug.Assert(
+            (inactiveThumbImage is not null) || (onInactiveThumbImageError is null)
+        );
     }
 
-    public static Switch CreateAdaptive(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, MaterialTapTargetSize? materialTapTargetSize = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null, bool? applyCupertinoTheme = null)
+    public static Switch CreateAdaptive(
+        Key? key = null,
+        bool value = default!,
+        Action<bool>? onChanged = default!,
+        Color? activeColor = null,
+        Color? activeThumbColor = null,
+        Color? activeTrackColor = null,
+        Color? inactiveThumbColor = null,
+        Color? inactiveTrackColor = null,
+        IImageProvider? activeThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null,
+        IImageProvider? inactiveThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        WidgetStateProperty<Color?>? thumbColor = null,
+        WidgetStateProperty<Color?>? trackColor = null,
+        WidgetStateProperty<Color?>? trackOutlineColor = null,
+        WidgetStateProperty<double?>? trackOutlineWidth = null,
+        WidgetStateProperty<Icon?>? thumbIcon = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        MouseCursor? mouseCursor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        EdgeInsetsGeometry? padding = null,
+        bool? applyCupertinoTheme = null
+    )
     {
-        var __instance = new Switch(key: key, value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeTrackColor: activeTrackColor, inactiveThumbColor: inactiveThumbColor, inactiveTrackColor: inactiveTrackColor, activeThumbImage: activeThumbImage, onActiveThumbImageError: onActiveThumbImageError, inactiveThumbImage: inactiveThumbImage, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, trackOutlineWidth: trackOutlineWidth, thumbIcon: thumbIcon, materialTapTargetSize: materialTapTargetSize, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, padding: padding);
+        var __instance = new Switch(
+            key: key,
+            value: value,
+            onChanged: onChanged,
+            activeColor: activeColor,
+            activeThumbColor: activeThumbColor,
+            activeTrackColor: activeTrackColor,
+            inactiveThumbColor: inactiveThumbColor,
+            inactiveTrackColor: inactiveTrackColor,
+            activeThumbImage: activeThumbImage,
+            onActiveThumbImageError: onActiveThumbImageError,
+            inactiveThumbImage: inactiveThumbImage,
+            onInactiveThumbImageError: onInactiveThumbImageError,
+            thumbColor: thumbColor,
+            trackColor: trackColor,
+            trackOutlineColor: trackOutlineColor,
+            trackOutlineWidth: trackOutlineWidth,
+            thumbIcon: thumbIcon,
+            materialTapTargetSize: materialTapTargetSize,
+            dragStartBehavior: dragStartBehavior,
+            mouseCursor: mouseCursor,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            focusNode: focusNode,
+            onFocusChange: onFocusChange,
+            autofocus: autofocus,
+            padding: padding
+        );
         __instance.value = value;
         __instance.onChanged = onChanged;
         __instance.activeColor = activeColor;
@@ -121,13 +222,30 @@ public class Switch : StatelessWidget
         SwitchThemeData defaults = new _SwitchDefaultsM3__switch(context);
         if (Equals(_switchType, _SwitchType__switch.adaptive))
         {
-            Adaptation<SwitchThemeData> switchAdaptation = theme.getAdaptation<SwitchThemeData>() ?? new _SwitchThemeAdaptation__switch();
+            Adaptation<SwitchThemeData> switchAdaptation =
+                theme.getAdaptation<SwitchThemeData>() ?? new _SwitchThemeAdaptation__switch();
             switchTheme = switchAdaptation.adapt(theme, switchTheme);
         }
         _SwitchConfig__switch switchConfig = new _SwitchConfigM3__switch(context);
-        MaterialTapTargetSize effectiveMaterialTapTargetSize = (materialTapTargetSize ?? switchTheme.materialTapTargetSize) ?? theme.materialTapTargetSize;
+        MaterialTapTargetSize effectiveMaterialTapTargetSize =
+            (materialTapTargetSize ?? switchTheme.materialTapTargetSize)
+            ?? theme.materialTapTargetSize;
         EdgeInsetsGeometry effectivePadding = (padding ?? switchTheme.padding) ?? defaults.padding!;
-        return effectiveMaterialTapTargetSize switch { var __constant22389 when Equals(__constant22389, MaterialTapTargetSize.padded) => new Size(switchConfig.switchWidth + effectivePadding.horizontal, switchConfig.switchHeight + effectivePadding.vertical), var __constant22569 when Equals(__constant22569, MaterialTapTargetSize.shrinkWrap) => new Size(switchConfig.switchWidth + effectivePadding.horizontal, switchConfig.switchHeightCollapsed + effectivePadding.vertical), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return effectiveMaterialTapTargetSize switch
+        {
+            var __constant22389 when Equals(__constant22389, MaterialTapTargetSize.padded) =>
+                new Size(
+                    switchConfig.switchWidth + effectivePadding.horizontal,
+                    switchConfig.switchHeight + effectivePadding.vertical
+                ),
+            var __constant22569 when Equals(__constant22569, MaterialTapTargetSize.shrinkWrap) =>
+                new Size(
+                    switchConfig.switchWidth + effectivePadding.horizontal,
+                    switchConfig.switchHeightCollapsed + effectivePadding.vertical
+                ),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
     }
 
     public override Widget build(BuildContext context)
@@ -137,43 +255,75 @@ public class Switch : StatelessWidget
         switch (_switchType)
         {
             case _SwitchType__switch.material:
-                {
-                    effectiveActiveThumbColor = activeColor;
-                    break;
-                }
+            {
+                effectiveActiveThumbColor = activeColor;
+                break;
+            }
             case _SwitchType__switch.adaptive:
+            {
+                switch (Theme.of(context).platform)
                 {
-                    switch (Theme.of(context).platform)
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.windows:
                     {
-                        case TargetPlatform.android:
-                        case TargetPlatform.fuchsia:
-                        case TargetPlatform.linux:
-                        case TargetPlatform.windows:
-                            {
-                                effectiveActiveThumbColor = activeColor;
-                                break;
-                            }
-                        case TargetPlatform.iOS:
-                        case TargetPlatform.macOS:
-                            {
-                                effectiveActiveTrackColor = activeColor;
-                                break;
-                            }
+                        effectiveActiveThumbColor = activeColor;
+                        break;
                     }
-                    break;
+                    case TargetPlatform.iOS:
+                    case TargetPlatform.macOS:
+                    {
+                        effectiveActiveTrackColor = activeColor;
+                        break;
+                    }
                 }
+                break;
+            }
         }
-        return new _MaterialSwitch__switch(value: value, onChanged: onChanged, size: _getSwitchSize(context), activeThumbColor: activeThumbColor ?? effectiveActiveThumbColor, activeTrackColor: activeTrackColor ?? effectiveActiveTrackColor, inactiveThumbColor: inactiveThumbColor, inactiveTrackColor: inactiveTrackColor, activeThumbImage: activeThumbImage, onActiveThumbImageError: onActiveThumbImageError, inactiveThumbImage: inactiveThumbImage, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, trackOutlineWidth: trackOutlineWidth, thumbIcon: thumbIcon, materialTapTargetSize: materialTapTargetSize, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, applyCupertinoTheme: applyCupertinoTheme, switchType: _switchType);
+        return new _MaterialSwitch__switch(
+            value: value,
+            onChanged: onChanged,
+            size: _getSwitchSize(context),
+            activeThumbColor: activeThumbColor ?? effectiveActiveThumbColor,
+            activeTrackColor: activeTrackColor ?? effectiveActiveTrackColor,
+            inactiveThumbColor: inactiveThumbColor,
+            inactiveTrackColor: inactiveTrackColor,
+            activeThumbImage: activeThumbImage,
+            onActiveThumbImageError: onActiveThumbImageError,
+            inactiveThumbImage: inactiveThumbImage,
+            onInactiveThumbImageError: onInactiveThumbImageError,
+            thumbColor: thumbColor,
+            trackColor: trackColor,
+            trackOutlineColor: trackOutlineColor,
+            trackOutlineWidth: trackOutlineWidth,
+            thumbIcon: thumbIcon,
+            materialTapTargetSize: materialTapTargetSize,
+            dragStartBehavior: dragStartBehavior,
+            mouseCursor: mouseCursor,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            focusNode: focusNode,
+            onFocusChange: onFocusChange,
+            autofocus: autofocus,
+            applyCupertinoTheme: applyCupertinoTheme,
+            switchType: _switchType
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("value", value: value, ifTrue: "on", ifFalse: "off", showName: true));
-        properties.add(new ObjectFlagProperty<Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
+        properties.add(
+            new FlagProperty("value", value: value, ifTrue: "on", ifFalse: "off", showName: true)
+        );
+        properties.add(
+            new ObjectFlagProperty<Action<bool>>("onChanged", onChanged, ifNull: "disabled")
+        );
     }
-
 }
 
 public class _MaterialSwitch__switch : StatefulWidget
@@ -185,9 +335,17 @@ public class _MaterialSwitch__switch : StatefulWidget
     public virtual Color? inactiveThumbColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
     public virtual IImageProvider? activeThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual IImageProvider? inactiveThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual WidgetStateProperty<Color?>? thumbColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackOutlineColor { get; private set; }
@@ -207,7 +365,36 @@ public class _MaterialSwitch__switch : StatefulWidget
     public virtual bool? applyCupertinoTheme { get; private set; }
     public virtual _SwitchType__switch switchType { get; private set; } = default!;
 
-    internal _MaterialSwitch__switch(bool value, Action<bool>? onChanged, Size size, _SwitchType__switch switchType, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null)
+    internal _MaterialSwitch__switch(
+        bool value,
+        Action<bool>? onChanged,
+        Size size,
+        _SwitchType__switch switchType,
+        Color? activeThumbColor = null,
+        Color? activeTrackColor = null,
+        Color? inactiveThumbColor = null,
+        Color? inactiveTrackColor = null,
+        IImageProvider? activeThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null,
+        IImageProvider? inactiveThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null,
+        WidgetStateProperty<Color?>? thumbColor = null,
+        WidgetStateProperty<Color?>? trackColor = null,
+        WidgetStateProperty<Color?>? trackOutlineColor = null,
+        WidgetStateProperty<double?>? trackOutlineWidth = null,
+        WidgetStateProperty<Icon?>? thumbIcon = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        MouseCursor? mouseCursor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        bool? applyCupertinoTheme = null
+    )
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -237,16 +424,25 @@ public class _MaterialSwitch__switch : StatefulWidget
         this.onFocusChange = onFocusChange;
         this.autofocus = autofocus;
         this.applyCupertinoTheme = applyCupertinoTheme;
-        System.Diagnostics.Debug.Assert((activeThumbImage is not null) || (onActiveThumbImageError is null));
-        System.Diagnostics.Debug.Assert((inactiveThumbImage is not null) || (onInactiveThumbImageError is null));
+        System.Diagnostics.Debug.Assert(
+            (activeThumbImage is not null) || (onActiveThumbImageError is null)
+        );
+        System.Diagnostics.Debug.Assert(
+            (inactiveThumbImage is not null) || (onInactiveThumbImageError is null)
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialSwitchState__switch());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MaterialSwitchState__switch());
 }
 
-internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, TickerProviderStateMixin<_MaterialSwitch__switch>, ToggleableStateMixin<_MaterialSwitch__switch>
+internal class _MaterialSwitchState__switch
+    : State<_MaterialSwitch__switch>,
+        TickerProviderStateMixin<_MaterialSwitch__switch>,
+        ToggleableStateMixin<_MaterialSwitch__switch>
 {
-    internal virtual _SwitchPainter__switch _painter { get; private set; } = new _SwitchPainter__switch();
+    internal virtual _SwitchPainter__switch _painter { get; private set; } =
+        new _SwitchPainter__switch();
     internal virtual bool _needsPositionAnimation { get; set; } = false;
     public virtual bool isCupertino { get; set; } = false;
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
@@ -259,7 +455,8 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     public virtual AnimationController _reactionHoverFadeController { get; set; } = default!;
     public virtual CurvedAnimation _reactionFocusFade { get; set; } = default!;
     public virtual AnimationController _reactionFocusFadeController { get; set; } = default!;
-    public virtual Duration _reactionAnimationDuration { get; set; } = Duration.Create(milliseconds: 100L);
+    public virtual Duration _reactionAnimationDuration { get; set; } =
+        Duration.Create(milliseconds: 100L);
     private bool __late__actionMap_initialized;
     private DartMap<Type, dynamic> __late__actionMap = default!;
     public virtual DartMap<Type, dynamic> _actionMap
@@ -268,7 +465,16 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic>
+                {
+                    [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(
+                        onInvoke: (__arg0) =>
+                        {
+                            ((Action<Intent?>)_handleTap)(__arg0);
+                            return default!;
+                        }
+                    ),
+                };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -288,37 +494,43 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
                 switch (widget.switchType)
                 {
                     case _SwitchType__switch.adaptive:
+                    {
+                        switch (Theme.of(context).platform)
                         {
-                            switch (Theme.of(context).platform)
+                            case TargetPlatform.android:
+                            case TargetPlatform.fuchsia:
+                            case TargetPlatform.linux:
+                            case TargetPlatform.windows:
                             {
-                                case TargetPlatform.android:
-                                case TargetPlatform.fuchsia:
-                                case TargetPlatform.linux:
-                                case TargetPlatform.windows:
-                                    {
-                                        updateCurve();
-                                        break;
-                                    }
-                                case TargetPlatform.iOS:
-                                case TargetPlatform.macOS:
-                                    {
-                                        DartRuntimePrimitives.Ignore(((Func<CurvedAnimation>)(() =>
-{
-    var __cascade = position;
-    __cascade.curve = Curves.linear;
-    __cascade.reverseCurve = Curves.linear;
-    return __cascade;
-}))());
-                                        break;
-                                    }
+                                updateCurve();
+                                break;
                             }
-                            break;
+                            case TargetPlatform.iOS:
+                            case TargetPlatform.macOS:
+                            {
+                                DartRuntimePrimitives.Ignore(
+                                    (
+                                        (Func<CurvedAnimation>)(
+                                            () =>
+                                            {
+                                                var __cascade = position;
+                                                __cascade.curve = Curves.linear;
+                                                __cascade.reverseCurve = Curves.linear;
+                                                return __cascade;
+                                            }
+                                        )
+                                    )()
+                                );
+                                break;
+                            }
                         }
+                        break;
+                    }
                     case _SwitchType__switch.material:
-                        {
-                            updateCurve();
-                            break;
-                        }
+                    {
+                        updateCurve();
+                        break;
+                    }
                 }
             }
             animateToValue();
@@ -339,20 +551,28 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         base.dispose();
     }
 
-    public virtual Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
+    public virtual Action<bool?>? onChanged =>
+        (widget.onChanged is not null) ? _handleChanged : null;
     public virtual bool tristate => false;
     public virtual bool? value => widget.value;
     public virtual Duration? reactionAnimationDuration => ConstantsLibrary.kRadialReactionDuration;
+
     public virtual void updateCurve()
     {
         {
-            DartRuntimePrimitives.Ignore(((Func<CurvedAnimation>)(() =>
-{
-    var __cascade = position;
-    __cascade.curve = Curves.easeOutBack;
-    __cascade.reverseCurve = Curves.easeOutBack.flipped;
-    return __cascade;
-}))());
+            DartRuntimePrimitives.Ignore(
+                (
+                    (Func<CurvedAnimation>)(
+                        () =>
+                        {
+                            var __cascade = position;
+                            __cascade.curve = Curves.easeOutBack;
+                            __cascade.reverseCurve = Curves.easeOutBack.flipped;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
     }
 
@@ -360,34 +580,38 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return widget.inactiveThumbColor;
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.activeThumbColor;
+                    }
                     return widget.inactiveThumbColor;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.activeThumbColor;
-                }
-                return widget.inactiveThumbColor;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual WidgetStateProperty<Color?> _widgetTrackColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return widget.activeTrackColor;
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.activeTrackColor;
+                    }
+                    return widget.inactiveTrackColor;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return widget.inactiveTrackColor;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual double _trackInnerLength
@@ -397,45 +621,54 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
             switch (widget.switchType)
             {
                 case _SwitchType__switch.adaptive:
+                {
+                    switch (Theme.of(context).platform)
                     {
-                        switch (Theme.of(context).platform)
+                        case TargetPlatform.android:
+                        case TargetPlatform.fuchsia:
+                        case TargetPlatform.linux:
+                        case TargetPlatform.windows:
                         {
-                            case TargetPlatform.android:
-                            case TargetPlatform.fuchsia:
-                            case TargetPlatform.linux:
-                            case TargetPlatform.windows:
-                                {
-                                    _SwitchConfig__switch config = new _SwitchConfigM3__switch(context);
-                                    double trackInnerStart = config.trackHeight / 2.0;
-                                    double trackInnerEnd = config.trackWidth - trackInnerStart;
-                                    double trackInnerLength = trackInnerEnd - trackInnerStart;
-                                    return trackInnerLength;
-                                }
-                            case TargetPlatform.iOS:
-                            case TargetPlatform.macOS:
-                                {
-                                    _SwitchConfig__switch configLocal = new _SwitchConfigCupertino__switch(context);
-                                    double trackInnerStartLocal = configLocal.trackHeight / 2.0;
-                                    double trackInnerEndLocal = configLocal.trackWidth - trackInnerStartLocal;
-                                    double trackInnerLengthLocal = trackInnerEndLocal - trackInnerStartLocal;
-                                    return trackInnerLengthLocal;
-                                }
-                            default:
-                                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                            _SwitchConfig__switch config = new _SwitchConfigM3__switch(context);
+                            double trackInnerStart = config.trackHeight / 2.0;
+                            double trackInnerEnd = config.trackWidth - trackInnerStart;
+                            double trackInnerLength = trackInnerEnd - trackInnerStart;
+                            return trackInnerLength;
                         }
+                        case TargetPlatform.iOS:
+                        case TargetPlatform.macOS:
+                        {
+                            _SwitchConfig__switch configLocal = new _SwitchConfigCupertino__switch(
+                                context
+                            );
+                            double trackInnerStartLocal = configLocal.trackHeight / 2.0;
+                            double trackInnerEndLocal =
+                                configLocal.trackWidth - trackInnerStartLocal;
+                            double trackInnerLengthLocal =
+                                trackInnerEndLocal - trackInnerStartLocal;
+                            return trackInnerLengthLocal;
+                        }
+                        default:
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            );
                     }
+                }
                 case _SwitchType__switch.material:
-                    {
-                        _SwitchConfig__switch configAlternate = new _SwitchConfigM3__switch(context);
-                        double trackInnerStartAlternate = configAlternate.trackHeight / 2.0;
-                        double trackInnerEndAlternate = configAlternate.trackWidth - trackInnerStartAlternate;
-                        double trackInnerLengthAlternate = trackInnerEndAlternate - trackInnerStartAlternate;
-                        return trackInnerLengthAlternate;
-                    }
+                {
+                    _SwitchConfig__switch configAlternate = new _SwitchConfigM3__switch(context);
+                    double trackInnerStartAlternate = configAlternate.trackHeight / 2.0;
+                    double trackInnerEndAlternate =
+                        configAlternate.trackWidth - trackInnerStartAlternate;
+                    double trackInnerLengthAlternate =
+                        trackInnerEndAlternate - trackInnerStartAlternate;
+                    return trackInnerLengthAlternate;
+                }
             }
             return default!;
         }
     }
+
     internal virtual void _handleDragStart(Gestures.DragStartDetails details)
     {
         if (isInteractive)
@@ -448,15 +681,28 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     {
         if (isInteractive)
         {
-            DartRuntimePrimitives.Ignore(((Func<CurvedAnimation>)(() =>
-{
-    var __cascade = position;
-    __cascade.curve = Curves.linear;
-    __cascade.reverseCurve = null;
-    return __cascade;
-}))());
-            double delta = DartRuntimePrimitives.RequireValue(details.primaryDelta) / _trackInnerLength;
-            positionController.value += Directionality.of(context) switch { TextDirection.rtl => -delta, TextDirection.ltr => delta, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            DartRuntimePrimitives.Ignore(
+                (
+                    (Func<CurvedAnimation>)(
+                        () =>
+                        {
+                            var __cascade = position;
+                            __cascade.curve = Curves.linear;
+                            __cascade.reverseCurve = null;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
+            double delta =
+                DartRuntimePrimitives.RequireValue(details.primaryDelta) / _trackInnerLength;
+            positionController.value += Directionality.of(context) switch
+            {
+                TextDirection.rtl => -delta,
+                TextDirection.ltr => delta,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
 
@@ -494,7 +740,8 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         }
         ThemeData theme = Theme.of(context);
         SwitchThemeData switchTheme = SwitchTheme.of(context);
-        Color cupertinoPrimaryColor = theme.cupertinoOverrideTheme?.primaryColor ?? theme.colorScheme.primary;
+        Color cupertinoPrimaryColor =
+            theme.cupertinoOverrideTheme?.primaryColor ?? theme.colorScheme.primary;
         _SwitchConfig__switch switchConfig = default!;
         SwitchThemeData defaults = default!;
         var applyCupertinoThemeLocal = false;
@@ -502,162 +749,343 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         switch (widget.switchType)
         {
             case _SwitchType__switch.material:
-                {
-                    switchConfig = new _SwitchConfigM3__switch(context);
-                    defaults = new _SwitchDefaultsM3__switch(context);
-                    break;
-                }
+            {
+                switchConfig = new _SwitchConfigM3__switch(context);
+                defaults = new _SwitchDefaultsM3__switch(context);
+                break;
+            }
             case _SwitchType__switch.adaptive:
+            {
+                Adaptation<SwitchThemeData> switchAdaptation =
+                    theme.getAdaptation<SwitchThemeData>() ?? new _SwitchThemeAdaptation__switch();
+                switchTheme = switchAdaptation.adapt(theme, switchTheme);
+                switch (theme.platform)
                 {
-                    Adaptation<SwitchThemeData> switchAdaptation = theme.getAdaptation<SwitchThemeData>() ?? new _SwitchThemeAdaptation__switch();
-                    switchTheme = switchAdaptation.adapt(theme, switchTheme);
-                    switch (theme.platform)
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.windows:
                     {
-                        case TargetPlatform.android:
-                        case TargetPlatform.fuchsia:
-                        case TargetPlatform.linux:
-                        case TargetPlatform.windows:
-                            {
-                                switchConfig = new _SwitchConfigM3__switch(context);
-                                defaults = new _SwitchDefaultsM3__switch(context);
-                                break;
-                            }
-                        case TargetPlatform.iOS:
-                        case TargetPlatform.macOS:
-                            {
-                                isCupertino = true;
-                                applyCupertinoThemeLocal = (widget.applyCupertinoTheme ?? theme.cupertinoOverrideTheme?.applyThemeToAll) ?? false;
-                                disabledOpacity = 0.5;
-                                switchConfig = DartRuntimePrimitives.ConvertValue<_SwitchConfig__switch>(new _SwitchConfigCupertino__switch(context));
-                                defaults = DartRuntimePrimitives.ConvertValue<SwitchThemeData>(new _SwitchDefaultsCupertino__switch(context));
-                                reactionController.duration = Duration.Create(milliseconds: 200L);
-                                break;
-                            }
+                        switchConfig = new _SwitchConfigM3__switch(context);
+                        defaults = new _SwitchDefaultsM3__switch(context);
+                        break;
                     }
-                    break;
+                    case TargetPlatform.iOS:
+                    case TargetPlatform.macOS:
+                    {
+                        isCupertino = true;
+                        applyCupertinoThemeLocal =
+                            (
+                                widget.applyCupertinoTheme
+                                ?? theme.cupertinoOverrideTheme?.applyThemeToAll
+                            ) ?? false;
+                        disabledOpacity = 0.5;
+                        switchConfig = DartRuntimePrimitives.ConvertValue<_SwitchConfig__switch>(
+                            new _SwitchConfigCupertino__switch(context)
+                        );
+                        defaults = DartRuntimePrimitives.ConvertValue<SwitchThemeData>(
+                            new _SwitchDefaultsCupertino__switch(context)
+                        );
+                        reactionController.duration = Duration.Create(milliseconds: 200L);
+                        break;
+                    }
                 }
+                break;
+            }
         }
-        var defaultOverlayColor = defaults.overlayColor ?? throw new InvalidOperationException("The built-in switch theme must provide overlayColor.");
-        var defaultThumbColor = defaults.thumbColor ?? throw new InvalidOperationException("The built-in switch theme must provide thumbColor.");
-        var defaultTrackColor = defaults.trackColor ?? throw new InvalidOperationException("The built-in switch theme must provide trackColor.");
+        var defaultOverlayColor =
+            defaults.overlayColor
+            ?? throw new InvalidOperationException(
+                "The built-in switch theme must provide overlayColor."
+            );
+        var defaultThumbColor =
+            defaults.thumbColor
+            ?? throw new InvalidOperationException(
+                "The built-in switch theme must provide thumbColor."
+            );
+        var defaultTrackColor =
+            defaults.trackColor
+            ?? throw new InvalidOperationException(
+                "The built-in switch theme must provide trackColor."
+            );
         positionController.duration = Duration.Create(milliseconds: switchConfig.toggleDuration);
-        HashSet<WidgetState> activeStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Add(WidgetState.selected);
-    return __cascade;
-}))();
-        HashSet<WidgetState> inactiveStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Remove(WidgetState.selected);
-    return __cascade;
-}))();
-        Color? activeThumbColor = (widget.thumbColor?.resolve(activeStates) ?? _widgetThumbColor.resolve(activeStates)) ?? (switchTheme.thumbColor?.resolve(activeStates));
-        Color effectiveActiveThumbColor = activeThumbColor ?? defaultThumbColor.resolve(activeStates)!;
-        Color? inactiveThumbColor = (widget.thumbColor?.resolve(inactiveStates) ?? _widgetThumbColor.resolve(inactiveStates)) ?? (switchTheme.thumbColor?.resolve(inactiveStates));
-        Color effectiveInactiveThumbColor = inactiveThumbColor ?? defaultThumbColor.resolve(inactiveStates)!;
-        Color effectiveActiveTrackColor = (((widget.trackColor?.resolve(activeStates) ?? _widgetTrackColor.resolve(activeStates)) ?? (applyCupertinoThemeLocal ? cupertinoPrimaryColor : switchTheme.trackColor?.resolve(activeStates))) ?? _widgetThumbColor.resolve(activeStates)?.withAlpha(128L)) ?? defaultTrackColor.resolve(activeStates)!;
-        Color? effectiveActiveTrackOutlineColor = (widget.trackOutlineColor?.resolve(activeStates) ?? (switchTheme.trackOutlineColor?.resolve(activeStates))) ?? defaults.trackOutlineColor?.resolve(activeStates);
-        double? effectiveActiveTrackOutlineWidth = (widget.trackOutlineWidth?.resolve(activeStates) ?? switchTheme.trackOutlineWidth?.resolve(activeStates)) ?? defaults.trackOutlineWidth?.resolve(activeStates);
-        Color effectiveInactiveTrackColor = ((widget.trackColor?.resolve(inactiveStates) ?? _widgetTrackColor.resolve(inactiveStates)) ?? (switchTheme.trackColor?.resolve(inactiveStates))) ?? defaultTrackColor.resolve(inactiveStates)!;
-        Color? effectiveInactiveTrackOutlineColor = (widget.trackOutlineColor?.resolve(inactiveStates) ?? (switchTheme.trackOutlineColor?.resolve(inactiveStates))) ?? (defaults.trackOutlineColor?.resolve(inactiveStates));
-        double? effectiveInactiveTrackOutlineWidth = (widget.trackOutlineWidth?.resolve(inactiveStates) ?? switchTheme.trackOutlineWidth?.resolve(inactiveStates)) ?? defaults.trackOutlineWidth?.resolve(inactiveStates);
-        Icon? effectiveActiveIcon = widget.thumbIcon?.resolve(activeStates) ?? (switchTheme.thumbIcon?.resolve(activeStates));
-        Icon? effectiveInactiveIcon = widget.thumbIcon?.resolve(inactiveStates) ?? (switchTheme.thumbIcon?.resolve(inactiveStates));
-        Color effectiveActiveIconColor = effectiveActiveIcon?.color ?? switchConfig.iconColor.resolve(activeStates);
-        Color effectiveInactiveIconColor = effectiveInactiveIcon?.color ?? switchConfig.iconColor.resolve(inactiveStates);
-        HashSet<WidgetState> focusedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Add(WidgetState.focused);
-    return __cascade;
-}))();
-        Color effectiveFocusOverlayColor = (((widget.overlayColor?.resolve(focusedStates) ?? widget.focusColor) ?? (switchTheme.overlayColor?.resolve(focusedStates))) ?? (applyCupertinoThemeLocal ? HSLColor.CreateFromColor(cupertinoPrimaryColor.withOpacity(0.8)).withLightness(0.69).withSaturation(0.835).toColor() : null)) ?? defaultOverlayColor.resolve(focusedStates)!;
-        HashSet<WidgetState> hoveredStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Add(WidgetState.hovered);
-    return __cascade;
-}))();
-        Color effectiveHoverOverlayColor = ((widget.overlayColor?.resolve(hoveredStates) ?? widget.hoverColor) ?? (switchTheme.overlayColor?.resolve(hoveredStates))) ?? defaultOverlayColor.resolve(hoveredStates)!;
-        var activePressedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = activeStates;
-    __cascade.Add(WidgetState.pressed);
-    return __cascade;
-}))();
-        Color effectiveActivePressedThumbColor = ((widget.thumbColor?.resolve(activePressedStates) ?? _widgetThumbColor.resolve(activePressedStates)) ?? (switchTheme.thumbColor?.resolve(activePressedStates))) ?? defaultThumbColor.resolve(activePressedStates)!;
-        Color effectiveActivePressedOverlayColor = ((widget.overlayColor?.resolve(activePressedStates) ?? (switchTheme.overlayColor?.resolve(activePressedStates))) ?? activeThumbColor?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? defaultOverlayColor.resolve(activePressedStates)!;
-        var inactivePressedStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = inactiveStates;
-    __cascade.Add(WidgetState.pressed);
-    return __cascade;
-}))();
-        Color effectiveInactivePressedThumbColor = ((widget.thumbColor?.resolve(inactivePressedStates) ?? _widgetThumbColor.resolve(inactivePressedStates)) ?? (switchTheme.thumbColor?.resolve(inactivePressedStates))) ?? defaultThumbColor.resolve(inactivePressedStates)!;
-        Color effectiveInactivePressedOverlayColor = ((widget.overlayColor?.resolve(inactivePressedStates) ?? (switchTheme.overlayColor?.resolve(inactivePressedStates))) ?? inactiveThumbColor?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? defaultOverlayColor.resolve(inactivePressedStates)!;
-        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith((states) =>
-        {
-            return WidgetStateProperty.resolveAs(widget.mouseCursor, states)
-                ?? switchTheme.mouseCursor?.resolve(states)
-                ?? WidgetStateMouseCursor.adaptiveClickable.resolve(states);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-        double effectiveActiveThumbRadius = (effectiveActiveIcon is null) ? switchConfig.activeThumbRadius : switchConfig.thumbRadiusWithIcon;
-        double effectiveInactiveThumbRadius = ((effectiveInactiveIcon is null) && (widget.inactiveThumbImage is null)) ? switchConfig.inactiveThumbRadius : switchConfig.thumbRadiusWithIcon;
-        double effectiveSplashRadius = (widget.splashRadius ?? switchTheme.splashRadius) ?? DartRuntimePrimitives.RequireValue(defaults.splashRadius);
-        return new Widgets.Semantics(toggled: widget.value, child: new GestureDetector(excludeFromSemantics: true, onHorizontalDragStart: _handleDragStart, onHorizontalDragUpdate: _handleDragUpdate, onHorizontalDragEnd: _handleDragEnd, dragStartBehavior: widget.dragStartBehavior, child: new Opacity(opacity: (onChanged is null) ? disabledOpacity : 1, child: buildToggleable(mouseCursor: effectiveMouseCursor, focusNode: widget.focusNode, onFocusChange: widget.onFocusChange, autofocus: widget.autofocus, size: widget.size, painter: ((Func<_SwitchPainter__switch>)(() =>
-{
-    var __cascade = _painter;
-    __cascade.position = position;
-    __cascade.reaction = reaction;
-    __cascade.reactionFocusFade = reactionFocusFade;
-    __cascade.reactionHoverFade = reactionHoverFade;
-    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
-    __cascade.reactionColor = effectiveActivePressedOverlayColor;
-    __cascade.hoverColor = effectiveHoverOverlayColor;
-    __cascade.focusColor = effectiveFocusOverlayColor;
-    __cascade.splashRadius = effectiveSplashRadius;
-    __cascade.downPosition = downPosition;
-    __cascade.isFocused = states.Contains(WidgetState.focused);
-    __cascade.isHovered = states.Contains(WidgetState.hovered);
-    __cascade.activeColor = effectiveActiveThumbColor;
-    __cascade.inactiveColor = effectiveInactiveThumbColor;
-    __cascade.activePressedColor = effectiveActivePressedThumbColor;
-    __cascade.inactivePressedColor = effectiveInactivePressedThumbColor;
-    __cascade.activeThumbImage = widget.activeThumbImage;
-    __cascade.onActiveThumbImageError = widget.onActiveThumbImageError;
-    __cascade.inactiveThumbImage = widget.inactiveThumbImage;
-    __cascade.onInactiveThumbImageError = widget.onInactiveThumbImageError;
-    __cascade.activeTrackColor = effectiveActiveTrackColor;
-    __cascade.activeTrackOutlineColor = effectiveActiveTrackOutlineColor;
-    __cascade.activeTrackOutlineWidth = effectiveActiveTrackOutlineWidth;
-    __cascade.inactiveTrackColor = effectiveInactiveTrackColor;
-    __cascade.inactiveTrackOutlineColor = effectiveInactiveTrackOutlineColor;
-    __cascade.inactiveTrackOutlineWidth = effectiveInactiveTrackOutlineWidth;
-    __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
-    __cascade.isInteractive = isInteractive;
-    __cascade.trackInnerLength = _trackInnerLength;
-    __cascade.textDirection = Directionality.of(context);
-    __cascade.surfaceColor = theme.colorScheme.surface;
-    __cascade.inactiveThumbRadius = effectiveInactiveThumbRadius;
-    __cascade.activeThumbRadius = effectiveActiveThumbRadius;
-    __cascade.pressedThumbRadius = switchConfig.pressedThumbRadius;
-    __cascade.thumbOffset = switchConfig.thumbOffset;
-    __cascade.trackHeight = switchConfig.trackHeight;
-    __cascade.trackWidth = switchConfig.trackWidth;
-    __cascade.activeIconColor = effectiveActiveIconColor;
-    __cascade.inactiveIconColor = effectiveInactiveIconColor;
-    __cascade.activeIcon = effectiveActiveIcon;
-    __cascade.inactiveIcon = effectiveInactiveIcon;
-    __cascade.iconTheme = IconTheme.of(context);
-    __cascade.thumbShadow = switchConfig.thumbShadow;
-    __cascade.transitionalThumbSize = switchConfig.transitionalThumbSize;
-    __cascade.positionController = positionController;
-    __cascade.isCupertino = isCupertino;
-    return __cascade;
-}))()))));
+        HashSet<WidgetState> activeStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Add(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        HashSet<WidgetState> inactiveStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Remove(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        Color? activeThumbColor =
+            (widget.thumbColor?.resolve(activeStates) ?? _widgetThumbColor.resolve(activeStates))
+            ?? (switchTheme.thumbColor?.resolve(activeStates));
+        Color effectiveActiveThumbColor =
+            activeThumbColor ?? defaultThumbColor.resolve(activeStates)!;
+        Color? inactiveThumbColor =
+            (
+                widget.thumbColor?.resolve(inactiveStates)
+                ?? _widgetThumbColor.resolve(inactiveStates)
+            ) ?? (switchTheme.thumbColor?.resolve(inactiveStates));
+        Color effectiveInactiveThumbColor =
+            inactiveThumbColor ?? defaultThumbColor.resolve(inactiveStates)!;
+        Color effectiveActiveTrackColor =
+            (
+                (
+                    (
+                        widget.trackColor?.resolve(activeStates)
+                        ?? _widgetTrackColor.resolve(activeStates)
+                    )
+                    ?? (
+                        applyCupertinoThemeLocal
+                            ? cupertinoPrimaryColor
+                            : switchTheme.trackColor?.resolve(activeStates)
+                    )
+                ) ?? _widgetThumbColor.resolve(activeStates)?.withAlpha(128L)
+            ) ?? defaultTrackColor.resolve(activeStates)!;
+        Color? effectiveActiveTrackOutlineColor =
+            (
+                widget.trackOutlineColor?.resolve(activeStates)
+                ?? (switchTheme.trackOutlineColor?.resolve(activeStates))
+            ) ?? defaults.trackOutlineColor?.resolve(activeStates);
+        double? effectiveActiveTrackOutlineWidth =
+            (
+                widget.trackOutlineWidth?.resolve(activeStates)
+                ?? switchTheme.trackOutlineWidth?.resolve(activeStates)
+            ) ?? defaults.trackOutlineWidth?.resolve(activeStates);
+        Color effectiveInactiveTrackColor =
+            (
+                (
+                    widget.trackColor?.resolve(inactiveStates)
+                    ?? _widgetTrackColor.resolve(inactiveStates)
+                ) ?? (switchTheme.trackColor?.resolve(inactiveStates))
+            ) ?? defaultTrackColor.resolve(inactiveStates)!;
+        Color? effectiveInactiveTrackOutlineColor =
+            (
+                widget.trackOutlineColor?.resolve(inactiveStates)
+                ?? (switchTheme.trackOutlineColor?.resolve(inactiveStates))
+            ) ?? (defaults.trackOutlineColor?.resolve(inactiveStates));
+        double? effectiveInactiveTrackOutlineWidth =
+            (
+                widget.trackOutlineWidth?.resolve(inactiveStates)
+                ?? switchTheme.trackOutlineWidth?.resolve(inactiveStates)
+            ) ?? defaults.trackOutlineWidth?.resolve(inactiveStates);
+        Icon? effectiveActiveIcon =
+            widget.thumbIcon?.resolve(activeStates)
+            ?? (switchTheme.thumbIcon?.resolve(activeStates));
+        Icon? effectiveInactiveIcon =
+            widget.thumbIcon?.resolve(inactiveStates)
+            ?? (switchTheme.thumbIcon?.resolve(inactiveStates));
+        Color effectiveActiveIconColor =
+            effectiveActiveIcon?.color ?? switchConfig.iconColor.resolve(activeStates);
+        Color effectiveInactiveIconColor =
+            effectiveInactiveIcon?.color ?? switchConfig.iconColor.resolve(inactiveStates);
+        HashSet<WidgetState> focusedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Add(WidgetState.focused);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveFocusOverlayColor =
+            (
+                (
+                    (widget.overlayColor?.resolve(focusedStates) ?? widget.focusColor)
+                    ?? (switchTheme.overlayColor?.resolve(focusedStates))
+                )
+                ?? (
+                    applyCupertinoThemeLocal
+                        ? HSLColor
+                            .CreateFromColor(cupertinoPrimaryColor.withOpacity(0.8))
+                            .withLightness(0.69)
+                            .withSaturation(0.835)
+                            .toColor()
+                        : null
+                )
+            ) ?? defaultOverlayColor.resolve(focusedStates)!;
+        HashSet<WidgetState> hoveredStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Add(WidgetState.hovered);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveHoverOverlayColor =
+            (
+                (widget.overlayColor?.resolve(hoveredStates) ?? widget.hoverColor)
+                ?? (switchTheme.overlayColor?.resolve(hoveredStates))
+            ) ?? defaultOverlayColor.resolve(hoveredStates)!;
+        var activePressedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = activeStates;
+                    __cascade.Add(WidgetState.pressed);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveActivePressedThumbColor =
+            (
+                (
+                    widget.thumbColor?.resolve(activePressedStates)
+                    ?? _widgetThumbColor.resolve(activePressedStates)
+                ) ?? (switchTheme.thumbColor?.resolve(activePressedStates))
+            ) ?? defaultThumbColor.resolve(activePressedStates)!;
+        Color effectiveActivePressedOverlayColor =
+            (
+                (
+                    widget.overlayColor?.resolve(activePressedStates)
+                    ?? (switchTheme.overlayColor?.resolve(activePressedStates))
+                ) ?? activeThumbColor?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)
+            ) ?? defaultOverlayColor.resolve(activePressedStates)!;
+        var inactivePressedStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = inactiveStates;
+                    __cascade.Add(WidgetState.pressed);
+                    return __cascade;
+                }
+            )
+        )();
+        Color effectiveInactivePressedThumbColor =
+            (
+                (
+                    widget.thumbColor?.resolve(inactivePressedStates)
+                    ?? _widgetThumbColor.resolve(inactivePressedStates)
+                ) ?? (switchTheme.thumbColor?.resolve(inactivePressedStates))
+            ) ?? defaultThumbColor.resolve(inactivePressedStates)!;
+        Color effectiveInactivePressedOverlayColor =
+            (
+                (
+                    widget.overlayColor?.resolve(inactivePressedStates)
+                    ?? (switchTheme.overlayColor?.resolve(inactivePressedStates))
+                ) ?? inactiveThumbColor?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)
+            ) ?? defaultOverlayColor.resolve(inactivePressedStates)!;
+        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith(
+            (states) =>
+            {
+                return WidgetStateProperty.resolveAs(widget.mouseCursor, states)
+                    ?? switchTheme.mouseCursor?.resolve(states)
+                    ?? WidgetStateMouseCursor.adaptiveClickable.resolve(states);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+        double effectiveActiveThumbRadius =
+            (effectiveActiveIcon is null)
+                ? switchConfig.activeThumbRadius
+                : switchConfig.thumbRadiusWithIcon;
+        double effectiveInactiveThumbRadius =
+            ((effectiveInactiveIcon is null) && (widget.inactiveThumbImage is null))
+                ? switchConfig.inactiveThumbRadius
+                : switchConfig.thumbRadiusWithIcon;
+        double effectiveSplashRadius =
+            (widget.splashRadius ?? switchTheme.splashRadius)
+            ?? DartRuntimePrimitives.RequireValue(defaults.splashRadius);
+        return new Widgets.Semantics(
+            toggled: widget.value,
+            child: new GestureDetector(
+                excludeFromSemantics: true,
+                onHorizontalDragStart: _handleDragStart,
+                onHorizontalDragUpdate: _handleDragUpdate,
+                onHorizontalDragEnd: _handleDragEnd,
+                dragStartBehavior: widget.dragStartBehavior,
+                child: new Opacity(
+                    opacity: (onChanged is null) ? disabledOpacity : 1,
+                    child: buildToggleable(
+                        mouseCursor: effectiveMouseCursor,
+                        focusNode: widget.focusNode,
+                        onFocusChange: widget.onFocusChange,
+                        autofocus: widget.autofocus,
+                        size: widget.size,
+                        painter: (
+                            (Func<_SwitchPainter__switch>)(
+                                () =>
+                                {
+                                    var __cascade = _painter;
+                                    __cascade.position = position;
+                                    __cascade.reaction = reaction;
+                                    __cascade.reactionFocusFade = reactionFocusFade;
+                                    __cascade.reactionHoverFade = reactionHoverFade;
+                                    __cascade.inactiveReactionColor =
+                                        effectiveInactivePressedOverlayColor;
+                                    __cascade.reactionColor = effectiveActivePressedOverlayColor;
+                                    __cascade.hoverColor = effectiveHoverOverlayColor;
+                                    __cascade.focusColor = effectiveFocusOverlayColor;
+                                    __cascade.splashRadius = effectiveSplashRadius;
+                                    __cascade.downPosition = downPosition;
+                                    __cascade.isFocused = states.Contains(WidgetState.focused);
+                                    __cascade.isHovered = states.Contains(WidgetState.hovered);
+                                    __cascade.activeColor = effectiveActiveThumbColor;
+                                    __cascade.inactiveColor = effectiveInactiveThumbColor;
+                                    __cascade.activePressedColor = effectiveActivePressedThumbColor;
+                                    __cascade.inactivePressedColor =
+                                        effectiveInactivePressedThumbColor;
+                                    __cascade.activeThumbImage = widget.activeThumbImage;
+                                    __cascade.onActiveThumbImageError =
+                                        widget.onActiveThumbImageError;
+                                    __cascade.inactiveThumbImage = widget.inactiveThumbImage;
+                                    __cascade.onInactiveThumbImageError =
+                                        widget.onInactiveThumbImageError;
+                                    __cascade.activeTrackColor = effectiveActiveTrackColor;
+                                    __cascade.activeTrackOutlineColor =
+                                        effectiveActiveTrackOutlineColor;
+                                    __cascade.activeTrackOutlineWidth =
+                                        effectiveActiveTrackOutlineWidth;
+                                    __cascade.inactiveTrackColor = effectiveInactiveTrackColor;
+                                    __cascade.inactiveTrackOutlineColor =
+                                        effectiveInactiveTrackOutlineColor;
+                                    __cascade.inactiveTrackOutlineWidth =
+                                        effectiveInactiveTrackOutlineWidth;
+                                    __cascade.configuration =
+                                        ImageLibrary.createLocalImageConfiguration(context);
+                                    __cascade.isInteractive = isInteractive;
+                                    __cascade.trackInnerLength = _trackInnerLength;
+                                    __cascade.textDirection = Directionality.of(context);
+                                    __cascade.surfaceColor = theme.colorScheme.surface;
+                                    __cascade.inactiveThumbRadius = effectiveInactiveThumbRadius;
+                                    __cascade.activeThumbRadius = effectiveActiveThumbRadius;
+                                    __cascade.pressedThumbRadius = switchConfig.pressedThumbRadius;
+                                    __cascade.thumbOffset = switchConfig.thumbOffset;
+                                    __cascade.trackHeight = switchConfig.trackHeight;
+                                    __cascade.trackWidth = switchConfig.trackWidth;
+                                    __cascade.activeIconColor = effectiveActiveIconColor;
+                                    __cascade.inactiveIconColor = effectiveInactiveIconColor;
+                                    __cascade.activeIcon = effectiveActiveIcon;
+                                    __cascade.inactiveIcon = effectiveInactiveIcon;
+                                    __cascade.iconTheme = IconTheme.of(context);
+                                    __cascade.thumbShadow = switchConfig.thumbShadow;
+                                    __cascade.transitionalThumbSize =
+                                        switchConfig.transitionalThumbSize;
+                                    __cascade.positionController = positionController;
+                                    __cascade.isCupertino = isCupertino;
+                                    return __cascade;
+                                }
+                            )
+                        )()
+                    )
+                )
+            )
+        );
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -669,13 +1097,23 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -724,7 +1162,16 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
 
     public virtual AnimationController positionController => _positionController;
@@ -733,18 +1180,45 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     public virtual CurvedAnimation reaction => _reaction;
     public virtual CurvedAnimation reactionHoverFade => _reactionHoverFade;
     public virtual CurvedAnimation reactionFocusFade => _reactionFocusFade;
-    public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
+    public virtual bool isInteractive =>
+        DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
+
     public override void initState()
     {
         base.initState();
-        _positionController = new AnimationController(duration: ToggleableLibrary._kToggleDuration, value: (value == false) ? 0.0 : 1.0, vsync: this);
-        _position = new CurvedAnimation(parent: _positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
-        _reactionController = new AnimationController(duration: _reactionAnimationDuration, vsync: this);
+        _positionController = new AnimationController(
+            duration: ToggleableLibrary._kToggleDuration,
+            value: (value == false) ? 0.0 : 1.0,
+            vsync: this
+        );
+        _position = new CurvedAnimation(
+            parent: _positionController,
+            curve: Curves.easeIn,
+            reverseCurve: Curves.easeOut
+        );
+        _reactionController = new AnimationController(
+            duration: _reactionAnimationDuration,
+            vsync: this
+        );
         _reaction = new CurvedAnimation(parent: _reactionController, curve: Curves.fastOutSlowIn);
-        _reactionHoverFadeController = new AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
-        _reactionHoverFade = new CurvedAnimation(parent: _reactionHoverFadeController, curve: Curves.fastOutSlowIn);
-        _reactionFocusFadeController = new AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
-        _reactionFocusFade = new CurvedAnimation(parent: _reactionFocusFadeController, curve: Curves.fastOutSlowIn);
+        _reactionHoverFadeController = new AnimationController(
+            duration: ToggleableLibrary._kReactionFadeDuration,
+            value: (_hovering || _focused) ? 1.0 : 0.0,
+            vsync: this
+        );
+        _reactionHoverFade = new CurvedAnimation(
+            parent: _reactionHoverFadeController,
+            curve: Curves.fastOutSlowIn
+        );
+        _reactionFocusFadeController = new AnimationController(
+            duration: ToggleableLibrary._kReactionFadeDuration,
+            value: (_hovering || _focused) ? 1.0 : 0.0,
+            vsync: this
+        );
+        _reactionFocusFade = new CurvedAnimation(
+            parent: _reactionFocusFadeController,
+            curve: Curves.fastOutSlowIn
+        );
     }
 
     public virtual void animateToValue()
@@ -778,6 +1252,7 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     }
 
     public virtual Offset? downPosition => _downPosition;
+
     public virtual void _handleTapDown(Gestures.TapDownDetails details)
     {
         if (isInteractive)
@@ -799,20 +1274,20 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         switch (value)
         {
             case false:
-                {
-                    onChanged!(true);
-                    break;
-                }
+            {
+                onChanged!(true);
+                break;
+            }
             case true:
-                {
-                    onChanged!(tristate ? null : false);
-                    break;
-                }
+            {
+                onChanged!(tristate ? null : false);
+                break;
+            }
             case null:
-                {
-                    onChanged!(false);
-                    break;
-                }
+            {
+                onChanged!(false);
+                break;
+            }
         }
         context.findRenderObject()!.sendSemanticsEvent(new TapSemanticEvent());
     }
@@ -867,19 +1342,80 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         }
     }
 
-    public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
+    public virtual HashSet<WidgetState> states =>
+        (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection10795 = new HashSet<WidgetState>();
+                    if (!isInteractive)
+                    {
+                        __collection10795.Add(WidgetState.disabled);
+                    }
+                    if (_hovering)
+                    {
+                        __collection10795.Add(WidgetState.hovered);
+                    }
+                    if (_focused)
+                    {
+                        __collection10795.Add(WidgetState.focused);
+                    }
+                    if (value ?? true)
+                    {
+                        __collection10795.Add(WidgetState.selected);
+                    }
+                    return __collection10795;
+                }
+            )
+        )();
+
+    public virtual Widget buildToggleable(
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        Size size = default!,
+        ToggleablePainter painter = default!
+    )
     {
-        return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
+        return buildToggleableWithChild(
+            focusNode: focusNode,
+            onFocusChange: onFocusChange,
+            autofocus: autofocus,
+            mouseCursor: mouseCursor,
+            child: new CustomPaint(size: size, painter: painter)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        Widget child = default!
+    )
     {
-        return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap() : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd() : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
+        return new FocusableActionDetector(
+            actions: _actionMap,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            onFocusChange: onFocusChange,
+            enabled: isInteractive,
+            onShowFocusHighlight: _handleFocusHighlightChanged,
+            onShowHoverHighlight: _handleHoverChanged,
+            mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic,
+            child: new GestureDetector(
+                excludeFromSemantics: !isInteractive,
+                onTapDown: isInteractive ? _handleTapDown : null,
+                onTap: isInteractive ? () => _handleTap() : null,
+                onTapUp: isInteractive ? _handleTapEnd : null,
+                onTapCancel: isInteractive ? () => _handleTapEnd() : null,
+                child: new Widgets.Semantics(enabled: isInteractive, child: child)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SwitchPainter__switch : ToggleablePainter
@@ -901,9 +1437,15 @@ internal class _SwitchPainter__switch : ToggleablePainter
     internal virtual double? _trackHeight { get; set; } = default;
     internal virtual double? _trackWidth { get; set; } = default;
     internal virtual IImageProvider? _activeThumbImage { get; set; } = default!;
-    internal virtual Action<object, System.Diagnostics.StackTrace?>? _onActiveThumbImageError { get; set; } = default;
+    internal virtual Action<
+        object,
+        System.Diagnostics.StackTrace?
+    >? _onActiveThumbImageError { get; set; } = default;
     internal virtual IImageProvider? _inactiveThumbImage { get; set; } = default!;
-    internal virtual Action<object, System.Diagnostics.StackTrace?>? _onInactiveThumbImageError { get; set; } = default;
+    internal virtual Action<
+        object,
+        System.Diagnostics.StackTrace?
+    >? _onInactiveThumbImageError { get; set; } = default;
     internal virtual Color? _activeTrackColor { get; set; } = default;
     internal virtual Color? _activeTrackOutlineColor { get; set; } = default;
     internal virtual Color? _inactiveTrackOutlineColor { get; set; } = default;
@@ -920,7 +1462,10 @@ internal class _SwitchPainter__switch : ToggleablePainter
     internal virtual TextPainter _textPainter { get; private set; } = new TextPainter();
     internal virtual Color? _cachedThumbColor { get; set; } = default;
     internal virtual IImageProvider? _cachedThumbImage { get; set; } = default!;
-    internal virtual Action<object, System.Diagnostics.StackTrace?>? _cachedThumbErrorListener { get; set; } = default;
+    internal virtual Action<
+        object,
+        System.Diagnostics.StackTrace?
+    >? _cachedThumbErrorListener { get; set; } = default;
     internal virtual BoxPainter? _cachedThumbPainter { get; set; } = default;
     internal virtual bool _isPainting { get; set; } = false;
     internal virtual bool _stopPressAnimation { get; set; } = false;
@@ -940,7 +1485,11 @@ internal class _SwitchPainter__switch : ToggleablePainter
             }
             _positionController = __value;
             _colorAnimation?.dispose();
-            _colorAnimation = new CurvedAnimation(parent: positionController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
+            _colorAnimation = new CurvedAnimation(
+                parent: positionController,
+                curve: Curves.easeOut,
+                reverseCurve: Curves.easeIn
+            );
             notifyListeners();
         }
     }
@@ -1378,9 +1927,21 @@ internal class _SwitchPainter__switch : ToggleablePainter
             notifyListeners();
         }
     }
-    internal virtual ShapeDecoration _createDefaultThumbDecoration(Color color, IImageProvider? image, Action<object, System.Diagnostics.StackTrace?>? errorListener)
+
+    internal virtual ShapeDecoration _createDefaultThumbDecoration(
+        Color color,
+        IImageProvider? image,
+        Action<object, System.Diagnostics.StackTrace?>? errorListener
+    )
     {
-        return new ShapeDecoration(color: color, image: (image is null) ? null : new DecorationImage(image: image, onError: errorListener), shape: new StadiumBorder(), shadows: isCupertino ? null : thumbShadow);
+        return new ShapeDecoration(
+            color: color,
+            image: (image is null)
+                ? null
+                : new DecorationImage(image: image, onError: errorListener),
+            shape: new StadiumBorder(),
+            shadows: isCupertino ? null : thumbShadow
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1395,7 +1956,13 @@ internal class _SwitchPainter__switch : ToggleablePainter
     public override void paint(Canvas canvas, Size size)
     {
         double currentValue = position.value;
-        double visualPosition = textDirection switch { TextDirection.rtl => 1.0 - currentValue, TextDirection.ltr => currentValue, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        double visualPosition = textDirection switch
+        {
+            TextDirection.rtl => 1.0 - currentValue,
+            TextDirection.ltr => currentValue,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         if (Equals(reaction.status, AnimationStatus.reverse) && !_stopPressAnimation)
         {
             _stopPressAnimation = true;
@@ -1409,34 +1976,104 @@ internal class _SwitchPainter__switch : ToggleablePainter
             _pressedThumbExtension = isCupertino ? (reaction.value * 7L) : 0;
             if (reaction.isCompleted)
             {
-                _pressedInactiveThumbRadius = Dart_uiLibrary.lerpDouble(inactiveThumbRadius, pressedThumbRadius, reaction.value);
-                _pressedActiveThumbRadius = Dart_uiLibrary.lerpDouble(activeThumbRadius, pressedThumbRadius, reaction.value);
+                _pressedInactiveThumbRadius = Dart_uiLibrary.lerpDouble(
+                    inactiveThumbRadius,
+                    pressedThumbRadius,
+                    reaction.value
+                );
+                _pressedActiveThumbRadius = Dart_uiLibrary.lerpDouble(
+                    activeThumbRadius,
+                    pressedThumbRadius,
+                    reaction.value
+                );
             }
             if (currentValue == 0L)
             {
-                _pressedInactiveThumbRadius = Dart_uiLibrary.lerpDouble(inactiveThumbRadius, pressedThumbRadius, reaction.value);
+                _pressedInactiveThumbRadius = Dart_uiLibrary.lerpDouble(
+                    inactiveThumbRadius,
+                    pressedThumbRadius,
+                    reaction.value
+                );
                 _pressedActiveThumbRadius = activeThumbRadius;
             }
             if (currentValue == 1L)
             {
-                _pressedActiveThumbRadius = Dart_uiLibrary.lerpDouble(activeThumbRadius, pressedThumbRadius, reaction.value);
+                _pressedActiveThumbRadius = Dart_uiLibrary.lerpDouble(
+                    activeThumbRadius,
+                    pressedThumbRadius,
+                    reaction.value
+                );
                 _pressedInactiveThumbRadius = inactiveThumbRadius;
             }
         }
-        var inactiveThumbSize = isCupertino ? new Size((DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(_pressedThumbExtension), DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L) : Size.fromRadius(_pressedInactiveThumbRadius ?? (double)inactiveThumbRadius);
-        var activeThumbSize = isCupertino ? new Size((DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(_pressedThumbExtension), DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L) : Size.fromRadius(_pressedActiveThumbRadius ?? (double)activeThumbRadius);
+        var inactiveThumbSize = isCupertino
+            ? new Size(
+                (DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L)
+                    + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
+                DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L
+            )
+            : Size.fromRadius(_pressedInactiveThumbRadius ?? (double)inactiveThumbRadius);
+        var activeThumbSize = isCupertino
+            ? new Size(
+                (DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L)
+                    + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
+                DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L
+            )
+            : Size.fromRadius(_pressedActiveThumbRadius ?? (double)activeThumbRadius);
         Animation<Size> thumbSizeAnimation(bool isForward)
         {
             List<TweenSequenceItem<Size>> thumbSizeSequence = default!;
             if (isForward)
             {
-                thumbSizeSequence = new List<TweenSequenceItem<Size>> { new TweenSequenceItem<Size>(tween: new Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize).chain(new CurveTween(curve: new Cubic(0.31, 0.0, 0.56, 1.0))), weight: 11), new TweenSequenceItem<Size>(tween: new Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize).chain(new CurveTween(curve: new Cubic(0.2, 0.0, 0.0, 1.0))), weight: 72), new TweenSequenceItem<Size>(tween: new ConstantTween<Size>(activeThumbSize), weight: 17) };
+                thumbSizeSequence = new List<TweenSequenceItem<Size>>
+                {
+                    new TweenSequenceItem<Size>(
+                        tween: new Tween<Size>(
+                            begin: inactiveThumbSize,
+                            end: transitionalThumbSize
+                        ).chain(new CurveTween(curve: new Cubic(0.31, 0.0, 0.56, 1.0))),
+                        weight: 11
+                    ),
+                    new TweenSequenceItem<Size>(
+                        tween: new Tween<Size>(
+                            begin: transitionalThumbSize,
+                            end: activeThumbSize
+                        ).chain(new CurveTween(curve: new Cubic(0.2, 0.0, 0.0, 1.0))),
+                        weight: 72
+                    ),
+                    new TweenSequenceItem<Size>(
+                        tween: new ConstantTween<Size>(activeThumbSize),
+                        weight: 17
+                    ),
+                };
             }
             else
             {
-                thumbSizeSequence = new List<TweenSequenceItem<Size>> { new TweenSequenceItem<Size>(tween: new ConstantTween<Size>(inactiveThumbSize), weight: 17), new TweenSequenceItem<Size>(tween: new Tween<Size>(begin: inactiveThumbSize, end: transitionalThumbSize).chain(new CurveTween(curve: new Cubic(0.2, 0.0, 0.0, 1.0).flipped)), weight: 72), new TweenSequenceItem<Size>(tween: new Tween<Size>(begin: transitionalThumbSize, end: activeThumbSize).chain(new CurveTween(curve: new Cubic(0.31, 0.0, 0.56, 1.0).flipped)), weight: 11) };
+                thumbSizeSequence = new List<TweenSequenceItem<Size>>
+                {
+                    new TweenSequenceItem<Size>(
+                        tween: new ConstantTween<Size>(inactiveThumbSize),
+                        weight: 17
+                    ),
+                    new TweenSequenceItem<Size>(
+                        tween: new Tween<Size>(
+                            begin: inactiveThumbSize,
+                            end: transitionalThumbSize
+                        ).chain(new CurveTween(curve: new Cubic(0.2, 0.0, 0.0, 1.0).flipped)),
+                        weight: 72
+                    ),
+                    new TweenSequenceItem<Size>(
+                        tween: new Tween<Size>(
+                            begin: transitionalThumbSize,
+                            end: activeThumbSize
+                        ).chain(new CurveTween(curve: new Cubic(0.31, 0.0, 0.56, 1.0).flipped)),
+                        weight: 11
+                    ),
+                };
             }
-            return new TweenSequence<Size>(thumbSizeSequence.Cast<TweenSequenceItem<Size>>().ToList()).animate(positionController);
+            return new TweenSequence<Size>(
+                thumbSizeSequence.Cast<TweenSequenceItem<Size>>().ToList()
+            ).animate(positionController);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         Size? thumbSize = default!;
@@ -1444,17 +2081,29 @@ internal class _SwitchPainter__switch : ToggleablePainter
         {
             if (reaction.isCompleted)
             {
-                thumbSize = new Size((DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(_pressedThumbExtension), DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L);
+                thumbSize = new Size(
+                    (DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L)
+                        + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
+                    DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L
+                );
             }
             else
             {
                 if (position.isDismissed || Equals(position.status, AnimationStatus.forward))
                 {
-                    thumbSize = Dart_uiLibrary.Size.lerp(inactiveThumbSize, activeThumbSize, position.value);
+                    thumbSize = Dart_uiLibrary.Size.lerp(
+                        inactiveThumbSize,
+                        activeThumbSize,
+                        position.value
+                    );
                 }
                 else
                 {
-                    thumbSize = Dart_uiLibrary.Size.lerp(inactiveThumbSize, activeThumbSize, position.value);
+                    thumbSize = Dart_uiLibrary.Size.lerp(
+                        inactiveThumbSize,
+                        activeThumbSize,
+                        position.value
+                    );
                 }
             }
         }
@@ -1476,54 +2125,120 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 }
             }
         }
-        double inset = (thumbOffset is null) ? 0 : (1.0 - ((currentValue - DartRuntimePrimitives.RequireValue(thumbOffset)).abs() * 2.0));
-        thumbSize = new Size(DartRuntimePrimitives.RequireValue(thumbSize).width - inset, DartRuntimePrimitives.RequireValue(thumbSize).height - inset);
+        double inset =
+            (thumbOffset is null)
+                ? 0
+                : (
+                    1.0
+                    - ((currentValue - DartRuntimePrimitives.RequireValue(thumbOffset)).abs() * 2.0)
+                );
+        thumbSize = new Size(
+            DartRuntimePrimitives.RequireValue(thumbSize).width - inset,
+            DartRuntimePrimitives.RequireValue(thumbSize).height - inset
+        );
         double colorValue = _colorAnimation!.value;
-        Color trackColor = Dart_uiLibrary.Color.lerp(inactiveTrackColor, activeTrackColor, colorValue)!;
-        Color? trackOutlineColor = ((inactiveTrackOutlineColor is null) || (activeTrackOutlineColor is null)) ? null : Dart_uiLibrary.Color.lerp(inactiveTrackOutlineColor, activeTrackOutlineColor, colorValue);
-        double? trackOutlineWidth = Dart_uiLibrary.lerpDouble(inactiveTrackOutlineWidth, activeTrackOutlineWidth, colorValue);
+        Color trackColor = Dart_uiLibrary.Color.lerp(
+            inactiveTrackColor,
+            activeTrackColor,
+            colorValue
+        )!;
+        Color? trackOutlineColor =
+            ((inactiveTrackOutlineColor is null) || (activeTrackOutlineColor is null))
+                ? null
+                : Dart_uiLibrary.Color.lerp(
+                    inactiveTrackOutlineColor,
+                    activeTrackOutlineColor,
+                    colorValue
+                );
+        double? trackOutlineWidth = Dart_uiLibrary.lerpDouble(
+            inactiveTrackOutlineWidth,
+            activeTrackOutlineWidth,
+            colorValue
+        );
         Color lerpedThumbColor = default!;
         if (!reaction.isDismissed)
         {
-            lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactivePressedColor, activePressedColor, colorValue)!;
+            lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                inactivePressedColor,
+                activePressedColor,
+                colorValue
+            )!;
         }
         else
         {
             if (Equals(positionController.status, AnimationStatus.forward))
             {
-                lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactivePressedColor, activeColor, colorValue)!;
+                lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                    inactivePressedColor,
+                    activeColor,
+                    colorValue
+                )!;
             }
             else
             {
                 if (Equals(positionController.status, AnimationStatus.reverse))
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactiveColor, activePressedColor, colorValue)!;
+                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                        inactiveColor,
+                        activePressedColor,
+                        colorValue
+                    )!;
                 }
                 else
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactiveColor, activeColor, colorValue)!;
+                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                        inactiveColor,
+                        activeColor,
+                        colorValue
+                    )!;
                 }
             }
         }
         Color thumbColor = Dart_uiLibrary.Color.alphaBlend(lerpedThumbColor, surfaceColor);
         Icon? thumbIcon = (currentValue < 0.5) ? inactiveIcon : activeIcon;
         IImageProvider? thumbImage = (currentValue < 0.5) ? inactiveThumbImage : activeThumbImage;
-        Action<object, System.Diagnostics.StackTrace?>? thumbErrorListener = (currentValue < 0.5) ? onInactiveThumbImageError : onActiveThumbImageError;
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = trackColor;
-    return __cascade;
-}))();
+        Action<object, System.Diagnostics.StackTrace?>? thumbErrorListener =
+            (currentValue < 0.5) ? onInactiveThumbImageError : onActiveThumbImageError;
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = trackColor;
+                    return __cascade;
+                }
+            )
+        )();
         Offset trackPaintOffset = _computeTrackPaintOffset(size, trackWidth, trackHeight);
-        Offset thumbPaintOffset = _computeThumbPaintOffset(trackPaintOffset, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)), visualPosition);
-        var radialReactionOrigin = new Offset(thumbPaintOffset.dx + (DartRuntimePrimitives.RequireValue(thumbSize).height / 2L), size.height / 2L);
+        Offset thumbPaintOffset = _computeThumbPaintOffset(
+            trackPaintOffset,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)),
+            visualPosition
+        );
+        var radialReactionOrigin = new Offset(
+            thumbPaintOffset.dx + (DartRuntimePrimitives.RequireValue(thumbSize).height / 2L),
+            size.height / 2L
+        );
         _paintTrackWith(canvas, paintLocal, trackPaintOffset, trackOutlineColor, trackOutlineWidth);
         paintRadialReaction(canvas: canvas, origin: radialReactionOrigin);
-        _paintThumbWith(thumbPaintOffset, canvas, colorValue, thumbColor, thumbImage, thumbErrorListener, thumbIcon, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)), inset);
+        _paintThumbWith(
+            thumbPaintOffset,
+            canvas,
+            colorValue,
+            thumbColor,
+            thumbImage,
+            thumbErrorListener,
+            thumbIcon,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)),
+            inset
+        );
     }
 
-    internal virtual Offset _computeTrackPaintOffset(Size canvasSize, double trackWidth, double trackHeight)
+    internal virtual Offset _computeTrackPaintOffset(
+        Size canvasSize,
+        double trackWidth,
+        double trackHeight
+    )
     {
         double horizontalOffset = (canvasSize.width - trackWidth) / 2.0;
         double verticalOffset = (canvasSize.height - trackHeight) / 2.0;
@@ -1531,35 +2246,69 @@ internal class _SwitchPainter__switch : ToggleablePainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Offset _computeThumbPaintOffset(Offset trackPaintOffset, Size thumbSize, double visualPosition)
+    internal virtual Offset _computeThumbPaintOffset(
+        Offset trackPaintOffset,
+        Size thumbSize,
+        double visualPosition
+    )
     {
         double trackRadius = trackHeight / 2L;
         double additionalThumbRadius = (thumbSize.height / 2L) - trackRadius;
-        double horizontalProgress = visualPosition * (trackInnerLength - DartRuntimePrimitives.RequireValue(_pressedThumbExtension));
-        double thumbHorizontalOffset = trackPaintOffset.dx + trackRadius + DartRuntimePrimitives.RequireValue(_pressedThumbExtension) / 2L - (thumbSize.width / 2L) + horizontalProgress;
+        double horizontalProgress =
+            visualPosition
+            * (trackInnerLength - DartRuntimePrimitives.RequireValue(_pressedThumbExtension));
+        double thumbHorizontalOffset =
+            trackPaintOffset.dx
+            + trackRadius
+            + (DartRuntimePrimitives.RequireValue(_pressedThumbExtension) / 2L)
+            - (thumbSize.width / 2L)
+            + horizontalProgress;
         double thumbVerticalOffset = trackPaintOffset.dy - additionalThumbRadius;
         return new Offset(thumbHorizontalOffset, thumbVerticalOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _paintTrackWith(Canvas canvas, Paint paint, Offset trackPaintOffset, Color? trackOutlineColor, double? trackOutlineWidth)
+    internal virtual void _paintTrackWith(
+        Canvas canvas,
+        Paint paint,
+        Offset trackPaintOffset,
+        Color? trackOutlineColor,
+        double? trackOutlineWidth
+    )
     {
-        var trackRect = Rect.fromLTWH(trackPaintOffset.dx, trackPaintOffset.dy, trackWidth, trackHeight);
+        var trackRect = Rect.fromLTWH(
+            trackPaintOffset.dx,
+            trackPaintOffset.dy,
+            trackWidth,
+            trackHeight
+        );
         double trackRadius = trackHeight / 2L;
         var trackRRect = RRect.fromRectAndRadius(trackRect, Radius.circular(trackRadius));
         canvas.drawRRect(trackRRect, paint);
         if (trackOutlineColor is not null)
         {
-            var outlineTrackRect = Rect.fromLTWH(trackPaintOffset.dx + 1L, trackPaintOffset.dy + 1L, trackWidth - 2L, trackHeight - 2L);
-            var outlineTrackRRect = RRect.fromRectAndRadius(outlineTrackRect, Radius.circular(trackRadius));
-            var outlinePaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = trackOutlineWidth ?? 2.0;
-    __cascade.color = trackOutlineColor;
-    return __cascade;
-}))();
+            var outlineTrackRect = Rect.fromLTWH(
+                trackPaintOffset.dx + 1L,
+                trackPaintOffset.dy + 1L,
+                trackWidth - 2L,
+                trackHeight - 2L
+            );
+            var outlineTrackRRect = RRect.fromRectAndRadius(
+                outlineTrackRect,
+                Radius.circular(trackRadius)
+            );
+            var outlinePaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.style = PaintingStyle.stroke;
+                        __cascade.strokeWidth = trackOutlineWidth ?? 2.0;
+                        __cascade.color = trackOutlineColor;
+                        return __cascade;
+                    }
+                )
+            )();
             canvas.drawRRect(outlineTrackRRect, outlinePaint);
         }
         if (isCupertino)
@@ -1567,32 +2316,56 @@ internal class _SwitchPainter__switch : ToggleablePainter
             if (isFocused)
             {
                 RRect focusedOutline = trackRRect.inflate(1.75);
-                var focusedPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.color = focusColor;
-    __cascade.strokeWidth = SwitchLibrary._kCupertinoFocusTrackOutline;
-    return __cascade;
-}))();
+                var focusedPaint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.style = PaintingStyle.stroke;
+                            __cascade.color = focusColor;
+                            __cascade.strokeWidth = SwitchLibrary._kCupertinoFocusTrackOutline;
+                            return __cascade;
+                        }
+                    )
+                )();
                 canvas.drawRRect(focusedOutline, focusedPaint);
             }
             canvas.clipRRect(trackRRect);
         }
     }
 
-    internal virtual void _paintThumbWith(Offset thumbPaintOffset, Canvas canvas, double currentValue, Color thumbColor, IImageProvider? thumbImage, Action<object, System.Diagnostics.StackTrace?>? thumbErrorListener, Icon? thumbIcon, Size thumbSize, double inset)
+    internal virtual void _paintThumbWith(
+        Offset thumbPaintOffset,
+        Canvas canvas,
+        double currentValue,
+        Color thumbColor,
+        IImageProvider? thumbImage,
+        Action<object, System.Diagnostics.StackTrace?>? thumbErrorListener,
+        Icon? thumbIcon,
+        Size thumbSize,
+        double inset
+    )
     {
         try
         {
             _isPainting = true;
-            if ((_cachedThumbPainter is null) || (!Equals(thumbColor, _cachedThumbColor)) || (!Equals(thumbImage, _cachedThumbImage)) || (!Equals(thumbErrorListener, _cachedThumbErrorListener)))
+            if (
+                (_cachedThumbPainter is null)
+                || (!Equals(thumbColor, _cachedThumbColor))
+                || (!Equals(thumbImage, _cachedThumbImage))
+                || (!Equals(thumbErrorListener, _cachedThumbErrorListener))
+            )
             {
                 _cachedThumbColor = thumbColor;
                 _cachedThumbImage = thumbImage;
                 _cachedThumbErrorListener = thumbErrorListener;
                 _cachedThumbPainter?.dispose();
-                _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage, thumbErrorListener).createBoxPainter(() => _handleDecorationChanged());
+                _cachedThumbPainter = _createDefaultThumbDecoration(
+                        thumbColor,
+                        thumbImage,
+                        thumbErrorListener
+                    )
+                    .createBoxPainter(() => _handleDecorationChanged());
             }
             BoxPainter thumbPainter = _cachedThumbPainter!;
             if (isCupertino)
@@ -1602,7 +2375,11 @@ internal class _SwitchPainter__switch : ToggleablePainter
             thumbPainter.paint(canvas, thumbPaintOffset, configuration.copyWith(size: thumbSize));
             if ((thumbIcon is not null) && (thumbIcon.icon is not null))
             {
-                Color iconColor = Dart_uiLibrary.Color.lerp(inactiveIconColor, activeIconColor, currentValue)!;
+                Color iconColor = Dart_uiLibrary.Color.lerp(
+                    inactiveIconColor,
+                    activeIconColor,
+                    currentValue
+                )!;
                 double iconSizeLocal = thumbIcon.size ?? _SwitchConfigM3__switch.iconSize;
                 IconData iconData = thumbIcon.icon!;
                 double? iconWeight = thumbIcon.weight ?? iconTheme?.weight;
@@ -1610,18 +2387,81 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 double? iconGrade = thumbIcon.grade ?? iconTheme?.grade;
                 double? iconOpticalSize = thumbIcon.opticalSize ?? iconTheme?.opticalSize;
                 List<Shadow>? iconShadows = (thumbIcon.shadows ?? iconTheme?.shadows)?.ToList();
-                var textSpan = new TextSpan(text: char.ConvertFromUtf32(checked((int)iconData.codePoint)), style: new TextStyle(fontVariations: ((Func<List<FontVariation>>)(() => { var __collection65120 = new List<FontVariation>(); if (iconFill is not null) { __collection65120.Add(new FontVariation("FILL", DartRuntimePrimitives.RequireValue(iconFill))); } if (iconWeight is not null) { __collection65120.Add(new FontVariation("wght", DartRuntimePrimitives.RequireValue(iconWeight))); } if (iconGrade is not null) { __collection65120.Add(new FontVariation("GRAD", DartRuntimePrimitives.RequireValue(iconGrade))); } if (iconOpticalSize is not null) { __collection65120.Add(new FontVariation("opsz", DartRuntimePrimitives.RequireValue(iconOpticalSize))); } return __collection65120; }))(), color: iconColor, fontSize: iconSizeLocal, inherit: false, fontFamily: iconData.fontFamily, package: iconData.fontPackage, shadows: iconShadows));
-                DartRuntimePrimitives.Ignore(((Func<TextPainter>)(() =>
-{
-    var __cascade = _textPainter;
-    __cascade.textDirection = textDirection;
-    __cascade.text = textSpan;
-    return __cascade;
-}))());
+                var textSpan = new TextSpan(
+                    text: char.ConvertFromUtf32(checked((int)iconData.codePoint)),
+                    style: new TextStyle(
+                        fontVariations: (
+                            (Func<List<FontVariation>>)(
+                                () =>
+                                {
+                                    var __collection65120 = new List<FontVariation>();
+                                    if (iconFill is not null)
+                                    {
+                                        __collection65120.Add(
+                                            new FontVariation(
+                                                "FILL",
+                                                DartRuntimePrimitives.RequireValue(iconFill)
+                                            )
+                                        );
+                                    }
+                                    if (iconWeight is not null)
+                                    {
+                                        __collection65120.Add(
+                                            new FontVariation(
+                                                "wght",
+                                                DartRuntimePrimitives.RequireValue(iconWeight)
+                                            )
+                                        );
+                                    }
+                                    if (iconGrade is not null)
+                                    {
+                                        __collection65120.Add(
+                                            new FontVariation(
+                                                "GRAD",
+                                                DartRuntimePrimitives.RequireValue(iconGrade)
+                                            )
+                                        );
+                                    }
+                                    if (iconOpticalSize is not null)
+                                    {
+                                        __collection65120.Add(
+                                            new FontVariation(
+                                                "opsz",
+                                                DartRuntimePrimitives.RequireValue(iconOpticalSize)
+                                            )
+                                        );
+                                    }
+                                    return __collection65120;
+                                }
+                            )
+                        )(),
+                        color: iconColor,
+                        fontSize: iconSizeLocal,
+                        inherit: false,
+                        fontFamily: iconData.fontFamily,
+                        package: iconData.fontPackage,
+                        shadows: iconShadows
+                    )
+                );
+                DartRuntimePrimitives.Ignore(
+                    (
+                        (Func<TextPainter>)(
+                            () =>
+                            {
+                                var __cascade = _textPainter;
+                                __cascade.textDirection = textDirection;
+                                __cascade.text = textSpan;
+                                return __cascade;
+                            }
+                        )
+                    )()
+                );
                 _textPainter.layout();
                 double additionalHorizontalOffset = (thumbSize.width - iconSizeLocal) / 2L;
                 double additionalVerticalOffset = (thumbSize.height - iconSizeLocal) / 2L;
-                Offset offset = thumbPaintOffset + new Offset(additionalHorizontalOffset, additionalVerticalOffset);
+                Offset offset =
+                    thumbPaintOffset
+                    + new Offset(additionalHorizontalOffset, additionalVerticalOffset);
                 _textPainter.paint(canvas, offset);
             }
         }
@@ -1631,9 +2471,19 @@ internal class _SwitchPainter__switch : ToggleablePainter
         }
     }
 
-    internal virtual void _paintCupertinoThumbShadowAndBorder(Canvas canvas, Offset thumbPaintOffset, Size thumbSize)
+    internal virtual void _paintCupertinoThumbShadowAndBorder(
+        Canvas canvas,
+        Offset thumbPaintOffset,
+        Size thumbSize
+    )
     {
-        var thumbBounds = RRect.fromLTRBR(thumbPaintOffset.dx, thumbPaintOffset.dy, thumbPaintOffset.dx + thumbSize.width, thumbPaintOffset.dy + thumbSize.height, Radius.circular(thumbSize.height / 2.0));
+        var thumbBounds = RRect.fromLTRBR(
+            thumbPaintOffset.dx,
+            thumbPaintOffset.dy,
+            thumbPaintOffset.dx + thumbSize.width,
+            thumbPaintOffset.dy + thumbSize.height,
+            Radius.circular(thumbSize.height / 2.0)
+        );
         if (thumbShadow is not null)
         {
             foreach (BoxShadow shadow in thumbShadow!)
@@ -1641,12 +2491,19 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 canvas.drawRRect(thumbBounds.shift(shadow.offset), shadow.toPaint());
             }
         }
-        canvas.drawRRect(thumbBounds.inflate(0.5), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = new Color(167772160L);
-    return __cascade;
-}))());
+        canvas.drawRRect(
+            thumbBounds.inflate(0.5),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = new Color(167772160L);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void dispose()
@@ -1660,14 +2517,11 @@ internal class _SwitchPainter__switch : ToggleablePainter
         _colorAnimation?.dispose();
         base.dispose();
     }
-
 }
 
 internal class _SwitchThemeAdaptation__switch : Adaptation<SwitchThemeData>
 {
-    internal _SwitchThemeAdaptation__switch()
-    {
-    }
+    internal _SwitchThemeAdaptation__switch() { }
 
     public override SwitchThemeData adapt(ThemeData theme, SwitchThemeData defaultValue)
     {
@@ -1677,20 +2531,19 @@ internal class _SwitchThemeAdaptation__switch : Adaptation<SwitchThemeData>
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
-                {
-                    return defaultValue;
-                }
+            {
+                return defaultValue;
+            }
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
-                {
-                    return new SwitchThemeData();
-                }
+            {
+                return new SwitchThemeData();
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal interface _SwitchConfig__switch
@@ -1725,47 +2578,75 @@ internal class _SwitchDefaultsCupertino__switch : SwitchThemeData
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return SystemMouseCursors.basic;
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return SystemMouseCursors.basic;
+                    }
+                    return Foundation.ConstantsLibrary.kIsWeb
+                        ? SystemMouseCursors.click
+                        : SystemMouseCursors.basic;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : SystemMouseCursors.basic;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
-    public override WidgetStateProperty<Color> thumbColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.white));
+    public override WidgetStateProperty<Color> thumbColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.white)
+        );
     public override WidgetStateProperty<Color> trackColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, context);
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, context);
+                    }
+                    return CupertinoDynamicColor.resolve(
+                        CupertinoColors.secondarySystemFill,
+                        context
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
-    public override WidgetStateProperty<Color?> trackOutlineColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
+    public override WidgetStateProperty<Color?> trackOutlineColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
     public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {
-            return (WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.focused))
-                {
-                    return HSLColor.CreateFromColor(CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, context).withOpacity(0.8)).withLightness(0.69).withSaturation(0.835).toColor();
-                }
-                return Colors.transparent;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return (WidgetStateProperty<Color?>)
+                WidgetStateProperty.resolveWith(
+                    (states) =>
+                    {
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return HSLColor
+                                .CreateFromColor(
+                                    CupertinoDynamicColor
+                                        .resolve(CupertinoColors.systemGreen, context)
+                                        .withOpacity(0.8)
+                                )
+                                .withLightness(0.69)
+                                .withSaturation(0.835)
+                                .toColor();
+                        }
+                        return Colors.transparent;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                );
         }
     }
     public override double? splashRadius => 0.0;
@@ -1791,31 +2672,40 @@ internal class _SwitchConfigCupertino__switch : _SwitchConfig__switch
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return _colors.onSurface.withOpacity(0.38);
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
+                    return _colors.onPrimaryContainer;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return _colors.onPrimaryContainer;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public virtual double activeThumbRadius => 14.0;
     public virtual double inactiveThumbRadius => 14.0;
     public virtual double pressedThumbRadius => 14.0;
-    public virtual double switchHeight => DartRuntimePrimitives.ConvertValue<double>(switchMinSize.height + 8.0);
+    public virtual double switchHeight =>
+        DartRuntimePrimitives.ConvertValue<double>(switchMinSize.height + 8.0);
     public virtual double switchHeightCollapsed => switchMinSize.height;
     public virtual double switchWidth => 60.0;
     public virtual double thumbRadiusWithIcon => 14.0;
-    public virtual List<BoxShadow>? thumbShadow => new List<BoxShadow> { new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0), new BoxShadow(color: new Color(251658240L), offset: new Offset(0, 3), blurRadius: 1.0) };
+    public virtual List<BoxShadow>? thumbShadow =>
+        new List<BoxShadow>
+        {
+            new BoxShadow(color: new Color(637534208L), offset: new Offset(0, 3), blurRadius: 8.0),
+            new BoxShadow(color: new Color(251658240L), offset: new Offset(0, 3), blurRadius: 1.0),
+        };
     public virtual double trackHeight => 31.0;
     public virtual double trackWidth => 51.0;
     public virtual Size transitionalThumbSize => new Size(28.0, 28.0);
     public virtual long toggleDuration => 140L;
     public virtual double? thumbOffset => DartRuntimePrimitives.ConvertValue<double>(null);
-    public virtual Size switchMinSize => new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0);
+    public virtual Size switchMinSize =>
+        new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0);
 }
 
 internal class _SwitchDefaultsM3__switch : SwitchThemeData
@@ -1845,164 +2735,183 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        if (states.Contains(WidgetState.selected))
+                        {
+                            return _colors.surface.withOpacity(1.0);
+                        }
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
                     if (states.Contains(WidgetState.selected))
                     {
-                        return _colors.surface.withOpacity(1.0);
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primaryContainer;
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primaryContainer;
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primaryContainer;
+                        }
+                        return _colors.onPrimary;
                     }
-                    return _colors.onSurface.withOpacity(0.38);
-                }
-                if (states.Contains(WidgetState.selected))
-                {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return _colors.primaryContainer;
+                        return _colors.onSurfaceVariant;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.primaryContainer;
+                        return _colors.onSurfaceVariant;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.primaryContainer;
+                        return _colors.onSurfaceVariant;
                     }
-                    return _colors.onPrimary;
+                    return _colors.outline;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.onSurfaceVariant;
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurfaceVariant;
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurfaceVariant;
-                }
-                return _colors.outline;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override WidgetStateProperty<Color> trackColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        if (states.Contains(WidgetState.selected))
+                        {
+                            return _colors.onSurface.withOpacity(0.12);
+                        }
+                        return _colors.surfaceContainerHighest.withOpacity(0.12);
+                    }
                     if (states.Contains(WidgetState.selected))
                     {
-                        return _colors.onSurface.withOpacity(0.12);
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary;
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary;
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary;
+                        }
+                        return _colors.primary;
                     }
-                    return _colors.surfaceContainerHighest.withOpacity(0.12);
-                }
-                if (states.Contains(WidgetState.selected))
-                {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return _colors.primary;
+                        return _colors.surfaceContainerHighest;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.primary;
+                        return _colors.surfaceContainerHighest;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.primary;
+                        return _colors.surfaceContainerHighest;
                     }
-                    return _colors.primary;
-                }
-                if (states.Contains(WidgetState.pressed))
-                {
                     return _colors.surfaceContainerHighest;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.surfaceContainerHighest;
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.surfaceContainerHighest;
-                }
-                return _colors.surfaceContainerHighest;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override WidgetStateProperty<Color?> trackOutlineColor
     {
         get
         {
-            return (WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
-                {
-                    return Colors.transparent;
-                }
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return _colors.onSurface.withOpacity(0.12);
-                }
-                return _colors.outline;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return (WidgetStateProperty<Color?>)
+                WidgetStateProperty.resolveWith(
+                    (states) =>
+                    {
+                        if (states.Contains(WidgetState.selected))
+                        {
+                            return Colors.transparent;
+                        }
+                        if (states.Contains(WidgetState.disabled))
+                        {
+                            return _colors.onSurface.withOpacity(0.12);
+                        }
+                        return _colors.outline;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                );
         }
     }
     public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        return null;
+                    }
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return _colors.primary.withOpacity(0.1);
+                        return _colors.onSurface.withOpacity(0.1);
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.primary.withOpacity(0.08);
+                        return _colors.onSurface.withOpacity(0.08);
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.primary.withOpacity(0.1);
+                        return _colors.onSurface.withOpacity(0.1);
                     }
                     return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurface.withOpacity(0.08);
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override WidgetStateProperty<MouseCursor> mouseCursor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) => WidgetStateMouseCursor.clickable.resolve(states));
+            return WidgetStateProperty.resolveWith(
+                (states) => WidgetStateMouseCursor.clickable.resolve(states)
+            );
         }
     }
-    public override WidgetStatePropertyAll<double?> trackOutlineWidth => DartRuntimePrimitives.ConvertValue<WidgetStatePropertyAll<double?>>(new WidgetStatePropertyAll<double?>(2.0));
+    public override WidgetStatePropertyAll<double?> trackOutlineWidth =>
+        DartRuntimePrimitives.ConvertValue<WidgetStatePropertyAll<double?>>(
+            new WidgetStatePropertyAll<double?>(2.0)
+        );
     public override double? splashRadius => DartRuntimePrimitives.ConvertValue<double>(40.0 / 2L);
-    public override EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.CreateSymmetric(horizontal: 4));
+    public override EdgeInsetsGeometry? padding =>
+        DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(
+            EdgeInsets.CreateSymmetric(horizontal: 4)
+        );
 }
 
 internal class _SwitchConfigM3__switch : _SwitchConfig__switch
@@ -2017,65 +2926,77 @@ internal class _SwitchConfigM3__switch : _SwitchConfig__switch
         _colors = Theme.of(context).colorScheme;
     }
 
-    public virtual double activeThumbRadius => DartRuntimePrimitives.ConvertValue<double>(24.0 / 2L);
+    public virtual double activeThumbRadius =>
+        DartRuntimePrimitives.ConvertValue<double>(24.0 / 2L);
     public virtual WidgetStateProperty<Color> iconColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        if (states.Contains(WidgetState.selected))
+                        {
+                            return _colors.onSurface.withOpacity(0.38);
+                        }
+                        return _colors.surfaceContainerHighest.withOpacity(0.38);
+                    }
                     if (states.Contains(WidgetState.selected))
                     {
-                        return _colors.onSurface.withOpacity(0.38);
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onPrimaryContainer;
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onPrimaryContainer;
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onPrimaryContainer;
+                        }
+                        return _colors.onPrimaryContainer;
                     }
-                    return _colors.surfaceContainerHighest.withOpacity(0.38);
-                }
-                if (states.Contains(WidgetState.selected))
-                {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return _colors.onPrimaryContainer;
+                        return _colors.surfaceContainerHighest;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.onPrimaryContainer;
+                        return _colors.surfaceContainerHighest;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.onPrimaryContainer;
+                        return _colors.surfaceContainerHighest;
                     }
-                    return _colors.onPrimaryContainer;
-                }
-                if (states.Contains(WidgetState.pressed))
-                {
                     return _colors.surfaceContainerHighest;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.surfaceContainerHighest;
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.surfaceContainerHighest;
-                }
-                return _colors.surfaceContainerHighest;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
-    public virtual double inactiveThumbRadius => DartRuntimePrimitives.ConvertValue<double>(16.0 / 2L);
-    public virtual double pressedThumbRadius => DartRuntimePrimitives.ConvertValue<double>(28.0 / 2L);
-    public virtual double switchHeight => DartRuntimePrimitives.ConvertValue<double>(switchMinSize.height + 8.0);
+    public virtual double inactiveThumbRadius =>
+        DartRuntimePrimitives.ConvertValue<double>(16.0 / 2L);
+    public virtual double pressedThumbRadius =>
+        DartRuntimePrimitives.ConvertValue<double>(28.0 / 2L);
+    public virtual double switchHeight =>
+        DartRuntimePrimitives.ConvertValue<double>(switchMinSize.height + 8.0);
     public virtual double switchHeightCollapsed => switchMinSize.height;
     public virtual double switchWidth => 52.0;
-    public virtual double thumbRadiusWithIcon => DartRuntimePrimitives.ConvertValue<double>(24.0 / 2L);
-    public virtual List<BoxShadow>? thumbShadow => ShadowsLibrary.kElevationToShadow.GetValueOrDefault(0L);
+    public virtual double thumbRadiusWithIcon =>
+        DartRuntimePrimitives.ConvertValue<double>(24.0 / 2L);
+    public virtual List<BoxShadow>? thumbShadow =>
+        ShadowsLibrary.kElevationToShadow.GetValueOrDefault(0L);
     public virtual double trackHeight => 32.0;
     public virtual double trackWidth => 52.0;
     public virtual Size transitionalThumbSize => new Size(34, 22);
     public virtual long toggleDuration => 300L;
     public virtual double? thumbOffset => DartRuntimePrimitives.ConvertValue<double>(null);
-    public virtual Size switchMinSize => new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension, Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0);
+    public virtual Size switchMinSize =>
+        new Size(
+            Widgets.ConstantsLibrary.kMinInteractiveDimension,
+            Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0
+        );
 }

@@ -15,14 +15,23 @@ public class RouteInformation
         this.state = state;
         _location = location;
         _uri = uri;
-        System.Diagnostics.Debug.Assert(location is not null != uri is not null);
+        System.Diagnostics.Debug.Assert((location is not null) != (uri is not null));
     }
 
     public virtual string location
     {
         get
         {
-            return _location ?? Dart_coreLibrary.decodeComponent(new DartUri(path: (uri.path.Length == 0) ? "/" : uri.path, queryParameters: !Enumerable.Any(uri.queryParametersAll) ? null : uri.queryParametersAll, fragment: (uri.fragment.Length == 0) ? null : uri.fragment).ToString());
+            return _location
+                ?? Dart_coreLibrary.decodeComponent(
+                    new DartUri(
+                        path: (uri.path.Length == 0) ? "/" : uri.path,
+                        queryParameters: !Enumerable.Any(uri.queryParametersAll)
+                            ? null
+                            : uri.queryParametersAll,
+                        fragment: (uri.fragment.Length == 0) ? null : uri.fragment
+                    ).ToString()
+                );
         }
     }
     public virtual DartUri uri
@@ -45,7 +54,12 @@ public interface IRouterConfig
 
 public interface IRouterDelegate : Listenable
 {
-    Widget createRouterWidget(RouteInformationProvider? provider, object? parser, BackButtonDispatcher? dispatcher, string? restorationScopeId);
+    Widget createRouterWidget(
+        RouteInformationProvider? provider,
+        object? parser,
+        BackButtonDispatcher? dispatcher,
+        string? restorationScopeId
+    );
 }
 
 public interface IRouter
@@ -65,17 +79,24 @@ public class RouterConfig<T> : IRouterConfig
     public virtual RouterDelegate<T> routerDelegate { get; private set; } = default!;
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
 
-    public Widget createRouterWidget(Key? key = null, string? restorationScopeId = null) => Router<T>.CreateWithConfig(key: key, config: this, restorationScopeId: restorationScopeId);
+    public Widget createRouterWidget(Key? key = null, string? restorationScopeId = null) =>
+        Router<T>.CreateWithConfig(key: key, config: this, restorationScopeId: restorationScopeId);
 
-    public RouterConfig(RouteInformationProvider? routeInformationProvider = null, RouteInformationParser<T>? routeInformationParser = null, RouterDelegate<T> routerDelegate = default!, BackButtonDispatcher? backButtonDispatcher = null)
+    public RouterConfig(
+        RouteInformationProvider? routeInformationProvider = null,
+        RouteInformationParser<T>? routeInformationParser = null,
+        RouterDelegate<T> routerDelegate = default!,
+        BackButtonDispatcher? backButtonDispatcher = null
+    )
     {
         this.routeInformationProvider = routeInformationProvider;
         this.routeInformationParser = routeInformationParser;
         this.routerDelegate = routerDelegate;
         this.backButtonDispatcher = backButtonDispatcher;
-        System.Diagnostics.Debug.Assert(routeInformationProvider is null == routeInformationParser is null);
+        System.Diagnostics.Debug.Assert(
+            (routeInformationProvider is null) == (routeInformationParser is null)
+        );
     }
-
 }
 
 public class Router<T> : StatefulWidget, IRouter
@@ -86,59 +107,103 @@ public class Router<T> : StatefulWidget, IRouter
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
     public virtual string? restorationScopeId { get; private set; }
 
-    public Router(Key? key = null, RouteInformationProvider? routeInformationProvider = null, RouteInformationParser<T>? routeInformationParser = null, RouterDelegate<T> routerDelegate = default!, BackButtonDispatcher? backButtonDispatcher = null, string? restorationScopeId = null) : base(key: key)
+    public Router(
+        Key? key = null,
+        RouteInformationProvider? routeInformationProvider = null,
+        RouteInformationParser<T>? routeInformationParser = null,
+        RouterDelegate<T> routerDelegate = default!,
+        BackButtonDispatcher? backButtonDispatcher = null,
+        string? restorationScopeId = null
+    )
+        : base(key: key)
     {
         this.routeInformationProvider = routeInformationProvider;
         this.routeInformationParser = routeInformationParser;
         this.routerDelegate = routerDelegate;
         this.backButtonDispatcher = backButtonDispatcher;
         this.restorationScopeId = restorationScopeId;
-        System.Diagnostics.Debug.Assert((routeInformationProvider is null) || (routeInformationParser is not null));
+        System.Diagnostics.Debug.Assert(
+            (routeInformationProvider is null) || (routeInformationParser is not null)
+        );
     }
 
-    public static Router<T> CreateWithConfig(Key? key = null, RouterConfig<T> config = default!, string? restorationScopeId = null)
+    public static Router<T> CreateWithConfig(
+        Key? key = null,
+        RouterConfig<T> config = default!,
+        string? restorationScopeId = null
+    )
     {
-        return new Router<T>(key: key, routeInformationProvider: config.routeInformationProvider, routeInformationParser: config.routeInformationParser, routerDelegate: config.routerDelegate, backButtonDispatcher: config.backButtonDispatcher, restorationScopeId: restorationScopeId);
+        return new Router<T>(
+            key: key,
+            routeInformationProvider: config.routeInformationProvider,
+            routeInformationParser: config.routeInformationParser,
+            routerDelegate: config.routerDelegate,
+            backButtonDispatcher: config.backButtonDispatcher,
+            restorationScopeId: restorationScopeId
+        );
     }
 
-    public static IRouter? untypedOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_RouterScope__router>()?.routerState.widget as IRouter;
+    public static IRouter? untypedOf(BuildContext context) =>
+        context.dependOnInheritedWidgetOfExactType<_RouterScope__router>()?.routerState.widget
+        as IRouter;
 
     public static Router<TConfiguration> of<TConfiguration>(BuildContext context)
     {
-        _RouterScope__router? scope = context.dependOnInheritedWidgetOfExactType<_RouterScope__router>();
+        _RouterScope__router? scope =
+            context.dependOnInheritedWidgetOfExactType<_RouterScope__router>();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (scope is null)
             {
-                if (scope is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Router operation requested with a context that does not include a Router.\n" + "The context used to retrieve the Router must be that of a widget that " + "is a descendant of a Router widget."));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "Router operation requested with a context that does not include a Router.\n"
+                            + "The context used to retrieve the Router must be that of a widget that "
+                            + "is a descendant of a Router widget."
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return ((Router<TConfiguration>?)scope!.routerState.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Router<TConfiguration>? maybeOf<TConfiguration>(BuildContext context)
     {
-        _RouterScope__router? scope = context.dependOnInheritedWidgetOfExactType<_RouterScope__router>();
+        _RouterScope__router? scope =
+            context.dependOnInheritedWidgetOfExactType<_RouterScope__router>();
         return ((Router<TConfiguration>?)scope?.routerState.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static void navigate(BuildContext context, Action callback)
     {
-        var scope = ((_RouterScope__router?)context.getElementForInheritedWidgetOfExactType<_RouterScope__router>()!.widget)!;
-        scope.routerState.setReportingStatus(RouteInformationReportingType.navigate, () => callback());
+        var scope = (
+            (_RouterScope__router?)
+                context.getElementForInheritedWidgetOfExactType<_RouterScope__router>()!.widget
+        )!;
+        scope.routerState.setReportingStatus(
+            RouteInformationReportingType.navigate,
+            () => callback()
+        );
     }
 
     public static void neglect(BuildContext context, Action callback)
     {
-        var scope = ((_RouterScope__router?)context.getElementForInheritedWidgetOfExactType<_RouterScope__router>()!.widget)!;
-        scope.routerState.setReportingStatus(RouteInformationReportingType.neglect, () => callback());
+        var scope = (
+            (_RouterScope__router?)
+                context.getElementForInheritedWidgetOfExactType<_RouterScope__router>()!.widget
+        )!;
+        scope.routerState.setReportingStatus(
+            RouteInformationReportingType.neglect,
+            () => callback()
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RouterState__router<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _RouterState__router<T>());
 }
 
 internal delegate Future<Q> _AsyncPassthrough__router<Q>(Q __unused0);
@@ -149,23 +214,28 @@ public enum RouteInformationReportingType
 {
     none,
     neglect,
-    navigate
+    navigate,
 }
 
 internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Router<T>>, IRouterState
 {
     internal virtual object? _currentRouterTransaction { get; set; } = default;
-    internal virtual RouteInformationReportingType? _currentIntentionToReport { get; set; } = default;
-    internal virtual _RestorableRouteInformation__router _routeInformation { get; private set; } = new _RestorableRouteInformation__router();
+    internal virtual RouteInformationReportingType? _currentIntentionToReport { get; set; } =
+        default;
+    internal virtual _RestorableRouteInformation__router _routeInformation { get; private set; } =
+        new _RestorableRouteInformation__router();
     internal virtual bool _routeParsePending { get; set; } = default!;
     internal virtual bool _routeInformationReportingTaskScheduled { get; set; } = false;
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual string? restorationId => widget.restorationScopeId;
+
     public override void initState()
     {
         base.initState();
@@ -180,13 +250,19 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         if (_routeInformation.value is not null)
         {
             DartRuntimePrimitives.Assert(() => widget.routeInformationParser is not null);
-            _processRouteInformation(_routeInformation.value!, () => widget.routerDelegate.setRestoredRoutePath);
+            _processRouteInformation(
+                _routeInformation.value!,
+                () => widget.routerDelegate.setRestoredRoutePath
+            );
         }
         else
         {
             if (widget.routeInformationProvider is not null)
             {
-                _processRouteInformation(widget.routeInformationProvider!.value, () => widget.routerDelegate.setInitialRoutePath);
+                _processRouteInformation(
+                    widget.routeInformationProvider!.value,
+                    () => widget.routerDelegate.setInitialRoutePath
+                );
             }
         }
     }
@@ -199,7 +275,10 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         DartRuntimePrimitives.Assert(() => _currentIntentionToReport is not null);
         _routeInformationReportingTaskScheduled = true;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration>)_reportRouteInformation)(__arg0), debugLabel: "Router.reportRouteInfo");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (__arg0) => ((Action<Duration>)_reportRouteInformation)(__arg0),
+            debugLabel: "Router.reportRouteInfo"
+        );
     }
 
     internal virtual void _reportRouteInformation(Duration timestamp)
@@ -214,7 +293,10 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         {
             RouteInformation currentRouteInformation = _routeInformation.value!;
             DartRuntimePrimitives.Assert(() => _currentIntentionToReport is not null);
-            widget.routeInformationProvider!.routerReportsNewRouteInformation(currentRouteInformation, type: DartRuntimePrimitives.RequireValue(_currentIntentionToReport));
+            widget.routeInformationProvider!.routerReportsNewRouteInformation(
+                currentRouteInformation,
+                type: DartRuntimePrimitives.RequireValue(_currentIntentionToReport)
+            );
         }
         _currentIntentionToReport = RouteInformationReportingType.none;
     }
@@ -230,20 +312,38 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    void IRouterState.setReportingStatus(RouteInformationReportingType status, Action action) => _setStateWithExplicitReportStatus(status, action);
+    void IRouterState.setReportingStatus(RouteInformationReportingType status, Action action) =>
+        _setStateWithExplicitReportStatus(status, action);
 
-    internal virtual void _setStateWithExplicitReportStatus(RouteInformationReportingType status, Action fn)
+    internal virtual void _setStateWithExplicitReportStatus(
+        RouteInformationReportingType status,
+        Action fn
+    )
     {
-        DartRuntimePrimitives.Assert(() => FoundationRuntimePorts.EnumIndex(status) >= FoundationRuntimePorts.EnumIndex(RouteInformationReportingType.neglect));
         DartRuntimePrimitives.Assert(() =>
+            FoundationRuntimePorts.EnumIndex(status)
+            >= FoundationRuntimePorts.EnumIndex(RouteInformationReportingType.neglect)
+        );
+        DartRuntimePrimitives.Assert(() =>
+        {
+            if (
+                (_currentIntentionToReport is not null)
+                && (!Equals(_currentIntentionToReport, RouteInformationReportingType.none))
+                && (!Equals(_currentIntentionToReport, status))
+            )
             {
-                if ((_currentIntentionToReport is not null) && (!Equals(_currentIntentionToReport, RouteInformationReportingType.none)) && (!Equals(_currentIntentionToReport, status)))
-                {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: "Both Router.navigate and Router.neglect have been called in this " + "build cycle, and the Router cannot decide whether to report the " + "route information. Please make sure only one of them is called " + "within the same build cycle."));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                FlutterError.reportError(
+                    new FlutterErrorDetails(
+                        exception: "Both Router.navigate and Router.neglect have been called in this "
+                            + "build cycle, and the Router cannot decide whether to report the "
+                            + "route information. Please make sure only one of them is called "
+                            + "within the same build cycle."
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _currentIntentionToReport = status;
         _scheduleRouteInformationReportingTask();
         fn();
@@ -263,7 +363,10 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -273,10 +376,14 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
             oldBucket?.dispose();
         }
-        RouteInformation? currentRouteInformation = _routeInformation.value ?? widget.routeInformationProvider?.value;
+        RouteInformation? currentRouteInformation =
+            _routeInformation.value ?? widget.routeInformationProvider?.value;
         if ((currentRouteInformation is not null) && _routeParsePending)
         {
-            _processRouteInformation(currentRouteInformation, () => widget.routerDelegate.setNewRoutePath);
+            _processRouteInformation(
+                currentRouteInformation,
+                () => widget.routerDelegate.setNewRoutePath
+            );
         }
         _routeParsePending = false;
         _maybeNeedToReportRouteInformation();
@@ -286,15 +393,29 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     {
         base.didUpdateWidget(oldWidget);
         didUpdateRestorationId();
-        if ((!Equals(widget.routeInformationProvider, oldWidget.routeInformationProvider)) || (!Equals(widget.backButtonDispatcher, oldWidget.backButtonDispatcher)) || (!Equals(widget.routeInformationParser, oldWidget.routeInformationParser)) || (!Equals(widget.routerDelegate, oldWidget.routerDelegate)))
+        if (
+            (!Equals(widget.routeInformationProvider, oldWidget.routeInformationProvider))
+            || (!Equals(widget.backButtonDispatcher, oldWidget.backButtonDispatcher))
+            || (!Equals(widget.routeInformationParser, oldWidget.routeInformationParser))
+            || (!Equals(widget.routerDelegate, oldWidget.routerDelegate))
+        )
         {
             _currentRouterTransaction = new object();
         }
         if (!Equals(widget.routeInformationProvider, oldWidget.routeInformationProvider))
         {
-            oldWidget.routeInformationProvider?.removeListener(_handleRouteInformationProviderNotification);
-            widget.routeInformationProvider?.addListener(_handleRouteInformationProviderNotification);
-            if (!Equals(oldWidget.routeInformationProvider?.value, widget.routeInformationProvider?.value))
+            oldWidget.routeInformationProvider?.removeListener(
+                _handleRouteInformationProviderNotification
+            );
+            widget.routeInformationProvider?.addListener(
+                _handleRouteInformationProviderNotification
+            );
+            if (
+                !Equals(
+                    oldWidget.routeInformationProvider?.value,
+                    widget.routeInformationProvider?.value
+                )
+            )
             {
                 _handleRouteInformationProviderNotification();
             }
@@ -315,31 +436,47 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     public override void dispose()
     {
         _routeInformation.dispose();
-        widget.routeInformationProvider?.removeListener(_handleRouteInformationProviderNotification);
+        widget.routeInformationProvider?.removeListener(
+            _handleRouteInformationProviderNotification
+        );
         widget.backButtonDispatcher?.removeCallback(_handleBackButtonDispatcherNotification);
         widget.routerDelegate.removeListener(_handleRouterDelegateNotification);
         _currentRouterTransaction = null;
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
     }
 
-    internal virtual void _processRouteInformation(RouteInformation information, Func<Func<T, Future>> delegateRouteSetter)
+    internal virtual void _processRouteInformation(
+        RouteInformation information,
+        Func<Func<T, Future>> delegateRouteSetter
+    )
     {
         DartRuntimePrimitives.Assert(() => _routeParsePending);
         _routeParsePending = false;
         _currentRouterTransaction = new object();
-        DartRuntimePrimitives.Ignore(widget.routeInformationParser!.parseRouteInformationWithDependencies(information, context).then(_processParsedRouteInformation(_currentRouterTransaction, delegateRouteSetter)));
+        DartRuntimePrimitives.Ignore(
+            widget
+                .routeInformationParser!.parseRouteInformationWithDependencies(information, context)
+                .then(
+                    _processParsedRouteInformation(_currentRouterTransaction, delegateRouteSetter)
+                )
+        );
     }
 
-    internal virtual Func<object?, Future> _processParsedRouteInformation(object? transaction, Func<Func<T, Future>> delegateRouteSetter)
+    internal virtual Func<object?, Future> _processParsedRouteInformation(
+        object? transaction,
+        Func<Func<T, Future>> delegateRouteSetter
+    )
     {
         return async (data) =>
         {
@@ -360,13 +497,18 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     internal virtual void _handleRouteInformationProviderNotification()
     {
         _routeParsePending = true;
-        _processRouteInformation(widget.routeInformationProvider!.value, () => widget.routerDelegate.setNewRoutePath);
+        _processRouteInformation(
+            widget.routeInformationProvider!.value,
+            () => widget.routerDelegate.setNewRoutePath
+        );
     }
 
     internal virtual Future<bool> _handleBackButtonDispatcherNotification()
     {
         _currentRouterTransaction = new object();
-        return widget.routerDelegate.popRoute().then<bool>(_handleRoutePopped(_currentRouterTransaction));
+        return widget
+            .routerDelegate.popRoute()
+            .then<bool>(_handleRoutePopped(_currentRouterTransaction));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -387,27 +529,34 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
 
     internal virtual void _rebuild()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
         _maybeNeedToReportRouteInformation();
     }
 
     internal virtual void _handleRouterDelegateNotification()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
         _maybeNeedToReportRouteInformation();
     }
 
     public override Widget build(BuildContext context)
     {
-        return new UnmanagedRestorationScope(bucket: bucket, child: new _RouterScope__router(routeInformationProvider: widget.routeInformationProvider, backButtonDispatcher: widget.backButtonDispatcher, routeInformationParser: widget.routeInformationParser, routerDelegate: widget.routerDelegate, routerState: this, child: new Builder(builder: widget.routerDelegate.build)));
+        return new UnmanagedRestorationScope(
+            bucket: bucket,
+            child: new _RouterScope__router(
+                routeInformationProvider: widget.routeInformationProvider,
+                backButtonDispatcher: widget.backButtonDispatcher,
+                routeInformationParser: widget.routeInformationParser,
+                routerDelegate: widget.routerDelegate,
+                routerState: this,
+                child: new Builder(builder: widget.routerDelegate.build)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -415,10 +564,22 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -433,18 +594,22 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -462,7 +627,10 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -484,37 +652,58 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                            ),
+                            new ErrorDescription(
+                                $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                    + "\"restoreState\" was called:"
+                            ),
+                        }
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -522,7 +711,10 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -546,7 +738,9 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -570,15 +764,14 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         property.removeListener(listener);
         property._unregister();
     }
-
 }
 
 internal class _RouterScope__router : InheritedWidget
@@ -589,32 +782,49 @@ internal class _RouterScope__router : InheritedWidget
     public virtual object routerDelegate { get; private set; } = default!;
     public virtual IRouterState routerState { get; private set; } = default!;
 
-    internal _RouterScope__router(ValueListenable<RouteInformation>? routeInformationProvider, BackButtonDispatcher? backButtonDispatcher, object? routeInformationParser, object routerDelegate, IRouterState routerState, Widget child) : base(child: child)
+    internal _RouterScope__router(
+        ValueListenable<RouteInformation>? routeInformationProvider,
+        BackButtonDispatcher? backButtonDispatcher,
+        object? routeInformationParser,
+        object routerDelegate,
+        IRouterState routerState,
+        Widget child
+    )
+        : base(child: child)
     {
         this.routeInformationProvider = routeInformationProvider;
         this.backButtonDispatcher = backButtonDispatcher;
         this.routeInformationParser = routeInformationParser;
         this.routerDelegate = routerDelegate;
         this.routerState = routerState;
-        System.Diagnostics.Debug.Assert((routeInformationProvider is null) || (routeInformationParser is not null));
+        System.Diagnostics.Debug.Assert(
+            (routeInformationProvider is null) || (routeInformationParser is not null)
+        );
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_RouterScope__router)oldWidget;
-        return (!Equals(routeInformationProvider, __oldWidget.routeInformationProvider)) || (!Equals(backButtonDispatcher, __oldWidget.backButtonDispatcher)) || (!Equals(routeInformationParser, __oldWidget.routeInformationParser)) || (!Equals(routerDelegate, __oldWidget.routerDelegate)) || (!Equals(routerState, __oldWidget.routerState));
+        return (!Equals(routeInformationProvider, __oldWidget.routeInformationProvider))
+            || (!Equals(backButtonDispatcher, __oldWidget.backButtonDispatcher))
+            || (!Equals(routeInformationParser, __oldWidget.routeInformationParser))
+            || (!Equals(routerDelegate, __oldWidget.routerDelegate))
+            || (!Equals(routerState, __oldWidget.routerState));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _CallbackHookProvider__router<T>
 {
-    internal virtual ObserverList<Func<T>> _callbacks { get; private set; } = new ObserverList<Func<T>>();
+    internal virtual ObserverList<Func<T>> _callbacks { get; private set; } =
+        new ObserverList<Func<T>>();
 
     public virtual bool hasCallbacks => Enumerable.Any(_callbacks);
+
     public virtual void addCallback(Func<T> callback) => _callbacks.add(callback);
+
     public virtual void removeCallback(Func<T> callback) => _callbacks.remove(callback);
+
     public virtual T invokeCallback(T defaultValue)
     {
         if (!Enumerable.Any(_callbacks))
@@ -628,12 +838,27 @@ public class _CallbackHookProvider__router<T>
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new ErrorDescription($"while invoking the callback for {GetType()}"), informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<_CallbackHookProvider__router<T>>($"The {GetType()} that invoked the callback was", this, style: DiagnosticsTreeStyle.errorProperty) }));
+            FlutterError.reportError(
+                new FlutterErrorDetails(
+                    exception: exceptionLocal,
+                    stack: stackLocal,
+                    library: "widget library",
+                    context: new ErrorDescription($"while invoking the callback for {GetType()}"),
+                    informationCollector: () =>
+                        new List<DiagnosticsNode>
+                        {
+                            new DiagnosticsProperty<_CallbackHookProvider__router<T>>(
+                                $"The {GetType()} that invoked the callback was",
+                                this,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                )
+            );
             return defaultValue;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Future<bool>>
@@ -653,7 +878,9 @@ public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Futur
         }
     }
 
-    public override bool hasCallbacks => DartRuntimePrimitives.ConvertValue<bool>(base.hasCallbacks || Enumerable.Any(_children));
+    public override bool hasCallbacks =>
+        DartRuntimePrimitives.ConvertValue<bool>(base.hasCallbacks || Enumerable.Any(_children));
+
     public override Future<bool> invokeCallback(Future<bool> defaultValue)
     {
         if (Enumerable.Any(_children))
@@ -669,12 +896,16 @@ public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Futur
                 if (childIndex > 0L)
                 {
                     childIndex -= 1L;
-                    return children[(int)childIndex].notifiedByParent(defaultValue).then<bool>(notifyNextChild);
+                    return children[(int)childIndex]
+                        .notifiedByParent(defaultValue)
+                        .then<bool>(notifyNextChild);
                 }
                 return base.invokeCallback(defaultValue);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            return children[(int)childIndex].notifiedByParent(defaultValue).then<bool>(notifyNextChild);
+            return children[(int)childIndex]
+                .notifiedByParent(defaultValue)
+                .then<bool>(notifyNextChild);
         }
         return base.invokeCallback(defaultValue);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -687,6 +918,7 @@ public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Futur
     }
 
     public virtual void takePriority() => _children.Clear();
+
     public virtual void deferTo(ChildBackButtonDispatcher child)
     {
         DartRuntimePrimitives.Assert(() => hasCallbacks);
@@ -699,10 +931,7 @@ public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Futur
 
 public class RootBackButtonDispatcher : BackButtonDispatcher, WidgetsBindingObserver
 {
-
-    public RootBackButtonDispatcher()
-    {
-    }
+    public RootBackButtonDispatcher() { }
 
     public override void addCallback(Func<Future<bool>> callback)
     {
@@ -761,7 +990,6 @@ public class ChildBackButtonDispatcher : BackButtonDispatcher
             parent.forget(this);
         }
     }
-
 }
 
 public class BackButtonListener : StatefulWidget
@@ -769,13 +997,19 @@ public class BackButtonListener : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Func<Future<bool>> onBackButtonPressed { get; private set; } = default!;
 
-    public BackButtonListener(Key? key = null, Widget child = default!, Func<Future<bool>> onBackButtonPressed = default!) : base(key: key)
+    public BackButtonListener(
+        Key? key = null,
+        Widget child = default!,
+        Func<Future<bool>> onBackButtonPressed = default!
+    )
+        : base(key: key)
     {
         this.child = child;
         this.onBackButtonPressed = onBackButtonPressed;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _BackButtonListenerState__router());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _BackButtonListenerState__router());
 }
 
 internal class _BackButtonListenerState__router : State<BackButtonListener>
@@ -785,15 +1019,26 @@ internal class _BackButtonListenerState__router : State<BackButtonListener>
     public override void didChangeDependencies()
     {
         dispatcher?.removeCallback(widget.onBackButtonPressed);
-        BackButtonDispatcher? rootBackDispatcher = Router<object>.untypedOf(context)!.backButtonDispatcher;
-        DartRuntimePrimitives.Assert(() => rootBackDispatcher is not null, () => (object?)"The parent router must have a backButtonDispatcher to use this widget");
-        dispatcher = DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>(((Func<ChildBackButtonDispatcher>)(() =>
-{
-    var __cascade = rootBackDispatcher!.createChildBackButtonDispatcher();
-    __cascade.addCallback(widget.onBackButtonPressed);
-    __cascade.takePriority();
-    return __cascade;
-}))());
+        BackButtonDispatcher? rootBackDispatcher = Router<object>
+            .untypedOf(context)!
+            .backButtonDispatcher;
+        DartRuntimePrimitives.Assert(
+            () => rootBackDispatcher is not null,
+            () => (object?)"The parent router must have a backButtonDispatcher to use this widget"
+        );
+        dispatcher = DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>(
+            (
+                (Func<ChildBackButtonDispatcher>)(
+                    () =>
+                    {
+                        var __cascade = rootBackDispatcher!.createChildBackButtonDispatcher();
+                        __cascade.addCallback(widget.onBackButtonPressed);
+                        __cascade.takePriority();
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         base.didChangeDependencies();
     }
 
@@ -819,36 +1064,60 @@ internal class _BackButtonListenerState__router : State<BackButtonListener>
 
 public abstract class RouteInformationParser<T>
 {
-    protected RouteInformationParser()
-    {
-    }
+    protected RouteInformationParser() { }
 
     public virtual Future<T> parseRouteInformation(RouteInformation routeInformation)
     {
-        throw new NotImplementedException("One of the parseRouteInformation or " + "parseRouteInformationWithDependencies must be implemented");
+        throw new NotImplementedException(
+            "One of the parseRouteInformation or "
+                + "parseRouteInformationWithDependencies must be implemented"
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<T> parseRouteInformationWithDependencies(RouteInformation routeInformation, BuildContext context)
+    public virtual Future<T> parseRouteInformationWithDependencies(
+        RouteInformation routeInformation,
+        BuildContext context
+    )
     {
         return parseRouteInformation(routeInformation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RouteInformation? restoreRouteInformation(T configuration) => DartRuntimePrimitives.ConvertValue<RouteInformation>(null);
+    public virtual RouteInformation? restoreRouteInformation(T configuration) =>
+        DartRuntimePrimitives.ConvertValue<RouteInformation>(null);
 }
 
 public abstract class RouterDelegate<T> : IRouterDelegate
 {
-    Widget IRouterDelegate.createRouterWidget(RouteInformationProvider? provider, object? parser, BackButtonDispatcher? dispatcher, string? restorationScopeId)
+    Widget IRouterDelegate.createRouterWidget(
+        RouteInformationProvider? provider,
+        object? parser,
+        BackButtonDispatcher? dispatcher,
+        string? restorationScopeId
+    )
     {
         if (parser is not null && parser is not RouteInformationParser<T>)
-            throw new ArgumentException($"The route information parser must use {typeof(T)}.", nameof(parser));
-        return new Router<T>(routeInformationProvider: provider, routeInformationParser: (RouteInformationParser<T>?)parser, routerDelegate: this, backButtonDispatcher: dispatcher, restorationScopeId: restorationScopeId);
+        {
+            throw new ArgumentException(
+                $"The route information parser must use {typeof(T)}.",
+                nameof(parser)
+            );
+        }
+
+        return new Router<T>(
+            routeInformationProvider: provider,
+            routeInformationParser: (RouteInformationParser<T>?)parser,
+            routerDelegate: this,
+            backButtonDispatcher: dispatcher,
+            restorationScopeId: restorationScopeId
+        );
     }
 
     public virtual void addListener(Action listener) => throw new NotSupportedException();
+
     public virtual void removeListener(Action listener) => throw new NotSupportedException();
+
     public virtual Future setInitialRoutePath(T configuration)
     {
         return setNewRoutePath(configuration);
@@ -870,22 +1139,37 @@ public abstract class RouterDelegate<T> : IRouterDelegate
 public abstract class RouteInformationProvider : ValueListenable<RouteInformation>
 {
     public virtual RouteInformation value => throw new NotSupportedException();
-    public virtual void routerReportsNewRouteInformation(RouteInformation routeInformation, RouteInformationReportingType type = RouteInformationReportingType.none)
-    {
-    }
+
+    public virtual void routerReportsNewRouteInformation(
+        RouteInformation routeInformation,
+        RouteInformationReportingType type = RouteInformationReportingType.none
+    ) { }
 
     private readonly HashSet<Action> __listeners = new();
     public virtual bool hasListeners => __listeners.Count != 0;
+
     public virtual void addListener(Action listener) => __listeners.Add(listener);
+
     public virtual void removeListener(Action listener) => __listeners.Remove(listener);
-    public virtual void notifyListeners() { foreach (var listener in __listeners.ToArray()) listener(); }
+
+    public virtual void notifyListeners()
+    {
+        foreach (var listener in __listeners.ToArray())
+        {
+            listener();
+        }
+    }
+
     public virtual void dispose() => __listeners.Clear();
 }
 
 public class PlatformRouteInformationProvider : RouteInformationProvider, WidgetsBindingObserver
 {
     internal virtual RouteInformation _value { get; set; } = default!;
-    internal virtual RouteInformation _valueInEngine { get; set; } = new RouteInformation(uri: DartUri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName));
+    internal virtual RouteInformation _valueInEngine { get; set; } =
+        new RouteInformation(
+            uri: DartUri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName)
+        );
 
     public PlatformRouteInformationProvider(RouteInformation initialRouteInformation)
     {
@@ -894,19 +1178,40 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
 
     internal static bool _equals(DartUri a, DartUri b)
     {
-        return (a.path == b.path) && (a.fragment == b.fragment) && new DeepCollectionEquality().equals(a.queryParametersAll, b.queryParametersAll);
+        return (a.path == b.path)
+            && (a.fragment == b.fragment)
+            && new DeepCollectionEquality().equals(a.queryParametersAll, b.queryParametersAll);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void routerReportsNewRouteInformation(RouteInformation routeInformation, RouteInformationReportingType type = RouteInformationReportingType.none)
+    public override void routerReportsNewRouteInformation(
+        RouteInformation routeInformation,
+        RouteInformationReportingType type = RouteInformationReportingType.none
+    )
     {
         DartRuntimePrimitives.Ignore(SystemNavigator.selectMultiEntryHistory());
-        DartRuntimePrimitives.Ignore(SystemNavigator.routeInformationUpdated(uri: routeInformation.uri, state: routeInformation.state, replace: type switch { RouteInformationReportingType.neglect => true, RouteInformationReportingType.navigate => false, RouteInformationReportingType.none => _equals(_valueInEngine.uri, routeInformation.uri), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        DartRuntimePrimitives.Ignore(
+            SystemNavigator.routeInformationUpdated(
+                uri: routeInformation.uri,
+                state: routeInformation.state,
+                replace: type switch
+                {
+                    RouteInformationReportingType.neglect => true,
+                    RouteInformationReportingType.navigate => false,
+                    RouteInformationReportingType.none => _equals(
+                        _valueInEngine.uri,
+                        routeInformation.uri
+                    ),
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                }
+            )
+        );
         _value = routeInformation;
         _valueInEngine = routeInformation;
     }
 
     public override RouteInformation value => _value;
+
     internal virtual void _platformReportsNewRouteInformation(RouteInformation routeInformation)
     {
         if (Equals(_value, routeInformation))
@@ -945,14 +1250,13 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
         base.dispose();
     }
 
-    public async virtual Future<bool> didPushRouteInformation(RouteInformation routeInformation)
+    public virtual async Future<bool> didPushRouteInformation(RouteInformation routeInformation)
     {
         DartRuntimePrimitives.Assert(() => hasListeners);
         _platformReportsNewRouteInformation(routeInformation);
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class PopNavigatorRouterDelegateMixin<T> : RouterDelegate<T>
@@ -960,18 +1264,20 @@ public abstract class PopNavigatorRouterDelegateMixin<T> : RouterDelegate<T>
     public abstract override void addListener(Action listener);
     public abstract override void removeListener(Action listener);
     public abstract GlobalKey<NavigatorState>? navigatorKey { get; }
+
     public override Future<bool> popRoute()
     {
         NavigatorState? navigator = navigatorKey?.currentState;
         return navigator?.maybePop<object>() ?? new SynchronousFuture<bool>(false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _RestorableRouteInformation__router : RestorableValue<RouteInformation?>
 {
-    public override RouteInformation? createDefaultValue() => DartRuntimePrimitives.ConvertValue<RouteInformation>(null);
+    public override RouteInformation? createDefaultValue() =>
+        DartRuntimePrimitives.ConvertValue<RouteInformation>(null);
+
     public override void didUpdateValue(RouteInformation? oldValue)
     {
         notifyListeners();
@@ -983,7 +1289,9 @@ internal class _RestorableRouteInformation__router : RestorableValue<RouteInform
         {
             return null;
         }
-        DartRuntimePrimitives.Assert(() => (data is List<object?>) && (checked(((List<object>)data).Count) == 2L));
+        DartRuntimePrimitives.Assert(() =>
+            (data is List<object?>) && (checked(((List<object>)data).Count) == 2L)
+        );
         var castedData = ((List<object?>?)data)!;
         var uriLocal = ((string?)castedData.First())!;
         if (uriLocal is null)
@@ -999,5 +1307,4 @@ internal class _RestorableRouteInformation__router : RestorableValue<RouteInform
         return (value is null) ? null : new List<object?> { value!.uri.ToString(), value!.state };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

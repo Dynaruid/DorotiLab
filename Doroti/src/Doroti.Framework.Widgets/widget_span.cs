@@ -9,10 +9,30 @@ public class WidgetSpan : PlaceholderSpan
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public WidgetSpan(Widget child, PlaceholderAlignment alignment = PlaceholderAlignment.bottom, TextBaseline? baseline = null, TextStyle? style = null) : base(alignment: alignment, baseline: DartRuntimePrimitives.RequireValue(baseline), style: style)
+    public WidgetSpan(
+        Widget child,
+        PlaceholderAlignment alignment = PlaceholderAlignment.bottom,
+        TextBaseline? baseline = null,
+        TextStyle? style = null
+    )
+        : base(
+            alignment: alignment,
+            baseline: DartRuntimePrimitives.RequireValue(baseline),
+            style: style
+        )
     {
         this.child = child;
-        System.Diagnostics.Debug.Assert((baseline is not null) || !(DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.aboveBaseline) || DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.belowBaseline) || DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.baseline)));
+        System.Diagnostics.Debug.Assert(
+            (baseline is not null)
+                || !(
+                    DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.aboveBaseline)
+                    || DartRuntimePrimitives.Identical(
+                        alignment,
+                        PlaceholderAlignment.belowBaseline
+                    )
+                    || DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.baseline)
+                )
+        );
     }
 
     public static List<Widget> extractFromInlineSpan(InlineSpan span, TextScaler textScaler)
@@ -22,27 +42,60 @@ public class WidgetSpan : PlaceholderSpan
         var index = 0L;
         bool visitSubtree(InlineSpan span)
         {
-            double? fontSizeToPush = span.style?.fontSize switch { double size when size != fontSizeStack.Last() => size, _ => DartRuntimePrimitives.ConvertValue<double>(null) };
+            double? fontSizeToPush = span.style?.fontSize switch
+            {
+                double size when size != fontSizeStack.Last() => size,
+                _ => DartRuntimePrimitives.ConvertValue<double>(null),
+            };
             if (fontSizeToPush is not null)
             {
-                double fontSizeToPush__3823__value3977 = DartRuntimePrimitives.RequireValue(fontSizeToPush);
-                fontSizeStack.Add(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value3977)));
+                double fontSizeToPush__3823__value3977 = DartRuntimePrimitives.RequireValue(
+                    fontSizeToPush
+                );
+                fontSizeStack.Add(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value3977)
+                    )
+                );
             }
             if (span is WidgetSpan)
             {
                 WidgetSpan span__as4064 = (WidgetSpan)span;
                 double fontSizeLocal = fontSizeStack.Last();
-                double textScaleFactorLocal = (fontSizeLocal == 0L) ? 0 : (textScaler.scale(fontSizeLocal) / fontSizeLocal);
-                widgets.Add(new _WidgetSpanParentData__widget_span(span: span__as4064, child: new Semantics(tagForChildren: new PlaceholderSpanIndexSemanticsTag(index++), child: new _AutoScaleInlineWidget__widget_span(span: span__as4064, textScaleFactor: textScaleFactorLocal, child: span__as4064.child))));
+                double textScaleFactorLocal =
+                    (fontSizeLocal == 0L) ? 0 : (textScaler.scale(fontSizeLocal) / fontSizeLocal);
+                widgets.Add(
+                    new _WidgetSpanParentData__widget_span(
+                        span: span__as4064,
+                        child: new Semantics(
+                            tagForChildren: new PlaceholderSpanIndexSemanticsTag(index++),
+                            child: new _AutoScaleInlineWidget__widget_span(
+                                span: span__as4064,
+                                textScaleFactor: textScaleFactorLocal,
+                                child: span__as4064.child
+                            )
+                        )
+                    )
+                );
             }
-            DartRuntimePrimitives.Assert(() => (span is WidgetSpan) || (span is not PlaceholderSpan), () => (object?)$"{((PlaceholderSpan)span)} is a PlaceholderSpan but not a WidgetSpan subclass. This is currently not supported.");
+            DartRuntimePrimitives.Assert(
+                () => (span is WidgetSpan) || (span is not PlaceholderSpan),
+                () =>
+                    (object?)
+                        $"{(PlaceholderSpan)span} is a PlaceholderSpan but not a WidgetSpan subclass. This is currently not supported."
+            );
             span.visitDirectChildren(visitSubtree);
             if (fontSizeToPush is not null)
             {
-                double fontSizeToPush__3823__value4876 = DartRuntimePrimitives.RequireValue(fontSizeToPush);
+                double fontSizeToPush__3823__value4876 = DartRuntimePrimitives.RequireValue(
+                    fontSizeToPush
+                );
                 double poppedFontSize = fontSizeStack.removeLast();
                 DartRuntimePrimitives.Assert(() => Enumerable.Any(fontSizeStack));
-                DartRuntimePrimitives.Assert(() => poppedFontSize == DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value4876));
+                DartRuntimePrimitives.Assert(() =>
+                    poppedFontSize
+                    == DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value4876)
+                );
             }
             return true;
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -52,7 +105,11 @@ public class WidgetSpan : PlaceholderSpan
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void build(ParagraphBuilder builder, TextScaler textScaler = default!, List<PlaceholderDimensions>? dimensions = null)
+    public override void build(
+        ParagraphBuilder builder,
+        TextScaler textScaler = default!,
+        List<PlaceholderDimensions>? dimensions = null
+    )
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         DartRuntimePrimitives.Assert(() => dimensions is not null);
@@ -63,7 +120,13 @@ public class WidgetSpan : PlaceholderSpan
         }
         DartRuntimePrimitives.Assert(() => builder.placeholderCount < checked(dimensions!.Count));
         PlaceholderDimensions currentDimensions = dimensions![(int)builder.placeholderCount];
-        builder.addPlaceholder(currentDimensions.size.width, currentDimensions.size.height, alignment, baseline: currentDimensions.baseline, baselineOffset: currentDimensions.baselineOffset);
+        builder.addPlaceholder(
+            currentDimensions.size.width,
+            currentDimensions.size.height,
+            alignment,
+            baseline: currentDimensions.baseline,
+            baselineOffset: currentDimensions.baselineOffset
+        );
         if (hasStyle)
         {
             builder.pop();
@@ -71,7 +134,9 @@ public class WidgetSpan : PlaceholderSpan
     }
 
     public override bool visitChildren(Func<InlineSpan, bool> visitor) => visitor(this);
+
     public override bool visitDirectChildren(Func<InlineSpan, bool> visitor) => true;
+
     public override InlineSpan? getSpanForPositionVisitor(TextPosition position, Accumulator offset)
     {
         if (position.offset == offset.value)
@@ -88,7 +153,9 @@ public class WidgetSpan : PlaceholderSpan
         long localOffset = index - offset.value;
         DartRuntimePrimitives.Assert(() => localOffset >= 0L);
         offset.increment(1L);
-        return (localOffset == 0L) ? global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit : null;
+        return (localOffset == 0L)
+            ? global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit
+            : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,7 +169,7 @@ public class WidgetSpan : PlaceholderSpan
         {
             return RenderComparison.layout;
         }
-        if (style is null != other.style is null)
+        if ((style is null) != (other.style is null))
         {
             return RenderComparison.layout;
         }
@@ -115,7 +182,10 @@ public class WidgetSpan : PlaceholderSpan
         if (style is not null)
         {
             RenderComparison candidate = style!.compareTo(((WidgetSpan)other).style!);
-            if (FoundationRuntimePorts.EnumIndex(candidate) > FoundationRuntimePorts.EnumIndex(result))
+            if (
+                FoundationRuntimePorts.EnumIndex(candidate)
+                > FoundationRuntimePorts.EnumIndex(result)
+            )
             {
                 result = candidate;
             }
@@ -131,7 +201,11 @@ public class WidgetSpan : PlaceholderSpan
     public override bool Equals(object? other)
     {
         var __other = other as WidgetSpan;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -144,10 +218,17 @@ public class WidgetSpan : PlaceholderSpan
         {
             return false;
         }
-        return (__other is WidgetSpan) && Equals(__other.child, child) && Equals(__other.alignment, alignment) && Equals(__other.baseline, baseline);
+        return (__other is WidgetSpan)
+            && Equals(__other.child, child)
+            && Equals(__other.alignment, alignment)
+            && Equals(__other.baseline, baseline);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(base.GetHashCode(), child, alignment, baseline));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(base.GetHashCode(), child, alignment, baseline)
+        );
+
     public override InlineSpan? getSpanForPosition(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
@@ -166,14 +247,14 @@ public class WidgetSpan : PlaceholderSpan
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Widget>("widget", child));
     }
-
 }
 
 internal class _WidgetSpanParentData__widget_span : ParentDataWidget<TextParentData>
 {
     public virtual WidgetSpan span { get; private set; } = default!;
 
-    internal _WidgetSpanParentData__widget_span(WidgetSpan span, Widget child) : base(child: child)
+    internal _WidgetSpanParentData__widget_span(WidgetSpan span, Widget child)
+        : base(child: child)
     {
         this.span = span;
     }
@@ -192,7 +273,12 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
     public virtual WidgetSpan span { get; private set; } = default!;
     public virtual double textScaleFactor { get; private set; } = default!;
 
-    internal _AutoScaleInlineWidget__widget_span(WidgetSpan span, double textScaleFactor, Widget? child) : base(child: child)
+    internal _AutoScaleInlineWidget__widget_span(
+        WidgetSpan span,
+        double textScaleFactor,
+        Widget? child
+    )
+        : base(child: child)
     {
         this.span = span;
         this.textScaleFactor = textScaleFactor;
@@ -200,33 +286,48 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderScaledInlineWidget__widget_span(span.alignment, span.baseline, textScaleFactor);
+        return new _RenderScaledInlineWidget__widget_span(
+            span.alignment,
+            span.baseline,
+            textScaleFactor
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderScaledInlineWidget__widget_span)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderScaledInlineWidget__widget_span>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.alignment = span.alignment;
-    __cascade.baseline = span.baseline;
-    __cascade.scale = textScaleFactor;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderScaledInlineWidget__widget_span>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.alignment = span.alignment;
+                        __cascade.baseline = span.baseline;
+                        __cascade.scale = textScaleFactor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
-public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWithChildMixin<RenderBox>
+public class _RenderScaledInlineWidget__widget_span
+    : RenderBox,
+        RenderObjectWithChildMixin<RenderBox>
 {
     internal virtual double _scale { get; set; } = default!;
     internal virtual PlaceholderAlignment _alignment { get; set; } = default!;
     internal virtual TextBaseline? _baseline { get; set; } = default;
     public virtual RenderBox? _child { get; set; } = default;
 
-    internal _RenderScaledInlineWidget__widget_span(PlaceholderAlignment _alignment, TextBaseline? _baseline, double _scale)
+    internal _RenderScaledInlineWidget__widget_span(
+        PlaceholderAlignment _alignment,
+        TextBaseline? _baseline,
+        double _scale
+    )
     {
         this._alignment = _alignment;
         this._baseline = _baseline;
@@ -244,7 +345,9 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
                 return;
             }
             DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(__value) > 0L);
-            DartRuntimePrimitives.Assert(() => double.IsFinite(DartRuntimePrimitives.RequireValue(__value)));
+            DartRuntimePrimitives.Assert(() =>
+                double.IsFinite(DartRuntimePrimitives.RequireValue(__value))
+            );
             _scale = DartRuntimePrimitives.RequireValue(__value);
             markNeedsLayout();
         }
@@ -277,6 +380,7 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
             markNeedsLayout();
         }
     }
+
     public override double computeMaxIntrinsicHeight(double width)
     {
         return (child?.getMaxIntrinsicHeight(width / scale) ?? 0.0) * scale;
@@ -303,13 +407,24 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        return child?.getDistanceToActualBaseline(DartRuntimePrimitives.RequireValue(baseline)) switch { null => base.computeDistanceToActualBaseline(DartRuntimePrimitives.RequireValue(baseline)), double childBaseline => scale * childBaseline };
+        return child?.getDistanceToActualBaseline(
+            DartRuntimePrimitives.RequireValue(baseline)
+        ) switch
+        {
+            null => base.computeDistanceToActualBaseline(
+                DartRuntimePrimitives.RequireValue(baseline)
+            ),
+            double childBaseline => scale * childBaseline,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        double? distance = child?.getDryBaseline(new BoxConstraints(maxWidth: constraints.maxWidth / scale), DartRuntimePrimitives.RequireValue(baseline));
+        double? distance = child?.getDryBaseline(
+            new BoxConstraints(maxWidth: constraints.maxWidth / scale),
+            DartRuntimePrimitives.RequireValue(baseline)
+        );
         return (distance is null) ? null : (scale * DartRuntimePrimitives.RequireValue(distance));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -317,7 +432,9 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => !constraints.hasBoundedHeight);
-        Size unscaledSize = child?.getDryLayout(new BoxConstraints(maxWidth: constraints.maxWidth / scale)) ?? Size.zero;
+        Size unscaledSize =
+            child?.getDryLayout(new BoxConstraints(maxWidth: constraints.maxWidth / scale))
+            ?? Size.zero;
         return constraints.constrain(unscaledSize * scale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -330,7 +447,10 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
             return;
         }
         DartRuntimePrimitives.Assert(() => !constraints.hasBoundedHeight);
-        childLocal.layout(new BoxConstraints(maxWidth: constraints.maxWidth / scale), parentUsesSize: true);
+        childLocal.layout(
+            new BoxConstraints(maxWidth: constraints.maxWidth / scale),
+            parentUsesSize: true
+        );
         size = constraints.constrain(childLocal.size * scale);
     }
 
@@ -354,7 +474,16 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
             layer = null;
             return;
         }
-        layer = context.pushTransform(needsCompositing, offset, Matrix4.diagonal3Values(scale, scale, 1.0), (context, offset) => { context.paintChild(childLocal, offset); }, oldLayer: ((TransformLayer?)layer)!);
+        layer = context.pushTransform(
+            needsCompositing,
+            offset,
+            Matrix4.diagonal3Values(scale, scale, 1.0),
+            (context, offset) =>
+            {
+                context.paintChild(childLocal, offset);
+            },
+            oldLayer: ((TransformLayer?)layer)!
+        );
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -364,21 +493,55 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
         {
             return false;
         }
-        return result.addWithPaintTransform(transform: Matrix4.diagonal3Values(scale, scale, 1.0), position: position, hitTest: (result, transformedOffset) => childLocal.hitTest(result, position: transformedOffset));
+        return result.addWithPaintTransform(
+            transform: Matrix4.diagonal3Values(scale, scale, 1.0),
+            position: position,
+            hitTest: (result, transformedOffset) =>
+                childLocal.hitTest(result, position: transformedOffset)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                    + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                            ),
+                            new ErrorDescription(
+                                "RenderObjects expect specific types of children because they "
+                                    + "coordinate with their children during layout and paint. For "
+                                    + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                    + "a RenderSliver does not understand the RenderBox layout protocol."
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                                debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                    + "was created by",
+                                child.debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -400,6 +563,7 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -430,9 +594,12 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

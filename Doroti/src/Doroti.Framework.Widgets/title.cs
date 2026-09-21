@@ -11,7 +11,13 @@ public class Title : StatefulWidget
     public virtual Color color { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public Title(Key? key = null, string title = "", Color color = default!, Widget child = default!) : base(key: key)
+    public Title(
+        Key? key = null,
+        string title = "",
+        Color color = default!,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.title = title;
         this.color = color;
@@ -19,7 +25,8 @@ public class Title : StatefulWidget
         System.Diagnostics.Debug.Assert((color.a * 255.0).round().clamp(0L, 255L) == 255L);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TitleState__title());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _TitleState__title());
 }
 
 internal class _TitleState__title : State<Title>
@@ -41,7 +48,14 @@ internal class _TitleState__title : State<Title>
 
     internal virtual void _updateChrome()
     {
-        DartRuntimePrimitives.Ignore(SystemChrome.setApplicationSwitcherDescription(new ApplicationSwitcherDescription(label: widget.title, primaryColor: widget.color.value)));
+        DartRuntimePrimitives.Ignore(
+            SystemChrome.setApplicationSwitcherDescription(
+                new ApplicationSwitcherDescription(
+                    label: widget.title,
+                    primaryColor: widget.color.value
+                )
+            )
+        );
     }
 
     public override Widget build(BuildContext context)
@@ -56,6 +70,4 @@ internal class _TitleState__title : State<Title>
         properties.add(new StringProperty("title", widget.title, defaultValue: ""));
         properties.add(new ColorProperty("color", widget.color, defaultValue: null));
     }
-
 }
-

@@ -9,7 +9,10 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
     protected override Doroti.Hosting.DorotiApplicationDescriptor CreateApplicationDescriptor() =>
         Doroti.Generated.DorotiBootstrap.Create(Environment.GetCommandLineArgs().Skip(1).ToArray());
 
-    public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary? launchOptions)
+    public override bool FinishedLaunching(
+        UIKit.UIApplication application,
+        NSDictionary? launchOptions
+    )
     {
         var result = base.FinishedLaunching(application, launchOptions);
         _ = PlatformViewEvidence.CaptureAsync();

@@ -4,32 +4,66 @@ namespace Doroti.Ui;
 
 public class Color : IEquatable<Color>
 {
-    protected Color() : this(0U) { }
+    protected Color()
+        : this(0U) { }
+
     public Color(uint value) => this.value = value;
-    public Color(long value) : this(unchecked((uint)value)) { }
+
+    public Color(long value)
+        : this(unchecked((uint)value)) { }
+
     public Color(double alpha, double red, double green, double blue, ColorSpace? colorSpace = null)
-        : this((uint)((ClampChannel(alpha) << 24) | (ClampChannel(red) << 16) | (ClampChannel(green) << 8) | ClampChannel(blue))) => this.colorSpace = colorSpace ?? ColorSpace.sRGB;
+        : this(
+            (uint)(
+                (ClampChannel(alpha) << 24)
+                | (ClampChannel(red) << 16)
+                | (ClampChannel(green) << 8)
+                | ClampChannel(blue)
+            )
+        ) => this.colorSpace = colorSpace ?? ColorSpace.sRGB;
+
     public virtual uint value { get; }
     public virtual ColorSpace colorSpace { get; } = ColorSpace.sRGB;
-    public static Color fromARGB(long alpha, long red, long green, long blue) => new(
-        ((uint)Math.Clamp(alpha, 0, 255) << 24) |
-        ((uint)Math.Clamp(red, 0, 255) << 16) |
-        ((uint)Math.Clamp(green, 0, 255) << 8) |
-        (uint)Math.Clamp(blue, 0, 255));
-    public static Color CreateFromARGB(long alpha, long red, long green, long blue) => fromARGB(alpha, red, green, blue);
-    public static Color fromRGBO(long red, long green, long blue, double opacity) => fromARGB((long)Math.Round(Math.Clamp(opacity, 0, 1) * 255), red, green, blue);
-    public static Color from(double alpha, double red, double green, double blue, ColorSpace colorSpace = ColorSpace.sRGB) => new(alpha, red, green, blue, colorSpace);
+
+    public static Color fromARGB(long alpha, long red, long green, long blue) =>
+        new(
+            ((uint)Math.Clamp(alpha, 0, 255) << 24)
+                | ((uint)Math.Clamp(red, 0, 255) << 16)
+                | ((uint)Math.Clamp(green, 0, 255) << 8)
+                | (uint)Math.Clamp(blue, 0, 255)
+        );
+
+    public static Color CreateFromARGB(long alpha, long red, long green, long blue) =>
+        fromARGB(alpha, red, green, blue);
+
+    public static Color fromRGBO(long red, long green, long blue, double opacity) =>
+        fromARGB((long)Math.Round(Math.Clamp(opacity, 0, 1) * 255), red, green, blue);
+
+    public static Color from(
+        double alpha,
+        double red,
+        double green,
+        double blue,
+        ColorSpace colorSpace = ColorSpace.sRGB
+    ) => new(alpha, red, green, blue, colorSpace);
+
     public static Color? lerp(Color? a, Color? b, double t)
     {
-        if (a is null && b is null) return null;
+        if (a is null && b is null)
+        {
+            return null;
+        }
+
         var begin = a ?? new Color(0U);
         var end = b ?? new Color(0U);
         return fromARGB(
             (long)Math.Round(begin.alpha + ((end.alpha - begin.alpha) * t)),
             (long)Math.Round(begin.red + ((end.red - begin.red) * t)),
             (long)Math.Round(begin.green + ((end.green - begin.green) * t)),
-            (long)Math.Round(begin.blue + ((end.blue - begin.blue) * t)));
+            (long)Math.Round(begin.blue + ((end.blue - begin.blue) * t))
+        );
     }
+
     public int alpha => (int)((value >> 24) & 0xff);
     public int red => (int)((value >> 16) & 0xff);
     public int green => (int)((value >> 8) & 0xff);
@@ -39,33 +73,61 @@ public class Color : IEquatable<Color>
     public double g => green / 255d;
     public double b => blue / 255d;
     public double opacity => a;
+
     public long toARGB32() => value;
-    public Color withAlpha(long alpha) => new((value & 0x00ffffffU) | ((uint)Math.Clamp(alpha, 0, 255) << 24));
+
+    public Color withAlpha(long alpha) =>
+        new((value & 0x00ffffffU) | ((uint)Math.Clamp(alpha, 0, 255) << 24));
+
     public Color withRed(long red) => fromARGB(alpha, red, green, blue);
+
     public Color withGreen(long green) => fromARGB(alpha, red, green, blue);
+
     public Color withBlue(long blue) => fromARGB(alpha, red, green, blue);
-    public Color withOpacity(double opacity) => withAlpha((long)Math.Round(Math.Clamp(opacity, 0, 1) * 255));
-    public virtual Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) =>
-        new(alpha ?? a, red ?? r, green ?? g, blue ?? b, colorSpace ?? this.colorSpace);
+
+    public Color withOpacity(double opacity) =>
+        withAlpha((long)Math.Round(Math.Clamp(opacity, 0, 1) * 255));
+
+    public virtual Color withValues(
+        double? alpha = null,
+        double? red = null,
+        double? green = null,
+        double? blue = null,
+        ColorSpace? colorSpace = null
+    ) => new(alpha ?? a, red ?? r, green ?? g, blue ?? b, colorSpace ?? this.colorSpace);
+
     public virtual Color resolveFrom<TContext>(TContext context) => this;
+
     public double computeLuminance()
     {
         static double Linearize(int channel)
         {
             var component = channel / 255d;
-            return component <= 0.03928 ? component / 12.92 : Math.Pow((component + 0.055) / 1.055, 2.4);
+            return component <= 0.03928
+                ? component / 12.92
+                : Math.Pow((component + 0.055) / 1.055, 2.4);
         }
         return (0.2126 * Linearize(red)) + (0.7152 * Linearize(green)) + (0.0722 * Linearize(blue));
     }
+
     public virtual bool Equals(Color? other) => other is not null && value == other.value;
+
     public override bool Equals(object? obj) => obj is Color other && Equals(other);
+
     public override int GetHashCode() => value.GetHashCode();
+
     public static bool operator ==(Color? left, Color? right) => Equals(left, right);
+
     public static bool operator !=(Color? left, Color? right) => !Equals(left, right);
+
     private static int ClampChannel(double value) => (int)Math.Round(Math.Clamp(value, 0, 1) * 255);
 }
 
-public enum ColorSpace { sRGB, extendedSRGB }
+public enum ColorSpace
+{
+    sRGB,
+    extendedSRGB,
+}
 
 public enum PaintingStyle
 {
@@ -73,12 +135,24 @@ public enum PaintingStyle
     stroke,
 }
 
-public enum StrokeCap { butt, round, square }
-public enum StrokeJoin { miter, round, bevel }
+public enum StrokeCap
+{
+    butt,
+    round,
+    square,
+}
+
+public enum StrokeJoin
+{
+    miter,
+    round,
+    bevel,
+}
 
 public sealed class Paint
 {
     internal Paint SnapshotForText() => (Paint)MemberwiseClone();
+
     public Color color { get; set; } = new(0xFF000000);
 
     public PaintingStyle style { get; set; } = PaintingStyle.fill;
@@ -105,7 +179,12 @@ public sealed class Path
     {
         var snapshot = new Path { fillType = fillType };
         foreach (var command in _commands)
-            snapshot._commands.Add(new(command.Operation, Array.AsReadOnly(command.Arguments.ToArray())));
+        {
+            snapshot._commands.Add(
+                new(command.Operation, Array.AsReadOnly(command.Arguments.ToArray()))
+            );
+        }
+
         return snapshot;
     }
 
@@ -116,30 +195,95 @@ public sealed class Path
     public void lineTo(double x, double y) => _commands.Add(new("lineTo", [x, y]));
 
     public void close() => _commands.Add(new("close", []));
+
     public PathFillType fillType { get; set; }
+
     public void reset() => _commands.Clear();
-    public void relativeMoveTo(double dx, double dy) => _commands.Add(new("relativeMoveTo", [dx, dy]));
-    public void relativeLineTo(double dx, double dy) => _commands.Add(new("relativeLineTo", [dx, dy]));
-    public void quadraticBezierTo(double x1, double y1, double x2, double y2) => _commands.Add(new("quadraticBezierTo", [x1, y1, x2, y2]));
-    public void conicTo(double x1, double y1, double x2, double y2, double weight) => _commands.Add(new("conicTo", [x1, y1, x2, y2, weight]));
-    public void cubicTo(double x1, double y1, double x2, double y2, double x3, double y3) => _commands.Add(new("cubicTo", [x1, y1, x2, y2, x3, y3]));
-    public void addRect(Rect rect) => _commands.Add(new("addRect", [rect.left, rect.top, rect.right, rect.bottom]));
-    public void addOval(Rect oval) => _commands.Add(new("addOval", [oval.left, oval.top, oval.right, oval.bottom]));
-    public void addArc(Rect oval, double startAngle, double sweepAngle) => _commands.Add(new("addArc", [oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle]));
-    public void addRRect(RRect rrect) => _commands.Add(new("addRRect", [
-        rrect.left, rrect.top, rrect.right, rrect.bottom,
-        rrect.tlRadiusX, rrect.tlRadiusY,
-        rrect.trRadiusX, rrect.trRadiusY,
-        rrect.brRadiusX, rrect.brRadiusY,
-        rrect.blRadiusX, rrect.blRadiusY]));
-    public void addRSuperellipse(RSuperellipse rse) => _commands.Add(new("addRSuperellipse", [
-        rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom,
-        rse.tlRadiusX, rse.tlRadiusY,
-        rse.trRadiusX, rse.trRadiusY,
-        rse.brRadiusX, rse.brRadiusY,
-        rse.blRadiusX, rse.blRadiusY]));
-    public void addPolygon(IReadOnlyList<Offset> points, bool close) { foreach (var point in points) lineTo(point.dx, point.dy); if (close) this.close(); }
-    public void addPath(Path path, Offset offset, Matrix4? matrix4 = null) => _commands.AddRange(path.Commands);
+
+    public void relativeMoveTo(double dx, double dy) =>
+        _commands.Add(new("relativeMoveTo", [dx, dy]));
+
+    public void relativeLineTo(double dx, double dy) =>
+        _commands.Add(new("relativeLineTo", [dx, dy]));
+
+    public void quadraticBezierTo(double x1, double y1, double x2, double y2) =>
+        _commands.Add(new("quadraticBezierTo", [x1, y1, x2, y2]));
+
+    public void conicTo(double x1, double y1, double x2, double y2, double weight) =>
+        _commands.Add(new("conicTo", [x1, y1, x2, y2, weight]));
+
+    public void cubicTo(double x1, double y1, double x2, double y2, double x3, double y3) =>
+        _commands.Add(new("cubicTo", [x1, y1, x2, y2, x3, y3]));
+
+    public void addRect(Rect rect) =>
+        _commands.Add(new("addRect", [rect.left, rect.top, rect.right, rect.bottom]));
+
+    public void addOval(Rect oval) =>
+        _commands.Add(new("addOval", [oval.left, oval.top, oval.right, oval.bottom]));
+
+    public void addArc(Rect oval, double startAngle, double sweepAngle) =>
+        _commands.Add(
+            new("addArc", [oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle])
+        );
+
+    public void addRRect(RRect rrect) =>
+        _commands.Add(
+            new(
+                "addRRect",
+                [
+                    rrect.left,
+                    rrect.top,
+                    rrect.right,
+                    rrect.bottom,
+                    rrect.tlRadiusX,
+                    rrect.tlRadiusY,
+                    rrect.trRadiusX,
+                    rrect.trRadiusY,
+                    rrect.brRadiusX,
+                    rrect.brRadiusY,
+                    rrect.blRadiusX,
+                    rrect.blRadiusY,
+                ]
+            )
+        );
+
+    public void addRSuperellipse(RSuperellipse rse) =>
+        _commands.Add(
+            new(
+                "addRSuperellipse",
+                [
+                    rse.outerRect.left,
+                    rse.outerRect.top,
+                    rse.outerRect.right,
+                    rse.outerRect.bottom,
+                    rse.tlRadiusX,
+                    rse.tlRadiusY,
+                    rse.trRadiusX,
+                    rse.trRadiusY,
+                    rse.brRadiusX,
+                    rse.brRadiusY,
+                    rse.blRadiusX,
+                    rse.blRadiusY,
+                ]
+            )
+        );
+
+    public void addPolygon(IReadOnlyList<Offset> points, bool close)
+    {
+        foreach (var point in points)
+        {
+            lineTo(point.dx, point.dy);
+        }
+
+        if (close)
+        {
+            this.close();
+        }
+    }
+
+    public void addPath(Path path, Offset offset, Matrix4? matrix4 = null) =>
+        _commands.AddRange(path.Commands);
+
     public Path shift(Offset offset)
     {
         var shifted = new Path { fillType = fillType };
@@ -177,42 +321,117 @@ public sealed class Path
         }
         return shifted;
     }
+
     public Rect getBounds()
     {
         var points = _commands
-            .Where(command => command.Operation is "moveTo" or "lineTo" && command.Arguments.Count >= 2)
+            .Where(command =>
+                command.Operation is "moveTo" or "lineTo" && command.Arguments.Count >= 2
+            )
             .Select(command => new Offset(command.Arguments[0], command.Arguments[1]))
-            .Concat(_commands
-                .Where(command => command.Operation is "addRect" or "addOval" or "addRRect" or "addRSuperellipse" && command.Arguments.Count >= 4)
-                .SelectMany(command => new[]
-                {
-                    new Offset(command.Arguments[0], command.Arguments[1]),
-                    new Offset(command.Arguments[2], command.Arguments[3]),
-                }))
+            .Concat(
+                _commands
+                    .Where(command =>
+                        command.Operation
+                            is "addRect"
+                                or "addOval"
+                                or "addRRect"
+                                or "addRSuperellipse"
+                        && command.Arguments.Count >= 4
+                    )
+                    .SelectMany(command =>
+                        new[]
+                        {
+                            new Offset(command.Arguments[0], command.Arguments[1]),
+                            new Offset(command.Arguments[2], command.Arguments[3]),
+                        }
+                    )
+            )
             .ToArray();
         return points.Length == 0
             ? Rect.zero
-            : Rect.fromLTRB(points.Min(point => point.dx), points.Min(point => point.dy), points.Max(point => point.dx), points.Max(point => point.dy));
+            : Rect.fromLTRB(
+                points.Min(point => point.dx),
+                points.Min(point => point.dy),
+                points.Max(point => point.dx),
+                points.Max(point => point.dy)
+            );
     }
-    public void arcToPoint(Offset arcEnd, Radius? radius = null, double rotation = 0, bool largeArc = false, bool clockwise = true) => _commands.Add(new("arcToPoint", [arcEnd.dx, arcEnd.dy, radius?.x ?? 0, radius?.y ?? 0, rotation, largeArc ? 1 : 0, clockwise ? 1 : 0]));
+
+    public void arcToPoint(
+        Offset arcEnd,
+        Radius? radius = null,
+        double rotation = 0,
+        bool largeArc = false,
+        bool clockwise = true
+    ) =>
+        _commands.Add(
+            new(
+                "arcToPoint",
+                [
+                    arcEnd.dx,
+                    arcEnd.dy,
+                    radius?.x ?? 0,
+                    radius?.y ?? 0,
+                    rotation,
+                    largeArc ? 1 : 0,
+                    clockwise ? 1 : 0,
+                ]
+            )
+        );
+
     public void arcTo(Rect oval, double startAngle, double sweepAngle, bool forceMoveTo) =>
-        _commands.Add(new("arcTo", [oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle, forceMoveTo ? 1 : 0]));
-    public Path transform(IReadOnlyList<double> matrix4) { var result = new Path { fillType = fillType }; result._commands.AddRange(_commands); return result; }
+        _commands.Add(
+            new(
+                "arcTo",
+                [
+                    oval.left,
+                    oval.top,
+                    oval.right,
+                    oval.bottom,
+                    startAngle,
+                    sweepAngle,
+                    forceMoveTo ? 1 : 0,
+                ]
+            )
+        );
+
+    public Path transform(IReadOnlyList<double> matrix4)
+    {
+        var result = new Path { fillType = fillType };
+        result._commands.AddRange(_commands);
+        return result;
+    }
+
     public bool contains(Offset point)
     {
         var shapeMatches = _commands
             .Where(command => command.Arguments.Count >= 4)
-            .Select(command => command.Operation switch
-            {
-                "addRect" => new Rect(command.Arguments[0], command.Arguments[1], command.Arguments[2], command.Arguments[3]).contains(point),
-                "addOval" => OvalContains(command.Arguments, point),
-                "addRRect" => RoundedRectContains(command.Arguments, point),
-                "addRSuperellipse" => new Rect(command.Arguments[0], command.Arguments[1], command.Arguments[2], command.Arguments[3]).contains(point),
-                _ => false,
-            })
+            .Select(command =>
+                command.Operation switch
+                {
+                    "addRect" => new Rect(
+                        command.Arguments[0],
+                        command.Arguments[1],
+                        command.Arguments[2],
+                        command.Arguments[3]
+                    ).contains(point),
+                    "addOval" => OvalContains(command.Arguments, point),
+                    "addRRect" => RoundedRectContains(command.Arguments, point),
+                    "addRSuperellipse" => new Rect(
+                        command.Arguments[0],
+                        command.Arguments[1],
+                        command.Arguments[2],
+                        command.Arguments[3]
+                    ).contains(point),
+                    _ => false,
+                }
+            )
             .ToArray();
         var vertices = _commands
-            .Where(command => command.Operation is "moveTo" or "lineTo" && command.Arguments.Count >= 2)
+            .Where(command =>
+                command.Operation is "moveTo" or "lineTo" && command.Arguments.Count >= 2
+            )
             .Select(command => new Offset(command.Arguments[0], command.Arguments[1]))
             .ToArray();
         var polygonMatch = false;
@@ -223,8 +442,10 @@ public sealed class Path
                 var j = i == 0 ? vertices.Length - 1 : i - 1;
                 var a = vertices[i];
                 var b = vertices[j];
-                if ((a.dy > point.dy) != (b.dy > point.dy) &&
-                    point.dx < ((b.dx - a.dx) * (point.dy - a.dy) / (b.dy - a.dy)) + a.dx)
+                if (
+                    (a.dy > point.dy) != (b.dy > point.dy)
+                    && point.dx < ((b.dx - a.dx) * (point.dy - a.dy) / (b.dy - a.dy)) + a.dx
+                )
                 {
                     polygonMatch = !polygonMatch;
                 }
@@ -240,7 +461,11 @@ public sealed class Path
         var centerY = (values[1] + values[3]) / 2;
         var radiusX = Math.Abs(values[2] - values[0]) / 2;
         var radiusY = Math.Abs(values[3] - values[1]) / 2;
-        if (radiusX == 0 || radiusY == 0) return false;
+        if (radiusX == 0 || radiusY == 0)
+        {
+            return false;
+        }
+
         var x = (point.dx - centerX) / radiusX;
         var y = (point.dy - centerY) / radiusY;
         return (x * x) + (y * y) <= 1;
@@ -248,13 +473,18 @@ public sealed class Path
 
     private static bool RoundedRectContains(IReadOnlyList<double> values, Offset point)
     {
-        if (values.Count < 12) return false;
+        if (values.Count < 12)
+        {
+            return false;
+        }
+
         return new RRect(
             new Rect(values[0], values[1], values[2], values[3]),
             new Radius(values[4], values[5]),
             new Radius(values[6], values[7]),
             new Radius(values[8], values[9]),
-            new Radius(values[10], values[11])).contains(point);
+            new Radius(values[10], values[11])
+        ).contains(point);
     }
 }
 
@@ -277,13 +507,14 @@ public static class SystemColor
 {
     public static bool platformProvidesSystemColors => false;
     public static SystemColorPalette light { get; } = new();
-    public static SystemColorPalette dark { get; } = new()
-    {
-        accentColor = new(new Color(0xffd0bcff)),
-        accentColorText = new(new Color(0xff381e72)),
-        canvas = new(new Color(0xff1c1b1f)),
-        canvasText = new(new Color(0xffe6e1e5)),
-    };
+    public static SystemColorPalette dark { get; } =
+        new()
+        {
+            accentColor = new(new Color(0xffd0bcff)),
+            accentColorText = new(new Color(0xff381e72)),
+            canvas = new(new Color(0xff1c1b1f)),
+            canvasText = new(new Color(0xffe6e1e5)),
+        };
 }
 
 public sealed record PathCommand(string Operation, IReadOnlyList<double> Arguments)
@@ -304,16 +535,15 @@ public interface ISceneHostCapability
 public sealed record DorotiSceneSubmission(
     Scene Scene,
     DorotiSceneBuildToken? BuildToken,
-    DorotiFrameTransaction? FrameTransaction = null);
+    DorotiFrameTransaction? FrameTransaction = null
+);
 
 public sealed class Scene : IDisposable
 {
     private int _disposed;
 
     public Scene(ulong viewId, IReadOnlyList<SceneCommand> commands)
-        : this(viewId, commands?.ToArray() ?? throw new ArgumentNullException(nameof(commands)))
-    {
-    }
+        : this(viewId, commands?.ToArray() ?? throw new ArgumentNullException(nameof(commands))) { }
 
     private Scene(ulong viewId, SceneCommand[] ownedCommands)
     {
@@ -340,6 +570,7 @@ public sealed class Scene : IDisposable
     }
 
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
+
     public void dispose() => Dispose();
 }
 
@@ -354,43 +585,117 @@ internal sealed record ScenePicturePayload(
     IReadOnlyList<PathCommand> Commands,
     Rect? CanvasBounds,
     bool IsComplexHint,
-    bool WillChangeHint);
+    bool WillChangeHint
+);
+
 internal sealed record SceneOffsetPayload(double Dx, double Dy);
+
 internal sealed record SceneClipRectPayload(Rect Rect, Clip Behavior = Clip.antiAlias);
+
 internal sealed record SceneClipRRectPayload(RRect RRect);
+
 internal sealed record SceneClipRSuperellipsePayload(RSuperellipse RSuperellipse);
+
 internal sealed record SceneClipPathPayload(Path Path);
+
 internal sealed record SceneTransformPayload(IReadOnlyList<double> Matrix4);
+
 internal sealed record SceneOpacityPayload(double Opacity, Offset Offset);
+
 internal sealed record SceneColorFilterPayload(ColorFilterSnapshot Filter);
+
 internal sealed record SceneImageFilterPayload(
     ImageFilterSnapshot Filter,
     Offset Offset,
     Rect? Bounds,
     object? CacheKey = null,
-    long CacheGeneration = 0);
-internal sealed record SceneShaderMaskPayload(ShaderSnapshot Shader, Rect MaskRect, BlendMode BlendMode);
-internal sealed record SceneBackdropFilterPayload(ImageFilterSnapshot Filter, BlendMode BlendMode, object? BackdropId);
-internal sealed record SceneRetainedPayload(IReadOnlyList<SceneCommand> Commands, ulong ViewId, long Generation);
+    long CacheGeneration = 0
+);
+
+internal sealed record SceneShaderMaskPayload(
+    ShaderSnapshot Shader,
+    Rect MaskRect,
+    BlendMode BlendMode
+);
+
+internal sealed record SceneBackdropFilterPayload(
+    ImageFilterSnapshot Filter,
+    BlendMode BlendMode,
+    object? BackdropId
+);
+
+internal sealed record SceneRetainedPayload(
+    IReadOnlyList<SceneCommand> Commands,
+    ulong ViewId,
+    long Generation
+);
+
 internal sealed record CanvasSaveLayerPayload(Rect? Bounds, PaintSnapshot Paint);
+
 internal sealed record CanvasPathPayload(Path Path, PaintSnapshot Paint);
+
 internal sealed record CanvasRectPayload(Rect Rect, PaintSnapshot Paint);
+
 internal sealed record CanvasRRectPayload(RRect RRect, PaintSnapshot Paint);
+
 internal sealed record CanvasRSuperellipsePayload(RSuperellipse RSuperellipse, PaintSnapshot Paint);
+
 internal sealed record CanvasDRRectPayload(RRect Outer, RRect Inner, PaintSnapshot Paint);
+
 internal sealed record CanvasClipRRectPayload(RRect RRect, bool DoAntiAlias = true);
-internal sealed record CanvasClipRSuperellipsePayload(RSuperellipse RSuperellipse, bool DoAntiAlias);
+
+internal sealed record CanvasClipRSuperellipsePayload(
+    RSuperellipse RSuperellipse,
+    bool DoAntiAlias
+);
+
 internal sealed record CanvasClipPathPayload(Path Path, bool DoAntiAlias = true);
-internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, PaintSnapshot Paint);
-internal sealed record CanvasImageNinePayload(Image Image, Rect Center, Rect Destination, PaintSnapshot Paint);
+
+internal sealed record CanvasImagePayload(
+    Image Image,
+    Rect Source,
+    Rect Destination,
+    PaintSnapshot Paint
+);
+
+internal sealed record CanvasImageNinePayload(
+    Image Image,
+    Rect Center,
+    Rect Destination,
+    PaintSnapshot Paint
+);
+
 internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset);
-internal sealed record CanvasShadowPayload(Path Path, Color Color, double Elevation, bool TransparentOccluder);
+
+internal sealed record CanvasShadowPayload(
+    Path Path,
+    Color Color,
+    double Elevation,
+    bool TransparentOccluder
+);
+
 internal sealed record CanvasCirclePayload(Offset Center, double Radius, PaintSnapshot Paint);
+
 internal sealed record CanvasLinePayload(Offset Start, Offset End, PaintSnapshot Paint);
-internal sealed record CanvasPointsPayload(PointMode PointMode, IReadOnlyList<Offset> Points, PaintSnapshot Paint);
+
+internal sealed record CanvasPointsPayload(
+    PointMode PointMode,
+    IReadOnlyList<Offset> Points,
+    PaintSnapshot Paint
+);
+
 internal sealed record CanvasOvalPayload(Rect Rect, PaintSnapshot Paint);
-internal sealed record CanvasArcPayload(Rect Rect, double StartAngle, double SweepAngle, bool UseCenter, PaintSnapshot Paint);
+
+internal sealed record CanvasArcPayload(
+    Rect Rect,
+    double StartAngle,
+    double SweepAngle,
+    bool UseCenter,
+    PaintSnapshot Paint
+);
+
 internal sealed record CanvasColorPayload(Color Color, BlendMode BlendMode);
+
 internal sealed record PaintSnapshot(
     Color Color,
     PaintingStyle Style,
@@ -403,7 +708,8 @@ internal sealed record PaintSnapshot(
     ColorFilterSnapshot? ColorFilter,
     MaskFilter? MaskFilter,
     FilterQuality FilterQuality,
-    bool InvertColors)
+    bool InvertColors
+)
 {
     internal static PaintSnapshot Capture(Paint paint)
     {
@@ -420,47 +726,83 @@ internal sealed record PaintSnapshot(
             paint.colorFilter is null ? null : ColorFilterSnapshot.Capture(paint.colorFilter),
             paint.maskFilter,
             paint.filterQuality,
-            paint.invertColors);
+            paint.invertColors
+        );
     }
 }
 
 internal abstract record ShaderSnapshot
 {
-    internal static ShaderSnapshot Capture(Shader shader) => shader switch
-    {
-        Gradient gradient => new GradientShaderSnapshot(
-            gradient.begin, gradient.end, gradient.center, gradient.radius, gradient.focal, gradient.focalRadius,
-            gradient.startAngle, gradient.endAngle, gradient.tileMode,
-            Array.AsReadOnly(gradient.colors.ToArray()), Array.AsReadOnly(gradient.colorStops.ToArray()),
-            gradient.matrix4 is null ? null : Array.AsReadOnly(gradient.matrix4.ToArray())),
-        ImageShader image => new ImageShaderSnapshot(image.image, image.tmx, image.tmy,
-            Array.AsReadOnly(image.matrix4.storage.ToArray()), image.filterQuality),
-        FragmentShader fragment => new FragmentShaderSnapshot(fragment.CaptureState()),
-        _ => new UnsupportedShaderSnapshot(shader.GetType().FullName ?? shader.GetType().Name),
-    };
+    internal static ShaderSnapshot Capture(Shader shader) =>
+        shader switch
+        {
+            Gradient gradient => new GradientShaderSnapshot(
+                gradient.begin,
+                gradient.end,
+                gradient.center,
+                gradient.radius,
+                gradient.focal,
+                gradient.focalRadius,
+                gradient.startAngle,
+                gradient.endAngle,
+                gradient.tileMode,
+                Array.AsReadOnly(gradient.colors.ToArray()),
+                Array.AsReadOnly(gradient.colorStops.ToArray()),
+                gradient.matrix4 is null ? null : Array.AsReadOnly(gradient.matrix4.ToArray())
+            ),
+            ImageShader image => new ImageShaderSnapshot(
+                image.image,
+                image.tmx,
+                image.tmy,
+                Array.AsReadOnly(image.matrix4.storage.ToArray()),
+                image.filterQuality
+            ),
+            FragmentShader fragment => new FragmentShaderSnapshot(fragment.CaptureState()),
+            _ => new UnsupportedShaderSnapshot(shader.GetType().FullName ?? shader.GetType().Name),
+        };
 }
 
 internal sealed record GradientShaderSnapshot(
-    Offset? Begin, Offset? End, Offset? Center, double Radius, Offset? Focal, double FocalRadius,
-    double StartAngle, double EndAngle, TileMode TileMode, IReadOnlyList<Color> Colors,
-    IReadOnlyList<double> Stops, IReadOnlyList<double>? Matrix4) : ShaderSnapshot;
+    Offset? Begin,
+    Offset? End,
+    Offset? Center,
+    double Radius,
+    Offset? Focal,
+    double FocalRadius,
+    double StartAngle,
+    double EndAngle,
+    TileMode TileMode,
+    IReadOnlyList<Color> Colors,
+    IReadOnlyList<double> Stops,
+    IReadOnlyList<double>? Matrix4
+) : ShaderSnapshot;
+
 internal sealed record ImageShaderSnapshot(
-    Image Image, TileMode TileModeX, TileMode TileModeY, IReadOnlyList<double> Matrix4,
-    FilterQuality? FilterQuality) : ShaderSnapshot;
+    Image Image,
+    TileMode TileModeX,
+    TileMode TileModeY,
+    IReadOnlyList<double> Matrix4,
+    FilterQuality? FilterQuality
+) : ShaderSnapshot;
+
 internal sealed record FragmentShaderSnapshot(FragmentShaderState State) : ShaderSnapshot;
+
 internal sealed record UnsupportedShaderSnapshot(string Family) : ShaderSnapshot;
 
 internal sealed record ColorFilterSnapshot(
     ColorFilterKind Kind,
     Color? Color,
     BlendMode BlendMode,
-    IReadOnlyList<double>? Matrix)
+    IReadOnlyList<double>? Matrix
+)
 {
-    internal static ColorFilterSnapshot Capture(ColorFilter filter) => new(
-        filter.kind,
-        filter.color,
-        filter.blendMode,
-        filter.matrixValues is null ? null : Array.AsReadOnly(filter.matrixValues.ToArray()));
+    internal static ColorFilterSnapshot Capture(ColorFilter filter) =>
+        new(
+            filter.kind,
+            filter.color,
+            filter.blendMode,
+            filter.matrixValues is null ? null : Array.AsReadOnly(filter.matrixValues.ToArray())
+        );
 }
 
 internal sealed record ImageFilterSnapshot(
@@ -474,14 +816,28 @@ internal sealed record ImageFilterSnapshot(
     IReadOnlyList<double>? Matrix4,
     FilterQuality FilterQuality,
     ShaderSnapshot? Shader,
-    PlatformEffectStyle? PlatformEffectIntent = null)
+    PlatformEffectStyle? PlatformEffectIntent = null
+)
 {
     internal static ImageFilterSnapshot Capture(ImageFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
         if (filter.shader is not null)
-            return new(0, 0, TileMode.clamp, null, null, null, null, null, filter.filterQuality,
-                ShaderSnapshot.Capture(filter.shader));
+        {
+            return new(
+                0,
+                0,
+                TileMode.clamp,
+                null,
+                null,
+                null,
+                null,
+                null,
+                filter.filterQuality,
+                ShaderSnapshot.Capture(filter.shader)
+            );
+        }
+
         return new(
             filter.sigmaX,
             filter.sigmaY,
@@ -492,15 +848,20 @@ internal sealed record ImageFilterSnapshot(
             filter.colorFilter is null ? null : ColorFilterSnapshot.Capture(filter.colorFilter),
             filter.matrix4 is null ? null : Array.AsReadOnly(filter.matrix4.ToArray()),
             filter.filterQuality,
-            null, filter.PlatformEffectIntent);
+            null,
+            filter.PlatformEffectIntent
+        );
     }
 }
+
 internal interface IDorotiImageHandle
 {
     IDorotiImageHandle Clone();
 
     ValueTask<ByteData> ReadBytesAsync(ImageByteFormat format) =>
-        ValueTask.FromException<ByteData>(new NotSupportedException($"Image readback for {format} is unavailable."));
+        ValueTask.FromException<ByteData>(
+            new NotSupportedException($"Image readback for {format} is unavailable.")
+        );
 
     void Release();
 }
@@ -510,7 +871,8 @@ public sealed record RetainedResourceDiagnostics(
     long EngineLayersDisposed,
     long ActiveEngineLayers,
     long RetainedSnapshots,
-    long RetainedReuses);
+    long RetainedReuses
+);
 
 public class EngineLayer : IDisposable
 {
@@ -533,36 +895,54 @@ public class EngineLayer : IDisposable
     internal long Generation { get; set; }
     public long debugGeneration => Generation;
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
-    public static RetainedResourceDiagnostics debugResourceDiagnostics => new(
-        Interlocked.Read(ref _created),
-        Interlocked.Read(ref _disposedCount),
-        Interlocked.Read(ref _active),
-        Interlocked.Read(ref _retainedSnapshots),
-        Interlocked.Read(ref _retainedReuses));
+    public static RetainedResourceDiagnostics debugResourceDiagnostics =>
+        new(
+            Interlocked.Read(ref _created),
+            Interlocked.Read(ref _disposedCount),
+            Interlocked.Read(ref _active),
+            Interlocked.Read(ref _retainedSnapshots),
+            Interlocked.Read(ref _retainedReuses)
+        );
 
     internal static void RecordSnapshot() => Interlocked.Increment(ref _retainedSnapshots);
+
     internal static void RecordReuse() => Interlocked.Increment(ref _retainedReuses);
 
     public void Dispose()
     {
-        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+        {
+            return;
+        }
+
         RetainedCommands = null;
         Interlocked.Increment(ref _disposedCount);
         Interlocked.Decrement(ref _active);
     }
+
     public void dispose() => Dispose();
 }
 
 public sealed class OffsetEngineLayer : EngineLayer;
+
 public sealed class ClipRectEngineLayer : EngineLayer;
+
 public sealed class ClipRRectEngineLayer : EngineLayer;
+
 public sealed class ClipRSuperellipseEngineLayer : EngineLayer;
+
 public sealed class ClipPathEngineLayer : EngineLayer;
+
 public sealed class ColorFilterEngineLayer : EngineLayer;
+
 public sealed class ImageFilterEngineLayer : EngineLayer;
+
 public sealed class TransformEngineLayer : EngineLayer;
+
 public sealed class OpacityEngineLayer : EngineLayer;
+
 public sealed class ShaderMaskEngineLayer : EngineLayer;
+
 public sealed class BackdropFilterEngineLayer : EngineLayer;
 
 public sealed class SceneBuilder
@@ -577,72 +957,211 @@ public sealed class SceneBuilder
     public void addPicture(Offset offset, IReadOnlyList<PathCommand> picture) =>
         _commands.Add(new("picture", new { offset, picture }));
 
-    public void addPicture(Offset offset, Picture picture, bool isComplexHint = false, bool willChangeHint = false) =>
-        AddPicture(offset, picture, null, isComplexHint, willChangeHint);
+    public void addPicture(
+        Offset offset,
+        Picture picture,
+        bool isComplexHint = false,
+        bool willChangeHint = false
+    ) => AddPicture(offset, picture, null, isComplexHint, willChangeHint);
 
     public void addPicture(
         Offset offset,
         Picture picture,
         Rect canvasBounds,
         bool isComplexHint = false,
-        bool willChangeHint = false) =>
-        AddPicture(offset, picture, canvasBounds, isComplexHint, willChangeHint);
+        bool willChangeHint = false
+    ) => AddPicture(offset, picture, canvasBounds, isComplexHint, willChangeHint);
 
     private void AddPicture(
         Offset offset,
         Picture picture,
         Rect? canvasBounds,
         bool isComplexHint,
-        bool willChangeHint)
+        bool willChangeHint
+    )
     {
         ArgumentNullException.ThrowIfNull(picture);
         ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
         var commands = picture.Commands;
-        _commands.Add(new SceneCommand("picture", new { offset, picture = commands, isComplexHint, willChangeHint })
-        {
-            // Picture is a Dart-side handle whose dispose may run as soon as a
-            // replacement layer is built. The scene owns the immutable command
-            // snapshot so raster/replay never observes that handle's lifetime.
-            HostPayload = new ScenePicturePayload(picture.SnapshotIdentity, offset, commands, canvasBounds, isComplexHint, willChangeHint),
-        });
+        _commands.Add(
+            new SceneCommand(
+                "picture",
+                new
+                {
+                    offset,
+                    picture = commands,
+                    isComplexHint,
+                    willChangeHint,
+                }
+            )
+            {
+                // Picture is a Dart-side handle whose dispose may run as soon as a
+                // replacement layer is built. The scene owns the immutable command
+                // snapshot so raster/replay never observes that handle's lifetime.
+                HostPayload = new ScenePicturePayload(
+                    picture.SnapshotIdentity,
+                    offset,
+                    commands,
+                    canvasBounds,
+                    isComplexHint,
+                    willChangeHint
+                ),
+            }
+        );
     }
 
-    public OffsetEngineLayer pushOffset(
-        double dx,
-        double dy,
-        OffsetEngineLayer? oldLayer = null) =>
+    public OffsetEngineLayer pushOffset(double dx, double dy, OffsetEngineLayer? oldLayer = null) =>
         Push(oldLayer, "offset", new { dx, dy }, new SceneOffsetPayload(dx, dy));
-    public ClipRectEngineLayer pushClipRect(Rect rect, Clip clipBehavior = Clip.antiAlias, ClipRectEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipRect", new { rect, clipBehavior }, new SceneClipRectPayload(rect, clipBehavior));
-    public ClipRRectEngineLayer pushClipRRect(RRect rrect, Clip clipBehavior = Clip.antiAlias, ClipRRectEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipRRect", new { rrect, clipBehavior }, new SceneClipRRectPayload(rrect));
-    public ClipRSuperellipseEngineLayer pushClipRSuperellipse(RSuperellipse rse, Clip clipBehavior = Clip.antiAlias, ClipRSuperellipseEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipRSuperellipse", new { rse, clipBehavior }, new SceneClipRSuperellipsePayload(rse));
-    public ClipPathEngineLayer pushClipPath(Path path, Clip clipBehavior = Clip.antiAlias, ClipPathEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipPath", new { path, clipBehavior }, new SceneClipPathPayload(path.SnapshotForPainting()));
-    public ColorFilterEngineLayer pushColorFilter(ColorFilter filter, ColorFilterEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "colorFilter", filter, new SceneColorFilterPayload(ColorFilterSnapshot.Capture(filter)));
+
+    public ClipRectEngineLayer pushClipRect(
+        Rect rect,
+        Clip clipBehavior = Clip.antiAlias,
+        ClipRectEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "clipRect",
+            new { rect, clipBehavior },
+            new SceneClipRectPayload(rect, clipBehavior)
+        );
+
+    public ClipRRectEngineLayer pushClipRRect(
+        RRect rrect,
+        Clip clipBehavior = Clip.antiAlias,
+        ClipRRectEngineLayer? oldLayer = null
+    ) => Push(oldLayer, "clipRRect", new { rrect, clipBehavior }, new SceneClipRRectPayload(rrect));
+
+    public ClipRSuperellipseEngineLayer pushClipRSuperellipse(
+        RSuperellipse rse,
+        Clip clipBehavior = Clip.antiAlias,
+        ClipRSuperellipseEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "clipRSuperellipse",
+            new { rse, clipBehavior },
+            new SceneClipRSuperellipsePayload(rse)
+        );
+
+    public ClipPathEngineLayer pushClipPath(
+        Path path,
+        Clip clipBehavior = Clip.antiAlias,
+        ClipPathEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "clipPath",
+            new { path, clipBehavior },
+            new SceneClipPathPayload(path.SnapshotForPainting())
+        );
+
+    public ColorFilterEngineLayer pushColorFilter(
+        ColorFilter filter,
+        ColorFilterEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "colorFilter",
+            filter,
+            new SceneColorFilterPayload(ColorFilterSnapshot.Capture(filter))
+        );
+
     public ImageFilterEngineLayer pushImageFilter(
         ImageFilter filter,
         Offset offset = default,
         ImageFilterEngineLayer? oldLayer = null,
         Rect? bounds = null,
         object? cacheKey = null,
-        long cacheGeneration = 0) =>
-        Push(oldLayer, "imageFilter", new { filter, offset, bounds },
+        long cacheGeneration = 0
+    ) =>
+        Push(
+            oldLayer,
+            "imageFilter",
+            new
+            {
+                filter,
+                offset,
+                bounds,
+            },
             new SceneImageFilterPayload(
-                ImageFilterSnapshot.Capture(filter), offset, bounds, cacheKey, cacheGeneration));
-    public TransformEngineLayer pushTransform(IReadOnlyList<double> matrix4, TransformEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "transform", matrix4, new SceneTransformPayload(Array.AsReadOnly(matrix4.ToArray())));
-    public OpacityEngineLayer pushOpacity(long alpha, Offset offset = default, OpacityEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "opacity", new { alpha, offset }, new SceneOpacityPayload(Math.Clamp(alpha, 0, 255) / 255d, offset));
-    public ShaderMaskEngineLayer pushShaderMask(Shader shader, Rect maskRect, BlendMode blendMode, ShaderMaskEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "shaderMask", new { shader, maskRect, blendMode }, new SceneShaderMaskPayload(ShaderSnapshot.Capture(shader), maskRect, blendMode));
-    public BackdropFilterEngineLayer pushBackdropFilter(ImageFilter filter, BlendMode blendMode = BlendMode.srcOver, BackdropFilterEngineLayer? oldLayer = null, object? backdropId = null) =>
-        Push(oldLayer, "backdropFilter", new { filter, blendMode, backdropId }, new SceneBackdropFilterPayload(ImageFilterSnapshot.Capture(filter), blendMode, backdropId));
+                ImageFilterSnapshot.Capture(filter),
+                offset,
+                bounds,
+                cacheKey,
+                cacheGeneration
+            )
+        );
+
+    public TransformEngineLayer pushTransform(
+        IReadOnlyList<double> matrix4,
+        TransformEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "transform",
+            matrix4,
+            new SceneTransformPayload(Array.AsReadOnly(matrix4.ToArray()))
+        );
+
+    public OpacityEngineLayer pushOpacity(
+        long alpha,
+        Offset offset = default,
+        OpacityEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "opacity",
+            new { alpha, offset },
+            new SceneOpacityPayload(Math.Clamp(alpha, 0, 255) / 255d, offset)
+        );
+
+    public ShaderMaskEngineLayer pushShaderMask(
+        Shader shader,
+        Rect maskRect,
+        BlendMode blendMode,
+        ShaderMaskEngineLayer? oldLayer = null
+    ) =>
+        Push(
+            oldLayer,
+            "shaderMask",
+            new
+            {
+                shader,
+                maskRect,
+                blendMode,
+            },
+            new SceneShaderMaskPayload(ShaderSnapshot.Capture(shader), maskRect, blendMode)
+        );
+
+    public BackdropFilterEngineLayer pushBackdropFilter(
+        ImageFilter filter,
+        BlendMode blendMode = BlendMode.srcOver,
+        BackdropFilterEngineLayer? oldLayer = null,
+        object? backdropId = null
+    ) =>
+        Push(
+            oldLayer,
+            "backdropFilter",
+            new
+            {
+                filter,
+                blendMode,
+                backdropId,
+            },
+            new SceneBackdropFilterPayload(
+                ImageFilterSnapshot.Capture(filter),
+                blendMode,
+                backdropId
+            )
+        );
+
     public void pop()
     {
-        if (_scopes.Count == 0) throw new InvalidOperationException("SceneBuilder pop is unbalanced.");
+        if (_scopes.Count == 0)
+        {
+            throw new InvalidOperationException("SceneBuilder pop is unbalanced.");
+        }
+
         _commands.Add(new("pop", null));
         var (layer, start) = _scopes.Pop();
         var retainedCount = _commands.Count - start;
@@ -652,46 +1171,118 @@ public sealed class SceneBuilder
         layer.Generation = Interlocked.Increment(ref _nextRetainedGeneration);
         EngineLayer.RecordSnapshot();
     }
+
     public void addRetained(EngineLayer layer)
     {
         ArgumentNullException.ThrowIfNull(layer);
         ObjectDisposedException.ThrowIf(layer.debugDisposed, layer);
         if (layer.RetainedCommands is null || layer.OwnerViewId != _viewId)
-            throw new InvalidOperationException("A retained layer must be complete and owned by the same Flutter view.");
-        _commands.Add(new SceneCommand("retained", layer) { HostPayload = new SceneRetainedPayload(layer.RetainedCommands, layer.OwnerViewId, layer.Generation) });
+        {
+            throw new InvalidOperationException(
+                "A retained layer must be complete and owned by the same Flutter view."
+            );
+        }
+
+        _commands.Add(
+            new SceneCommand("retained", layer)
+            {
+                HostPayload = new SceneRetainedPayload(
+                    layer.RetainedCommands,
+                    layer.OwnerViewId,
+                    layer.Generation
+                ),
+            }
+        );
         EngineLayer.RecordReuse();
     }
-    public void addPerformanceOverlay(long enabledOptions, Rect bounds) => _commands.Add(new("performanceOverlay", new { enabledOptions, bounds }));
-    public void addPlatformView(long viewId, Offset offset = default, double width = 0, double height = 0)
+
+    public void addPerformanceOverlay(long enabledOptions, Rect bounds) =>
+        _commands.Add(new("performanceOverlay", new { enabledOptions, bounds }));
+
+    public void addPlatformView(
+        long viewId,
+        Offset offset = default,
+        double width = 0,
+        double height = 0
+    )
     {
         var invocation = DartUiInvocation.Managed("dart:ui#SceneBuilder.addPlatformView");
-        var host = PlatformDispatcher.instance.GetView(_viewId, invocation)
-            .RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews, invocation);
+        var host = PlatformDispatcher
+            .instance.GetView(_viewId, invocation)
+            .RequireCapability<IPlatformViewHostCapability>(
+                DorotiCapabilityIds.PlatformViews,
+                invocation
+            );
         addPlatformView(host.Resolve(viewId), offset, width, height);
     }
 
-    public void addPlatformView(PlatformViewHandle handle, Offset offset = default, double width = 0, double height = 0)
+    public void addPlatformView(
+        PlatformViewHandle handle,
+        Offset offset = default,
+        double width = 0,
+        double height = 0
+    )
     {
         if (handle.OwnerViewId != _viewId || handle.InstanceGeneration <= 0)
+        {
             throw new InvalidOperationException("PlatformView scene owner/generation is invalid.");
+        }
+
         var bounds = Rect.fromLTWH(offset.dx, offset.dy, width, height);
-        new PlatformViewPlacement(handle, bounds, PlatformViewTransform.Identity, null, 0).Validate();
+        new PlatformViewPlacement(
+            handle,
+            bounds,
+            PlatformViewTransform.Identity,
+            null,
+            0
+        ).Validate();
         var payload = new ScenePlatformViewPayload(handle, bounds);
         _commands.Add(new("platformView", payload) { HostPayload = payload });
     }
 
     public void addInputShield(Rect bounds, bool debug = false)
     {
-        new PlatformViewPlacement(default, bounds, PlatformViewTransform.Identity, null, 0).Validate();
+        new PlatformViewPlacement(
+            default,
+            bounds,
+            PlatformViewTransform.Identity,
+            null,
+            0
+        ).Validate();
         var payload = new SceneInputShieldPayload(bounds, debug);
         _commands.Add(new("inputShield", payload) { HostPayload = payload });
     }
-    public void addTexture(long textureId, Offset offset = default, double width = 0, double height = 0, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) =>
-        _commands.Add(new("texture", new { textureId, offset, width, height, freeze, filterQuality }));
 
-    private T Push<T>(T? oldLayer, string operation, object? payload, object? hostPayload = null) where T : EngineLayer, new()
+    public void addTexture(
+        long textureId,
+        Offset offset = default,
+        double width = 0,
+        double height = 0,
+        bool freeze = false,
+        FilterQuality filterQuality = FilterQuality.low
+    ) =>
+        _commands.Add(
+            new(
+                "texture",
+                new
+                {
+                    textureId,
+                    offset,
+                    width,
+                    height,
+                    freeze,
+                    filterQuality,
+                }
+            )
+        );
+
+    private T Push<T>(T? oldLayer, string operation, object? payload, object? hostPayload = null)
+        where T : EngineLayer, new()
     {
-        var layer = oldLayer is { debugDisposed: false } && oldLayer.Operation == operation ? oldLayer : new T();
+        var layer =
+            oldLayer is { debugDisposed: false } && oldLayer.Operation == operation
+                ? oldLayer
+                : new T();
         layer.Operation = operation;
         layer.OwnerViewId = _viewId;
         var start = _commands.Count;
@@ -702,7 +1293,13 @@ public sealed class SceneBuilder
 
     public Scene build()
     {
-        if (_scopes.Count != 0) throw new InvalidOperationException($"SceneBuilder has {_scopes.Count} unclosed effect scope(s).");
+        if (_scopes.Count != 0)
+        {
+            throw new InvalidOperationException(
+                $"SceneBuilder has {_scopes.Count} unclosed effect scope(s)."
+            );
+        }
+
         return Scene.FromOwnedCommands(_viewId, _commands.ToArray());
     }
 }
@@ -713,151 +1310,414 @@ public class Canvas
     private int _saveCount = 1;
 
     protected Canvas() => _commands = [];
-    public Canvas(List<PathCommand> commands) => _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+
+    public Canvas(List<PathCommand> commands) =>
+        _commands = commands ?? throw new ArgumentNullException(nameof(commands));
 
     public void drawPath(Path path, Paint paint)
     {
         ArgumentNullException.ThrowIfNull(path);
         ArgumentNullException.ThrowIfNull(paint);
-        _commands.Add(new PathCommand("drawPath", [path.Commands.Count, paint.color.value, paint.strokeWidth])
-        {
-            HostPayload = new CanvasPathPayload(path.SnapshotForPainting(), PaintSnapshot.Capture(paint)),
-        });
+        _commands.Add(
+            new PathCommand("drawPath", [path.Commands.Count, paint.color.value, paint.strokeWidth])
+            {
+                HostPayload = new CanvasPathPayload(
+                    path.SnapshotForPainting(),
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
     }
 
-    public Canvas(PictureRecorder recorder, Rect? cullRect = null) : this(recorder.commands) { }
+    public Canvas(PictureRecorder recorder, Rect? cullRect = null)
+        : this(recorder.commands) { }
+
     public virtual object? noSuchMethod(Invocation invocation) =>
-        throw new MissingMethodException($"Canvas does not implement the requested Dart invocation: {invocation}.");
-    public void save() { _saveCount++; _commands.Add(new("save", [])); }
-    public void restore() { if (_saveCount > 1) _saveCount--; _commands.Add(new("restore", [])); }
+        throw new MissingMethodException(
+            $"Canvas does not implement the requested Dart invocation: {invocation}."
+        );
+
+    public void save()
+    {
+        _saveCount++;
+        _commands.Add(new("save", []));
+    }
+
+    public void restore()
+    {
+        if (_saveCount > 1)
+        {
+            _saveCount--;
+        }
+        _commands.Add(new("restore", []));
+    }
+
     public void saveLayer(Rect? bounds, Paint paint)
     {
         _saveCount++;
-        _commands.Add(new PathCommand("saveLayer", []) { HostPayload = new CanvasSaveLayerPayload(bounds, PaintSnapshot.Capture(paint)) });
+        _commands.Add(
+            new PathCommand("saveLayer", [])
+            {
+                HostPayload = new CanvasSaveLayerPayload(bounds, PaintSnapshot.Capture(paint)),
+            }
+        );
     }
+
     public long getSaveCount() => _saveCount;
+
     public void translate(double dx, double dy) => _commands.Add(new("translate", [dx, dy]));
+
     public void scale(double sx, double? sy = null) => _commands.Add(new("scale", [sx, sy ?? sx]));
+
     public void rotate(double radians) => _commands.Add(new("rotate", [radians]));
+
     public void skew(double sx, double sy) => _commands.Add(new("skew", [sx, sy]));
-    public void transform(IReadOnlyList<double> matrix4) => _commands.Add(new("transform", Array.AsReadOnly(matrix4.ToArray())));
-    public void clipRect(Rect rect, Clip clipBehavior = Clip.antiAlias) => _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom]));
+
+    public void transform(IReadOnlyList<double> matrix4) =>
+        _commands.Add(new("transform", Array.AsReadOnly(matrix4.ToArray())));
+
+    public void clipRect(Rect rect, Clip clipBehavior = Clip.antiAlias) =>
+        _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom]));
+
     public void clipRect(Rect rect, ClipOp clipOp, bool doAntiAlias = true) =>
-        _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom, (double)clipOp, doAntiAlias ? 1 : 0]));
-    public void clipRect(Rect rect, bool doAntiAlias) => _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom, doAntiAlias ? 1 : 0]));
-    public void clipRRect(RRect rrect, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
-    {
-        HostPayload = new CanvasClipRRectPayload(rrect, doAntiAlias),
-    });
-    public void clipRSuperellipse(RSuperellipse rse, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom])
-    {
-        HostPayload = new CanvasClipRSuperellipsePayload(rse, doAntiAlias),
-    });
-    public void clipPath(Path path, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipPath", [path.Commands.Count])
-    {
-        HostPayload = new CanvasClipPathPayload(path.SnapshotForPainting(), doAntiAlias),
-    });
-    public void drawRect(Rect rect, Paint paint) => _commands.Add(new PathCommand("drawRect", [rect.left, rect.top, rect.right, rect.bottom, paint.color.value])
-    {
-        HostPayload = new CanvasRectPayload(rect, PaintSnapshot.Capture(paint)),
-    });
-    public void drawRRect(RRect rrect, Paint paint) => _commands.Add(new PathCommand("drawRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
-    {
-        HostPayload = new CanvasRRectPayload(rrect, PaintSnapshot.Capture(paint)),
-    });
-    public void drawRSuperellipse(RSuperellipse rse, Paint paint) => _commands.Add(new PathCommand("drawRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom])
-    {
-        HostPayload = new CanvasRSuperellipsePayload(rse, PaintSnapshot.Capture(paint)),
-    });
+        _commands.Add(
+            new(
+                "clipRect",
+                [rect.left, rect.top, rect.right, rect.bottom, (double)clipOp, doAntiAlias ? 1 : 0]
+            )
+        );
+
+    public void clipRect(Rect rect, bool doAntiAlias) =>
+        _commands.Add(
+            new("clipRect", [rect.left, rect.top, rect.right, rect.bottom, doAntiAlias ? 1 : 0])
+        );
+
+    public void clipRRect(RRect rrect, bool doAntiAlias = true) =>
+        _commands.Add(
+            new PathCommand("clipRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
+            {
+                HostPayload = new CanvasClipRRectPayload(rrect, doAntiAlias),
+            }
+        );
+
+    public void clipRSuperellipse(RSuperellipse rse, bool doAntiAlias = true) =>
+        _commands.Add(
+            new PathCommand(
+                "clipRSuperellipse",
+                [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom]
+            )
+            {
+                HostPayload = new CanvasClipRSuperellipsePayload(rse, doAntiAlias),
+            }
+        );
+
+    public void clipPath(Path path, bool doAntiAlias = true) =>
+        _commands.Add(
+            new PathCommand("clipPath", [path.Commands.Count])
+            {
+                HostPayload = new CanvasClipPathPayload(path.SnapshotForPainting(), doAntiAlias),
+            }
+        );
+
+    public void drawRect(Rect rect, Paint paint) =>
+        _commands.Add(
+            new PathCommand(
+                "drawRect",
+                [rect.left, rect.top, rect.right, rect.bottom, paint.color.value]
+            )
+            {
+                HostPayload = new CanvasRectPayload(rect, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawRRect(RRect rrect, Paint paint) =>
+        _commands.Add(
+            new PathCommand("drawRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
+            {
+                HostPayload = new CanvasRRectPayload(rrect, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawRSuperellipse(RSuperellipse rse, Paint paint) =>
+        _commands.Add(
+            new PathCommand(
+                "drawRSuperellipse",
+                [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom]
+            )
+            {
+                HostPayload = new CanvasRSuperellipsePayload(rse, PaintSnapshot.Capture(paint)),
+            }
+        );
+
     public void drawDRRect(RRect outer, RRect inner, Paint paint) =>
-        _commands.Add(new PathCommand("drawDRRect", [outer.left, outer.top, outer.right, outer.bottom, inner.left, inner.top, inner.right, inner.bottom])
-        {
-            HostPayload = new CanvasDRRectPayload(outer, inner, PaintSnapshot.Capture(paint)),
-        });
-    public void drawCircle(Offset center, double radius, Paint paint) => _commands.Add(new PathCommand("drawCircle", [center.dx, center.dy, radius])
-    {
-        HostPayload = new CanvasCirclePayload(center, radius, PaintSnapshot.Capture(paint)),
-    });
-    public void drawArc(Rect rect, double startAngle, double sweepAngle, bool useCenter, Paint paint) =>
-        _commands.Add(new PathCommand("drawArc", [rect.left, rect.top, rect.right, rect.bottom, startAngle, sweepAngle, useCenter ? 1 : 0])
-        {
-            HostPayload = new CanvasArcPayload(rect, startAngle, sweepAngle, useCenter, PaintSnapshot.Capture(paint)),
-        });
-    public void drawLine(Offset point1, Offset point2, Paint paint) => _commands.Add(new PathCommand("drawLine", [point1.dx, point1.dy, point2.dx, point2.dy])
-    {
-        HostPayload = new CanvasLinePayload(point1, point2, PaintSnapshot.Capture(paint)),
-    });
-    public void drawPaint(Paint paint) => _commands.Add(new PathCommand("drawPaint", [paint.color.value])
-    {
-        HostPayload = PaintSnapshot.Capture(paint),
-    });
+        _commands.Add(
+            new PathCommand(
+                "drawDRRect",
+                [
+                    outer.left,
+                    outer.top,
+                    outer.right,
+                    outer.bottom,
+                    inner.left,
+                    inner.top,
+                    inner.right,
+                    inner.bottom,
+                ]
+            )
+            {
+                HostPayload = new CanvasDRRectPayload(outer, inner, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawCircle(Offset center, double radius, Paint paint) =>
+        _commands.Add(
+            new PathCommand("drawCircle", [center.dx, center.dy, radius])
+            {
+                HostPayload = new CanvasCirclePayload(center, radius, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawArc(
+        Rect rect,
+        double startAngle,
+        double sweepAngle,
+        bool useCenter,
+        Paint paint
+    ) =>
+        _commands.Add(
+            new PathCommand(
+                "drawArc",
+                [
+                    rect.left,
+                    rect.top,
+                    rect.right,
+                    rect.bottom,
+                    startAngle,
+                    sweepAngle,
+                    useCenter ? 1 : 0,
+                ]
+            )
+            {
+                HostPayload = new CanvasArcPayload(
+                    rect,
+                    startAngle,
+                    sweepAngle,
+                    useCenter,
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
+
+    public void drawLine(Offset point1, Offset point2, Paint paint) =>
+        _commands.Add(
+            new PathCommand("drawLine", [point1.dx, point1.dy, point2.dx, point2.dy])
+            {
+                HostPayload = new CanvasLinePayload(point1, point2, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawPaint(Paint paint) =>
+        _commands.Add(
+            new PathCommand("drawPaint", [paint.color.value])
+            {
+                HostPayload = PaintSnapshot.Capture(paint),
+            }
+        );
+
     public void drawShadow(Path path, Color color, double elevation, bool transparentOccluder) =>
-        _commands.Add(new PathCommand("drawShadow", [path.Commands.Count, color.value, elevation, transparentOccluder ? 1 : 0])
-        {
-            HostPayload = new CanvasShadowPayload(path.SnapshotForPainting(), color, elevation, transparentOccluder),
-        });
+        _commands.Add(
+            new PathCommand(
+                "drawShadow",
+                [path.Commands.Count, color.value, elevation, transparentOccluder ? 1 : 0]
+            )
+            {
+                HostPayload = new CanvasShadowPayload(
+                    path.SnapshotForPainting(),
+                    color,
+                    elevation,
+                    transparentOccluder
+                ),
+            }
+        );
+
     public void drawColor(Color color, BlendMode blendMode) =>
-        _commands.Add(new PathCommand("drawColor", [color.value, (double)blendMode]) { HostPayload = new CanvasColorPayload(color, blendMode) });
+        _commands.Add(
+            new PathCommand("drawColor", [color.value, (double)blendMode])
+            {
+                HostPayload = new CanvasColorPayload(color, blendMode),
+            }
+        );
+
     public void drawImage(Image image, Offset offset, Paint paint) =>
-        _commands.Add(new PathCommand("drawImage", [image.width, image.height, offset.dx, offset.dy])
-        {
-            HostPayload = new CanvasImagePayload(image, Rect.fromLTWH(0, 0, image.width, image.height),
-                Rect.fromLTWH(offset.dx, offset.dy, image.width, image.height), PaintSnapshot.Capture(paint)),
-        });
+        _commands.Add(
+            new PathCommand("drawImage", [image.width, image.height, offset.dx, offset.dy])
+            {
+                HostPayload = new CanvasImagePayload(
+                    image,
+                    Rect.fromLTWH(0, 0, image.width, image.height),
+                    Rect.fromLTWH(offset.dx, offset.dy, image.width, image.height),
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
+
     public void drawPicture(Picture picture) => _commands.AddRange(picture.Commands);
+
     public void drawPoints(PointMode pointMode, IReadOnlyList<Offset> points, Paint paint)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(paint);
         var capturedPoints = Array.AsReadOnly(points.ToArray());
-        _commands.Add(new PathCommand("drawPoints", [(double)pointMode, capturedPoints.Count, paint.color.value])
-        {
-            HostPayload = new CanvasPointsPayload(pointMode, capturedPoints, PaintSnapshot.Capture(paint)),
-        });
+        _commands.Add(
+            new PathCommand(
+                "drawPoints",
+                [(double)pointMode, capturedPoints.Count, paint.color.value]
+            )
+            {
+                HostPayload = new CanvasPointsPayload(
+                    pointMode,
+                    capturedPoints,
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
     }
+
     public void drawRawPoints(PointMode pointMode, Float32List points, Paint paint)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(paint);
         if ((points.Count & 1) != 0)
-            throw new ArgumentException("Raw point coordinates must contain x/y pairs.", nameof(points));
-        var capturedPoints = Array.AsReadOnly(Enumerable.Range(0, points.Count / 2)
-            .Select(index => new Offset(points[index * 2], points[(index * 2) + 1]))
-            .ToArray());
-        _commands.Add(new PathCommand("drawRawPoints", [(double)pointMode, capturedPoints.Count, paint.color.value])
         {
-            HostPayload = new CanvasPointsPayload(pointMode, capturedPoints, PaintSnapshot.Capture(paint)),
-        });
+            throw new ArgumentException(
+                "Raw point coordinates must contain x/y pairs.",
+                nameof(points)
+            );
+        }
+
+        var capturedPoints = Array.AsReadOnly(
+            Enumerable
+                .Range(0, points.Count / 2)
+                .Select(index => new Offset(points[index * 2], points[(index * 2) + 1]))
+                .ToArray()
+        );
+        _commands.Add(
+            new PathCommand(
+                "drawRawPoints",
+                [(double)pointMode, capturedPoints.Count, paint.color.value]
+            )
+            {
+                HostPayload = new CanvasPointsPayload(
+                    pointMode,
+                    capturedPoints,
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
     }
+
     public void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint) =>
         _commands.Add(new("drawVertices", [(double)blendMode, paint.color.value]));
-    public void drawAtlas(Image atlas, IReadOnlyList<RSTransform> transforms, IReadOnlyList<Rect> rects,
-        IReadOnlyList<Color>? colors, BlendMode? blendMode, Rect? cullRect, Paint paint) =>
-        _commands.Add(new("drawAtlas", [atlas.width, atlas.height, transforms.Count, rects.Count, colors?.Count ?? 0]));
-    public void drawRawAtlas(Image atlas, Float32List rstTransforms, Float32List rects, Int32List? colors,
-        BlendMode? blendMode, Rect? cullRect, Paint paint) =>
-        _commands.Add(new("drawRawAtlas", [atlas.width, atlas.height, rstTransforms.Count, rects.Count, colors?.Count ?? 0]));
-    public void drawOval(Rect rect, Paint paint) => _commands.Add(new PathCommand("drawOval", [rect.left, rect.top, rect.right, rect.bottom])
-    {
-        HostPayload = new CanvasOvalPayload(rect, PaintSnapshot.Capture(paint)),
-    });
-    public void drawImageRect(Image image, Rect src, Rect dst, Paint paint) => _commands.Add(new PathCommand("drawImageRect", [image.width, image.height, src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom])
-    {
-        HostPayload = new CanvasImagePayload(image, src, dst, PaintSnapshot.Capture(paint)),
-    });
+
+    public void drawAtlas(
+        Image atlas,
+        IReadOnlyList<RSTransform> transforms,
+        IReadOnlyList<Rect> rects,
+        IReadOnlyList<Color>? colors,
+        BlendMode? blendMode,
+        Rect? cullRect,
+        Paint paint
+    ) =>
+        _commands.Add(
+            new(
+                "drawAtlas",
+                [atlas.width, atlas.height, transforms.Count, rects.Count, colors?.Count ?? 0]
+            )
+        );
+
+    public void drawRawAtlas(
+        Image atlas,
+        Float32List rstTransforms,
+        Float32List rects,
+        Int32List? colors,
+        BlendMode? blendMode,
+        Rect? cullRect,
+        Paint paint
+    ) =>
+        _commands.Add(
+            new(
+                "drawRawAtlas",
+                [atlas.width, atlas.height, rstTransforms.Count, rects.Count, colors?.Count ?? 0]
+            )
+        );
+
+    public void drawOval(Rect rect, Paint paint) =>
+        _commands.Add(
+            new PathCommand("drawOval", [rect.left, rect.top, rect.right, rect.bottom])
+            {
+                HostPayload = new CanvasOvalPayload(rect, PaintSnapshot.Capture(paint)),
+            }
+        );
+
+    public void drawImageRect(Image image, Rect src, Rect dst, Paint paint) =>
+        _commands.Add(
+            new PathCommand(
+                "drawImageRect",
+                [
+                    image.width,
+                    image.height,
+                    src.left,
+                    src.top,
+                    src.right,
+                    src.bottom,
+                    dst.left,
+                    dst.top,
+                    dst.right,
+                    dst.bottom,
+                ]
+            )
+            {
+                HostPayload = new CanvasImagePayload(image, src, dst, PaintSnapshot.Capture(paint)),
+            }
+        );
+
     public void drawImageNine(Image image, Rect center, Rect dst, Paint paint) =>
-        _commands.Add(new PathCommand(
-            "drawImageNine",
-            [image.width, image.height, center.left, center.top, center.right, center.bottom,
-                dst.left, dst.top, dst.right, dst.bottom])
-        {
-            HostPayload = new CanvasImageNinePayload(
-                image, center, dst, PaintSnapshot.Capture(paint)),
-        });
-    public void drawParagraph(Paragraph paragraph, Offset offset) => _commands.Add(new PathCommand("drawParagraph", [offset.dx, offset.dy, paragraph.width, paragraph.height])
-    {
-        HostPayload = new CanvasParagraphPayload(paragraph.SnapshotForPainting(), offset),
-    });
+        _commands.Add(
+            new PathCommand(
+                "drawImageNine",
+                [
+                    image.width,
+                    image.height,
+                    center.left,
+                    center.top,
+                    center.right,
+                    center.bottom,
+                    dst.left,
+                    dst.top,
+                    dst.right,
+                    dst.bottom,
+                ]
+            )
+            {
+                HostPayload = new CanvasImageNinePayload(
+                    image,
+                    center,
+                    dst,
+                    PaintSnapshot.Capture(paint)
+                ),
+            }
+        );
+
+    public void drawParagraph(Paragraph paragraph, Offset offset) =>
+        _commands.Add(
+            new PathCommand(
+                "drawParagraph",
+                [offset.dx, offset.dy, paragraph.width, paragraph.height]
+            )
+            {
+                HostPayload = new CanvasParagraphPayload(paragraph.SnapshotForPainting(), offset),
+            }
+        );
 }
 
 public interface IParagraphHostCapability
@@ -877,7 +1737,8 @@ public sealed record ParagraphRequest(
     TextDirection? TextDirection = null,
     Locale? Locale = null,
     string? Ellipsis = null,
-    IReadOnlyList<ParagraphTextRun>? TextRuns = null)
+    IReadOnlyList<ParagraphTextRun>? TextRuns = null
+)
 {
     // ParagraphBuilder builds drawing state; TextPainter supplies the first
     // layout width afterwards. Hosts may avoid an otherwise discarded layout.
@@ -893,7 +1754,8 @@ internal sealed record ParagraphHostLineSnapshot(
     double Height,
     double Width,
     double Left,
-    double Baseline);
+    double Baseline
+);
 
 internal sealed record ParagraphHostGraphemeSnapshot(
     int Start,
@@ -904,7 +1766,8 @@ internal sealed record ParagraphHostGraphemeSnapshot(
     double Bottom,
     double StrutTop,
     double StrutBottom,
-    TextDirection Direction);
+    TextDirection Direction
+);
 
 internal sealed record ParagraphHostLayoutSnapshot(
     double Width,
@@ -918,7 +1781,8 @@ internal sealed record ParagraphHostLayoutSnapshot(
     ulong MetricsHash,
     IReadOnlyList<double> CodeUnitAdvances,
     IReadOnlyList<ParagraphHostLineSnapshot> Lines,
-    IReadOnlyList<ParagraphHostGraphemeSnapshot> Graphemes);
+    IReadOnlyList<ParagraphHostGraphemeSnapshot> Graphemes
+);
 
 public sealed class Paragraph : IDisposable
 {
@@ -935,6 +1799,7 @@ public sealed class Paragraph : IDisposable
     private double? _hostLongestLine;
     private double? _hostAlphabeticBaseline;
     private double? _hostIdeographicBaseline;
+
     internal Paragraph SnapshotForPainting()
     {
         // Layout replaces metrics/advance arrays. Keep the current line list
@@ -943,10 +1808,14 @@ public sealed class Paragraph : IDisposable
         var snapshot = (Paragraph)MemberwiseClone();
         snapshot._disposed = 0;
         snapshot._lines = new(_lines);
-        snapshot.TextRuns = Array.AsReadOnly(TextRuns.Select(run =>
-            new ParagraphTextRun(run.Text, run.Style.SnapshotForPainting())).ToArray());
+        snapshot.TextRuns = Array.AsReadOnly(
+            TextRuns
+                .Select(run => new ParagraphTextRun(run.Text, run.Style.SnapshotForPainting()))
+                .ToArray()
+        );
         return snapshot;
     }
+
     public Paragraph(
         string text,
         double width,
@@ -956,7 +1825,8 @@ public sealed class Paragraph : IDisposable
         string? fontFamily = null,
         Color? color = null,
         IReadOnlyList<double>? codeUnitAdvances = null,
-        IReadOnlyList<ParagraphTextRun>? textRuns = null)
+        IReadOnlyList<ParagraphTextRun>? textRuns = null
+    )
     {
         this.text = text;
         this.fontSize = Math.Max(1, fontSize);
@@ -965,14 +1835,16 @@ public sealed class Paragraph : IDisposable
         TextRuns = (textRuns ?? []).ToArray();
         _graphemeStarts = System.Globalization.StringInfo.ParseCombiningCharacters(text);
         _lineHeight = height > 0 ? height : this.fontSize * 1.2;
-        _codeUnitAdvances = codeUnitAdvances is { Count: var count } && count == text.Length
-            ? codeUnitAdvances.Select(value => Math.Max(0, value)).ToArray()
-            : CreateFallbackAdvances(text, this.fontSize);
+        _codeUnitAdvances =
+            codeUnitAdvances is { Count: var count } && count == text.Length
+                ? codeUnitAdvances.Select(value => Math.Max(0, value)).ToArray()
+                : CreateFallbackAdvances(text, this.fontSize);
         _naturalWidth = ComputeNaturalWidth(text, _codeUnitAdvances);
         _maxLines = maxLines;
         this.width = width;
         this.height = height;
     }
+
     public string text { get; }
     public double fontSize { get; }
     public string? fontFamily { get; }
@@ -982,7 +1854,8 @@ public sealed class Paragraph : IDisposable
     public double minIntrinsicWidth => _hostMinIntrinsicWidth ?? ComputeMinIntrinsicWidth();
     public double maxIntrinsicWidth => _hostMaxIntrinsicWidth ?? _naturalWidth;
     public double longestLine => _hostLongestLine ?? Math.Min(_naturalWidth, width);
-    public double alphabeticBaseline => _hostAlphabeticBaseline ?? NativeAlphabeticBaseline ?? _lineHeight * 0.8;
+    public double alphabeticBaseline =>
+        _hostAlphabeticBaseline ?? NativeAlphabeticBaseline ?? (_lineHeight * 0.8);
     public double ideographicBaseline => _hostIdeographicBaseline ?? _lineHeight;
     public bool didExceedMaxLines { get; private set; }
     public int numberOfLines { get; private set; }
@@ -993,13 +1866,19 @@ public sealed class Paragraph : IDisposable
     internal double? NativeAlphabeticBaseline { get; init; }
     internal IEnumerable<(int Start, int End, double Left, double Baseline)> PaintLines =>
         _lines.Select(line => (line.Start, line.End, line.Left, line.Baseline));
+
     internal double TextAdvance(int start, int end) => AdvanceBetween(start, end);
+
     public void layout(ParagraphConstraints constraints)
     {
         var availableWidth = constraints.width;
         if (double.IsNaN(availableWidth) || availableWidth < 0)
-            throw new ArgumentOutOfRangeException(nameof(constraints),
-                "Paragraph width must be nonnegative or positive infinity.");
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(constraints),
+                "Paragraph width must be nonnegative or positive infinity."
+            );
+        }
 
         _hostMinIntrinsicWidth = null;
         _hostMaxIntrinsicWidth = null;
@@ -1012,7 +1891,10 @@ public sealed class Paragraph : IDisposable
         didExceedMaxLines = _maxLines.HasValue && _lines.Count > _maxLines.Value;
         if (_maxLines.HasValue && _lines.Count > _maxLines.Value)
         {
-            _lines.RemoveRange(checked((int)_maxLines.Value), _lines.Count - checked((int)_maxLines.Value));
+            _lines.RemoveRange(
+                checked((int)_maxLines.Value),
+                _lines.Count - checked((int)_maxLines.Value)
+            );
         }
         numberOfLines = _lines.Count;
         // An empty paragraph still reserves the font's line height for its
@@ -1021,7 +1903,13 @@ public sealed class Paragraph : IDisposable
         // the top of the caret when an empty field is long-pressed or cleared.
         height = (text.Length == 0 ? 1 : numberOfLines) * _lineHeight;
     }
-    public List<TextBox> getBoxesForRange(long start, long end, BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight, BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight)
+
+    public List<TextBox> getBoxesForRange(
+        long start,
+        long end,
+        BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight,
+        BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight
+    )
     {
         var clampedStart = Math.Clamp(checked((int)start), 0, text.Length);
         var clampedEnd = Math.Clamp(checked((int)end), clampedStart, text.Length);
@@ -1040,7 +1928,8 @@ public sealed class Paragraph : IDisposable
                     useStrutHeight ? value.StrutTop : value.Top,
                     value.Right,
                     useStrutHeight ? value.StrutBottom : value.Bottom,
-                    value.Direction))
+                    value.Direction
+                ))
                 .ToList();
         }
 
@@ -1050,29 +1939,48 @@ public sealed class Paragraph : IDisposable
             var paragraphLine = _lines[line];
             var boxStart = Math.Max(clampedStart, paragraphLine.Start);
             var boxEnd = Math.Min(clampedEnd, paragraphLine.End);
-            if (boxStart >= boxEnd) continue;
-            boxes.Add(new TextBox(
-                paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxStart),
-                paragraphLine.Top,
-                paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
-                paragraphLine.Top + paragraphLine.Height,
-                LayoutTextDirection));
+            if (boxStart >= boxEnd)
+            {
+                continue;
+            }
+
+            boxes.Add(
+                new TextBox(
+                    paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxStart),
+                    paragraphLine.Top,
+                    paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
+                    paragraphLine.Top + paragraphLine.Height,
+                    LayoutTextDirection
+                )
+            );
         }
 
         return boxes;
     }
+
     public List<TextBox> getBoxesForPlaceholders() => [];
+
     public TextPosition getPositionForOffset(Offset offset)
     {
         if (_hostGraphemes is { Length: > 0 } graphemes)
         {
             var glyph = ClosestGrapheme(graphemes, offset);
             var afterMidpoint = offset.dx >= (glyph.Left + glyph.Right) / 2;
-            return new TextPosition(glyph.Direction == TextDirection.rtl
-                ? afterMidpoint ? glyph.Start : glyph.End
-                : afterMidpoint ? glyph.End : glyph.Start);
+            return new TextPosition(
+                glyph.Direction == TextDirection.rtl
+                    ? afterMidpoint
+                        ? glyph.Start
+                        : glyph.End
+                    : afterMidpoint
+                        ? glyph.End
+                        : glyph.Start
+            );
         }
-        if (_lines.Count == 0) return new TextPosition(0);
+        if (_lines.Count == 0)
+        {
+            return new TextPosition(0);
+        }
+
         var lineIndex = _lines.FindIndex(value => offset.dy < value.Top + value.Height);
         var line = _lines[lineIndex < 0 ? ^1 : lineIndex];
         var x = Math.Max(0, offset.dx - line.Left);
@@ -1081,17 +1989,26 @@ public sealed class Paragraph : IDisposable
         {
             var clusterEnd = NextClusterEnd(index);
             var advance = AdvanceBetween(index, clusterEnd);
-            if (x < currentX + advance / 2) return new TextPosition(index);
+            if (x < currentX + (advance / 2))
+            {
+                return new TextPosition(index);
+            }
+
             currentX += advance;
         }
         return new TextPosition(line.End);
     }
+
     public TextRange getWordBoundary(TextPosition position)
     {
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
         if (offset == text.Length)
         {
-            if (offset == 0 || char.IsWhiteSpace(text[offset - 1])) return new TextRange(offset, offset);
+            if (offset == 0 || char.IsWhiteSpace(text[offset - 1]))
+            {
+                return new TextRange(offset, offset);
+            }
+
             offset--;
         }
 
@@ -1099,46 +2016,68 @@ public sealed class Paragraph : IDisposable
         // Returning the preceding word at a space makes forward word movement
         // return the current caret offset forever. Keep hard breaks separate so
         // movement can still stop at a line boundary.
-        static int BoundaryClass(char value) => value switch
-        {
-            '\r' or '\n' or '\v' or '\f' or '\u0085' or '\u2028' or '\u2029' => 2,
-            _ => char.IsWhiteSpace(value) ? 1 : 0,
-        };
+        static int BoundaryClass(char value) =>
+            value switch
+            {
+                '\r' or '\n' or '\v' or '\f' or '\u0085' or '\u2028' or '\u2029' => 2,
+                _ => char.IsWhiteSpace(value) ? 1 : 0,
+            };
         var boundaryClass = BoundaryClass(text[offset]);
-        if (boundaryClass == 2) return new TextRange(offset, offset + 1);
+        if (boundaryClass == 2)
+        {
+            return new TextRange(offset, offset + 1);
+        }
+
         var start = offset;
         var end = offset + 1;
-        while (start > 0 && BoundaryClass(text[start - 1]) == boundaryClass) start--;
-        while (end < text.Length && BoundaryClass(text[end]) == boundaryClass) end++;
+        while (start > 0 && BoundaryClass(text[start - 1]) == boundaryClass)
+        {
+            start--;
+        }
+
+        while (end < text.Length && BoundaryClass(text[end]) == boundaryClass)
+        {
+            end++;
+        }
+
         return new TextRange(start, end);
     }
+
     public TextRange getLineBoundary(TextPosition position)
     {
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
         var line = FindLine(offset);
         return line is null ? TextRange.empty : new TextRange(line.Value.Start, line.Value.End);
     }
+
     public List<LineMetrics> computeLineMetrics()
     {
         var metrics = new List<LineMetrics>(numberOfLines);
         for (var line = 0; line < numberOfLines; line++)
         {
             var paragraphLine = _lines[line];
-            metrics.Add(new LineMetrics(
-                hardBreak: paragraphLine.HardBreak,
-                ascent: paragraphLine.Ascent,
-                descent: paragraphLine.Descent,
-                unscaledAscent: paragraphLine.Ascent,
-                height: paragraphLine.Height,
-                width: paragraphLine.Width,
-                left: paragraphLine.Left,
-                baseline: paragraphLine.Baseline,
-                lineNumber: line));
+            metrics.Add(
+                new LineMetrics(
+                    hardBreak: paragraphLine.HardBreak,
+                    ascent: paragraphLine.Ascent,
+                    descent: paragraphLine.Descent,
+                    unscaledAscent: paragraphLine.Ascent,
+                    height: paragraphLine.Height,
+                    width: paragraphLine.Width,
+                    left: paragraphLine.Left,
+                    baseline: paragraphLine.Baseline,
+                    lineNumber: line
+                )
+            );
         }
         return metrics;
     }
+
     public LineMetrics? getLineMetricsAt(long lineNumber) =>
-        lineNumber >= 0 && lineNumber < numberOfLines ? computeLineMetrics()[checked((int)lineNumber)] : null;
+        lineNumber >= 0 && lineNumber < numberOfLines
+            ? computeLineMetrics()[checked((int)lineNumber)]
+            : null;
+
     public GlyphInfo? getGlyphInfoAt(long codeUnitOffset)
     {
         if (codeUnitOffset < 0 || codeUnitOffset >= text.Length)
@@ -1149,26 +2088,34 @@ public sealed class Paragraph : IDisposable
         if (_hostGraphemes is { } graphemes)
         {
             var glyph = graphemes.FirstOrDefault(value =>
-                offset >= value.Start && offset < value.End);
-            return glyph is null
-                ? null
-                : ToGlyphInfo(glyph);
+                offset >= value.Start && offset < value.End
+            );
+            return glyph is null ? null : ToGlyphInfo(glyph);
         }
         var clusterStart = ClusterStart(offset);
         var clusterEnd = NextClusterEnd(clusterStart);
         var lineIndex = FindLineIndex(clusterStart);
-        if (lineIndex < 0) return null;
+        if (lineIndex < 0)
+        {
+            return null;
+        }
+
         var line = _lines[lineIndex];
         var left = line.Left + AdvanceBetween(line.Start, clusterStart);
         return new GlyphInfo(
             Rect.fromLTWH(left, line.Top, AdvanceBetween(clusterStart, clusterEnd), line.Height),
             new TextRange(clusterStart, clusterEnd),
-            LayoutTextDirection);
+            LayoutTextDirection
+        );
     }
+
     public GlyphInfo? getClosestGlyphInfoForOffset(Offset offset)
     {
         if (_hostGraphemes is { Length: > 0 } graphemes)
+        {
             return ToGlyphInfo(ClosestGrapheme(graphemes, offset));
+        }
+
         if (text.Length == 0)
         {
             return null;
@@ -1176,35 +2123,73 @@ public sealed class Paragraph : IDisposable
         var position = getPositionForOffset(offset);
         return getGlyphInfoAt(Math.Min(position.offset, text.Length - 1));
     }
+
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
+
     public void dispose() => Dispose();
 
     internal void ApplyHostLayout(ParagraphHostLayoutSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ObjectDisposedException.ThrowIf(debugDisposed, this);
-        if (!IsNonnegativeFinite(snapshot.Width) || !IsNonnegativeFinite(snapshot.Height) ||
-            !IsNonnegativeFinite(snapshot.AlphabeticBaseline) ||
-            !IsNonnegativeFinite(snapshot.IdeographicBaseline) ||
-            !IsNonnegativeFinite(snapshot.MinIntrinsicWidth) ||
-            !IsNonnegativeFinite(snapshot.MaxIntrinsicWidth) ||
-            !IsNonnegativeFinite(snapshot.LongestLine))
-            throw new InvalidDataException("The host returned non-finite or negative paragraph geometry.");
-        if (snapshot.CodeUnitAdvances.Count != text.Length ||
-            snapshot.CodeUnitAdvances.Any(value => !IsNonnegativeFinite(value)))
-            throw new InvalidDataException("The host paragraph advance table does not match the UTF-16 text.");
+        if (
+            !IsNonnegativeFinite(snapshot.Width)
+            || !IsNonnegativeFinite(snapshot.Height)
+            || !IsNonnegativeFinite(snapshot.AlphabeticBaseline)
+            || !IsNonnegativeFinite(snapshot.IdeographicBaseline)
+            || !IsNonnegativeFinite(snapshot.MinIntrinsicWidth)
+            || !IsNonnegativeFinite(snapshot.MaxIntrinsicWidth)
+            || !IsNonnegativeFinite(snapshot.LongestLine)
+        )
+        {
+            throw new InvalidDataException(
+                "The host returned non-finite or negative paragraph geometry."
+            );
+        }
+
+        if (
+            snapshot.CodeUnitAdvances.Count != text.Length
+            || snapshot.CodeUnitAdvances.Any(value => !IsNonnegativeFinite(value))
+        )
+        {
+            throw new InvalidDataException(
+                "The host paragraph advance table does not match the UTF-16 text."
+            );
+        }
 
         var lines = new List<ParagraphLine>(snapshot.Lines.Count);
         foreach (var line in snapshot.Lines)
         {
-            if (line.Start < 0 || line.End < line.Start || line.End > text.Length ||
-                !IsNonnegativeFinite(line.Ascent) || !IsNonnegativeFinite(line.Descent) ||
-                !IsNonnegativeFinite(line.Height) || !IsNonnegativeFinite(line.Width) ||
-                !double.IsFinite(line.Left) || !IsNonnegativeFinite(line.Baseline))
-                throw new InvalidDataException("The host returned an invalid paragraph line snapshot.");
-            lines.Add(new(
-                line.Start, line.End, line.Width, line.HardBreak,
-                line.Ascent, line.Descent, line.Height, line.Left, line.Baseline));
+            if (
+                line.Start < 0
+                || line.End < line.Start
+                || line.End > text.Length
+                || !IsNonnegativeFinite(line.Ascent)
+                || !IsNonnegativeFinite(line.Descent)
+                || !IsNonnegativeFinite(line.Height)
+                || !IsNonnegativeFinite(line.Width)
+                || !double.IsFinite(line.Left)
+                || !IsNonnegativeFinite(line.Baseline)
+            )
+            {
+                throw new InvalidDataException(
+                    "The host returned an invalid paragraph line snapshot."
+                );
+            }
+
+            lines.Add(
+                new(
+                    line.Start,
+                    line.End,
+                    line.Width,
+                    line.HardBreak,
+                    line.Ascent,
+                    line.Descent,
+                    line.Height,
+                    line.Left,
+                    line.Baseline
+                )
+            );
         }
 
         var graphemes = new ParagraphHostGraphemeSnapshot[snapshot.Graphemes.Count];
@@ -1212,14 +2197,26 @@ public sealed class Paragraph : IDisposable
         for (var index = 0; index < graphemes.Length; index++)
         {
             var grapheme = snapshot.Graphemes[index];
-            if (grapheme.Start < previousEnd || grapheme.End <= grapheme.Start ||
-                grapheme.End > text.Length || !double.IsFinite(grapheme.Left) ||
-                !double.IsFinite(grapheme.Top) || !double.IsFinite(grapheme.Right) ||
-                !double.IsFinite(grapheme.Bottom) || grapheme.Right < grapheme.Left ||
-                grapheme.Bottom < grapheme.Top || !double.IsFinite(grapheme.StrutTop) ||
-                !double.IsFinite(grapheme.StrutBottom) ||
-                grapheme.StrutBottom < grapheme.StrutTop)
-                throw new InvalidDataException("The host returned an invalid paragraph grapheme snapshot.");
+            if (
+                grapheme.Start < previousEnd
+                || grapheme.End <= grapheme.Start
+                || grapheme.End > text.Length
+                || !double.IsFinite(grapheme.Left)
+                || !double.IsFinite(grapheme.Top)
+                || !double.IsFinite(grapheme.Right)
+                || !double.IsFinite(grapheme.Bottom)
+                || grapheme.Right < grapheme.Left
+                || grapheme.Bottom < grapheme.Top
+                || !double.IsFinite(grapheme.StrutTop)
+                || !double.IsFinite(grapheme.StrutBottom)
+                || grapheme.StrutBottom < grapheme.StrutTop
+            )
+            {
+                throw new InvalidDataException(
+                    "The host returned an invalid paragraph grapheme snapshot."
+                );
+            }
+
             graphemes[index] = grapheme;
             previousEnd = grapheme.End;
         }
@@ -1227,7 +2224,11 @@ public sealed class Paragraph : IDisposable
         width = snapshot.Width;
         height = snapshot.Height;
         _naturalWidth = snapshot.MaxIntrinsicWidth;
-        if (lines.Count != 0) _lineHeight = lines[0].Height;
+        if (lines.Count != 0)
+        {
+            _lineHeight = lines[0].Height;
+        }
+
         _codeUnitAdvances = snapshot.CodeUnitAdvances.ToArray();
         _lines = lines;
         _hostGraphemes = graphemes;
@@ -1244,14 +2245,19 @@ public sealed class Paragraph : IDisposable
 
     private static ParagraphHostGraphemeSnapshot ClosestGrapheme(
         IReadOnlyList<ParagraphHostGraphemeSnapshot> graphemes,
-        Offset offset)
+        Offset offset
+    )
     {
         var closest = graphemes[0];
         var closestDistance = SquaredDistance(closest, offset);
         for (var index = 1; index < graphemes.Count; index++)
         {
             var distance = SquaredDistance(graphemes[index], offset);
-            if (distance >= closestDistance) continue;
+            if (distance >= closestDistance)
+            {
+                continue;
+            }
+
             closest = graphemes[index];
             closestDistance = distance;
         }
@@ -1260,26 +2266,34 @@ public sealed class Paragraph : IDisposable
 
     private static double SquaredDistance(ParagraphHostGraphemeSnapshot grapheme, Offset offset)
     {
-        var dx = offset.dx < grapheme.Left
-            ? grapheme.Left - offset.dx
-            : offset.dx > grapheme.Right ? offset.dx - grapheme.Right : 0;
-        var dy = offset.dy < grapheme.Top
-            ? grapheme.Top - offset.dy
-            : offset.dy > grapheme.Bottom ? offset.dy - grapheme.Bottom : 0;
+        var dx =
+            offset.dx < grapheme.Left ? grapheme.Left - offset.dx
+            : offset.dx > grapheme.Right ? offset.dx - grapheme.Right
+            : 0;
+        var dy =
+            offset.dy < grapheme.Top ? grapheme.Top - offset.dy
+            : offset.dy > grapheme.Bottom ? offset.dy - grapheme.Bottom
+            : 0;
         return (dx * dx) + (dy * dy);
     }
 
-    private static GlyphInfo ToGlyphInfo(ParagraphHostGraphemeSnapshot grapheme) => new(
-        Rect.fromLTRB(grapheme.Left, grapheme.Top, grapheme.Right, grapheme.Bottom),
-        new TextRange(grapheme.Start, grapheme.End),
-        grapheme.Direction);
+    private static GlyphInfo ToGlyphInfo(ParagraphHostGraphemeSnapshot grapheme) =>
+        new(
+            Rect.fromLTRB(grapheme.Left, grapheme.Top, grapheme.Right, grapheme.Bottom),
+            new TextRange(grapheme.Start, grapheme.End),
+            grapheme.Direction
+        );
 
     private static double[] CreateFallbackAdvances(string text, double fontSize)
     {
         var advances = new double[text.Length];
         for (var index = 0; index < text.Length; index++)
         {
-            if (char.IsLowSurrogate(text[index])) continue;
+            if (char.IsLowSurrogate(text[index]))
+            {
+                continue;
+            }
+
             var isWide = text[index] >= 0x2E80 || char.IsHighSurrogate(text[index]);
             advances[index] = fontSize * (isWide ? 1.0 : 0.55);
         }
@@ -1297,7 +2311,10 @@ public sealed class Paragraph : IDisposable
                 longest = Math.Max(longest, current);
                 current = 0;
             }
-            else current += advances[index];
+            else
+            {
+                current += advances[index];
+            }
         }
         return Math.Max(longest, current);
     }
@@ -1313,14 +2330,21 @@ public sealed class Paragraph : IDisposable
                 longest = Math.Max(longest, current);
                 current = 0;
             }
-            else current += _codeUnitAdvances[index];
+            else
+            {
+                current += _codeUnitAdvances[index];
+            }
         }
         return Math.Max(longest, current);
     }
 
     private List<ParagraphLine> BuildLines(double availableWidth)
     {
-        if (text.Length == 0) return [];
+        if (text.Length == 0)
+        {
+            return [];
+        }
+
         var lines = new List<ParagraphLine>();
         var lineStart = 0;
         var lineWidth = 0.0;
@@ -1349,41 +2373,76 @@ public sealed class Paragraph : IDisposable
     }
 
     private ParagraphLine CreateFallbackLine(
-        int start, int end, double lineWidth, bool hardBreak, int lineNumber)
+        int start,
+        int end,
+        double lineWidth,
+        bool hardBreak,
+        int lineNumber
+    )
     {
-        var ascent = NativeAlphabeticBaseline ?? _lineHeight * 0.8;
+        var ascent = NativeAlphabeticBaseline ?? (_lineHeight * 0.8);
         var align = LayoutTextAlign switch
         {
-            TextAlign.start => LayoutTextDirection == TextDirection.rtl ? TextAlign.right : TextAlign.left,
-            TextAlign.end => LayoutTextDirection == TextDirection.rtl ? TextAlign.left : TextAlign.right,
+            TextAlign.start => LayoutTextDirection == TextDirection.rtl
+                ? TextAlign.right
+                : TextAlign.left,
+            TextAlign.end => LayoutTextDirection == TextDirection.rtl
+                ? TextAlign.left
+                : TextAlign.right,
             _ => LayoutTextAlign,
         };
-        var left = align == TextAlign.center ? (width - lineWidth) / 2 : align == TextAlign.right ? width - lineWidth : 0;
+        var left =
+            align == TextAlign.center ? (width - lineWidth) / 2
+            : align == TextAlign.right ? width - lineWidth
+            : 0;
         return new(
-            start, end, lineWidth, hardBreak,
-            ascent, _lineHeight - ascent, _lineHeight, left,
-            (lineNumber * _lineHeight) + ascent);
+            start,
+            end,
+            lineWidth,
+            hardBreak,
+            ascent,
+            _lineHeight - ascent,
+            _lineHeight,
+            left,
+            (lineNumber * _lineHeight) + ascent
+        );
     }
 
     private double AdvanceBetween(int start, int end)
     {
         var result = 0.0;
-        for (var index = start; index < end; index++) result += _codeUnitAdvances[index];
+        for (var index = start; index < end; index++)
+        {
+            result += _codeUnitAdvances[index];
+        }
+
         return result;
     }
 
     private int ClusterStart(int offset)
     {
-        if (_graphemeStarts.Length == 0) return 0;
+        if (_graphemeStarts.Length == 0)
+        {
+            return 0;
+        }
+
         var index = Array.BinarySearch(_graphemeStarts, offset);
-        if (index >= 0) return _graphemeStarts[index];
+        if (index >= 0)
+        {
+            return _graphemeStarts[index];
+        }
+
         index = ~index;
         return _graphemeStarts[Math.Max(0, index - 1)];
     }
 
     private int NextClusterEnd(int start)
     {
-        if (_graphemeStarts.Length == 0) return text.Length;
+        if (_graphemeStarts.Length == 0)
+        {
+            return text.Length;
+        }
+
         var index = Array.BinarySearch(_graphemeStarts, start);
         index = index >= 0 ? index + 1 : ~index;
         return index < _graphemeStarts.Length ? _graphemeStarts[index] : text.Length;
@@ -1394,7 +2453,10 @@ public sealed class Paragraph : IDisposable
         for (var index = 0; index < _lines.Count; index++)
         {
             var line = _lines[index];
-            if (offset >= line.Start && offset < line.End) return index;
+            if (offset >= line.Start && offset < line.End)
+            {
+                return index;
+            }
         }
         return -1;
     }
@@ -1403,7 +2465,10 @@ public sealed class Paragraph : IDisposable
     {
         foreach (var line in _lines)
         {
-            if (offset >= line.Start && offset <= line.End) return line;
+            if (offset >= line.Start && offset <= line.End)
+            {
+                return line;
+            }
         }
         return _lines.Count == 0 ? null : _lines[^1];
     }
@@ -1417,7 +2482,8 @@ public sealed class Paragraph : IDisposable
         double Descent,
         double Height,
         double Left,
-        double Baseline)
+        double Baseline
+    )
     {
         internal double Top => Baseline - Ascent;
     }
@@ -1425,52 +2491,133 @@ public sealed class Paragraph : IDisposable
 
 public interface IImageHostCapability
 {
-    ValueTask<Image> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation, CancellationToken cancellationToken = default);
+    ValueTask<Image> DecodeAsync(
+        ReadOnlyMemory<byte> bytes,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    );
 
-    async ValueTask<Image> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
-        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    async ValueTask<Image> DecodeSizedAsync(
+        ReadOnlyMemory<byte> bytes,
+        Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    )
     {
         var image = await DecodeAsync(bytes, invocation, cancellationToken);
         try
         {
-            var size = ImageDecodeSizing.Resolve(image.width, image.height, targetSize(image.width, image.height), allowUpscaling);
-            if (size.Width == image.width && size.Height == image.height) return image;
+            var size = ImageDecodeSizing.Resolve(
+                image.width,
+                image.height,
+                targetSize(image.width, image.height),
+                allowUpscaling
+            );
+            if (size.Width == image.width && size.Height == image.height)
+            {
+                return image;
+            }
+
             var recorder = new PictureRecorder();
             var canvas = new Canvas(recorder);
-            canvas.drawImageRect(image, Rect.fromLTWH(0, 0, image.width, image.height),
-                Rect.fromLTWH(0, 0, size.Width, size.Height), new Paint { filterQuality = FilterQuality.medium });
+            canvas.drawImageRect(
+                image,
+                Rect.fromLTWH(0, 0, image.width, image.height),
+                Rect.fromLTWH(0, 0, size.Width, size.Height),
+                new Paint { filterQuality = FilterQuality.medium }
+            );
             using var picture = recorder.endRecording();
-            var resized = await RasterizeAsync(picture, size.Width, size.Height, invocation, cancellationToken);
+            var resized = await RasterizeAsync(
+                picture,
+                size.Width,
+                size.Height,
+                invocation,
+                cancellationToken
+            );
             image.Dispose();
             return resized;
         }
-        catch { image.Dispose(); throw; }
+        catch
+        {
+            image.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Rasterizes at 1 logical unit per pixel onto transparent sRGB storage, independent of window DPR.</summary>
-    ValueTask<Image> RasterizeAsync(Picture picture, int width, int height, DartUiInvocation invocation,
-        CancellationToken cancellationToken = default) => ValueTask.FromException<Image>(
-            new DorotiCapabilityException(DorotiCapabilityIds.GraphicsImage, null, invocation,
-                "picture rasterization is not registered by the active host"));
+    ValueTask<Image> RasterizeAsync(
+        Picture picture,
+        int width,
+        int height,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    ) =>
+        ValueTask.FromException<Image>(
+            new DorotiCapabilityException(
+                DorotiCapabilityIds.GraphicsImage,
+                null,
+                invocation,
+                "picture rasterization is not registered by the active host"
+            )
+        );
 }
 
 public static class ImageDecodeSizing
 {
-    public static (int Width, int Height) Resolve(int width, int height, TargetImageSize? requested, bool allowUpscaling)
+    public static (int Width, int Height) Resolve(
+        int width,
+        int height,
+        TargetImageSize? requested,
+        bool allowUpscaling
+    )
     {
         if (width <= 0 || height <= 0 || requested?.width <= 0 || requested?.height <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(requested));
+        }
+
         var targetWidth = requested?.width;
         var targetHeight = requested?.height;
         if (!allowUpscaling)
         {
-            if (targetWidth is not null) targetWidth = Math.Min(targetWidth.Value, width);
-            if (targetHeight is not null) targetHeight = Math.Min(targetHeight.Value, height);
+            if (targetWidth is not null)
+            {
+                targetWidth = Math.Min(targetWidth.Value, width);
+            }
+
+            if (targetHeight is not null)
+            {
+                targetHeight = Math.Min(targetHeight.Value, height);
+            }
         }
-        targetWidth ??= targetHeight is null ? width : Math.Max(1, (long)Math.Round((double)width * targetHeight.Value / height, MidpointRounding.AwayFromZero));
-        targetHeight ??= Math.Max(1, (long)Math.Round((double)height * targetWidth.Value / width, MidpointRounding.AwayFromZero));
-        var result = (Width: checked((int)targetWidth.Value), Height: checked((int)targetHeight.Value));
-        if ((long)result.Width * result.Height > int.MaxValue / 4) throw new ArgumentOutOfRangeException(nameof(requested));
+        targetWidth ??= targetHeight is null
+            ? width
+            : Math.Max(
+                1,
+                (long)
+                    Math.Round(
+                        (double)width * targetHeight.Value / height,
+                        MidpointRounding.AwayFromZero
+                    )
+            );
+        targetHeight ??= Math.Max(
+            1,
+            (long)
+                Math.Round(
+                    (double)height * targetWidth.Value / width,
+                    MidpointRounding.AwayFromZero
+                )
+        );
+        var result = (
+            Width: checked((int)targetWidth.Value),
+            Height: checked((int)targetHeight.Value)
+        );
+        if ((long)result.Width * result.Height > int.MaxValue / 4)
+        {
+            throw new ArgumentOutOfRangeException(nameof(requested));
+        }
+
         return result;
     }
 }
@@ -1497,6 +2644,7 @@ public sealed class Image : IDisposable
     public int height { get; }
 
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
+
     public Image clone()
     {
         ObjectDisposedException.ThrowIf(debugDisposed, this);
@@ -1507,25 +2655,42 @@ public sealed class Image : IDisposable
         }
         return new(viewId, width, height, _release) { HostHandle = HostHandle };
     }
-    public bool isCloneOf(Image other) => ReferenceEquals(this, other) || (viewId == other.viewId && width == other.width && height == other.height);
+
+    public bool isCloneOf(Image other) =>
+        ReferenceEquals(this, other)
+        || (viewId == other.viewId && width == other.width && height == other.height);
+
     public static IReadOnlyList<string> debugGetOpenHandleStackTraces() => [];
+
     public async Future<ByteData?> toByteData(ImageByteFormat format = ImageByteFormat.rawRgba)
     {
         ObjectDisposedException.ThrowIf(debugDisposed, this);
-        if (!Enum.IsDefined(format)) throw new ArgumentOutOfRangeException(nameof(format));
+        if (!Enum.IsDefined(format))
+        {
+            throw new ArgumentOutOfRangeException(nameof(format));
+        }
+
         if (HostHandle is IDorotiImageHandle handle)
         {
             // Pin storage across an asynchronous host read even if the caller releases this handle.
             var lease = handle.Clone();
-            try { return await lease.ReadBytesAsync(format); }
-            finally { lease.Release(); }
+            try
+            {
+                return await lease.ReadBytesAsync(format);
+            }
+            finally
+            {
+                lease.Release();
+            }
         }
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.GraphicsImage,
             viewId,
             DartUiInvocation.Managed("dart:ui#Image.toByteData"),
-            $"image encoding for {format} is not registered by the active host");
+            $"image encoding for {format} is not registered by the active host"
+        );
     }
+
     public void dispose() => Dispose();
 
     public void Dispose()
@@ -1537,7 +2702,13 @@ public sealed class Image : IDisposable
     }
 }
 
-public enum ImageByteFormat { rawRgba, rawStraightRgba, rawUnmodified, png }
+public enum ImageByteFormat
+{
+    rawRgba,
+    rawStraightRgba,
+    rawUnmodified,
+    png,
+}
 
 [Flags]
 public enum SemanticsAction : long
@@ -1608,30 +2779,62 @@ public enum SemanticsRole
     region,
 }
 
-public enum SemanticsInputType { none, text, url, phone, search, email }
-public enum SemanticsValidationResult { none, valid, invalid }
-public enum SemanticsHitTestBehavior { defer, opaque, transparent }
-public enum CheckedState { none, isTrue, isFalse, mixed }
-public enum Tristate { none, isTrue, isFalse }
+public enum SemanticsInputType
+{
+    none,
+    text,
+    url,
+    phone,
+    search,
+    email,
+}
+
+public enum SemanticsValidationResult
+{
+    none,
+    valid,
+    invalid,
+}
+
+public enum SemanticsHitTestBehavior
+{
+    defer,
+    opaque,
+    transparent,
+}
+
+public enum CheckedState
+{
+    none,
+    isTrue,
+    isFalse,
+    mixed,
+}
+
+public enum Tristate
+{
+    none,
+    isTrue,
+    isFalse,
+}
 
 public static class TristateExtensions
 {
-    public static bool? toBoolOrNull(this Tristate value) => value switch
-    {
-        Tristate.isTrue => true,
-        Tristate.isFalse => false,
-        _ => null,
-    };
+    public static bool? toBoolOrNull(this Tristate value) =>
+        value switch
+        {
+            Tristate.isTrue => true,
+            Tristate.isFalse => false,
+            _ => null,
+        };
 
     public static bool hasConflict(this Tristate value, Tristate other) =>
         value != Tristate.none && other != Tristate.none;
 
     public static Tristate merge(this Tristate value, Tristate other) =>
-        value == Tristate.isTrue || other == Tristate.isTrue
-            ? Tristate.isTrue
-            : value == Tristate.isFalse || other == Tristate.isFalse
-                ? Tristate.isFalse
-                : Tristate.none;
+        value == Tristate.isTrue || other == Tristate.isTrue ? Tristate.isTrue
+        : value == Tristate.isFalse || other == Tristate.isFalse ? Tristate.isFalse
+        : Tristate.none;
 }
 
 [Flags]
@@ -1695,7 +2898,8 @@ public sealed record SemanticsFlags(
     bool isLink = false,
     bool isSlider = false,
     bool isKeyboardKey = false,
-    bool isAccessibilityFocusBlocked = false)
+    bool isAccessibilityFocusBlocked = false
+)
 {
     public static SemanticsFlags none { get; } = new();
 
@@ -1723,7 +2927,9 @@ public sealed record SemanticsFlags(
         bool? isLink = null,
         bool? isSlider = null,
         bool? isKeyboardKey = null,
-        bool? isAccessibilityFocusBlocked = null) => new(
+        bool? isAccessibilityFocusBlocked = null
+    ) =>
+        new(
             isChecked ?? this.isChecked,
             isSelected ?? this.isSelected,
             isEnabled ?? this.isEnabled,
@@ -1747,70 +2953,169 @@ public sealed record SemanticsFlags(
             isLink ?? this.isLink,
             isSlider ?? this.isSlider,
             isKeyboardKey ?? this.isKeyboardKey,
-            isAccessibilityFocusBlocked ?? this.isAccessibilityFocusBlocked);
+            isAccessibilityFocusBlocked ?? this.isAccessibilityFocusBlocked
+        );
 
-    public SemanticsFlags merge(SemanticsFlags other) => new(
-        MergeChecked(isChecked, other.isChecked),
-        isSelected.merge(other.isSelected),
-        isEnabled.merge(other.isEnabled),
-        isToggled.merge(other.isToggled),
-        isExpanded.merge(other.isExpanded),
-        isRequired.merge(other.isRequired),
-        isFocused.merge(other.isFocused),
-        isButton || other.isButton,
-        isTextField || other.isTextField,
-        isInMutuallyExclusiveGroup || other.isInMutuallyExclusiveGroup,
-        isHeader || other.isHeader,
-        isObscured || other.isObscured,
-        scopesRoute || other.scopesRoute,
-        namesRoute || other.namesRoute,
-        isHidden || other.isHidden,
-        isImage || other.isImage,
-        isLiveRegion || other.isLiveRegion,
-        hasImplicitScrolling || other.hasImplicitScrolling,
-        isMultiline || other.isMultiline,
-        isReadOnly || other.isReadOnly,
-        isLink || other.isLink,
-        isSlider || other.isSlider,
-        isKeyboardKey || other.isKeyboardKey,
-        isAccessibilityFocusBlocked || other.isAccessibilityFocusBlocked);
+    public SemanticsFlags merge(SemanticsFlags other) =>
+        new(
+            MergeChecked(isChecked, other.isChecked),
+            isSelected.merge(other.isSelected),
+            isEnabled.merge(other.isEnabled),
+            isToggled.merge(other.isToggled),
+            isExpanded.merge(other.isExpanded),
+            isRequired.merge(other.isRequired),
+            isFocused.merge(other.isFocused),
+            isButton || other.isButton,
+            isTextField || other.isTextField,
+            isInMutuallyExclusiveGroup || other.isInMutuallyExclusiveGroup,
+            isHeader || other.isHeader,
+            isObscured || other.isObscured,
+            scopesRoute || other.scopesRoute,
+            namesRoute || other.namesRoute,
+            isHidden || other.isHidden,
+            isImage || other.isImage,
+            isLiveRegion || other.isLiveRegion,
+            hasImplicitScrolling || other.hasImplicitScrolling,
+            isMultiline || other.isMultiline,
+            isReadOnly || other.isReadOnly,
+            isLink || other.isLink,
+            isSlider || other.isSlider,
+            isKeyboardKey || other.isKeyboardKey,
+            isAccessibilityFocusBlocked || other.isAccessibilityFocusBlocked
+        );
 
     public bool hasConflictingFlags(SemanticsFlags other) =>
-        Conflicts(isChecked, other.isChecked) ||
-        isSelected.hasConflict(other.isSelected) ||
-        isEnabled.hasConflict(other.isEnabled) ||
-        isToggled.hasConflict(other.isToggled) ||
-        isExpanded.hasConflict(other.isExpanded) ||
-        isRequired.hasConflict(other.isRequired) ||
-        isFocused.hasConflict(other.isFocused);
+        Conflicts(isChecked, other.isChecked)
+        || isSelected.hasConflict(other.isSelected)
+        || isEnabled.hasConflict(other.isEnabled)
+        || isToggled.hasConflict(other.isToggled)
+        || isExpanded.hasConflict(other.isExpanded)
+        || isRequired.hasConflict(other.isRequired)
+        || isFocused.hasConflict(other.isFocused);
 
     public List<string> toStrings()
     {
         var result = new List<string>();
-        if (isChecked != CheckedState.none) result.Add(nameof(isChecked));
-        if (isSelected != Tristate.none) result.Add(nameof(isSelected));
-        if (isEnabled != Tristate.none) result.Add(nameof(isEnabled));
-        if (isToggled != Tristate.none) result.Add(nameof(isToggled));
-        if (isExpanded != Tristate.none) result.Add(nameof(isExpanded));
-        if (isRequired != Tristate.none) result.Add(nameof(isRequired));
-        if (isFocused != Tristate.none) result.Add(nameof(isFocused));
-        if (isButton) result.Add(nameof(isButton));
-        if (isTextField) result.Add(nameof(isTextField));
-        if (isInMutuallyExclusiveGroup) result.Add(nameof(isInMutuallyExclusiveGroup));
-        if (isHeader) result.Add(nameof(isHeader));
-        if (isObscured) result.Add(nameof(isObscured));
-        if (scopesRoute) result.Add(nameof(scopesRoute));
-        if (namesRoute) result.Add(nameof(namesRoute));
-        if (isHidden) result.Add(nameof(isHidden));
-        if (isImage) result.Add(nameof(isImage));
-        if (isLiveRegion) result.Add(nameof(isLiveRegion));
-        if (hasImplicitScrolling) result.Add(nameof(hasImplicitScrolling));
-        if (isMultiline) result.Add(nameof(isMultiline));
-        if (isReadOnly) result.Add(nameof(isReadOnly));
-        if (isLink) result.Add(nameof(isLink));
-        if (isSlider) result.Add(nameof(isSlider));
-        if (isKeyboardKey) result.Add(nameof(isKeyboardKey));
-        if (isAccessibilityFocusBlocked) result.Add(nameof(isAccessibilityFocusBlocked));
+        if (isChecked != CheckedState.none)
+        {
+            result.Add(nameof(isChecked));
+        }
+
+        if (isSelected != Tristate.none)
+        {
+            result.Add(nameof(isSelected));
+        }
+
+        if (isEnabled != Tristate.none)
+        {
+            result.Add(nameof(isEnabled));
+        }
+
+        if (isToggled != Tristate.none)
+        {
+            result.Add(nameof(isToggled));
+        }
+
+        if (isExpanded != Tristate.none)
+        {
+            result.Add(nameof(isExpanded));
+        }
+
+        if (isRequired != Tristate.none)
+        {
+            result.Add(nameof(isRequired));
+        }
+
+        if (isFocused != Tristate.none)
+        {
+            result.Add(nameof(isFocused));
+        }
+
+        if (isButton)
+        {
+            result.Add(nameof(isButton));
+        }
+
+        if (isTextField)
+        {
+            result.Add(nameof(isTextField));
+        }
+
+        if (isInMutuallyExclusiveGroup)
+        {
+            result.Add(nameof(isInMutuallyExclusiveGroup));
+        }
+
+        if (isHeader)
+        {
+            result.Add(nameof(isHeader));
+        }
+
+        if (isObscured)
+        {
+            result.Add(nameof(isObscured));
+        }
+
+        if (scopesRoute)
+        {
+            result.Add(nameof(scopesRoute));
+        }
+
+        if (namesRoute)
+        {
+            result.Add(nameof(namesRoute));
+        }
+
+        if (isHidden)
+        {
+            result.Add(nameof(isHidden));
+        }
+
+        if (isImage)
+        {
+            result.Add(nameof(isImage));
+        }
+
+        if (isLiveRegion)
+        {
+            result.Add(nameof(isLiveRegion));
+        }
+
+        if (hasImplicitScrolling)
+        {
+            result.Add(nameof(hasImplicitScrolling));
+        }
+
+        if (isMultiline)
+        {
+            result.Add(nameof(isMultiline));
+        }
+
+        if (isReadOnly)
+        {
+            result.Add(nameof(isReadOnly));
+        }
+
+        if (isLink)
+        {
+            result.Add(nameof(isLink));
+        }
+
+        if (isSlider)
+        {
+            result.Add(nameof(isSlider));
+        }
+
+        if (isKeyboardKey)
+        {
+            result.Add(nameof(isKeyboardKey));
+        }
+
+        if (isAccessibilityFocusBlocked)
+        {
+            result.Add(nameof(isAccessibilityFocusBlocked));
+        }
+
         return result;
     }
 
@@ -1856,14 +3161,17 @@ public sealed record SemanticsNodeUpdate(
     IReadOnlyList<string>? controlsNodes = null,
     Locale? locale = null,
     IReadOnlyList<double>? coordinateTransform = null,
-    long? platformViewId = null);
+    long? platformViewId = null
+);
 
 public enum SemanticsUpdateUrgency
 {
     /// <summary>Let the host classify the node delta. Geometry-only scroll work may be coalesced.</summary>
     automatic,
+
     /// <summary>Do not defer this update; it changes an assistive-technology interaction boundary.</summary>
     immediate,
+
     /// <summary>Flush the latest scroll geometry when a scroll activity reaches rest.</summary>
     scrollEnd,
 }
@@ -1872,7 +3180,8 @@ public sealed record SemanticsUpdate(
     long generation,
     IReadOnlyList<SemanticsNodeUpdate> nodes,
     SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic,
-    double viewDevicePixelRatio = 1);
+    double viewDevicePixelRatio = 1
+);
 
 /// <summary>
 /// Projects the framework's parent-relative semantics rectangles into logical view
@@ -1882,26 +3191,45 @@ public sealed record SemanticsUpdate(
 public static class SemanticsGeometryProjection
 {
     public static IReadOnlyList<SemanticsNodeUpdate> ToViewCoordinates(
-        IEnumerable<SemanticsNodeUpdate> source, double viewDevicePixelRatio = 1)
+        IEnumerable<SemanticsNodeUpdate> source,
+        double viewDevicePixelRatio = 1
+    )
     {
         ArgumentNullException.ThrowIfNull(source);
         if (!double.IsFinite(viewDevicePixelRatio) || viewDevicePixelRatio <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(viewDevicePixelRatio));
+        }
+
         var input = source.ToArray();
         var nodes = input.ToDictionary(node => node.id);
         var childIds = nodes.Values.SelectMany(node => node.children).ToHashSet();
         var projected = new Dictionary<int, SemanticsNodeUpdate>();
 
-        foreach (var root in nodes.Values.Where(node => !childIds.Contains(node.id)).OrderBy(node => node.id))
+        foreach (
+            var root in nodes
+                .Values.Where(node => !childIds.Contains(node.id))
+                .OrderBy(node => node.id)
+        )
+        {
             Project(root.id, RootTransform(root), nodes, projected, []);
-        foreach (var orphan in nodes.Values.Where(node => !projected.ContainsKey(node.id)).OrderBy(node => node.id))
+        }
+
+        foreach (
+            var orphan in nodes
+                .Values.Where(node => !projected.ContainsKey(node.id))
+                .OrderBy(node => node.id)
+        )
+        {
             Project(orphan.id, RootTransform(orphan), nodes, projected, []);
+        }
 
         return input.Select(node => projected[node.id]).ToArray();
 
-        Matrix4 RootTransform(SemanticsNodeUpdate root) => root.coordinateTransform is { Count: 16 }
-            ? Matrix4.diagonal3Values(1 / viewDevicePixelRatio, 1 / viewDevicePixelRatio, 1)
-            : Matrix4.identity(); // Direct legacy host nodes already use logical view coordinates.
+        Matrix4 RootTransform(SemanticsNodeUpdate root) =>
+            root.coordinateTransform is { Count: 16 }
+                ? Matrix4.diagonal3Values(1 / viewDevicePixelRatio, 1 / viewDevicePixelRatio, 1)
+                : Matrix4.identity(); // Direct legacy host nodes already use logical view coordinates.
     }
 
     private static void Project(
@@ -1909,32 +3237,58 @@ public static class SemanticsGeometryProjection
         Matrix4 parentTransform,
         IReadOnlyDictionary<int, SemanticsNodeUpdate> nodes,
         IDictionary<int, SemanticsNodeUpdate> projected,
-        HashSet<int> activePath)
+        HashSet<int> activePath
+    )
     {
-        if (projected.ContainsKey(id) || !nodes.TryGetValue(id, out var node) || !activePath.Add(id)) return;
+        if (
+            projected.ContainsKey(id)
+            || !nodes.TryGetValue(id, out var node)
+            || !activePath.Add(id)
+        )
+        {
+            return;
+        }
+
         var transform = new Matrix4(parentTransform.storage.ToArray());
         var explicitTransform = node.coordinateTransform is { Count: 16 };
-        if (explicitTransform) transform.multiply(new Matrix4(node.coordinateTransform!.ToArray()));
+        if (explicitTransform)
+        {
+            transform.multiply(new Matrix4(node.coordinateTransform!.ToArray()));
+        }
+
         var rect = TransformRect(node.rect, transform);
         projected[id] = node with { rect = rect, coordinateTransform = null };
         // Legacy manually supplied nodes use a rect-relative child origin. Framework
         // nodes carry a coordinate transform: a clipped rect must never move that origin.
-        if (!explicitTransform) transform.multiply(Matrix4.translationValues(node.rect.left, node.rect.top, 0));
+        if (!explicitTransform)
+        {
+            transform.multiply(Matrix4.translationValues(node.rect.left, node.rect.top, 0));
+        }
+
         foreach (var childId in node.children)
+        {
             Project(childId, transform, nodes, projected, activePath);
+        }
+
         activePath.Remove(id);
     }
+
     private static Rect TransformRect(Rect rect, Matrix4 matrix)
     {
-        var corners = new[] {
+        var corners = new[]
+        {
             matrix.perspectiveTransform(new Vector3(rect.left, rect.top, 0)),
             matrix.perspectiveTransform(new Vector3(rect.right, rect.top, 0)),
             matrix.perspectiveTransform(new Vector3(rect.left, rect.bottom, 0)),
             matrix.perspectiveTransform(new Vector3(rect.right, rect.bottom, 0)),
         };
-        return new Rect(corners.Min(p => p.x), corners.Min(p => p.y), corners.Max(p => p.x), corners.Max(p => p.y));
+        return new Rect(
+            corners.Min(p => p.x),
+            corners.Min(p => p.y),
+            corners.Max(p => p.x),
+            corners.Max(p => p.y)
+        );
     }
-
 }
 
 [Flags]
@@ -1950,6 +3304,7 @@ public enum SemanticsNodeProperty
     children = 1 << 6,
     traversal = 1 << 7,
     selection = 1 << 8,
+
     /// <summary>
     /// The current logical scroll offset and its framework-provided extents.
     /// This remains distinct from node bounds: native accessibility providers
@@ -1957,6 +3312,7 @@ public enum SemanticsNodeProperty
     /// scroll authority.
     /// </summary>
     scroll = 1 << 9,
+
     /// <summary>Accessible name supplements, role metadata, ranges, and relationships.</summary>
     metadata = 1 << 10,
 }
@@ -1965,37 +3321,53 @@ public sealed record SemanticsNodeDelta(
     int id,
     SemanticsNodeProperty changedProperties,
     int previousContentHash,
-    int contentHash)
+    int contentHash
+)
 {
     public bool IsGeometryOnly =>
-        (changedProperties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll)) ==
-        SemanticsNodeProperty.none;
+        (changedProperties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll))
+        == SemanticsNodeProperty.none;
 }
 
 public sealed record SemanticsUpdateDelta(
     IReadOnlyList<SemanticsNodeDelta> changedNodes,
-    IReadOnlyList<int> removedNodeIds)
+    IReadOnlyList<int> removedNodeIds
+)
 {
     public bool HasChanges => changedNodes.Count != 0 || removedNodeIds.Count != 0;
-    public bool HasTopologyChange => removedNodeIds.Count != 0 || changedNodes.Any(delta =>
-        delta.previousContentHash == 0 ||
-        delta.changedProperties.HasFlag(SemanticsNodeProperty.children) ||
-        delta.changedProperties.HasFlag(SemanticsNodeProperty.traversal));
-    public bool IsGeometryOnly => changedNodes.Count != 0 && removedNodeIds.Count == 0 && changedNodes.All(delta => delta.IsGeometryOnly);
+    public bool HasTopologyChange =>
+        removedNodeIds.Count != 0
+        || changedNodes.Any(delta =>
+            delta.previousContentHash == 0
+            || delta.changedProperties.HasFlag(SemanticsNodeProperty.children)
+            || delta.changedProperties.HasFlag(SemanticsNodeProperty.traversal)
+        );
+    public bool IsGeometryOnly =>
+        changedNodes.Count != 0
+        && removedNodeIds.Count == 0
+        && changedNodes.All(delta => delta.IsGeometryOnly);
+
     // A virtualized scroll routinely inserts and removes semantics nodes. Treating that
     // topology churn as urgent bypasses the host's accessibility-rate limiter and makes
     // native layout work compete with every visual frame. Existing interactive content
     // mutations remain urgent; topology is flushed by the next bounded apply or by an
     // explicit immediate/scrollEnd update.
-    public bool RequiresImmediateFlush => changedNodes.Any(delta =>
-        delta.previousContentHash != 0 &&
-        (delta.changedProperties & (SemanticsNodeProperty.label |
-                                    SemanticsNodeProperty.value |
-                                    SemanticsNodeProperty.actions |
-                                    SemanticsNodeProperty.flags |
-                                    SemanticsNodeProperty.role |
-                                    SemanticsNodeProperty.selection |
-                                    SemanticsNodeProperty.metadata)) != 0);
+    public bool RequiresImmediateFlush =>
+        changedNodes.Any(delta =>
+            delta.previousContentHash != 0
+            && (
+                delta.changedProperties
+                & (
+                    SemanticsNodeProperty.label
+                    | SemanticsNodeProperty.value
+                    | SemanticsNodeProperty.actions
+                    | SemanticsNodeProperty.flags
+                    | SemanticsNodeProperty.role
+                    | SemanticsNodeProperty.selection
+                    | SemanticsNodeProperty.metadata
+                )
+            ) != 0
+        );
 }
 
 /// <summary>
@@ -2007,7 +3379,8 @@ public static class SemanticsUpdateDiffer
 {
     public static SemanticsUpdateDelta Diff(
         IReadOnlyDictionary<int, SemanticsNodeUpdate> previous,
-        IReadOnlyList<SemanticsNodeUpdate> current)
+        IReadOnlyList<SemanticsNodeUpdate> current
+    )
     {
         ArgumentNullException.ThrowIfNull(previous);
         ArgumentNullException.ThrowIfNull(current);
@@ -2025,10 +3398,15 @@ public static class SemanticsUpdateDiffer
 
             var properties = ChangedProperties(oldNode, node);
             if (properties != SemanticsNodeProperty.none)
+            {
                 changed.Add(new(node.id, properties, ContentHash(oldNode), ContentHash(node)));
+            }
         }
 
-        return new(changed, previous.Keys.Where(id => !currentIds.Contains(id)).OrderBy(id => id).ToArray());
+        return new(
+            changed,
+            previous.Keys.Where(id => !currentIds.Contains(id)).OrderBy(id => id).ToArray()
+        );
     }
 
     public static int ContentHash(SemanticsNodeUpdate node)
@@ -2064,64 +3442,138 @@ public static class SemanticsUpdateDiffer
         hash.Add(node.scrollChildCount);
         hash.Add(node.scrollIndex);
         if (node.controlsNodes is not null)
-            foreach (var controlledNode in node.controlsNodes) hash.Add(controlledNode, StringComparer.Ordinal);
+        {
+            foreach (var controlledNode in node.controlsNodes)
+            {
+                hash.Add(controlledNode, StringComparer.Ordinal);
+            }
+        }
+
         hash.Add(node.locale);
-        foreach (var child in node.children) hash.Add(child);
+        foreach (var child in node.children)
+        {
+            hash.Add(child);
+        }
+
         return hash.ToHashCode();
     }
 
     private const SemanticsNodeProperty AllProperties =
-        SemanticsNodeProperty.bounds |
-        SemanticsNodeProperty.label |
-        SemanticsNodeProperty.value |
-        SemanticsNodeProperty.actions |
-        SemanticsNodeProperty.flags |
-        SemanticsNodeProperty.role |
-        SemanticsNodeProperty.children |
-        SemanticsNodeProperty.traversal |
-        SemanticsNodeProperty.selection |
-        SemanticsNodeProperty.scroll |
-        SemanticsNodeProperty.metadata;
+        SemanticsNodeProperty.bounds
+        | SemanticsNodeProperty.label
+        | SemanticsNodeProperty.value
+        | SemanticsNodeProperty.actions
+        | SemanticsNodeProperty.flags
+        | SemanticsNodeProperty.role
+        | SemanticsNodeProperty.children
+        | SemanticsNodeProperty.traversal
+        | SemanticsNodeProperty.selection
+        | SemanticsNodeProperty.scroll
+        | SemanticsNodeProperty.metadata;
 
-    private static SemanticsNodeProperty ChangedProperties(SemanticsNodeUpdate previous, SemanticsNodeUpdate current)
+    private static SemanticsNodeProperty ChangedProperties(
+        SemanticsNodeUpdate previous,
+        SemanticsNodeUpdate current
+    )
     {
         var result = SemanticsNodeProperty.none;
-        if (previous.rect != current.rect || !(previous.coordinateTransform ?? []).SequenceEqual(current.coordinateTransform ?? [])) result |= SemanticsNodeProperty.bounds;
-        if (!string.Equals(previous.label, current.label, StringComparison.Ordinal)) result |= SemanticsNodeProperty.label;
-        if (!string.Equals(previous.value, current.value, StringComparison.Ordinal)) result |= SemanticsNodeProperty.value;
-        if (previous.actions != current.actions) result |= SemanticsNodeProperty.actions;
-        if (previous.flags != current.flags) result |= SemanticsNodeProperty.flags;
-        if (previous.role != current.role) result |= SemanticsNodeProperty.role;
-        if (previous.platformViewId != current.platformViewId) result |= SemanticsNodeProperty.children;
-        if (!previous.children.SequenceEqual(current.children)) result |= SemanticsNodeProperty.children;
-        if (previous.traversalParent != current.traversalParent || previous.indexInParent != current.indexInParent)
+        if (
+            previous.rect != current.rect
+            || !(previous.coordinateTransform ?? []).SequenceEqual(
+                current.coordinateTransform ?? []
+            )
+        )
+        {
+            result |= SemanticsNodeProperty.bounds;
+        }
+
+        if (!string.Equals(previous.label, current.label, StringComparison.Ordinal))
+        {
+            result |= SemanticsNodeProperty.label;
+        }
+
+        if (!string.Equals(previous.value, current.value, StringComparison.Ordinal))
+        {
+            result |= SemanticsNodeProperty.value;
+        }
+
+        if (previous.actions != current.actions)
+        {
+            result |= SemanticsNodeProperty.actions;
+        }
+
+        if (previous.flags != current.flags)
+        {
+            result |= SemanticsNodeProperty.flags;
+        }
+
+        if (previous.role != current.role)
+        {
+            result |= SemanticsNodeProperty.role;
+        }
+
+        if (previous.platformViewId != current.platformViewId)
+        {
+            result |= SemanticsNodeProperty.children;
+        }
+
+        if (!previous.children.SequenceEqual(current.children))
+        {
+            result |= SemanticsNodeProperty.children;
+        }
+
+        if (
+            previous.traversalParent != current.traversalParent
+            || previous.indexInParent != current.indexInParent
+        )
+        {
             result |= SemanticsNodeProperty.traversal;
-        if (previous.textSelectionBase != current.textSelectionBase || previous.textSelectionExtent != current.textSelectionExtent)
+        }
+
+        if (
+            previous.textSelectionBase != current.textSelectionBase
+            || previous.textSelectionExtent != current.textSelectionExtent
+        )
+        {
             result |= SemanticsNodeProperty.selection;
-        if (previous.scrollPosition != current.scrollPosition ||
-            previous.scrollExtentMax != current.scrollExtentMax ||
-            previous.scrollExtentMin != current.scrollExtentMin)
+        }
+
+        if (
+            previous.scrollPosition != current.scrollPosition
+            || previous.scrollExtentMax != current.scrollExtentMax
+            || previous.scrollExtentMin != current.scrollExtentMin
+        )
         {
             result |= SemanticsNodeProperty.scroll;
         }
-        if (!string.Equals(previous.identifier, current.identifier, StringComparison.Ordinal) ||
-            !string.Equals(previous.hint, current.hint, StringComparison.Ordinal) ||
-            !string.Equals(previous.tooltip, current.tooltip, StringComparison.Ordinal) ||
-            !string.Equals(previous.increasedValue, current.increasedValue, StringComparison.Ordinal) ||
-            !string.Equals(previous.decreasedValue, current.decreasedValue, StringComparison.Ordinal) ||
-            previous.headingLevel != current.headingLevel ||
-            !string.Equals(previous.linkUrl, current.linkUrl, StringComparison.Ordinal) ||
-            previous.validationResult != current.validationResult ||
-            previous.hitTestBehavior != current.hitTestBehavior ||
-            previous.inputType != current.inputType ||
-            !string.Equals(previous.minValue, current.minValue, StringComparison.Ordinal) ||
-            !string.Equals(previous.maxValue, current.maxValue, StringComparison.Ordinal) ||
-            previous.maxValueLength != current.maxValueLength ||
-            previous.currentValueLength != current.currentValueLength ||
-            previous.scrollChildCount != current.scrollChildCount ||
-            previous.scrollIndex != current.scrollIndex ||
-            !SequenceEqual(previous.controlsNodes, current.controlsNodes) ||
-            previous.locale != current.locale)
+        if (
+            !string.Equals(previous.identifier, current.identifier, StringComparison.Ordinal)
+            || !string.Equals(previous.hint, current.hint, StringComparison.Ordinal)
+            || !string.Equals(previous.tooltip, current.tooltip, StringComparison.Ordinal)
+            || !string.Equals(
+                previous.increasedValue,
+                current.increasedValue,
+                StringComparison.Ordinal
+            )
+            || !string.Equals(
+                previous.decreasedValue,
+                current.decreasedValue,
+                StringComparison.Ordinal
+            )
+            || previous.headingLevel != current.headingLevel
+            || !string.Equals(previous.linkUrl, current.linkUrl, StringComparison.Ordinal)
+            || previous.validationResult != current.validationResult
+            || previous.hitTestBehavior != current.hitTestBehavior
+            || previous.inputType != current.inputType
+            || !string.Equals(previous.minValue, current.minValue, StringComparison.Ordinal)
+            || !string.Equals(previous.maxValue, current.maxValue, StringComparison.Ordinal)
+            || previous.maxValueLength != current.maxValueLength
+            || previous.currentValueLength != current.currentValueLength
+            || previous.scrollChildCount != current.scrollChildCount
+            || previous.scrollIndex != current.scrollIndex
+            || !SequenceEqual(previous.controlsNodes, current.controlsNodes)
+            || previous.locale != current.locale
+        )
         {
             result |= SemanticsNodeProperty.metadata;
         }
@@ -2129,8 +3581,12 @@ public static class SemanticsUpdateDiffer
     }
 
     private static bool SequenceEqual(IReadOnlyList<string>? left, IReadOnlyList<string>? right) =>
-        ReferenceEquals(left, right) ||
-        (left is not null && right is not null && left.SequenceEqual(right, StringComparer.Ordinal));
+        ReferenceEquals(left, right)
+        || (
+            left is not null
+            && right is not null
+            && left.SequenceEqual(right, StringComparer.Ordinal)
+        );
 }
 
 public sealed class SemanticsUpdateBuilder
@@ -2187,47 +3643,53 @@ public sealed class SemanticsUpdateBuilder
         SemanticsInputType inputType,
         Locale? locale,
         string minValue,
-        string maxValue)
+        string maxValue
+    )
     {
         var actionFlags = (SemanticsAction)actions;
         var traversalChildren = ToNodeIds(childrenInTraversalOrder);
         var hitTestChildren = ToNodeIds(childrenInHitTestOrder);
-        updateNode(new SemanticsNodeUpdate(
-            checked((int)id),
-            rect,
-            label,
-            value,
-            actionFlags,
-            traversalChildren.Count > 0 ? traversalChildren : hitTestChildren,
-            flags,
-            role,
-            traversalParent >= 0 ? checked((int)traversalParent) : null,
-            null,
-            textSelectionBase,
-            textSelectionExtent,
-            NormalizeOptionalDouble(scrollPosition),
-            NormalizeOptionalDouble(scrollExtentMax),
-            NormalizeOptionalDouble(scrollExtentMin),
-            NullIfEmpty(identifier),
-            NullIfEmpty(hint),
-            NullIfEmpty(tooltip),
-            NullIfEmpty(increasedValue),
-            NullIfEmpty(decreasedValue),
-            headingLevel > 0 ? headingLevel : null,
-            NullIfEmpty(linkUrl),
-            validationResult,
-            hitTestBehavior,
-            inputType,
-            NullIfEmpty(minValue),
-            NullIfEmpty(maxValue),
-            NormalizeOptionalLong(maxValueLength),
-            NormalizeOptionalLong(currentValueLength),
-            NormalizeOptionalLong(scrollChildren),
-            NormalizeOptionalLong(scrollIndex),
-            controlsNodes?.ToArray(),
-            locale,
-            transform is IEnumerable<double> matrix && matrix.Count() == 16 ? matrix.ToArray() : Matrix4.identity().storage.ToArray(),
-            NormalizeOptionalLong(platformViewId)));
+        updateNode(
+            new SemanticsNodeUpdate(
+                checked((int)id),
+                rect,
+                label,
+                value,
+                actionFlags,
+                traversalChildren.Count > 0 ? traversalChildren : hitTestChildren,
+                flags,
+                role,
+                traversalParent >= 0 ? checked((int)traversalParent) : null,
+                null,
+                textSelectionBase,
+                textSelectionExtent,
+                NormalizeOptionalDouble(scrollPosition),
+                NormalizeOptionalDouble(scrollExtentMax),
+                NormalizeOptionalDouble(scrollExtentMin),
+                NullIfEmpty(identifier),
+                NullIfEmpty(hint),
+                NullIfEmpty(tooltip),
+                NullIfEmpty(increasedValue),
+                NullIfEmpty(decreasedValue),
+                headingLevel > 0 ? headingLevel : null,
+                NullIfEmpty(linkUrl),
+                validationResult,
+                hitTestBehavior,
+                inputType,
+                NullIfEmpty(minValue),
+                NullIfEmpty(maxValue),
+                NormalizeOptionalLong(maxValueLength),
+                NormalizeOptionalLong(currentValueLength),
+                NormalizeOptionalLong(scrollChildren),
+                NormalizeOptionalLong(scrollIndex),
+                controlsNodes?.ToArray(),
+                locale,
+                transform is IEnumerable<double> matrix && matrix.Count() == 16
+                    ? matrix.ToArray()
+                    : Matrix4.identity().storage.ToArray(),
+                NormalizeOptionalLong(platformViewId)
+            )
+        );
     }
 
     // The generated framework ABI represents an absent scroll metric as NaN.
@@ -2240,34 +3702,56 @@ public sealed class SemanticsUpdateBuilder
 
     private static string? NullIfEmpty(string? value) => string.IsNullOrEmpty(value) ? null : value;
 
-    public void updateCustomAction(long id, string? label = null, string? hint = null, long overrideId = -1)
+    public void updateCustomAction(
+        long id,
+        string? label = null,
+        string? hint = null,
+        long overrideId = -1
+    )
     {
         // Custom actions are transported alongside the next node batch by the
         // framework layer. The reduced host contract currently consumes only
         // node updates, so retaining the call is intentionally side-effect free.
     }
 
-    public SemanticsUpdate build(long generation) => new(
-        generation,
-        _nodes.Values.OrderBy(node => node.id).ToArray());
+    public SemanticsUpdate build(long generation) =>
+        new(generation, _nodes.Values.OrderBy(node => node.id).ToArray());
 
     public SemanticsUpdate build() => build(Interlocked.Increment(ref _generation));
 
-    private static IReadOnlyList<int> ToNodeIds(object value) => value switch
-    {
-        IEnumerable<int> integers => integers.ToArray(),
-        IEnumerable<long> longs => longs.Select(checkedValue => checked((int)checkedValue)).ToArray(),
-        System.Collections.IEnumerable items => items.Cast<object>().Select(item => checked(Convert.ToInt32(item, System.Globalization.CultureInfo.InvariantCulture))).ToArray(),
-        _ => [],
-    };
+    private static IReadOnlyList<int> ToNodeIds(object value) =>
+        value switch
+        {
+            IEnumerable<int> integers => integers.ToArray(),
+            IEnumerable<long> longs => longs
+                .Select(checkedValue => checked((int)checkedValue))
+                .ToArray(),
+            System.Collections.IEnumerable items => items
+                .Cast<object>()
+                .Select(item =>
+                    checked(
+                        Convert.ToInt32(item, System.Globalization.CultureInfo.InvariantCulture)
+                    )
+                )
+                .ToArray(),
+            _ => [],
+        };
 }
 
-public readonly record struct SemanticsActionEvent(ulong viewId, int nodeId, SemanticsAction action, object? arguments = null)
+public readonly record struct SemanticsActionEvent(
+    ulong viewId,
+    int nodeId,
+    SemanticsAction action,
+    object? arguments = null
+)
 {
     public SemanticsAction type => action;
 
     public SemanticsActionEvent copyWith(object? arguments = null) =>
-        this with { arguments = arguments };
+        this with
+        {
+            arguments = arguments,
+        };
 }
 
 public interface ISemanticsHostCapability

@@ -4,16 +4,35 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate Widget AnimatedTransitionBuilder(BuildContext context, Animation<double> animation, Widget? child);
+public delegate Widget AnimatedTransitionBuilder(
+    BuildContext context,
+    Animation<double> animation,
+    Widget? child
+);
 
 public class DualTransitionBuilder : StatefulWidget
 {
     public virtual Animation<double> animation { get; private set; } = default!;
-    public virtual Func<BuildContext, Animation<double>, Widget?, Widget> forwardBuilder { get; private set; } = default!;
-    public virtual Func<BuildContext, Animation<double>, Widget?, Widget> reverseBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, Animation<double>, Widget?, Widget> forwardBuilder
+    {
+        get;
+        private set;
+    } = default!;
+    public virtual Func<BuildContext, Animation<double>, Widget?, Widget> reverseBuilder
+    {
+        get;
+        private set;
+    } = default!;
     public virtual Widget? child { get; private set; }
 
-    public DualTransitionBuilder(Key? key = null, Animation<double> animation = default!, Func<BuildContext, Animation<double>, Widget?, Widget> forwardBuilder = default!, Func<BuildContext, Animation<double>, Widget?, Widget> reverseBuilder = default!, Widget? child = null) : base(key: key)
+    public DualTransitionBuilder(
+        Key? key = null,
+        Animation<double> animation = default!,
+        Func<BuildContext, Animation<double>, Widget?, Widget> forwardBuilder = default!,
+        Func<BuildContext, Animation<double>, Widget?, Widget> reverseBuilder = default!,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         this.animation = animation;
         this.forwardBuilder = forwardBuilder;
@@ -21,7 +40,10 @@ public class DualTransitionBuilder : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DualTransitionBuilderState__dual_transition_builder());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _DualTransitionBuilderState__dual_transition_builder()
+        );
 }
 
 internal class _DualTransitionBuilderState__dual_transition_builder : State<DualTransitionBuilder>
@@ -41,7 +63,10 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     internal virtual void _animationListener(AnimationStatus animationStatus)
     {
         AnimationStatus oldEffective = _effectiveAnimationStatus;
-        _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: _effectiveAnimationStatus, current: animationStatus);
+        _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(
+            lastEffective: _effectiveAnimationStatus,
+            current: animationStatus
+        );
         if (!Equals(oldEffective, _effectiveAnimationStatus))
         {
             _updateAnimations();
@@ -59,51 +84,54 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
         }
     }
 
-    internal virtual AnimationStatus _calculateEffectiveAnimationStatus(AnimationStatus lastEffective, AnimationStatus current)
+    internal virtual AnimationStatus _calculateEffectiveAnimationStatus(
+        AnimationStatus lastEffective,
+        AnimationStatus current
+    )
     {
         switch (current)
         {
             case AnimationStatus.dismissed:
             case AnimationStatus.completed:
-                {
-                    return current;
-                }
+            {
+                return current;
+            }
             case AnimationStatus.forward:
+            {
+                switch (lastEffective)
                 {
-                    switch (lastEffective)
+                    case AnimationStatus.dismissed:
+                    case AnimationStatus.completed:
+                    case AnimationStatus.forward:
                     {
-                        case AnimationStatus.dismissed:
-                        case AnimationStatus.completed:
-                        case AnimationStatus.forward:
-                            {
-                                return current;
-                            }
-                        case AnimationStatus.reverse:
-                            {
-                                return lastEffective;
-                            }
-                        default:
-                            throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        return current;
                     }
+                    case AnimationStatus.reverse:
+                    {
+                        return lastEffective;
+                    }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
+            }
             case AnimationStatus.reverse:
+            {
+                switch (lastEffective)
                 {
-                    switch (lastEffective)
+                    case AnimationStatus.dismissed:
+                    case AnimationStatus.completed:
+                    case AnimationStatus.reverse:
                     {
-                        case AnimationStatus.dismissed:
-                        case AnimationStatus.completed:
-                        case AnimationStatus.reverse:
-                            {
-                                return current;
-                            }
-                        case AnimationStatus.forward:
-                            {
-                                return lastEffective;
-                            }
-                        default:
-                            throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        return current;
                     }
+                    case AnimationStatus.forward:
+                    {
+                        return lastEffective;
+                    }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -114,18 +142,20 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
         {
             case AnimationStatus.dismissed:
             case AnimationStatus.forward:
-                {
-                    _forwardAnimation.parent = widget.animation;
-                    _reverseAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
-                    break;
-                }
+            {
+                _forwardAnimation.parent = widget.animation;
+                _reverseAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
+                break;
+            }
             case AnimationStatus.reverse:
             case AnimationStatus.completed:
-                {
-                    _forwardAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    _reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(widget.animation));
-                    break;
-                }
+            {
+                _forwardAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                _reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                    new ReverseAnimation(widget.animation)
+                );
+                break;
+            }
         }
     }
 
@@ -137,9 +167,11 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
 
     public override Widget build(BuildContext context)
     {
-        return widget.forwardBuilder(context, _forwardAnimation, widget.reverseBuilder(context, _reverseAnimation, widget.child));
+        return widget.forwardBuilder(
+            context,
+            _forwardAnimation,
+            widget.reverseBuilder(context, _reverseAnimation, widget.child)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

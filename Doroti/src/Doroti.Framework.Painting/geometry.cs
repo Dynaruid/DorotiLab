@@ -6,7 +6,14 @@ namespace Doroti.Framework.Painting;
 
 public static partial class GeometryLibrary
 {
-    public static Offset positionDependentBox(Size size, Size childSize, Offset target, bool preferBelow, double verticalOffset = 0.0, double margin = 10.0)
+    public static Offset positionDependentBox(
+        Size size,
+        Size childSize,
+        Offset target,
+        bool preferBelow,
+        double verticalOffset = 0.0,
+        double margin = 10.0
+    )
     {
         bool fitsBelow = (target.dy + verticalOffset + childSize.height) <= (size.height - margin);
         bool fitsAbove = (target.dy - verticalOffset - childSize.height) >= margin;
@@ -21,9 +28,15 @@ public static partial class GeometryLibrary
             y = Math.Max(target.dy - verticalOffset - childSize.height, margin);
         }
         double flexibleSpace = size.width - childSize.width;
-        double x = (flexibleSpace <= (2L * margin)) ? (flexibleSpace / 2.0) : Dart_uiLibrary.clampDouble(target.dx - (childSize.width / 2L), margin, flexibleSpace - margin);
+        double x =
+            (flexibleSpace <= (2L * margin))
+                ? (flexibleSpace / 2.0)
+                : Dart_uiLibrary.clampDouble(
+                    target.dx - (childSize.width / 2L),
+                    margin,
+                    flexibleSpace - margin
+                );
         return new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

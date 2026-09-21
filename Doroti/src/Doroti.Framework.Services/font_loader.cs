@@ -24,10 +24,12 @@ public class FontLoader
         {
             throw new InvalidOperationException("FontLoader is already loaded");
         }
-        _fontFutures.Add(bytes.then((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes)));
+        _fontFutures.Add(
+            bytes.then((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes))
+        );
     }
 
-    public async virtual Future load()
+    public virtual async Future load()
     {
         if (_loaded)
         {
@@ -45,6 +47,4 @@ public class FontLoader
         return Dart_uiLibrary.loadFontFromList(list, fontFamily: family);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

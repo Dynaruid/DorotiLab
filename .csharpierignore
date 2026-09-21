@@ -1,0 +1,19 @@
+# Format C# source; keep project files and other XML in their existing layout.
+*
+!*/
+!*.cs
+!*.csx
+
+# External sources, archived work, and generated build output.
+/reference/
+/history/
+/research/
+/.git/
+/.github/
+/.vscode/
+**/.doroti/
+**/bin/
+**/obj/
+**/artifacts/
+**/node_modules/
+**/TestResults/

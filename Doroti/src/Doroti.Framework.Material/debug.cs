@@ -9,14 +9,64 @@ public static partial class DebugLibrary
     public static bool debugCheckHasMaterial(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (LookupBoundary.findAncestorWidgetOfExactType<Material>(context) is null)
             {
-                if (LookupBoundary.findAncestorWidgetOfExactType<Material>(context) is null)
-                {
-                    bool hiddenByBoundary = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<Material>(context);
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection1421 = new List<DiagnosticsNode>(); __collection1421.Add(new ErrorSummary($"No Material widget found{(hiddenByBoundary ? " within the closest LookupBoundary" : "")}.")); if (hiddenByBoundary) { __collection1421.Add(new ErrorDescription("There is an ancestor Material widget, but it is hidden by a LookupBoundary.")); } __collection1421.Add(new ErrorDescription($"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a Material " + "widget ancestor within the closest LookupBoundary.\n" + "In Material Design, most widgets are conceptually \"printed\" on " + "a sheet of material. In Flutter's material library, that " + "material is represented by the Material widget. It is the " + "Material widget that renders ink splashes, for instance. " + "Because of this, many material library widgets require that " + "there be a Material widget in the tree above them.")); __collection1421.Add(new ErrorHint("To introduce a Material widget, you can either directly " + "include one, or use a widget that contains Material itself, " + "such as a Card, Dialog, Drawer, or Scaffold.")); __collection1421.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(Material))); return __collection1421; }))()));
-                }
-                return true;
-            });
+                bool hiddenByBoundary =
+                    LookupBoundary.debugIsHidingAncestorWidgetOfExactType<Material>(context);
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection1421 = new List<DiagnosticsNode>();
+                                    __collection1421.Add(
+                                        new ErrorSummary(
+                                            $"No Material widget found{(hiddenByBoundary ? " within the closest LookupBoundary" : "")}."
+                                        )
+                                    );
+                                    if (hiddenByBoundary)
+                                    {
+                                        __collection1421.Add(
+                                            new ErrorDescription(
+                                                "There is an ancestor Material widget, but it is hidden by a LookupBoundary."
+                                            )
+                                        );
+                                    }
+                                    __collection1421.Add(
+                                        new ErrorDescription(
+                                            $"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a Material "
+                                                + "widget ancestor within the closest LookupBoundary.\n"
+                                                + "In Material Design, most widgets are conceptually \"printed\" on "
+                                                + "a sheet of material. In Flutter's material library, that "
+                                                + "material is represented by the Material widget. It is the "
+                                                + "Material widget that renders ink splashes, for instance. "
+                                                + "Because of this, many material library widgets require that "
+                                                + "there be a Material widget in the tree above them."
+                                        )
+                                    );
+                                    __collection1421.Add(
+                                        new ErrorHint(
+                                            "To introduce a Material widget, you can either directly "
+                                                + "include one, or use a widget that contains Material itself, "
+                                                + "such as a Card, Dialog, Drawer, or Scaffold."
+                                        )
+                                    );
+                                    __collection1421.AddRange(
+                                        context.describeMissingAncestor(
+                                            expectedAncestorType: typeof(Material)
+                                        )
+                                    );
+                                    return __collection1421;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -27,13 +77,56 @@ public static partial class DebugLibrary
     public static bool debugCheckHasMaterialLocalizations(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (
+                Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations))
+                is null
+            )
             {
-                if (Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations)) is null)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection3880 = new List<DiagnosticsNode>(); __collection3880.Add(new ErrorSummary("No MaterialLocalizations found.")); __collection3880.Add(new ErrorDescription($"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require MaterialLocalizations " + "to be provided by a Localizations widget ancestor.")); __collection3880.Add(new ErrorDescription("The material library uses Localizations to generate messages, " + "labels, and abbreviations.")); __collection3880.Add(new ErrorHint("To introduce a MaterialLocalizations, either use a " + "MaterialApp at the root of your application to include them " + "automatically, or add a Localization widget with a " + "MaterialLocalizations delegate.")); __collection3880.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(MaterialLocalizations))); return __collection3880; }))()));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection3880 = new List<DiagnosticsNode>();
+                                    __collection3880.Add(
+                                        new ErrorSummary("No MaterialLocalizations found.")
+                                    );
+                                    __collection3880.Add(
+                                        new ErrorDescription(
+                                            $"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require MaterialLocalizations "
+                                                + "to be provided by a Localizations widget ancestor."
+                                        )
+                                    );
+                                    __collection3880.Add(
+                                        new ErrorDescription(
+                                            "The material library uses Localizations to generate messages, "
+                                                + "labels, and abbreviations."
+                                        )
+                                    );
+                                    __collection3880.Add(
+                                        new ErrorHint(
+                                            "To introduce a MaterialLocalizations, either use a "
+                                                + "MaterialApp at the root of your application to include them "
+                                                + "automatically, or add a Localization widget with a "
+                                                + "MaterialLocalizations delegate."
+                                        )
+                                    );
+                                    __collection3880.AddRange(
+                                        context.describeMissingAncestor(
+                                            expectedAncestorType: typeof(MaterialLocalizations)
+                                        )
+                                    );
+                                    return __collection3880;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -44,13 +137,47 @@ public static partial class DebugLibrary
     public static bool debugCheckHasScaffold(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (
+                (context.widget is not Scaffold)
+                && (context.findAncestorWidgetOfExactType<Scaffold>() is null)
+            )
             {
-                if ((context.widget is not Scaffold) && (context.findAncestorWidgetOfExactType<Scaffold>() is null))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection5564 = new List<DiagnosticsNode>(); __collection5564.Add(new ErrorSummary("No Scaffold widget found.")); __collection5564.Add(new ErrorDescription($"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a Scaffold widget ancestor.")); __collection5564.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(Scaffold))); __collection5564.Add(new ErrorHint("Typically, the Scaffold widget is introduced by the MaterialApp or " + "WidgetsApp widget at the top of your application widget tree.")); return __collection5564; }))()));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection5564 = new List<DiagnosticsNode>();
+                                    __collection5564.Add(
+                                        new ErrorSummary("No Scaffold widget found.")
+                                    );
+                                    __collection5564.Add(
+                                        new ErrorDescription(
+                                            $"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a Scaffold widget ancestor."
+                                        )
+                                    );
+                                    __collection5564.AddRange(
+                                        context.describeMissingAncestor(
+                                            expectedAncestorType: typeof(Scaffold)
+                                        )
+                                    );
+                                    __collection5564.Add(
+                                        new ErrorHint(
+                                            "Typically, the Scaffold widget is introduced by the MaterialApp or "
+                                                + "WidgetsApp widget at the top of your application widget tree."
+                                        )
+                                    );
+                                    return __collection5564;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -61,13 +188,44 @@ public static partial class DebugLibrary
     public static bool debugCheckHasScaffoldMessenger(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (context.findAncestorWidgetOfExactType<ScaffoldMessenger>() is null)
             {
-                if (context.findAncestorWidgetOfExactType<ScaffoldMessenger>() is null)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection6933 = new List<DiagnosticsNode>(); __collection6933.Add(new ErrorSummary("No ScaffoldMessenger widget found.")); __collection6933.Add(new ErrorDescription($"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a ScaffoldMessenger widget ancestor.")); __collection6933.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(ScaffoldMessenger))); __collection6933.Add(new ErrorHint("Typically, the ScaffoldMessenger widget is introduced by the MaterialApp " + "at the top of your application widget tree.")); return __collection6933; }))()));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection6933 = new List<DiagnosticsNode>();
+                                    __collection6933.Add(
+                                        new ErrorSummary("No ScaffoldMessenger widget found.")
+                                    );
+                                    __collection6933.Add(
+                                        new ErrorDescription(
+                                            $"{DartRuntimePrimitives.RuntimeType(context.widget)} widgets require a ScaffoldMessenger widget ancestor."
+                                        )
+                                    );
+                                    __collection6933.AddRange(
+                                        context.describeMissingAncestor(
+                                            expectedAncestorType: typeof(ScaffoldMessenger)
+                                        )
+                                    );
+                                    __collection6933.Add(
+                                        new ErrorHint(
+                                            "Typically, the ScaffoldMessenger widget is introduced by the MaterialApp "
+                                                + "at the top of your application widget tree."
+                                        )
+                                    );
+                                    return __collection6933;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

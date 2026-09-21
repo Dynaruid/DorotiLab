@@ -15,18 +15,26 @@ public enum TextOverflow
     clip,
     fade,
     ellipsis,
-    visible
+    visible,
 }
 
 public class PlaceholderDimensions
 {
-    public static PlaceholderDimensions empty = new PlaceholderDimensions(size: Size.zero, alignment: Dart_uiLibrary.PlaceholderAlignment.bottom);
+    public static PlaceholderDimensions empty = new PlaceholderDimensions(
+        size: Size.zero,
+        alignment: Dart_uiLibrary.PlaceholderAlignment.bottom
+    );
     public virtual Size size { get; private set; } = default!;
     public virtual PlaceholderAlignment alignment { get; private set; } = default!;
     public virtual double? baselineOffset { get; private set; }
     public virtual TextBaseline? baseline { get; private set; }
 
-    public PlaceholderDimensions(Size size, PlaceholderAlignment alignment, TextBaseline? baseline = null, double? baselineOffset = null)
+    public PlaceholderDimensions(
+        Size size,
+        PlaceholderAlignment alignment,
+        TextBaseline? baseline = null,
+        double? baselineOffset = null
+    )
     {
         this.size = size;
         this.alignment = alignment;
@@ -37,34 +45,58 @@ public class PlaceholderDimensions
     public override bool Equals(object? other)
     {
         var __other = other as PlaceholderDimensions;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
         }
-        return (__other is PlaceholderDimensions) && Equals(__other.size, size) && Equals(__other.alignment, alignment) && Equals(__other.baseline, baseline) && (__other.baselineOffset == baselineOffset);
+        return (__other is PlaceholderDimensions)
+            && Equals(__other.size, size)
+            && Equals(__other.alignment, alignment)
+            && Equals(__other.baseline, baseline)
+            && (__other.baselineOffset == baselineOffset);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(size, alignment, baseline, baselineOffset);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(size, alignment, baseline, baselineOffset);
+
     public override string ToString()
     {
-        return alignment switch { Dart_uiLibrary.PlaceholderAlignment.top or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle or Dart_uiLibrary.PlaceholderAlignment.aboveBaseline => $"PlaceholderDimensions({size}, {alignment})", Dart_uiLibrary.PlaceholderAlignment.belowBaseline => $"PlaceholderDimensions({size}, {alignment})", Dart_uiLibrary.PlaceholderAlignment.baseline => $"PlaceholderDimensions({size}, {alignment}({baselineOffset} from top))", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return alignment switch
+        {
+            Dart_uiLibrary.PlaceholderAlignment.top
+            or Dart_uiLibrary.PlaceholderAlignment.bottom
+            or Dart_uiLibrary.PlaceholderAlignment.middle
+            or Dart_uiLibrary.PlaceholderAlignment.aboveBaseline =>
+                $"PlaceholderDimensions({size}, {alignment})",
+            Dart_uiLibrary.PlaceholderAlignment.belowBaseline =>
+                $"PlaceholderDimensions({size}, {alignment})",
+            Dart_uiLibrary.PlaceholderAlignment.baseline =>
+                $"PlaceholderDimensions({size}, {alignment}({baselineOffset} from top))",
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum TextWidthBasis
 {
     parent,
-    longestLine
+    longestLine,
 }
 
 public class WordBoundary : TextBoundary
 {
     internal virtual InlineSpan _text { get; private set; } = default!;
     internal virtual Paragraph _paragraph { get; private set; } = default!;
-    internal static RegExp _regExpSpaceSeparatorOrPunctuation = new RegExp("[\\p{Space_Separator}\\p{Punctuation}]", unicode: true);
+    internal static RegExp _regExpSpaceSeparatorOrPunctuation = new RegExp(
+        "[\\p{Space_Separator}\\p{Punctuation}]",
+        unicode: true
+    );
     private bool __late_moveByWordBoundary_initialized;
     private TextBoundary __late_moveByWordBoundary = default!;
     public virtual TextBoundary moveByWordBoundary
@@ -73,7 +105,10 @@ public class WordBoundary : TextBoundary
         {
             if (!__late_moveByWordBoundary_initialized)
             {
-                __late_moveByWordBoundary = new _UntilTextBoundary__text_painter(this, _skipSpacesAndPunctuations);
+                __late_moveByWordBoundary = new _UntilTextBoundary__text_painter(
+                    this,
+                    _skipSpacesAndPunctuations
+                );
                 __late_moveByWordBoundary_initialized = true;
             }
             return __late_moveByWordBoundary;
@@ -86,7 +121,9 @@ public class WordBoundary : TextBoundary
         this._paragraph = _paragraph;
     }
 
-    public override TextRange getTextBoundaryAt(long position) => _paragraph.getWordBoundary(new TextPosition(offset: Math.Max(position, 0L)));
+    public override TextRange getTextBoundaryAt(long position) =>
+        _paragraph.getWordBoundary(new TextPosition(offset: Math.Max(position, 0L)));
+
     internal static long _codePointFromSurrogates(long highSurrogate, long lowSurrogate)
     {
         DartRuntimePrimitives.Assert(() => TextPainter.isHighSurrogate(highSurrogate));
@@ -103,13 +140,33 @@ public class WordBoundary : TextBoundary
         {
             return null;
         }
-        return (DartRuntimePrimitives.RequireValue(codeUnitAtIndex) & 64512L) switch { 55296L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex)), DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index + 1L))), 56320L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index - 1L)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex))), _ => DartRuntimePrimitives.RequireValue(codeUnitAtIndex) };
+        return (DartRuntimePrimitives.RequireValue(codeUnitAtIndex) & 64512L) switch
+        {
+            55296L => _codePointFromSurrogates(
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(codeUnitAtIndex)
+                ),
+                DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index + 1L))
+            ),
+            56320L => _codePointFromSurrogates(
+                DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index - 1L)),
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(codeUnitAtIndex)
+                )
+            ),
+            _ => DartRuntimePrimitives.RequireValue(codeUnitAtIndex),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static bool _isNewline(long codePoint)
     {
-        return codePoint switch { 10L or 133L or 11L or 12L or 8232L => true, 8233L => true, _ => false };
+        return codePoint switch
+        {
+            10L or 133L or 11L or 12L or 8232L => true,
+            8233L => true,
+            _ => false,
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -117,11 +174,27 @@ public class WordBoundary : TextBoundary
     {
         long? innerCodePoint = _codePointAt(forward ? (offset - 1L) : offset);
         long? outerCodeUnit = _text.codeUnitAt(forward ? offset : (offset - 1L));
-        bool hardBreakRulesApply = (innerCodePoint is null) || (outerCodeUnit is null) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerCodePoint))) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(outerCodeUnit)));
-        return hardBreakRulesApply || !_regExpSpaceSeparatorOrPunctuation.hasMatch(char.ConvertFromUtf32(checked((int)DartRuntimePrimitives.RequireValue(innerCodePoint))));
+        bool hardBreakRulesApply =
+            (innerCodePoint is null)
+            || (outerCodeUnit is null)
+            || _isNewline(
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(innerCodePoint)
+                )
+            )
+            || _isNewline(
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(outerCodeUnit)
+                )
+            );
+        return hardBreakRulesApply
+            || !_regExpSpaceSeparatorOrPunctuation.hasMatch(
+                char.ConvertFromUtf32(
+                    checked((int)DartRuntimePrimitives.RequireValue(innerCodePoint))
+                )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _UntilTextBoundary__text_painter : TextBoundary
@@ -129,7 +202,10 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
     internal virtual Func<long, bool, bool> _predicate { get; private set; } = default!;
     internal virtual TextBoundary _textBoundary { get; private set; } = default!;
 
-    internal _UntilTextBoundary__text_painter(TextBoundary _textBoundary, Func<long, bool, bool> _predicate)
+    internal _UntilTextBoundary__text_painter(
+        TextBoundary _textBoundary,
+        Func<long, bool, bool> _predicate
+    )
     {
         this._textBoundary = _textBoundary;
         this._predicate = _predicate;
@@ -142,17 +218,22 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
             return null;
         }
         long? offset = _textBoundary.getLeadingTextBoundaryAt(position);
-        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), false)) ? offset : getLeadingTextBoundaryAt(DartRuntimePrimitives.RequireValue(offset) - 1L);
+        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), false))
+            ? offset
+            : getLeadingTextBoundaryAt(DartRuntimePrimitives.RequireValue(offset) - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
     {
         long? offset = _textBoundary.getTrailingTextBoundaryAt(Math.Max(position, 0L));
-        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), true)) ? offset : getTrailingTextBoundaryAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset)));
+        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), true))
+            ? offset
+            : getTrailingTextBoundaryAt(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset))
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TextLayout__text_painter
@@ -160,7 +241,10 @@ internal class _TextLayout__text_painter
     public virtual TextDirection writingDirection { get; private set; } = default!;
     internal virtual TextPainter _painter { get; private set; } = default!;
     internal virtual Paragraph _paragraph { get; set; } = default!;
-    internal static RegExp _regExpSpaceSeparators = new RegExp("\\p{Space_Separator}", unicode: true);
+    internal static RegExp _regExpSpaceSeparators = new RegExp(
+        "\\p{Space_Separator}",
+        unicode: true
+    );
     private bool __late__endOfTextCaretMetrics_initialized;
     private _LineCaretMetrics__text_painter __late__endOfTextCaretMetrics = default!;
     internal virtual _LineCaretMetrics__text_painter _endOfTextCaretMetrics
@@ -176,7 +260,11 @@ internal class _TextLayout__text_painter
         }
     }
 
-    internal _TextLayout__text_painter(Paragraph _paragraph, TextDirection writingDirection, TextPainter _painter)
+    internal _TextLayout__text_painter(
+        Paragraph _paragraph,
+        TextDirection writingDirection,
+        TextPainter _painter
+    )
     {
         this._paragraph = _paragraph;
         this.writingDirection = writingDirection;
@@ -189,9 +277,15 @@ internal class _TextLayout__text_painter
     public virtual double minIntrinsicLineExtent => _paragraph.minIntrinsicWidth;
     public virtual double maxIntrinsicLineExtent => _paragraph.maxIntrinsicWidth;
     public virtual double longestLine => _paragraph.longestLine;
+
     public virtual double getDistanceToBaseline(TextBaseline baseline)
     {
-        return baseline switch { TextBaseline.alphabetic => _paragraph.alphabeticBaseline, TextBaseline.ideographic => _paragraph.ideographicBaseline, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return baseline switch
+        {
+            TextBaseline.alphabetic => _paragraph.alphabeticBaseline,
+            TextBaseline.ideographic => _paragraph.ideographicBaseline,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -202,7 +296,13 @@ internal class _TextLayout__text_painter
         DartRuntimePrimitives.Assert(() => lastLineIndex >= 0L);
         LineMetrics lineMetrics = _paragraph.getLineMetricsAt(lastLineIndex)!;
         string lastCodeUnit = rawString[(int)(rawString.Length - 1L)].ToString();
-        bool hasTrailingSpaces = lastCodeUnit.codeUnitAt(0L) switch { 9L => true, 160L or 8199L => false, 8239L => false, _ => _regExpSpaceSeparators.hasMatch(lastCodeUnit) };
+        bool hasTrailingSpaces = lastCodeUnit.codeUnitAt(0L) switch
+        {
+            9L => true,
+            160L or 8199L => false,
+            8239L => false,
+            _ => _regExpSpaceSeparators.hasMatch(lastCodeUnit),
+        };
         double baselineLocal = lineMetrics.baseline;
         double dx = default!;
         double heightLocal = default!;
@@ -211,24 +311,54 @@ internal class _TextLayout__text_painter
         {
             Rect glyphBounds = lastGlyph.graphemeClusterLayoutBounds;
             DartRuntimePrimitives.Assert(() => !glyphBounds.isEmpty);
-            dx = writingDirection switch { TextDirection.ltr => glyphBounds.right, TextDirection.rtl => glyphBounds.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            dx = writingDirection switch
+            {
+                TextDirection.ltr => glyphBounds.right,
+                TextDirection.rtl => glyphBounds.left,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             heightLocal = glyphBounds.height;
         }
         else
         {
-            dx = writingDirection switch { TextDirection.ltr => lineMetrics.left + lineMetrics.width, TextDirection.rtl => lineMetrics.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            dx = writingDirection switch
+            {
+                TextDirection.ltr => lineMetrics.left + lineMetrics.width,
+                TextDirection.rtl => lineMetrics.left,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
             heightLocal = lineMetrics.height;
         }
-        return new _LineCaretMetrics__text_painter(offset: new Offset(dx, baselineLocal), writingDirection: writingDirection, height: heightLocal);
+        return new _LineCaretMetrics__text_painter(
+            offset: new Offset(dx, baselineLocal),
+            writingDirection: writingDirection,
+            height: heightLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _contentWidthFor(double minWidth, double maxWidth, TextWidthBasis widthBasis)
+    internal virtual double _contentWidthFor(
+        double minWidth,
+        double maxWidth,
+        TextWidthBasis widthBasis
+    )
     {
-        return widthBasis switch { TextWidthBasis.longestLine => Dart_uiLibrary.clampDouble(longestLine, minWidth, maxWidth), TextWidthBasis.parent => Dart_uiLibrary.clampDouble(maxIntrinsicLineExtent, minWidth, maxWidth), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return widthBasis switch
+        {
+            TextWidthBasis.longestLine => Dart_uiLibrary.clampDouble(
+                longestLine,
+                minWidth,
+                maxWidth
+            ),
+            TextWidthBasis.parent => Dart_uiLibrary.clampDouble(
+                maxIntrinsicLineExtent,
+                minWidth,
+                maxWidth
+            ),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TextPainterLayoutCacheWithOffset__text_painter
@@ -241,7 +371,12 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
     internal virtual List<LineMetrics>? _cachedLineMetrics { get; set; } = default;
     internal virtual long? _previousCaretPositionKey { get; set; } = default;
 
-    internal _TextPainterLayoutCacheWithOffset__text_painter(_TextLayout__text_painter layout, double textAlignment, double layoutMaxWidth, double contentWidth)
+    internal _TextPainterLayoutCacheWithOffset__text_painter(
+        _TextLayout__text_painter layout,
+        double textAlignment,
+        double layoutMaxWidth,
+        double contentWidth
+    )
     {
         this.layout = layout;
         this.textAlignment = textAlignment;
@@ -270,6 +405,7 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
         }
     }
     public virtual Paragraph paragraph => layout._paragraph;
+
     internal virtual bool _resizeToFit(double minWidth, double maxWidth, TextWidthBasis widthBasis)
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(layout.maxIntrinsicLineExtent));
@@ -279,14 +415,29 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             contentWidth = layout._contentWidthFor(minWidth, maxWidth, widthBasis);
             return true;
         }
-        if (!double.IsFinite(paintOffset.dx) && !double.IsFinite(paragraph.width) && double.IsFinite(minWidth))
+        if (
+            !double.IsFinite(paintOffset.dx)
+            && !double.IsFinite(paragraph.width)
+            && double.IsFinite(minWidth)
+        )
         {
             DartRuntimePrimitives.Assert(() => paintOffset.dx == double.PositiveInfinity);
             DartRuntimePrimitives.Assert(() => paragraph.width == double.PositiveInfinity);
             return false;
         }
         double maxIntrinsicWidthLocal = paragraph.maxIntrinsicWidth;
-        bool skipLineBreaking = (maxWidth == layoutMaxWidth) || (paragraph.width - maxIntrinsicWidthLocal > -Foundation.ConstantsLibrary.precisionErrorTolerance) && (maxWidth - maxIntrinsicWidthLocal > -Foundation.ConstantsLibrary.precisionErrorTolerance);
+        bool skipLineBreaking =
+            (maxWidth == layoutMaxWidth)
+            || (
+                (
+                    paragraph.width - maxIntrinsicWidthLocal
+                    > -Foundation.ConstantsLibrary.precisionErrorTolerance
+                )
+                && (
+                    maxWidth - maxIntrinsicWidthLocal
+                    > -Foundation.ConstantsLibrary.precisionErrorTolerance
+                )
+            );
         if (skipLineBreaking)
         {
             contentWidth = layout._contentWidthFor(minWidth, maxWidth, widthBasis);
@@ -296,8 +447,10 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<TextBox> inlinePlaceholderBoxes => _cachedInlinePlaceholderBoxes ??= paragraph.getBoxesForPlaceholders();
-    public virtual List<LineMetrics> lineMetrics => _cachedLineMetrics ??= paragraph.computeLineMetrics();
+    public virtual List<TextBox> inlinePlaceholderBoxes =>
+        _cachedInlinePlaceholderBoxes ??= paragraph.getBoxesForPlaceholders();
+    public virtual List<LineMetrics> lineMetrics =>
+        _cachedLineMetrics ??= paragraph.computeLineMetrics();
 }
 
 internal class _LineCaretMetrics__text_painter
@@ -306,7 +459,11 @@ internal class _LineCaretMetrics__text_painter
     public virtual TextDirection writingDirection { get; private set; } = default!;
     public virtual double height { get; private set; } = default!;
 
-    internal _LineCaretMetrics__text_painter(Offset offset, TextDirection writingDirection, double height)
+    internal _LineCaretMetrics__text_painter(
+        Offset offset,
+        TextDirection writingDirection,
+        double height
+    )
     {
         this.offset = offset;
         this.writingDirection = writingDirection;
@@ -315,18 +472,25 @@ internal class _LineCaretMetrics__text_painter
 
     public virtual _LineCaretMetrics__text_painter shift(Offset offset)
     {
-        return Equals(offset, Offset.zero) ? this : new _LineCaretMetrics__text_painter(offset: offset + this.offset, writingDirection: writingDirection, height: height);
+        return Equals(offset, Offset.zero)
+            ? this
+            : new _LineCaretMetrics__text_painter(
+                offset: offset + this.offset,
+                writingDirection: writingDirection,
+                height: height
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TextPainter
 {
     internal virtual bool _debugNeedsRelayout { get; set; } = true;
-    internal virtual _TextPainterLayoutCacheWithOffset__text_painter? _layoutCache { get; set; } = default;
+    internal virtual _TextPainterLayoutCacheWithOffset__text_painter? _layoutCache { get; set; } =
+        default;
     internal virtual bool _rebuildParagraphForPaint { get; set; } = true;
-    internal virtual System.Diagnostics.StackTrace? _debugMarkNeedsLayoutCallStack { get; set; } = default;
+    internal virtual System.Diagnostics.StackTrace? _debugMarkNeedsLayoutCallStack { get; set; } =
+        default;
     internal virtual InlineSpan? _text { get; set; } = default;
     internal virtual string? _cachedPlainText { get; set; } = default;
     internal virtual TextAlign _textAlign { get; set; } = default!;
@@ -344,13 +508,27 @@ public class TextPainter
     internal virtual _LineCaretMetrics__text_painter _caretMetrics { get; set; } = default!;
     internal virtual bool _disposed { get; set; } = false;
 
-    public TextPainter(InlineSpan? text = null, TextAlign textAlign = TextAlign.start, TextDirection? textDirection = null, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null)
+    public TextPainter(
+        InlineSpan? text = null,
+        TextAlign textAlign = TextAlign.start,
+        TextDirection? textDirection = null,
+        double textScaleFactor = 1.0,
+        TextScaler? textScaler = null,
+        long? maxLines = null,
+        string? ellipsis = null,
+        Locale? locale = null,
+        StrutStyle? strutStyle = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        TextHeightBehavior? textHeightBehavior = null
+    )
     {
         TextScaler __textScaler = textScaler ?? new _UnspecifiedTextScaler__text_painter();
         _text = text;
         _textAlign = textAlign;
         _textDirection = textDirection;
-        _textScaler = textScaler is null or _UnspecifiedTextScaler__text_painter ? TextScaler.CreateLinear(textScaleFactor) : textScaler;
+        _textScaler = textScaler is null or _UnspecifiedTextScaler__text_painter
+            ? TextScaler.CreateLinear(textScaleFactor)
+            : textScaler;
         _maxLines = maxLines;
         _ellipsis = ellipsis;
         _locale = locale;
@@ -358,19 +536,57 @@ public class TextPainter
         _textWidthBasis = textWidthBasis;
         _textHeightBehavior = textHeightBehavior;
         System.Diagnostics.Debug.Assert((text is null) || text.debugAssertIsValid());
-        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
-        System.Diagnostics.Debug.Assert(textScaleFactor == 1.0 || textScaler is null or _UnspecifiedTextScaler__text_painter);
+        System.Diagnostics.Debug.Assert(
+            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            textScaleFactor == 1.0 || textScaler is null or _UnspecifiedTextScaler__text_painter
+        );
     }
 
-    public static double computeWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
+    public static double computeWidth(
+        InlineSpan text,
+        TextDirection textDirection,
+        TextAlign textAlign = TextAlign.start,
+        double textScaleFactor = 1.0,
+        TextScaler? textScaler = null,
+        long? maxLines = null,
+        string? ellipsis = null,
+        Locale? locale = null,
+        StrutStyle? strutStyle = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        TextHeightBehavior? textHeightBehavior = null,
+        double minWidth = 0.0,
+        double maxWidth = double.PositiveInfinity
+    )
     {
-        DartRuntimePrimitives.Assert(() => (textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling));
-        var painter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: Equals(textScaler, TextScaler.noScaling) ? TextScaler.CreateLinear(textScaleFactor) : textScaler, maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
-    __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
-    return __cascade;
-}))();
+        DartRuntimePrimitives.Assert(() =>
+            (textScaleFactor == 1.0)
+            || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)
+        );
+        var painter = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = new TextPainter(
+                        text: text,
+                        textAlign: textAlign,
+                        textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+                        textScaler: Equals(textScaler, TextScaler.noScaling)
+                            ? TextScaler.CreateLinear(textScaleFactor)
+                            : textScaler,
+                        maxLines: maxLines,
+                        ellipsis: ellipsis,
+                        locale: locale,
+                        strutStyle: strutStyle,
+                        textWidthBasis: textWidthBasis,
+                        textHeightBehavior: textHeightBehavior
+                    );
+                    __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
+                    return __cascade;
+                }
+            )
+        )();
         try
         {
             return painter.width;
@@ -382,15 +598,49 @@ public class TextPainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double computeMaxIntrinsicWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
+    public static double computeMaxIntrinsicWidth(
+        InlineSpan text,
+        TextDirection textDirection,
+        TextAlign textAlign = TextAlign.start,
+        double textScaleFactor = 1.0,
+        TextScaler? textScaler = null,
+        long? maxLines = null,
+        string? ellipsis = null,
+        Locale? locale = null,
+        StrutStyle? strutStyle = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        TextHeightBehavior? textHeightBehavior = null,
+        double minWidth = 0.0,
+        double maxWidth = double.PositiveInfinity
+    )
     {
-        DartRuntimePrimitives.Assert(() => (textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling));
-        var painter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: Equals(textScaler, TextScaler.noScaling) ? TextScaler.CreateLinear(textScaleFactor) : textScaler, maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
-    __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
-    return __cascade;
-}))();
+        DartRuntimePrimitives.Assert(() =>
+            (textScaleFactor == 1.0)
+            || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)
+        );
+        var painter = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = new TextPainter(
+                        text: text,
+                        textAlign: textAlign,
+                        textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+                        textScaler: Equals(textScaler, TextScaler.noScaling)
+                            ? TextScaler.CreateLinear(textScaleFactor)
+                            : textScaler,
+                        maxLines: maxLines,
+                        ellipsis: ellipsis,
+                        locale: locale,
+                        strutStyle: strutStyle,
+                        textWidthBasis: textWidthBasis,
+                        textHeightBehavior: textHeightBehavior
+                    );
+                    __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
+                    return __cascade;
+                }
+            )
+        )();
         try
         {
             return painter.maxIntrinsicWidth;
@@ -409,21 +659,24 @@ public class TextPainter
             DartRuntimePrimitives.Assert(() => !debugDisposed);
             if (_layoutCache is null)
             {
-                throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Text layout not available") });
+                throw new FlutterError(
+                    new List<DiagnosticsNode> { new ErrorSummary("Text layout not available") }
+                );
             }
             return true;
         }
     }
+
     public virtual void markNeedsLayout()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_layoutCache is not null)
             {
-                if (_layoutCache is not null)
-                {
-                    _debugMarkNeedsLayoutCallStack ??= new System.Diagnostics.StackTrace(true);
-                }
-                return true;
-            });
+                _debugMarkNeedsLayoutCallStack ??= new System.Diagnostics.StackTrace(true);
+            }
+            return true;
+        });
         _layoutCache?.paragraph.dispose();
         _layoutCache = null;
     }
@@ -444,16 +697,25 @@ public class TextPainter
                 _layoutTemplate?.dispose();
                 _layoutTemplate = null;
             }
-            RenderComparison comparison = (__value is null) ? RenderComparison.layout : (_text?.compareTo(__value) ?? RenderComparison.layout);
+            RenderComparison comparison =
+                (__value is null)
+                    ? RenderComparison.layout
+                    : (_text?.compareTo(__value) ?? RenderComparison.layout);
             _text = __value;
             _cachedPlainText = null;
-            if (FoundationRuntimePorts.EnumIndex(comparison) >= FoundationRuntimePorts.EnumIndex(RenderComparison.layout))
+            if (
+                FoundationRuntimePorts.EnumIndex(comparison)
+                >= FoundationRuntimePorts.EnumIndex(RenderComparison.layout)
+            )
             {
                 markNeedsLayout();
             }
             else
             {
-                if (FoundationRuntimePorts.EnumIndex(comparison) >= FoundationRuntimePorts.EnumIndex(RenderComparison.paint))
+                if (
+                    FoundationRuntimePorts.EnumIndex(comparison)
+                    >= FoundationRuntimePorts.EnumIndex(RenderComparison.paint)
+                )
                 {
                     _rebuildParagraphForPaint = true;
                 }
@@ -558,7 +820,9 @@ public class TextPainter
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L));
+            DartRuntimePrimitives.Assert(() =>
+                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+            );
             if (_maxLines == __value)
             {
                 return;
@@ -592,9 +856,9 @@ public class TextPainter
                 return;
             }
             DartRuntimePrimitives.Assert(() =>
-                {
-                    return _debugNeedsRelayout = true;
-                });
+            {
+                return _debugNeedsRelayout = true;
+            });
             _textWidthBasis = DartRuntimePrimitives.RequireValue(__value);
         }
     }
@@ -634,25 +898,32 @@ public class TextPainter
             return rawBoxes.map((box) => _shiftTextBox(box, offset)).ToList();
         }
     }
+
     public virtual void setPlaceholderDimensions(List<PlaceholderDimensions>? value)
     {
-        if ((value is null) || (checked((long)value.Count) == 0) || CollectionsLibrary.listEquals(value, _placeholderDimensions))
+        if (
+            (value is null)
+            || (checked((long)value.Count) == 0)
+            || CollectionsLibrary.listEquals(value, _placeholderDimensions)
+        )
         {
             return;
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                var placeholderCount = 0L;
-                text!.visitChildren((span) =>
+        {
+            var placeholderCount = 0L;
+            text!.visitChildren(
+                (span) =>
                 {
                     if (span is PlaceholderSpan)
                     {
                         placeholderCount += 1L;
                     }
                     return checked(value.Count) >= placeholderCount;
-                });
-                return placeholderCount == checked(value.Count);
-            });
+                }
+            );
+            return placeholderCount == checked(value.Count);
+        });
         _placeholderDimensions = value;
         markNeedsLayout();
     }
@@ -661,7 +932,16 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         TextStyle baseStyle = _text?.style ?? new TextStyle();
-        return baseStyle.getParagraphStyle(textAlign: textAlignOverride ?? textAlign, textDirection: textDirection, textScaler: textScaler, maxLines: _maxLines, textHeightBehavior: _textHeightBehavior, ellipsis: _ellipsis, locale: _locale, strutStyle: _strutStyle);
+        return baseStyle.getParagraphStyle(
+            textAlign: textAlignOverride ?? textAlign,
+            textDirection: textDirection,
+            textScaler: textScaler,
+            maxLines: _maxLines,
+            textHeightBehavior: _textHeightBehavior,
+            ellipsis: _ellipsis,
+            locale: _locale,
+            strutStyle: _strutStyle
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -674,16 +954,22 @@ public class TextPainter
             builder.pushStyle(textStyle);
         }
         builder.addText(" ");
-        return ((Func<Paragraph>)(() =>
-{
-    var __cascade = builder.build();
-    __cascade.layout(new ParagraphConstraints(width: double.PositiveInfinity));
-    return __cascade;
-}))();
+        return (
+            (Func<Paragraph>)(
+                () =>
+                {
+                    var __cascade = builder.build();
+                    __cascade.layout(new ParagraphConstraints(width: double.PositiveInfinity));
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Paragraph _getOrCreateLayoutTemplate() => _layoutTemplate ??= _createLayoutTemplate();
+    internal virtual Paragraph _getOrCreateLayoutTemplate() =>
+        _layoutTemplate ??= _createLayoutTemplate();
+
     public virtual double preferredLineHeight => _getOrCreateLayoutTemplate().height;
     public virtual double minIntrinsicWidth
     {
@@ -727,6 +1013,7 @@ public class TextPainter
             return new Size(width, height);
         }
     }
+
     public virtual double computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
@@ -742,15 +1029,16 @@ public class TextPainter
             return _layoutCache!.paragraph.didExceedMaxLines;
         }
     }
+
     internal virtual Paragraph _createParagraph(InlineSpan text)
     {
         var builder = new ParagraphBuilder(_createParagraphStyle());
         text.build(builder, textScaler: textScaler, dimensions: _placeholderDimensions);
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugMarkNeedsLayoutCallStack = null;
-                return true;
-            });
+        {
+            _debugMarkNeedsLayoutCallStack = null;
+            return true;
+        });
         _rebuildParagraphForPaint = false;
         return builder.build();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -761,36 +1049,58 @@ public class TextPainter
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxWidth));
         DartRuntimePrimitives.Assert(() => !double.IsNaN(minWidth));
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugNeedsRelayout = false;
-                return true;
-            });
+        {
+            _debugNeedsRelayout = false;
+            return true;
+        });
         _TextPainterLayoutCacheWithOffset__text_painter? cachedLayout = _layoutCache;
-        if ((cachedLayout is not null) && cachedLayout._resizeToFit(minWidth, maxWidth, textWidthBasis))
+        if (
+            (cachedLayout is not null)
+            && cachedLayout._resizeToFit(minWidth, maxWidth, textWidthBasis)
+        )
         {
             return;
         }
         InlineSpan? textLocal = text;
         if (textLocal is null)
         {
-            throw new InvalidOperationException("TextPainter.text must be set to a non-null value before using the TextPainter.");
+            throw new InvalidOperationException(
+                "TextPainter.text must be set to a non-null value before using the TextPainter."
+            );
         }
         TextDirection? textDirectionLocal = textDirection;
         if (textDirectionLocal is null)
         {
-            throw new InvalidOperationException("TextPainter.textDirection must be set to a non-null value before using the TextPainter.");
+            throw new InvalidOperationException(
+                "TextPainter.textDirection must be set to a non-null value before using the TextPainter."
+            );
         }
-        double paintOffsetAlignment = _computePaintOffsetFraction(textAlign, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirectionLocal)));
+        double paintOffsetAlignment = _computePaintOffsetFraction(
+            textAlign,
+            DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(textDirectionLocal)
+            )
+        );
         bool adjustMaxWidth = !double.IsFinite(maxWidth) && (paintOffsetAlignment != 0L);
-        double? adjustedMaxWidth = !adjustMaxWidth ? maxWidth : cachedLayout?.layout.maxIntrinsicLineExtent;
+        double? adjustedMaxWidth = !adjustMaxWidth
+            ? maxWidth
+            : cachedLayout?.layout.maxIntrinsicLineExtent;
         double layoutMaxWidth = adjustedMaxWidth ?? maxWidth;
-        Paragraph paragraphLocal = ((Func<Paragraph>)(() =>
-{
-    var __cascade = cachedLayout?.paragraph ?? _createParagraph(textLocal);
-    __cascade.layout(new ParagraphConstraints(width: layoutMaxWidth));
-    return __cascade;
-}))();
-        var layoutLocal = new _TextLayout__text_painter(paragraphLocal, DartRuntimePrimitives.RequireValue(textDirectionLocal), this);
+        Paragraph paragraphLocal = (
+            (Func<Paragraph>)(
+                () =>
+                {
+                    var __cascade = cachedLayout?.paragraph ?? _createParagraph(textLocal);
+                    __cascade.layout(new ParagraphConstraints(width: layoutMaxWidth));
+                    return __cascade;
+                }
+            )
+        )();
+        var layoutLocal = new _TextLayout__text_painter(
+            paragraphLocal,
+            DartRuntimePrimitives.RequireValue(textDirectionLocal),
+            this
+        );
         double contentWidth = layoutLocal._contentWidthFor(minWidth, maxWidth, textWidthBasis);
         _TextPainterLayoutCacheWithOffset__text_painter newLayoutCache = default!;
         if ((adjustedMaxWidth is null) && double.IsFinite(minWidth))
@@ -798,11 +1108,21 @@ public class TextPainter
             DartRuntimePrimitives.Assert(() => double.IsInfinity(maxWidth));
             double newInputWidth = layoutLocal.maxIntrinsicLineExtent;
             paragraphLocal.layout(new ParagraphConstraints(width: newInputWidth));
-            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(layoutLocal, paintOffsetAlignment, newInputWidth, contentWidth);
+            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(
+                layoutLocal,
+                paintOffsetAlignment,
+                newInputWidth,
+                contentWidth
+            );
         }
         else
         {
-            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(layoutLocal, paintOffsetAlignment, layoutMaxWidth, contentWidth);
+            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(
+                layoutLocal,
+                paintOffsetAlignment,
+                layoutMaxWidth,
+                contentWidth
+            );
         }
         _layoutCache = newLayoutCache;
     }
@@ -812,9 +1132,15 @@ public class TextPainter
         _TextPainterLayoutCacheWithOffset__text_painter? layoutCache = _layoutCache;
         if (layoutCache is null)
         {
-            throw new InvalidOperationException("TextPainter.paint called when text geometry was not yet calculated.\n" + "Please call layout() before paint() to position the text before painting it.");
+            throw new InvalidOperationException(
+                "TextPainter.paint called when text geometry was not yet calculated.\n"
+                    + "Please call layout() before paint() to position the text before painting it."
+            );
         }
-        if (!double.IsFinite(layoutCache.paintOffset.dx) || !double.IsFinite(layoutCache.paintOffset.dy))
+        if (
+            !double.IsFinite(layoutCache.paintOffset.dx)
+            || !double.IsFinite(layoutCache.paintOffset.dy)
+        )
         {
             return;
         }
@@ -822,38 +1148,59 @@ public class TextPainter
         {
             Size? debugSize = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    debugSize = size;
-                    return true;
-                });
+            {
+                debugSize = size;
+                return true;
+            });
             Paragraph paragraphLocal = layoutCache.paragraph;
             DartRuntimePrimitives.Assert(() => !double.IsNaN(layoutCache.layoutMaxWidth));
-            layoutCache.layout._paragraph = ((Func<Paragraph>)(() =>
-{
-    var __cascade = _createParagraph(text!);
-    __cascade.layout(new ParagraphConstraints(width: layoutCache.layoutMaxWidth));
-    return __cascade;
-}))();
-            DartRuntimePrimitives.Assert(() => paragraphLocal.width == layoutCache.layout._paragraph.width);
+            layoutCache.layout._paragraph = (
+                (Func<Paragraph>)(
+                    () =>
+                    {
+                        var __cascade = _createParagraph(text!);
+                        __cascade.layout(
+                            new ParagraphConstraints(width: layoutCache.layoutMaxWidth)
+                        );
+                        return __cascade;
+                    }
+                )
+            )();
+            DartRuntimePrimitives.Assert(() =>
+                paragraphLocal.width == layoutCache.layout._paragraph.width
+            );
             paragraphLocal.dispose();
             DartRuntimePrimitives.Assert(() => Equals(debugSize, size));
         }
         DartRuntimePrimitives.Assert(() => !_rebuildParagraphForPaint);
-        DartRuntimePrimitives.Assert(() => !debugPaintTextLayoutBoxes || _debugPaintCharacterLayoutBoxes(canvas, layoutCache, offset));
+        DartRuntimePrimitives.Assert(() =>
+            !debugPaintTextLayoutBoxes
+            || _debugPaintCharacterLayoutBoxes(canvas, layoutCache, offset)
+        );
         canvas.drawParagraph(layoutCache.paragraph, offset + layoutCache.paintOffset);
     }
 
-    internal virtual bool _debugPaintCharacterLayoutBoxes(Canvas canvas, _TextPainterLayoutCacheWithOffset__text_painter layout, Offset offset)
+    internal virtual bool _debugPaintCharacterLayoutBoxes(
+        Canvas canvas,
+        _TextPainterLayoutCacheWithOffset__text_painter layout,
+        Offset offset
+    )
     {
-        var paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 1.0;
-    __cascade.color = new Color(4278255615L);
-    return __cascade;
-}))();
-        List<TextBox> textBoxes = getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: plainText.Length));
+        var paint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.stroke;
+                    __cascade.strokeWidth = 1.0;
+                    __cascade.color = new Color(4278255615L);
+                    return __cascade;
+                }
+            )
+        )();
+        List<TextBox> textBoxes = getBoxesForSelection(
+            new TextSelection(baseOffset: 0L, extentOffset: plainText.Length)
+        );
         foreach (var textBox in textBoxes)
         {
             canvas.drawRect(textBox.toRect().shift(offset), paint);
@@ -870,14 +1217,18 @@ public class TextPainter
 
     public static bool isHighSurrogate(long value)
     {
-        DartRuntimePrimitives.Assert(() => _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))));
+        DartRuntimePrimitives.Assert(() =>
+            _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)))
+        );
         return (DartRuntimePrimitives.RequireValue(value) & 64512L) == 55296L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isLowSurrogate(long value)
     {
-        DartRuntimePrimitives.Assert(() => _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))));
+        DartRuntimePrimitives.Assert(() =>
+            _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)))
+        );
         return (DartRuntimePrimitives.RequireValue(value) & 64512L) == 56320L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -889,7 +1240,11 @@ public class TextPainter
         {
             return null;
         }
-        return isHighSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(nextCodeUnit))) ? (offset + 2L) : (offset + 1L);
+        return isHighSurrogate(
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(nextCodeUnit))
+        )
+            ? (offset + 2L)
+            : (offset + 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -900,13 +1255,30 @@ public class TextPainter
         {
             return null;
         }
-        return isLowSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(prevCodeUnit))) ? (offset - 2L) : (offset - 1L);
+        return isLowSurrogate(
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(prevCodeUnit))
+        )
+            ? (offset - 2L)
+            : (offset - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static double _computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection)
+    internal static double _computePaintOffsetFraction(
+        TextAlign textAlign,
+        TextDirection textDirection
+    )
     {
-        return (textAlign, DartRuntimePrimitives.RequireValue(textDirection)) switch { (TextAlign.left, _) => 0.0, (TextAlign.right, _) => 1.0, (TextAlign.center, _) => 0.5, (TextAlign.start or TextAlign.justify, TextDirection.ltr) => 0.0, (TextAlign.start or TextAlign.justify, TextDirection.rtl) => 1.0, (TextAlign.end, TextDirection.ltr) => 1.0, (TextAlign.end, TextDirection.rtl) => 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return (textAlign, DartRuntimePrimitives.RequireValue(textDirection)) switch
+        {
+            (TextAlign.left, _) => 0.0,
+            (TextAlign.right, _) => 1.0,
+            (TextAlign.center, _) => 0.5,
+            (TextAlign.start or TextAlign.justify, TextDirection.ltr) => 0.0,
+            (TextAlign.start or TextAlign.justify, TextDirection.rtl) => 1.0,
+            (TextAlign.end, TextDirection.ltr) => 1.0,
+            (TextAlign.end, TextDirection.rtl) => 0.0,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -916,17 +1288,51 @@ public class TextPainter
         _LineCaretMetrics__text_painter? caretMetrics = _computeCaretMetrics(position);
         if (caretMetrics is null)
         {
-            double paintOffsetAlignment = _computePaintOffsetFraction(textAlign, DartRuntimePrimitives.RequireValue(textDirection));
-            double dxLocal = (paintOffsetAlignment == 0L) ? 0 : (paintOffsetAlignment * layoutCache.contentWidth);
+            double paintOffsetAlignment = _computePaintOffsetFraction(
+                textAlign,
+                DartRuntimePrimitives.RequireValue(textDirection)
+            );
+            double dxLocal =
+                (paintOffsetAlignment == 0L)
+                    ? 0
+                    : (paintOffsetAlignment * layoutCache.contentWidth);
             return new Offset(dxLocal, 0.0);
         }
-        Offset rawOffset = caretMetrics switch { _LineCaretMetrics__text_painter { writingDirection: TextDirection.ltr, offset: Offset offsetLocal } __object55102 => offsetLocal, _LineCaretMetrics__text_painter { writingDirection: TextDirection.rtl, offset: Offset offsetAlternate } __object55196 => new Offset(offsetAlternate.dx - caretPrototype.width, offsetAlternate.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        double adjustedDx = Dart_uiLibrary.clampDouble(rawOffset.dx + layoutCache.paintOffset.dx, 0, layoutCache.contentWidth);
+        Offset rawOffset = caretMetrics switch
+        {
+            _LineCaretMetrics__text_painter
+            {
+                writingDirection: TextDirection.ltr,
+                offset: Offset offsetLocal
+            } __object55102 => offsetLocal,
+            _LineCaretMetrics__text_painter
+            {
+                writingDirection: TextDirection.rtl,
+                offset: Offset offsetAlternate
+            } __object55196 => new Offset(
+                offsetAlternate.dx - caretPrototype.width,
+                offsetAlternate.dy
+            ),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        double adjustedDx = Dart_uiLibrary.clampDouble(
+            rawOffset.dx + layoutCache.paintOffset.dx,
+            0,
+            layoutCache.contentWidth
+        );
         return new Offset(adjustedDx, rawOffset.dy + layoutCache.paintOffset.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _strutDisabled => strutStyle switch { null => true, var __constant56323 when Equals(__constant56323, StrutStyle.disabled) => true, StrutStyle { fontSize: double fontSizeLocal } __object56356 => fontSizeLocal == 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    internal virtual bool _strutDisabled =>
+        strutStyle switch
+        {
+            null => true,
+            var __constant56323 when Equals(__constant56323, StrutStyle.disabled) => true,
+            StrutStyle { fontSize: double fontSizeLocal } __object56356 => fontSizeLocal == 0.0,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+
     public virtual double getFullHeightForCaret(TextPosition position, Rect caretPrototype)
     {
         if (_strutDisabled)
@@ -934,11 +1340,15 @@ public class TextPainter
             double? heightFromCaretMetrics = _computeCaretMetrics(position)?.height;
             if (heightFromCaretMetrics is not null)
             {
-                double heightFromCaretMetrics__56763__value56838 = DartRuntimePrimitives.RequireValue(heightFromCaretMetrics);
-                return DartRuntimePrimitives.RequireValue(heightFromCaretMetrics__56763__value56838);
+                double heightFromCaretMetrics__56763__value56838 =
+                    DartRuntimePrimitives.RequireValue(heightFromCaretMetrics);
+                return DartRuntimePrimitives.RequireValue(
+                    heightFromCaretMetrics__56763__value56838
+                );
             }
         }
-        List<TextBox> boxes = _getOrCreateLayoutTemplate().getBoxesForRange(0L, 1L, boxHeightStyle: BoxHeightStyle.strut);
+        List<TextBox> boxes = _getOrCreateLayoutTemplate()
+            .getBoxesForRange(0L, 1L, boxHeightStyle: BoxHeightStyle.strut);
         if (checked((long)boxes.Count) == 0)
         {
             return preferredLineHeight;
@@ -947,7 +1357,11 @@ public class TextPainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _isNewlineAtOffset(long offset) => (0L <= offset) && (offset < plainText.Length) && WordBoundary._isNewline(plainText.codeUnitAt(offset));
+    internal virtual bool _isNewlineAtOffset(long offset) =>
+        (0L <= offset)
+        && (offset < plainText.Length)
+        && WordBoundary._isNewline(plainText.codeUnitAt(offset));
+
     internal virtual _LineCaretMetrics__text_painter? _computeCaretMetrics(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
@@ -957,7 +1371,26 @@ public class TextPainter
         {
             return null;
         }
-        var (offsetLocal, anchorToLeadingEdge) = position switch { TextPosition { offset: 0L } __object60679 => (0L, true), TextPosition { offset: long offsetAlternate, affinity: TextAffinity.downstream } __object60854 => (offsetAlternate, true), TextPosition { offset: long offsetNested, affinity: TextAffinity.upstream } __object60946 when _isNewlineAtOffset(offsetNested - 1L) => (offsetNested, true), TextPosition { offset: long offsetCurrent, affinity: TextAffinity.upstream } __object61090 => (offsetCurrent - 1L, false), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (offsetLocal, anchorToLeadingEdge) = position switch
+        {
+            TextPosition { offset: 0L } __object60679 => (0L, true),
+            TextPosition
+            {
+                offset: long offsetAlternate,
+                affinity: TextAffinity.downstream
+            } __object60854 => (offsetAlternate, true),
+            TextPosition
+            {
+                offset: long offsetNested,
+                affinity: TextAffinity.upstream
+            } __object60946 when _isNewlineAtOffset(offsetNested - 1L) => (offsetNested, true),
+            TextPosition
+            {
+                offset: long offsetCurrent,
+                affinity: TextAffinity.upstream
+            } __object61090 => (offsetCurrent - 1L, false),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         long caretPositionCacheKey = anchorToLeadingEdge ? offsetLocal : (-offsetLocal - 1L);
         if (caretPositionCacheKey == cachedLayout._previousCaretPositionKey)
         {
@@ -969,7 +1402,9 @@ public class TextPainter
             Paragraph template = _getOrCreateLayoutTemplate();
             DartRuntimePrimitives.Assert(() => template.numberOfLines == 1L);
             double baselineOffset = template.getLineMetricsAt(0L)!.baseline;
-            return cachedLayout.layout._endOfTextCaretMetrics.shift(new Offset(0.0, -baselineOffset));
+            return cachedLayout.layout._endOfTextCaretMetrics.shift(
+                new Offset(0.0, -baselineOffset)
+            );
         }
         TextRange graphemeRange = glyphInfo.graphemeClusterCodeUnitRange;
         if (graphemeRange.isCollapsed)
@@ -983,16 +1418,33 @@ public class TextPainter
             return _computeCaretMetrics(new TextPosition(offset: graphemeRange.end));
         }
         _LineCaretMetrics__text_painter metrics = default!;
-        List<TextBox> boxes = cachedLayout.paragraph.getBoxesForRange(graphemeRange.start, graphemeRange.end, boxHeightStyle: Dart_uiLibrary.BoxHeightStyle.strut);
-        bool anchorToLeft = glyphInfo.writingDirection switch { TextDirection.ltr => anchorToLeadingEdge, TextDirection.rtl => !anchorToLeadingEdge, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        List<TextBox> boxes = cachedLayout.paragraph.getBoxesForRange(
+            graphemeRange.start,
+            graphemeRange.end,
+            boxHeightStyle: Dart_uiLibrary.BoxHeightStyle.strut
+        );
+        bool anchorToLeft = glyphInfo.writingDirection switch
+        {
+            TextDirection.ltr => anchorToLeadingEdge,
+            TextDirection.rtl => !anchorToLeadingEdge,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         TextBox box = anchorToLeft ? boxes.First() : boxes.Last();
-        metrics = new _LineCaretMetrics__text_painter(offset: new Offset(anchorToLeft ? box.left : box.right, box.top), writingDirection: box.direction, height: box.bottom - box.top);
+        metrics = new _LineCaretMetrics__text_painter(
+            offset: new Offset(anchorToLeft ? box.left : box.right, box.top),
+            writingDirection: box.direction,
+            height: box.bottom - box.top
+        );
         cachedLayout._previousCaretPositionKey = caretPositionCacheKey;
         return _caretMetrics = metrics;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<TextBox> getBoxesForSelection(TextSelection selection, BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight, BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight)
+    public virtual List<TextBox> getBoxesForSelection(
+        TextSelection selection,
+        BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight,
+        BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight
+    )
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => selection.isValid);
@@ -1003,8 +1455,15 @@ public class TextPainter
         {
             return new List<TextBox>();
         }
-        List<TextBox> boxes = cachedLayout.paragraph.getBoxesForRange(selection.start, selection.end, boxHeightStyle: boxHeightStyle, boxWidthStyle: boxWidthStyle);
-        return Equals(offset, Offset.zero) ? boxes : boxes.map((box) => _shiftTextBox(box, offset)).ToList();
+        List<TextBox> boxes = cachedLayout.paragraph.getBoxesForRange(
+            selection.start,
+            selection.end,
+            boxHeightStyle: boxHeightStyle,
+            boxWidthStyle: boxWidthStyle
+        );
+        return Equals(offset, Offset.zero)
+            ? boxes
+            : boxes.map((box) => _shiftTextBox(box, offset)).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1013,12 +1472,18 @@ public class TextPainter
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => !_debugNeedsRelayout);
         _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = _layoutCache!;
-        GlyphInfo? rawGlyphInfo = cachedLayout.paragraph.getClosestGlyphInfoForOffset(offset - cachedLayout.paintOffset);
+        GlyphInfo? rawGlyphInfo = cachedLayout.paragraph.getClosestGlyphInfoForOffset(
+            offset - cachedLayout.paintOffset
+        );
         if ((rawGlyphInfo is null) || Equals(cachedLayout.paintOffset, Offset.zero))
         {
             return rawGlyphInfo;
         }
-        return new GlyphInfo(rawGlyphInfo.graphemeClusterLayoutBounds.shift(cachedLayout.paintOffset), rawGlyphInfo.graphemeClusterCodeUnitRange, rawGlyphInfo.writingDirection);
+        return new GlyphInfo(
+            rawGlyphInfo.graphemeClusterLayoutBounds.shift(cachedLayout.paintOffset),
+            rawGlyphInfo.graphemeClusterCodeUnitRange,
+            rawGlyphInfo.writingDirection
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1039,6 +1504,7 @@ public class TextPainter
     }
 
     public virtual WordBoundary wordBoundaries => new WordBoundary(text!, _layoutCache!.paragraph);
+
     public virtual TextRange getLineBoundary(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
@@ -1050,7 +1516,17 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(offset.dx));
         DartRuntimePrimitives.Assert(() => double.IsFinite(offset.dy));
-        return new LineMetrics(hardBreak: metrics.hardBreak, ascent: metrics.ascent, descent: metrics.descent, unscaledAscent: metrics.unscaledAscent, height: metrics.height, width: metrics.width, left: metrics.left + offset.dx, baseline: metrics.baseline + offset.dy, lineNumber: metrics.lineNumber);
+        return new LineMetrics(
+            hardBreak: metrics.hardBreak,
+            ascent: metrics.ascent,
+            descent: metrics.descent,
+            unscaledAscent: metrics.unscaledAscent,
+            height: metrics.height,
+            width: metrics.width,
+            left: metrics.left + offset.dx,
+            baseline: metrics.baseline + offset.dy,
+            lineNumber: metrics.lineNumber
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1058,7 +1534,13 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(offset.dx));
         DartRuntimePrimitives.Assert(() => double.IsFinite(offset.dy));
-        return new TextBox(box.left + offset.dx, box.top + offset.dy, box.right + offset.dx, box.bottom + offset.dy, box.direction);
+        return new TextBox(
+            box.left + offset.dx,
+            box.top + offset.dy,
+            box.right + offset.dx,
+            box.bottom + offset.dy,
+            box.direction
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1073,7 +1555,9 @@ public class TextPainter
             return new List<LineMetrics>();
         }
         List<LineMetrics> rawMetrics = layout.lineMetrics;
-        return Equals(offset, Offset.zero) ? rawMetrics : rawMetrics.map((metrics) => _shiftLineMetrics(metrics, offset)).ToList();
+        return Equals(offset, Offset.zero)
+            ? rawMetrics
+            : rawMetrics.map((metrics) => _shiftLineMetrics(metrics, offset)).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1083,38 +1567,41 @@ public class TextPainter
         {
             bool? disposed = default!;
             DartRuntimePrimitives.Assert(() =>
-                {
-                    disposed = _disposed;
-                    return true;
-                });
-            return disposed ?? throw new InvalidOperationException("debugDisposed only available when asserts are on.");
+            {
+                disposed = _disposed;
+                return true;
+            });
+            return disposed
+                ?? throw new InvalidOperationException(
+                    "debugDisposed only available when asserts are on."
+                );
         }
     }
+
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => !debugDisposed);
         DartRuntimePrimitives.Assert(() =>
-            {
-                _disposed = true;
-                return true;
-            });
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        {
+            _disposed = true;
+            return true;
+        });
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _layoutTemplate?.dispose();
         _layoutTemplate = null;
         _layoutCache?.paragraph.dispose();
         _layoutCache = null;
         _text = null;
     }
-
 }
 
 internal class _UnspecifiedTextScaler__text_painter : TextScaler
 {
-    internal _UnspecifiedTextScaler__text_painter()
-    {
-    }
+    internal _UnspecifiedTextScaler__text_painter() { }
 
     public override double textScaleFactor => throw new NotImplementedException();
+
     public override double scale(double fontSize) => throw new NotImplementedException();
 }
-

@@ -14,12 +14,22 @@ public enum MaterialType
     card,
     circle,
     button,
-    transparency
+    transparency,
 }
 
 public static partial class MaterialLibrary
 {
-    public static DartMap<MaterialType, BorderRadius?> kMaterialEdges = new DartMap<MaterialType, BorderRadius?> { [MaterialType.canvas] = (BorderRadius?)(object?)null, [MaterialType.card] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.circle] = (BorderRadius?)(object?)null, [MaterialType.button] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.transparency] = (BorderRadius?)(object?)null };
+    public static DartMap<MaterialType, BorderRadius?> kMaterialEdges = new DartMap<
+        MaterialType,
+        BorderRadius?
+    >
+    {
+        [MaterialType.canvas] = (BorderRadius?)(object?)null,
+        [MaterialType.card] = BorderRadius.CreateAll(Radius.circular(2.0)),
+        [MaterialType.circle] = (BorderRadius?)(object?)null,
+        [MaterialType.button] = BorderRadius.CreateAll(Radius.circular(2.0)),
+        [MaterialType.transparency] = (BorderRadius?)(object?)null,
+    };
 }
 
 public interface MaterialInkController
@@ -47,7 +57,23 @@ public class Material : StatefulWidget
     public virtual BorderRadiusGeometry? borderRadius { get; private set; }
     public const double defaultSplashRadius = 35.0;
 
-    public Material(Key? key = null, MaterialType type = MaterialType.canvas, double elevation = 0.0, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, TextStyle? textStyle = null, BorderRadiusGeometry? borderRadius = null, ShapeBorder? shape = null, bool borderOnForeground = true, Clip clipBehavior = Clip.none, Duration? animationDuration = null, Widget? child = null, bool animateColor = false) : base(key: key)
+    public Material(
+        Key? key = null,
+        MaterialType type = MaterialType.canvas,
+        double elevation = 0.0,
+        Color? color = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        TextStyle? textStyle = null,
+        BorderRadiusGeometry? borderRadius = null,
+        ShapeBorder? shape = null,
+        bool borderOnForeground = true,
+        Clip clipBehavior = Clip.none,
+        Duration? animationDuration = null,
+        Widget? child = null,
+        bool animateColor = false
+    )
+        : base(key: key)
     {
         Duration __animationDuration = animationDuration ?? ConstantsLibrary.kThemeChangeDuration;
         this.type = type;
@@ -65,7 +91,12 @@ public class Material : StatefulWidget
         this.animateColor = animateColor;
         System.Diagnostics.Debug.Assert(elevation >= 0.0);
         System.Diagnostics.Debug.Assert(!((shape is not null) && (borderRadius is not null)));
-        System.Diagnostics.Debug.Assert(!(DartRuntimePrimitives.Identical(type, MaterialType.circle) && ((borderRadius is not null) || (shape is not null))));
+        System.Diagnostics.Debug.Assert(
+            !(
+                DartRuntimePrimitives.Identical(type, MaterialType.circle)
+                && ((borderRadius is not null) || (shape is not null))
+            )
+        );
     }
 
     public static MaterialInkController? maybeOf(BuildContext context)
@@ -78,22 +109,46 @@ public class Material : StatefulWidget
     {
         MaterialInkController? controller = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (controller is null)
             {
-                if (controller is null)
+                if (
+                    LookupBoundary.debugIsHidingAncestorRenderObjectOfType<_RenderInkFeatures__material>(
+                        context
+                    )
+                )
                 {
-                    if (LookupBoundary.debugIsHidingAncestorRenderObjectOfType<_RenderInkFeatures__material>(context))
-                    {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create("Material.of() was called with a context that does not have access to a Material widget.\n" + "The context provided to Material.of() does have a Material widget ancestor, but it is " + "hidden by a LookupBoundary. This can happen because you are using a widget that looks " + "for a Material ancestor, but no such ancestor exists within the closest LookupBoundary.\n" + "The context used was:\n" + $"  {context}"));
-                    }
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Material.of() was called with a context that does not contain a Material widget.\n" + "No Material widget ancestor could be found starting from the context that was passed to " + "Material.of(). This can happen because you are using a widget that looks for a Material " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            "Material.of() was called with a context that does not have access to a Material widget.\n"
+                                + "The context provided to Material.of() does have a Material widget ancestor, but it is "
+                                + "hidden by a LookupBoundary. This can happen because you are using a widget that looks "
+                                + "for a Material ancestor, but no such ancestor exists within the closest LookupBoundary.\n"
+                                + "The context used was:\n"
+                                + $"  {context}"
+                        )
+                    );
                 }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "Material.of() was called with a context that does not contain a Material widget.\n"
+                            + "No Material widget ancestor could be found starting from the context that was passed to "
+                            + "Material.of(). This can happen because you are using a widget that looks for a Material "
+                            + "ancestor, but no such ancestor exists.\n"
+                            + "The context used was:\n"
+                            + $"  {context}"
+                    )
+                );
+            }
+            return true;
+        });
         return controller!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialState__material());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MaterialState__material());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -104,48 +159,160 @@ public class Material : StatefulWidget
         properties.add(new ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
         textStyle?.debugFillProperties(properties, prefix: "textStyle.");
         properties.add(new DiagnosticsProperty<ShapeBorder>("shape", shape, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("borderOnForeground", borderOnForeground, defaultValue: true));
-        properties.add(new DiagnosticsProperty<BorderRadiusGeometry>("borderRadius", borderRadius, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<bool>(
+                "borderOnForeground",
+                borderOnForeground,
+                defaultValue: true
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<BorderRadiusGeometry>(
+                "borderRadius",
+                borderRadius,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
 internal class _MaterialState__material : State<Material>, TickerProviderStateMixin<Material>
 {
-    internal virtual GlobalKey<IState> _inkFeatureRenderer { get; private set; } = GlobalKey<IState>.Create(debugLabel: "ink renderer");
+    internal virtual GlobalKey<IState> _inkFeatureRenderer { get; private set; } =
+        GlobalKey<IState>.Create(debugLabel: "ink renderer");
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        Color? backgroundColor = (Color?)(widget.color ?? (widget.type switch { MaterialType.canvas => theme.canvasColor, MaterialType.card => theme.cardColor, MaterialType.button or MaterialType.circle => DartRuntimePrimitives.ConvertValue<Color>(null), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        Color? backgroundColor = (Color?)(
+            widget.color
+            ?? (
+                widget.type switch
+                {
+                    MaterialType.canvas => theme.canvasColor,
+                    MaterialType.card => theme.cardColor,
+                    MaterialType.button or MaterialType.circle =>
+                        DartRuntimePrimitives.ConvertValue<Color>(null),
+                    MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null),
+                    _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                }
+            )
+        );
         Color modelShadowColor = widget.shadowColor ?? theme.colorScheme.shadow;
-        DartRuntimePrimitives.Assert(() => (backgroundColor is not null) || Equals(widget.type, MaterialType.transparency), () => (object?)"If Material type is not MaterialType.transparency, a color must " + "either be passed in through the `color` property, or be defined " + "in the theme (ex. canvasColor != null if type is set to " + "MaterialType.canvas)");
+        DartRuntimePrimitives.Assert(
+            () => (backgroundColor is not null) || Equals(widget.type, MaterialType.transparency),
+            () =>
+                (object?)"If Material type is not MaterialType.transparency, a color must "
+                + "either be passed in through the `color` property, or be defined "
+                + "in the theme (ex. canvasColor != null if type is set to "
+                + "MaterialType.canvas)"
+        );
         Widget? contents = widget.child;
         if (contents is not null)
         {
-            contents = DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedDefaultTextStyle(style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium!, duration: widget.animationDuration, child: contents));
+            contents = DartRuntimePrimitives.ConvertValue<Widget>(
+                new AnimatedDefaultTextStyle(
+                    style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium!,
+                    duration: widget.animationDuration,
+                    child: contents
+                )
+            );
         }
-        contents = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<LayoutChangedNotification>(onNotification: (notification) =>
-        {
-            var renderer = ((_RenderInkFeatures__material?)_inkFeatureRenderer.currentContext!.findRenderObject()!)!;
-            renderer._didChangeLayout();
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new _InkFeatures__material(key: _inkFeatureRenderer, absorbHitTest: !Equals(widget.type, MaterialType.transparency), color: backgroundColor, vsync: this, child: contents)));
-        ShapeBorder? shapeLocal = (widget.borderRadius is not null) ? new RoundedRectangleBorder(borderRadius: widget.borderRadius!) : widget.shape;
+        contents = DartRuntimePrimitives.ConvertValue<Widget>(
+            new NotificationListener<LayoutChangedNotification>(
+                onNotification: (notification) =>
+                {
+                    var renderer = (
+                        (_RenderInkFeatures__material?)
+                            _inkFeatureRenderer.currentContext!.findRenderObject()!
+                    )!;
+                    renderer._didChangeLayout();
+                    return false;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                child: new _InkFeatures__material(
+                    key: _inkFeatureRenderer,
+                    absorbHitTest: !Equals(widget.type, MaterialType.transparency),
+                    color: backgroundColor,
+                    vsync: this,
+                    child: contents
+                )
+            )
+        );
+        ShapeBorder? shapeLocal =
+            (widget.borderRadius is not null)
+                ? new RoundedRectangleBorder(borderRadius: widget.borderRadius!)
+                : widget.shape;
         if (Equals(widget.type, MaterialType.canvas) && (shapeLocal is null))
         {
-            Color colorLocal = ElevationOverlay.applySurfaceTint(backgroundColor!, widget.surfaceTintColor, widget.elevation);
-            return new AnimatedPhysicalModel(curve: Curves.fastOutSlowIn, duration: widget.animationDuration, clipBehavior: widget.clipBehavior, elevation: widget.elevation, color: colorLocal, shadowColor: modelShadowColor, animateColor: widget.animateColor, child: contents);
+            Color colorLocal = ElevationOverlay.applySurfaceTint(
+                backgroundColor!,
+                widget.surfaceTintColor,
+                widget.elevation
+            );
+            return new AnimatedPhysicalModel(
+                curve: Curves.fastOutSlowIn,
+                duration: widget.animationDuration,
+                clipBehavior: widget.clipBehavior,
+                elevation: widget.elevation,
+                color: colorLocal,
+                shadowColor: modelShadowColor,
+                animateColor: widget.animateColor,
+                child: contents
+            );
         }
-        shapeLocal ??= (widget.type switch { MaterialType.circle => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(new CircleBorder()), MaterialType.canvas => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(new RoundedRectangleBorder()), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(new RoundedRectangleBorder()), MaterialType.card => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), MaterialType.button => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        shapeLocal ??= (
+            widget.type switch
+            {
+                MaterialType.circle => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(
+                    new CircleBorder()
+                ),
+                MaterialType.canvas => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(
+                    new RoundedRectangleBorder()
+                ),
+                MaterialType.transparency => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(
+                    new RoundedRectangleBorder()
+                ),
+                MaterialType.card => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(
+                    new RoundedRectangleBorder(
+                        borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))
+                    )
+                ),
+                MaterialType.button => DartRuntimePrimitives.ConvertValue<OutlinedBorder>(
+                    new RoundedRectangleBorder(
+                        borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))
+                    )
+                ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         if (Equals(widget.type, MaterialType.transparency))
         {
-            return new ClipPath(clipper: new ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: widget.clipBehavior, child: new _ShapeBorderPaint__material(shape: shapeLocal, child: contents));
+            return new ClipPath(
+                clipper: new ShapeBorderClipper(
+                    shape: shapeLocal,
+                    textDirection: Directionality.maybeOf(context)
+                ),
+                clipBehavior: widget.clipBehavior,
+                child: new _ShapeBorderPaint__material(shape: shapeLocal, child: contents)
+            );
         }
-        return new _MaterialInterior__material(curve: Curves.fastOutSlowIn, duration: widget.animationDuration, shape: shapeLocal, borderOnForeground: widget.borderOnForeground, clipBehavior: widget.clipBehavior, elevation: widget.elevation, color: backgroundColor!, shadowColor: modelShadowColor, surfaceTintColor: widget.surfaceTintColor, child: contents);
+        return new _MaterialInterior__material(
+            curve: Curves.fastOutSlowIn,
+            duration: widget.animationDuration,
+            shape: shapeLocal,
+            borderOnForeground: widget.borderOnForeground,
+            clipBehavior: widget.clipBehavior,
+            elevation: widget.elevation,
+            color: backgroundColor!,
+            shadowColor: modelShadowColor,
+            surfaceTintColor: widget.surfaceTintColor,
+            child: contents
+        );
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -157,13 +324,23 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -212,19 +389,37 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -233,9 +428,17 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class _RenderInkFeatures__material : RenderProxyBox, MaterialInkController
@@ -245,7 +448,13 @@ public class _RenderInkFeatures__material : RenderProxyBox, MaterialInkControlle
     public virtual bool absorbHitTest { get; set; } = default!;
     internal virtual List<InkFeature>? _inkFeatures { get; set; } = default;
 
-    internal _RenderInkFeatures__material(RenderBox? child = null, Scheduler.TickerProvider vsync = default!, bool absorbHitTest = default!, Color? color = null) : base(child)
+    internal _RenderInkFeatures__material(
+        RenderBox? child = null,
+        Scheduler.TickerProvider vsync = default!,
+        bool absorbHitTest = default!,
+        Color? color = null
+    )
+        : base(child)
     {
         this.vsync = vsync;
         this.absorbHitTest = absorbHitTest;
@@ -263,6 +472,7 @@ public class _RenderInkFeatures__material : RenderProxyBox, MaterialInkControlle
             return null;
         }
     }
+
     public virtual void addInkFeature(InkFeature feature)
     {
         DartRuntimePrimitives.Assert(() => !feature._debugDisposed);
@@ -282,13 +492,20 @@ public class _RenderInkFeatures__material : RenderProxyBox, MaterialInkControlle
 
     internal virtual void _didChangeLayout()
     {
-        if ((_inkFeatures is { } __items23755 ? System.Linq.Enumerable.Any(__items23755) : (bool?)null) ?? false)
+        if (
+            (
+                _inkFeatures is { } __items23755
+                    ? System.Linq.Enumerable.Any(__items23755)
+                    : (bool?)null
+            ) ?? false
+        )
         {
             markNeedsPaint();
         }
     }
 
     public override bool hitTestSelf(Offset position) => absorbHitTest;
+
     public override void paint(PaintingContext context, Offset offset)
     {
         List<InkFeature>? inkFeatures = _inkFeatures;
@@ -307,7 +524,6 @@ public class _RenderInkFeatures__material : RenderProxyBox, MaterialInkControlle
         DartRuntimePrimitives.Assert(() => Equals(inkFeatures, _inkFeatures));
         base.paint(context, offset);
     }
-
 }
 
 internal class _InkFeatures__material : SingleChildRenderObjectWidget
@@ -316,7 +532,14 @@ internal class _InkFeatures__material : SingleChildRenderObjectWidget
     public virtual Scheduler.TickerProvider vsync { get; private set; } = default!;
     public virtual bool absorbHitTest { get; private set; } = default!;
 
-    internal _InkFeatures__material(Key? key = null, Color? color = null, Scheduler.TickerProvider vsync = default!, bool absorbHitTest = default!, Widget? child = null) : base(key: key, child: child)
+    internal _InkFeatures__material(
+        Key? key = null,
+        Color? color = null,
+        Scheduler.TickerProvider vsync = default!,
+        bool absorbHitTest = default!,
+        Widget? child = null
+    )
+        : base(key: key, child: child)
     {
         this.color = color;
         this.vsync = vsync;
@@ -325,23 +548,32 @@ internal class _InkFeatures__material : SingleChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderInkFeatures__material(color: color, absorbHitTest: absorbHitTest, vsync: vsync);
+        return new _RenderInkFeatures__material(
+            color: color,
+            absorbHitTest: absorbHitTest,
+            vsync: vsync
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderInkFeatures__material)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderInkFeatures__material>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.color = color;
-    __cascade.absorbHitTest = absorbHitTest;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderInkFeatures__material>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.color = color;
+                        __cascade.absorbHitTest = absorbHitTest;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         DartRuntimePrimitives.Assert(() => Equals(vsync, __renderObject.vsync));
     }
-
 }
 
 public abstract class InkFeature
@@ -351,29 +583,42 @@ public abstract class InkFeature
     public virtual Action? onRemoved { get; private set; }
     internal virtual bool _debugDisposed { get; set; } = false;
 
-    protected InkFeature(MaterialInkController controller, RenderBox referenceBox, Action? onRemoved = null)
+    protected InkFeature(
+        MaterialInkController controller,
+        RenderBox referenceBox,
+        Action? onRemoved = null
+    )
     {
         this.referenceBox = referenceBox;
         this.onRemoved = onRemoved;
         _controller = ((_RenderInkFeatures__material?)controller)!;
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "InkFeature", this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "InkFeature", this)
+        );
     }
 
-    public virtual MaterialInkController controller => DartRuntimePrimitives.ConvertValue<MaterialInkController>(_controller);
+    public virtual MaterialInkController controller =>
+        DartRuntimePrimitives.ConvertValue<MaterialInkController>(_controller);
+
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => !_debugDisposed);
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugDisposed = true;
-                return true;
-            });
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        {
+            _debugDisposed = true;
+            return true;
+        });
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _controller._removeFeature(this);
         onRemoved?.Invoke();
     }
 
-    internal static Matrix4? _getPaintTransform(RenderObject fromRenderObject, RenderObject toRenderObject)
+    internal static Matrix4? _getPaintTransform(
+        RenderObject fromRenderObject,
+        RenderObject toRenderObject
+    )
     {
         var fromPath = new List<RenderObject> { fromRenderObject };
         var toPath = new List<RenderObject> { toRenderObject };
@@ -413,15 +658,22 @@ public abstract class InkFeature
         }
         for (long indexLocal = checked(fromPath.Count) - 1L; indexLocal > 0L; indexLocal -= 1L)
         {
-            fromPath[(int)indexLocal].applyPaintTransform(fromPath[(int)(indexLocal - 1L)], inverseTransform);
+            fromPath[(int)indexLocal]
+                .applyPaintTransform(fromPath[(int)(indexLocal - 1L)], inverseTransform);
         }
         double det = inverseTransform.invert();
-        return (det != 0L) ? ((Func<Matrix4>)(() =>
-{
-    var __cascade = inverseTransform;
-    __cascade.multiply(transform);
-    return __cascade;
-}))() : null;
+        return (det != 0L)
+            ? (
+                (Func<Matrix4>)(
+                    () =>
+                    {
+                        var __cascade = inverseTransform;
+                        __cascade.multiply(transform);
+                        return __cascade;
+                    }
+                )
+            )()
+            : null;
     }
 
     internal virtual void _paint(Canvas canvas)
@@ -436,21 +688,20 @@ public abstract class InkFeature
     }
 
     public virtual void paintFeature(Canvas canvas, Matrix4 transform) { }
+
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class ShapeBorderTween : Tween<ShapeBorder?>
 {
-    public ShapeBorderTween(ShapeBorder? begin = null, ShapeBorder? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public ShapeBorderTween(ShapeBorder? begin = null, ShapeBorder? end = null)
+        : base(begin: begin, end: end) { }
 
     public override ShapeBorder? lerp(double t)
     {
         return ShapeBorder.lerp(begin, end, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _MaterialInterior__material : ImplicitlyAnimatedWidget
@@ -464,7 +715,19 @@ internal class _MaterialInterior__material : ImplicitlyAnimatedWidget
     public virtual Color shadowColor { get; private set; } = default!;
     public virtual Color? surfaceTintColor { get; private set; }
 
-    internal _MaterialInterior__material(Widget child, ShapeBorder shape, bool borderOnForeground = true, Clip clipBehavior = Clip.none, double elevation = default!, Color color = default!, Color shadowColor = default!, Color? surfaceTintColor = default!, Curve curve = default!, Duration duration = default!) : base(curve: curve ?? Curves.linear, duration: duration)
+    internal _MaterialInterior__material(
+        Widget child,
+        ShapeBorder shape,
+        bool borderOnForeground = true,
+        Clip clipBehavior = Clip.none,
+        double elevation = default!,
+        Color color = default!,
+        Color shadowColor = default!,
+        Color? surfaceTintColor = default!,
+        Curve curve = default!,
+        Duration duration = default!
+    )
+        : base(curve: curve ?? Curves.linear, duration: duration)
     {
         this.child = child;
         this.shape = shape;
@@ -477,7 +740,9 @@ internal class _MaterialInterior__material : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialInteriorState__material());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _MaterialInteriorState__material());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
@@ -486,33 +751,79 @@ internal class _MaterialInterior__material : ImplicitlyAnimatedWidget
         description.add(new ColorProperty("color", color));
         description.add(new ColorProperty("shadowColor", shadowColor));
     }
-
 }
 
-internal class _MaterialInteriorState__material : AnimatedWidgetBaseState<_MaterialInterior__material>
+internal class _MaterialInteriorState__material
+    : AnimatedWidgetBaseState<_MaterialInterior__material>
 {
     internal virtual Tween<double>? _elevation { get; set; } = default;
     internal virtual ColorTween? _surfaceTintColor { get; set; } = default;
     internal virtual ColorTween? _shadowColor { get; set; } = default;
     internal virtual ShapeBorderTween? _border { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _elevation = ((Tween<double>?)visitor(_elevation, widget.elevation, (value) => new Tween<double>(begin: (double)value)))!;
-        _shadowColor = ((ColorTween?)visitor(_shadowColor, widget.shadowColor, (value) => new ColorTween(begin: ((Color?)value)!)))!;
-        _surfaceTintColor = (widget.surfaceTintColor is not null) ? ((ColorTween?)visitor(_surfaceTintColor, widget.surfaceTintColor, (value) => new ColorTween(begin: ((Color?)value)!)))! : null;
-        _border = ((ShapeBorderTween?)visitor(_border, widget.shape, (value) => new ShapeBorderTween(begin: ((ShapeBorder?)value)!)))!;
+        _elevation = (
+            (Tween<double>?)visitor(
+                _elevation,
+                widget.elevation,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _shadowColor = (
+            (ColorTween?)visitor(
+                _shadowColor,
+                widget.shadowColor,
+                (value) => new ColorTween(begin: ((Color?)value)!)
+            )
+        )!;
+        _surfaceTintColor =
+            (widget.surfaceTintColor is not null)
+                ? (
+                    (ColorTween?)visitor(
+                        _surfaceTintColor,
+                        widget.surfaceTintColor,
+                        (value) => new ColorTween(begin: ((Color?)value)!)
+                    )
+                )!
+                : null;
+        _border = (
+            (ShapeBorderTween?)visitor(
+                _border,
+                widget.shape,
+                (value) => new ShapeBorderTween(begin: ((ShapeBorder?)value)!)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
         ShapeBorder shapeLocal = _border!.evaluate(animation)!;
         double elevationLocal = _elevation!.evaluate(animation);
-        Color colorLocal = ElevationOverlay.applySurfaceTint(widget.color, _surfaceTintColor?.evaluate(animation), elevationLocal);
+        Color colorLocal = ElevationOverlay.applySurfaceTint(
+            widget.color,
+            _surfaceTintColor?.evaluate(animation),
+            elevationLocal
+        );
         Color shadowColorLocal = _shadowColor!.evaluate(animation)!;
-        return new PhysicalShape(clipper: new ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: widget.clipBehavior, elevation: elevationLocal, color: colorLocal, shadowColor: shadowColorLocal, child: new _ShapeBorderPaint__material(shape: shapeLocal, borderOnForeground: widget.borderOnForeground, child: widget.child));
+        return new PhysicalShape(
+            clipper: new ShapeBorderClipper(
+                shape: shapeLocal,
+                textDirection: Directionality.maybeOf(context)
+            ),
+            clipBehavior: widget.clipBehavior,
+            elevation: elevationLocal,
+            color: colorLocal,
+            shadowColor: shadowColorLocal,
+            child: new _ShapeBorderPaint__material(
+                shape: shapeLocal,
+                borderOnForeground: widget.borderOnForeground,
+                child: widget.child
+            )
+        );
     }
-
 }
 
 internal class _ShapeBorderPaint__material : StatelessWidget
@@ -521,7 +832,11 @@ internal class _ShapeBorderPaint__material : StatelessWidget
     public virtual ShapeBorder shape { get; private set; } = default!;
     public virtual bool borderOnForeground { get; private set; } = default!;
 
-    internal _ShapeBorderPaint__material(Widget child, ShapeBorder shape, bool borderOnForeground = true)
+    internal _ShapeBorderPaint__material(
+        Widget child,
+        ShapeBorder shape,
+        bool borderOnForeground = true
+    )
     {
         this.child = child;
         this.shape = shape;
@@ -530,10 +845,17 @@ internal class _ShapeBorderPaint__material : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new CustomPaint(painter: borderOnForeground ? null : new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context)), foregroundPainter: borderOnForeground ? new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context)) : null, child: child);
+        return new CustomPaint(
+            painter: borderOnForeground
+                ? null
+                : new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context)),
+            foregroundPainter: borderOnForeground
+                ? new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context))
+                : null,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ShapeBorderPainter__material : CustomPainter
@@ -558,5 +880,4 @@ internal class _ShapeBorderPainter__material : CustomPainter
         return !Equals(__oldDelegate.border, border);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

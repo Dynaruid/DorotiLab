@@ -4,9 +4,11 @@ namespace Doroti.Framework.Foundation;
 
 public static class CapabilitiesLibrary
 {
-    public static bool isCanvasKit => throw new NotSupportedException("isCanvasKit is not implemented for dart:io.");
+    public static bool isCanvasKit =>
+        throw new NotSupportedException("isCanvasKit is not implemented for dart:io.");
 
-    public static bool isSkwasm => throw new NotSupportedException("isSkwasm is not implemented for dart:io.");
+    public static bool isSkwasm =>
+        throw new NotSupportedException("isSkwasm is not implemented for dart:io.");
 
     public static bool isSkiaWeb => isCanvasKit || isSkwasm;
 }

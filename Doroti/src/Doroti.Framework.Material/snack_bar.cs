@@ -43,7 +43,11 @@ public static partial class Snack_barLibrary
 
 public static partial class Snack_barLibrary
 {
-    internal static Curve _snackBarFadeOutCurve = new Interval(0.72, 1.0, curve: Curves.fastOutSlowIn);
+    internal static Curve _snackBarFadeOutCurve = new Interval(
+        0.72,
+        1.0,
+        curve: Curves.fastOutSlowIn
+    );
 }
 
 public enum SnackBarClosedReason
@@ -53,7 +57,7 @@ public enum SnackBarClosedReason
     swipe,
     hide,
     remove,
-    timeout
+    timeout,
 }
 
 public class SnackBarAction : StatefulWidget
@@ -65,7 +69,16 @@ public class SnackBarAction : StatefulWidget
     public virtual string label { get; private set; } = default!;
     public virtual Action onPressed { get; private set; } = default!;
 
-    public SnackBarAction(Key? key = null, Color? textColor = null, Color? disabledTextColor = null, Color? backgroundColor = null, Color? disabledBackgroundColor = null, string label = default!, Action onPressed = default!) : base(key: key)
+    public SnackBarAction(
+        Key? key = null,
+        Color? textColor = null,
+        Color? disabledTextColor = null,
+        Color? backgroundColor = null,
+        Color? disabledBackgroundColor = null,
+        string label = default!,
+        Action onPressed = default!
+    )
+        : base(key: key)
     {
         this.textColor = textColor;
         this.disabledTextColor = disabledTextColor;
@@ -73,10 +86,13 @@ public class SnackBarAction : StatefulWidget
         this.disabledBackgroundColor = disabledBackgroundColor;
         this.label = label;
         this.onPressed = onPressed;
-        System.Diagnostics.Debug.Assert((backgroundColor is not WidgetStateColor) || (disabledBackgroundColor is null));
+        System.Diagnostics.Debug.Assert(
+            (backgroundColor is not WidgetStateColor) || (disabledBackgroundColor is null)
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SnackBarActionState__snack_bar());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SnackBarActionState__snack_bar());
 }
 
 internal class _SnackBarActionState__snack_bar : State<SnackBarAction>
@@ -130,15 +146,19 @@ internal class _SnackBarActionState__snack_bar : State<SnackBarAction>
                     }
                 }
             }
-            return WidgetStateColor.CreateResolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateColor.CreateResolveWith(
+                (states) =>
                 {
-                    return (widget.disabledTextColor ?? snackBarTheme.disabledActionTextColor) ?? defaults.disabledActionTextColor!;
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return (widget.disabledTextColor ?? snackBarTheme.disabledActionTextColor)
+                            ?? defaults.disabledActionTextColor!;
+                    }
+                    return (widget.textColor ?? snackBarTheme.actionTextColor)
+                        ?? defaults.actionTextColor!;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return (widget.textColor ?? snackBarTheme.actionTextColor) ?? defaults.actionTextColor!;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         WidgetStateColor? resolveBackgroundColor()
@@ -151,20 +171,34 @@ internal class _SnackBarActionState__snack_bar : State<SnackBarAction>
             {
                 return ((WidgetStateColor?)snackBarTheme.actionBackgroundColor!)!;
             }
-            return WidgetStateColor.CreateResolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateColor.CreateResolveWith(
+                (states) =>
                 {
-                    return (widget.disabledBackgroundColor ?? snackBarTheme.disabledActionBackgroundColor) ?? Colors.transparent;
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return (
+                                widget.disabledBackgroundColor
+                                ?? snackBarTheme.disabledActionBackgroundColor
+                            ) ?? Colors.transparent;
+                    }
+                    return (widget.backgroundColor ?? snackBarTheme.actionBackgroundColor)
+                        ?? Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return (widget.backgroundColor ?? snackBarTheme.actionBackgroundColor) ?? Colors.transparent;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        return new TextButton(style: TextButton.styleFrom(overlayColor: resolveForegroundColor()).copyWith(foregroundColor: resolveForegroundColor(), backgroundColor: resolveBackgroundColor()), onPressed: _haveTriggeredAction ? null : _handlePressed, child: new Text(widget.label));
+        return new TextButton(
+            style: TextButton
+                .styleFrom(overlayColor: resolveForegroundColor())
+                .copyWith(
+                    foregroundColor: resolveForegroundColor(),
+                    backgroundColor: resolveBackgroundColor()
+                ),
+            onPressed: _haveTriggeredAction ? null : _handlePressed,
+            child: new Text(widget.label)
+        );
     }
-
 }
 
 public class SnackBar : StatefulWidget
@@ -189,7 +223,29 @@ public class SnackBar : StatefulWidget
     public virtual DismissDirection? dismissDirection { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public SnackBar(Key? key = null, Widget content = default!, Color? backgroundColor = null, double? elevation = null, EdgeInsetsGeometry? margin = null, EdgeInsetsGeometry? padding = null, double? width = null, ShapeBorder? shape = null, HitTestBehavior? hitTestBehavior = null, SnackBarBehavior? behavior = null, SnackBarAction? action = null, double? actionOverflowThreshold = null, bool? showCloseIcon = null, Color? closeIconColor = null, Duration? duration = null, bool? persist = null, Animation<double>? animation = null, Action? onVisible = null, DismissDirection? dismissDirection = null, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public SnackBar(
+        Key? key = null,
+        Widget content = default!,
+        Color? backgroundColor = null,
+        double? elevation = null,
+        EdgeInsetsGeometry? margin = null,
+        EdgeInsetsGeometry? padding = null,
+        double? width = null,
+        ShapeBorder? shape = null,
+        HitTestBehavior? hitTestBehavior = null,
+        SnackBarBehavior? behavior = null,
+        SnackBarAction? action = null,
+        double? actionOverflowThreshold = null,
+        bool? showCloseIcon = null,
+        Color? closeIconColor = null,
+        Duration? duration = null,
+        bool? persist = null,
+        Animation<double>? animation = null,
+        Action? onVisible = null,
+        DismissDirection? dismissDirection = null,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(key: key)
     {
         Duration __duration = duration ?? Snack_barLibrary._snackBarDisplayDuration;
         this.content = content;
@@ -213,22 +269,56 @@ public class SnackBar : StatefulWidget
         this.persist = persist ?? (action is not null);
         System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
         System.Diagnostics.Debug.Assert((width is null) || (margin is null));
-        System.Diagnostics.Debug.Assert((actionOverflowThreshold is null) || (actionOverflowThreshold >= 0L) && (actionOverflowThreshold <= 1L));
+        System.Diagnostics.Debug.Assert(
+            (actionOverflowThreshold is null)
+                || ((actionOverflowThreshold >= 0L) && (actionOverflowThreshold <= 1L))
+        );
     }
 
-    public static AnimationController createAnimationController(Scheduler.TickerProvider vsync, Duration? duration = null, Duration? reverseDuration = null)
+    public static AnimationController createAnimationController(
+        Scheduler.TickerProvider vsync,
+        Duration? duration = null,
+        Duration? reverseDuration = null
+    )
     {
-        return new AnimationController(duration: duration ?? Snack_barLibrary._snackBarTransitionDuration, reverseDuration: reverseDuration, debugLabel: "SnackBar", vsync: vsync);
+        return new AnimationController(
+            duration: duration ?? Snack_barLibrary._snackBarTransitionDuration,
+            reverseDuration: reverseDuration,
+            debugLabel: "SnackBar",
+            vsync: vsync
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual SnackBar withAnimation(Animation<double> newAnimation, Key? fallbackKey = null)
     {
-        return new SnackBar(key: key ?? fallbackKey, content: content, backgroundColor: backgroundColor, elevation: elevation, margin: margin, padding: padding, width: width, shape: shape, hitTestBehavior: hitTestBehavior, behavior: behavior, action: action, actionOverflowThreshold: actionOverflowThreshold, showCloseIcon: showCloseIcon, closeIconColor: closeIconColor, duration: DartRuntimePrimitives.RequireValue(duration), persist: persist, animation: newAnimation, onVisible: onVisible, dismissDirection: dismissDirection, clipBehavior: clipBehavior);
+        return new SnackBar(
+            key: key ?? fallbackKey,
+            content: content,
+            backgroundColor: backgroundColor,
+            elevation: elevation,
+            margin: margin,
+            padding: padding,
+            width: width,
+            shape: shape,
+            hitTestBehavior: hitTestBehavior,
+            behavior: behavior,
+            action: action,
+            actionOverflowThreshold: actionOverflowThreshold,
+            showCloseIcon: showCloseIcon,
+            closeIconColor: closeIconColor,
+            duration: DartRuntimePrimitives.RequireValue(duration),
+            persist: persist,
+            animation: newAnimation,
+            onVisible: onVisible,
+            dismissDirection: dismissDirection,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SnackBarState__snack_bar());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SnackBarState__snack_bar());
 }
 
 internal class _SnackBarState__snack_bar : State<SnackBar>
@@ -263,11 +353,28 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
     internal virtual void _setAnimations()
     {
         DartRuntimePrimitives.Assert(() => widget.animation is not null);
-        _heightAnimation = new CurvedAnimation(parent: widget.animation!, curve: Snack_barLibrary._snackBarHeightCurve);
-        _fadeInAnimation = new CurvedAnimation(parent: widget.animation!, curve: Snack_barLibrary._snackBarFadeInCurve);
-        _fadeInM3Animation = new CurvedAnimation(parent: widget.animation!, curve: Snack_barLibrary._snackBarM3FadeInCurve);
-        _fadeOutAnimation = new CurvedAnimation(parent: widget.animation!, curve: Snack_barLibrary._snackBarFadeOutCurve, reverseCurve: new Threshold(0.0));
-        _heightM3Animation = new CurvedAnimation(parent: widget.animation!, curve: Snack_barLibrary._snackBarM3HeightCurve, reverseCurve: new Threshold(0.0));
+        _heightAnimation = new CurvedAnimation(
+            parent: widget.animation!,
+            curve: Snack_barLibrary._snackBarHeightCurve
+        );
+        _fadeInAnimation = new CurvedAnimation(
+            parent: widget.animation!,
+            curve: Snack_barLibrary._snackBarFadeInCurve
+        );
+        _fadeInM3Animation = new CurvedAnimation(
+            parent: widget.animation!,
+            curve: Snack_barLibrary._snackBarM3FadeInCurve
+        );
+        _fadeOutAnimation = new CurvedAnimation(
+            parent: widget.animation!,
+            curve: Snack_barLibrary._snackBarFadeOutCurve,
+            reverseCurve: new Threshold(0.0)
+        );
+        _heightM3Animation = new CurvedAnimation(
+            parent: widget.animation!,
+            curve: Snack_barLibrary._snackBarM3HeightCurve,
+            reverseCurve: new Threshold(0.0)
+        );
     }
 
     internal virtual void _disposeAnimations()
@@ -316,88 +423,322 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         SnackBarThemeData defaults = new _SnackbarDefaultsM3__snack_bar(context);
         Brightness brightnessLocal = isThemeDark ? Brightness.light : Brightness.dark;
         ThemeData effectiveTheme = theme;
-        TextStyle? contentTextStyleLocal = snackBarTheme.contentTextStyle ?? defaults.contentTextStyle;
-        SnackBarBehavior snackBarBehavior = DartRuntimePrimitives.RequireValue(widget.behavior ?? snackBarTheme.behavior ?? defaults.behavior);
+        TextStyle? contentTextStyleLocal =
+            snackBarTheme.contentTextStyle ?? defaults.contentTextStyle;
+        SnackBarBehavior snackBarBehavior = DartRuntimePrimitives.RequireValue(
+            widget.behavior ?? snackBarTheme.behavior ?? defaults.behavior
+        );
         double? widthLocal = widget.width ?? snackBarTheme.width;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (!Equals(snackBarBehavior, SnackBarBehavior.floating))
             {
-                if (!Equals(snackBarBehavior, SnackBarBehavior.floating))
+                string message(string parameter)
                 {
-                    string message(string parameter)
+                    var prefix = $"{parameter} can only be used with floating behavior.";
+                    if (widget.behavior is not null)
                     {
-                        var prefix = $"{parameter} can only be used with floating behavior.";
-                        if (widget.behavior is not null)
+                        return $"{prefix} SnackBarBehavior.fixed was set in the SnackBar constructor.";
+                    }
+                    else
+                    {
+                        if (snackBarTheme.behavior is not null)
                         {
-                            return $"{prefix} SnackBarBehavior.fixed was set in the SnackBar constructor.";
+                            return $"{prefix} SnackBarBehavior.fixed was set by the inherited SnackBarThemeData.";
                         }
                         else
                         {
-                            if (snackBarTheme.behavior is not null)
-                            {
-                                return $"{prefix} SnackBarBehavior.fixed was set by the inherited SnackBarThemeData.";
-                            }
-                            else
-                            {
-                                return $"{prefix} SnackBarBehavior.fixed was set by default.";
-                            }
+                            return $"{prefix} SnackBarBehavior.fixed was set by default.";
                         }
-                        throw new InvalidOperationException("Dart control flow completed without a value.");
                     }
-                    DartRuntimePrimitives.Assert(() => widget.margin is null, () => (object?)message("Margin"));
-                    DartRuntimePrimitives.Assert(() => widthLocal is null, () => (object?)message("Width"));
+                    throw new InvalidOperationException(
+                        "Dart control flow completed without a value."
+                    );
                 }
-                return true;
-            });
-        bool showCloseIconLocal = (widget.showCloseIcon ?? snackBarTheme.showCloseIcon) ?? DartRuntimePrimitives.RequireValue(defaults.showCloseIcon);
+                DartRuntimePrimitives.Assert(
+                    () => widget.margin is null,
+                    () => (object?)message("Margin")
+                );
+                DartRuntimePrimitives.Assert(
+                    () => widthLocal is null,
+                    () => (object?)message("Width")
+                );
+            }
+            return true;
+        });
+        bool showCloseIconLocal =
+            (widget.showCloseIcon ?? snackBarTheme.showCloseIcon)
+            ?? DartRuntimePrimitives.RequireValue(defaults.showCloseIcon);
         var isFloatingSnackBar = Equals(snackBarBehavior, SnackBarBehavior.floating);
         var horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
-        EdgeInsetsGeometry paddingLocal = widget.padding ?? EdgeInsetsDirectional.CreateOnly(start: horizontalPadding, end: ((widget.action is not null) || showCloseIconLocal) ? 0 : horizontalPadding);
-        double actionHorizontalMargin = (widget.padding?.resolve(TextDirection.ltr).right ?? horizontalPadding) / 2L;
-        double iconHorizontalMargin = (widget.padding?.resolve(TextDirection.ltr).right ?? horizontalPadding) / 12.0;
-        IconButton? iconButton = showCloseIconLocal ? new IconButton(key: StandardComponentTypeMembers.key(StandardComponentType.closeButton), icon: new Icon(Icons.close), iconSize: 24.0, color: (widget.closeIconColor ?? snackBarTheme.closeIconColor) ?? defaults.closeIconColor, onPressed: () => { ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss); }, tooltip: MaterialLocalizations.of(context).closeButtonTooltip) : null;
-        var actionTextPainter = ((Func<TextPainter>)(() =>
-{
-    var __cascade = new TextPainter(text: new TextSpan(text: widget.action?.label ?? "", style: Theme.of(context).textTheme.labelLarge), maxLines: 1L, textDirection: TextDirection.ltr);
-    __cascade.layout();
-    return __cascade;
-}))();
-        double actionAndIconWidth = actionTextPainter.size.width + ((widget.action is not null) ? actionHorizontalMargin : 0L) + (showCloseIconLocal ? (iconButton?.iconSize ?? (0L + iconHorizontalMargin)) : 0L);
+        EdgeInsetsGeometry paddingLocal =
+            widget.padding
+            ?? EdgeInsetsDirectional.CreateOnly(
+                start: horizontalPadding,
+                end: ((widget.action is not null) || showCloseIconLocal) ? 0 : horizontalPadding
+            );
+        double actionHorizontalMargin =
+            (widget.padding?.resolve(TextDirection.ltr).right ?? horizontalPadding) / 2L;
+        double iconHorizontalMargin =
+            (widget.padding?.resolve(TextDirection.ltr).right ?? horizontalPadding) / 12.0;
+        IconButton? iconButton = showCloseIconLocal
+            ? new IconButton(
+                key: StandardComponentTypeMembers.key(StandardComponentType.closeButton),
+                icon: new Icon(Icons.close),
+                iconSize: 24.0,
+                color: (widget.closeIconColor ?? snackBarTheme.closeIconColor)
+                    ?? defaults.closeIconColor,
+                onPressed: () =>
+                {
+                    ScaffoldMessenger
+                        .of(context)
+                        .hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+                },
+                tooltip: MaterialLocalizations.of(context).closeButtonTooltip
+            )
+            : null;
+        var actionTextPainter = (
+            (Func<TextPainter>)(
+                () =>
+                {
+                    var __cascade = new TextPainter(
+                        text: new TextSpan(
+                            text: widget.action?.label ?? "",
+                            style: Theme.of(context).textTheme.labelLarge
+                        ),
+                        maxLines: 1L,
+                        textDirection: TextDirection.ltr
+                    );
+                    __cascade.layout();
+                    return __cascade;
+                }
+            )
+        )();
+        double actionAndIconWidth =
+            actionTextPainter.size.width
+            + ((widget.action is not null) ? actionHorizontalMargin : 0L)
+            + (showCloseIconLocal ? (iconButton?.iconSize ?? (0L + iconHorizontalMargin)) : 0L);
         actionTextPainter.dispose();
-        EdgeInsets marginLocal = (widget.margin?.resolve(TextDirection.ltr) ?? snackBarTheme.insetPadding) ?? defaults.insetPadding!;
-        double snackBarWidth = widget.width ?? (MediaQuery.widthOf(context) - (marginLocal.left + marginLocal.right));
-        double actionOverflowThresholdLocal = (widget.actionOverflowThreshold ?? snackBarTheme.actionOverflowThreshold) ?? DartRuntimePrimitives.RequireValue(defaults.actionOverflowThreshold);
-        bool willOverflowAction = (actionAndIconWidth / snackBarWidth) > actionOverflowThresholdLocal;
-        var maybeActionAndIcon = ((Func<List<Widget>>)(() => { var __collection27629 = new List<Widget>(); if (widget.action is not null) { __collection27629.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: actionHorizontalMargin), child: new TextButtonTheme(data: new TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: buttonColor, padding: EdgeInsets.CreateSymmetric(horizontal: horizontalPadding))), child: widget.action!)))); } if (showCloseIconLocal) { __collection27629.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: iconHorizontalMargin), child: iconButton))); } return __collection27629; }))();
-        Widget snackBar = new Padding(padding: paddingLocal, child: new Wrap(children: ((Func<List<Widget>>)(() => { var __collection28354 = new List<Widget>(); __collection28354.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Row(children: ((Func<List<Widget>>)(() => { var __collection28401 = new List<Widget>(); __collection28401.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Padding(padding: (widget.padding is null) ? EdgeInsets.CreateSymmetric(vertical: Snack_barLibrary._singleLineVerticalPadding) : EdgeInsets.zero, child: new DefaultTextStyle(style: contentTextStyleLocal!, child: widget.content))))); if (!willOverflowAction) { __collection28401.AddRange(maybeActionAndIcon); } if (willOverflowAction) { __collection28401.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: snackBarWidth * 0.4))); } return __collection28401; }))()))); if (willOverflowAction) { __collection28354.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(bottom: Snack_barLibrary._singleLineVerticalPadding), child: new Row(mainAxisAlignment: MainAxisAlignment.end, children: maybeActionAndIcon)))); } return __collection28354; }))()));
+        EdgeInsets marginLocal =
+            (widget.margin?.resolve(TextDirection.ltr) ?? snackBarTheme.insetPadding)
+            ?? defaults.insetPadding!;
+        double snackBarWidth =
+            widget.width ?? (MediaQuery.widthOf(context) - (marginLocal.left + marginLocal.right));
+        double actionOverflowThresholdLocal =
+            (widget.actionOverflowThreshold ?? snackBarTheme.actionOverflowThreshold)
+            ?? DartRuntimePrimitives.RequireValue(defaults.actionOverflowThreshold);
+        bool willOverflowAction =
+            (actionAndIconWidth / snackBarWidth) > actionOverflowThresholdLocal;
+        var maybeActionAndIcon = (
+            (Func<List<Widget>>)(
+                () =>
+                {
+                    var __collection27629 = new List<Widget>();
+                    if (widget.action is not null)
+                    {
+                        __collection27629.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new Padding(
+                                    padding: EdgeInsets.CreateSymmetric(
+                                        horizontal: actionHorizontalMargin
+                                    ),
+                                    child: new TextButtonTheme(
+                                        data: new TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                                foregroundColor: buttonColor,
+                                                padding: EdgeInsets.CreateSymmetric(
+                                                    horizontal: horizontalPadding
+                                                )
+                                            )
+                                        ),
+                                        child: widget.action!
+                                    )
+                                )
+                            )
+                        );
+                    }
+                    if (showCloseIconLocal)
+                    {
+                        __collection27629.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new Padding(
+                                    padding: EdgeInsets.CreateSymmetric(
+                                        horizontal: iconHorizontalMargin
+                                    ),
+                                    child: iconButton
+                                )
+                            )
+                        );
+                    }
+                    return __collection27629;
+                }
+            )
+        )();
+        Widget snackBar = new Padding(
+            padding: paddingLocal,
+            child: new Wrap(
+                children: (
+                    (Func<List<Widget>>)(
+                        () =>
+                        {
+                            var __collection28354 = new List<Widget>();
+                            __collection28354.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new Row(
+                                        children: (
+                                            (Func<List<Widget>>)(
+                                                () =>
+                                                {
+                                                    var __collection28401 = new List<Widget>();
+                                                    __collection28401.Add(
+                                                        DartRuntimePrimitives.ConvertValue<Widget>(
+                                                            new Expanded(
+                                                                child: new Padding(
+                                                                    padding: (
+                                                                        widget.padding is null
+                                                                    )
+                                                                        ? EdgeInsets.CreateSymmetric(
+                                                                            vertical: Snack_barLibrary._singleLineVerticalPadding
+                                                                        )
+                                                                        : EdgeInsets.zero,
+                                                                    child: new DefaultTextStyle(
+                                                                        style: contentTextStyleLocal!,
+                                                                        child: widget.content
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    );
+                                                    if (!willOverflowAction)
+                                                    {
+                                                        __collection28401.AddRange(
+                                                            maybeActionAndIcon
+                                                        );
+                                                    }
+                                                    if (willOverflowAction)
+                                                    {
+                                                        __collection28401.Add(
+                                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                                new SizedBox(
+                                                                    width: snackBarWidth * 0.4
+                                                                )
+                                                            )
+                                                        );
+                                                    }
+                                                    return __collection28401;
+                                                }
+                                            )
+                                        )()
+                                    )
+                                )
+                            );
+                            if (willOverflowAction)
+                            {
+                                __collection28354.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new Padding(
+                                            padding: EdgeInsets.CreateOnly(
+                                                bottom: Snack_barLibrary._singleLineVerticalPadding
+                                            ),
+                                            child: new Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: maybeActionAndIcon
+                                            )
+                                        )
+                                    )
+                                );
+                            }
+                            return __collection28354;
+                        }
+                    )
+                )()
+            )
+        );
         if (!isFloatingSnackBar)
         {
-            snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new SafeArea(top: false, child: snackBar));
+            snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+                new SafeArea(top: false, child: snackBar)
+            );
         }
-        double elevationLocal = (widget.elevation ?? snackBarTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
-        Color backgroundColorLocal = (widget.backgroundColor ?? snackBarTheme.backgroundColor) ?? defaults.backgroundColor!;
-        ShapeBorder? shapeLocal = (widget.shape ?? snackBarTheme.shape) ?? (isFloatingSnackBar ? defaults.shape : null);
-        DismissDirection dismissDirectionLocal = (widget.dismissDirection ?? snackBarTheme.dismissDirection) ?? DismissDirection.down;
-        snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new Material(shape: shapeLocal, elevation: elevationLocal, color: backgroundColorLocal, clipBehavior: widget.clipBehavior, child: new Theme(data: effectiveTheme, child: snackBar)));
+        double elevationLocal =
+            (widget.elevation ?? snackBarTheme.elevation)
+            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+        Color backgroundColorLocal =
+            (widget.backgroundColor ?? snackBarTheme.backgroundColor) ?? defaults.backgroundColor!;
+        ShapeBorder? shapeLocal =
+            (widget.shape ?? snackBarTheme.shape) ?? (isFloatingSnackBar ? defaults.shape : null);
+        DismissDirection dismissDirectionLocal =
+            (widget.dismissDirection ?? snackBarTheme.dismissDirection) ?? DismissDirection.down;
+        snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+            new Material(
+                shape: shapeLocal,
+                elevation: elevationLocal,
+                color: backgroundColorLocal,
+                clipBehavior: widget.clipBehavior,
+                child: new Theme(data: effectiveTheme, child: snackBar)
+            )
+        );
         if (isFloatingSnackBar)
         {
             if (widthLocal is not null)
             {
                 double width__24238__value30275 = DartRuntimePrimitives.RequireValue(widthLocal);
-                snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(top: marginLocal.top, bottom: marginLocal.bottom), child: new SizedBox(width: DartRuntimePrimitives.RequireValue(width__24238__value30275), child: snackBar)));
+                snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Padding(
+                        padding: EdgeInsets.CreateOnly(
+                            top: marginLocal.top,
+                            bottom: marginLocal.bottom
+                        ),
+                        child: new SizedBox(
+                            width: DartRuntimePrimitives.RequireValue(width__24238__value30275),
+                            child: snackBar
+                        )
+                    )
+                );
             }
             else
             {
-                snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: marginLocal, child: snackBar));
+                snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Padding(padding: marginLocal, child: snackBar)
+                );
             }
-            snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new SafeArea(top: false, bottom: false, child: snackBar));
+            snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+                new SafeArea(top: false, bottom: false, child: snackBar)
+            );
         }
-        snackBar = DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(container: true, liveRegion: true, onDismiss: () =>
-        {
-            ScaffoldMessenger.of(context).removeCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-        }, child: new Dismissible(key: _dismissibleKey, direction: dismissDirectionLocal, resizeDuration: null, behavior: widget.hitTestBehavior ?? (((widget.margin is not null) || (snackBarTheme.insetPadding is not null)) ? HitTestBehavior.deferToChild : HitTestBehavior.opaque), onDismissed: (direction) =>
-        {
-            ScaffoldMessenger.of(context).removeCurrentSnackBar(reason: SnackBarClosedReason.swipe);
-        }, child: snackBar)));
+        snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
+            new Widgets.Semantics(
+                container: true,
+                liveRegion: true,
+                onDismiss: () =>
+                {
+                    ScaffoldMessenger
+                        .of(context)
+                        .removeCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+                },
+                child: new Dismissible(
+                    key: _dismissibleKey,
+                    direction: dismissDirectionLocal,
+                    resizeDuration: null,
+                    behavior: widget.hitTestBehavior
+                        ?? (
+                            (
+                                (widget.margin is not null)
+                                || (snackBarTheme.insetPadding is not null)
+                            )
+                                ? HitTestBehavior.deferToChild
+                                : HitTestBehavior.opaque
+                        ),
+                    onDismissed: (direction) =>
+                    {
+                        ScaffoldMessenger
+                            .of(context)
+                            .removeCurrentSnackBar(reason: SnackBarClosedReason.swipe);
+                    },
+                    child: snackBar
+                )
+            )
+        );
         Widget snackBarTransition = default!;
         if (accessibleNavigation)
         {
@@ -407,31 +748,63 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         {
             if (isFloatingSnackBar && false)
             {
-                snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: _fadeInAnimation!, child: snackBar));
+                snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new FadeTransition(opacity: _fadeInAnimation!, child: snackBar)
+                );
             }
             else
             {
                 if (isFloatingSnackBar)
                 {
-                    snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: _fadeInM3Animation!, child: new ValueListenableBuilder<double>(valueListenable: _heightM3Animation!, builder: (context, value, child) =>
-                    {
-                        return new Align(alignment: Alignment.bottomLeft, heightFactor: value, child: child);
-                        throw new InvalidOperationException("Dart closure completed without a value.");
-                    }, child: snackBar)));
+                    snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new FadeTransition(
+                            opacity: _fadeInM3Animation!,
+                            child: new ValueListenableBuilder<double>(
+                                valueListenable: _heightM3Animation!,
+                                builder: (context, value, child) =>
+                                {
+                                    return new Align(
+                                        alignment: Alignment.bottomLeft,
+                                        heightFactor: value,
+                                        child: child
+                                    );
+                                    throw new InvalidOperationException(
+                                        "Dart closure completed without a value."
+                                    );
+                                },
+                                child: snackBar
+                            )
+                        )
+                    );
                 }
                 else
                 {
-                    snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(new ValueListenableBuilder<double>(valueListenable: _heightAnimation!, builder: (context, value, child) =>
-                    {
-                        return new Align(alignment: AlignmentDirectional.topStart, heightFactor: value, child: child);
-                        throw new InvalidOperationException("Dart closure completed without a value.");
-                    }, child: snackBar));
+                    snackBarTransition = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new ValueListenableBuilder<double>(
+                            valueListenable: _heightAnimation!,
+                            builder: (context, value, child) =>
+                            {
+                                return new Align(
+                                    alignment: AlignmentDirectional.topStart,
+                                    heightFactor: value,
+                                    child: child
+                                );
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            },
+                            child: snackBar
+                        )
+                    );
                 }
             }
         }
-        return new Hero(tag: $"<SnackBar Hero tag - {widget.content}>", transitionOnUserGestures: true, child: new ClipRect(clipBehavior: widget.clipBehavior, child: snackBarTransition));
+        return new Hero(
+            tag: $"<SnackBar Hero tag - {widget.content}>",
+            transitionOnUserGestures: true,
+            child: new ClipRect(clipBehavior: widget.clipBehavior, child: snackBarTransition)
+        );
     }
-
 }
 
 internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData
@@ -471,35 +844,47 @@ internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData
         this.context = context;
     }
 
-    public override Color backgroundColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.inverseSurface);
-    public override Color actionTextColor => DartRuntimePrimitives.ConvertValue<Color>(WidgetStateColor.CreateResolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.inversePrimary;
-        }
-        if (states.Contains(WidgetState.pressed))
-        {
-            return _colors.inversePrimary;
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.inversePrimary;
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.inversePrimary;
-        }
-        return _colors.inversePrimary;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override Color disabledActionTextColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.inversePrimary);
-    public override TextStyle contentTextStyle => Theme.of(context).textTheme.bodyMedium!.copyWith(color: _colors.onInverseSurface);
+    public override Color backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.inverseSurface);
+    public override Color actionTextColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(
+            WidgetStateColor.CreateResolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.inversePrimary;
+                    }
+                    if (states.Contains(WidgetState.pressed))
+                    {
+                        return _colors.inversePrimary;
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.inversePrimary;
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.inversePrimary;
+                    }
+                    return _colors.inversePrimary;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override Color disabledActionTextColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.inversePrimary);
+    public override TextStyle contentTextStyle =>
+        Theme.of(context).textTheme.bodyMedium!.copyWith(color: _colors.onInverseSurface);
     public override double? elevation => 6.0;
-    public override ShapeBorder shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))));
+    public override ShapeBorder shape =>
+        DartRuntimePrimitives.ConvertValue<ShapeBorder>(
+            new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)))
+        );
     public override SnackBarBehavior? behavior => SnackBarBehavior.@fixed;
     public override EdgeInsets insetPadding => new EdgeInsets(15.0, 5.0, 15.0, 10.0);
     public override bool? showCloseIcon => false;
-    public override Color? closeIconColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onInverseSurface);
+    public override Color? closeIconColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onInverseSurface);
     public override double? actionOverflowThreshold => 0.25;
 }

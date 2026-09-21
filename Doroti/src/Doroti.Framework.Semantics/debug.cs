@@ -6,4 +6,3 @@ public static partial class DebugLibrary
 {
     public static bool? debugSemanticsDisableAnimations;
 }
-

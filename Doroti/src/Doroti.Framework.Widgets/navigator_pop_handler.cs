@@ -11,7 +11,14 @@ public class NavigatorPopHandler<T> : StatefulWidget
     public virtual Action? onPop { get; private set; }
     public virtual Action<T?>? onPopWithResult { get; private set; }
 
-    public NavigatorPopHandler(Key? key = null, Action? onPop = null, Action<T?>? onPopWithResult = null, bool enabled = true, Widget child = default!) : base(key: key)
+    public NavigatorPopHandler(
+        Key? key = null,
+        Action? onPop = null,
+        Action<T?>? onPopWithResult = null,
+        bool enabled = true,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.onPop = onPop;
         this.onPopWithResult = onPopWithResult;
@@ -20,7 +27,10 @@ public class NavigatorPopHandler<T> : StatefulWidget
         System.Diagnostics.Debug.Assert((onPop is null) || (onPopWithResult is null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _NavigatorPopHandlerState__navigator_pop_handler<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _NavigatorPopHandlerState__navigator_pop_handler<T>()
+        );
 }
 
 internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<NavigatorPopHandler<T>>
@@ -29,31 +39,36 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
 
     public override Widget build(BuildContext context)
     {
-        return new PopScope<T>(canPop: !widget.enabled || _canPop, onPopInvokedWithResult: (didPop, result) =>
-        {
-            if (didPop)
+        return new PopScope<T>(
+            canPop: !widget.enabled || _canPop,
+            onPopInvokedWithResult: (didPop, result) =>
             {
-                return;
-            }
-            widget.onPop?.Invoke();
-            widget.onPopWithResult?.Invoke(result);
-        }, child: new NotificationListener<NavigationNotification>(onNotification: (notification) =>
-        {
-            bool nextCanPop = !notification.canHandlePop;
-            if (nextCanPop != _canPop)
-            {
-                setState(() =>
+                if (didPop)
                 {
-                    _canPop = nextCanPop;
-                });
-            }
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: widget.child));
+                    return;
+                }
+                widget.onPop?.Invoke();
+                widget.onPopWithResult?.Invoke(result);
+            },
+            child: new NotificationListener<NavigationNotification>(
+                onNotification: (notification) =>
+                {
+                    bool nextCanPop = !notification.canHandlePop;
+                    if (nextCanPop != _canPop)
+                    {
+                        setState(() =>
+                        {
+                            _canPop = nextCanPop;
+                        });
+                    }
+                    return false;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                },
+                child: widget.child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public delegate void PopResultCallback<T>(T? result);
-

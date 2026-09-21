@@ -20,7 +20,22 @@ public class SingleChildScrollView : StatelessWidget
     public virtual string? restorationId { get; private set; }
     public virtual ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior { get; private set; }
 
-    public SingleChildScrollView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, EdgeInsetsGeometry? padding = null, bool? primary = null, ScrollPhysics? physics = null, ScrollController? controller = null, Widget? child = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null) : base(key: key)
+    public SingleChildScrollView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        EdgeInsetsGeometry? padding = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        ScrollController? controller = null,
+        Widget? child = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque,
+        string? restorationId = null,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null
+    )
+        : base(key: key)
     {
         this.scrollDirection = scrollDirection;
         this.reverse = reverse;
@@ -39,7 +54,11 @@ public class SingleChildScrollView : StatelessWidget
 
     internal virtual AxisDirection _getDirection(BuildContext context)
     {
-        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, scrollDirection, reverse);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(
+            context,
+            scrollDirection,
+            reverse
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -49,33 +68,70 @@ public class SingleChildScrollView : StatelessWidget
         Widget? contents = child;
         if (padding is not null)
         {
-            contents = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: padding!, child: contents));
+            contents = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Padding(padding: padding!, child: contents)
+            );
         }
-        bool effectivePrimary = primary ?? ((controller is null) && PrimaryScrollController.shouldInherit(context, scrollDirection));
-        ScrollController? scrollController = effectivePrimary ? PrimaryScrollController.maybeOf(context) : controller;
-        Widget scrollable = new Scrollable(dragStartBehavior: dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: physics, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, viewportBuilder: (context, offset) =>
-        {
-            return new _SingleChildViewport__single_child_scroll_view(axisDirection: axisDirectionLocal, offset: offset, clipBehavior: clipBehavior, child: contents);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = keyboardDismissBehavior ?? ScrollConfiguration.of(context).getKeyboardDismissBehavior(context);
+        bool effectivePrimary =
+            primary
+            ?? (
+                (controller is null)
+                && PrimaryScrollController.shouldInherit(context, scrollDirection)
+            );
+        ScrollController? scrollController = effectivePrimary
+            ? PrimaryScrollController.maybeOf(context)
+            : controller;
+        Widget scrollable = new Scrollable(
+            dragStartBehavior: dragStartBehavior,
+            axisDirection: axisDirectionLocal,
+            controller: scrollController,
+            physics: physics,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior,
+            viewportBuilder: (context, offset) =>
+            {
+                return new _SingleChildViewport__single_child_scroll_view(
+                    axisDirection: axisDirectionLocal,
+                    offset: offset,
+                    clipBehavior: clipBehavior,
+                    child: contents
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior =
+            keyboardDismissBehavior
+            ?? ScrollConfiguration.of(context).getKeyboardDismissBehavior(context);
         if (Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag))
         {
-            scrollable = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollUpdateNotification>(child: scrollable, onNotification: (notification) =>
-            {
-                FocusScopeNode currentScope = FocusScope.of(context);
-                if ((notification.dragDetails is not null) && !currentScope.hasPrimaryFocus && currentScope.hasFocus)
-                {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                }
-                return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
+            scrollable = DartRuntimePrimitives.ConvertValue<Widget>(
+                new NotificationListener<ScrollUpdateNotification>(
+                    child: scrollable,
+                    onNotification: (notification) =>
+                    {
+                        FocusScopeNode currentScope = FocusScope.of(context);
+                        if (
+                            (notification.dragDetails is not null)
+                            && !currentScope.hasPrimaryFocus
+                            && currentScope.hasFocus
+                        )
+                        {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                        }
+                        return false;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+            );
         }
-        return (effectivePrimary && (scrollController is not null)) ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable;
+        return (effectivePrimary && (scrollController is not null))
+            ? PrimaryScrollController.CreateNone(child: scrollable)
+            : scrollable;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderObjectWidget
@@ -84,7 +140,13 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
     public virtual ViewportOffset offset { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    internal _SingleChildViewport__single_child_scroll_view(AxisDirection axisDirection = AxisDirection.down, ViewportOffset offset = default!, Widget? child = null, Clip clipBehavior = default!) : base(child: child)
+    internal _SingleChildViewport__single_child_scroll_view(
+        AxisDirection axisDirection = AxisDirection.down,
+        ViewportOffset offset = default!,
+        Widget? child = null,
+        Clip clipBehavior = default!
+    )
+        : base(child: child)
     {
         this.axisDirection = axisDirection;
         this.offset = offset;
@@ -93,21 +155,31 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSingleChildViewport__single_child_scroll_view(axisDirection: axisDirection, offset: offset, clipBehavior: clipBehavior);
+        return new _RenderSingleChildViewport__single_child_scroll_view(
+            axisDirection: axisDirection,
+            offset: offset,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSingleChildViewport__single_child_scroll_view)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSingleChildViewport__single_child_scroll_view>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.axisDirection = axisDirection;
-    __cascade.offset = offset;
-    __cascade.clipBehavior = clipBehavior;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSingleChildViewport__single_child_scroll_view>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.axisDirection = axisDirection;
+                        __cascade.offset = offset;
+                        __cascade.clipBehavior = clipBehavior;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override SingleChildRenderObjectElement createElement()
@@ -115,15 +187,17 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
         return new _SingleChildViewportElement__single_child_scroll_view(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _SingleChildViewportElement__single_child_scroll_view : SingleChildRenderObjectElement, NotifiableElementMixin, ViewportElementMixin
+internal class _SingleChildViewportElement__single_child_scroll_view
+    : SingleChildRenderObjectElement,
+        NotifiableElementMixin,
+        ViewportElementMixin
 {
-
-    internal _SingleChildViewportElement__single_child_scroll_view(_SingleChildViewport__single_child_scroll_view widget) : base(widget)
-    {
-    }
+    internal _SingleChildViewportElement__single_child_scroll_view(
+        _SingleChildViewport__single_child_scroll_view widget
+    )
+        : base(widget) { }
 
     public override void attachNotificationTree()
     {
@@ -139,18 +213,25 @@ internal class _SingleChildViewportElement__single_child_scroll_view : SingleChi
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, RenderObjectWithChildMixin<RenderBox>
+public class _RenderSingleChildViewport__single_child_scroll_view
+    : RenderBox,
+        RenderObjectWithChildMixin<RenderBox>
 {
     internal virtual AxisDirection _axisDirection { get; set; } = default!;
     internal virtual ViewportOffset _offset { get; set; } = default!;
     internal virtual Clip _clipBehavior { get; set; } = Clip.none;
-    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
+    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } =
+        new LayerHandle<ClipRectLayer>();
     public virtual RenderBox? _child { get; set; } = default;
 
-    internal _RenderSingleChildViewport__single_child_scroll_view(AxisDirection axisDirection = AxisDirection.down, ViewportOffset offset = default!, RenderBox? child = null, Clip clipBehavior = default!)
+    internal _RenderSingleChildViewport__single_child_scroll_view(
+        AxisDirection axisDirection = AxisDirection.down,
+        ViewportOffset offset = default!,
+        RenderBox? child = null,
+        Clip clipBehavior = default!
+    )
     {
         _axisDirection = axisDirection;
         _offset = offset;
@@ -208,15 +289,14 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
             }
         }
     }
+
     internal virtual void _hasScrolled()
     {
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
-    public override void setupParentData(RenderObject child)
-    {
-    }
+    public override void setupParentData(RenderObject child) { }
 
     public override void attach(PipelineOwner owner)
     {
@@ -238,7 +318,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            return axis switch { Axis.horizontal => size.width, Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return axis switch
+            {
+                Axis.horizontal => size.width,
+                Axis.vertical => size.height,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
     internal virtual double _minScrollExtent
@@ -258,12 +343,26 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
             {
                 return 0.0;
             }
-            return Math.Max(0.0, axis switch { Axis.horizontal => child!.size.width - size.width, Axis.vertical => child!.size.height - size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return Math.Max(
+                0.0,
+                axis switch
+                {
+                    Axis.horizontal => child!.size.width - size.width,
+                    Axis.vertical => child!.size.height - size.height,
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                }
+            );
         }
     }
+
     internal virtual BoxConstraints _getInnerConstraints(BoxConstraints constraints)
     {
-        return axis switch { Axis.horizontal => constraints.heightConstraints(), Axis.vertical => constraints.widthConstraints(), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return axis switch
+        {
+            Axis.horizontal => constraints.heightConstraints(),
+            Axis.vertical => constraints.widthConstraints(),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -332,10 +431,19 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         offset.applyContentDimensions(_minScrollExtent, _maxScrollExtent);
     }
 
-    internal virtual Offset _paintOffset => DartRuntimePrimitives.ConvertValue<Offset>(_paintOffsetForPosition(offset.pixels));
+    internal virtual Offset _paintOffset =>
+        DartRuntimePrimitives.ConvertValue<Offset>(_paintOffsetForPosition(offset.pixels));
+
     internal virtual Offset _paintOffsetForPosition(double position)
     {
-        return axisDirection switch { AxisDirection.up => new Offset(0.0, position - child!.size.height + size.height), AxisDirection.left => new Offset(position - child!.size.width + size.width, 0.0), AxisDirection.right => new Offset(-position, 0.0), AxisDirection.down => new Offset(0.0, -position), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return axisDirection switch
+        {
+            AxisDirection.up => new Offset(0.0, position - child!.size.height + size.height),
+            AxisDirection.left => new Offset(position - child!.size.width + size.width, 0.0),
+            AxisDirection.right => new Offset(-position, 0.0),
+            AxisDirection.down => new Offset(0.0, -position),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -345,15 +453,18 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         switch (clipBehavior)
         {
             case Clip.none:
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
             case Clip.hardEdge:
             case Clip.antiAlias:
             case Clip.antiAliasWithSaveLayer:
-                {
-                    return (paintOffset.dx < 0L) || (paintOffset.dy < 0L) || ((paintOffset.dx + child!.size.width) > size.width) || ((paintOffset.dy + child!.size.height) > size.height);
-                }
+            {
+                return (paintOffset.dx < 0L)
+                    || (paintOffset.dy < 0L)
+                    || ((paintOffset.dx + child!.size.width) > size.width)
+                    || ((paintOffset.dy + child!.size.height) > size.height);
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -371,7 +482,14 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
             }
             if (_shouldClipAtPaintOffset(paintOffset))
             {
-                _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, paintContents, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
+                _clipRectLayer.layer = context.pushClipRect(
+                    needsCompositing,
+                    offset,
+                    Offset.zero & size,
+                    paintContents,
+                    clipBehavior: clipBehavior,
+                    oldLayer: _clipRectLayer.layer
+                );
             }
             else
             {
@@ -408,37 +526,67 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
     {
         if (child is not null)
         {
-            return result.addWithPaintOffset(offset: _paintOffset, position: position, hitTest: (result, transformed) =>
-            {
-                DartRuntimePrimitives.Assert(() => Equals(transformed, position + -_paintOffset));
-                return child!.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            return result.addWithPaintOffset(
+                offset: _paintOffset,
+                position: position,
+                hitTest: (result, transformed) =>
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(transformed, position + -_paintOffset)
+                    );
+                    return child!.hitTest(result, position: transformed);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, Axis? axis = null)
+    public virtual RevealedOffset getOffsetToReveal(
+        RenderObject target,
+        double alignment,
+        Rect? rect = null,
+        Axis? axis = null
+    )
     {
         axis = this.axis;
         rect ??= target.paintBounds;
         if (target is not RenderBox)
         {
-            return new RevealedOffset(offset: offset.pixels, rect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+            return new RevealedOffset(
+                offset: offset.pixels,
+                rect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            );
         }
         RenderBox targetBox = (RenderBox)target;
         Matrix4 transform = targetBox.getTransformTo(child);
-        Rect bounds = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+        Rect bounds = MatrixUtils.transformRect(
+            transform,
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+        );
         Size contentSize = child!.size;
-        var (mainAxisExtent, leadingScrollOffset, targetMainAxisExtent) = axisDirection switch { AxisDirection.up => (size.height, contentSize.height - bounds.bottom, bounds.height), AxisDirection.left => (size.width, contentSize.width - bounds.right, bounds.width), AxisDirection.right => (size.width, bounds.left, bounds.width), AxisDirection.down => (size.height, bounds.top, bounds.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        double targetOffset = leadingScrollOffset - ((mainAxisExtent - targetMainAxisExtent) * alignment);
+        var (mainAxisExtent, leadingScrollOffset, targetMainAxisExtent) = axisDirection switch
+        {
+            AxisDirection.up => (size.height, contentSize.height - bounds.bottom, bounds.height),
+            AxisDirection.left => (size.width, contentSize.width - bounds.right, bounds.width),
+            AxisDirection.right => (size.width, bounds.left, bounds.width),
+            AxisDirection.down => (size.height, bounds.top, bounds.height),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        double targetOffset =
+            leadingScrollOffset - ((mainAxisExtent - targetMainAxisExtent) * alignment);
         Rect targetRect = bounds.shift(_paintOffsetForPosition(targetOffset));
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
+    public override void showOnScreen(
+        RenderObject? descendant = null,
+        Rect? rect = null,
+        Duration duration = default,
+        Curve curve = default!
+    )
     {
         if (!offset.allowImplicitScrolling)
         {
@@ -449,7 +597,29 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         base.showOnScreen(rect: newRect, duration: duration, curve: curve);
     }
 
-    private static Rect? _showInViewport(RenderObject? descendant, Rect? rect, _RenderSingleChildViewport__single_child_scroll_view viewport, ViewportOffset offset, Duration duration, Curve curve) { if (descendant is null) return rect; var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect); var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect); var target = RevealedOffset.clampOffset(leading, trailing, offset.pixels); if (target is null) return rect ?? descendant.paintBounds; _ = offset.moveTo(target.offset, duration: duration, curve: curve); return target.rect; }
+    private static Rect? _showInViewport(
+        RenderObject? descendant,
+        Rect? rect,
+        _RenderSingleChildViewport__single_child_scroll_view viewport,
+        ViewportOffset offset,
+        Duration duration,
+        Curve curve
+    )
+    {
+        if (descendant is null)
+        {
+            return rect;
+        }
+        var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect);
+        var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect);
+        var target = RevealedOffset.clampOffset(leading, trailing, offset.pixels);
+        if (target is null)
+        {
+            return rect ?? descendant.paintBounds;
+        }
+        _ = offset.moveTo(target.offset, duration: duration, curve: curve);
+        return target.rect;
+    }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
@@ -463,21 +633,41 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         switch (axisDirection)
         {
             case AxisDirection.up:
-                {
-                    return Rect.fromLTRB(semanticBounds.left, semanticBounds.top - remainingOffset, semanticBounds.right, semanticBounds.bottom + offset.pixels);
-                }
+            {
+                return Rect.fromLTRB(
+                    semanticBounds.left,
+                    semanticBounds.top - remainingOffset,
+                    semanticBounds.right,
+                    semanticBounds.bottom + offset.pixels
+                );
+            }
             case AxisDirection.right:
-                {
-                    return Rect.fromLTRB(semanticBounds.left - offset.pixels, semanticBounds.top, semanticBounds.right + remainingOffset, semanticBounds.bottom);
-                }
+            {
+                return Rect.fromLTRB(
+                    semanticBounds.left - offset.pixels,
+                    semanticBounds.top,
+                    semanticBounds.right + remainingOffset,
+                    semanticBounds.bottom
+                );
+            }
             case AxisDirection.down:
-                {
-                    return Rect.fromLTRB(semanticBounds.left, semanticBounds.top - offset.pixels, semanticBounds.right, semanticBounds.bottom + remainingOffset);
-                }
+            {
+                return Rect.fromLTRB(
+                    semanticBounds.left,
+                    semanticBounds.top - offset.pixels,
+                    semanticBounds.right,
+                    semanticBounds.bottom + remainingOffset
+                );
+            }
             case AxisDirection.left:
-                {
-                    return Rect.fromLTRB(semanticBounds.left - remainingOffset, semanticBounds.top, semanticBounds.right + offset.pixels, semanticBounds.bottom);
-                }
+            {
+                return Rect.fromLTRB(
+                    semanticBounds.left - remainingOffset,
+                    semanticBounds.top,
+                    semanticBounds.right + offset.pixels,
+                    semanticBounds.bottom
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -487,14 +677,43 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                    + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                            ),
+                            new ErrorDescription(
+                                "RenderObjects expect specific types of children because they "
+                                    + "coordinate with their children during layout and paint. For "
+                                    + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                    + "a RenderSliver does not understand the RenderBox layout protocol."
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                                debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                    + "was created by",
+                                child.debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -516,6 +735,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
             }
         }
     }
+
     public override void redepthChildren()
     {
         if (_child is not null)
@@ -534,8 +754,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

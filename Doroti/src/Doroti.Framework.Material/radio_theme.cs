@@ -18,7 +18,17 @@ public class RadioThemeData : Diagnosticable
     public virtual BorderSide? side { get; private set; }
     public virtual WidgetStateProperty<double?>? innerRadius { get; private set; }
 
-    public RadioThemeData(WidgetStateProperty<MouseCursor?>? mouseCursor = null, WidgetStateProperty<Color?>? fillColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null)
+    public RadioThemeData(
+        WidgetStateProperty<MouseCursor?>? mouseCursor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        BorderSide? side = null,
+        WidgetStateProperty<double?>? innerRadius = null
+    )
     {
         this.mouseCursor = mouseCursor;
         this.fillColor = fillColor;
@@ -31,9 +41,29 @@ public class RadioThemeData : Diagnosticable
         this.innerRadius = innerRadius;
     }
 
-    public virtual RadioThemeData copyWith(WidgetStateProperty<MouseCursor?>? mouseCursor = null, WidgetStateProperty<Color?>? fillColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null)
+    public virtual RadioThemeData copyWith(
+        WidgetStateProperty<MouseCursor?>? mouseCursor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        WidgetStateProperty<Color?>? backgroundColor = null,
+        BorderSide? side = null,
+        WidgetStateProperty<double?>? innerRadius = null
+    )
     {
-        return new RadioThemeData(mouseCursor: mouseCursor ?? this.mouseCursor, fillColor: fillColor ?? this.fillColor, overlayColor: overlayColor ?? this.overlayColor, splashRadius: splashRadius ?? this.splashRadius, materialTapTargetSize: materialTapTargetSize ?? this.materialTapTargetSize, visualDensity: visualDensity ?? this.visualDensity, backgroundColor: backgroundColor ?? this.backgroundColor, side: side ?? this.side, innerRadius: innerRadius ?? this.innerRadius);
+        return new RadioThemeData(
+            mouseCursor: mouseCursor ?? this.mouseCursor,
+            fillColor: fillColor ?? this.fillColor,
+            overlayColor: overlayColor ?? this.overlayColor,
+            splashRadius: splashRadius ?? this.splashRadius,
+            materialTapTargetSize: materialTapTargetSize ?? this.materialTapTargetSize,
+            visualDensity: visualDensity ?? this.visualDensity,
+            backgroundColor: backgroundColor ?? this.backgroundColor,
+            side: side ?? this.side,
+            innerRadius: innerRadius ?? this.innerRadius
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -63,15 +93,53 @@ public class RadioThemeData : Diagnosticable
         {
             return a;
         }
-        return new RadioThemeData(mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor, fillColor: WidgetStateProperty.lerp(a?.fillColor, b?.fillColor, t, Color.lerp), materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize, overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity, backgroundColor: WidgetStateProperty.lerp(a?.backgroundColor, b?.backgroundColor, t, Color.lerp), side: _lerpSides(a?.side, b?.side, t), innerRadius: WidgetStateProperty.lerp(a?.innerRadius, b?.innerRadius, t, Dart_uiLibrary.lerpDouble));
+        return new RadioThemeData(
+            mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor,
+            fillColor: WidgetStateProperty.lerp(a?.fillColor, b?.fillColor, t, Color.lerp),
+            materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize,
+            overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
+            splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
+            visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,
+            backgroundColor: WidgetStateProperty.lerp(
+                a?.backgroundColor,
+                b?.backgroundColor,
+                t,
+                Color.lerp
+            ),
+            side: _lerpSides(a?.side, b?.side, t),
+            innerRadius: WidgetStateProperty.lerp(
+                a?.innerRadius,
+                b?.innerRadius,
+                t,
+                Dart_uiLibrary.lerpDouble
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(mouseCursor, fillColor, overlayColor, splashRadius, materialTapTargetSize, visualDensity, backgroundColor, side, innerRadius));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(
+                mouseCursor,
+                fillColor,
+                overlayColor,
+                splashRadius,
+                materialTapTargetSize,
+                visualDensity,
+                backgroundColor,
+                side,
+                innerRadius
+            )
+        );
+
     public override bool Equals(object? other)
     {
         var __other = other as RadioThemeData;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -80,50 +148,107 @@ public class RadioThemeData : Diagnosticable
         {
             return false;
         }
-        return (__other is RadioThemeData) && Equals(__other.mouseCursor, mouseCursor) && Equals(__other.fillColor, fillColor) && Equals(__other.overlayColor, overlayColor) && (__other.splashRadius == splashRadius) && Equals(__other.materialTapTargetSize, materialTapTargetSize) && Equals(__other.visualDensity, visualDensity) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.side, side) && Equals(__other.innerRadius, innerRadius);
+        return (__other is RadioThemeData)
+            && Equals(__other.mouseCursor, mouseCursor)
+            && Equals(__other.fillColor, fillColor)
+            && Equals(__other.overlayColor, overlayColor)
+            && (__other.splashRadius == splashRadius)
+            && Equals(__other.materialTapTargetSize, materialTapTargetSize)
+            && Equals(__other.visualDensity, visualDensity)
+            && Equals(__other.backgroundColor, backgroundColor)
+            && Equals(__other.side, side)
+            && Equals(__other.innerRadius, innerRadius);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("fillColor", fillColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("overlayColor", overlayColor, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>(
+                "mouseCursor",
+                mouseCursor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "fillColor",
+                fillColor,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "overlayColor",
+                overlayColor,
+                defaultValue: null
+            )
+        );
         properties.add(new DoubleProperty("splashRadius", splashRadius, defaultValue: null));
-        properties.add(new DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", materialTapTargetSize, defaultValue: null));
-        properties.add(new DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<Color?>>("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<MaterialTapTargetSize>(
+                "materialTapTargetSize",
+                materialTapTargetSize,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<VisualDensity>(
+                "visualDensity",
+                visualDensity,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<Color?>>(
+                "backgroundColor",
+                backgroundColor,
+                defaultValue: null
+            )
+        );
         properties.add(new DiagnosticsProperty<BorderSide>("side", side, defaultValue: null));
-        properties.add(new DiagnosticsProperty<WidgetStateProperty<double?>>("innerRadius", innerRadius, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<WidgetStateProperty<double?>>(
+                "innerRadius",
+                innerRadius,
+                defaultValue: null
+            )
+        );
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RadioTheme : InheritedWidget
 {
     public virtual RadioThemeData data { get; private set; } = default!;
 
-    public RadioTheme(Key? key = null, RadioThemeData data = default!, Widget child = default!) : base(key: key, child: child)
+    public RadioTheme(Key? key = null, RadioThemeData data = default!, Widget child = default!)
+        : base(key: key, child: child)
     {
         this.data = data;
     }
@@ -135,5 +260,6 @@ public class RadioTheme : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((RadioTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
+        DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((RadioTheme)oldWidget).data));
 }

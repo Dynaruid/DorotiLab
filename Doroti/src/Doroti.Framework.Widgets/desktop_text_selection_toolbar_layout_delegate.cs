@@ -21,8 +21,14 @@ public class DesktopTextSelectionToolbarLayoutDelegate : SingleChildLayoutDelega
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        var overhang = new Offset(anchor.dx + childSize.width - size.width, anchor.dy + childSize.height - size.height);
-        return new Offset((overhang.dx > 0.0) ? (anchor.dx - overhang.dx) : anchor.dx, (overhang.dy > 0.0) ? (anchor.dy - overhang.dy) : anchor.dy);
+        var overhang = new Offset(
+            anchor.dx + childSize.width - size.width,
+            anchor.dy + childSize.height - size.height
+        );
+        return new Offset(
+            (overhang.dx > 0.0) ? (anchor.dx - overhang.dx) : anchor.dx,
+            (overhang.dy > 0.0) ? (anchor.dy - overhang.dy) : anchor.dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -32,6 +38,4 @@ public class DesktopTextSelectionToolbarLayoutDelegate : SingleChildLayoutDelega
         return !Equals(anchor, __oldDelegate.anchor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

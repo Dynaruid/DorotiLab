@@ -7,8 +7,10 @@ public sealed class DartFile(string path)
 
     public Future<long> length() => Future<long>.value(new FileInfo(path).Length);
 
-    public Future<Uint8List> readAsBytes() => Future<Uint8List>.value(
-        new Uint8List(File.ReadAllBytes(path).Select(value => (long)value)));
+    public Future<Uint8List> readAsBytes() =>
+        Future<Uint8List>.value(
+            new Uint8List(File.ReadAllBytes(path).Select(value => (long)value))
+        );
 
     public override string ToString() => $"File: '{path}'";
 }

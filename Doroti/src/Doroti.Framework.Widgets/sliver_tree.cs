@@ -40,9 +40,20 @@ public class TreeSliverNode<T> : ITreeSliverNode
     internal virtual long? _depth { get; set; } = default;
     internal virtual TreeSliverNode<T>? _parent { get; set; } = default;
 
-    public TreeSliverNode(T content, List<TreeSliverNode<T>>? children = null, bool expanded = false)
+    public TreeSliverNode(
+        T content,
+        List<TreeSliverNode<T>>? children = null,
+        bool expanded = false
+    )
     {
-        _expanded = ((children is { } __items1104 ? System.Linq.Enumerable.Any(__items1104) : (bool?)null) ?? false) && expanded;
+        _expanded =
+            (
+                (
+                    children is { } __items1104
+                        ? System.Linq.Enumerable.Any(__items1104)
+                        : (bool?)null
+                ) ?? false
+            ) && expanded;
         _content = content;
         _children = children ?? new List<TreeSliverNode<T>>();
     }
@@ -52,17 +63,25 @@ public class TreeSliverNode<T> : ITreeSliverNode
     public virtual bool isExpanded => _expanded;
     public virtual long? depth => _depth;
     public virtual TreeSliverNode<T>? parent => _parent;
+
     public override string ToString()
     {
-        return $"TreeSliverNode: {content}, depth: {((depth == 0L) ? "root" : depth)}, " + $"{(!Enumerable.Any(children) ? "leaf" : $"parent, expanded: {isExpanded}")}";
+        return $"TreeSliverNode: {content}, depth: {((depth == 0L) ? "root" : depth)}, "
+            + $"{(!Enumerable.Any(children) ? "leaf" : $"parent, expanded: {isExpanded}")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public delegate Widget TreeSliverNodeBuilder(BuildContext context, ITreeSliverNode node, AnimationStyle animationStyle);
+public delegate Widget TreeSliverNodeBuilder(
+    BuildContext context,
+    ITreeSliverNode node,
+    AnimationStyle animationStyle
+);
 
-public delegate double TreeSliverRowExtentBuilder(ITreeSliverNode node, SliverLayoutDimensions dimensions);
+public delegate double TreeSliverRowExtentBuilder(
+    ITreeSliverNode node,
+    SliverLayoutDimensions dimensions
+);
 
 public delegate void TreeSliverNodeCallback(ITreeSliverNode node);
 
@@ -81,9 +100,7 @@ public class TreeSliverController
 {
     internal virtual ITreeSliverState? _state { get; set; } = default;
 
-    public TreeSliverController()
-    {
-    }
+    public TreeSliverController() { }
 
     public virtual bool isExpanded(ITreeSliverNode node)
     {
@@ -157,7 +174,37 @@ public class TreeSliverController
         {
             return result.controller;
         }
-        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("TreeController.of() called with a context that does not contain a " + "TreeSliver."), new ErrorDescription("No TreeSliver ancestor could be found starting from the context that " + "was passed to TreeController.of(). " + "This usually happens when the context provided is from the same " + "StatefulWidget as that whose build function actually creates the " + "TreeSliver widget being sought."), new ErrorHint("There are several ways to avoid this problem. The simplest is to use " + "a Builder to get a context that is \"under\" the TreeSliver."), new ErrorHint("A more efficient solution is to split your build function into " + "several widgets. This introduces a new context from which you can " + "obtain the TreeSliver. In this solution, you would have an outer " + "widget that creates the TreeSliver populated by instances of your new " + "inner widgets, and then in these inner widgets you would use " + "TreeController.of()."), context.describeElement("The context used was") }));
+        throw DartRuntimePrimitives.AsException(
+            new FlutterError(
+                new List<DiagnosticsNode>
+                {
+                    new ErrorSummary(
+                        "TreeController.of() called with a context that does not contain a "
+                            + "TreeSliver."
+                    ),
+                    new ErrorDescription(
+                        "No TreeSliver ancestor could be found starting from the context that "
+                            + "was passed to TreeController.of(). "
+                            + "This usually happens when the context provided is from the same "
+                            + "StatefulWidget as that whose build function actually creates the "
+                            + "TreeSliver widget being sought."
+                    ),
+                    new ErrorHint(
+                        "There are several ways to avoid this problem. The simplest is to use "
+                            + "a Builder to get a context that is \"under\" the TreeSliver."
+                    ),
+                    new ErrorHint(
+                        "A more efficient solution is to split your build function into "
+                            + "several widgets. This introduces a new context from which you can "
+                            + "obtain the TreeSliver. In this solution, you would have an outer "
+                            + "widget that creates the TreeSliver populated by instances of your new "
+                            + "inner widgets, and then in these inner widgets you would use "
+                            + "TreeController.of()."
+                    ),
+                    context.describeElement("The context used was"),
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -166,19 +213,27 @@ public class TreeSliverController
         return context.findAncestorStateOfType<ITreeSliverState>()?.controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Sliver_treeLibrary
 {
-    internal static long _kDefaultSemanticIndexCallback(Widget __unused0, long localIndex) => localIndex;
+    internal static long _kDefaultSemanticIndexCallback(Widget __unused0, long localIndex) =>
+        localIndex;
 }
 
 public class TreeSliver<T> : StatefulWidget
 {
     public virtual List<TreeSliverNode<T>> tree { get; private set; } = default!;
-    public virtual Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder { get; private set; } = default!;
-    public virtual Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder
+    {
+        get;
+        private set;
+    } = default!;
+    public virtual Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder
+    {
+        get;
+        private set;
+    } = default!;
     public virtual TreeSliverController? controller { get; private set; }
     public virtual Action<TreeSliverNode<T>>? onNodeToggle { get; private set; }
     public virtual AnimationStyle? toggleAnimationStyle { get; private set; }
@@ -189,16 +244,42 @@ public class TreeSliver<T> : StatefulWidget
     public virtual Func<Widget, long, long?> semanticIndexCallback { get; private set; } = default!;
     public virtual long semanticIndexOffset { get; private set; } = default!;
     public virtual Func<Key, long?>? findChildIndexCallback { get; private set; }
-    public static AnimationStyle defaultToggleAnimationStyle = new AnimationStyle(curve: defaultAnimationCurve, duration: defaultAnimationDuration);
+    public static AnimationStyle defaultToggleAnimationStyle = new AnimationStyle(
+        curve: defaultAnimationCurve,
+        duration: defaultAnimationDuration
+    );
     public static Curve defaultAnimationCurve = Curves.linear;
     public static Duration defaultAnimationDuration = Duration.Create(milliseconds: 150L);
 
-    public TreeSliver(Key? key = null, List<TreeSliverNode<T>> tree = default!, Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder = default!, Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder = default!, TreeSliverController? controller = null, Action<TreeSliverNode<T>>? onNodeToggle = null, AnimationStyle? toggleAnimationStyle = null, TreeSliverIndentationType indentation = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0, Func<Key, long?>? findChildIndexCallback = null) : base(key: key)
+    public TreeSliver(
+        Key? key = null,
+        List<TreeSliverNode<T>> tree = default!,
+        Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder = default!,
+        Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder = default!,
+        TreeSliverController? controller = null,
+        Action<TreeSliverNode<T>>? onNodeToggle = null,
+        AnimationStyle? toggleAnimationStyle = null,
+        TreeSliverIndentationType indentation = default!,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        Func<Widget, long, long?> semanticIndexCallback = default!,
+        long semanticIndexOffset = 0,
+        Func<Key, long?>? findChildIndexCallback = null
+    )
+        : base(key: key)
     {
-        Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> __treeNodeBuilder = treeNodeBuilder ?? TreeSliver<T>.defaultTreeNodeBuilder;
-        Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> __treeRowExtentBuilder = treeRowExtentBuilder ?? ((node, dimensions) => TreeSliver<T>.defaultTreeRowExtentBuilder(node, dimensions));
+        Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> __treeNodeBuilder =
+            treeNodeBuilder ?? TreeSliver<T>.defaultTreeNodeBuilder;
+        Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> __treeRowExtentBuilder =
+            treeRowExtentBuilder
+            ?? ((node, dimensions) => TreeSliver<T>.defaultTreeRowExtentBuilder(node, dimensions));
         TreeSliverIndentationType __indentation = indentation ?? TreeSliverIndentationType.standard;
-        Func<Widget, long, long?> __semanticIndexCallback = semanticIndexCallback ?? ((widget, index) => Sliver_treeLibrary._kDefaultSemanticIndexCallback(widget, index));
+        Func<Widget, long, long?> __semanticIndexCallback =
+            semanticIndexCallback
+            ?? (
+                (widget, index) => Sliver_treeLibrary._kDefaultSemanticIndexCallback(widget, index)
+            );
         this.tree = tree;
         this.treeNodeBuilder = __treeNodeBuilder;
         this.treeRowExtentBuilder = __treeRowExtentBuilder;
@@ -216,53 +297,124 @@ public class TreeSliver<T> : StatefulWidget
 
     public static Widget wrapChildToToggleNode(TreeSliverNode<T> node, Widget child)
     {
-        return new Builder(builder: (context) =>
-        {
-            return new GestureDetector(onTap: () =>
+        return new Builder(
+            builder: (context) =>
             {
-                TreeSliverController.of(context).toggleNode(node);
-            }, child: child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+                return new GestureDetector(
+                    onTap: () =>
+                    {
+                        TreeSliverController.of(context).toggleNode(node);
+                    },
+                    child: child
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double defaultTreeRowExtentBuilder(TreeSliverNode<T> node, SliverLayoutDimensions dimensions)
+    public static double defaultTreeRowExtentBuilder(
+        TreeSliverNode<T> node,
+        SliverLayoutDimensions dimensions
+    )
     {
         return Sliver_treeLibrary._kDefaultRowExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget defaultTreeNodeBuilder(BuildContext context, TreeSliverNode<T> node, AnimationStyle toggleAnimationStyle)
+    public static Widget defaultTreeNodeBuilder(
+        BuildContext context,
+        TreeSliverNode<T> node,
+        AnimationStyle toggleAnimationStyle
+    )
     {
         Duration animationDuration = toggleAnimationStyle.duration ?? defaultAnimationDuration;
         Curve animationCurve = toggleAnimationStyle.curve ?? defaultAnimationCurve;
-        long index = DartRuntimePrimitives.RequireValue(TreeSliverController.of(context).getActiveIndexFor(node));
-        return new Padding(padding: EdgeInsets.CreateAll(8.0), child: new Row(children: new List<Widget> { TreeSliver<T>.wrapChildToToggleNode(node: node, child: SizedBox.CreateSquare(dimension: 30.0, child: Enumerable.Any(node.children) ? new AnimatedRotation(key: new ValueKey<long>(index), turns: node.isExpanded ? 0.25 : 0.0, duration: animationDuration, curve: animationCurve, child: new Icon(new IconData(9658L), size: 14)) : null)), new SizedBox(width: 8.0), new Text($"{node.content}") }));
+        long index = DartRuntimePrimitives.RequireValue(
+            TreeSliverController.of(context).getActiveIndexFor(node)
+        );
+        return new Padding(
+            padding: EdgeInsets.CreateAll(8.0),
+            child: new Row(
+                children: new List<Widget>
+                {
+                    TreeSliver<T>.wrapChildToToggleNode(
+                        node: node,
+                        child: SizedBox.CreateSquare(
+                            dimension: 30.0,
+                            child: Enumerable.Any(node.children)
+                                ? new AnimatedRotation(
+                                    key: new ValueKey<long>(index),
+                                    turns: node.isExpanded ? 0.25 : 0.0,
+                                    duration: animationDuration,
+                                    curve: animationCurve,
+                                    child: new Icon(new IconData(9658L), size: 14)
+                                )
+                                : null
+                        )
+                    ),
+                    new SizedBox(width: 8.0),
+                    new Text($"{node.content}"),
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TreeSliverState__sliver_tree<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _TreeSliverState__sliver_tree<T>());
 }
 
 internal delegate void _AnimationRecord__sliver_tree();
 
-internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerProviderStateMixin<TreeSliver<T>>, TreeSliverStateMixin<T>, ITreeSliverState
+internal class _TreeSliverState__sliver_tree<T>
+    : State<TreeSliver<T>>,
+        TickerProviderStateMixin<TreeSliver<T>>,
+        TreeSliverStateMixin<T>,
+        ITreeSliverState
 {
-    bool ITreeSliverState.isExpanded(ITreeSliverNode node) => node is TreeSliverNode<T> typed && isExpanded(typed);
-    bool ITreeSliverState.isActive(ITreeSliverNode node) => node is TreeSliverNode<T> typed && isActive(typed);
-    long? ITreeSliverState.getActiveIndexFor(ITreeSliverNode node) => node is TreeSliverNode<T> typed ? getActiveIndexFor(typed) : null;
+    bool ITreeSliverState.isExpanded(ITreeSliverNode node) =>
+        node is TreeSliverNode<T> typed && isExpanded(typed);
+
+    bool ITreeSliverState.isActive(ITreeSliverNode node) =>
+        node is TreeSliverNode<T> typed && isActive(typed);
+
+    long? ITreeSliverState.getActiveIndexFor(ITreeSliverNode node) =>
+        node is TreeSliverNode<T> typed ? getActiveIndexFor(typed) : null;
+
     void ITreeSliverState.toggleNode(ITreeSliverNode node) => toggleNode((TreeSliverNode<T>)node);
-    ITreeSliverNode? ITreeSliverState.getNodeFor(object? content) => content is T typed ? getNodeFor(typed) : content is null && default(T) is null ? getNodeFor(default!) : null;
+
+    ITreeSliverNode? ITreeSliverState.getNodeFor(object? content) =>
+        content is T typed ? getNodeFor(typed)
+        : content is null && default(T) is null ? getNodeFor(default!)
+        : null;
 
     internal virtual TreeSliverController? _treeController { get; set; } = default;
-    internal virtual List<TreeSliverNode<T>> _activeNodes { get; private set; } = new List<TreeSliverNode<T>>();
-    internal virtual DartMap<TreeSliverNode<T>, (CurvedAnimation animation, AnimationController controller, UniqueKey key)> _currentAnimationForParent { get; private set; } = new DartMap<TreeSliverNode<T>, (CurvedAnimation animation, AnimationController controller, UniqueKey key)>();
-    internal virtual DartMap<UniqueKey, TreeSliverNodesAnimation> _activeAnimations { get; private set; } = new DartMap<UniqueKey, TreeSliverNodesAnimation>().cast<UniqueKey, TreeSliverNodesAnimation>();
+    internal virtual List<TreeSliverNode<T>> _activeNodes { get; private set; } =
+        new List<TreeSliverNode<T>>();
+    internal virtual DartMap<
+        TreeSliverNode<T>,
+        (CurvedAnimation animation, AnimationController controller, UniqueKey key)
+    > _currentAnimationForParent { get; private set; } =
+        new DartMap<
+            TreeSliverNode<T>,
+            (CurvedAnimation animation, AnimationController controller, UniqueKey key)
+        >();
+    internal virtual DartMap<UniqueKey, TreeSliverNodesAnimation> _activeAnimations
+    {
+        get;
+        private set;
+    } =
+        new DartMap<UniqueKey, TreeSliverNodesAnimation>().cast<
+            UniqueKey,
+            TreeSliverNodesAnimation
+        >();
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    public virtual TreeSliverController controller => DartRuntimePrimitives.ConvertValue<TreeSliverController>(_treeController!);
+    public virtual TreeSliverController controller =>
+        DartRuntimePrimitives.ConvertValue<TreeSliverController>(_treeController!);
+
     internal virtual bool _shouldUnpackNode(TreeSliverNode<T> node)
     {
         if (!Enumerable.Any(node.children))
@@ -277,7 +429,11 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _unpackActiveNodes(long depth = 0, List<TreeSliverNode<T>>? nodes = null, TreeSliverNode<T>? parent = null)
+    internal virtual void _unpackActiveNodes(
+        long depth = 0,
+        List<TreeSliverNode<T>>? nodes = null,
+        TreeSliverNode<T>? parent = null
+    )
     {
         if (nodes is null)
         {
@@ -299,7 +455,13 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     public override void initState()
     {
         _unpackActiveNodes();
-        DartRuntimePrimitives.Assert(() => widget.controller?._state is null, () => (object?)"The provided TreeSliverController is already associated with another " + "TreeSliver. A TreeSliverController can only be associated with one " + "TreeSliver.");
+        DartRuntimePrimitives.Assert(
+            () => widget.controller?._state is null,
+            () =>
+                (object?)"The provided TreeSliverController is already associated with another "
+                + "TreeSliver. A TreeSliverController can only be associated with one "
+                + "TreeSliver."
+        );
         _treeController = widget.controller ?? new TreeSliverController();
         _treeController!._state = this;
         base.initState();
@@ -330,7 +492,9 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
                 {
                     DartRuntimePrimitives.Assert(() => oldWidget.controller is not null);
                     DartRuntimePrimitives.Assert(() => widget.controller is not null);
-                    DartRuntimePrimitives.Assert(() => Equals(oldWidget.controller, _treeController));
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(oldWidget.controller, _treeController)
+                    );
                     _treeController!._state = null;
                     _treeController = widget.controller;
                     _treeController!._state = this;
@@ -345,26 +509,50 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     public override void dispose()
     {
         _treeController!._state = null;
-        foreach ((CurvedAnimation animation, AnimationController controller, UniqueKey key) @record in _currentAnimationForParent.Values)
+        foreach (
+            (
+                CurvedAnimation animation,
+                AnimationController controller,
+                UniqueKey key
+            ) @record in _currentAnimationForParent.Values
+        )
         {
             @record.animation.dispose();
             @record.controller.dispose();
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -372,30 +560,57 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
 
     public override Widget build(BuildContext context)
     {
-        return new _SliverTree__sliver_tree(itemCount: checked(_activeNodes.Count), activeAnimations: _activeAnimations.cast<UniqueKey, TreeSliverNodesAnimation>(), itemBuilder: (context, index) =>
-        {
-            TreeSliverNode<T> node = _activeNodes[(int)index];
-            Widget childLocal = widget.treeNodeBuilder(context, node, widget.toggleAnimationStyle ?? TreeSliver<object>.defaultToggleAnimationStyle);
-            if (widget.addRepaintBoundaries)
+        return new _SliverTree__sliver_tree(
+            itemCount: checked(_activeNodes.Count),
+            activeAnimations: _activeAnimations.cast<UniqueKey, TreeSliverNodesAnimation>(),
+            itemBuilder: (context, index) =>
             {
-                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
-            }
-            if (widget.addSemanticIndexes)
-            {
-                long? semanticIndex = widget.semanticIndexCallback(childLocal, index);
-                if (semanticIndex is not null)
+                TreeSliverNode<T> node = _activeNodes[(int)index];
+                Widget childLocal = widget.treeNodeBuilder(
+                    context,
+                    node,
+                    widget.toggleAnimationStyle ?? TreeSliver<object>.defaultToggleAnimationStyle
+                );
+                if (widget.addRepaintBoundaries)
                 {
-                    long semanticIndex__26512__value26586 = DartRuntimePrimitives.RequireValue(semanticIndex);
-                    childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedSemantics(index: DartRuntimePrimitives.RequireValue(semanticIndex__26512__value26586) + widget.semanticIndexOffset, child: childLocal));
+                    childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new RepaintBoundary(child: childLocal)
+                    );
                 }
-            }
-            return (Widget?)new _TreeNodeParentDataWidget__sliver_tree(depth: DartRuntimePrimitives.RequireValue(node.depth), child: childLocal);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, itemExtentBuilder: (index, dimensions) =>
-        {
-            return widget.treeRowExtentBuilder(_activeNodes[(int)index], dimensions);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, addAutomaticKeepAlives: widget.addAutomaticKeepAlives, findChildIndexCallback: widget.findChildIndexCallback, indentation: widget.indentation.value);
+                if (widget.addSemanticIndexes)
+                {
+                    long? semanticIndex = widget.semanticIndexCallback(childLocal, index);
+                    if (semanticIndex is not null)
+                    {
+                        long semanticIndex__26512__value26586 = DartRuntimePrimitives.RequireValue(
+                            semanticIndex
+                        );
+                        childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                            new IndexedSemantics(
+                                index: DartRuntimePrimitives.RequireValue(
+                                    semanticIndex__26512__value26586
+                                ) + widget.semanticIndexOffset,
+                                child: childLocal
+                            )
+                        );
+                    }
+                }
+                return (Widget?)
+                    new _TreeNodeParentDataWidget__sliver_tree(
+                        depth: DartRuntimePrimitives.RequireValue(node.depth),
+                        child: childLocal
+                    );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            itemExtentBuilder: (index, dimensions) =>
+            {
+                return widget.treeRowExtentBuilder(_activeNodes[(int)index], dimensions);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+            findChildIndexCallback: widget.findChildIndexCallback,
+            indentation: widget.indentation.value
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -406,7 +621,9 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     }
 
     public virtual bool isActive(TreeSliverNode<T> node) => _activeNodes.Contains(node);
+
     public virtual TreeSliverNode<T>? getNodeFor(T content) => _getNode(content, widget.tree);
+
     internal virtual TreeSliverNode<T>? _getNode(T content, List<TreeSliverNode<T>> tree)
     {
         var nextDepth = new List<TreeSliverNode<T>>();
@@ -443,10 +660,15 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     {
         var activeNodesToExpand = new List<TreeSliverNode<T>>();
         _expandAll(widget.tree, activeNodesToExpand);
-        Enumerable.Reverse(activeNodesToExpand).forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
+        Enumerable
+            .Reverse(activeNodesToExpand)
+            .forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
     }
 
-    internal virtual void _expandAll(List<TreeSliverNode<T>> tree, List<TreeSliverNode<T>> activeNodesToExpand)
+    internal virtual void _expandAll(
+        List<TreeSliverNode<T>> tree,
+        List<TreeSliverNode<T>> activeNodesToExpand
+    )
     {
         foreach (var node in tree)
         {
@@ -472,10 +694,15 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     {
         var activeNodesToCollapse = new List<TreeSliverNode<T>>();
         _collapseAll(widget.tree, activeNodesToCollapse);
-        Enumerable.Reverse(activeNodesToCollapse).forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
+        Enumerable
+            .Reverse(activeNodesToCollapse)
+            .forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
     }
 
-    internal virtual void _collapseAll(List<TreeSliverNode<T>> tree, List<TreeSliverNode<T>> activeNodesToCollapse)
+    internal virtual void _collapseAll(
+        List<TreeSliverNode<T>> tree,
+        List<TreeSliverNode<T>> activeNodesToCollapse
+    )
     {
         foreach (var node in tree)
         {
@@ -502,9 +729,23 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
         _activeAnimations.Clear();
         foreach (TreeSliverNode<T> node in _currentAnimationForParent.Keys)
         {
-            (CurvedAnimation animation, AnimationController controller, UniqueKey key) animationRecord = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(CurvedAnimation animation, AnimationController controller, UniqueKey key)>(_currentAnimationForParent, node));
+            (
+                CurvedAnimation animation,
+                AnimationController controller,
+                UniqueKey key
+            ) animationRecord = DartRuntimePrimitives.RequireValue(
+                DartCollectionRuntime.NullableMapValue<(
+                    CurvedAnimation animation,
+                    AnimationController controller,
+                    UniqueKey key
+                )>(_currentAnimationForParent, node)
+            );
             long leadingChildIndex = _activeNodes.IndexOf(node) + 1L;
-            TreeSliverNodesAnimation animatingChildren = new TreeSliverNodesAnimation(fromIndex: leadingChildIndex, toIndex: leadingChildIndex + checked(node.children.Count) - 1L, value: animationRecord.animation.value);
+            TreeSliverNodesAnimation animatingChildren = new TreeSliverNodesAnimation(
+                fromIndex: leadingChildIndex,
+                toIndex: leadingChildIndex + checked(node.children.Count) - 1L,
+                value: animationRecord.animation.value
+            );
             _activeAnimations[animationRecord.key] = animatingChildren;
         }
     }
@@ -525,74 +766,128 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
             }
             if (_currentAnimationForParent.ContainsKey(node))
             {
-                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(CurvedAnimation animation, AnimationController controller, UniqueKey key)>(_currentAnimationForParent, node)).animation.dispose();
+                DartRuntimePrimitives
+                    .RequireValue(
+                        DartCollectionRuntime.NullableMapValue<(
+                            CurvedAnimation animation,
+                            AnimationController controller,
+                            UniqueKey key
+                        )>(_currentAnimationForParent, node)
+                    )
+                    .animation.dispose();
             }
-            if (Equals(widget.toggleAnimationStyle, AnimationStyle.noAnimation) || Equals(widget.toggleAnimationStyle?.duration, Duration.zero))
+            if (
+                Equals(widget.toggleAnimationStyle, AnimationStyle.noAnimation)
+                || Equals(widget.toggleAnimationStyle?.duration, Duration.zero)
+            )
             {
                 _unpackActiveNodes();
                 return;
             }
-            AnimationController controllerLocal = ((Func<AnimationController>)(() =>
-            {
-                var __cascade = DartCollectionRuntime.NullableMapValue<(CurvedAnimation animation, AnimationController controller, UniqueKey key)>(_currentAnimationForParent, node)?.controller ?? new AnimationController(value: node._expanded ? 0.0 : 1.0, vsync: this, duration: widget.toggleAnimationStyle?.duration ?? TreeSliver<object>.defaultAnimationDuration);
-                __cascade.addStatusListener((status) =>
-                {
-                    switch (status)
+            AnimationController controllerLocal = (
+                (Func<AnimationController>)(
+                    () =>
                     {
-                        case AnimationStatus.dismissed:
-                        case AnimationStatus.completed:
+                        var __cascade =
+                            DartCollectionRuntime
+                                .NullableMapValue<(
+                                    CurvedAnimation animation,
+                                    AnimationController controller,
+                                    UniqueKey key
+                                )>(_currentAnimationForParent, node)
+                                ?.controller
+                            ?? new AnimationController(
+                                value: node._expanded ? 0.0 : 1.0,
+                                vsync: this,
+                                duration: widget.toggleAnimationStyle?.duration
+                                    ?? TreeSliver<object>.defaultAnimationDuration
+                            );
+                        __cascade.addStatusListener(
+                            (status) =>
                             {
-                                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(CurvedAnimation animation, AnimationController controller, UniqueKey key)>(_currentAnimationForParent, node)).animation.dispose();
-                                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(CurvedAnimation animation, AnimationController controller, UniqueKey key)>(_currentAnimationForParent, node)).controller.dispose();
-                                _currentAnimationForParent.remove(node);
-                                _updateActiveAnimations();
-                                if (!node._expanded)
+                                switch (status)
                                 {
-                                    _unpackActiveNodes();
+                                    case AnimationStatus.dismissed:
+                                    case AnimationStatus.completed:
+                                    {
+                                        DartRuntimePrimitives
+                                            .RequireValue(
+                                                DartCollectionRuntime.NullableMapValue<(
+                                                    CurvedAnimation animation,
+                                                    AnimationController controller,
+                                                    UniqueKey key
+                                                )>(_currentAnimationForParent, node)
+                                            )
+                                            .animation.dispose();
+                                        DartRuntimePrimitives
+                                            .RequireValue(
+                                                DartCollectionRuntime.NullableMapValue<(
+                                                    CurvedAnimation animation,
+                                                    AnimationController controller,
+                                                    UniqueKey key
+                                                )>(_currentAnimationForParent, node)
+                                            )
+                                            .controller.dispose();
+                                        _currentAnimationForParent.remove(node);
+                                        _updateActiveAnimations();
+                                        if (!node._expanded)
+                                        {
+                                            _unpackActiveNodes();
+                                        }
+                                        break;
+                                    }
+                                    case AnimationStatus.forward:
+                                    case AnimationStatus.reverse:
+                                        break;
                                 }
-                                break;
                             }
-                        case AnimationStatus.forward:
-                        case AnimationStatus.reverse:
-                            break;
+                        );
+                        __cascade.addListener(() =>
+                        {
+                            setState(() =>
+                            {
+                                _updateActiveAnimations();
+                            });
+                        });
+                        return __cascade;
                     }
-                });
-                __cascade.addListener(() =>
-                {
-                    setState(() =>
-                    {
-                        _updateActiveAnimations();
-                    });
-                });
-                return __cascade;
-            }))();
+                )
+            )();
             switch (controllerLocal.status)
             {
                 case AnimationStatus.forward:
                 case AnimationStatus.reverse:
-                    {
-                        controllerLocal.stop();
-                        break;
-                    }
+                {
+                    controllerLocal.stop();
+                    break;
+                }
                 case AnimationStatus.dismissed:
                 case AnimationStatus.completed:
                     break;
             }
-            var newAnimation = new CurvedAnimation(parent: controllerLocal, curve: widget.toggleAnimationStyle?.curve ?? TreeSliver<object>.defaultAnimationCurve);
-            _currentAnimationForParent[node] = (animation: newAnimation, controller: controllerLocal, key: new UniqueKey());
+            var newAnimation = new CurvedAnimation(
+                parent: controllerLocal,
+                curve: widget.toggleAnimationStyle?.curve
+                    ?? TreeSliver<object>.defaultAnimationCurve
+            );
+            _currentAnimationForParent[node] = (
+                animation: newAnimation,
+                controller: controllerLocal,
+                key: new UniqueKey()
+            );
             switch (node._expanded)
             {
                 case true:
-                    {
-                        _unpackActiveNodes();
-                        controllerLocal.forward();
-                        break;
-                    }
+                {
+                    _unpackActiveNodes();
+                    controllerLocal.forward();
+                    break;
+                }
                 case false:
-                    {
-                        controllerLocal.reverse();
-                        break;
-                    }
+                {
+                    controllerLocal.reverse();
+                    break;
+                }
             }
         });
     }
@@ -606,13 +901,23 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -661,16 +966,25 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _TreeNodeParentDataWidget__sliver_tree : ParentDataWidget<TreeSliverNodeParentData>
 {
     public virtual long depth { get; private set; } = default!;
 
-    internal _TreeNodeParentDataWidget__sliver_tree(long depth, Widget child) : base(child: child)
+    internal _TreeNodeParentDataWidget__sliver_tree(long depth, Widget child)
+        : base(child: child)
     {
         this.depth = depth;
         System.Diagnostics.Debug.Assert(depth >= 0L);
@@ -693,20 +1007,43 @@ internal class _TreeNodeParentDataWidget__sliver_tree : ParentDataWidget<TreeSli
     }
 
     public override Type debugTypicalAncestorWidgetClass => typeof(_SliverTree__sliver_tree);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new IntProperty("depth", depth));
     }
-
 }
 
 internal class _SliverTree__sliver_tree : SliverVariedExtentList
 {
-    public virtual DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations { get; private set; } = default!;
+    public virtual DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations
+    {
+        get;
+        private set;
+    } = default!;
     public virtual double indentation { get; private set; } = default!;
 
-    internal _SliverTree__sliver_tree(Func<BuildContext, long, Widget?> itemBuilder, ItemExtentBuilder itemExtentBuilder, DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations, double indentation, Func<Key, long?>? findChildIndexCallback = null, long itemCount = default!, bool addAutomaticKeepAlives = true) : base(itemExtentBuilder: itemExtentBuilder, @delegate: new SliverChildBuilderDelegate(itemBuilder, findChildIndexCallback: findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: false, addSemanticIndexes: false))
+    internal _SliverTree__sliver_tree(
+        Func<BuildContext, long, Widget?> itemBuilder,
+        ItemExtentBuilder itemExtentBuilder,
+        DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations,
+        double indentation,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long itemCount = default!,
+        bool addAutomaticKeepAlives = true
+    )
+        : base(
+            itemExtentBuilder: itemExtentBuilder,
+            @delegate: new SliverChildBuilderDelegate(
+                itemBuilder,
+                findChildIndexCallback: findChildIndexCallback,
+                childCount: itemCount,
+                addAutomaticKeepAlives: addAutomaticKeepAlives,
+                addRepaintBoundaries: false,
+                addSemanticIndexes: false
+            )
+        )
     {
         this.activeAnimations = activeAnimations;
         this.indentation = indentation;
@@ -715,22 +1052,31 @@ internal class _SliverTree__sliver_tree : SliverVariedExtentList
     public override RenderObject createRenderObject(BuildContext context)
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
-        return new RenderTreeSliver(itemExtentBuilder: itemExtentBuilder, activeAnimations: activeAnimations, indentation: indentation, childManager: element);
+        return new RenderTreeSliver(
+            itemExtentBuilder: itemExtentBuilder,
+            activeAnimations: activeAnimations,
+            indentation: indentation,
+            childManager: element
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderTreeSliver)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderTreeSliver>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.itemExtentBuilder = itemExtentBuilder;
-    __cascade.activeAnimations = activeAnimations;
-    __cascade.indentation = indentation;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderTreeSliver>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.itemExtentBuilder = itemExtentBuilder;
+                        __cascade.activeAnimations = activeAnimations;
+                        __cascade.indentation = indentation;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
-

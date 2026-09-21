@@ -7,7 +7,7 @@ namespace Doroti.Framework.Gestures;
 public enum GestureDisposition
 {
     accepted,
-    rejected
+    rejected,
 }
 
 public interface GestureArenaMember
@@ -21,8 +21,8 @@ public class GestureArenaEntry
     internal virtual GestureArenaManager _arena { get; private set; } = default!;
     internal virtual long _pointer { get; private set; } = default!;
     internal virtual GestureArenaMember _member { get; private set; } = default!;
-    public GestureArenaEntry() { }
 
+    public GestureArenaEntry() { }
 
     public GestureArenaEntry(GestureArenaManager _arena, long _pointer, GestureArenaMember _member)
     {
@@ -35,12 +35,12 @@ public class GestureArenaEntry
     {
         _arena._resolve(_pointer, _member, disposition);
     }
-
 }
 
 internal class _GestureArena__arena
 {
-    public virtual List<GestureArenaMember> members { get; private set; } = new List<GestureArenaMember>();
+    public virtual List<GestureArenaMember> members { get; private set; } =
+        new List<GestureArenaMember>();
     public virtual bool isOpen { get; set; } = true;
     public virtual bool isHeld { get; set; } = false;
     public virtual bool hasPendingSweep { get; set; } = false;
@@ -61,14 +61,21 @@ internal class _GestureArena__arena
         }
         else
         {
-            buffer.write(string.Join(", ", members.map((member) =>
-            {
-                if (Equals(member, eagerWinner))
-                {
-                    return $"{member} (eager winner)";
-                }
-                return $"{member}";
-            })));
+            buffer.write(
+                string.Join(
+                    ", ",
+                    members.map(
+                        (member) =>
+                        {
+                            if (Equals(member, eagerWinner))
+                            {
+                                return $"{member} (eager winner)";
+                            }
+                            return $"{member}";
+                        }
+                    )
+                )
+            );
         }
         if (isOpen)
         {
@@ -85,20 +92,25 @@ internal class _GestureArena__arena
         return buffer.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class GestureArenaManager
 {
-    internal virtual DartMap<long, _GestureArena__arena> _arenas { get; private set; } = new DartMap<long, _GestureArena__arena>();
+    internal virtual DartMap<long, _GestureArena__arena> _arenas { get; private set; } =
+        new DartMap<long, _GestureArena__arena>();
 
     public virtual GestureArenaEntry add(long pointer, GestureArenaMember member)
     {
-        _GestureArena__arena state = _arenas.putIfAbsent(pointer, () =>
-        {
-            DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, "★ Opening new gesture arena."));
-            return new _GestureArena__arena();
-        });
+        _GestureArena__arena state = _arenas.putIfAbsent(
+            pointer,
+            () =>
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    _debugLogDiagnostic(pointer, "★ Opening new gesture arena.")
+                );
+                return new _GestureArena__arena();
+            }
+        );
         state.add(member);
         DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Adding: {member}"));
         return new GestureArenaEntry(this, pointer, member);
@@ -128,14 +140,18 @@ public class GestureArenaManager
         if (state.isHeld)
         {
             state.hasPendingSweep = true;
-            DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, "Delaying sweep", state));
+            DartRuntimePrimitives.Assert(() =>
+                _debugLogDiagnostic(pointer, "Delaying sweep", state)
+            );
             return;
         }
         DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, "Sweeping", state));
         _arenas.remove(pointer);
         if (checked((long)state.members.Count) != 0)
         {
-            DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Winner: {state.members.First()}"));
+            DartRuntimePrimitives.Assert(() =>
+                _debugLogDiagnostic(pointer, $"Winner: {state.members.First()}")
+            );
             state.members.First().acceptGesture(pointer);
             for (var i = 1L; i < checked(state.members.Count); i++)
             {
@@ -170,7 +186,11 @@ public class GestureArenaManager
         }
     }
 
-    internal virtual void _resolve(long pointer, GestureArenaMember member, GestureDisposition disposition)
+    internal virtual void _resolve(
+        long pointer,
+        GestureArenaMember member,
+        GestureDisposition disposition
+    )
     {
         _GestureArena__arena? state = _arenas.GetValueOrDefault(pointer);
         if (state is null)
@@ -181,34 +201,40 @@ public class GestureArenaManager
         switch (disposition)
         {
             case GestureDisposition.accepted:
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    _debugLogDiagnostic(pointer, $"Accepting: {member}")
+                );
+                if (state.isOpen)
                 {
-                    DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Accepting: {member}"));
-                    if (state.isOpen)
-                    {
-                        state.eagerWinner ??= member;
-                    }
-                    else
-                    {
-                        DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Self-declared winner: {member}"));
-                        _resolveInFavorOf(pointer, state, member);
-                    }
-                    break;
+                    state.eagerWinner ??= member;
                 }
+                else
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        _debugLogDiagnostic(pointer, $"Self-declared winner: {member}")
+                    );
+                    _resolveInFavorOf(pointer, state, member);
+                }
+                break;
+            }
             case GestureDisposition.rejected:
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    _debugLogDiagnostic(pointer, $"Rejecting: {member}")
+                );
+                if (Equals(state.eagerWinner, member))
                 {
-                    DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Rejecting: {member}"));
-                    if (Equals(state.eagerWinner, member))
-                    {
-                        state.eagerWinner = null;
-                    }
-                    state.members.Remove(member);
-                    member.rejectGesture(pointer);
-                    if (!state.isOpen)
-                    {
-                        _tryToResolveArena(pointer, state);
-                    }
-                    break;
+                    state.eagerWinner = null;
                 }
+                state.members.Remove(member);
+                member.rejectGesture(pointer);
+                if (!state.isOpen)
+                {
+                    _tryToResolveArena(pointer, state);
+                }
+                break;
+            }
         }
     }
 
@@ -231,7 +257,9 @@ public class GestureArenaManager
             {
                 if (state.eagerWinner is not null)
                 {
-                    DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Eager winner: {state.eagerWinner}"));
+                    DartRuntimePrimitives.Assert(() =>
+                        _debugLogDiagnostic(pointer, $"Eager winner: {state.eagerWinner}")
+                    );
                     _resolveInFavorOf(pointer, state, state.eagerWinner!);
                 }
             }
@@ -249,14 +277,22 @@ public class GestureArenaManager
         List<GestureArenaMember> membersLocal = state.members;
         DartRuntimePrimitives.Assert(() => checked(membersLocal.Count) == 1L);
         _arenas.remove(pointer);
-        DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Default winner: {state.members.First()}"));
+        DartRuntimePrimitives.Assert(() =>
+            _debugLogDiagnostic(pointer, $"Default winner: {state.members.First()}")
+        );
         state.members.First().acceptGesture(pointer);
     }
 
-    internal virtual void _resolveInFavorOf(long pointer, _GestureArena__arena state, GestureArenaMember member)
+    internal virtual void _resolveInFavorOf(
+        long pointer,
+        _GestureArena__arena state,
+        GestureArenaMember member
+    )
     {
         DartRuntimePrimitives.Assert(() => Equals(state, _arenas.GetValueOrDefault(pointer)));
-        DartRuntimePrimitives.Assert(() => (state.eagerWinner is null) || Equals(state.eagerWinner, member));
+        DartRuntimePrimitives.Assert(() =>
+            (state.eagerWinner is null) || Equals(state.eagerWinner, member)
+        );
         DartRuntimePrimitives.Assert(() => !state.isOpen);
         _arenas.remove(pointer);
         foreach (GestureArenaMember rejectedMember in state.members)
@@ -269,21 +305,25 @@ public class GestureArenaManager
         member.acceptGesture(pointer);
     }
 
-    internal virtual bool _debugLogDiagnostic(long pointer, string message, _GestureArena__arena? state = null)
+    internal virtual bool _debugLogDiagnostic(
+        long pointer,
+        string message,
+        _GestureArena__arena? state = null
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (DebugLibrary.debugPrintGestureArenaDiagnostics)
             {
-                if (DebugLibrary.debugPrintGestureArenaDiagnostics)
-                {
-                    long? count = state?.members?.Count;
-                    var s = (count != 1L) ? "s" : "";
-                    PrintLibrary.debugPrint($"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {DartRuntimePrimitives.RequireValue(count)} member{s}." : "")}");
-                }
-                return true;
-            });
+                long? count = state?.members?.Count;
+                var s = (count != 1L) ? "s" : "";
+                PrintLibrary.debugPrint(
+                    $"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {DartRuntimePrimitives.RequireValue(count)} member{s}." : "")}"
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

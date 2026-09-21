@@ -51,7 +51,8 @@ public static partial class _network_image_webLibrary
 
 public static partial class _network_image_webLibrary
 {
-    public static Func<HTMLImageElement> imgElementFactory = _network_image_webLibrary._imgElementFactory;
+    public static Func<HTMLImageElement> imgElementFactory =
+        _network_image_webLibrary._imgElementFactory;
 }
 
 public static partial class _network_image_webLibrary
@@ -68,12 +69,18 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public virtual double scale { get; private set; } = default!;
     public virtual DartMap<string, string>? headers { get; private set; }
     public virtual WebHtmlElementStrategy webHtmlElementStrategy { get; private set; } = default!;
+
     public NetworkImageIo() { }
 
-
-    public NetworkImageIo(string url, double scale = 1.0, DartMap<string, string>? headers = null, WebHtmlElementStrategy? webHtmlElementStrategy = null)
+    public NetworkImageIo(
+        string url,
+        double scale = 1.0,
+        DartMap<string, string>? headers = null,
+        WebHtmlElementStrategy? webHtmlElementStrategy = null
+    )
     {
-        WebHtmlElementStrategy __webHtmlElementStrategy = webHtmlElementStrategy ?? WebHtmlElementStrategy.never;
+        WebHtmlElementStrategy __webHtmlElementStrategy =
+            webHtmlElementStrategy ?? WebHtmlElementStrategy.never;
         this.url = url;
         this.scale = scale;
         this.headers = headers;
@@ -86,15 +93,35 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ImageStreamCompleter loadBuffer(NetworkImageIo key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode)
+    public override ImageStreamCompleter loadBuffer(
+        NetworkImageIo key,
+        Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode
+    )
     {
-        return new _ForwardingImageStreamCompleter___network_image_web(_loadAsync(((NetworkImageIo?)(object?)key)!, (Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)decode), informationCollector: _imageStreamInformationCollector(key), debugLabel: key.url);
+        return new _ForwardingImageStreamCompleter___network_image_web(
+            _loadAsync(
+                ((NetworkImageIo?)(object?)key)!,
+                (Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)decode
+            ),
+            informationCollector: _imageStreamInformationCollector(key),
+            debugLabel: key.url
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ImageStreamCompleter loadImage(NetworkImageIo key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode)
+    public override ImageStreamCompleter loadImage(
+        NetworkImageIo key,
+        Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode
+    )
     {
-        return new _ForwardingImageStreamCompleter___network_image_web(_loadAsync(((NetworkImageIo?)(object?)key)!, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decode), informationCollector: _imageStreamInformationCollector(key), debugLabel: key.url);
+        return new _ForwardingImageStreamCompleter___network_image_web(
+            _loadAsync(
+                ((NetworkImageIo?)(object?)key)!,
+                (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decode
+            ),
+            informationCollector: _imageStreamInformationCollector(key),
+            debugLabel: key.url
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,21 +129,41 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     {
         InformationCollector? collector = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", ((NetworkImageIo?)(object?)key)!) });
-                return true;
-            });
+        {
+            collector = (
+                () =>
+                    new List<DiagnosticsNode>
+                    {
+                        new DiagnosticsProperty<dynamic>("Image provider", this),
+                        new DiagnosticsProperty<NetworkImageIo>(
+                            "Image key",
+                            ((NetworkImageIo?)(object?)key)!
+                        ),
+                    }
+            );
+            return true;
+        });
         return collector;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<ImageStreamCompleter> _loadAsync(NetworkImageIo key, Func<ImmutableBuffer, Future<Codec>> decode)
+    internal virtual async Future<ImageStreamCompleter> _loadAsync(
+        NetworkImageIo key,
+        Func<ImmutableBuffer, Future<Codec>> decode
+    )
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(key, this)));
         async Future<ImageStreamCompleter> loadViaDecode()
         {
-            global::Doroti.Ui.Codec codecLocal = await _fetchImageBytes((Func<ImmutableBuffer, Future<Codec>>)decode);
-            return new MultiFrameImageStreamCompleter(codec: Future<global::Doroti.Ui.Codec>.value(codecLocal), scale: key.scale, debugLabel: key.url, informationCollector: _imageStreamInformationCollector(key));
+            global::Doroti.Ui.Codec codecLocal = await _fetchImageBytes(
+                (Func<ImmutableBuffer, Future<Codec>>)decode
+            );
+            return new MultiFrameImageStreamCompleter(
+                codec: Future<global::Doroti.Ui.Codec>.value(codecLocal),
+                scale: key.scale,
+                debugLabel: key.url,
+                informationCollector: _imageStreamInformationCollector(key)
+            );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         async Future<ImageStreamCompleter> loadViaImgElement()
@@ -124,74 +171,131 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             HTMLImageElement imageElement = _network_image_webLibrary.imgElementFactory();
             imageElement.src = key.url;
             await imageElement.decode().toDart;
-            return ((Func<OneFrameImageStreamCompleter>)(() =>
-{            var __cascade = new OneFrameImageStreamCompleter(Future<ImageInfo>.value(new WebImageInfoIo(imageElement, debugLabel: key.url)), informationCollector: _imageStreamInformationCollector(key));
-            __cascade.debugLabel = key.url;
-            return __cascade;        }))();
+            return (
+                (Func<OneFrameImageStreamCompleter>)(
+                    () =>
+                    {
+                        var __cascade = new OneFrameImageStreamCompleter(
+                            Future<ImageInfo>.value(
+                                new WebImageInfoIo(imageElement, debugLabel: key.url)
+                            ),
+                            informationCollector: _imageStreamInformationCollector(key)
+                        );
+                        __cascade.debugLabel = key.url;
+                        return __cascade;
+                    }
+                )
+            )();
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        bool containsNetworkImageHeaders = ((((long?)(key.headers?.Count)) is { } __count5178 ? __count5178 != 0 : (bool?)null) ?? false);
+        bool containsNetworkImageHeaders = (
+            (((long?)(key.headers?.Count)) is { } __count5178 ? __count5178 != 0 : (bool?)null)
+            ?? false
+        );
         if (containsNetworkImageHeaders)
         {
             return await loadViaDecode();
         }
         switch (this.webHtmlElementStrategy)
         {
-            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.never:
+            case global::Doroti
+                .Framework
+                .Painting
+                .Image_providerLibrary
+                .WebHtmlElementStrategy
+                .never:
+            {
+                return await loadViaDecode();
+            }
+            case global::Doroti
+                .Framework
+                .Painting
+                .Image_providerLibrary
+                .WebHtmlElementStrategy
+                .prefer:
+            {
+                return await loadViaImgElement();
+            }
+            case global::Doroti
+                .Framework
+                .Painting
+                .Image_providerLibrary
+                .WebHtmlElementStrategy
+                .fallback:
+            {
+                try
                 {
                     return await loadViaDecode();
                 }
-            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.prefer:
+                catch (Exception e)
                 {
                     return await loadViaImgElement();
                 }
-            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.fallback:
-                {
-                    try
-                    {
-                        return await loadViaDecode();
-                    }
-                    catch (Exception e)
-                    {
-                        return await loadViaImgElement();
-                    }
-                    break;
-                }
+                break;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<global::Doroti.Ui.Codec> _fetchImageBytes(Func<ImmutableBuffer, Future<Codec>> decode)
+    internal virtual async Future<global::Doroti.Ui.Codec> _fetchImageBytes(
+        Func<ImmutableBuffer, Future<Codec>> decode
+    )
     {
         DartUri resolved = DartUri.@base.resolve(this.url);
-        bool containsNetworkImageHeaders = ((((long?)(this.headers?.Count)) is { } __count6471 ? __count6471 != 0 : (bool?)null) ?? false);
+        bool containsNetworkImageHeaders = (
+            (((long?)(this.headers?.Count)) is { } __count6471 ? __count6471 != 0 : (bool?)null)
+            ?? false
+        );
         var completer = new Completer<XMLHttpRequest>();
         XMLHttpRequest request = _network_image_webLibrary.httpRequestFactory();
         request.open("GET", this.url, true);
         request.responseType = "arraybuffer";
         if (containsNetworkImageHeaders)
         {
-            this.headers!.forEach(((header, value) => {
-request.setRequestHeader(header, value);
-}));
+            this.headers!.forEach(
+                (
+                    (header, value) =>
+                    {
+                        request.setRequestHeader(header, value);
+                    }
+                )
+            );
         }
-        request.addEventListener("load", ((e) => {
-long statusLocal = request.status;
-bool accepted = ((statusLocal >= 200L) && (statusLocal < 300L));
-var fileUri = (statusLocal == 0L);
-var notModified = (statusLocal == 304L);
-bool unknownRedirect = ((statusLocal > 307L) && (statusLocal < 400L));
-bool success = (((accepted || fileUri) || notModified) || unknownRedirect);
-if (success)
-{
-    completer.complete(request);
-}
-else
-{
-    completer.completeError(new NetworkImageLoadException(statusCode: statusLocal, uri: resolved));
-}
-}).toJS);
-        request.addEventListener("error", (((e) => completer.completeError(new NetworkImageLoadException(statusCode: request.status, uri: resolved)))).toJS);
+        request.addEventListener(
+            "load",
+            (
+                (e) =>
+                {
+                    long statusLocal = request.status;
+                    bool accepted = ((statusLocal >= 200L) && (statusLocal < 300L));
+                    var fileUri = (statusLocal == 0L);
+                    var notModified = (statusLocal == 304L);
+                    bool unknownRedirect = ((statusLocal > 307L) && (statusLocal < 400L));
+                    bool success = (((accepted || fileUri) || notModified) || unknownRedirect);
+                    if (success)
+                    {
+                        completer.complete(request);
+                    }
+                    else
+                    {
+                        completer.completeError(
+                            new NetworkImageLoadException(statusCode: statusLocal, uri: resolved)
+                        );
+                    }
+                }
+            ).toJS
+        );
+        request.addEventListener(
+            "error",
+            (
+                (
+                    (e) =>
+                        completer.completeError(
+                            new NetworkImageLoadException(statusCode: request.status, uri: resolved)
+                        )
+                )
+            ).toJS
+        );
         request.send();
         await completer.future;
         Uint8List bytes = (((JSArrayBuffer?)(object?)request.response!)!).toDart.asUint8List();
@@ -206,20 +310,52 @@ else
     public override bool Equals(object? other)
     {
         var __other = other as NetworkImageIo;
-        if (__other is null) return false;
+        if (__other is null)
+            return false;
         if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is NetworkImageIo) && (((NetworkImageIo)__other).url == this.url)) && (((NetworkImageIo)__other).scale == this.scale)) && (object.Equals(((NetworkImageIo)__other).webHtmlElementStrategy, this.webHtmlElementStrategy))) && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals(((NetworkImageIo)__other).headers, this.headers));
+        return (
+            (
+                (
+                    ((__other is NetworkImageIo) && (((NetworkImageIo)__other).url == this.url))
+                    && (((NetworkImageIo)__other).scale == this.scale)
+                )
+                && (
+                    object.Equals(
+                        ((NetworkImageIo)__other).webHtmlElementStrategy,
+                        this.webHtmlElementStrategy
+                    )
+                )
+            )
+            && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals(
+                ((NetworkImageIo)__other).headers,
+                this.headers
+            )
+        );
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.url, this.scale, DartRuntimePrimitives.RequireValue(this.webHtmlElementStrategy), new MapEquality<string, string>().hash(this.headers));
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage"))}(\"{this.url}\", scale: {this.scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {this.headers})";
-    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>
-        loadBuffer((NetworkImageIo)key, decode);
-    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) =>
-        loadImage((NetworkImageIo)key, decode);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            this.url,
+            this.scale,
+            DartRuntimePrimitives.RequireValue(this.webHtmlElementStrategy),
+            new MapEquality<string, string>().hash(this.headers)
+        );
+
+    public override string ToString() =>
+        $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage"))}(\"{this.url}\", scale: {this.scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {this.headers})";
+
+    ImageStreamCompleter NetworkImage.loadBuffer(
+        NetworkImage key,
+        Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode
+    ) => loadBuffer((NetworkImageIo)key, decode);
+
+    ImageStreamCompleter NetworkImage.loadImage(
+        NetworkImage key,
+        Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode
+    ) => loadImage((NetworkImageIo)key, decode);
 }
 
 internal class _ForwardingImageStreamCompleter___network_image_web : ImageStreamCompleter
@@ -236,20 +372,37 @@ internal class _ForwardingImageStreamCompleter___network_image_web : ImageStream
         {
             if (!__late_listener_initialized)
             {
-                __late_listener = new ImageStreamListener(((image, synchronousCall) => {
-setImage(image);
-}), onChunk: ((@event) => {
-reportImageChunkEvent(@event);
-}), onError: ((exception, stackTrace) => {
-reportError(exception: exception, stack: stackTrace);
-}));
+                __late_listener = new ImageStreamListener(
+                    (
+                        (image, synchronousCall) =>
+                        {
+                            setImage(image);
+                        }
+                    ),
+                    onChunk: (
+                        (@event) =>
+                        {
+                            reportImageChunkEvent(@event);
+                        }
+                    ),
+                    onError: (
+                        (exception, stackTrace) =>
+                        {
+                            reportError(exception: exception, stack: stackTrace);
+                        }
+                    )
+                );
                 __late_listener_initialized = true;
             }
             return __late_listener;
         }
     }
 
-    internal _ForwardingImageStreamCompleter___network_image_web(Future<ImageStreamCompleter> task, InformationCollector? informationCollector = null, string? debugLabel = null)
+    internal _ForwardingImageStreamCompleter___network_image_web(
+        Future<ImageStreamCompleter> task,
+        InformationCollector? informationCollector = null,
+        string? debugLabel = null
+    )
     {
         this.task = task;
     }
@@ -263,6 +416,4 @@ reportError(exception: exception, stack: stackTrace);
         _disposed = true;
         base.onDisposed();
     }
-
 }
-

@@ -16,22 +16,28 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
     {
         UnhandledException += (_, args) => WriteStartupFailure(args.Exception);
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
-            WriteStartupFailure(args.ExceptionObject as Exception ?? new InvalidOperationException(args.ExceptionObject.ToString()));
+            WriteStartupFailure(
+                args.ExceptionObject as Exception
+                    ?? new InvalidOperationException(args.ExceptionObject.ToString())
+            );
     }
 
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
         builder.ConfigureLifecycleEvents(events =>
-            events.AddWindows(windows => windows.OnWindowCreated(window =>
-                window.Closed += HandlePlatformWindowClosed)));
+            events.AddWindows(windows =>
+                windows.OnWindowCreated(window => window.Closed += HandlePlatformWindowClosed)
+            )
+        );
         ConfigurePlatform(builder);
         return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
     }
 
     private static void HandlePlatformWindowClosed(
         object sender,
-        Microsoft.UI.Xaml.WindowEventArgs args)
+        Microsoft.UI.Xaml.WindowEventArgs args
+    )
     {
         _ = sender;
         _ = args;
@@ -53,8 +59,11 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
 public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegate
 {
 #if IOS && !MACCATALYST
-    public override UIKit.UISceneConfiguration GetConfiguration(UIKit.UIApplication application,
-        UIKit.UISceneSession connectingSceneSession, UIKit.UISceneConnectionOptions options)
+    public override UIKit.UISceneConfiguration GetConfiguration(
+        UIKit.UIApplication application,
+        UIKit.UISceneSession connectingSceneSession,
+        UIKit.UISceneConnectionOptions options
+    )
     {
         var configuration = base.GetConfiguration(application, connectingSceneSession, options);
         // A direct type reference keeps the registered delegate in trimmed/AOT apps.
@@ -62,11 +71,14 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
         return configuration;
     }
 #endif
+
     protected DorotiMauiUIApplicationDelegate()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
-            DorotiMauiSurface.WriteFailure(args.ExceptionObject as Exception ??
-                new InvalidOperationException(args.ExceptionObject.ToString()));
+            DorotiMauiSurface.WriteFailure(
+                args.ExceptionObject as Exception
+                    ?? new InvalidOperationException(args.ExceptionObject.ToString())
+            );
     }
 
     protected sealed override MauiApp CreateMauiApp()
@@ -81,8 +93,10 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
     protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }
 #elif ANDROID
-public abstract class DorotiMauiAndroidApplication(IntPtr handle, Android.Runtime.JniHandleOwnership ownership)
-    : MauiApplication(handle, ownership)
+public abstract class DorotiMauiAndroidApplication(
+    IntPtr handle,
+    Android.Runtime.JniHandleOwnership ownership
+) : MauiApplication(handle, ownership)
 {
     protected sealed override MauiApp CreateMauiApp()
     {
@@ -103,21 +117,26 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
     protected DorotiMacOSMauiApplication()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
-            DorotiMauiSurface.WriteFailure(args.ExceptionObject as Exception ??
-                new InvalidOperationException(args.ExceptionObject.ToString()));
+            DorotiMauiSurface.WriteFailure(
+                args.ExceptionObject as Exception
+                    ?? new InvalidOperationException(args.ExceptionObject.ToString())
+            );
     }
 
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
         var descriptor = CreateApplicationDescriptor();
-        _terminateAfterLastWindowClosed = descriptor.ViewConfiguration.terminateAfterLastWindowClosed;
+        _terminateAfterLastWindowClosed = descriptor
+            .ViewConfiguration
+            .terminateAfterLastWindowClosed;
         ConfigurePlatform(builder);
         return builder.UseDorotiApplication(descriptor).Build();
     }
 
     public sealed override bool ApplicationShouldTerminateAfterLastWindowClosed(
-        NSApplication sender)
+        NSApplication sender
+    )
     {
         _ = sender;
         return _terminateAfterLastWindowClosed;

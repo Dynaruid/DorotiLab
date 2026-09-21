@@ -167,12 +167,11 @@ public readonly record struct DisplayRoundedRect(
     float BottomRightX,
     float BottomRightY,
     float BottomLeftX,
-    float BottomLeftY)
+    float BottomLeftY
+)
 {
     public DisplayRoundedRect(DisplayRect bounds, float radiusX, float radiusY)
-        : this(bounds, radiusX, radiusY, radiusX, radiusY, radiusX, radiusY, radiusX, radiusY)
-    {
-    }
+        : this(bounds, radiusX, radiusY, radiusX, radiusY, radiusX, radiusY, radiusX, radiusY) { }
 }
 
 public sealed class DisplayMatrix : IEquatable<DisplayMatrix>
@@ -186,32 +185,51 @@ public sealed class DisplayMatrix : IEquatable<DisplayMatrix>
         _values = new ReadOnlyCollection<float>(values.ToArray());
         if (_values.Count != 16)
         {
-            throw new ArgumentException("A DisplayList transform must contain exactly 16 values.", nameof(values));
+            throw new ArgumentException(
+                "A DisplayList transform must contain exactly 16 values.",
+                nameof(values)
+            );
         }
         var hash = new HashCode();
-        foreach (var value in _values) hash.Add(value);
+        foreach (var value in _values)
+        {
+            hash.Add(value);
+        }
+
         _hashCode = hash.ToHashCode();
     }
 
     public bool Equals(DisplayMatrix? other)
     {
-        if (ReferenceEquals(this, other)) return true;
-        if (other is null || _hashCode != other._hashCode) return false;
-        for (var i = 0; i < 16; i++) if (!_values[i].Equals(other._values[i])) return false;
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        if (other is null || _hashCode != other._hashCode)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < 16; i++)
+        {
+            if (!_values[i].Equals(other._values[i]))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
+
     public override bool Equals(object? obj) => obj is DisplayMatrix other && Equals(other);
+
     public override int GetHashCode() => _hashCode;
 
     public IReadOnlyList<float> Values => _values;
 
-    public static DisplayMatrix Identity { get; } = new(
-        [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1,
-        ]);
+    public static DisplayMatrix Identity { get; } =
+        new([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 }
 
 public sealed class DisplayPath
@@ -222,7 +240,8 @@ public sealed class DisplayPath
     public DisplayPath(
         DisplayPathFillType fillType,
         IEnumerable<DisplayPathVerb> verbs,
-        IEnumerable<float> values)
+        IEnumerable<float> values
+    )
     {
         ArgumentNullException.ThrowIfNull(verbs);
         ArgumentNullException.ThrowIfNull(values);
@@ -251,7 +270,8 @@ public sealed record DisplayLinearGradientShader : DisplayShader
         IEnumerable<uint> colors,
         IEnumerable<float> stops,
         DisplayTileMode tileMode = DisplayTileMode.Clamp,
-        DisplayMatrix? transform = null)
+        DisplayMatrix? transform = null
+    )
     {
         ArgumentNullException.ThrowIfNull(colors);
         ArgumentNullException.ThrowIfNull(stops);
@@ -289,7 +309,8 @@ public sealed record DisplayRadialGradientShader : DisplayShader
         DisplayTileMode tileMode = DisplayTileMode.Clamp,
         DisplayPoint? focal = null,
         float focalRadius = 0,
-        DisplayMatrix? transform = null)
+        DisplayMatrix? transform = null
+    )
     {
         ArgumentNullException.ThrowIfNull(colors);
         ArgumentNullException.ThrowIfNull(stops);
@@ -332,7 +353,8 @@ public sealed record DisplaySweepGradientShader : DisplayShader
         IEnumerable<uint> colors,
         IEnumerable<float> stops,
         DisplayTileMode tileMode = DisplayTileMode.Clamp,
-        DisplayMatrix? transform = null)
+        DisplayMatrix? transform = null
+    )
     {
         ArgumentNullException.ThrowIfNull(colors);
         ArgumentNullException.ThrowIfNull(stops);
@@ -365,7 +387,8 @@ public sealed record DisplayImageShader(
     DisplayTileMode TileModeX,
     DisplayTileMode TileModeY,
     DisplaySamplingQuality Sampling,
-    DisplayMatrix Transform) : DisplayShader;
+    DisplayMatrix Transform
+) : DisplayShader;
 
 public sealed record DisplayRuntimeEffectShader : DisplayShader
 {
@@ -375,7 +398,8 @@ public sealed record DisplayRuntimeEffectShader : DisplayShader
     public DisplayRuntimeEffectShader(
         DisplayResourceReference effect,
         IEnumerable<byte> uniforms,
-        IEnumerable<DisplayResourceReference>? children = null)
+        IEnumerable<DisplayResourceReference>? children = null
+    )
     {
         ArgumentNullException.ThrowIfNull(uniforms);
         Effect = effect;
@@ -392,7 +416,8 @@ public sealed record DisplayRuntimeEffectShader : DisplayShader
 
 public abstract record DisplayColorFilter;
 
-public sealed record DisplayBlendColorFilter(uint Color, DisplayBlendMode BlendMode) : DisplayColorFilter;
+public sealed record DisplayBlendColorFilter(uint Color, DisplayBlendMode BlendMode)
+    : DisplayColorFilter;
 
 public sealed record DisplayMatrixColorFilter : DisplayColorFilter
 {
@@ -404,7 +429,10 @@ public sealed record DisplayMatrixColorFilter : DisplayColorFilter
         _values = new ReadOnlyCollection<float>(values.ToArray());
         if (_values.Count != 20)
         {
-            throw new ArgumentException("A color matrix must contain exactly 20 values.", nameof(values));
+            throw new ArgumentException(
+                "A color matrix must contain exactly 20 values.",
+                nameof(values)
+            );
         }
     }
 
@@ -423,21 +451,21 @@ public sealed record DisplayBlurImageFilter(
     float SigmaX,
     float SigmaY,
     DisplayTileMode TileMode,
-    DisplayRect? Bounds = null) : DisplayImageFilter;
+    DisplayRect? Bounds = null
+) : DisplayImageFilter;
 
 public sealed record DisplayColorImageFilter(DisplayColorFilter Filter) : DisplayImageFilter;
 
-public sealed record DisplayMatrixImageFilter(
-    DisplayMatrix Matrix,
-    DisplaySamplingQuality Sampling) : DisplayImageFilter;
+public sealed record DisplayMatrixImageFilter(DisplayMatrix Matrix, DisplaySamplingQuality Sampling)
+    : DisplayImageFilter;
 
 public sealed record DisplayRuntimeEffectImageFilter(
     DisplayRuntimeEffectShader Shader,
-    DisplaySamplingQuality Sampling) : DisplayImageFilter;
+    DisplaySamplingQuality Sampling
+) : DisplayImageFilter;
 
-public sealed record DisplayComposeImageFilter(
-    DisplayImageFilter Outer,
-    DisplayImageFilter Inner) : DisplayImageFilter;
+public sealed record DisplayComposeImageFilter(DisplayImageFilter Outer, DisplayImageFilter Inner)
+    : DisplayImageFilter;
 
 public sealed record DisplayDropShadowImageFilter(
     float DeltaX,
@@ -445,7 +473,8 @@ public sealed record DisplayDropShadowImageFilter(
     float SigmaX,
     float SigmaY,
     uint Color,
-    bool ShadowOnly) : DisplayImageFilter;
+    bool ShadowOnly
+) : DisplayImageFilter;
 
 public sealed record DisplayPaint(
     uint Color,
@@ -461,7 +490,8 @@ public sealed record DisplayPaint(
     DisplayShader? Shader = null,
     DisplayColorFilter? ColorFilter = null,
     DisplayMaskFilter? MaskFilter = null,
-    DisplayImageFilter? ImageFilter = null);
+    DisplayImageFilter? ImageFilter = null
+);
 
 public sealed class DisplayParagraphRecipe
 {
@@ -487,7 +517,8 @@ public sealed class DisplayParagraphRecipe
         float measuredHeight,
         ulong metricsHash,
         IEnumerable<DisplayResourceReference>? fallbackFonts = null,
-        IEnumerable<DisplayParagraphTextRun>? textRuns = null)
+        IEnumerable<DisplayParagraphTextRun>? textRuns = null
+    )
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(fontFamily);
@@ -509,7 +540,9 @@ public sealed class DisplayParagraphRecipe
         MeasuredWidth = measuredWidth;
         MeasuredHeight = measuredHeight;
         MetricsHash = metricsHash;
-        _fallbackFonts = new ReadOnlyCollection<DisplayResourceReference>((fallbackFonts ?? []).ToArray());
+        _fallbackFonts = new ReadOnlyCollection<DisplayResourceReference>(
+            (fallbackFonts ?? []).ToArray()
+        );
         _textRuns = new ReadOnlyCollection<DisplayParagraphTextRun>((textRuns ?? []).ToArray());
     }
 
@@ -586,7 +619,8 @@ public sealed class DisplayParagraphTextRun
         IEnumerable<string>? fontFamilyFallback = null,
         IEnumerable<DisplayTextShadow>? shadows = null,
         IEnumerable<DisplayFontFeature>? fontFeatures = null,
-        IEnumerable<DisplayFontVariation>? fontVariations = null)
+        IEnumerable<DisplayFontVariation>? fontVariations = null
+    )
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(fontFamily);
@@ -611,7 +645,9 @@ public sealed class DisplayParagraphTextRun
         _fontFamilyFallback = new ReadOnlyCollection<string>((fontFamilyFallback ?? []).ToArray());
         _shadows = new ReadOnlyCollection<DisplayTextShadow>((shadows ?? []).ToArray());
         _fontFeatures = new ReadOnlyCollection<DisplayFontFeature>((fontFeatures ?? []).ToArray());
-        _fontVariations = new ReadOnlyCollection<DisplayFontVariation>((fontVariations ?? []).ToArray());
+        _fontVariations = new ReadOnlyCollection<DisplayFontVariation>(
+            (fontVariations ?? []).ToArray()
+        );
     }
 
     public string Text { get; }

@@ -29,7 +29,8 @@ public sealed record DorotiScrollTraceEntry(
     long TimestampMicroseconds,
     DorotiScrollTracePhase Phase,
     ulong ViewId,
-    string? Detail = null);
+    string? Detail = null
+);
 
 /// <summary>
 /// Bounded, causally keyed scroll diagnostics. Consumers must supply the
@@ -48,7 +49,12 @@ public sealed class DorotiScrollTrace
     public long Begin(ulong viewId, DorotiScrollTracePhase phase, string? detail = null)
     {
         if (phase is not (DorotiScrollTracePhase.nativeInput or DorotiScrollTracePhase.pointerData))
-            throw new ArgumentOutOfRangeException(nameof(phase), "A scroll trace must start at native input or PointerData.");
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(phase),
+                "A scroll trace must start at native input or PointerData."
+            );
+        }
 
         lock (_gate)
         {
@@ -58,10 +64,18 @@ public sealed class DorotiScrollTrace
         }
     }
 
-    public void Record(long inputSequence, ulong viewId, DorotiScrollTracePhase phase, string? detail = null)
+    public void Record(
+        long inputSequence,
+        ulong viewId,
+        DorotiScrollTracePhase phase,
+        string? detail = null
+    )
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(inputSequence);
-        lock (_gate) Add(inputSequence, viewId, phase, detail);
+        lock (_gate)
+        {
+            Add(inputSequence, viewId, phase, detail);
+        }
     }
 
     public IReadOnlyList<DorotiScrollTraceEntry> Snapshot(long? inputSequence = null)
@@ -76,9 +90,17 @@ public sealed class DorotiScrollTrace
 
     private void Add(long inputSequence, ulong viewId, DorotiScrollTracePhase phase, string? detail)
     {
-        var timestampMicroseconds = Math.Max(_lastTimestampMicroseconds, DorotiFrameClock.Now.Ticks / 10);
+        var timestampMicroseconds = Math.Max(
+            _lastTimestampMicroseconds,
+            DorotiFrameClock.Now.Ticks / 10
+        );
         _lastTimestampMicroseconds = timestampMicroseconds;
-        _entries.Enqueue(new(++_nextSequence, inputSequence, timestampMicroseconds, phase, viewId, detail));
-        while (_entries.Count > Capacity) _entries.Dequeue();
+        _entries.Enqueue(
+            new(++_nextSequence, inputSequence, timestampMicroseconds, phase, viewId, detail)
+        );
+        while (_entries.Count > Capacity)
+        {
+            _entries.Dequeue();
+        }
     }
 }

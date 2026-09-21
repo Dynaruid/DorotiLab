@@ -5,6 +5,5 @@ namespace Doroti.Framework.Services;
 public enum ServicesServiceExtensions
 {
     profilePlatformChannels,
-    evict
+    evict,
 }
-

@@ -18,8 +18,16 @@ public interface PaintingBinding
     }
     public ImageCache imageCache { get; }
     public ImageCache createImageCache();
-    public Future<Codec> instantiateImageCodecFromBuffer(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool allowUpscaling = false);
-    public Future<Codec> instantiateImageCodecWithSize(ImmutableBuffer buffer, Func<long, long, TargetImageSize>? getTargetSize = null);
+    public Future<Codec> instantiateImageCodecFromBuffer(
+        ImmutableBuffer buffer,
+        long? cacheWidth = null,
+        long? cacheHeight = null,
+        bool allowUpscaling = false
+    );
+    public Future<Codec> instantiateImageCodecWithSize(
+        ImmutableBuffer buffer,
+        Func<long, long, TargetImageSize>? getTargetSize = null
+    );
     public void evict(string asset);
     public void handleMemoryPressure();
     public Listenable systemFonts { get; }
@@ -29,7 +37,8 @@ public interface PaintingBinding
 
 public class _SystemFontsNotifier__binding : Listenable
 {
-    internal virtual HashSet<Action> _systemFontsCallbacks { get; private set; } = new HashSet<Action>();
+    internal virtual HashSet<Action> _systemFontsCallbacks { get; private set; } =
+        new HashSet<Action>();
 
     public virtual void notifyListeners()
     {
@@ -48,11 +57,9 @@ public class _SystemFontsNotifier__binding : Listenable
     {
         _systemFontsCallbacks.Remove(listener);
     }
-
 }
 
 public static partial class BindingLibrary
 {
     public static ImageCache imageCache => PaintingBinding.instance.imageCache;
 }
-

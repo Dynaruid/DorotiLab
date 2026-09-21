@@ -5,7 +5,10 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate List<Widget> NestedScrollViewHeaderSliversBuilder(BuildContext context, bool innerBoxIsScrolled);
+public delegate List<Widget> NestedScrollViewHeaderSliversBuilder(
+    BuildContext context,
+    bool innerBoxIsScrolled
+);
 
 public class NestedScrollView : StatefulWidget
 {
@@ -13,7 +16,11 @@ public class NestedScrollView : StatefulWidget
     public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
     public virtual ScrollPhysics? physics { get; private set; }
-    public virtual Func<BuildContext, bool, List<Widget>> headerSliverBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, bool, List<Widget>> headerSliverBuilder
+    {
+        get;
+        private set;
+    } = default!;
     public virtual Widget body { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual bool floatHeaderSlivers { get; private set; } = default!;
@@ -22,7 +29,22 @@ public class NestedScrollView : StatefulWidget
     public virtual string? restorationId { get; private set; }
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
 
-    public NestedScrollView(Key? key = null, ScrollController? controller = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollPhysics? physics = null, Func<BuildContext, bool, List<Widget>> headerSliverBuilder = default!, Widget body = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool floatHeaderSlivers = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null) : base(key: key)
+    public NestedScrollView(
+        Key? key = null,
+        ScrollController? controller = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollPhysics? physics = null,
+        Func<BuildContext, bool, List<Widget>> headerSliverBuilder = default!,
+        Widget body = default!,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        bool floatHeaderSlivers = false,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque,
+        string? restorationId = null,
+        ScrollBehavior? scrollBehavior = null
+    )
+        : base(key: key)
     {
         this.controller = controller;
         this.scrollDirection = scrollDirection;
@@ -40,33 +62,65 @@ public class NestedScrollView : StatefulWidget
 
     public static SliverOverlapAbsorberHandle sliverOverlapAbsorberHandleFor(BuildContext context)
     {
-        _InheritedNestedScrollView__nested_scroll_view? target = context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>();
-        DartRuntimePrimitives.Assert(() => target is not null, () => (object?)"NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView.");
+        _InheritedNestedScrollView__nested_scroll_view? target =
+            context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>();
+        DartRuntimePrimitives.Assert(
+            () => target is not null,
+            () =>
+                (object?)
+                    "NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView."
+        );
         return target!.state._absorberHandle;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<Widget> _buildSlivers(BuildContext context, ScrollController innerController, bool bodyIsScrolled)
+    internal virtual List<Widget> _buildSlivers(
+        BuildContext context,
+        ScrollController innerController,
+        bool bodyIsScrolled
+    )
     {
-        return new List<Widget> { new SliverFillRemaining(child: new PrimaryScrollController(automaticallyInheritForPlatforms: Enum.GetValues<TargetPlatform>().ToList().toSet(), controller: innerController, child: body)) };
+        return new List<Widget>
+        {
+            new SliverFillRemaining(
+                child: new PrimaryScrollController(
+                    automaticallyInheritForPlatforms: Enum.GetValues<TargetPlatform>()
+                        .ToList()
+                        .toSet(),
+                    controller: innerController,
+                    child: body
+                )
+            ),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new NestedScrollViewState());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new NestedScrollViewState());
 }
 
 public class NestedScrollViewState : State<NestedScrollView>
 {
-    internal virtual SliverOverlapAbsorberHandle _absorberHandle { get; private set; } = new SliverOverlapAbsorberHandle();
-    internal virtual _NestedScrollCoordinator__nested_scroll_view? _coordinator { get; set; } = default;
+    internal virtual SliverOverlapAbsorberHandle _absorberHandle { get; private set; } =
+        new SliverOverlapAbsorberHandle();
+    internal virtual _NestedScrollCoordinator__nested_scroll_view? _coordinator { get; set; } =
+        default;
     internal virtual bool? _lastHasScrolledBody { get; set; } = default;
 
-    public virtual ScrollController innerController => DartRuntimePrimitives.ConvertValue<ScrollController>(_coordinator!._innerController);
-    public virtual ScrollController outerController => DartRuntimePrimitives.ConvertValue<ScrollController>(_coordinator!._outerController);
+    public virtual ScrollController innerController =>
+        DartRuntimePrimitives.ConvertValue<ScrollController>(_coordinator!._innerController);
+    public virtual ScrollController outerController =>
+        DartRuntimePrimitives.ConvertValue<ScrollController>(_coordinator!._outerController);
+
     public override void initState()
     {
         base.initState();
-        _coordinator = new _NestedScrollCoordinator__nested_scroll_view(this, widget.controller, () => _handleHasScrolledBodyChanged(), widget.floatHeaderSlivers);
+        _coordinator = new _NestedScrollCoordinator__nested_scroll_view(
+            this,
+            widget.controller,
+            () => _handleHasScrolledBodyChanged(),
+            widget.floatHeaderSlivers
+        );
     }
 
     public override void didChangeDependencies()
@@ -101,54 +155,120 @@ public class NestedScrollViewState : State<NestedScrollView>
         bool newHasScrolledBody = _coordinator!.hasScrolledBody;
         if (_lastHasScrolledBody != newHasScrolledBody)
         {
-            setState(() =>
-            {
-            });
+            setState(() => { });
         }
     }
 
     public override Widget build(BuildContext context)
     {
-        ScrollPhysics scrollPhysics = (widget.physics?.applyTo(new ClampingScrollPhysics()) ?? (widget.scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics();
-        return new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: (context) =>
-        {
-            _lastHasScrolledBody = _coordinator!.hasScrolledBody;
-            return new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: widget.dragStartBehavior, scrollDirection: widget.scrollDirection, reverse: widget.reverse, physics: scrollPhysics, scrollBehavior: widget.scrollBehavior ?? ScrollConfiguration.of(context).copyWith(scrollbars: false), controller: _coordinator!._outerController, slivers: widget._buildSlivers(context, _coordinator!._innerController, DartRuntimePrimitives.RequireValue(_lastHasScrolledBody)), handle: _absorberHandle, clipBehavior: widget.clipBehavior, restorationId: widget.restorationId, hitTestBehavior: widget.hitTestBehavior);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        ScrollPhysics scrollPhysics =
+            (
+                widget.physics?.applyTo(new ClampingScrollPhysics())
+                ?? (
+                    widget
+                        .scrollBehavior?.getScrollPhysics(context)
+                        .applyTo(new ClampingScrollPhysics())
+                )
+            ) ?? new ClampingScrollPhysics();
+        return new _InheritedNestedScrollView__nested_scroll_view(
+            state: this,
+            child: new Builder(
+                builder: (context) =>
+                {
+                    _lastHasScrolledBody = _coordinator!.hasScrolledBody;
+                    return new _NestedScrollViewCustomScrollView__nested_scroll_view(
+                        dragStartBehavior: widget.dragStartBehavior,
+                        scrollDirection: widget.scrollDirection,
+                        reverse: widget.reverse,
+                        physics: scrollPhysics,
+                        scrollBehavior: widget.scrollBehavior
+                            ?? ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                        controller: _coordinator!._outerController,
+                        slivers: widget._buildSlivers(
+                            context,
+                            _coordinator!._innerController,
+                            DartRuntimePrimitives.RequireValue(_lastHasScrolledBody)
+                        ),
+                        handle: _absorberHandle,
+                        clipBehavior: widget.clipBehavior,
+                        restorationId: widget.restorationId,
+                        hitTestBehavior: widget.hitTestBehavior
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _NestedScrollViewCustomScrollView__nested_scroll_view : CustomScrollView
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    internal _NestedScrollViewCustomScrollView__nested_scroll_view(Axis scrollDirection, bool reverse, ScrollPhysics physics, ScrollBehavior scrollBehavior, ScrollController controller, List<Widget> slivers, SliverOverlapAbsorberHandle handle, Clip clipBehavior, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, DragStartBehavior dragStartBehavior = DragStartBehavior.start, string? restorationId = null) : base(scrollDirection: scrollDirection, reverse: reverse, physics: physics, scrollBehavior: scrollBehavior, controller: controller, slivers: slivers, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, dragStartBehavior: dragStartBehavior, restorationId: restorationId)
+    internal _NestedScrollViewCustomScrollView__nested_scroll_view(
+        Axis scrollDirection,
+        bool reverse,
+        ScrollPhysics physics,
+        ScrollBehavior scrollBehavior,
+        ScrollController controller,
+        List<Widget> slivers,
+        SliverOverlapAbsorberHandle handle,
+        Clip clipBehavior,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        string? restorationId = null
+    )
+        : base(
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            physics: physics,
+            scrollBehavior: scrollBehavior,
+            controller: controller,
+            slivers: slivers,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior,
+            dragStartBehavior: dragStartBehavior,
+            restorationId: restorationId
+        )
     {
         this.handle = handle;
     }
 
-    public override Widget buildViewport(BuildContext context, ViewportOffset offset, AxisDirection axisDirection, List<Widget> slivers)
+    public override Widget buildViewport(
+        BuildContext context,
+        ViewportOffset offset,
+        AxisDirection axisDirection,
+        List<Widget> slivers
+    )
     {
         DartRuntimePrimitives.Assert(() => !shrinkWrap);
-        return new NestedScrollViewViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, handle: handle, clipBehavior: clipBehavior);
+        return new NestedScrollViewViewport(
+            axisDirection: axisDirection,
+            offset: offset,
+            slivers: slivers,
+            handle: handle,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _InheritedNestedScrollView__nested_scroll_view : InheritedWidget
 {
     public virtual NestedScrollViewState state { get; private set; } = default!;
 
-    internal _InheritedNestedScrollView__nested_scroll_view(NestedScrollViewState state, Widget child) : base(child: child)
+    internal _InheritedNestedScrollView__nested_scroll_view(
+        NestedScrollViewState state,
+        Widget child
+    )
+        : base(child: child)
     {
         this.state = state;
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => !Equals(state, ((_InheritedNestedScrollView__nested_scroll_view)oldWidget).state);
+    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
+        !Equals(state, ((_InheritedNestedScrollView__nested_scroll_view)oldWidget).state);
 }
 
 public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
@@ -157,35 +277,88 @@ public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
     public virtual double maxRange { get; private set; } = default!;
     public virtual double correctionOffset { get; private set; } = default!;
 
-    internal _NestedScrollMetrics__nested_scroll_view(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, AxisDirection axisDirection, double devicePixelRatio, double minRange, double maxRange, double correctionOffset) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
+    internal _NestedScrollMetrics__nested_scroll_view(
+        double? minScrollExtent,
+        double? maxScrollExtent,
+        double? pixels,
+        double? viewportDimension,
+        AxisDirection axisDirection,
+        double devicePixelRatio,
+        double minRange,
+        double maxRange,
+        double correctionOffset
+    )
+        : base(
+            minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
+            maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent),
+            pixels: DartRuntimePrimitives.RequireValue(pixels),
+            viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension),
+            axisDirection: axisDirection,
+            devicePixelRatio: devicePixelRatio
+        )
     {
         this.minRange = minRange;
         this.maxRange = maxRange;
         this.correctionOffset = correctionOffset;
     }
 
-    public override _NestedScrollMetrics__nested_scroll_view copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override _NestedScrollMetrics__nested_scroll_view copyWith(
+        double? minScrollExtent = null,
+        double? maxScrollExtent = null,
+        double? pixels = null,
+        double? viewportDimension = null,
+        AxisDirection? axisDirection = null,
+        double? devicePixelRatio = null,
+        long? itemIndex = null,
+        double? minRange = null,
+        double? maxRange = null,
+        double? correctionOffset = null,
+        double? viewportFraction = null
+    )
     {
-        return new _NestedScrollMetrics__nested_scroll_view(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio, minRange: minRange ?? this.minRange, maxRange: maxRange ?? this.maxRange, correctionOffset: correctionOffset ?? this.correctionOffset);
+        return new _NestedScrollMetrics__nested_scroll_view(
+            minScrollExtent: minScrollExtent
+                ?? (hasContentDimensions ? this.minScrollExtent : null),
+            maxScrollExtent: maxScrollExtent
+                ?? (hasContentDimensions ? this.maxScrollExtent : null),
+            pixels: pixels ?? (hasPixels ? this.pixels : null),
+            viewportDimension: viewportDimension
+                ?? (hasViewportDimension ? this.viewportDimension : null),
+            axisDirection: axisDirection ?? this.axisDirection,
+            devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio,
+            minRange: minRange ?? this.minRange,
+            maxRange: maxRange ?? this.maxRange,
+            correctionOffset: correctionOffset ?? this.correctionOffset
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal delegate ScrollActivity _NestedScrollActivityGetter__nested_scroll_view(_NestedScrollPosition__nested_scroll_view position);
+internal delegate ScrollActivity _NestedScrollActivityGetter__nested_scroll_view(
+    _NestedScrollPosition__nested_scroll_view position
+);
 
-public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelegate, ScrollHoldController
+public class _NestedScrollCoordinator__nested_scroll_view
+    : ScrollActivityDelegate,
+        ScrollHoldController
 {
     internal virtual NestedScrollViewState _state { get; private set; } = default!;
     internal virtual ScrollController? _parent { get; set; } = default;
     internal virtual Action _onHasScrolledBodyChanged { get; private set; } = default!;
     internal virtual bool _floatHeaderSlivers { get; private set; } = default!;
-    internal virtual _NestedScrollController__nested_scroll_view _outerController { get; set; } = default!;
-    internal virtual _NestedScrollController__nested_scroll_view _innerController { get; set; } = default!;
+    internal virtual _NestedScrollController__nested_scroll_view _outerController { get; set; } =
+        default!;
+    internal virtual _NestedScrollController__nested_scroll_view _innerController { get; set; } =
+        default!;
     internal virtual ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
     internal virtual ScrollDragController? _currentDrag { get; set; } = default;
 
-    internal _NestedScrollCoordinator__nested_scroll_view(NestedScrollViewState _state, ScrollController? _parent, Action _onHasScrolledBodyChanged, bool _floatHeaderSlivers)
+    internal _NestedScrollCoordinator__nested_scroll_view(
+        NestedScrollViewState _state,
+        ScrollController? _parent,
+        Action _onHasScrolledBodyChanged,
+        bool _floatHeaderSlivers
+    )
     {
         this._state = _state;
         this._parent = _parent;
@@ -197,7 +370,8 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     {
         get
         {
-            return (_outerPosition?.outOfRange ?? false) || _innerPositions.any((position) => position.outOfRange);
+            return (_outerPosition?.outOfRange ?? false)
+                || _innerPositions.any((position) => position.outOfRange);
         }
     }
     internal virtual _NestedScrollPosition__nested_scroll_view? _outerPosition
@@ -213,10 +387,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     }
     internal virtual IEnumerable<_NestedScrollPosition__nested_scroll_view> _innerPositions
     {
-        get
-        {
-            return _innerController.nestedPositions;
-        }
+        get { return _innerController.nestedPositions; }
     }
     public virtual bool canScrollBody
     {
@@ -251,12 +422,14 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
             return false;
         }
     }
+
     public virtual void updateShadow()
     {
         _onHasScrolledBodyChanged();
     }
 
     public virtual ScrollDirection userScrollDirection => _userScrollDirection;
+
     public virtual void updateUserScrollDirection(ScrollDirection value)
     {
         if (Equals(userScrollDirection, DartRuntimePrimitives.RequireValue(value)))
@@ -264,14 +437,21 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
             return;
         }
         _userScrollDirection = DartRuntimePrimitives.RequireValue(value);
-        _outerPosition!.didUpdateScrollDirection(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
+        _outerPosition!.didUpdateScrollDirection(
+            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
+        );
         foreach (_NestedScrollPosition__nested_scroll_view position in _innerPositions)
         {
-            position.didUpdateScrollDirection(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
+            position.didUpdateScrollDirection(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
+            );
         }
     }
 
-    public virtual void beginActivity(ScrollActivity newOuterActivity, Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity> innerActivityGetter)
+    public virtual void beginActivity(
+        ScrollActivity newOuterActivity,
+        Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity> innerActivityGetter
+    )
     {
         _outerPosition!.beginActivity(newOuterActivity);
         bool scrolling = newOuterActivity.isScrolling;
@@ -290,7 +470,10 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     }
 
     public virtual AxisDirection axisDirection => _outerPosition!.axisDirection;
-    internal static IdleScrollActivity _createIdleScrollActivity(_NestedScrollPosition__nested_scroll_view position)
+
+    internal static IdleScrollActivity _createIdleScrollActivity(
+        _NestedScrollPosition__nested_scroll_view position
+    )
     {
         return new IdleScrollActivity(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -298,16 +481,23 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void goIdle()
     {
-        beginActivity(_createIdleScrollActivity(_outerPosition!), (Func<_NestedScrollPosition__nested_scroll_view, IdleScrollActivity>)_createIdleScrollActivity);
+        beginActivity(
+            _createIdleScrollActivity(_outerPosition!),
+            (Func<_NestedScrollPosition__nested_scroll_view, IdleScrollActivity>)
+                _createIdleScrollActivity
+        );
     }
 
     public virtual void goBallistic(double velocity)
     {
-        beginActivity(createOuterBallisticScrollActivity(velocity), (position) =>
-        {
-            return createInnerBallisticScrollActivity(position, velocity);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        beginActivity(
+            createOuterBallisticScrollActivity(velocity),
+            (position) =>
+            {
+                return createInnerBallisticScrollActivity(position, velocity);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
     }
 
     public virtual ScrollActivity createOuterBallisticScrollActivity(double velocity)
@@ -340,20 +530,39 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         }
         if (innerPosition is null)
         {
-            return _outerPosition!.createBallisticScrollActivity(_outerPosition!.physics.createBallisticSimulation(_outerPosition!, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent);
+            return _outerPosition!.createBallisticScrollActivity(
+                _outerPosition!.physics.createBallisticSimulation(_outerPosition!, velocity),
+                mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent
+            );
         }
-        _NestedScrollMetrics__nested_scroll_view metricsLocal = _getMetrics(innerPosition, velocity);
-        return _outerPosition!.createBallisticScrollActivity(_outerPosition!.physics.createBallisticSimulation(metricsLocal, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer, metrics: metricsLocal);
+        _NestedScrollMetrics__nested_scroll_view metricsLocal = _getMetrics(
+            innerPosition,
+            velocity
+        );
+        return _outerPosition!.createBallisticScrollActivity(
+            _outerPosition!.physics.createBallisticSimulation(metricsLocal, velocity),
+            mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer,
+            metrics: metricsLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ScrollActivity createInnerBallisticScrollActivity(_NestedScrollPosition__nested_scroll_view position, double velocity)
+    public virtual ScrollActivity createInnerBallisticScrollActivity(
+        _NestedScrollPosition__nested_scroll_view position,
+        double velocity
+    )
     {
-        return position.createBallisticScrollActivity(position.physics.createBallisticSimulation(_getMetrics(position, velocity), velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.inner);
+        return position.createBallisticScrollActivity(
+            position.physics.createBallisticSimulation(_getMetrics(position, velocity), velocity),
+            mode: _NestedBallisticScrollActivityMode__nested_scroll_view.inner
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual _NestedScrollMetrics__nested_scroll_view _getMetrics(_NestedScrollPosition__nested_scroll_view innerPosition, double velocity)
+    internal virtual _NestedScrollMetrics__nested_scroll_view _getMetrics(
+        _NestedScrollPosition__nested_scroll_view innerPosition,
+        double velocity
+    )
     {
         double pixelsLocal = default!;
         double minRangeLocal = default!;
@@ -362,7 +571,11 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         var extra = 0.0;
         if (innerPosition.pixels == innerPosition.minScrollExtent)
         {
-            pixelsLocal = Dart_uiLibrary.clampDouble(_outerPosition!.pixels, _outerPosition!.minScrollExtent, _outerPosition!.maxScrollExtent);
+            pixelsLocal = Dart_uiLibrary.clampDouble(
+                _outerPosition!.pixels,
+                _outerPosition!.minScrollExtent,
+                _outerPosition!.maxScrollExtent
+            );
             minRangeLocal = _outerPosition!.minScrollExtent;
             maxRangeLocal = _outerPosition!.maxScrollExtent;
             DartRuntimePrimitives.Assert(() => minRangeLocal <= maxRangeLocal);
@@ -370,15 +583,25 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => innerPosition.pixels != innerPosition.minScrollExtent);
+            DartRuntimePrimitives.Assert(() =>
+                innerPosition.pixels != innerPosition.minScrollExtent
+            );
             if (innerPosition.pixels < innerPosition.minScrollExtent)
             {
-                pixelsLocal = innerPosition.pixels - innerPosition.minScrollExtent + _outerPosition!.minScrollExtent;
+                pixelsLocal =
+                    innerPosition.pixels
+                    - innerPosition.minScrollExtent
+                    + _outerPosition!.minScrollExtent;
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => innerPosition.pixels > innerPosition.minScrollExtent);
-                pixelsLocal = innerPosition.pixels - innerPosition.minScrollExtent + _outerPosition!.maxScrollExtent;
+                DartRuntimePrimitives.Assert(() =>
+                    innerPosition.pixels > innerPosition.minScrollExtent
+                );
+                pixelsLocal =
+                    innerPosition.pixels
+                    - innerPosition.minScrollExtent
+                    + _outerPosition!.maxScrollExtent;
             }
             if (velocity > 0.0 && innerPosition.pixels > innerPosition.minScrollExtent)
             {
@@ -410,7 +633,12 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                     {
                         if (velocity < 0.0)
                         {
-                            extra = _outerPosition!.pixels - (_outerPosition!.maxScrollExtent - _outerPosition!.minScrollExtent);
+                            extra =
+                                _outerPosition!.pixels
+                                - (
+                                    _outerPosition!.maxScrollExtent
+                                    - _outerPosition!.minScrollExtent
+                                );
                         }
                     }
                     DartRuntimePrimitives.Assert(() => extra <= 0.0);
@@ -421,21 +649,45 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 }
             }
         }
-        return new _NestedScrollMetrics__nested_scroll_view(minScrollExtent: _outerPosition!.minScrollExtent, maxScrollExtent: _outerPosition!.maxScrollExtent + innerPosition.maxScrollExtent - innerPosition.minScrollExtent + extra, pixels: pixelsLocal, viewportDimension: _outerPosition!.viewportDimension, axisDirection: _outerPosition!.axisDirection, minRange: minRangeLocal, maxRange: maxRangeLocal, correctionOffset: correctionOffsetLocal, devicePixelRatio: _outerPosition!.devicePixelRatio);
+        return new _NestedScrollMetrics__nested_scroll_view(
+            minScrollExtent: _outerPosition!.minScrollExtent,
+            maxScrollExtent: _outerPosition!.maxScrollExtent
+                + innerPosition.maxScrollExtent
+                - innerPosition.minScrollExtent
+                + extra,
+            pixels: pixelsLocal,
+            viewportDimension: _outerPosition!.viewportDimension,
+            axisDirection: _outerPosition!.axisDirection,
+            minRange: minRangeLocal,
+            maxRange: maxRangeLocal,
+            correctionOffset: correctionOffsetLocal,
+            devicePixelRatio: _outerPosition!.devicePixelRatio
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double unnestOffset(double value, _NestedScrollPosition__nested_scroll_view source)
+    public virtual double unnestOffset(
+        double value,
+        _NestedScrollPosition__nested_scroll_view source
+    )
     {
         if (Equals(source, _outerPosition))
         {
-            return Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), _outerPosition!.minScrollExtent, _outerPosition!.maxScrollExtent);
+            return Dart_uiLibrary.clampDouble(
+                DartRuntimePrimitives.RequireValue(value),
+                _outerPosition!.minScrollExtent,
+                _outerPosition!.maxScrollExtent
+            );
         }
         if (DartRuntimePrimitives.RequireValue(value) < source.minScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value) - source.minScrollExtent + _outerPosition!.minScrollExtent;
+            return DartRuntimePrimitives.RequireValue(value)
+                - source.minScrollExtent
+                + _outerPosition!.minScrollExtent;
         }
-        return DartRuntimePrimitives.RequireValue(value) - source.minScrollExtent + _outerPosition!.maxScrollExtent;
+        return DartRuntimePrimitives.RequireValue(value)
+            - source.minScrollExtent
+            + _outerPosition!.maxScrollExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -443,15 +695,23 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     {
         if (Equals(target, _outerPosition))
         {
-            return Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), _outerPosition!.minScrollExtent, _outerPosition!.maxScrollExtent);
+            return Dart_uiLibrary.clampDouble(
+                DartRuntimePrimitives.RequireValue(value),
+                _outerPosition!.minScrollExtent,
+                _outerPosition!.maxScrollExtent
+            );
         }
         if (DartRuntimePrimitives.RequireValue(value) < _outerPosition!.minScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value) - _outerPosition!.minScrollExtent + target.minScrollExtent;
+            return DartRuntimePrimitives.RequireValue(value)
+                - _outerPosition!.minScrollExtent
+                + target.minScrollExtent;
         }
         if (DartRuntimePrimitives.RequireValue(value) > _outerPosition!.maxScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value) - _outerPosition!.maxScrollExtent + target.minScrollExtent;
+            return DartRuntimePrimitives.RequireValue(value)
+                - _outerPosition!.maxScrollExtent
+                + target.minScrollExtent;
         }
         return target.minScrollExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -475,17 +735,28 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         _outerPosition!.updateCanDrag(innerCanDrag);
     }
 
-    public async virtual Future animateTo(double to, Duration duration, Curve curve)
+    public virtual async Future animateTo(double to, Duration duration, Curve curve)
     {
-        DrivenScrollActivity outerActivity = _outerPosition!.createDrivenScrollActivity(nestOffset(to, _outerPosition!), duration, curve);
+        DrivenScrollActivity outerActivity = _outerPosition!.createDrivenScrollActivity(
+            nestOffset(to, _outerPosition!),
+            duration,
+            curve
+        );
         var resultFutures = new List<Future> { outerActivity.done };
-        beginActivity(outerActivity, (position) =>
-        {
-            DrivenScrollActivity innerActivity = position.createDrivenScrollActivity(nestOffset(to, position), duration, curve);
-            resultFutures.Add(innerActivity.done);
-            return innerActivity;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        beginActivity(
+            outerActivity,
+            (position) =>
+            {
+                DrivenScrollActivity innerActivity = position.createDrivenScrollActivity(
+                    nestOffset(to, position),
+                    duration,
+                    curve
+                );
+                resultFutures.Add(innerActivity.done);
+                return innerActivity;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         await DartAsyncRuntime.wait<object?>(resultFutures);
     }
 
@@ -508,7 +779,9 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
             return;
         }
         goIdle();
-        updateUserScrollDirection((delta < 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+        updateUserScrollDirection(
+            (delta < 0.0) ? ScrollDirection.forward : ScrollDirection.reverse
+        );
         _outerPosition!.isScrollingNotifier.value = true;
         _outerPosition!.didStartScroll();
         foreach (_NestedScrollPosition__nested_scroll_view position in _innerPositions)
@@ -529,7 +802,9 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 {
                     if (positionLocal.pixels < 0.0)
                     {
-                        double potentialOuterDelta = positionLocal.applyClampedPointerSignalUpdate(delta);
+                        double potentialOuterDelta = positionLocal.applyClampedPointerSignalUpdate(
+                            delta
+                        );
                         outerDelta = Math.Max(outerDelta, potentialOuterDelta);
                     }
                 }
@@ -538,7 +813,9 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                     double innerDelta = _outerPosition!.applyClampedPointerSignalUpdate(outerDelta);
                     if (innerDelta != 0.0)
                     {
-                        foreach (_NestedScrollPosition__nested_scroll_view positionAlternate in _innerPositions)
+                        foreach (
+                            _NestedScrollPosition__nested_scroll_view positionAlternate in _innerPositions
+                        )
                         {
                             positionAlternate.applyClampedPointerSignalUpdate(innerDelta);
                         }
@@ -555,9 +832,13 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 if (innerDeltaLocal != 0.0)
                 {
                     var outerDeltaLocal = 0.0;
-                    foreach (_NestedScrollPosition__nested_scroll_view positionNested in _innerPositions)
+                    foreach (
+                        _NestedScrollPosition__nested_scroll_view positionNested in _innerPositions
+                    )
                     {
-                        double overscroll = positionNested.applyClampedPointerSignalUpdate(innerDeltaLocal);
+                        double overscroll = positionNested.applyClampedPointerSignalUpdate(
+                            innerDeltaLocal
+                        );
                         outerDeltaLocal = Math.Min(outerDeltaLocal, overscroll);
                     }
                     if (outerDeltaLocal != 0.0)
@@ -584,7 +865,13 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual ScrollHoldController hold(Action holdCancelCallback)
     {
-        beginActivity(new HoldScrollActivity(@delegate: _outerPosition!, onHoldCanceled: () => holdCancelCallback()), (position) => new HoldScrollActivity(@delegate: position));
+        beginActivity(
+            new HoldScrollActivity(
+                @delegate: _outerPosition!,
+                onHoldCanceled: () => holdCancelCallback()
+            ),
+            (position) => new HoldScrollActivity(@delegate: position)
+        );
         return this;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -596,8 +883,15 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual Drag drag(DragStartDetails details, Action dragCancelCallback)
     {
-        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback());
-        beginActivity(new DragScrollActivity(_outerPosition!, dragLocal), (position) => new DragScrollActivity(position, dragLocal));
+        var dragLocal = new ScrollDragController(
+            @delegate: this,
+            details: details,
+            onDragCanceled: () => dragCancelCallback()
+        );
+        beginActivity(
+            new DragScrollActivity(_outerPosition!, dragLocal),
+            (position) => new DragScrollActivity(position, dragLocal)
+        );
         DartRuntimePrimitives.Assert(() => _currentDrag is null);
         _currentDrag = dragLocal;
         return dragLocal;
@@ -606,7 +900,9 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void applyUserOffset(double delta)
     {
-        updateUserScrollDirection((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+        updateUserScrollDirection(
+            (delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse
+        );
         DartRuntimePrimitives.Assert(() => delta != 0.0);
         if (!Enumerable.Any(_innerPositions))
         {
@@ -630,7 +926,9 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                     double innerDelta = _outerPosition!.applyClampedDragUpdate(outerDelta);
                     if (innerDelta != 0.0)
                     {
-                        foreach (_NestedScrollPosition__nested_scroll_view positionLocal in _innerPositions)
+                        foreach (
+                            _NestedScrollPosition__nested_scroll_view positionLocal in _innerPositions
+                        )
                         {
                             positionLocal.applyFullDragUpdate(innerDelta);
                         }
@@ -648,10 +946,14 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 {
                     var outerDeltaLocal = 0.0;
                     var overscrolls = new List<double>();
-                    List<_NestedScrollPosition__nested_scroll_view> innerPositions = _innerPositions.ToList().ToList();
+                    List<_NestedScrollPosition__nested_scroll_view> innerPositions = _innerPositions
+                        .ToList()
+                        .ToList();
                     foreach (var positionAlternate in innerPositions)
                     {
-                        double overscroll = positionAlternate.applyClampedDragUpdate(innerDeltaLocal);
+                        double overscroll = positionAlternate.applyClampedDragUpdate(
+                            innerDeltaLocal
+                        );
                         outerDeltaLocal = Math.Max(outerDeltaLocal, overscroll);
                         overscrolls.Add(overscroll);
                     }
@@ -685,28 +987,48 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _currentDrag?.dispose();
         _currentDrag = null;
         _outerController.dispose();
         _innerController.dispose();
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedScrollCoordinator")}(outer={_outerController}; inner={_innerController})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedScrollCoordinator")}(outer={_outerController}; inner={_innerController})";
 }
 
 internal class _NestedScrollController__nested_scroll_view : ScrollController
 {
-    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } = default!;
+    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } =
+        default!;
 
-    internal _NestedScrollController__nested_scroll_view(_NestedScrollCoordinator__nested_scroll_view coordinator, double initialScrollOffset = 0.0, string? debugLabel = null) : base(initialScrollOffset: initialScrollOffset, debugLabel: debugLabel)
+    internal _NestedScrollController__nested_scroll_view(
+        _NestedScrollCoordinator__nested_scroll_view coordinator,
+        double initialScrollOffset = 0.0,
+        string? debugLabel = null
+    )
+        : base(initialScrollOffset: initialScrollOffset, debugLabel: debugLabel)
     {
         this.coordinator = coordinator;
     }
 
-    public override ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
+    public override ScrollPosition createScrollPosition(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition
+    )
     {
-        return new _NestedScrollPosition__nested_scroll_view(coordinator: coordinator, physics: physics, context: context, initialPixels: initialScrollOffset, oldPosition: oldPosition, debugLabel: debugLabel);
+        return new _NestedScrollPosition__nested_scroll_view(
+            coordinator: coordinator,
+            physics: physics,
+            context: context,
+            initialPixels: initialScrollOffset,
+            oldPosition: oldPosition,
+            debugLabel: debugLabel
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -731,32 +1053,42 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
 
     internal virtual void _scheduleUpdateShadow()
     {
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-        {
-            coordinator.updateShadow();
-        }, debugLabel: "NestedScrollController.updateShadow");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) =>
+            {
+                coordinator.updateShadow();
+            },
+            debugLabel: "NestedScrollController.updateShadow"
+        );
     }
 
     public virtual IEnumerable<_NestedScrollPosition__nested_scroll_view> nestedPositions
     {
-        get
-        {
-            return positions.cast<_NestedScrollPosition__nested_scroll_view>();
-        }
+        get { return positions.cast<_NestedScrollPosition__nested_scroll_view>(); }
     }
 }
 
 public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollActivityDelegate
 {
-    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } = default!;
+    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } =
+        default!;
     internal virtual ScrollController? _parent { get; set; } = default;
 
-    internal _NestedScrollPosition__nested_scroll_view(ScrollPhysics physics, ScrollContext context, double initialPixels = 0.0, ScrollPosition? oldPosition = null, string? debugLabel = null, _NestedScrollCoordinator__nested_scroll_view coordinator = default!) : base(physics: physics, context: context, oldPosition: oldPosition, debugLabel: debugLabel)
+    internal _NestedScrollPosition__nested_scroll_view(
+        ScrollPhysics physics,
+        ScrollContext context,
+        double initialPixels = 0.0,
+        ScrollPosition? oldPosition = null,
+        string? debugLabel = null,
+        _NestedScrollCoordinator__nested_scroll_view coordinator = default!
+    )
+        : base(physics: physics, context: context, oldPosition: oldPosition, debugLabel: debugLabel)
     {
         this.coordinator = coordinator;
     }
 
     public virtual Scheduler.TickerProvider vsync => context.vsync;
+
     public virtual void setParent(ScrollController? value)
     {
         _parent?.detach(this);
@@ -765,6 +1097,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     }
 
     public override AxisDirection axisDirection => context.axisDirection;
+
     public override void absorb(ScrollPosition other)
     {
         base.absorb(other);
@@ -783,7 +1116,10 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     {
         DartRuntimePrimitives.Assert(() => delta != 0.0);
         double min = (delta < 0.0) ? -double.PositiveInfinity : Math.Min(minScrollExtent, pixels);
-        double max = (delta > 0.0) ? double.PositiveInfinity : ((pixels < 0.0) ? 0.0 : Math.Max(maxScrollExtent, pixels));
+        double max =
+            (delta > 0.0)
+                ? double.PositiveInfinity
+                : ((pixels < 0.0) ? 0.0 : Math.Max(maxScrollExtent, pixels));
         double oldPixels = pixels;
         double newPixels = Dart_uiLibrary.clampDouble(pixels - delta, min, max);
         double clampedDelta = newPixels - pixels;
@@ -851,9 +1187,21 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     }
 
     public override ScrollDirection userScrollDirection => coordinator.userScrollDirection;
-    public virtual DrivenScrollActivity createDrivenScrollActivity(double to, Duration duration, Curve curve)
+
+    public virtual DrivenScrollActivity createDrivenScrollActivity(
+        double to,
+        Duration duration,
+        Curve curve
+    )
     {
-        return new DrivenScrollActivity(this, from: pixels, to: to, duration: duration, curve: curve, vsync: vsync);
+        return new DrivenScrollActivity(
+            this,
+            from: pixels,
+            to: to,
+            duration: duration,
+            curve: curve,
+            vsync: vsync
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -877,10 +1225,19 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         {
             simulation = physics.createBallisticSimulation(this, velocity);
         }
-        beginActivity(createBallisticScrollActivity(simulation, mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
+        beginActivity(
+            createBallisticScrollActivity(
+                simulation,
+                mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent
+            )
+        );
     }
 
-    public virtual ScrollActivity createBallisticScrollActivity(Physics.Simulation? simulation, _NestedBallisticScrollActivityMode__nested_scroll_view mode, _NestedScrollMetrics__nested_scroll_view? metrics = null)
+    public virtual ScrollActivity createBallisticScrollActivity(
+        Physics.Simulation? simulation,
+        _NestedBallisticScrollActivityMode__nested_scroll_view mode,
+        _NestedScrollMetrics__nested_scroll_view? metrics = null
+    )
     {
         if (simulation is null)
         {
@@ -889,22 +1246,40 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         switch (mode)
         {
             case _NestedBallisticScrollActivityMode__nested_scroll_view.outer:
+            {
+                DartRuntimePrimitives.Assert(() => metrics is not null);
+                if (metrics!.minRange == metrics.maxRange)
                 {
-                    DartRuntimePrimitives.Assert(() => metrics is not null);
-                    if (metrics!.minRange == metrics.maxRange)
-                    {
-                        return new IdleScrollActivity(this);
-                    }
-                    return new _NestedOuterBallisticScrollActivity__nested_scroll_view(coordinator, this, metrics, simulation, context.vsync, shouldIgnorePointer);
+                    return new IdleScrollActivity(this);
                 }
+                return new _NestedOuterBallisticScrollActivity__nested_scroll_view(
+                    coordinator,
+                    this,
+                    metrics,
+                    simulation,
+                    context.vsync,
+                    shouldIgnorePointer
+                );
+            }
             case _NestedBallisticScrollActivityMode__nested_scroll_view.inner:
-                {
-                    return new _NestedInnerBallisticScrollActivity__nested_scroll_view(coordinator, this, simulation, context.vsync, shouldIgnorePointer);
-                }
+            {
+                return new _NestedInnerBallisticScrollActivity__nested_scroll_view(
+                    coordinator,
+                    this,
+                    simulation,
+                    context.vsync,
+                    shouldIgnorePointer
+                );
+            }
             case _NestedBallisticScrollActivityMode__nested_scroll_view.independent:
-                {
-                    return new BallisticScrollActivity(this, simulation, context.vsync, shouldIgnorePointer);
-                }
+            {
+                return new BallisticScrollActivity(
+                    this,
+                    simulation,
+                    context.vsync,
+                    shouldIgnorePointer
+                );
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -913,13 +1288,22 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public override Future animateTo(double to, Duration duration, Curve curve)
     {
-        return coordinator.animateTo(coordinator.unnestOffset(to, this), duration: duration, curve: curve);
+        return coordinator.animateTo(
+            coordinator.unnestOffset(to, this),
+            duration: duration,
+            curve: curve
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void jumpTo(double pixels)
     {
-        coordinator.jumpTo(coordinator.unnestOffset(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(pixels)), this));
+        coordinator.jumpTo(
+            coordinator.unnestOffset(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(pixels)),
+                this
+            )
+        );
         return;
     }
 
@@ -939,7 +1323,9 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         if (pixels != DartRuntimePrimitives.RequireValue(value))
         {
             double oldPixels = pixels;
-            forcePixels(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
+            forcePixels(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
+            );
             didStartScroll();
             didUpdateScrollPositionBy(pixels - oldPixels);
             didEndScroll();
@@ -969,50 +1355,91 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         return coordinator.drag(details, () => dragCancelCallback());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum _NestedBallisticScrollActivityMode__nested_scroll_view
 {
     outer,
     inner,
-    independent
+    independent,
 }
 
 internal class _NestedInnerBallisticScrollActivity__nested_scroll_view : BallisticScrollActivity
 {
-    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } = default!;
+    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } =
+        default!;
 
-    internal _NestedInnerBallisticScrollActivity__nested_scroll_view(_NestedScrollCoordinator__nested_scroll_view coordinator, _NestedScrollPosition__nested_scroll_view position, Physics.Simulation simulation, Scheduler.TickerProvider vsync, bool shouldIgnorePointer) : base(position, simulation, vsync, shouldIgnorePointer)
+    internal _NestedInnerBallisticScrollActivity__nested_scroll_view(
+        _NestedScrollCoordinator__nested_scroll_view coordinator,
+        _NestedScrollPosition__nested_scroll_view position,
+        Physics.Simulation simulation,
+        Scheduler.TickerProvider vsync,
+        bool shouldIgnorePointer
+    )
+        : base(position, simulation, vsync, shouldIgnorePointer)
     {
         this.coordinator = coordinator;
     }
 
-    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!);
+    public override ScrollActivityDelegate @delegate =>
+        DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(
+            ((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!
+        );
+
     public override void resetActivity()
     {
-        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(@delegate), velocity));
+        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(
+            coordinator.createInnerBallisticScrollActivity(
+                DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(
+                    @delegate
+                ),
+                velocity
+            )
+        );
     }
 
     public override void applyNewDimensions()
     {
-        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(@delegate), velocity));
+        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(
+            coordinator.createInnerBallisticScrollActivity(
+                DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(
+                    @delegate
+                ),
+                velocity
+            )
+        );
     }
 
     public override bool applyMoveTo(double value)
     {
-        return base.applyMoveTo(coordinator.nestOffset(value, DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(@delegate)));
+        return base.applyMoveTo(
+            coordinator.nestOffset(
+                value,
+                DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(
+                    @delegate
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : BallisticScrollActivity
 {
-    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } = default!;
-    public virtual _NestedScrollMetrics__nested_scroll_view metrics { get; private set; } = default!;
+    public virtual _NestedScrollCoordinator__nested_scroll_view coordinator { get; private set; } =
+        default!;
+    public virtual _NestedScrollMetrics__nested_scroll_view metrics { get; private set; } =
+        default!;
 
-    internal _NestedOuterBallisticScrollActivity__nested_scroll_view(_NestedScrollCoordinator__nested_scroll_view coordinator, _NestedScrollPosition__nested_scroll_view position, _NestedScrollMetrics__nested_scroll_view metrics, Physics.Simulation simulation, Scheduler.TickerProvider vsync, bool shouldIgnorePointer) : base(position, simulation, vsync, shouldIgnorePointer)
+    internal _NestedOuterBallisticScrollActivity__nested_scroll_view(
+        _NestedScrollCoordinator__nested_scroll_view coordinator,
+        _NestedScrollPosition__nested_scroll_view position,
+        _NestedScrollMetrics__nested_scroll_view metrics,
+        Physics.Simulation simulation,
+        Scheduler.TickerProvider vsync,
+        bool shouldIgnorePointer
+    )
+        : base(position, simulation, vsync, shouldIgnorePointer)
     {
         this.coordinator = coordinator;
         this.metrics = metrics;
@@ -1020,15 +1447,23 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
         System.Diagnostics.Debug.Assert(metrics.maxRange > metrics.minRange);
     }
 
-    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!);
+    public override ScrollActivityDelegate @delegate =>
+        DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(
+            ((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!
+        );
+
     public override void resetActivity()
     {
-        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(coordinator.createOuterBallisticScrollActivity(velocity));
+        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(
+            coordinator.createOuterBallisticScrollActivity(velocity)
+        );
     }
 
     public override void applyNewDimensions()
     {
-        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(coordinator.createOuterBallisticScrollActivity(velocity));
+        ((_NestedScrollPosition__nested_scroll_view)@delegate).beginActivity(
+            coordinator.createOuterBallisticScrollActivity(velocity)
+        );
     }
 
     public override bool applyMoveTo(double value)
@@ -1077,7 +1512,6 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedOuterBallisticScrollActivity")}({metrics.minRange} .. {metrics.maxRange}; correcting by {metrics.correctionOffset})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverOverlapAbsorberHandle : ChangeNotifier
@@ -1086,34 +1520,48 @@ public class SliverOverlapAbsorberHandle : ChangeNotifier
     internal virtual double? _layoutExtent { get; set; } = default;
     internal virtual double? _scrollExtent { get; set; } = default;
 
-    public SliverOverlapAbsorberHandle()
-    {
-    }
+    public SliverOverlapAbsorberHandle() { }
 
     public virtual double? layoutExtent => _layoutExtent;
     public virtual double? scrollExtent => _scrollExtent;
+
     internal virtual void _setExtents(double? layoutValue, double? scrollValue)
     {
-        DartRuntimePrimitives.Assert(() => _writers == 1L, () => (object?)"Multiple RenderSliverOverlapAbsorbers have been provided the same SliverOverlapAbsorberHandle.");
+        DartRuntimePrimitives.Assert(
+            () => _writers == 1L,
+            () =>
+                (object?)
+                    "Multiple RenderSliverOverlapAbsorbers have been provided the same SliverOverlapAbsorberHandle."
+        );
         _layoutExtent = layoutValue;
         _scrollExtent = scrollValue;
     }
 
     internal virtual void _markNeedsLayout() => notifyListeners();
+
     public override string ToString()
     {
-        string? extra = _writers switch { 0L => ", orphan", 1L => DartRuntimePrimitives.ConvertValue<string>(null), _ => $", {_writers} WRITERS ASSIGNED" };
+        string? extra = _writers switch
+        {
+            0L => ", orphan",
+            1L => DartRuntimePrimitives.ConvertValue<string>(null),
+            _ => $", {_writers} WRITERS ASSIGNED",
+        };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle")}({layoutExtent}{extra})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverOverlapAbsorber : SingleChildRenderObjectWidget
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    public SliverOverlapAbsorber(Key? key = null, SliverOverlapAbsorberHandle handle = default!, Widget? sliver = null) : base(key: key, child: sliver)
+    public SliverOverlapAbsorber(
+        Key? key = null,
+        SliverOverlapAbsorberHandle handle = default!,
+        Widget? sliver = null
+    )
+        : base(key: key, child: sliver)
     {
         this.handle = handle;
     }
@@ -1135,7 +1583,6 @@ public class SliverOverlapAbsorber : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SliverOverlapAbsorberHandle>("handle", handle));
     }
-
 }
 
 public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMixin<RenderSliver>
@@ -1143,7 +1590,10 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
     internal virtual SliverOverlapAbsorberHandle _handle { get; set; } = default!;
     public virtual RenderSliver? _child { get; set; } = default;
 
-    public RenderSliverOverlapAbsorber(SliverOverlapAbsorberHandle handle, RenderSliver? sliver = null)
+    public RenderSliverOverlapAbsorber(
+        SliverOverlapAbsorberHandle handle,
+        RenderSliver? sliver = null
+    )
     {
         _handle = handle;
     }
@@ -1167,6 +1617,7 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
             _handle = __value;
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -1183,7 +1634,12 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
 
     public override void performLayout()
     {
-        DartRuntimePrimitives.Assert(() => handle._writers == 1L, () => (object?)"A SliverOverlapAbsorberHandle cannot be passed to multiple RenderSliverOverlapAbsorber objects at the same time.");
+        DartRuntimePrimitives.Assert(
+            () => handle._writers == 1L,
+            () =>
+                (object?)
+                    "A SliverOverlapAbsorberHandle cannot be passed to multiple RenderSliverOverlapAbsorber objects at the same time."
+        );
         if (child is null)
         {
             geometry = SliverGeometry.zero;
@@ -1191,19 +1647,35 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
         }
         child!.layout(constraints, parentUsesSize: true);
         SliverGeometry childLayoutGeometry = child!.geometry!;
-        geometry = childLayoutGeometry.copyWith(scrollExtent: childLayoutGeometry.scrollExtent - childLayoutGeometry.maxScrollObstructionExtent, layoutExtent: Math.Max(0, childLayoutGeometry.paintExtent - childLayoutGeometry.maxScrollObstructionExtent));
-        handle._setExtents(childLayoutGeometry.maxScrollObstructionExtent, childLayoutGeometry.maxScrollObstructionExtent);
+        geometry = childLayoutGeometry.copyWith(
+            scrollExtent: childLayoutGeometry.scrollExtent
+                - childLayoutGeometry.maxScrollObstructionExtent,
+            layoutExtent: Math.Max(
+                0,
+                childLayoutGeometry.paintExtent - childLayoutGeometry.maxScrollObstructionExtent
+            )
+        );
+        handle._setExtents(
+            childLayoutGeometry.maxScrollObstructionExtent,
+            childLayoutGeometry.maxScrollObstructionExtent
+        );
     }
 
-    public override void applyPaintTransform(RenderObject child, Matrix4 transform)
-    {
-    }
+    public override void applyPaintTransform(RenderObject child, Matrix4 transform) { }
 
-    public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTestChildren(
+        SliverHitTestResult result,
+        double mainAxisPosition,
+        double crossAxisPosition
+    )
     {
         if (child is not null)
         {
-            return child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
+            return child!.hitTest(
+                result,
+                mainAxisPosition: mainAxisPosition,
+                crossAxisPosition: crossAxisPosition
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1226,14 +1698,43 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderSliver)
             {
-                if (child is not RenderSliver)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a "
+                                    + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                            ),
+                            new ErrorDescription(
+                                "RenderObjects expect specific types of children because they "
+                                    + "coordinate with their children during layout and paint. For "
+                                    + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                    + "a RenderSliver does not understand the RenderBox layout protocol."
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {GetType()} that expected a {typeof(RenderSliver)} child was created by",
+                                debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                    + "was created by",
+                                child.debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1255,6 +1756,7 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
             }
         }
     }
+
     public override void redepthChildren()
     {
         if (_child is not null)
@@ -1273,17 +1775,26 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverOverlapInjector : SingleChildRenderObjectWidget
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    public SliverOverlapInjector(Key? key = null, SliverOverlapAbsorberHandle handle = default!, Widget? sliver = null) : base(key: key, child: sliver)
+    public SliverOverlapInjector(
+        Key? key = null,
+        SliverOverlapAbsorberHandle handle = default!,
+        Widget? sliver = null
+    )
+        : base(key: key, child: sliver)
     {
         this.handle = handle;
     }
@@ -1305,7 +1816,6 @@ public class SliverOverlapInjector : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SliverOverlapAbsorberHandle>("handle", handle));
     }
-
 }
 
 public class RenderSliverOverlapInjector : RenderSliver
@@ -1337,18 +1847,25 @@ public class RenderSliverOverlapInjector : RenderSliver
             if (attached)
             {
                 handle.addListener(markNeedsLayout);
-                if ((handle.layoutExtent != _currentLayoutExtent) || (handle.scrollExtent != _currentMaxExtent))
+                if (
+                    (handle.layoutExtent != _currentLayoutExtent)
+                    || (handle.scrollExtent != _currentMaxExtent)
+                )
                 {
                     markNeedsLayout();
                 }
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
         handle.addListener(markNeedsLayout);
-        if ((handle.layoutExtent != _currentLayoutExtent) || (handle.scrollExtent != _currentMaxExtent))
+        if (
+            (handle.layoutExtent != _currentLayoutExtent)
+            || (handle.scrollExtent != _currentMaxExtent)
+        )
         {
             markNeedsLayout();
         }
@@ -1364,56 +1881,87 @@ public class RenderSliverOverlapInjector : RenderSliver
     {
         _currentLayoutExtent = handle.layoutExtent;
         _currentMaxExtent = handle.layoutExtent;
-        DartRuntimePrimitives.Assert(() => (_currentLayoutExtent is not null) && (_currentMaxExtent is not null), () => (object?)"SliverOverlapInjector has found no absorbed extent to inject.\n " + "The SliverOverlapAbsorber must be an earlier descendant of a common " + "ancestor Viewport, so that it will always be laid out before the " + "SliverOverlapInjector during a particular frame.\n " + "The SliverOverlapAbsorber is typically contained in the list of slivers " + "provided by NestedScrollView.headerSliverBuilder.\n");
-        double clampedPaintExtent = Math.Min(DartRuntimePrimitives.RequireValue(_currentLayoutExtent), constraints.remainingPaintExtent);
-        double clampedLayoutExtent = Math.Min(DartRuntimePrimitives.RequireValue(_currentLayoutExtent) - constraints.scrollOffset, constraints.remainingPaintExtent);
-        geometry = new SliverGeometry(scrollExtent: DartRuntimePrimitives.RequireValue(_currentLayoutExtent), paintExtent: Math.Max(0.0, clampedPaintExtent), layoutExtent: Math.Max(0.0, clampedLayoutExtent), maxPaintExtent: DartRuntimePrimitives.RequireValue(_currentMaxExtent));
+        DartRuntimePrimitives.Assert(
+            () => (_currentLayoutExtent is not null) && (_currentMaxExtent is not null),
+            () =>
+                (object?)"SliverOverlapInjector has found no absorbed extent to inject.\n "
+                + "The SliverOverlapAbsorber must be an earlier descendant of a common "
+                + "ancestor Viewport, so that it will always be laid out before the "
+                + "SliverOverlapInjector during a particular frame.\n "
+                + "The SliverOverlapAbsorber is typically contained in the list of slivers "
+                + "provided by NestedScrollView.headerSliverBuilder.\n"
+        );
+        double clampedPaintExtent = Math.Min(
+            DartRuntimePrimitives.RequireValue(_currentLayoutExtent),
+            constraints.remainingPaintExtent
+        );
+        double clampedLayoutExtent = Math.Min(
+            DartRuntimePrimitives.RequireValue(_currentLayoutExtent) - constraints.scrollOffset,
+            constraints.remainingPaintExtent
+        );
+        geometry = new SliverGeometry(
+            scrollExtent: DartRuntimePrimitives.RequireValue(_currentLayoutExtent),
+            paintExtent: Math.Max(0.0, clampedPaintExtent),
+            layoutExtent: Math.Max(0.0, clampedLayoutExtent),
+            maxPaintExtent: DartRuntimePrimitives.RequireValue(_currentMaxExtent)
+        );
     }
 
     public override void debugPaint(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Rendering.DebugLibrary.debugPaintSizeEnabled)
             {
-                if (Rendering.DebugLibrary.debugPaintSizeEnabled)
+                var paint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = new Color(4291598643L);
+                            __cascade.strokeWidth = 3.0;
+                            __cascade.style = PaintingStyle.stroke;
+                            return __cascade;
+                        }
+                    )
+                )();
+                Offset start = default!;
+                Offset end = default!;
+                Offset delta = default!;
+                switch (constraints.axis)
                 {
-                    var paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = new Color(4291598643L);
-    __cascade.strokeWidth = 3.0;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))();
-                    Offset start = default!;
-                    Offset end = default!;
-                    Offset delta = default!;
-                    switch (constraints.axis)
+                    case Axis.vertical:
                     {
-                        case Axis.vertical:
-                            {
-                                double x = offset.dx + (constraints.crossAxisExtent / 2.0);
-                                start = new Offset(x, offset.dy);
-                                end = new Offset(x, offset.dy + geometry!.paintExtent);
-                                delta = new Offset(constraints.crossAxisExtent / 5.0, 0.0);
-                                break;
-                            }
-                        case Axis.horizontal:
-                            {
-                                double y = offset.dy + (constraints.crossAxisExtent / 2.0);
-                                start = new Offset(offset.dx, y);
-                                end = new Offset(offset.dy + geometry!.paintExtent, y);
-                                delta = new Offset(0.0, constraints.crossAxisExtent / 5.0);
-                                break;
-                            }
+                        double x = offset.dx + (constraints.crossAxisExtent / 2.0);
+                        start = new Offset(x, offset.dy);
+                        end = new Offset(x, offset.dy + geometry!.paintExtent);
+                        delta = new Offset(constraints.crossAxisExtent / 5.0, 0.0);
+                        break;
                     }
-                    for (var index = -2L; index <= 2L; index += 1L)
+                    case Axis.horizontal:
                     {
-                        Paint_utilitiesLibrary.paintZigZag(context.canvas, paint, start - (delta * index.toDouble()), end - (delta * index.toDouble()), 10L, 10.0);
+                        double y = offset.dy + (constraints.crossAxisExtent / 2.0);
+                        start = new Offset(offset.dx, y);
+                        end = new Offset(offset.dy + geometry!.paintExtent, y);
+                        delta = new Offset(0.0, constraints.crossAxisExtent / 5.0);
+                        break;
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                for (var index = -2L; index <= 2L; index += 1L)
+                {
+                    Paint_utilitiesLibrary.paintZigZag(
+                        context.canvas,
+                        paint,
+                        start - (delta * index.toDouble()),
+                        end - (delta * index.toDouble()),
+                        10L,
+                        10.0
+                    );
+                }
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1421,38 +1969,73 @@ public class RenderSliverOverlapInjector : RenderSliver
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SliverOverlapAbsorberHandle>("handle", handle));
     }
-
 }
 
 public class NestedScrollViewViewport : Viewport
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    public NestedScrollViewViewport(Key? key = null, AxisDirection axisDirection = AxisDirection.down, AxisDirection? crossAxisDirection = null, double anchor = 0.0, ViewportOffset offset = default!, Key? center = null, List<Widget> slivers = default!, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key, axisDirection: axisDirection, crossAxisDirection: DartRuntimePrimitives.RequireValue(crossAxisDirection), anchor: anchor, offset: offset, center: center, slivers: slivers ?? new List<Widget>(), clipBehavior: clipBehavior)
+    public NestedScrollViewViewport(
+        Key? key = null,
+        AxisDirection axisDirection = AxisDirection.down,
+        AxisDirection? crossAxisDirection = null,
+        double anchor = 0.0,
+        ViewportOffset offset = default!,
+        Key? center = null,
+        List<Widget> slivers = default!,
+        SliverOverlapAbsorberHandle handle = default!,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(
+            key: key,
+            axisDirection: axisDirection,
+            crossAxisDirection: DartRuntimePrimitives.RequireValue(crossAxisDirection),
+            anchor: anchor,
+            offset: offset,
+            center: center,
+            slivers: slivers ?? new List<Widget>(),
+            clipBehavior: clipBehavior
+        )
     {
         this.handle = handle;
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new RenderNestedScrollViewViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection), anchor: anchor, offset: offset, handle: handle, clipBehavior: clipBehavior);
+        return new RenderNestedScrollViewViewport(
+            axisDirection: axisDirection,
+            crossAxisDirection: crossAxisDirection
+                ?? getDefaultCrossAxisDirection(context, axisDirection),
+            anchor: anchor,
+            offset: offset,
+            handle: handle,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderNestedScrollViewViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderNestedScrollViewViewport>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.axisDirection = axisDirection;
-    __cascade.crossAxisDirection = crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection);
-    __cascade.anchor = anchor;
-    __cascade.offset = offset;
-    __cascade.handle = handle;
-    __cascade.clipBehavior = clipBehavior;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderNestedScrollViewViewport>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.axisDirection = axisDirection;
+                        __cascade.crossAxisDirection =
+                            crossAxisDirection
+                            ?? getDefaultCrossAxisDirection(context, axisDirection);
+                        __cascade.anchor = anchor;
+                        __cascade.offset = offset;
+                        __cascade.handle = handle;
+                        __cascade.clipBehavior = clipBehavior;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1460,14 +2043,31 @@ public class NestedScrollViewViewport : Viewport
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SliverOverlapAbsorberHandle>("handle", handle));
     }
-
 }
 
 public class RenderNestedScrollViewViewport : RenderViewport
 {
     internal virtual SliverOverlapAbsorberHandle _handle { get; set; } = default!;
 
-    public RenderNestedScrollViewViewport(AxisDirection axisDirection = AxisDirection.down, AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, double anchor = 0.0, List<RenderSliver>? children = null, RenderSliver? center = null, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, anchor: anchor, children: children, center: center, clipBehavior: clipBehavior)
+    public RenderNestedScrollViewViewport(
+        AxisDirection axisDirection = AxisDirection.down,
+        AxisDirection crossAxisDirection = default!,
+        ViewportOffset offset = default!,
+        double anchor = 0.0,
+        List<RenderSliver>? children = null,
+        RenderSliver? center = null,
+        SliverOverlapAbsorberHandle handle = default!,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(
+            axisDirection: axisDirection,
+            crossAxisDirection: crossAxisDirection,
+            offset: offset,
+            anchor: anchor,
+            children: children,
+            center: center,
+            clipBehavior: clipBehavior
+        )
     {
         _handle = handle;
     }
@@ -1486,6 +2086,7 @@ public class RenderNestedScrollViewViewport : RenderViewport
             handle._markNeedsLayout();
         }
     }
+
     public override void markNeedsLayout()
     {
         handle._markNeedsLayout();
@@ -1497,5 +2098,4 @@ public class RenderNestedScrollViewViewport : RenderViewport
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SliverOverlapAbsorberHandle>("handle", handle));
     }
-
 }

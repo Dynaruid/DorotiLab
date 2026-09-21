@@ -8,15 +8,11 @@ internal class BackgroundIsolateBinaryMessengerIo
 {
     public static BinaryMessenger instance
     {
-        get
-        {
-            throw new NotSupportedException("Isolates not supported on web.");
-        }
+        get { throw new NotSupportedException("Isolates not supported on web."); }
     }
+
     public static void ensureInitialized(RootIsolateToken token)
     {
         throw new NotSupportedException("Isolates not supported on web.");
     }
-
 }
-

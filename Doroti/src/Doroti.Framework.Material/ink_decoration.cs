@@ -14,27 +14,68 @@ public class Ink : StatefulWidget
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public Ink(Key? key = null, EdgeInsetsGeometry? padding = null, Color? color = null, Decoration? decoration = null, double? width = null, double? height = null, Widget? child = null) : base(key: key)
+    public Ink(
+        Key? key = null,
+        EdgeInsetsGeometry? padding = null,
+        Color? color = null,
+        Decoration? decoration = null,
+        double? width = null,
+        double? height = null,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         this.padding = padding;
         this.width = width;
         this.height = height;
         this.child = child;
-        this.decoration = decoration ?? ((color is not null) ? new BoxDecoration(color: color) : null);
+        this.decoration =
+            decoration ?? ((color is not null) ? new BoxDecoration(color: color) : null);
         System.Diagnostics.Debug.Assert((padding is null) || padding.isNonNegative);
         System.Diagnostics.Debug.Assert((decoration is null) || decoration.debugAssertIsValid());
         System.Diagnostics.Debug.Assert((color is null) || (decoration is null));
     }
 
-    public static Ink CreateImage(Key? key = null, EdgeInsetsGeometry? padding = null, IImageProvider image = default!, Action<object, System.Diagnostics.StackTrace?>? onImageError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double? width = null, double? height = null, Widget? child = null)
+    public static Ink CreateImage(
+        Key? key = null,
+        EdgeInsetsGeometry? padding = null,
+        IImageProvider image = default!,
+        Action<object, System.Diagnostics.StackTrace?>? onImageError = null,
+        ColorFilter? colorFilter = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        Rect? centerSlice = null,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        bool matchTextDirection = false,
+        double? width = null,
+        double? height = null,
+        Widget? child = null
+    )
     {
-        var __instance = new Ink(key: key, padding: padding, width: width, height: height, child: child);
+        var __instance = new Ink(
+            key: key,
+            padding: padding,
+            width: width,
+            height: height,
+            child: child
+        );
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.padding = padding;
         __instance.width = width;
         __instance.height = height;
         __instance.child = child;
-        __instance.decoration = new BoxDecoration(image: new DecorationImage(image: image, onError: onImageError, colorFilter: colorFilter, fit: fit, alignment: __alignment, centerSlice: centerSlice, repeat: repeat, matchTextDirection: matchTextDirection));
+        __instance.decoration = new BoxDecoration(
+            image: new DecorationImage(
+                image: image,
+                onError: onImageError,
+                colorFilter: colorFilter,
+                fit: fit,
+                alignment: __alignment,
+                centerSlice: centerSlice,
+                repeat: repeat,
+                matchTextDirection: matchTextDirection
+            )
+        );
         return __instance;
     }
 
@@ -42,17 +83,29 @@ public class Ink : StatefulWidget
     {
         get
         {
-            return (padding, decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.zero), (null, EdgeInsetsGeometry paddingLocal) => paddingLocal, (EdgeInsetsGeometry paddingAlternate, null) => paddingAlternate, _ => padding!.add(decoration!.padding) };
+            return (padding, decoration?.padding) switch
+            {
+                (null, null) => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(
+                    EdgeInsets.zero
+                ),
+                (null, EdgeInsetsGeometry paddingLocal) => paddingLocal,
+                (EdgeInsetsGeometry paddingAlternate, null) => paddingAlternate,
+                _ => padding!.add(decoration!.padding),
+            };
         }
     }
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<Decoration>("bg", decoration, defaultValue: null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InkState__ink_decoration());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _InkState__ink_decoration());
 }
 
 internal class _InkState__ink_decoration : State<Ink>
@@ -76,7 +129,14 @@ internal class _InkState__ink_decoration : State<Ink>
     {
         if (_ink is null)
         {
-            _ink = new InkDecoration(decoration: widget.decoration, isVisible: Visibility.of(context), configuration: ImageLibrary.createLocalImageConfiguration(context), controller: Material.of(context), referenceBox: ((RenderBox?)_boxKey.currentContext!.findRenderObject()!)!, onRemoved: () => _handleRemoved());
+            _ink = new InkDecoration(
+                decoration: widget.decoration,
+                isVisible: Visibility.of(context),
+                configuration: ImageLibrary.createLocalImageConfiguration(context),
+                controller: Material.of(context),
+                referenceBox: ((RenderBox?)_boxKey.currentContext!.findRenderObject()!)!,
+                onRemoved: () => _handleRemoved()
+            );
         }
         else
         {
@@ -91,15 +151,20 @@ internal class _InkState__ink_decoration : State<Ink>
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        Widget result = new Padding(key: _boxKey, padding: widget._paddingIncludingDecoration, child: new Builder(builder: _build));
+        Widget result = new Padding(
+            key: _boxKey,
+            padding: widget._paddingIncludingDecoration,
+            child: new Builder(builder: _build)
+        );
         if ((widget.width is not null) || (widget.height is not null))
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: widget.width, height: widget.height, child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new SizedBox(width: widget.width, height: widget.height, child: result)
+            );
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class InkDecoration : InkFeature
@@ -109,7 +174,15 @@ public class InkDecoration : InkFeature
     internal virtual bool _isVisible { get; set; } = true;
     internal virtual ImageConfiguration _configuration { get; set; } = default!;
 
-    public InkDecoration(Decoration? decoration, bool isVisible = true, ImageConfiguration configuration = default!, MaterialInkController controller = default!, RenderBox referenceBox = default!, Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
+    public InkDecoration(
+        Decoration? decoration,
+        bool isVisible = true,
+        ImageConfiguration configuration = default!,
+        MaterialInkController controller = default!,
+        RenderBox referenceBox = default!,
+        Action? onRemoved = null
+    )
+        : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
     {
         _configuration = configuration;
         this.decoration = decoration;
@@ -161,6 +234,7 @@ public class InkDecoration : InkFeature
             controller.markNeedsPaint();
         }
     }
+
     internal virtual void _handleChanged()
     {
         controller.markNeedsPaint();
@@ -189,8 +263,13 @@ public class InkDecoration : InkFeature
         }
         else
         {
-            _painter!.paint(canvas, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset)), sizedConfiguration);
+            _painter!.paint(
+                canvas,
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(originOffset)
+                ),
+                sizedConfiguration
+            );
         }
     }
-
 }

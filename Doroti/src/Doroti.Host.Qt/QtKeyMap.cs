@@ -10,11 +10,26 @@ internal static class QtKeyMap
 
     internal static long Physical(long nativeScanCode, long qtKey)
     {
-        if (qtKey is >= 'A' and <= 'Z') return HidPlane + 0x04 + qtKey - 'A';
-        if (qtKey is >= '1' and <= '9') return HidPlane + 0x1e + qtKey - '1';
-        if (qtKey == '0') return HidPlane + 0x27;
+        if (qtKey is >= 'A' and <= 'Z')
+        {
+            return HidPlane + 0x04 + qtKey - 'A';
+        }
+
+        if (qtKey is >= '1' and <= '9')
+        {
+            return HidPlane + 0x1e + qtKey - '1';
+        }
+
+        if (qtKey == '0')
+        {
+            return HidPlane + 0x27;
+        }
+
         if (qtKey is >= 0x01000030 and <= 0x0100003b)
+        {
             return HidPlane + 0x3a + qtKey - 0x01000030;
+        }
+
         return qtKey switch
         {
             0x01000004 or 0x01000005 => HidPlane + 0x28,
@@ -42,15 +57,31 @@ internal static class QtKeyMap
 
     internal static long Logical(long qtKey, string character)
     {
-        if (!string.IsNullOrEmpty(character) &&
-            character.EnumerateRunes().Take(2).ToArray() is [var rune] && !Rune.IsControl(rune))
+        if (
+            !string.IsNullOrEmpty(character)
+            && character.EnumerateRunes().Take(2).ToArray() is [var rune]
+            && !Rune.IsControl(rune)
+        )
+        {
             return Rune.ToLowerInvariant(rune).Value;
+        }
         // QKeyEvent.text() can contain a control character for Ctrl+letter,
         // and can be empty on release. Neither changes the logical letter.
-        if (qtKey is >= 'A' and <= 'Z') return 'a' + qtKey - 'A';
-        if (qtKey is >= '0' and <= '9') return qtKey;
+        if (qtKey is >= 'A' and <= 'Z')
+        {
+            return 'a' + qtKey - 'A';
+        }
+
+        if (qtKey is >= '0' and <= '9')
+        {
+            return qtKey;
+        }
+
         if (qtKey is >= 0x01000030 and <= 0x01000047)
+        {
             return 0x100000801 + qtKey - 0x01000030;
+        }
+
         return qtKey switch
         {
             0x01000003 => 0x100000008,

@@ -11,9 +11,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
 {
     public virtual RenderBox? _child { get; set; } = default;
 
-    protected RenderShiftedBox(RenderBox? child)
-    {
-    }
+    protected RenderShiftedBox(RenderBox? child) { }
 
     public override double computeMinIntrinsicWidth(double height)
     {
@@ -95,11 +93,17 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
         if (childLocal is not null)
         {
             var childParentData = ((BoxParentData?)(object?)childLocal.parentData!)!;
-            return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
-            {
-                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
-                return childLocal.hitTest(result, position: transformed);
-            });
+            return result.addWithPaintOffset(
+                offset: childParentData.offset,
+                position: position,
+                hitTest: (result, transformed) =>
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(transformed, position - childParentData.offset)
+                    );
+                    return childLocal.hitTest(result, position: transformed);
+                }
+            );
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -108,13 +112,40 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -136,6 +167,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -166,10 +198,14 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class RenderPadding : RenderShiftedBox
@@ -178,7 +214,12 @@ public class RenderPadding : RenderShiftedBox
     internal virtual EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderPadding(EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderBox? child = null) : base(child)
+    public RenderPadding(
+        EdgeInsetsGeometry padding,
+        TextDirection? textDirection = null,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         _textDirection = textDirection;
         _padding = padding;
@@ -194,6 +235,7 @@ public class RenderPadding : RenderShiftedBox
             return returnValue;
         }
     }
+
     internal virtual void _markNeedResolution()
     {
         _resolvedPaddingCache = null;
@@ -229,12 +271,14 @@ public class RenderPadding : RenderShiftedBox
             _markNeedResolution();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         EdgeInsets padding = _resolvedPadding;
         if (child is not null)
         {
-            return child!.getMinIntrinsicWidth(Math.Max(0.0, height - padding.vertical)) + padding.horizontal;
+            return child!.getMinIntrinsicWidth(Math.Max(0.0, height - padding.vertical))
+                + padding.horizontal;
         }
         return padding.horizontal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -245,7 +289,8 @@ public class RenderPadding : RenderShiftedBox
         EdgeInsets padding = _resolvedPadding;
         if (child is not null)
         {
-            return child!.getMaxIntrinsicWidth(Math.Max(0.0, height - padding.vertical)) + padding.horizontal;
+            return child!.getMaxIntrinsicWidth(Math.Max(0.0, height - padding.vertical))
+                + padding.horizontal;
         }
         return padding.horizontal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -256,7 +301,8 @@ public class RenderPadding : RenderShiftedBox
         EdgeInsets padding = _resolvedPadding;
         if (child is not null)
         {
-            return child!.getMinIntrinsicHeight(Math.Max(0.0, width - padding.horizontal)) + padding.vertical;
+            return child!.getMinIntrinsicHeight(Math.Max(0.0, width - padding.horizontal))
+                + padding.vertical;
         }
         return padding.vertical;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -267,7 +313,8 @@ public class RenderPadding : RenderShiftedBox
         EdgeInsets padding = _resolvedPadding;
         if (child is not null)
         {
-            return child!.getMaxIntrinsicHeight(Math.Max(0.0, width - padding.horizontal)) + padding.vertical;
+            return child!.getMaxIntrinsicHeight(Math.Max(0.0, width - padding.horizontal))
+                + padding.vertical;
         }
         return padding.vertical;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -282,7 +329,9 @@ public class RenderPadding : RenderShiftedBox
         }
         BoxConstraints innerConstraints = constraints.deflate(padding);
         Size childSize = child!.getDryLayout(innerConstraints);
-        return constraints.constrain(new Size(padding.horizontal + childSize.width, padding.vertical + childSize.height));
+        return constraints.constrain(
+            new Size(padding.horizontal + childSize.width, padding.vertical + childSize.height)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -317,27 +366,34 @@ public class RenderPadding : RenderShiftedBox
         child!.layout(innerConstraints, parentUsesSize: true);
         var childParentData = ((BoxParentData?)(object?)child!.parentData!)!;
         childParentData.offset = new Offset(padding.left, padding.top);
-        size = constraintsLocal.constrain(new Size(padding.horizontal + child!.size.width, padding.vertical + child!.size.height));
+        size = constraintsLocal.constrain(
+            new Size(padding.horizontal + child!.size.width, padding.vertical + child!.size.height)
+        );
     }
 
     public override void debugPaintSize(PaintingContext context, Offset offset)
     {
         base.debugPaintSize(context, offset);
         DartRuntimePrimitives.Assert(() =>
-            {
-                Rect outerRect = offset & size;
-                DebugLibrary.debugPaintPadding(context.canvas, outerRect, (child is not null) ? _resolvedPaddingCache!.deflateRect(outerRect) : null);
-                return true;
-            });
+        {
+            Rect outerRect = offset & size;
+            DebugLibrary.debugPaintPadding(
+                context.canvas,
+                outerRect,
+                (child is not null) ? _resolvedPaddingCache!.deflateRect(outerRect) : null
+            );
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
-
 }
 
 public abstract class RenderAligningShiftedBox : RenderShiftedBox
@@ -346,14 +402,21 @@ public abstract class RenderAligningShiftedBox : RenderShiftedBox
     internal virtual AlignmentGeometry _alignment { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    protected RenderAligningShiftedBox(AlignmentGeometry alignment = default!, TextDirection? textDirection = default!, RenderBox? child = null) : base(child)
+    protected RenderAligningShiftedBox(
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = default!,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         _alignment = __alignment;
         _textDirection = textDirection;
     }
 
-    public virtual Alignment resolvedAlignment => _resolvedAlignment ??= alignment.resolve(textDirection);
+    public virtual Alignment resolvedAlignment =>
+        _resolvedAlignment ??= alignment.resolve(textDirection);
+
     internal virtual void _markNeedResolution()
     {
         _resolvedAlignment = null;
@@ -388,6 +451,7 @@ public abstract class RenderAligningShiftedBox : RenderShiftedBox
             _markNeedResolution();
         }
     }
+
     public virtual void alignChild()
     {
         DartRuntimePrimitives.Assert(() => child is not null);
@@ -402,9 +466,10 @@ public abstract class RenderAligningShiftedBox : RenderShiftedBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
-
 }
 
 public class RenderPositionedBox : RenderAligningShiftedBox
@@ -412,7 +477,18 @@ public class RenderPositionedBox : RenderAligningShiftedBox
     internal virtual double? _widthFactor { get; set; } = default;
     internal virtual double? _heightFactor { get; set; } = default;
 
-    public RenderPositionedBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderPositionedBox(
+        RenderBox? child = null,
+        double? widthFactor = null,
+        double? heightFactor = null,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null
+    )
+        : base(
+            child: child,
+            alignment: alignment ?? Alignment.center,
+            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+        )
     {
         _widthFactor = widthFactor;
         _heightFactor = heightFactor;
@@ -450,6 +526,7 @@ public class RenderPositionedBox : RenderAligningShiftedBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         return base.computeMinIntrinsicWidth(height) * (_widthFactor ?? 1L);
@@ -476,31 +553,63 @@ public class RenderPositionedBox : RenderAligningShiftedBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        bool shrinkWrapWidth = (_widthFactor is not null) || (constraints.maxWidth == double.PositiveInfinity);
-        bool shrinkWrapHeight = (_heightFactor is not null) || (constraints.maxHeight == double.PositiveInfinity);
+        bool shrinkWrapWidth =
+            (_widthFactor is not null) || (constraints.maxWidth == double.PositiveInfinity);
+        bool shrinkWrapHeight =
+            (_heightFactor is not null) || (constraints.maxHeight == double.PositiveInfinity);
         if (child is not null)
         {
             Size childSize = child!.getDryLayout(constraints.loosen());
-            return constraints.constrain(new Size(shrinkWrapWidth ? (childSize.width * (_widthFactor ?? 1.0)) : double.PositiveInfinity, shrinkWrapHeight ? (childSize.height * (_heightFactor ?? 1.0)) : double.PositiveInfinity));
+            return constraints.constrain(
+                new Size(
+                    shrinkWrapWidth
+                        ? (childSize.width * (_widthFactor ?? 1.0))
+                        : double.PositiveInfinity,
+                    shrinkWrapHeight
+                        ? (childSize.height * (_heightFactor ?? 1.0))
+                        : double.PositiveInfinity
+                )
+            );
         }
-        return constraints.constrain(new Size(shrinkWrapWidth ? 0.0 : double.PositiveInfinity, shrinkWrapHeight ? 0.0 : double.PositiveInfinity));
+        return constraints.constrain(
+            new Size(
+                shrinkWrapWidth ? 0.0 : double.PositiveInfinity,
+                shrinkWrapHeight ? 0.0 : double.PositiveInfinity
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
         BoxConstraints constraintsLocal = constraints;
-        bool shrinkWrapWidth = (_widthFactor is not null) || (constraintsLocal.maxWidth == double.PositiveInfinity);
-        bool shrinkWrapHeight = (_heightFactor is not null) || (constraintsLocal.maxHeight == double.PositiveInfinity);
+        bool shrinkWrapWidth =
+            (_widthFactor is not null) || (constraintsLocal.maxWidth == double.PositiveInfinity);
+        bool shrinkWrapHeight =
+            (_heightFactor is not null) || (constraintsLocal.maxHeight == double.PositiveInfinity);
         if (child is not null)
         {
             child!.layout(constraintsLocal.loosen(), parentUsesSize: true);
-            size = constraintsLocal.constrain(new Size(shrinkWrapWidth ? (child!.size.width * (_widthFactor ?? 1.0)) : double.PositiveInfinity, shrinkWrapHeight ? (child!.size.height * (_heightFactor ?? 1.0)) : double.PositiveInfinity));
+            size = constraintsLocal.constrain(
+                new Size(
+                    shrinkWrapWidth
+                        ? (child!.size.width * (_widthFactor ?? 1.0))
+                        : double.PositiveInfinity,
+                    shrinkWrapHeight
+                        ? (child!.size.height * (_heightFactor ?? 1.0))
+                        : double.PositiveInfinity
+                )
+            );
             alignChild();
         }
         else
         {
-            size = constraintsLocal.constrain(new Size(shrinkWrapWidth ? 0.0 : double.PositiveInfinity, shrinkWrapHeight ? 0.0 : double.PositiveInfinity));
+            size = constraintsLocal.constrain(
+                new Size(
+                    shrinkWrapWidth ? 0.0 : double.PositiveInfinity,
+                    shrinkWrapHeight ? 0.0 : double.PositiveInfinity
+                )
+            );
         }
     }
 
@@ -508,78 +617,109 @@ public class RenderPositionedBox : RenderAligningShiftedBox
     {
         base.debugPaintSize(context, offset);
         DartRuntimePrimitives.Assert(() =>
+        {
+            Paint paint = default!;
+            if ((child is not null) && !child!.size.isEmpty)
             {
-                Paint paint = default!;
-                if ((child is not null) && !child!.size.isEmpty)
+                Path path = default!;
+                paint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.style = PaintingStyle.stroke;
+                            __cascade.strokeWidth = 1.0;
+                            __cascade.color = new Color(4294967040L);
+                            return __cascade;
+                        }
+                    )
+                )();
+                path = new Path();
+                var childParentData = ((BoxParentData?)(object?)child!.parentData!)!;
+                if (childParentData.offset.dy > 0.0)
                 {
-                    Path path = default!;
-                    paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 1.0;
-    __cascade.color = new Color(4294967040L);
-    return __cascade;
-}))();
-                    path = new Path();
-                    var childParentData = ((BoxParentData?)(object?)child!.parentData!)!;
-                    if (childParentData.offset.dy > 0.0)
-                    {
-                        double headSize = Math.Min(childParentData.offset.dy * 0.2, 10.0);
-                        ((Func<Path>)(() =>
-{
-    var __cascade = path;
-    __cascade.moveTo(offset.dx + (size.width / 2.0), offset.dy);
-    __cascade.relativeLineTo(0.0, childParentData.offset.dy - headSize);
-    __cascade.relativeLineTo(headSize, 0.0);
-    __cascade.relativeLineTo(-headSize, headSize);
-    __cascade.relativeLineTo(-headSize, -headSize);
-    __cascade.relativeLineTo(headSize, 0.0);
-    __cascade.moveTo(offset.dx + (size.width / 2.0), offset.dy + size.height);
-    __cascade.relativeLineTo(0.0, -childParentData.offset.dy + headSize);
-    __cascade.relativeLineTo(headSize, 0.0);
-    __cascade.relativeLineTo(-headSize, -headSize);
-    __cascade.relativeLineTo(-headSize, headSize);
-    __cascade.relativeLineTo(headSize, 0.0);
-    return __cascade;
-}))();
-                        context.canvas.drawPath(path, paint);
-                    }
-                    if (childParentData.offset.dx > 0.0)
-                    {
-                        double headSizeLocal = Math.Min(childParentData.offset.dx * 0.2, 10.0);
-                        ((Func<Path>)(() =>
-{
-    var __cascade = path;
-    __cascade.moveTo(offset.dx, offset.dy + (size.height / 2.0));
-    __cascade.relativeLineTo(childParentData.offset.dx - headSizeLocal, 0.0);
-    __cascade.relativeLineTo(0.0, headSizeLocal);
-    __cascade.relativeLineTo(headSizeLocal, -headSizeLocal);
-    __cascade.relativeLineTo(-headSizeLocal, -headSizeLocal);
-    __cascade.relativeLineTo(0.0, headSizeLocal);
-    __cascade.moveTo(offset.dx + size.width, offset.dy + (size.height / 2.0));
-    __cascade.relativeLineTo(-childParentData.offset.dx + headSizeLocal, 0.0);
-    __cascade.relativeLineTo(0.0, headSizeLocal);
-    __cascade.relativeLineTo(-headSizeLocal, -headSizeLocal);
-    __cascade.relativeLineTo(headSizeLocal, -headSizeLocal);
-    __cascade.relativeLineTo(0.0, headSizeLocal);
-    return __cascade;
-}))();
-                        context.canvas.drawPath(path, paint);
-                    }
+                    double headSize = Math.Min(childParentData.offset.dy * 0.2, 10.0);
+                    (
+                        (Func<Path>)(
+                            () =>
+                            {
+                                var __cascade = path;
+                                __cascade.moveTo(offset.dx + (size.width / 2.0), offset.dy);
+                                __cascade.relativeLineTo(0.0, childParentData.offset.dy - headSize);
+                                __cascade.relativeLineTo(headSize, 0.0);
+                                __cascade.relativeLineTo(-headSize, headSize);
+                                __cascade.relativeLineTo(-headSize, -headSize);
+                                __cascade.relativeLineTo(headSize, 0.0);
+                                __cascade.moveTo(
+                                    offset.dx + (size.width / 2.0),
+                                    offset.dy + size.height
+                                );
+                                __cascade.relativeLineTo(
+                                    0.0,
+                                    -childParentData.offset.dy + headSize
+                                );
+                                __cascade.relativeLineTo(headSize, 0.0);
+                                __cascade.relativeLineTo(-headSize, -headSize);
+                                __cascade.relativeLineTo(-headSize, headSize);
+                                __cascade.relativeLineTo(headSize, 0.0);
+                                return __cascade;
+                            }
+                        )
+                    )();
+                    context.canvas.drawPath(path, paint);
                 }
-                else
+                if (childParentData.offset.dx > 0.0)
                 {
-                    paint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = new Color(2425393296L);
-    return __cascade;
-}))();
-                    context.canvas.drawRect(offset & size, paint);
+                    double headSizeLocal = Math.Min(childParentData.offset.dx * 0.2, 10.0);
+                    (
+                        (Func<Path>)(
+                            () =>
+                            {
+                                var __cascade = path;
+                                __cascade.moveTo(offset.dx, offset.dy + (size.height / 2.0));
+                                __cascade.relativeLineTo(
+                                    childParentData.offset.dx - headSizeLocal,
+                                    0.0
+                                );
+                                __cascade.relativeLineTo(0.0, headSizeLocal);
+                                __cascade.relativeLineTo(headSizeLocal, -headSizeLocal);
+                                __cascade.relativeLineTo(-headSizeLocal, -headSizeLocal);
+                                __cascade.relativeLineTo(0.0, headSizeLocal);
+                                __cascade.moveTo(
+                                    offset.dx + size.width,
+                                    offset.dy + (size.height / 2.0)
+                                );
+                                __cascade.relativeLineTo(
+                                    -childParentData.offset.dx + headSizeLocal,
+                                    0.0
+                                );
+                                __cascade.relativeLineTo(0.0, headSizeLocal);
+                                __cascade.relativeLineTo(-headSizeLocal, -headSizeLocal);
+                                __cascade.relativeLineTo(headSizeLocal, -headSizeLocal);
+                                __cascade.relativeLineTo(0.0, headSizeLocal);
+                                return __cascade;
+                            }
+                        )
+                    )();
+                    context.canvas.drawPath(path, paint);
                 }
-                return true;
-            });
+            }
+            else
+            {
+                paint = (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = new Color(2425393296L);
+                            return __cascade;
+                        }
+                    )
+                )();
+                context.canvas.drawRect(offset & size, paint);
+            }
+            return true;
+        });
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -603,20 +743,30 @@ public class RenderPositionedBox : RenderAligningShiftedBox
             return null;
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
-        bool shrinkWrapWidth = (_widthFactor is not null) || (constraints.maxWidth == double.PositiveInfinity);
-        bool shrinkWrapHeight = (_heightFactor is not null) || (constraints.maxHeight == double.PositiveInfinity);
-        Size size = constraints.constrain(new Size(shrinkWrapWidth ? (childSize.width * (_widthFactor ?? 1.0)) : double.PositiveInfinity, shrinkWrapHeight ? (childSize.height * (_heightFactor ?? 1.0)) : double.PositiveInfinity));
+        bool shrinkWrapWidth =
+            (_widthFactor is not null) || (constraints.maxWidth == double.PositiveInfinity);
+        bool shrinkWrapHeight =
+            (_heightFactor is not null) || (constraints.maxHeight == double.PositiveInfinity);
+        Size size = constraints.constrain(
+            new Size(
+                shrinkWrapWidth
+                    ? (childSize.width * (_widthFactor ?? 1.0))
+                    : double.PositiveInfinity,
+                shrinkWrapHeight
+                    ? (childSize.height * (_heightFactor ?? 1.0))
+                    : double.PositiveInfinity
+            )
+        );
         Offset childOffset = resolvedAlignment.alongOffset(size - childSize);
         return DartRuntimePrimitives.RequireValue(result) + childOffset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public enum OverflowBoxFit
 {
     max,
-    deferToChild
+    deferToChild,
 }
 
 public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
@@ -627,7 +777,21 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
     internal virtual double? _maxHeight { get; set; } = default;
     internal virtual OverflowBoxFit _fit { get; set; } = default!;
 
-    public RenderConstrainedOverflowBox(RenderBox? child = null, double? minWidth = null, double? maxWidth = null, double? minHeight = null, double? maxHeight = null, OverflowBoxFit fit = OverflowBoxFit.max, AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderConstrainedOverflowBox(
+        RenderBox? child = null,
+        double? minWidth = null,
+        double? maxWidth = null,
+        double? minHeight = null,
+        double? maxHeight = null,
+        OverflowBoxFit fit = OverflowBoxFit.max,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null
+    )
+        : base(
+            child: child,
+            alignment: alignment ?? Alignment.center,
+            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+        )
     {
         _minWidth = minWidth;
         _maxWidth = maxWidth;
@@ -706,16 +870,34 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
             markNeedsLayoutForSizedByParentChange();
         }
     }
+
     internal virtual BoxConstraints _getInnerConstraints(BoxConstraints constraints)
     {
-        return new BoxConstraints(minWidth: _minWidth ?? constraints.minWidth, maxWidth: _maxWidth ?? constraints.maxWidth, minHeight: _minHeight ?? constraints.minHeight, maxHeight: _maxHeight ?? constraints.maxHeight);
+        return new BoxConstraints(
+            minWidth: _minWidth ?? constraints.minWidth,
+            maxWidth: _maxWidth ?? constraints.maxWidth,
+            minHeight: _minHeight ?? constraints.minHeight,
+            maxHeight: _maxHeight ?? constraints.maxHeight
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool sizedByParent => fit switch { OverflowBoxFit.max => true, OverflowBoxFit.deferToChild => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    public override bool sizedByParent =>
+        fit switch
+        {
+            OverflowBoxFit.max => true,
+            OverflowBoxFit.deferToChild => false,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return fit switch { OverflowBoxFit.max => constraints.biggest, OverflowBoxFit.deferToChild => child?.getDryLayout(constraints) ?? constraints.smallest, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return fit switch
+        {
+            OverflowBoxFit.max => constraints.biggest,
+            OverflowBoxFit.deferToChild => child?.getDryLayout(constraints) ?? constraints.smallest,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -734,7 +916,8 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result) + resolvedAlignment.alongOffset(size - childSize).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -746,15 +929,15 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
             switch (fit)
             {
                 case OverflowBoxFit.max:
-                    {
-                        DartRuntimePrimitives.Assert(() => sizedByParent);
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() => sizedByParent);
+                    break;
+                }
                 case OverflowBoxFit.deferToChild:
-                    {
-                        size = constraints.constrain(child!.size);
-                        break;
-                    }
+                {
+                    size = constraints.constrain(child!.size);
+                    break;
+                }
             }
             alignChild();
         }
@@ -763,15 +946,15 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
             switch (fit)
             {
                 case OverflowBoxFit.max:
-                    {
-                        DartRuntimePrimitives.Assert(() => sizedByParent);
-                        break;
-                    }
+                {
+                    DartRuntimePrimitives.Assert(() => sizedByParent);
+                    break;
+                }
                 case OverflowBoxFit.deferToChild:
-                    {
-                        size = constraints.smallest;
-                        break;
-                    }
+                {
+                    size = constraints.smallest;
+                    break;
+                }
             }
         }
     }
@@ -779,28 +962,65 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("minWidth", minWidth, ifNull: "use parent minWidth constraint"));
-        properties.add(new DoubleProperty("maxWidth", maxWidth, ifNull: "use parent maxWidth constraint"));
-        properties.add(new DoubleProperty("minHeight", minHeight, ifNull: "use parent minHeight constraint"));
-        properties.add(new DoubleProperty("maxHeight", maxHeight, ifNull: "use parent maxHeight constraint"));
+        properties.add(
+            new DoubleProperty("minWidth", minWidth, ifNull: "use parent minWidth constraint")
+        );
+        properties.add(
+            new DoubleProperty("maxWidth", maxWidth, ifNull: "use parent maxWidth constraint")
+        );
+        properties.add(
+            new DoubleProperty("minHeight", minHeight, ifNull: "use parent minHeight constraint")
+        );
+        properties.add(
+            new DoubleProperty("maxHeight", maxHeight, ifNull: "use parent maxHeight constraint")
+        );
         properties.add(new EnumProperty<OverflowBoxFit>("fit", fit));
     }
-
 }
 
 public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOverflowIndicatorMixin
 {
-    internal virtual Func<BoxConstraints, BoxConstraints> _constraintsTransform { get; set; } = default!;
+    internal virtual Func<BoxConstraints, BoxConstraints> _constraintsTransform { get; set; } =
+        default!;
     internal virtual Clip _clipBehavior { get; set; } = default!;
     internal virtual Rect _overflowContainerRect { get; set; } = Rect.zero;
     internal virtual Rect _overflowChildRect { get; set; } = Rect.zero;
     internal virtual bool _isOverflowing { get; set; } = false;
     internal virtual BoxConstraints? _childConstraints { get; set; } = default;
-    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
-    public virtual List<TextPainter> _indicatorLabel { get; set; } = new List<TextPainter>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)Enum.GetValues<_OverflowSide__debug_overflow_indicator>().ToList().Count))), (i) => new TextPainter(textDirection: TextDirection.ltr)));
+    internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } =
+        new LayerHandle<ClipRectLayer>();
+    public virtual List<TextPainter> _indicatorLabel { get; set; } =
+        new List<TextPainter>(
+            Enumerable.Select(
+                Enumerable.Range(
+                    0,
+                    checked(
+                        (int)
+                            checked(
+                                (long)
+                                    Enum.GetValues<_OverflowSide__debug_overflow_indicator>()
+                                        .ToList()
+                                        .Count
+                            )
+                    )
+                ),
+                (i) => new TextPainter(textDirection: TextDirection.ltr)
+            )
+        );
     public virtual bool _overflowReportNeeded { get; set; } = true;
 
-    public RenderConstraintsTransformBox(AlignmentGeometry alignment, TextDirection? textDirection, Func<BoxConstraints, BoxConstraints> constraintsTransform, RenderBox? child = null, Clip clipBehavior = Clip.none) : base(alignment: alignment, textDirection: DartRuntimePrimitives.RequireValue(textDirection), child: child)
+    public RenderConstraintsTransformBox(
+        AlignmentGeometry alignment,
+        TextDirection? textDirection,
+        Func<BoxConstraints, BoxConstraints> constraintsTransform,
+        RenderBox? child = null,
+        Clip clipBehavior = Clip.none
+    )
+        : base(
+            alignment: alignment,
+            textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+            child: child
+        )
     {
         _constraintsTransform = constraintsTransform;
         _clipBehavior = clipBehavior;
@@ -817,7 +1037,8 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
                 return;
             }
             _constraintsTransform = __value;
-            bool needsLayout = (_childConstraints is null) || (!Equals(_childConstraints, __value(constraints)));
+            bool needsLayout =
+                (_childConstraints is null) || (!Equals(_childConstraints, __value(constraints)));
             if (needsLayout)
             {
                 markNeedsLayout();
@@ -838,34 +1059,47 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             }
         }
     }
+
     public override double computeMinIntrinsicHeight(double width)
     {
-        return base.computeMinIntrinsicHeight(constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth);
+        return base.computeMinIntrinsicHeight(
+            constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return base.computeMaxIntrinsicHeight(constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth);
+        return base.computeMaxIntrinsicHeight(
+            constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return base.computeMinIntrinsicWidth(constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight);
+        return base.computeMinIntrinsicWidth(
+            constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return base.computeMaxIntrinsicWidth(constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight);
+        return base.computeMaxIntrinsicWidth(
+            constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         Size? childSize = child?.getDryLayout(constraintsTransform(constraints));
-        return (childSize is null) ? constraints.smallest : constraints.constrain(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childSize)));
+        return (childSize is null)
+            ? constraints.smallest
+            : constraints.constrain(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childSize))
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -884,7 +1118,8 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = constraints.constrain(childSize);
-        return DartRuntimePrimitives.RequireValue(result) + resolvedAlignment.alongOffset(size - childSize).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -910,7 +1145,9 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             _overflowContainerRect = Rect.zero;
             _overflowChildRect = Rect.zero;
         }
-        _isOverflowing = RelativeRect.CreateFromRect(_overflowContainerRect, _overflowChildRect).hasInsets;
+        _isOverflowing = RelativeRect
+            .CreateFromRect(_overflowContainerRect, _overflowChildRect)
+            .hasInsets;
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -924,29 +1161,41 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             base.paint(context, offset);
             return;
         }
-        _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, base.paint, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
+        _clipRectLayer.layer = context.pushClipRect(
+            needsCompositing,
+            offset,
+            Offset.zero & size,
+            base.paint,
+            clipBehavior: clipBehavior,
+            oldLayer: _clipRectLayer.layer
+        );
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (size.isEmpty)
             {
-                if (size.isEmpty)
-                {
-                    return true;
-                }
-                switch (clipBehavior)
-                {
-                    case Clip.none:
-                        {
-                            paintOverflowIndicator(context, offset, _overflowContainerRect, _overflowChildRect);
-                            break;
-                        }
-                    case Clip.hardEdge:
-                    case Clip.antiAlias:
-                    case Clip.antiAliasWithSaveLayer:
-                        {
-                            break;
-                        }
-                }
                 return true;
-            });
+            }
+            switch (clipBehavior)
+            {
+                case Clip.none:
+                {
+                    paintOverflowIndicator(
+                        context,
+                        offset,
+                        _overflowContainerRect,
+                        _overflowChildRect
+                    );
+                    break;
+                }
+                case Clip.hardEdge:
+                case Clip.antiAlias:
+                case Clip.antiAliasWithSaveLayer:
+                {
+                    break;
+                }
+            }
+            return true;
+        });
     }
 
     public override void dispose()
@@ -964,15 +1213,15 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         switch (clipBehavior)
         {
             case Clip.none:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case Clip.hardEdge:
             case Clip.antiAlias:
             case Clip.antiAliasWithSaveLayer:
-                {
-                    return _isOverflowing ? (Offset.zero & size) : null;
-                }
+            {
+                return _isOverflowing ? (Offset.zero & size) : null;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -994,32 +1243,106 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     public virtual string _formatPixels(double value)
     {
         DartRuntimePrimitives.Assert(() => value > 0.0);
-        return value switch { > 10.0 => value.toStringAsFixed(0L), > 1.0 => value.toStringAsFixed(1L), _ => value.toStringAsPrecision(3L) };
+        return value switch
+        {
+            > 10.0 => value.toStringAsFixed(0L),
+            > 1.0 => value.toStringAsFixed(1L),
+            _ => value.toStringAsPrecision(3L),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<_OverflowRegionData__debug_overflow_indicator> _calculateOverflowRegions(RelativeRect overflow, Rect containerRect)
+    public virtual List<_OverflowRegionData__debug_overflow_indicator> _calculateOverflowRegions(
+        RelativeRect overflow,
+        Rect containerRect
+    )
     {
         var regions = new List<_OverflowRegionData__debug_overflow_indicator>();
         if (overflow.left > 0.0)
         {
-            var markerRect = Rect.fromLTWH(0.0, 0.0, containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction, containerRect.height);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRect, label: $"LEFT OVERFLOWED BY {_formatPixels(overflow.left)} PIXELS", labelOffset: markerRect.centerLeft + new Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.left));
+            var markerRect = Rect.fromLTWH(
+                0.0,
+                0.0,
+                containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction,
+                containerRect.height
+            );
+            regions.Add(
+                new _OverflowRegionData__debug_overflow_indicator(
+                    rect: markerRect,
+                    label: $"LEFT OVERFLOWED BY {_formatPixels(overflow.left)} PIXELS",
+                    labelOffset: markerRect.centerLeft
+                        + new Offset(
+                            DebugOverflowIndicatorMixin._indicatorFontSizePixels
+                                + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels,
+                            0.0
+                        ),
+                    rotation: Dart_mathLibrary.pi / 2.0,
+                    side: _OverflowSide__debug_overflow_indicator.left
+                )
+            );
         }
         if (overflow.right > 0.0)
         {
-            var markerRectLocal = Rect.fromLTWH(containerRect.width * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction), 0.0, containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction, containerRect.height);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectLocal, label: $"RIGHT OVERFLOWED BY {_formatPixels(overflow.right)} PIXELS", labelOffset: markerRectLocal.centerRight - new Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: -Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.right));
+            var markerRectLocal = Rect.fromLTWH(
+                containerRect.width * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction),
+                0.0,
+                containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction,
+                containerRect.height
+            );
+            regions.Add(
+                new _OverflowRegionData__debug_overflow_indicator(
+                    rect: markerRectLocal,
+                    label: $"RIGHT OVERFLOWED BY {_formatPixels(overflow.right)} PIXELS",
+                    labelOffset: markerRectLocal.centerRight
+                        - new Offset(
+                            DebugOverflowIndicatorMixin._indicatorFontSizePixels
+                                + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels,
+                            0.0
+                        ),
+                    rotation: -Dart_mathLibrary.pi / 2.0,
+                    side: _OverflowSide__debug_overflow_indicator.right
+                )
+            );
         }
         if (overflow.top > 0.0)
         {
-            var markerRectAlternate = Rect.fromLTWH(0.0, 0.0, containerRect.width, containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectAlternate, label: $"TOP OVERFLOWED BY {_formatPixels(overflow.top)} PIXELS", labelOffset: markerRectAlternate.topCenter + new Offset(0.0, DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.top));
+            var markerRectAlternate = Rect.fromLTWH(
+                0.0,
+                0.0,
+                containerRect.width,
+                containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction
+            );
+            regions.Add(
+                new _OverflowRegionData__debug_overflow_indicator(
+                    rect: markerRectAlternate,
+                    label: $"TOP OVERFLOWED BY {_formatPixels(overflow.top)} PIXELS",
+                    labelOffset: markerRectAlternate.topCenter
+                        + new Offset(0.0, DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels),
+                    side: _OverflowSide__debug_overflow_indicator.top
+                )
+            );
         }
         if (overflow.bottom > 0.0)
         {
-            var markerRectNested = Rect.fromLTWH(0.0, containerRect.height * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction), containerRect.width, containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectNested, label: $"BOTTOM OVERFLOWED BY {_formatPixels(overflow.bottom)} PIXELS", labelOffset: markerRectNested.bottomCenter - new Offset(0.0, DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.bottom));
+            var markerRectNested = Rect.fromLTWH(
+                0.0,
+                containerRect.height * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction),
+                containerRect.width,
+                containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction
+            );
+            regions.Add(
+                new _OverflowRegionData__debug_overflow_indicator(
+                    rect: markerRectNested,
+                    label: $"BOTTOM OVERFLOWED BY {_formatPixels(overflow.bottom)} PIXELS",
+                    labelOffset: markerRectNested.bottomCenter
+                        - new Offset(
+                            0.0,
+                            DebugOverflowIndicatorMixin._indicatorFontSizePixels
+                                + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels
+                        ),
+                    side: _OverflowSide__debug_overflow_indicator.bottom
+                )
+            );
         }
         return regions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1030,8 +1353,23 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         overflowHints ??= new List<DiagnosticsNode>();
         if (checked((long)overflowHints.Count) == 0)
         {
-            overflowHints.Add(new ErrorDescription($"The edge of the {GetType()} that is " + "overflowing has been marked in the rendering with a yellow and black " + "striped pattern. This is usually caused by the contents being too big " + $"for the {GetType()}."));
-            overflowHints.Add(new ErrorHint("This is considered an error condition because it indicates that there " + "is content that cannot be seen. If the content is legitimately bigger " + "than the available space, consider clipping it with a ClipRect widget " + $"before putting it in the {GetType()}, or using a scrollable " + "container, like a ListView."));
+            overflowHints.Add(
+                new ErrorDescription(
+                    $"The edge of the {GetType()} that is "
+                        + "overflowing has been marked in the rendering with a yellow and black "
+                        + "striped pattern. This is usually caused by the contents being too big "
+                        + $"for the {GetType()}."
+                )
+            );
+            overflowHints.Add(
+                new ErrorHint(
+                    "This is considered an error condition because it indicates that there "
+                        + "is content that cannot be seen. If the content is legitimately bigger "
+                        + "than the available space, consider clipping it with a ClipRect widget "
+                        + $"before putting it in the {GetType()}, or using a scrollable "
+                        + "container, like a ListView."
+                )
+            );
         }
         var overflows = new List<string>();
         var overflowText = "";
@@ -1039,50 +1377,98 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         switch (checked((long)overflows.Count))
         {
             case 1L:
-                {
-                    overflowText = overflows.First();
-                    break;
-                }
+            {
+                overflowText = overflows.First();
+                break;
+            }
             case 2L:
-                {
-                    overflowText = $"{overflows.First()} and {overflows.Last()}";
-                    break;
-                }
+            {
+                overflowText = $"{overflows.First()} and {overflows.Last()}";
+                break;
+            }
             default:
-                {
-                    overflows[(int)(checked(overflows.Count) - 1L)] = $"and {overflows[(int)(checked(overflows.Count) - 1L)]}";
-                    overflowText = string.Join(", ", overflows);
-                    break;
-                }
+            {
+                overflows[(int)(checked(overflows.Count) - 1L)] =
+                    $"and {overflows[(int)(checked(overflows.Count) - 1L)]}";
+                overflowText = string.Join(", ", overflows);
+                break;
+            }
         }
-        FlutterError.reportError(new FlutterErrorDetails(exception: new FlutterError($"A {GetType()} overflowed by {overflowText}."), library: "rendering library", context: new ErrorDescription("during layout"), informationCollector: () => new List<DiagnosticsNode> { describeForError($"The specific {GetType()} in question is"), new DiagnosticsNode(DartCoreExtensions.repeat("◢◤", checked(FlutterError.wrapWidth / 2L)), allowWrap: false) }));
+        FlutterError.reportError(
+            new FlutterErrorDetails(
+                exception: new FlutterError($"A {GetType()} overflowed by {overflowText}."),
+                library: "rendering library",
+                context: new ErrorDescription("during layout"),
+                informationCollector: () =>
+                    new List<DiagnosticsNode>
+                    {
+                        describeForError($"The specific {GetType()} in question is"),
+                        new DiagnosticsNode(
+                            DartCoreExtensions.repeat("◢◤", checked(FlutterError.wrapWidth / 2L)),
+                            allowWrap: false
+                        ),
+                    }
+            )
+        );
     }
 
-    public virtual void paintOverflowIndicator(PaintingContext context, Offset offset, Rect containerRect, Rect childRect, List<DiagnosticsNode>? overflowHints = null)
+    public virtual void paintOverflowIndicator(
+        PaintingContext context,
+        Offset offset,
+        Rect containerRect,
+        Rect childRect,
+        List<DiagnosticsNode>? overflowHints = null
+    )
     {
         var overflow = RelativeRect.CreateFromRect(containerRect, childRect);
-        if ((overflow.left <= 0.0) && (overflow.right <= 0.0) && (overflow.top <= 0.0) && (overflow.bottom <= 0.0))
+        if (
+            (overflow.left <= 0.0)
+            && (overflow.right <= 0.0)
+            && (overflow.top <= 0.0)
+            && (overflow.bottom <= 0.0)
+        )
         {
             return;
         }
-        List<_OverflowRegionData__debug_overflow_indicator> overflowRegions = _calculateOverflowRegions(overflow, containerRect);
+        List<_OverflowRegionData__debug_overflow_indicator> overflowRegions =
+            _calculateOverflowRegions(overflow, containerRect);
         foreach (var region in overflowRegions)
         {
-            context.canvas.drawRect(region.rect.shift(offset), DebugOverflowIndicatorMixin._indicatorPaint);
-            var textSpan = ((TextSpan?)(object?)_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text)!;
+            context.canvas.drawRect(
+                region.rect.shift(offset),
+                DebugOverflowIndicatorMixin._indicatorPaint
+            );
+            var textSpan = (
+                (TextSpan?)
+                    (object?)
+                        _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text
+            )!;
             if (textSpan?.text != region.label)
             {
-                _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text = new TextSpan(text: region.label, style: DebugOverflowIndicatorMixin._indicatorTextStyle);
+                _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text =
+                    new TextSpan(
+                        text: region.label,
+                        style: DebugOverflowIndicatorMixin._indicatorTextStyle
+                    );
                 _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].layout();
             }
             Offset labelOffsetLocal = region.labelOffset + offset;
-            var centerOffset = new Offset(-_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].width / 2.0, 0.0);
-            Rect textBackgroundRect = centerOffset & _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].size;
+            var centerOffset = new Offset(
+                -_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].width / 2.0,
+                0.0
+            );
+            Rect textBackgroundRect =
+                centerOffset
+                & _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].size;
             context.canvas.save();
             context.canvas.translate(labelOffsetLocal.dx, labelOffsetLocal.dy);
             context.canvas.rotate(region.rotation);
-            context.canvas.drawRect(textBackgroundRect, DebugOverflowIndicatorMixin._labelBackgroundPaint);
-            _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].paint(context.canvas, centerOffset);
+            context.canvas.drawRect(
+                textBackgroundRect,
+                DebugOverflowIndicatorMixin._labelBackgroundPaint
+            );
+            _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)]
+                .paint(context.canvas, centerOffset);
             context.canvas.restore();
         }
         if (_overflowReportNeeded)
@@ -1096,19 +1482,28 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     {
         base.reassemble();
         DartRuntimePrimitives.Assert(() =>
-            {
-                _overflowReportNeeded = true;
-                return true;
-            });
+        {
+            _overflowReportNeeded = true;
+            return true;
+        });
     }
-
 }
 
 public class RenderSizedOverflowBox : RenderAligningShiftedBox
 {
     internal virtual Size _requestedSize { get; set; } = default!;
 
-    public RenderSizedOverflowBox(RenderBox? child = null, Size requestedSize = default!, AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderSizedOverflowBox(
+        RenderBox? child = null,
+        Size requestedSize = default!,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null
+    )
+        : base(
+            child: child,
+            alignment: alignment ?? Alignment.center,
+            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+        )
     {
         _requestedSize = requestedSize;
     }
@@ -1127,6 +1522,7 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         return _requestedSize.width;
@@ -1182,7 +1578,8 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(constraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result) + resolvedAlignment.alongOffset(size - childSize).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1201,7 +1598,6 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
             alignChild();
         }
     }
-
 }
 
 public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
@@ -1209,7 +1605,18 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
     internal virtual double? _widthFactor { get; set; } = default;
     internal virtual double? _heightFactor { get; set; } = default;
 
-    public RenderFractionallySizedOverflowBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderFractionallySizedOverflowBox(
+        RenderBox? child = null,
+        double? widthFactor = null,
+        double? heightFactor = null,
+        AlignmentGeometry alignment = default!,
+        TextDirection? textDirection = null
+    )
+        : base(
+            child: child,
+            alignment: alignment ?? Alignment.center,
+            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+        )
     {
         _widthFactor = widthFactor;
         _heightFactor = heightFactor;
@@ -1245,6 +1652,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
             markNeedsLayout();
         }
     }
+
     internal virtual BoxConstraints _getInnerConstraints(BoxConstraints constraints)
     {
         double minWidthLocal = constraints.minWidth;
@@ -1263,7 +1671,12 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
             minHeightLocal = height;
             maxHeightLocal = height;
         }
-        return new BoxConstraints(minWidth: minWidthLocal, maxWidth: maxWidthLocal, minHeight: minHeightLocal, maxHeight: maxHeightLocal);
+        return new BoxConstraints(
+            minWidth: minWidthLocal,
+            maxWidth: maxWidthLocal,
+            minHeight: minHeightLocal,
+            maxHeight: maxHeightLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1357,7 +1770,8 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result) + resolvedAlignment.alongOffset(size - childSize).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1381,7 +1795,6 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         properties.add(new DoubleProperty("widthFactor", _widthFactor, ifNull: "pass-through"));
         properties.add(new DoubleProperty("heightFactor", _heightFactor, ifNull: "pass-through"));
     }
-
 }
 
 public abstract class SingleChildLayoutDelegate
@@ -1394,8 +1807,11 @@ public abstract class SingleChildLayoutDelegate
     }
 
     public virtual Size getSize(BoxConstraints constraints) => constraints.biggest;
+
     public virtual BoxConstraints getConstraintsForChild(BoxConstraints constraints) => constraints;
+
     public virtual Offset getPositionForChild(Size size, Size childSize) => Offset.zero;
+
     public abstract bool shouldRelayout(SingleChildLayoutDelegate oldDelegate);
 }
 
@@ -1403,7 +1819,11 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
 {
     internal virtual SingleChildLayoutDelegate _delegate { get; set; } = default!;
 
-    public RenderCustomSingleChildLayoutBox(RenderBox? child = null, SingleChildLayoutDelegate @delegate = default!) : base(child)
+    public RenderCustomSingleChildLayoutBox(
+        RenderBox? child = null,
+        SingleChildLayoutDelegate @delegate = default!
+    )
+        : base(child)
     {
         _delegate = @delegate;
     }
@@ -1419,7 +1839,14 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
                 return;
             }
             SingleChildLayoutDelegate oldDelegate = _delegate;
-            if ((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRelayout(oldDelegate))
+            if (
+                (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newDelegate),
+                        DartRuntimePrimitives.RuntimeType(oldDelegate)
+                    )
+                ) || newDelegate.shouldRelayout(oldDelegate)
+            )
             {
                 markNeedsLayout();
             }
@@ -1431,6 +1858,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -1512,7 +1940,15 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
         {
             return null;
         }
-        return DartRuntimePrimitives.RequireValue(result) + @delegate.getPositionForChild(_getSize(constraints), childConstraints.isTight ? childConstraints.smallest : childLocal.getDryLayout(childConstraints)).dy;
+        return DartRuntimePrimitives.RequireValue(result)
+            + @delegate
+                .getPositionForChild(
+                    _getSize(constraints),
+                    childConstraints.isTight
+                        ? childConstraints.smallest
+                        : childLocal.getDryLayout(childConstraints)
+                )
+                .dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1522,13 +1958,17 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
         if (child is not null)
         {
             BoxConstraints childConstraints = @delegate.getConstraintsForChild(constraints);
-            DartRuntimePrimitives.Assert(() => childConstraints.debugAssertIsValid(isAppliedConstraint: true));
+            DartRuntimePrimitives.Assert(() =>
+                childConstraints.debugAssertIsValid(isAppliedConstraint: true)
+            );
             child!.layout(childConstraints, parentUsesSize: !childConstraints.isTight);
             var childParentData = ((BoxParentData?)(object?)child!.parentData!)!;
-            childParentData.offset = @delegate.getPositionForChild(size, childConstraints.isTight ? childConstraints.smallest : child!.size);
+            childParentData.offset = @delegate.getPositionForChild(
+                size,
+                childConstraints.isTight ? childConstraints.smallest : child!.size
+            );
         }
     }
-
 }
 
 public class RenderBaseline : RenderShiftedBox
@@ -1536,7 +1976,12 @@ public class RenderBaseline : RenderShiftedBox
     internal virtual double _baseline { get; set; } = default!;
     internal virtual TextBaseline _baselineType { get; set; } = default!;
 
-    public RenderBaseline(RenderBox? child = null, double baseline = default!, TextBaseline baselineType = default!) : base(child)
+    public RenderBaseline(
+        RenderBox? child = null,
+        double baseline = default!,
+        TextBaseline baselineType = default!
+    )
+        : base(child)
     {
         _baseline = baseline;
         _baselineType = baselineType;
@@ -1570,7 +2015,12 @@ public class RenderBaseline : RenderShiftedBox
             markNeedsLayout();
         }
     }
-    internal virtual (Size size, double top) _computeSizes(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
+
+    internal virtual (Size size, double top) _computeSizes(
+        BoxConstraints constraints,
+        Func<RenderBox, BoxConstraints, Size> layoutChild,
+        Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline
+    )
     {
         RenderBox? childLocal = child;
         if (childLocal is null)
@@ -1579,15 +2029,23 @@ public class RenderBaseline : RenderShiftedBox
         }
         BoxConstraints childConstraints = constraints.loosen();
         Size childSize = layoutChild(childLocal, childConstraints);
-        double childBaseline = getBaseline(childLocal, childConstraints, baselineType) ?? childSize.height;
+        double childBaseline =
+            getBaseline(childLocal, childConstraints, baselineType) ?? childSize.height;
         double topLocal = baseline - childBaseline;
-        return (size: constraints.constrain(new Size(childSize.width, topLocal + childSize.height)), top: topLocal);
+        return (
+            size: constraints.constrain(new Size(childSize.width, topLocal + childSize.height)),
+            top: topLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSizes(constraints, ChildLayoutHelper.dryLayoutChild, ChildLayoutHelper.getDryBaseline).size;
+        return _computeSizes(
+            constraints,
+            ChildLayoutHelper.dryLayoutChild,
+            ChildLayoutHelper.getDryBaseline
+        ).size;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1600,13 +2058,19 @@ public class RenderBaseline : RenderShiftedBox
         {
             return null;
         }
-        return this.baseline + DartRuntimePrimitives.RequireValue(result1) - DartRuntimePrimitives.RequireValue(result2);
+        return this.baseline
+            + DartRuntimePrimitives.RequireValue(result1)
+            - DartRuntimePrimitives.RequireValue(result2);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        var (sizeLocal, top) = _computeSizes(constraints, ChildLayoutHelper.layoutChild, ChildLayoutHelper.getBaseline);
+        var (sizeLocal, top) = _computeSizes(
+            constraints,
+            ChildLayoutHelper.layoutChild,
+            ChildLayoutHelper.getBaseline
+        );
         size = sizeLocal;
         ((BoxParentData?)(object?)child?.parentData)!?.offset = new Offset(0.0, top);
     }
@@ -1617,6 +2081,4 @@ public class RenderBaseline : RenderShiftedBox
         properties.add(new DoubleProperty("baseline", baseline));
         properties.add(new EnumProperty<TextBaseline>("baselineType", baselineType));
     }
-
 }
-

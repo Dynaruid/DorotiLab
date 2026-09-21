@@ -4,17 +4,9 @@ namespace Doroti.Framework.Gestures;
 
 public abstract class Drag
 {
-    public virtual void update(DragUpdateDetails details)
-    {
-    }
+    public virtual void update(DragUpdateDetails details) { }
 
-    public virtual void end(DragEndDetails details)
-    {
-    }
+    public virtual void end(DragEndDetails details) { }
 
-    public virtual void cancel()
-    {
-    }
-
+    public virtual void cancel() { }
 }
-

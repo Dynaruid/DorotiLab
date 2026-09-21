@@ -9,7 +9,7 @@ namespace Doroti.Framework.Material;
 internal enum _CheckboxType__checkbox_list_tile
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public class CheckboxListTile : StatelessWidget
@@ -54,9 +54,53 @@ public class CheckboxListTile : StatelessWidget
     public virtual bool internalAddSemanticForOnTap { get; private set; } = default!;
     public virtual double checkboxScaleFactor { get; private set; } = default!;
     public virtual string? checkboxSemanticLabel { get; private set; }
-    internal virtual _CheckboxType__checkbox_list_tile _checkboxType { get; private set; } = default!;
+    internal virtual _CheckboxType__checkbox_list_tile _checkboxType { get; private set; } =
+        default!;
 
-    public CheckboxListTile(Key? key = null, bool? value = default!, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, bool autofocus = false, ShapeBorder? shape = null, BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, EdgeInsetsGeometry? contentPadding = null, bool tristate = false, OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false) : base(key: key)
+    public CheckboxListTile(
+        Key? key = null,
+        bool? value = default!,
+        Action<bool?>? onChanged = default!,
+        MouseCursor? mouseCursor = null,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? checkColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        bool autofocus = false,
+        ShapeBorder? shape = null,
+        BorderSide? side = null,
+        bool isError = false,
+        bool? enabled = null,
+        Color? tileColor = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        EdgeInsetsGeometry? contentPadding = null,
+        bool tristate = false,
+        OutlinedBorder? checkboxShape = null,
+        Color? selectedTileColor = null,
+        Action<bool>? onFocusChange = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        string? checkboxSemanticLabel = null,
+        double checkboxScaleFactor = 1.0,
+        ListTileTitleAlignment? titleAlignment = null,
+        bool internalAddSemanticForOnTap = false
+    )
+        : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -103,9 +147,93 @@ public class CheckboxListTile : StatelessWidget
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static CheckboxListTile CreateAdaptive(Key? key = null, bool? value = default!, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, bool autofocus = false, ShapeBorder? shape = null, BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, EdgeInsetsGeometry? contentPadding = null, bool tristate = false, OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false)
+    public static CheckboxListTile CreateAdaptive(
+        Key? key = null,
+        bool? value = default!,
+        Action<bool?>? onChanged = default!,
+        MouseCursor? mouseCursor = null,
+        Color? activeColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? checkColor = null,
+        Color? hoverColor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        VisualDensity? visualDensity = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        bool autofocus = false,
+        ShapeBorder? shape = null,
+        BorderSide? side = null,
+        bool isError = false,
+        bool? enabled = null,
+        Color? tileColor = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        EdgeInsetsGeometry? contentPadding = null,
+        bool tristate = false,
+        OutlinedBorder? checkboxShape = null,
+        Color? selectedTileColor = null,
+        Action<bool>? onFocusChange = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        string? checkboxSemanticLabel = null,
+        double checkboxScaleFactor = 1.0,
+        ListTileTitleAlignment? titleAlignment = null,
+        bool internalAddSemanticForOnTap = false
+    )
     {
-        var __instance = new CheckboxListTile(key: key, value: value, onChanged: onChanged, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, autofocus: autofocus, shape: shape, side: side, isError: isError, enabled: enabled, tileColor: tileColor, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, secondary: secondary, selected: selected, controlAffinity: controlAffinity, contentPadding: contentPadding, tristate: tristate, checkboxShape: checkboxShape, selectedTileColor: selectedTileColor, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, checkboxSemanticLabel: checkboxSemanticLabel, checkboxScaleFactor: checkboxScaleFactor, titleAlignment: titleAlignment, internalAddSemanticForOnTap: internalAddSemanticForOnTap);
+        var __instance = new CheckboxListTile(
+            key: key,
+            value: value,
+            onChanged: onChanged,
+            mouseCursor: mouseCursor,
+            activeColor: activeColor,
+            fillColor: fillColor,
+            checkColor: checkColor,
+            hoverColor: hoverColor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            materialTapTargetSize: materialTapTargetSize,
+            visualDensity: visualDensity,
+            focusNode: focusNode,
+            statesController: statesController,
+            autofocus: autofocus,
+            shape: shape,
+            side: side,
+            isError: isError,
+            enabled: enabled,
+            tileColor: tileColor,
+            title: title,
+            subtitle: subtitle,
+            isThreeLine: isThreeLine,
+            dense: dense,
+            secondary: secondary,
+            selected: selected,
+            controlAffinity: controlAffinity,
+            contentPadding: contentPadding,
+            tristate: tristate,
+            checkboxShape: checkboxShape,
+            selectedTileColor: selectedTileColor,
+            onFocusChange: onFocusChange,
+            enableFeedback: enableFeedback,
+            horizontalTitleGap: horizontalTitleGap,
+            minVerticalPadding: minVerticalPadding,
+            minLeadingWidth: minLeadingWidth,
+            minTileHeight: minTileHeight,
+            checkboxSemanticLabel: checkboxSemanticLabel,
+            checkboxScaleFactor: checkboxScaleFactor,
+            titleAlignment: titleAlignment,
+            internalAddSemanticForOnTap: internalAddSemanticForOnTap
+        );
         __instance.value = value;
         __instance.onChanged = onChanged;
         __instance.mouseCursor = mouseCursor;
@@ -156,20 +284,20 @@ public class CheckboxListTile : StatelessWidget
         switch (value)
         {
             case false:
-                {
-                    onChanged!(true);
-                    break;
-                }
+            {
+                onChanged!(true);
+                break;
+            }
             case true:
-                {
-                    onChanged!(tristate ? null : false);
-                    break;
-                }
+            {
+                onChanged!(tristate ? null : false);
+                break;
+            }
             case null:
-                {
-                    onChanged!(false);
-                    break;
-                }
+            {
+                onChanged!(false);
+                break;
+            }
         }
     }
 
@@ -179,29 +307,134 @@ public class CheckboxListTile : StatelessWidget
         switch (_checkboxType)
         {
             case _CheckboxType__checkbox_list_tile.material:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: new Checkbox(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: new Checkbox(
+                            value: value,
+                            onChanged: (enabled ?? true) ? onChanged : null,
+                            mouseCursor: mouseCursor,
+                            activeColor: activeColor,
+                            fillColor: fillColor,
+                            checkColor: checkColor,
+                            hoverColor: hoverColor,
+                            overlayColor: overlayColor,
+                            splashRadius: splashRadius,
+                            materialTapTargetSize: materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            autofocus: autofocus,
+                            tristate: tristate,
+                            shape: checkboxShape,
+                            side: side,
+                            isError: isError,
+                            semanticLabel: checkboxSemanticLabel
+                        )
+                    )
+                );
+                break;
+            }
             case _CheckboxType__checkbox_list_tile.adaptive:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: Checkbox.CreateAdaptive(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: Checkbox.CreateAdaptive(
+                            value: value,
+                            onChanged: (enabled ?? true) ? onChanged : null,
+                            mouseCursor: mouseCursor,
+                            activeColor: activeColor,
+                            fillColor: fillColor,
+                            checkColor: checkColor,
+                            hoverColor: hoverColor,
+                            overlayColor: overlayColor,
+                            splashRadius: splashRadius,
+                            materialTapTargetSize: materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            autofocus: autofocus,
+                            tristate: tristate,
+                            shape: checkboxShape,
+                            side: side,
+                            isError: isError,
+                            semanticLabel: checkboxSemanticLabel
+                        )
+                    )
+                );
+                break;
+            }
         }
         if (checkboxScaleFactor != 1.0)
         {
-            control = DartRuntimePrimitives.ConvertValue<Widget>(Transform.CreateScale(scale: checkboxScaleFactor, child: control));
+            control = DartRuntimePrimitives.ConvertValue<Widget>(
+                Transform.CreateScale(scale: checkboxScaleFactor, child: control)
+            );
         }
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
-        ListTileControlAffinity effectiveControlAffinity = (controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
-        var (leadingLocal, trailingLocal) = effectiveControlAffinity switch { ListTileControlAffinity.leading => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, secondary)), ListTileControlAffinity.trailing => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), ListTileControlAffinity.platform => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        ListTileControlAffinity effectiveControlAffinity =
+            (controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
+        var (leadingLocal, trailingLocal) = effectiveControlAffinity switch
+        {
+            ListTileControlAffinity.leading => DartRuntimePrimitives.ConvertValue<(
+                Widget?,
+                Widget?
+            )>((control, secondary)),
+            ListTileControlAffinity.trailing => DartRuntimePrimitives.ConvertValue<(
+                Widget?,
+                Widget?
+            )>((secondary, control)),
+            ListTileControlAffinity.platform => DartRuntimePrimitives.ConvertValue<(
+                Widget?,
+                Widget?
+            )>((secondary, control)),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         ThemeData theme = Theme.of(context);
         CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection21344 = new HashSet<WidgetState>(); if (selected) { __collection21344.Add(WidgetState.selected); } return __collection21344; }))();
-        Color effectiveActiveColor = (activeColor ?? (checkboxTheme.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
-        return new MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: title, subtitle: subtitle, trailing: trailingLocal, isThreeLine: isThreeLine, dense: dense, enabled: enabled ?? (onChanged is not null), onTap: (onChanged is not null) ? _handleValueChange : null, selected: selected, autofocus: autofocus, contentPadding: contentPadding, shape: shape, selectedTileColor: selectedTileColor, tileColor: tileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, titleAlignment: titleAlignment, internalAddSemanticForOnTap: internalAddSemanticForOnTap));
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection21344 = new HashSet<WidgetState>();
+                    if (selected)
+                    {
+                        __collection21344.Add(WidgetState.selected);
+                    }
+                    return __collection21344;
+                }
+            )
+        )();
+        Color effectiveActiveColor =
+            (activeColor ?? (checkboxTheme.fillColor?.resolve(states)))
+            ?? theme.colorScheme.secondary;
+        return new MergeSemantics(
+            child: new ListTile(
+                selectedColor: effectiveActiveColor,
+                leading: leadingLocal,
+                title: title,
+                subtitle: subtitle,
+                trailing: trailingLocal,
+                isThreeLine: isThreeLine,
+                dense: dense,
+                enabled: enabled ?? (onChanged is not null),
+                onTap: (onChanged is not null) ? _handleValueChange : null,
+                selected: selected,
+                autofocus: autofocus,
+                contentPadding: contentPadding,
+                shape: shape,
+                selectedTileColor: selectedTileColor,
+                tileColor: tileColor,
+                visualDensity: visualDensity,
+                focusNode: focusNode,
+                statesController: statesController,
+                onFocusChange: onFocusChange,
+                enableFeedback: enableFeedback,
+                horizontalTitleGap: horizontalTitleGap,
+                minVerticalPadding: minVerticalPadding,
+                minLeadingWidth: minLeadingWidth,
+                minTileHeight: minTileHeight,
+                titleAlignment: titleAlignment,
+                internalAddSemanticForOnTap: internalAddSemanticForOnTap
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

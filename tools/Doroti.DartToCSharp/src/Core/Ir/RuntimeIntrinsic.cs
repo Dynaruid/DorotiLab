@@ -27,7 +27,8 @@ internal sealed record RuntimeIntrinsicBinding(
     RuntimeIntrinsic Intrinsic,
     SymbolId Member,
     SymbolId? ReceiverType = null,
-    int? TypeArgumentCount = null);
+    int? TypeArgumentCount = null
+);
 
 internal static class RuntimeIntrinsicRegistry
 {
@@ -39,25 +40,55 @@ internal static class RuntimeIntrinsicRegistry
         new(RuntimeIntrinsic.EnumIndex, SymbolId.Parse("dart:core#Enum.index")),
         new(RuntimeIntrinsic.EnumName, SymbolId.Parse("dart:core#Enum.name")),
         new(RuntimeIntrinsic.ScheduleMicrotask, SymbolId.Parse("dart:async#scheduleMicrotask")),
-        new(RuntimeIntrinsic.StringLength, SymbolId.Parse("dart:core#String.length"), SymbolId.Parse("dart:core#String")),
-        new(RuntimeIntrinsic.StringCodeUnitAt, SymbolId.Parse("dart:core#String.codeUnitAt"), SymbolId.Parse("dart:core#String")),
-        new(RuntimeIntrinsic.CollectionLength, SymbolId.Parse("dart:core#Iterable.length"), SymbolId.Parse("dart:core#Iterable"), 1),
-        new(RuntimeIntrinsic.CollectionIsEmpty, SymbolId.Parse("dart:core#Iterable.isEmpty"), SymbolId.Parse("dart:core#Iterable"), 1),
-        new(RuntimeIntrinsic.CollectionIsNotEmpty, SymbolId.Parse("dart:core#Iterable.isNotEmpty"), SymbolId.Parse("dart:core#Iterable"), 1),
+        new(
+            RuntimeIntrinsic.StringLength,
+            SymbolId.Parse("dart:core#String.length"),
+            SymbolId.Parse("dart:core#String")
+        ),
+        new(
+            RuntimeIntrinsic.StringCodeUnitAt,
+            SymbolId.Parse("dart:core#String.codeUnitAt"),
+            SymbolId.Parse("dart:core#String")
+        ),
+        new(
+            RuntimeIntrinsic.CollectionLength,
+            SymbolId.Parse("dart:core#Iterable.length"),
+            SymbolId.Parse("dart:core#Iterable"),
+            1
+        ),
+        new(
+            RuntimeIntrinsic.CollectionIsEmpty,
+            SymbolId.Parse("dart:core#Iterable.isEmpty"),
+            SymbolId.Parse("dart:core#Iterable"),
+            1
+        ),
+        new(
+            RuntimeIntrinsic.CollectionIsNotEmpty,
+            SymbolId.Parse("dart:core#Iterable.isNotEmpty"),
+            SymbolId.Parse("dart:core#Iterable"),
+            1
+        ),
     ];
 
     public static RuntimeIntrinsicBinding? Resolve(SymbolId member, DartType? receiverType)
     {
         return Bindings.FirstOrDefault(binding =>
-            binding.Member == member &&
-            ReceiverMatches(binding, receiverType));
+            binding.Member == member && ReceiverMatches(binding, receiverType)
+        );
     }
 
     private static bool ReceiverMatches(RuntimeIntrinsicBinding binding, DartType? receiverType)
     {
-        if (binding.ReceiverType is null) return true;
-        return receiverType is DartInterfaceType interfaceType &&
-            interfaceType.Symbol == binding.ReceiverType.Value &&
-            (binding.TypeArgumentCount is null || interfaceType.TypeArguments.Length == binding.TypeArgumentCount.Value);
+        if (binding.ReceiverType is null)
+        {
+            return true;
+        }
+
+        return receiverType is DartInterfaceType interfaceType
+            && interfaceType.Symbol == binding.ReceiverType.Value
+            && (
+                binding.TypeArgumentCount is null
+                || interfaceType.TypeArguments.Length == binding.TypeArgumentCount.Value
+            );
     }
 }

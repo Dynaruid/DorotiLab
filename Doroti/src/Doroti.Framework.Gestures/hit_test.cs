@@ -10,6 +10,7 @@ public interface HitTestable
     public void hitTest(HitTestResult result, Offset position);
     public void hitTestInView(HitTestResult result, Offset position, long viewId);
 }
+
 public interface HitTestDispatcher
 {
     public void dispatchEvent(PointerEvent @event, HitTestResult result);
@@ -20,11 +21,10 @@ public interface HitTestTarget
     public void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry);
 }
 
-public abstract class NativeHitTestTarget
-{
-}
+public abstract class NativeHitTestTarget { }
 
-public class HitTestEntry<T> where T : HitTestTarget
+public class HitTestEntry<T>
+    where T : HitTestTarget
 {
     public virtual T target { get; private set; } = default!;
     internal virtual Matrix4? _transform { get; set; } = default;
@@ -37,6 +37,7 @@ public class HitTestEntry<T> where T : HitTestTarget
     }
 
     public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({target})";
+
     public virtual Matrix4? transform => _transform;
 }
 
@@ -59,7 +60,6 @@ internal class _MatrixTransformPart__hit_test : _TransformPart__hit_test
         return matrix.multiplied(rhs);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _OffsetTransformPart__hit_test : _TransformPart__hit_test
@@ -73,22 +73,26 @@ internal class _OffsetTransformPart__hit_test : _TransformPart__hit_test
 
     public virtual Matrix4 multiply(Matrix4 rhs)
     {
-        return ((Func<Matrix4>)(() =>
-{
-    var __cascade = rhs.clone();
-    __cascade.leftTranslateByDouble(offset.dx, offset.dy, 0, 1);
-    return __cascade;
-}))();
+        return (
+            (Func<Matrix4>)(
+                () =>
+                {
+                    var __cascade = rhs.clone();
+                    __cascade.leftTranslateByDouble(offset.dx, offset.dy, 0, 1);
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class HitTestResult
 {
     internal virtual List<HitTestEntry<HitTestTarget>> _path { get; private set; } = default!;
     internal virtual List<Matrix4> _transforms { get; private set; } = default!;
-    internal virtual List<_TransformPart__hit_test> _localTransforms { get; private set; } = default!;
+    internal virtual List<_TransformPart__hit_test> _localTransforms { get; private set; } =
+        default!;
 
     public HitTestResult()
     {
@@ -115,6 +119,7 @@ public class HitTestResult
     }
 
     public virtual IEnumerable<HitTestEntry<HitTestTarget>> path => _path;
+
     internal virtual void _globalizeTransforms()
     {
         if (checked((long)_localTransforms.Count) == 0)
@@ -139,6 +144,7 @@ public class HitTestResult
             return _transforms.Last();
         }
     }
+
     public virtual void add(HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => entry._transform is null);
@@ -148,7 +154,16 @@ public class HitTestResult
 
     public virtual void pushTransform(Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => _debugVectorMoreOrLessEquals(transform.getRow(2L), new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))) && _debugVectorMoreOrLessEquals(transform.getColumn(2L), new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))));
+        DartRuntimePrimitives.Assert(() =>
+            _debugVectorMoreOrLessEquals(
+                transform.getRow(2L),
+                new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))
+            )
+            && _debugVectorMoreOrLessEquals(
+                transform.getColumn(2L),
+                new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))
+            )
+        );
         _localTransforms.Add(new _MatrixTransformPart__hit_test(transform));
     }
 
@@ -170,21 +185,30 @@ public class HitTestResult
         DartRuntimePrimitives.Assert(() => checked((long)_transforms.Count) != 0);
     }
 
-    internal virtual bool _debugVectorMoreOrLessEquals(System.Numerics.Vector4 a, System.Numerics.Vector4 b, double epsilon = 1e-10)
+    internal virtual bool _debugVectorMoreOrLessEquals(
+        System.Numerics.Vector4 a,
+        System.Numerics.Vector4 b,
+        double epsilon = 1e-10
+    )
     {
         var result = true;
         DartRuntimePrimitives.Assert(() =>
-            {
-                System.Numerics.Vector4 difference = a - b;
-                result = new double[] { difference.X, difference.Y, difference.Z, difference.W }.All((component) => component.abs() < epsilon);
-                return true;
-            });
+        {
+            System.Numerics.Vector4 difference = a - b;
+            result = new double[] { difference.X, difference.Y, difference.Z, difference.W }.All(
+                (component) => component.abs() < epsilon
+            );
+            return true;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"HitTestResult({((checked((long)_path.Count) == 0) ? "<empty path>" : string.Join(", ", _path))})";
-    public virtual void add<T>(HitTestEntry<T> entry) where T : HitTestTarget
+    public override string ToString() =>
+        $"HitTestResult({((checked((long)_path.Count) == 0) ? "<empty path>" : string.Join(", ", _path))})";
+
+    public virtual void add<T>(HitTestEntry<T> entry)
+        where T : HitTestTarget
     {
         DartRuntimePrimitives.Assert(() => entry._transform is null);
         var compatibleEntry = new HitTestEntry<HitTestTarget>(entry.target)

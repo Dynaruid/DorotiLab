@@ -7,11 +7,16 @@ internal static class KeptAliveSliverVisibility
     // theater that owns its overlay render object.
     internal static bool IsHidden(RenderObject? renderObject)
     {
-        for (var current = renderObject; current is not null;)
+        for (var current = renderObject; current is not null; )
         {
-            if (current.parentData is KeepAliveParentDataMixin { keptAlive: true }) return true;
+            if (current.parentData is KeepAliveParentDataMixin { keptAlive: true })
+            {
+                return true;
+            }
+
             current = current is _RenderDeferredLayoutBox__overlay portal
-                ? portal._layoutSurrogate : current.parent;
+                ? portal._layoutSurrogate
+                : current.parent;
         }
         return false;
     }

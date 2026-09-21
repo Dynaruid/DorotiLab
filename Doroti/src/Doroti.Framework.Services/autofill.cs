@@ -73,24 +73,42 @@ public abstract class AutofillHints
     public const string transactionCurrency = "transactionCurrency";
     public const string url = "url";
     public const string username = "username";
-
 }
 
 public class AutofillConfiguration
 {
-    public static AutofillConfiguration disabled = new AutofillConfiguration(enabled: false, uniqueIdentifier: "", currentEditingValue: TextEditingValue.empty);
+    public static AutofillConfiguration disabled = new AutofillConfiguration(
+        enabled: false,
+        uniqueIdentifier: "",
+        currentEditingValue: TextEditingValue.empty
+    );
     public virtual bool enabled { get; private set; } = default!;
     public virtual string uniqueIdentifier { get; private set; } = default!;
     public virtual List<string> autofillHints { get; private set; } = default!;
     public virtual TextEditingValue currentEditingValue { get; private set; } = default!;
     public virtual string? hintText { get; private set; }
 
-    public AutofillConfiguration(string uniqueIdentifier, List<string> autofillHints, TextEditingValue currentEditingValue, string? hintText = null)
-        : this(enabled: true, uniqueIdentifier: uniqueIdentifier, autofillHints: autofillHints, currentEditingValue: currentEditingValue, hintText: hintText)
-    {
-    }
+    public AutofillConfiguration(
+        string uniqueIdentifier,
+        List<string> autofillHints,
+        TextEditingValue currentEditingValue,
+        string? hintText = null
+    )
+        : this(
+            enabled: true,
+            uniqueIdentifier: uniqueIdentifier,
+            autofillHints: autofillHints,
+            currentEditingValue: currentEditingValue,
+            hintText: hintText
+        ) { }
 
-    public AutofillConfiguration(bool enabled, string uniqueIdentifier, List<string> autofillHints = default!, string? hintText = null, TextEditingValue currentEditingValue = default!)
+    public AutofillConfiguration(
+        bool enabled,
+        string uniqueIdentifier,
+        List<string> autofillHints = default!,
+        string? hintText = null,
+        TextEditingValue currentEditingValue = default!
+    )
     {
         this.enabled = enabled;
         this.uniqueIdentifier = uniqueIdentifier;
@@ -101,14 +119,26 @@ public class AutofillConfiguration
 
     public virtual DartMap<string, object?>? toJson()
     {
-        return enabled ? new DartMap<string, object?> { ["uniqueIdentifier"] = uniqueIdentifier, ["hints"] = autofillHints, ["editingValue"] = currentEditingValue.toJSON(), ["hintText"] = hintText } : null;
+        return enabled
+            ? new DartMap<string, object?>
+            {
+                ["uniqueIdentifier"] = uniqueIdentifier,
+                ["hints"] = autofillHints,
+                ["editingValue"] = currentEditingValue.toJSON(),
+                ["hintText"] = hintText,
+            }
+            : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as AutofillConfiguration;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -117,20 +147,37 @@ public class AutofillConfiguration
         {
             return false;
         }
-        return (__other is AutofillConfiguration) && (__other.enabled == enabled) && (__other.uniqueIdentifier == uniqueIdentifier) && CollectionsLibrary.listEquals(__other.autofillHints, autofillHints) && Equals(__other.currentEditingValue, currentEditingValue) && (__other.hintText == hintText);
+        return (__other is AutofillConfiguration)
+            && (__other.enabled == enabled)
+            && (__other.uniqueIdentifier == uniqueIdentifier)
+            && CollectionsLibrary.listEquals(__other.autofillHints, autofillHints)
+            && Equals(__other.currentEditingValue, currentEditingValue)
+            && (__other.hintText == hintText);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(enabled, uniqueIdentifier, FoundationRuntimePorts.ObjectHashAll(autofillHints), currentEditingValue, hintText);
+        return FoundationRuntimePorts.ObjectHash(
+            enabled,
+            uniqueIdentifier,
+            FoundationRuntimePorts.ObjectHashAll(autofillHints),
+            currentEditingValue,
+            hintText
+        );
     }
+
     public override string ToString()
     {
-        var description = new List<string> { $"enabled: {enabled}", $"uniqueIdentifier: {uniqueIdentifier}", $"autofillHints: {autofillHints}", $"currentEditingValue: {currentEditingValue}" };
+        var description = new List<string>
+        {
+            $"enabled: {enabled}",
+            $"uniqueIdentifier: {uniqueIdentifier}",
+            $"autofillHints: {autofillHints}",
+            $"currentEditingValue: {currentEditingValue}",
+        };
         return $"AutofillConfiguration({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface AutofillClient
@@ -144,14 +191,35 @@ public interface AutofillScope
 {
     public AutofillClient? getAutofillClient(string autofillId);
     public IEnumerable<AutofillClient> autofillClients { get; }
-    public TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration);
+    public TextInputConnection attach(
+        TextInputClient trigger,
+        TextInputConfiguration configuration
+    );
 }
 
 internal class _AutofillScopeTextInputConfiguration__autofill : TextInputConfiguration
 {
-    public virtual IEnumerable<TextInputConfiguration> allConfigurations { get; private set; } = default!;
+    public virtual IEnumerable<TextInputConfiguration> allConfigurations { get; private set; } =
+        default!;
 
-    internal _AutofillScopeTextInputConfiguration__autofill(IEnumerable<TextInputConfiguration> allConfigurations, TextInputConfiguration currentClientConfiguration) : base(viewId: currentClientConfiguration.viewId, inputType: currentClientConfiguration.inputType, obscureText: currentClientConfiguration.obscureText, autocorrect: currentClientConfiguration.autocorrect, smartDashesType: currentClientConfiguration.smartDashesType, smartQuotesType: currentClientConfiguration.smartQuotesType, enableSuggestions: currentClientConfiguration.enableSuggestions, inputAction: currentClientConfiguration.inputAction, textCapitalization: currentClientConfiguration.textCapitalization, keyboardAppearance: currentClientConfiguration.keyboardAppearance, actionLabel: currentClientConfiguration.actionLabel, autofillConfiguration: currentClientConfiguration.autofillConfiguration)
+    internal _AutofillScopeTextInputConfiguration__autofill(
+        IEnumerable<TextInputConfiguration> allConfigurations,
+        TextInputConfiguration currentClientConfiguration
+    )
+        : base(
+            viewId: currentClientConfiguration.viewId,
+            inputType: currentClientConfiguration.inputType,
+            obscureText: currentClientConfiguration.obscureText,
+            autocorrect: currentClientConfiguration.autocorrect,
+            smartDashesType: currentClientConfiguration.smartDashesType,
+            smartQuotesType: currentClientConfiguration.smartQuotesType,
+            enableSuggestions: currentClientConfiguration.enableSuggestions,
+            inputAction: currentClientConfiguration.inputAction,
+            textCapitalization: currentClientConfiguration.textCapitalization,
+            keyboardAppearance: currentClientConfiguration.keyboardAppearance,
+            actionLabel: currentClientConfiguration.actionLabel,
+            autofillConfiguration: currentClientConfiguration.autofillConfiguration
+        )
     {
         this.allConfigurations = allConfigurations;
     }
@@ -159,21 +227,32 @@ internal class _AutofillScopeTextInputConfiguration__autofill : TextInputConfigu
     public override DartMap<string, object?> toJson()
     {
         DartMap<string, object?> result = base.toJson();
-        result["fields"] = allConfigurations.map((configuration) => configuration.toJson()).ToList();
+        result["fields"] = allConfigurations
+            .map((configuration) => configuration.toJson())
+            .ToList();
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public interface AutofillScopeMixin : AutofillScope
 {
-    public new TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration)
+    public new TextInputConnection attach(
+        TextInputClient trigger,
+        TextInputConfiguration configuration
+    )
     {
-        DartRuntimePrimitives.Assert(() => !autofillClients.any((client) => !client.textInputConfiguration.autofillConfiguration.enabled));
-        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map((client) => client.textInputConfiguration), currentClientConfiguration: configuration);
+        DartRuntimePrimitives.Assert(() =>
+            !autofillClients.any(
+                (client) => !client.textInputConfiguration.autofillConfiguration.enabled
+            )
+        );
+        TextInputConfiguration inputConfiguration =
+            new _AutofillScopeTextInputConfiguration__autofill(
+                allConfigurations: autofillClients.map((client) => client.textInputConfiguration),
+                currentClientConfiguration: configuration
+            );
         return TextInput.attach(trigger, inputConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

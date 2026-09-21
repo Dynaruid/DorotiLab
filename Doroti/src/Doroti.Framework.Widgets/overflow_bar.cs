@@ -9,7 +9,7 @@ public enum OverflowBarAlignment
 {
     start,
     end,
-    center
+    center,
 }
 
 public class OverflowBar : MultiChildRenderObjectWidget
@@ -21,7 +21,17 @@ public class OverflowBar : MultiChildRenderObjectWidget
     public virtual VerticalDirection overflowDirection { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
 
-    public OverflowBar(Key? key = null, double spacing = 0.0, MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, VerticalDirection overflowDirection = VerticalDirection.down, TextDirection? textDirection = null, List<Widget> children = default!) : base(key: key, children: children ?? new List<Widget>())
+    public OverflowBar(
+        Key? key = null,
+        double spacing = 0.0,
+        MainAxisAlignment? alignment = null,
+        double overflowSpacing = 0.0,
+        OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start,
+        VerticalDirection overflowDirection = VerticalDirection.down,
+        TextDirection? textDirection = null,
+        List<Widget> children = default!
+    )
+        : base(key: key, children: children ?? new List<Widget>())
     {
         this.spacing = spacing;
         this.alignment = alignment;
@@ -33,43 +43,72 @@ public class OverflowBar : MultiChildRenderObjectWidget
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderOverflowBar__overflow_bar(spacing: spacing, alignment: alignment, overflowSpacing: overflowSpacing, overflowAlignment: overflowAlignment, overflowDirection: overflowDirection, textDirection: textDirection ?? Directionality.of(context));
+        return new _RenderOverflowBar__overflow_bar(
+            spacing: spacing,
+            alignment: alignment,
+            overflowSpacing: overflowSpacing,
+            overflowAlignment: overflowAlignment,
+            overflowDirection: overflowDirection,
+            textDirection: textDirection ?? Directionality.of(context)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        DartRuntimePrimitives.Ignore(((Func<_RenderOverflowBar__overflow_bar>)(() =>
-{
-    var __cascade = ((_RenderOverflowBar__overflow_bar?)renderObject)!;
-    __cascade.spacing = spacing;
-    __cascade.alignment = alignment;
-    __cascade.overflowSpacing = overflowSpacing;
-    __cascade.overflowAlignment = overflowAlignment;
-    __cascade.overflowDirection = overflowDirection;
-    __cascade.textDirection = textDirection ?? Directionality.of(context);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderOverflowBar__overflow_bar>)(
+                    () =>
+                    {
+                        var __cascade = ((_RenderOverflowBar__overflow_bar?)renderObject)!;
+                        __cascade.spacing = spacing;
+                        __cascade.alignment = alignment;
+                        __cascade.overflowSpacing = overflowSpacing;
+                        __cascade.overflowAlignment = overflowAlignment;
+                        __cascade.overflowDirection = overflowDirection;
+                        __cascade.textDirection = textDirection ?? Directionality.of(context);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("spacing", spacing, defaultValue: 0L));
-        properties.add(new EnumProperty<MainAxisAlignment>("alignment", alignment, defaultValue: null));
+        properties.add(
+            new EnumProperty<MainAxisAlignment>("alignment", alignment, defaultValue: null)
+        );
         properties.add(new DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
-        properties.add(new EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new EnumProperty<VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<OverflowBarAlignment>(
+                "overflowAlignment",
+                overflowAlignment,
+                defaultValue: OverflowBarAlignment.start
+            )
+        );
+        properties.add(
+            new EnumProperty<VerticalDirection>(
+                "overflowDirection",
+                overflowDirection,
+                defaultValue: VerticalDirection.down
+            )
+        );
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
-
 }
 
-internal class _OverflowBarParentData__overflow_bar : ContainerBoxParentData<RenderBox>
-{
-}
+internal class _OverflowBarParentData__overflow_bar : ContainerBoxParentData<RenderBox> { }
 
-internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObjectMixin<RenderBox, _OverflowBarParentData__overflow_bar>, RenderBoxContainerDefaultsMixin<RenderBox, _OverflowBarParentData__overflow_bar>
+internal class _RenderOverflowBar__overflow_bar
+    : RenderBox,
+        ContainerRenderObjectMixin<RenderBox, _OverflowBarParentData__overflow_bar>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _OverflowBarParentData__overflow_bar>
 {
     internal virtual double _spacing { get; set; } = default!;
     internal virtual MainAxisAlignment? _alignment { get; set; } = default;
@@ -81,7 +120,15 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    internal _RenderOverflowBar__overflow_bar(List<RenderBox>? children = null, double spacing = 0.0, MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, VerticalDirection overflowDirection = VerticalDirection.down, TextDirection textDirection = default!)
+    internal _RenderOverflowBar__overflow_bar(
+        List<RenderBox>? children = null,
+        double spacing = 0.0,
+        MainAxisAlignment? alignment = null,
+        double overflowSpacing = 0.0,
+        OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start,
+        VerticalDirection overflowDirection = VerticalDirection.down,
+        TextDirection textDirection = default!
+    )
     {
         _spacing = spacing;
         _alignment = alignment;
@@ -175,6 +222,7 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             markNeedsLayout();
         }
     }
+
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)child;
@@ -303,7 +351,14 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         BoxConstraints childConstraints = constraints.loosen();
-        var (next, startChild) = overflowDirection switch { VerticalDirection.down => ((Func<RenderBox, RenderBox?>, RenderBox?))(childAfter, firstChild), VerticalDirection.up => ((Func<RenderBox, RenderBox?>, RenderBox?))(childBefore, lastChild), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (next, startChild) = overflowDirection switch
+        {
+            VerticalDirection.down => ((Func<RenderBox, RenderBox?>, RenderBox?))
+                (childAfter, firstChild),
+            VerticalDirection.up => ((Func<RenderBox, RenderBox?>, RenderBox?))
+                (childBefore, lastChild),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         var maxChildHeight = 0.0;
         var y = 0.0;
         var childrenWidth = 0.0;
@@ -318,17 +373,25 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
                 minHorizontalBaseline = minHorizontalBaseline.op_Add(heightDiff / 2L);
                 maxChildHeight = childSize.height;
             }
-            var baselineOffset = new BaselineOffset(child.getDryBaseline(childConstraints, baseline));
+            var baselineOffset = new BaselineOffset(
+                child.getDryBaseline(childConstraints, baseline)
+            );
             if (baselineOffset is not null)
             {
                 verticalBaseline ??= (baselineOffset.op_Add(y));
-                minHorizontalBaseline = minHorizontalBaseline.minOf(baselineOffset.op_Add(maxChildHeight - childSize.height));
+                minHorizontalBaseline = minHorizontalBaseline.minOf(
+                    baselineOffset.op_Add(maxChildHeight - childSize.height)
+                );
             }
             y += childSize.height + overflowSpacing;
             childrenWidth += childSize.width;
         }
-        DartRuntimePrimitives.Assert(() => verticalBaseline is null == minHorizontalBaseline is null);
-        return ((childrenWidth + (spacing * (childCount - 1L))) > constraints.maxWidth) ? verticalBaseline.offset : minHorizontalBaseline.offset;
+        DartRuntimePrimitives.Assert(() =>
+            (verticalBaseline is null) == (minHorizontalBaseline is null)
+        );
+        return ((childrenWidth + (spacing * (childCount - 1L))) > constraints.maxWidth)
+            ? verticalBaseline.offset
+            : minHorizontalBaseline.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -391,14 +454,26 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             child = Equals(overflowDirection, VerticalDirection.down) ? firstChild : lastChild;
             RenderBox? nextChild()
             {
-                return Equals(overflowDirection, VerticalDirection.down) ? childAfter(child!) : childBefore(child!);
+                return Equals(overflowDirection, VerticalDirection.down)
+                    ? childAfter(child!)
+                    : childBefore(child!);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
             double y = 0;
             while (child is not null)
             {
                 var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-                double x = overflowAlignment switch { OverflowBarAlignment.center => (constraints.maxWidth - child.size.width) / 2L, OverflowBarAlignment.start => rtlLocal ? (constraints.maxWidth - child.size.width) : 0, OverflowBarAlignment.end => rtlLocal ? 0 : (constraints.maxWidth - child.size.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                double x = overflowAlignment switch
+                {
+                    OverflowBarAlignment.center => (constraints.maxWidth - child.size.width) / 2L,
+                    OverflowBarAlignment.start => rtlLocal
+                        ? (constraints.maxWidth - child.size.width)
+                        : 0,
+                    OverflowBarAlignment.end => rtlLocal
+                        ? 0
+                        : (constraints.maxWidth - child.size.width),
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                };
                 childParentData.offset = new Offset(x, y);
                 y += child.size.height + overflowSpacing;
                 child = nextChild();
@@ -416,49 +491,63 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             switch (alignment)
             {
                 case null:
-                    {
-                        xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
-                        break;
-                    }
+                {
+                    xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
+                    break;
+                }
                 case MainAxisAlignment.start:
-                    {
-                        xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
-                        break;
-                    }
+                {
+                    xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
+                    break;
+                }
                 case MainAxisAlignment.center:
-                    {
-                        double halfRemainingWidth = (size.width - actualWidth) / 2L;
-                        xLocal = rtlLocal ? (size.width - halfRemainingWidth - firstChildWidth) : halfRemainingWidth;
-                        break;
-                    }
+                {
+                    double halfRemainingWidth = (size.width - actualWidth) / 2L;
+                    xLocal = rtlLocal
+                        ? (size.width - halfRemainingWidth - firstChildWidth)
+                        : halfRemainingWidth;
+                    break;
+                }
                 case MainAxisAlignment.end:
-                    {
-                        xLocal = rtlLocal ? (actualWidth - firstChildWidth) : (size.width - actualWidth);
-                        break;
-                    }
+                {
+                    xLocal = rtlLocal
+                        ? (actualWidth - firstChildWidth)
+                        : (size.width - actualWidth);
+                    break;
+                }
                 case MainAxisAlignment.spaceBetween:
-                    {
-                        layoutSpacing = (size.width - childrenWidth) / (childCount - 1L);
-                        xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
-                        break;
-                    }
+                {
+                    layoutSpacing = (size.width - childrenWidth) / (childCount - 1L);
+                    xLocal = rtlLocal ? (size.width - firstChildWidth) : 0;
+                    break;
+                }
                 case MainAxisAlignment.spaceAround:
-                    {
-                        layoutSpacing = (childCount > 0L) ? ((size.width - childrenWidth) / childCount) : 0;
-                        xLocal = rtlLocal ? (size.width - (layoutSpacing / 2L) - firstChildWidth) : (layoutSpacing / 2L);
-                        break;
-                    }
+                {
+                    layoutSpacing =
+                        (childCount > 0L) ? ((size.width - childrenWidth) / childCount) : 0;
+                    xLocal = rtlLocal
+                        ? (size.width - (layoutSpacing / 2L) - firstChildWidth)
+                        : (layoutSpacing / 2L);
+                    break;
+                }
                 case MainAxisAlignment.spaceEvenly:
-                    {
-                        layoutSpacing = (size.width - childrenWidth) / (childCount + 1L);
-                        xLocal = rtlLocal ? (size.width - layoutSpacing - firstChildWidth) : layoutSpacing;
-                        break;
-                    }
+                {
+                    layoutSpacing = (size.width - childrenWidth) / (childCount + 1L);
+                    xLocal = rtlLocal
+                        ? (size.width - layoutSpacing - firstChildWidth)
+                        : layoutSpacing;
+                    break;
+                }
             }
             while (child is not null)
             {
-                var childParentDataLocal = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-                childParentDataLocal.offset = new Offset(xLocal, (maxChildHeight - child.size.height) / 2L);
+                var childParentDataLocal = (
+                    (_OverflowBarParentData__overflow_bar?)child.parentData!
+                )!;
+                childParentDataLocal.offset = new Offset(
+                    xLocal,
+                    (maxChildHeight - child.size.height) / 2L
+                );
                 if (!rtlLocal)
                 {
                     xLocal += child.size.width + layoutSpacing;
@@ -488,9 +577,23 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("spacing", spacing, defaultValue: 0L));
         properties.add(new DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
-        properties.add(new EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new EnumProperty<VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
-        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(
+            new EnumProperty<OverflowBarAlignment>(
+                "overflowAlignment",
+                overflowAlignment,
+                defaultValue: OverflowBarAlignment.start
+            )
+        );
+        properties.add(
+            new EnumProperty<VerticalDirection>(
+                "overflowDirection",
+                overflowDirection,
+                defaultValue: VerticalDirection.down
+            )
+        );
+        properties.add(
+            new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null)
+        );
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -520,17 +623,47 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
     }
 
     public virtual long childCount => _childCount;
+
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
-                }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                    + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                            ),
+                            new ErrorDescription(
+                                "RenderObjects expect specific types of children because they "
+                                    + "coordinate with their children during layout and paint. For "
+                                    + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                    + "a RenderSliver does not understand the RenderBox layout protocol."
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                                debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                    + "was created by",
+                                child.debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -547,7 +680,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             childParentData.nextSibling = _firstChild;
             if (_firstChild is not null)
             {
-                var firstChildParentData = ((_OverflowBarParentData__overflow_bar?)_firstChild!.parentData!)!;
+                var firstChildParentData = (
+                    (_OverflowBarParentData__overflow_bar?)_firstChild!.parentData!
+                )!;
                 firstChildParentData.previousSibling = child;
             }
             _firstChild = child;
@@ -557,8 +692,12 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         {
             DartRuntimePrimitives.Assert(() => _firstChild is not null);
             DartRuntimePrimitives.Assert(() => _lastChild is not null);
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimatePreviousSiblingOf(after, equals: _firstChild)
+            );
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimateNextSiblingOf(after, equals: _lastChild)
+            );
             var afterParentData = ((_OverflowBarParentData__overflow_bar?)after.parentData!)!;
             if (afterParentData.nextSibling is null)
             {
@@ -571,8 +710,13 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = (
+                    (_OverflowBarParentData__overflow_bar?)
+                        childParentData.previousSibling!.parentData!
+                )!;
+                var childNextSiblingParentData = (
+                    (_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!
+                )!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
                 DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
@@ -582,13 +726,31 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => !Equals(child, this), () => (object?)"A RenderObject cannot be inserted into itself.");
-        DartRuntimePrimitives.Assert(() => !Equals(after, this), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
-        DartRuntimePrimitives.Assert(() => !Equals(child, after), () => (object?)"A RenderObject cannot be inserted after itself.");
+        DartRuntimePrimitives.Assert(
+            () => !Equals(child, this),
+            () => (object?)"A RenderObject cannot be inserted into itself."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !Equals(after, this),
+            () =>
+                (object?)
+                    "A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !Equals(child, after),
+            () => (object?)"A RenderObject cannot be inserted after itself."
+        );
         DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
         DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => child.parentData is _OverflowBarParentData__overflow_bar, () => (object?)$"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {typeof(_OverflowBarParentData__overflow_bar)}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {typeof(_OverflowBarParentData__overflow_bar)}.");
+        DartRuntimePrimitives.Assert(
+            () => child.parentData is _OverflowBarParentData__overflow_bar,
+            () =>
+                (object?)
+                    $"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, "
+                + $"which does not conform to {typeof(_OverflowBarParentData__overflow_bar)}. Class using ContainerRenderObjectMixin "
+                + $"should override setupParentData() to set parentData to type {typeof(_OverflowBarParentData__overflow_bar)}."
+        );
         _insertIntoChildList(child, after: after);
     }
 
@@ -605,7 +767,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() =>
+            _debugUltimatePreviousSiblingOf(child, equals: _firstChild)
+        );
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
         DartRuntimePrimitives.Assert(() => _childCount >= 0L);
         if (childParentData.previousSibling is null)
@@ -615,7 +779,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         }
         else
         {
-            var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = (
+                (_OverflowBarParentData__overflow_bar?)childParentData.previousSibling!.parentData!
+            )!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if (childParentData.nextSibling is null)
@@ -625,7 +791,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         }
         else
         {
-            var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = (
+                (_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!
+            )!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -720,6 +888,7 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
 
     public virtual RenderBox? firstChild => _firstChild;
     public virtual RenderBox? lastChild => _lastChild;
+
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
@@ -745,7 +914,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             var count = 1L;
             while (true)
             {
-                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
+                children.Add(
+                    ((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}")
+                );
                 if (Equals(child, lastChild))
                 {
                     break;
@@ -770,7 +941,8 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
             if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
+                    + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -786,7 +958,9 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         while (child is not null)
         {
             var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
+            BaselineOffset candidate = new BaselineOffset(
+                child.getDistanceToActualBaseline(baseline)
+            ).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -800,12 +974,18 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         while (child is not null)
         {
             var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
-            {
-                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
-                return child!.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            bool isHit = result.addWithPaintOffset(
+                offset: childParentData.offset,
+                position: position,
+                hitTest: (result, transformed) =>
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(transformed, position - childParentData.offset)
+                    );
+                    return child!.hitTest(result, position: transformed);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
             if (isHit)
             {
                 return true;
@@ -840,6 +1020,4 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

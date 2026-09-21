@@ -16,9 +16,7 @@ public class AbstractNode
 
     public AbstractNode? parent => _parent;
 
-    public virtual void redepthChildren()
-    {
-    }
+    public virtual void redepthChildren() { }
 
     public void redepthChild(AbstractNode child)
     {
@@ -58,7 +56,9 @@ public class AbstractNode
         ArgumentNullException.ThrowIfNull(child);
         if (child._parent is not null || ReferenceEquals(child, this) || IsAncestorOf(child, this))
         {
-            throw new InvalidOperationException("The child already has a parent or would create a cycle.");
+            throw new InvalidOperationException(
+                "The child already has a parent or would create a cycle."
+            );
         }
         child._parent = this;
         if (attached)

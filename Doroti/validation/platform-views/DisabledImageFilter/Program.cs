@@ -23,13 +23,15 @@ Console.WriteLine("PASS 3 disabled image filter lifecycle checks");
 
 static void Check(string name, bool condition)
 {
-    if (!condition) throw new InvalidOperationException(name);
+    if (!condition)
+        throw new InvalidOperationException(name);
     Console.WriteLine("PASS " + name);
 }
 
 sealed class CountingBoundary(RenderBox child) : RenderRepaintBoundary(child: child)
 {
     internal int Invalidations;
+
     public override void markNeedsPaint()
     {
         Invalidations++;

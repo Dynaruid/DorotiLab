@@ -14,12 +14,13 @@ namespace Doroti.Host.Maui;
 /// </summary>
 public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
 {
-    protected override SKMetalView CreatePlatformView() => new DorotiMacCatalystMetalView
-    {
-        BackgroundColor = UIColor.Clear,
-        Opaque = false,
-        ContentMode = UIViewContentMode.Redraw,
-    };
+    protected override SKMetalView CreatePlatformView() =>
+        new DorotiMacCatalystMetalView
+        {
+            BackgroundColor = UIColor.Clear,
+            Opaque = false,
+            ContentMode = UIViewContentMode.Redraw,
+        };
 
     private sealed class DorotiMacCatalystMetalView : SKMetalView
     {
@@ -47,11 +48,21 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
         {
             base.LayoutSubviews();
             var size = Bounds.Size;
-            var scale = (double)(ContentScaleFactor > 0
-                ? ContentScaleFactor
-                : Window?.Screen.Scale ?? UIScreen.MainScreen.Scale);
-            if (_drawingLayout || Window is null || size.Width <= 0 || size.Height <= 0 ||
-                (size.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale))) return;
+            var scale = (double)(
+                ContentScaleFactor > 0
+                    ? ContentScaleFactor
+                    : Window?.Screen.Scale ?? UIScreen.MainScreen.Scale
+            );
+            if (
+                _drawingLayout
+                || Window is null
+                || size.Width <= 0
+                || size.Height <= 0
+                || (size.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale))
+            )
+            {
+                return;
+            }
 
             _lastLayoutSize = size;
             _lastLayoutScale = scale;
@@ -60,7 +71,8 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
                 _drawingLayout = true;
                 var drawableSize = new CGSize(
                     Math.Max(1, Math.Round(size.Width * scale)),
-                    Math.Max(1, Math.Round(size.Height * scale)));
+                    Math.Max(1, Math.Round(size.Height * scale))
+                );
 
                 // Update backing geometry without implicit layer animations,
                 // then draw immediately. SKMetalView owns GPU presentation.

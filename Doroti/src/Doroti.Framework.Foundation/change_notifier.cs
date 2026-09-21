@@ -6,9 +6,10 @@ namespace Doroti.Framework.Foundation;
 
 public interface Listenable
 {
-    public static Listenable merge(IEnumerable<Listenable?> listenables)
-        => new _MergingListenable(listenables);
-    public static Listenable CreateMerge(IEnumerable<Listenable?> listenables) => merge(listenables);
+    public static Listenable merge(IEnumerable<Listenable?> listenables) =>
+        new _MergingListenable(listenables);
+    public static Listenable CreateMerge(IEnumerable<Listenable?> listenables) =>
+        merge(listenables);
 
     public void addListener(Action listener);
     public void removeListener(Action listener);
@@ -24,13 +25,13 @@ public interface ValueListenable<T> : Listenable
 public class ChangeNotifier : Listenable, IDisposable
 {
     private int _count = 0;
-    private static readonly List<Action?> _emptyListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, 0));
+    private static readonly List<Action?> _emptyListeners = new List<Action?>(
+        Enumerable.Repeat<Action?>(null, 0)
+    );
 
     // Ensure _emptyListeners exists before any instance field initializer reads
     // it on eager AOT runtimes. An explicit initializer prevents beforefieldinit.
-    static ChangeNotifier()
-    {
-    }
+    static ChangeNotifier() { }
 
     private List<Action?> _listeners = _emptyListeners;
     private int _notificationCallStackDepth = 0;
@@ -41,29 +42,34 @@ public class ChangeNotifier : Listenable, IDisposable
     public static bool debugAssertNotDisposed(ChangeNotifier notifier)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (notifier._debugDisposed)
             {
-                if (notifier._debugDisposed)
-                {
-                    throw new FlutterError($"A {notifier.GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {notifier.GetType()}, it " + "can no longer be used.");
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    $"A {notifier.GetType()} was used after being disposed.\n"
+                        + $"Once you have called dispose() on a {notifier.GetType()}, it "
+                        + "can no longer be used."
+                );
+            }
+            return true;
+        });
         return true;
     }
 
     public bool hasListeners => _count > 0;
     public int debugListenerCount => _count;
+
     public static void maybeDispatchObjectCreation(ChangeNotifier @object)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (!@object._debugCreationDispatched)
             {
-                if (!@object._debugCreationDispatched)
-                {
-                    DebugLibrary.debugMaybeDispatchCreated("foundation", "ChangeNotifier", @object);
-                    @object._debugCreationDispatched = true;
-                }
-                return true;
-            });
+                DebugLibrary.debugMaybeDispatchCreated("foundation", "ChangeNotifier", @object);
+                @object._debugCreationDispatched = true;
+            }
+            return true;
+        });
     }
 
     public virtual void addListener(Action listener)
@@ -81,7 +87,9 @@ public class ChangeNotifier : Listenable, IDisposable
             }
             else
             {
-                var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, _listeners.Count * 2));
+                var newListeners = new List<Action?>(
+                    Enumerable.Repeat<Action?>(null, _listeners.Count * 2)
+                );
                 for (var i = 0; i < _count; i++)
                 {
                     newListeners[i] = _listeners[i];
@@ -148,14 +156,14 @@ public class ChangeNotifier : Listenable, IDisposable
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         DartRuntimePrimitives.Assert(() => _notificationCallStackDepth == 0);
         DartRuntimePrimitives.Assert(() =>
+        {
+            _debugDisposed = true;
+            if (_debugCreationDispatched)
             {
-                _debugDisposed = true;
-                if (_debugCreationDispatched)
-                {
-                    DartRuntimePrimitives.Assert(() => DebugLibrary.debugMaybeDispatchDisposed(this));
-                }
-                return true;
-            });
+                DartRuntimePrimitives.Assert(() => DebugLibrary.debugMaybeDispatchDisposed(this));
+            }
+            return true;
+        });
         _listeners = _emptyListeners;
         _count = 0;
     }
@@ -184,7 +192,23 @@ public class ChangeNotifier : Listenable, IDisposable
             catch (Exception exception)
             {
                 var stack = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception, stack, "foundation library", new ErrorDescription($"while dispatching notifications for {GetType()}"), () => new List<DiagnosticsNode> { new DiagnosticsProperty<ChangeNotifier>($"The {GetType()} sending notification was", this, DiagnosticsTreeStyle.errorProperty) }));
+                FlutterError.reportError(
+                    new FlutterErrorDetails(
+                        exception,
+                        stack,
+                        "foundation library",
+                        new ErrorDescription($"while dispatching notifications for {GetType()}"),
+                        () =>
+                            new List<DiagnosticsNode>
+                            {
+                                new DiagnosticsProperty<ChangeNotifier>(
+                                    $"The {GetType()} sending notification was",
+                                    this,
+                                    DiagnosticsTreeStyle.errorProperty
+                                ),
+                            }
+                    )
+                );
             }
         }
         _notificationCallStackDepth--;
@@ -227,7 +251,6 @@ public class ChangeNotifier : Listenable, IDisposable
     }
 
     protected void NotifyListeners() => notifyListeners();
-
 }
 
 internal class _MergingListenable : Listenable
@@ -259,7 +282,6 @@ internal class _MergingListenable : Listenable
     {
         return $"Listenable.merge([{string.Join(", ", _children)}])";
     }
-
 }
 
 public class ValueNotifier<T> : ChangeNotifier, ValueListenable<T>
@@ -290,5 +312,6 @@ public class ValueNotifier<T> : ChangeNotifier, ValueListenable<T>
         get => value;
         set => this.value = value;
     }
+
     public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({value})";
 }

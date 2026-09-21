@@ -15,7 +15,8 @@ public sealed class Preview(
     Func<Widget, Widget>? wrapper = null,
     Func<PreviewThemeData>? theme = null,
     Brightness? brightness = null,
-    Func<PreviewLocalizationsData>? localizations = null)
+    Func<PreviewLocalizationsData>? localizations = null
+)
 {
     public string group { get; } = group;
     public string? name { get; } = name;
@@ -25,14 +26,18 @@ public sealed class Preview(
     public Func<PreviewThemeData>? theme { get; } = theme;
     public Brightness? brightness { get; } = brightness;
     public Func<PreviewLocalizationsData>? localizations { get; } = localizations;
+
     public Preview transform() => this;
+
     public PreviewBuilder toBuilder() => PreviewBuilder.fromPreview(this);
 }
 
 public abstract class MultiPreview
 {
     public abstract IReadOnlyList<Preview> previews { get; }
-    public virtual IReadOnlyList<Preview> transform() => previews.Select(preview => preview.transform()).ToArray();
+
+    public virtual IReadOnlyList<Preview> transform() =>
+        previews.Select(preview => preview.transform()).ToArray();
 }
 
 public sealed class PreviewBuilder
@@ -46,17 +51,18 @@ public sealed class PreviewBuilder
     public Brightness? brightness { get; set; }
     public Func<PreviewLocalizationsData>? localizations { get; set; }
 
-    public static PreviewBuilder fromPreview(Preview preview) => new()
-    {
-        group = preview.group,
-        name = preview.name,
-        size = preview.size,
-        textScaleFactor = preview.textScaleFactor,
-        wrapper = preview.wrapper,
-        theme = preview.theme,
-        brightness = preview.brightness,
-        localizations = preview.localizations,
-    };
+    public static PreviewBuilder fromPreview(Preview preview) =>
+        new()
+        {
+            group = preview.group,
+            name = preview.name,
+            size = preview.size,
+            textScaleFactor = preview.textScaleFactor,
+            wrapper = preview.wrapper,
+            theme = preview.theme,
+            brightness = preview.brightness,
+            localizations = preview.localizations,
+        };
 
     public void addWrapper(Func<Widget, Widget> newWrapper)
     {
@@ -65,15 +71,17 @@ public sealed class PreviewBuilder
         wrapper = previous is null ? newWrapper : child => newWrapper(previous(child));
     }
 
-    public Preview build() => new(
-        group: group ?? "Default",
-        name: name,
-        size: size,
-        textScaleFactor: textScaleFactor,
-        wrapper: wrapper,
-        theme: theme,
-        brightness: brightness,
-        localizations: localizations);
+    public Preview build() =>
+        new(
+            group: group ?? "Default",
+            name: name,
+            size: size,
+            textScaleFactor: textScaleFactor,
+            wrapper: wrapper,
+            theme: theme,
+            brightness: brightness,
+            localizations: localizations
+        );
 }
 
 public sealed class PreviewLocalizationsData(
@@ -81,13 +89,20 @@ public sealed class PreviewLocalizationsData(
     IReadOnlyList<Locale>? supportedLocales = null,
     IEnumerable<object>? localizationsDelegates = null,
     Func<IReadOnlyList<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null,
-    Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null)
+    Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null
+)
 {
     public Locale? locale { get; } = locale;
-    public IReadOnlyList<Locale> supportedLocales { get; } = supportedLocales ?? [new Locale("en", "US")];
+    public IReadOnlyList<Locale> supportedLocales { get; } =
+        supportedLocales ?? [new Locale("en", "US")];
     public IEnumerable<object>? localizationsDelegates { get; } = localizationsDelegates;
-    public Func<IReadOnlyList<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback { get; } = localeListResolutionCallback;
-    public Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback { get; } = localeResolutionCallback;
+    public Func<
+        IReadOnlyList<Locale>?,
+        IEnumerable<Locale>,
+        Locale?
+    >? localeListResolutionCallback { get; } = localeListResolutionCallback;
+    public Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback { get; } =
+        localeResolutionCallback;
 }
 
 public interface PreviewThemeData
@@ -102,7 +117,11 @@ public sealed class MultiPreviewThemeData(IReadOnlyList<PreviewThemeData> themes
     public Widget apply(BuildContext context, Widget child)
     {
         var result = child;
-        foreach (var theme in themes.Reverse()) result = theme.apply(context, result);
+        foreach (var theme in themes.Reverse())
+        {
+            result = theme.apply(context, result);
+        }
+
         return result;
     }
 }

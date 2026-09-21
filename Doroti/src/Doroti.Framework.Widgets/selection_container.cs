@@ -11,7 +11,13 @@ public class SelectionContainer : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual SelectionContainerDelegate? @delegate { get; private set; }
 
-    public SelectionContainer(Key? key = null, SelectionRegistrar? registrar = null, SelectionContainerDelegate @delegate = default!, Widget child = default!) : base(key: key)
+    public SelectionContainer(
+        Key? key = null,
+        SelectionRegistrar? registrar = null,
+        SelectionContainerDelegate @delegate = default!,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.registrar = registrar;
         this.@delegate = @delegate;
@@ -29,19 +35,30 @@ public class SelectionContainer : StatefulWidget
 
     public static SelectionRegistrar? maybeOf(BuildContext context)
     {
-        SelectionRegistrarScope? scope = context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
+        SelectionRegistrarScope? scope =
+            context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
         return scope?.registrar;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _disabled => DartRuntimePrimitives.ConvertValue<bool>(@delegate is null);
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionContainerState__selection_container());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SelectionContainerState__selection_container()
+        );
 }
 
-internal class _SelectionContainerState__selection_container : State<SelectionContainer>, Selectable, SelectionRegistrant
+internal class _SelectionContainerState__selection_container
+    : State<SelectionContainer>,
+        Selectable,
+        SelectionRegistrant
 {
     internal virtual HashSet<Action> _listeners { get; private set; } = new HashSet<Action>();
-    internal static SelectionGeometry _disabledGeometry = new SelectionGeometry(status: SelectionStatus.none, hasContent: true);
+    internal static SelectionGeometry _disabledGeometry = new SelectionGeometry(
+        status: SelectionStatus.none,
+        hasContent: true
+    );
     public virtual SelectionRegistrar? _registrar { get; set; } = default;
     public virtual bool _subscribedToSelectionRegistrar { get; set; } = false;
 
@@ -66,12 +83,16 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             if (!oldWidget._disabled)
             {
                 oldWidget.@delegate!._selectionContainerContext = null;
-                _listeners.forEach((__arg0) => ((Action<Action>)oldWidget.@delegate!.removeListener)(__arg0));
+                _listeners.forEach(
+                    (__arg0) => ((Action<Action>)oldWidget.@delegate!.removeListener)(__arg0)
+                );
             }
             if (!widget._disabled)
             {
                 widget.@delegate!._selectionContainerContext = context;
-                _listeners.forEach((__arg0) => ((Action<Action>)widget.@delegate!.addListener)(__arg0));
+                _listeners.forEach(
+                    (__arg0) => ((Action<Action>)widget.@delegate!.addListener)(__arg0)
+                );
             }
             if (!Equals(oldWidget.@delegate?.value, widget.@delegate?.value))
             {
@@ -156,6 +177,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             return widget.@delegate!.value;
         }
     }
+
     public virtual Matrix4 getTransformTo(RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
@@ -165,13 +187,17 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
 
     public virtual long contentLength => widget.@delegate!.contentLength;
     public virtual Size size => ((RenderBox?)context.findRenderObject()!)!.size;
-    public virtual List<Rect> boundingBoxes => new List<Rect> { ((RenderBox?)context.findRenderObject()!)!.paintBounds };
+    public virtual List<Rect> boundingBoxes =>
+        new List<Rect> { ((RenderBox?)context.findRenderObject()!)!.paintBounds };
+
     public override void dispose()
     {
         if (!widget._disabled)
         {
             widget.@delegate!._selectionContainerContext = null;
-            _listeners.forEach((__arg0) => ((Action<Action>)widget.@delegate!.removeListener)(__arg0));
+            _listeners.forEach(
+                (__arg0) => ((Action<Action>)widget.@delegate!.removeListener)(__arg0)
+            );
         }
         _removeSelectionRegistrarSubscription();
         base.dispose();
@@ -213,6 +239,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             _updateSelectionRegistrarSubscription();
         }
     }
+
     public virtual void _updateSelectionRegistrarSubscription()
     {
         if (_registrar is null)
@@ -243,14 +270,18 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             _subscribedToSelectionRegistrar = false;
         }
     }
-
 }
 
 public class SelectionRegistrarScope : InheritedWidget
 {
     public virtual SelectionRegistrar? registrar { get; private set; }
 
-    public SelectionRegistrarScope(Key? key = null, SelectionRegistrar registrar = default!, Widget child = default!) : base(key: key, child: child)
+    public SelectionRegistrarScope(
+        Key? key = null,
+        SelectionRegistrar registrar = default!,
+        Widget child = default!
+    )
+        : base(key: key, child: child)
     {
         this.registrar = registrar;
     }
@@ -268,31 +299,46 @@ public class SelectionRegistrarScope : InheritedWidget
         return !Equals(__oldWidget.registrar, registrar);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRegistrar
 {
     internal virtual BuildContext? _selectionContainerContext { get; set; } = default;
 
-    public virtual void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle) => throw new NotSupportedException();
+    public virtual void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle) =>
+        throw new NotSupportedException();
+
     public virtual SelectedContent? getSelectedContent() => throw new NotSupportedException();
+
     public virtual SelectedContentRange? getSelection() => throw new NotSupportedException();
-    public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event) => throw new NotSupportedException();
+
+    public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event) =>
+        throw new NotSupportedException();
+
     public virtual long contentLength => throw new NotSupportedException();
     public virtual SelectionGeometry value => throw new NotSupportedException();
+
     public virtual void add(Selectable selectable) => throw new NotSupportedException();
+
     public virtual void remove(Selectable selectable) => throw new NotSupportedException();
+
     public virtual Matrix4 getTransformFrom(Selectable child)
     {
-        DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"getTransformFrom cannot be called before SelectionContainer is laid out.");
+        DartRuntimePrimitives.Assert(
+            () => _selectionContainerContext?.findRenderObject() is not null,
+            () =>
+                (object?)"getTransformFrom cannot be called before SelectionContainer is laid out."
+        );
         return child.getTransformTo(((RenderBox?)_selectionContainerContext!.findRenderObject()!)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Matrix4 getTransformTo(RenderObject? ancestor)
     {
-        DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"getTransformTo cannot be called before SelectionContainer is laid out.");
+        DartRuntimePrimitives.Assert(
+            () => _selectionContainerContext?.findRenderObject() is not null,
+            () => (object?)"getTransformTo cannot be called before SelectionContainer is laid out."
+        );
         var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
         return box.getTransformTo(ancestor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -302,7 +348,12 @@ public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRe
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"The _selectionContainerContext must have a renderObject, such as after the first build has completed.");
+            DartRuntimePrimitives.Assert(
+                () => _selectionContainerContext?.findRenderObject() is not null,
+                () =>
+                    (object?)
+                        "The _selectionContainerContext must have a renderObject, such as after the first build has completed."
+            );
             var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
             return box.hasSize;
         }
@@ -311,16 +362,29 @@ public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRe
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => hasSize, () => (object?)"containerSize cannot be called before SelectionContainer is laid out.");
+            DartRuntimePrimitives.Assert(
+                () => hasSize,
+                () =>
+                    (object?)"containerSize cannot be called before SelectionContainer is laid out."
+            );
             var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
             return box.size;
         }
     }
     private readonly HashSet<Action> __listeners = new();
     public virtual bool hasListeners => __listeners.Count != 0;
+
     public virtual void addListener(Action listener) => __listeners.Add(listener);
+
     public virtual void removeListener(Action listener) => __listeners.Remove(listener);
-    public virtual void notifyListeners() { foreach (var listener in __listeners.ToArray()) listener(); }
+
+    public virtual void notifyListeners()
+    {
+        foreach (var listener in __listeners.ToArray())
+        {
+            listener();
+        }
+    }
+
     public virtual void dispose() => __listeners.Clear();
 }
-

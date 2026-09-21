@@ -19,23 +19,27 @@ public delegate void MaterialStateOutlinedBorder();
 
 public delegate void MaterialStateTextStyle();
 
-public abstract class MaterialStateOutlineInputBorder : OutlineInputBorder, WidgetStateProperty<InputBorder>
+public abstract class MaterialStateOutlineInputBorder
+    : OutlineInputBorder,
+        WidgetStateProperty<InputBorder>
 {
-    protected MaterialStateOutlineInputBorder()
-    {
-    }
+    protected MaterialStateOutlineInputBorder() { }
 
-    public static MaterialStateOutlineInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
-        => new _MaterialStateOutlineInputBorder__material_state(callback);
+    public static MaterialStateOutlineInputBorder CreateResolveWith(
+        Func<HashSet<WidgetState>, InputBorder> callback
+    ) => new _MaterialStateOutlineInputBorder__material_state(callback);
 
     public abstract InputBorder resolve(HashSet<WidgetState> states);
 }
 
 internal class _MaterialStateOutlineInputBorder__material_state : MaterialStateOutlineInputBorder
 {
-    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } = default!;
+    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } =
+        default!;
 
-    internal _MaterialStateOutlineInputBorder__material_state(Func<HashSet<WidgetState>, InputBorder> _resolve)
+    internal _MaterialStateOutlineInputBorder__material_state(
+        Func<HashSet<WidgetState>, InputBorder> _resolve
+    )
     {
         this._resolve = _resolve;
     }
@@ -43,23 +47,28 @@ internal class _MaterialStateOutlineInputBorder__material_state : MaterialStateO
     public override InputBorder resolve(HashSet<WidgetState> states) => _resolve(states);
 }
 
-public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, WidgetStateProperty<InputBorder>
+public abstract class MaterialStateUnderlineInputBorder
+    : UnderlineInputBorder,
+        WidgetStateProperty<InputBorder>
 {
-    protected MaterialStateUnderlineInputBorder()
-    {
-    }
+    protected MaterialStateUnderlineInputBorder() { }
 
-    public static MaterialStateUnderlineInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
-        => new _MaterialStateUnderlineInputBorder__material_state(callback);
+    public static MaterialStateUnderlineInputBorder CreateResolveWith(
+        Func<HashSet<WidgetState>, InputBorder> callback
+    ) => new _MaterialStateUnderlineInputBorder__material_state(callback);
 
     public abstract InputBorder resolve(HashSet<WidgetState> states);
 }
 
-internal class _MaterialStateUnderlineInputBorder__material_state : MaterialStateUnderlineInputBorder
+internal class _MaterialStateUnderlineInputBorder__material_state
+    : MaterialStateUnderlineInputBorder
 {
-    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } = default!;
+    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } =
+        default!;
 
-    internal _MaterialStateUnderlineInputBorder__material_state(Func<HashSet<WidgetState>, InputBorder> _resolve)
+    internal _MaterialStateUnderlineInputBorder__material_state(
+        Func<HashSet<WidgetState>, InputBorder> _resolve
+    )
     {
         this._resolve = _resolve;
     }
@@ -71,11 +80,14 @@ public abstract class WidgetStateInputBorder : InputBorder, WidgetStateProperty<
 {
     public WidgetStateInputBorder() { }
 
-    public static WidgetStateInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
-        => new _WidgetStateInputBorder__material_state(callback);
+    public static WidgetStateInputBorder CreateResolveWith(
+        Func<HashSet<WidgetState>, InputBorder> callback
+    ) => new _WidgetStateInputBorder__material_state(callback);
 
-    public static WidgetStateInputBorder CreateFromMap(DartMap<WidgetStatesConstraint, InputBorder> map)
-        => new _WidgetInputBorderMapper__material_state(map);
+    public static WidgetStateInputBorder CreateFromMap(
+        DartMap<WidgetStatesConstraint, InputBorder> map
+    ) => new _WidgetInputBorderMapper__material_state(map);
 
-    public virtual InputBorder resolve(HashSet<WidgetState> states) => throw new NotSupportedException();
+    public virtual InputBorder resolve(HashSet<WidgetState> states) =>
+        throw new NotSupportedException();
 }

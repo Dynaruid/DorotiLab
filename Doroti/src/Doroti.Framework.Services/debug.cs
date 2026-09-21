@@ -19,17 +19,17 @@ public static partial class DebugLibrary
     public static bool debugAssertAllServicesVarsUnset(string reason)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (debugKeyEventSimulatorTransitModeOverride is not null)
             {
-                if (debugKeyEventSimulatorTransitModeOverride is not null)
-                {
-                    throw new FlutterError(reason);
-                }
-                if (debugPrintKeyboardEvents)
-                {
-                    throw new FlutterError(reason);
-                }
-                return true;
-            });
+                throw new FlutterError(reason);
+            }
+            if (debugPrintKeyboardEvents)
+            {
+                throw new FlutterError(reason);
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -39,4 +39,3 @@ public static partial class DebugLibrary
 {
     public static bool debugProfilePlatformChannels = false;
 }
-

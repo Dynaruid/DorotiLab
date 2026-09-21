@@ -9,16 +9,29 @@ internal sealed class ScaffoldSlotMediaQuery(
     bool removeRightPadding,
     bool removeBottomPadding,
     bool removeBottomInset,
-    bool maintainBottomViewPadding) : StatelessWidget
+    bool maintainBottomViewPadding
+) : StatelessWidget
 {
     public override Widget build(BuildContext context)
     {
-        var data = MediaQuery.of(context).removePadding(
-            removeLeft: removeLeftPadding, removeTop: removeTopPadding,
-            removeRight: removeRightPadding, removeBottom: removeBottomPadding);
-        if (removeBottomInset) data = data.removeViewInsets(removeBottom: true);
+        var data = MediaQuery
+            .of(context)
+            .removePadding(
+                removeLeft: removeLeftPadding,
+                removeTop: removeTopPadding,
+                removeRight: removeRightPadding,
+                removeBottom: removeBottomPadding
+            );
+        if (removeBottomInset)
+        {
+            data = data.removeViewInsets(removeBottom: true);
+        }
+
         if (maintainBottomViewPadding && data.viewInsets.bottom != 0)
+        {
             data = data.copyWith(padding: data.padding.copyWith(bottom: data.viewPadding.bottom));
+        }
+
         return new MediaQuery(data: data, child: child);
     }
 }

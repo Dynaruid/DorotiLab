@@ -18,7 +18,11 @@ public class ProcessTextAction
     public override bool Equals(object? other)
     {
         var __other = other as ProcessTextAction;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -39,25 +43,25 @@ public class DefaultProcessTextService : ProcessTextService
 {
     internal virtual MethodChannel _processTextChannel { get; set; } = default!;
 
-    public DefaultProcessTextService()
-    {
-    }
+    public DefaultProcessTextService() { }
 
     public virtual void setChannel(MethodChannel newChannel)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _processTextChannel = newChannel;
-                return true;
-            });
+        {
+            _processTextChannel = newChannel;
+            return true;
+        });
     }
 
-    public async virtual Future<List<ProcessTextAction>> queryTextActions()
+    public virtual async Future<List<ProcessTextAction>> queryTextActions()
     {
         DartMap<object?, object?> rawResults = default!;
         try
         {
-            var result = await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions");
+            var result = await _processTextChannel.invokeMethod<object>(
+                "ProcessText.queryTextActions"
+            );
             if (result is null)
             {
                 return new List<ProcessTextAction>();
@@ -70,21 +74,32 @@ public class DefaultProcessTextService : ProcessTextService
         {
             return new List<ProcessTextAction>();
         }
-        return rawResults.Select(entry =>
-        {
-            if (entry.Key is not string id || entry.Value is not string label)
-                throw new FormatException("Process text action IDs and labels must be strings.");
-            return new ProcessTextAction(id, label);
-        }).ToList();
+        return rawResults
+            .Select(entry =>
+            {
+                if (entry.Key is not string id || entry.Value is not string label)
+                {
+                    throw new FormatException(
+                        "Process text action IDs and labels must be strings."
+                    );
+                }
+
+                return new ProcessTextAction(id, label);
+            })
+            .ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<string?> processTextAction(string id, string text, bool readOnly)
+    public virtual async Future<string?> processTextAction(string id, string text, bool readOnly)
     {
-        var processedText = ((string?)await _processTextChannel.invokeMethod<object>("ProcessText.processTextAction", new List<object> { id, text, readOnly }))!;
+        var processedText = (
+            (string?)
+                await _processTextChannel.invokeMethod<object>(
+                    "ProcessText.processTextAction",
+                    new List<object> { id, text, readOnly }
+                )
+        )!;
         return processedText;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

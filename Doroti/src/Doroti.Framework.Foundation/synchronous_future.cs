@@ -7,14 +7,18 @@ public sealed class SynchronousFuture<T> : Runtime.Future<T>
 {
     private readonly T _value;
 
-    public SynchronousFuture(T value) : base(Task.FromResult(value)) => _value = value;
+    public SynchronousFuture(T value)
+        : base(Task.FromResult(value)) => _value = value;
 
     public override Runtime.Future<TResult> then<TResult>(Func<T, TResult> onValue) =>
         new SynchronousFuture<TResult>(onValue(_value));
 
     // Localizations keeps heterogeneous delegate results as Future. Preserve
     // synchronous delivery through that base reference as well as Future<T>.
-    public override Runtime.Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null)
+    public override Runtime.Future<TResult> then<TResult>(
+        Func<object?, object?> onValue,
+        Delegate? onError = null
+    )
     {
         var result = onValue(_value);
         return result is Runtime.Future<TResult> future

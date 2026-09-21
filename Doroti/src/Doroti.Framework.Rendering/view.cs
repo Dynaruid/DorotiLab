@@ -11,10 +11,16 @@ public class ViewConfiguration
     public virtual BoxConstraints physicalConstraints { get; private set; } = default!;
     public virtual double devicePixelRatio { get; private set; } = default!;
 
-    public ViewConfiguration(BoxConstraints physicalConstraints = default!, BoxConstraints logicalConstraints = default!, double devicePixelRatio = 1.0)
+    public ViewConfiguration(
+        BoxConstraints physicalConstraints = default!,
+        BoxConstraints logicalConstraints = default!,
+        double devicePixelRatio = 1.0
+    )
     {
-        BoxConstraints __physicalConstraints = physicalConstraints ?? new BoxConstraints(maxWidth: 0, maxHeight: 0);
-        BoxConstraints __logicalConstraints = logicalConstraints ?? new BoxConstraints(maxWidth: 0, maxHeight: 0);
+        BoxConstraints __physicalConstraints =
+            physicalConstraints ?? new BoxConstraints(maxWidth: 0, maxHeight: 0);
+        BoxConstraints __logicalConstraints =
+            logicalConstraints ?? new BoxConstraints(maxWidth: 0, maxHeight: 0);
         this.physicalConstraints = __physicalConstraints;
         this.logicalConstraints = __logicalConstraints;
         this.devicePixelRatio = devicePixelRatio;
@@ -22,9 +28,15 @@ public class ViewConfiguration
 
     public static ViewConfiguration CreateFromView(DorotiView view)
     {
-        var physicalConstraintsLocal = BoxConstraints.CreateFromViewConstraints(view.physicalConstraints);
+        var physicalConstraintsLocal = BoxConstraints.CreateFromViewConstraints(
+            view.physicalConstraints
+        );
         double devicePixelRatioLocal = view.devicePixelRatio;
-        return new ViewConfiguration(physicalConstraints: physicalConstraintsLocal, logicalConstraints: physicalConstraintsLocal.op_Divide(devicePixelRatioLocal), devicePixelRatio: devicePixelRatioLocal);
+        return new ViewConfiguration(
+            physicalConstraints: physicalConstraintsLocal,
+            logicalConstraints: physicalConstraintsLocal.op_Divide(devicePixelRatioLocal),
+            devicePixelRatio: devicePixelRatioLocal
+        );
     }
 
     public virtual Matrix4 toMatrix()
@@ -52,16 +64,30 @@ public class ViewConfiguration
     public override bool Equals(object? other)
     {
         var __other = other as ViewConfiguration;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (__other is ViewConfiguration) && Equals(__other.logicalConstraints, logicalConstraints) && Equals(__other.physicalConstraints, physicalConstraints) && (__other.devicePixelRatio == devicePixelRatio);
+        return (__other is ViewConfiguration)
+            && Equals(__other.logicalConstraints, logicalConstraints)
+            && Equals(__other.physicalConstraints, physicalConstraints)
+            && (__other.devicePixelRatio == devicePixelRatio);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(logicalConstraints, physicalConstraints, devicePixelRatio);
-    public override string ToString() => $"{logicalConstraints} at {Foundation.DebugLibrary.debugFormatDouble(devicePixelRatio)}x";
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            logicalConstraints,
+            physicalConstraints,
+            devicePixelRatio
+        );
+
+    public override string ToString() =>
+        $"{logicalConstraints} at {Foundation.DebugLibrary.debugFormatDouble(devicePixelRatio)}x";
 }
 
 public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
@@ -71,10 +97,15 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     internal virtual DorotiView _view { get; private set; } = default!;
     public virtual bool automaticSystemUiAdjustment { get; set; } = true;
     internal virtual Matrix4? _rootTransform { get; set; } = default;
-    internal static List<Action<PaintingContext, Offset, RenderView>> _debugPaintCallbacks = new List<Action<PaintingContext, Offset, RenderView>>();
+    internal static List<Action<PaintingContext, Offset, RenderView>> _debugPaintCallbacks =
+        new List<Action<PaintingContext, Offset, RenderView>>();
     public virtual RenderBox? _child { get; set; } = default;
 
-    public RenderView(RenderBox? child = null, ViewConfiguration? configuration = null, DorotiView view = default!)
+    public RenderView(
+        RenderBox? child = null,
+        ViewConfiguration? configuration = null,
+        DorotiView view = default!
+    )
     {
         _view = view;
     }
@@ -111,12 +142,15 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         {
             if (!hasConfiguration)
             {
-                throw new InvalidOperationException("Constraints are not available because RenderView has not been given a configuration yet.");
+                throw new InvalidOperationException(
+                    "Constraints are not available because RenderView has not been given a configuration yet."
+                );
             }
             return configuration.logicalConstraints;
         }
     }
     public virtual DorotiView flutterView => _view;
+
     public virtual void prepareInitialFrame()
     {
         DartRuntimePrimitives.Assert(() => owner is not null);
@@ -167,6 +201,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     }
 
     public override bool isRepaintBoundary => true;
+
     public override void paint(PaintingContext context, Offset offset)
     {
         if (child is not null)
@@ -174,17 +209,18 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             context.paintChild(child!, offset);
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            List<Action<PaintingContext, Offset, RenderView>> localCallbacks =
+                _debugPaintCallbacks.ToList();
+            foreach (var paintCallback in localCallbacks)
             {
-                List<Action<PaintingContext, Offset, RenderView>> localCallbacks = _debugPaintCallbacks.ToList();
-                foreach (var paintCallback in localCallbacks)
+                if (_debugPaintCallbacks.Contains(paintCallback))
                 {
-                    if (_debugPaintCallbacks.Contains(paintCallback))
-                    {
-                        paintCallback(context, offset, this);
-                    }
+                    paintCallback(context, offset, this);
                 }
-                return true;
-            });
+            }
+            return true;
+        });
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -206,25 +242,34 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             DartRuntimePrimitives.Assert(() => hasConfiguration);
             DartRuntimePrimitives.Assert(() => _rootTransform is not null);
             DartRuntimePrimitives.Assert(() => layer is not null);
-            SceneBuilder builder = _view.viewId == 0
-                ? RendererBinding.instance.createSceneBuilder()
-                : new SceneBuilder(_view.viewId);
+            SceneBuilder builder =
+                _view.viewId == 0
+                    ? RendererBinding.instance.createSceneBuilder()
+                    : new SceneBuilder(_view.viewId);
             Scene scene = layer!.buildScene(builder);
             if (automaticSystemUiAdjustment)
             {
                 _updateSystemChrome();
             }
-            DartRuntimePrimitives.Assert(() => configuration.logicalConstraints.isSatisfiedBy(size));
+            DartRuntimePrimitives.Assert(() =>
+                configuration.logicalConstraints.isSatisfiedBy(size)
+            );
             _view.render(scene, size: configuration.toPhysicalSize(size));
             scene.dispose();
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (
+                    DebugLibrary.debugRepaintRainbowEnabled
+                    || DebugLibrary.debugRepaintTextRainbowEnabled
+                )
                 {
-                    if (DebugLibrary.debugRepaintRainbowEnabled || DebugLibrary.debugRepaintTextRainbowEnabled)
-                    {
-                        DebugLibrary.debugCurrentRepaintColor = DebugLibrary.debugCurrentRepaintColor.withHue((DebugLibrary.debugCurrentRepaintColor.hue + 2.0) % 360.0);
-                    }
-                    return true;
-                });
+                    DebugLibrary.debugCurrentRepaintColor =
+                        DebugLibrary.debugCurrentRepaintColor.withHue(
+                            (DebugLibrary.debugCurrentRepaintColor.hue + 2.0) % 360.0
+                        );
+                }
+                return true;
+            });
         }
         finally
         {
@@ -244,24 +289,27 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     {
         Rect bounds = paintBounds;
         var topLocal = new Offset(bounds.center.dx, _view.padding.top / 2.0);
-        var bottomLocal = new Offset(bounds.center.dx, bounds.bottom - 1.0 - (_view.padding.bottom / 2.0));
+        var bottomLocal = new Offset(
+            bounds.center.dx,
+            bounds.bottom - 1.0 - (_view.padding.bottom / 2.0)
+        );
         SystemUiOverlayStyle? upperOverlayStyle = layer!.find<SystemUiOverlayStyle>(topLocal);
         SystemUiOverlayStyle? lowerOverlayStyle = default!;
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant17241 when Equals(__constant17241, TargetPlatform.android):
-                {
-                    lowerOverlayStyle = layer!.find<SystemUiOverlayStyle>(bottomLocal);
-                    break;
-                }
+            {
+                lowerOverlayStyle = layer!.find<SystemUiOverlayStyle>(bottomLocal);
+                break;
+            }
             case var __constant17347 when Equals(__constant17347, TargetPlatform.fuchsia):
             case var __constant17382 when Equals(__constant17382, TargetPlatform.iOS):
             case var __constant17413 when Equals(__constant17413, TargetPlatform.linux):
             case var __constant17446 when Equals(__constant17446, TargetPlatform.macOS):
             case var __constant17479 when Equals(__constant17479, TargetPlatform.windows):
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
         if ((upperOverlayStyle is null) && (lowerOverlayStyle is null))
         {
@@ -269,17 +317,43 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         }
         if ((upperOverlayStyle is not null) && (lowerOverlayStyle is not null))
         {
-            var overlayStyle = new SystemUiOverlayStyle(statusBarBrightness: upperOverlayStyle.statusBarBrightness, statusBarIconBrightness: upperOverlayStyle.statusBarIconBrightness, statusBarColor: upperOverlayStyle.statusBarColor, systemStatusBarContrastEnforced: upperOverlayStyle.systemStatusBarContrastEnforced, systemNavigationBarColor: lowerOverlayStyle.systemNavigationBarColor, systemNavigationBarDividerColor: lowerOverlayStyle.systemNavigationBarDividerColor, systemNavigationBarIconBrightness: lowerOverlayStyle.systemNavigationBarIconBrightness, systemNavigationBarContrastEnforced: lowerOverlayStyle.systemNavigationBarContrastEnforced);
+            var overlayStyle = new SystemUiOverlayStyle(
+                statusBarBrightness: upperOverlayStyle.statusBarBrightness,
+                statusBarIconBrightness: upperOverlayStyle.statusBarIconBrightness,
+                statusBarColor: upperOverlayStyle.statusBarColor,
+                systemStatusBarContrastEnforced: upperOverlayStyle.systemStatusBarContrastEnforced,
+                systemNavigationBarColor: lowerOverlayStyle.systemNavigationBarColor,
+                systemNavigationBarDividerColor: lowerOverlayStyle.systemNavigationBarDividerColor,
+                systemNavigationBarIconBrightness: lowerOverlayStyle.systemNavigationBarIconBrightness,
+                systemNavigationBarContrastEnforced: lowerOverlayStyle.systemNavigationBarContrastEnforced
+            );
             SystemChrome.setSystemUIOverlayStyle(overlayStyle);
             return;
         }
         var isAndroid = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android);
         SystemUiOverlayStyle definedOverlayStyle = (upperOverlayStyle ?? lowerOverlayStyle)!;
-        var overlayStyleLocal = new SystemUiOverlayStyle(statusBarBrightness: definedOverlayStyle.statusBarBrightness, statusBarIconBrightness: definedOverlayStyle.statusBarIconBrightness, statusBarColor: definedOverlayStyle.statusBarColor, systemStatusBarContrastEnforced: definedOverlayStyle.systemStatusBarContrastEnforced, systemNavigationBarColor: isAndroid ? definedOverlayStyle.systemNavigationBarColor : null, systemNavigationBarDividerColor: isAndroid ? definedOverlayStyle.systemNavigationBarDividerColor : null, systemNavigationBarIconBrightness: isAndroid ? definedOverlayStyle.systemNavigationBarIconBrightness : null, systemNavigationBarContrastEnforced: isAndroid ? definedOverlayStyle.systemNavigationBarContrastEnforced : null);
+        var overlayStyleLocal = new SystemUiOverlayStyle(
+            statusBarBrightness: definedOverlayStyle.statusBarBrightness,
+            statusBarIconBrightness: definedOverlayStyle.statusBarIconBrightness,
+            statusBarColor: definedOverlayStyle.statusBarColor,
+            systemStatusBarContrastEnforced: definedOverlayStyle.systemStatusBarContrastEnforced,
+            systemNavigationBarColor: isAndroid
+                ? definedOverlayStyle.systemNavigationBarColor
+                : null,
+            systemNavigationBarDividerColor: isAndroid
+                ? definedOverlayStyle.systemNavigationBarDividerColor
+                : null,
+            systemNavigationBarIconBrightness: isAndroid
+                ? definedOverlayStyle.systemNavigationBarIconBrightness
+                : null,
+            systemNavigationBarContrastEnforced: isAndroid
+                ? definedOverlayStyle.systemNavigationBarContrastEnforced
+                : null
+        );
         SystemChrome.setSystemUIOverlayStyle(overlayStyleLocal);
     }
 
-    public override Rect paintBounds => Offset.zero & size * configuration.devicePixelRatio;
+    public override Rect paintBounds => Offset.zero & (size * configuration.devicePixelRatio);
     public override Rect semanticBounds
     {
         get
@@ -288,16 +362,39 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             return MatrixUtils.transformRect(_rootTransform!, Offset.zero & size);
         }
     }
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                properties.add(new DiagnosticsNode($"debug mode enabled - {(Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem)}"));
-                return true;
-            });
-        properties.add(new DiagnosticsProperty<Size>("view size", _view.physicalSize, tooltip: "in physical pixels"));
-        properties.add(new DoubleProperty("device pixel ratio", _view.devicePixelRatio, tooltip: "physical pixels per logical pixel"));
-        properties.add(new DiagnosticsProperty<ViewConfiguration>("configuration", configuration, tooltip: "in logical pixels"));
+        {
+            properties.add(
+                new DiagnosticsNode(
+                    $"debug mode enabled - {(Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem)}"
+                )
+            );
+            return true;
+        });
+        properties.add(
+            new DiagnosticsProperty<Size>(
+                "view size",
+                _view.physicalSize,
+                tooltip: "in physical pixels"
+            )
+        );
+        properties.add(
+            new DoubleProperty(
+                "device pixel ratio",
+                _view.devicePixelRatio,
+                tooltip: "physical pixels per logical pixel"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<ViewConfiguration>(
+                "configuration",
+                configuration,
+                tooltip: "in logical pixels"
+            )
+        );
         if (_view.platformDispatcher.semanticsEnabled)
         {
             properties.add(new DiagnosticsNode("semantics enabled"));
@@ -307,31 +404,60 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     public static void debugAddPaintCallback(Action<PaintingContext, Offset, RenderView> callback)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPaintCallbacks.Add(callback);
-                return true;
-            });
+        {
+            _debugPaintCallbacks.Add(callback);
+            return true;
+        });
     }
 
-    public static void debugRemovePaintCallback(Action<PaintingContext, Offset, RenderView> callback)
+    public static void debugRemovePaintCallback(
+        Action<PaintingContext, Offset, RenderView> callback
+    )
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPaintCallbacks.Remove(callback);
-                return true;
-            });
+        {
+            _debugPaintCallbacks.Remove(callback);
+            return true;
+        });
     }
 
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
-                }
-                return true;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                        ),
+                        new ErrorDescription(
+                            "RenderObjects expect specific types of children because they "
+                                + "coordinate with their children during layout and paint. For "
+                                + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                + "a RenderSliver does not understand the RenderBox layout protocol."
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                            debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                        new ErrorSpacer(),
+                        new DiagnosticsProperty<object?>(
+                            $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                + "was created by",
+                            child.debugCreator,
+                            style: DiagnosticsTreeStyle.errorProperty
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -353,6 +479,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             }
         }
     }
+
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -383,10 +510,18 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
+        return (child is not null)
+            ? new List<DiagnosticsNode>
+            {
+                ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
+            }
+            : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public delegate void DebugPaintCallback(PaintingContext context, Offset offset, RenderView renderView);
+public delegate void DebugPaintCallback(
+    PaintingContext context,
+    Offset offset,
+    RenderView renderView
+);

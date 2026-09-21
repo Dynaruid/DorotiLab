@@ -1,31 +1,34 @@
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
-using Color = Doroti.Ui.Color;
 using SkiaSharp;
+using Color = Doroti.Ui.Color;
 using UiImage = Doroti.Ui.Image;
 
 namespace Doroti.Host.Maui;
 
-internal sealed class MauiSkiaCapabilities :
-    ISceneHostCapability,
-    IParagraphHostCapability,
-    IFontHostCapability,
-    IImageHostCapability,
-    ISemanticsHostCapability,
-    IDisposable
+internal sealed class MauiSkiaCapabilities
+    : ISceneHostCapability,
+        IParagraphHostCapability,
+        IFontHostCapability,
+        IImageHostCapability,
+        ISemanticsHostCapability,
+        IDisposable
 {
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
     private IMauiGraphiteSurface? _graphiteSurface;
+
     internal void AttachGraphiteLifecycle(IMauiGraphiteSurface surface)
     {
         _graphiteSurface = surface;
         surface.GpuResourcesReleasing += _renderer.InvalidateGpuContextResources;
     }
+
 #if ANDROID
     private IDisposable? _platformViewChannel;
     private AndroidPlatformViewHost? _platformViews;
+
     internal void AttachPlatformViews(AndroidPlatformViewHost platformViews, IDisposable channel)
     {
         _platformViews = platformViews;
@@ -37,12 +40,21 @@ internal sealed class MauiSkiaCapabilities :
 #if IOS && !MACCATALYST
     private IDisposable? _platformViewChannel;
     private UIKitPlatformViewHost? _platformViews;
+
     internal void AttachPlatformViews(UIKitPlatformViewHost platformViews, IDisposable channel)
     {
         _platformViews = platformViews;
         _platformViewChannel = channel;
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
-            platformViews.Draw(_renderer, canvas, commands, descriptor, width, height, _host.Configuration.platformBrightness);
+            platformViews.Draw(
+                _renderer,
+                canvas,
+                commands,
+                descriptor,
+                width,
+                height,
+                _host.Configuration.platformBrightness
+            );
     }
 #endif
 #if MACOS
@@ -55,7 +67,15 @@ internal sealed class MauiSkiaCapabilities :
         _platformViews = platformViews;
         _platformViewChannel = channel;
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
-            platformViews.Draw(_renderer, canvas, commands, descriptor, width, height, _host.Configuration.platformBrightness);
+            platformViews.Draw(
+                _renderer,
+                canvas,
+                commands,
+                descriptor,
+                width,
+                height,
+                _host.Configuration.platformBrightness
+            );
     }
 
     internal void AttachNativeLifecycle(DorotiMacOSMetalSurface surface)
@@ -69,7 +89,8 @@ internal sealed class MauiSkiaCapabilities :
         ulong viewId,
         MauiHostAdapter host,
         Color? backgroundColor,
-        Color? darkBackgroundColor)
+        Color? darkBackgroundColor
+    )
     {
         _host = host;
         _renderer = new(
@@ -79,41 +100,65 @@ internal sealed class MauiSkiaCapabilities :
             darkBackgroundColor,
 #if MACOS
             "macos/mtkview",
-            DorotiMacOSMetalView.UseGraphite ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.AppKitMetalBackend,
+            DorotiMacOSMetalView.UseGraphite
+                ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend
+                : DorotiSkiaRuntimeEffects.AppKitMetalBackend,
             DorotiMacOSMetalView.GraphicsBackendId,
             // AppKit Ganesh offscreen snapshots can expose a transparent
             // picture before its raster work is visible to the main surface.
-            enablePictureRasterCache: false);
+            enablePictureRasterCache: false
+        );
 #elif MACCATALYST
             "maui/skglview",
-            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            DorotiGraphiteView.Enabled ? "UIKit/MTKView/Graphite-Metal" : "skiasharp-maui-skglview-gpu",
+            DorotiGraphiteView.Enabled
+                ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend
+                : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled
+                ? "UIKit/MTKView/Graphite-Metal"
+                : "skiasharp-maui-skglview-gpu",
             // Catalyst uses the same Ganesh/Metal offscreen path. During a
             // live resize, cached component pictures can become visible before
             // their replacement raster belongs to the new drawable epoch.
-            enablePictureRasterCache: false);
+            enablePictureRasterCache: false
+        );
 #elif IOS
             "maui/skglview",
-            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            DorotiGraphiteView.Enabled ? "UIKit/MTKView/Graphite-Metal" : "skiasharp-maui-skglview-gpu",
+            DorotiGraphiteView.Enabled
+                ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend
+                : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled
+                ? "UIKit/MTKView/Graphite-Metal"
+                : "skiasharp-maui-skglview-gpu",
             // iOS uses the same Ganesh/Metal offscreen path as Catalyst.
             // Cached component pictures can otherwise expose a transparent
             // snapshot before their raster work is visible to the drawable.
-            enablePictureRasterCache: false);
+            enablePictureRasterCache: false
+        );
 #elif ANDROID
             "maui/surfaceview",
-            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            DorotiGraphiteView.Enabled ? "Android/SurfaceView/Graphite-Vulkan" : "skiasharp-maui-skglview-gpu",
-            enablePictureRasterCache: false);
+            DorotiGraphiteView.Enabled
+                ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
+                : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled
+                ? "Android/SurfaceView/Graphite-Vulkan"
+                : "skiasharp-maui-skglview-gpu",
+            enablePictureRasterCache: false
+        );
 #elif WINDOWS
             "maui/composition",
-            WindowsCompositionSurfaceFeature.GraphiteEnabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            WindowsCompositionSurfaceFeature.GraphiteEnabled ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan" : "skiasharp-maui-skglview-gpu",
-            enablePictureRasterCache: !WindowsCompositionSurfaceFeature.GraphiteEnabled);
+            WindowsCompositionSurfaceFeature.GraphiteEnabled
+                ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
+                : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            WindowsCompositionSurfaceFeature.GraphiteEnabled
+                ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan"
+                : "skiasharp-maui-skglview-gpu",
+            enablePictureRasterCache: !WindowsCompositionSurfaceFeature.GraphiteEnabled
+        );
 #else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            "skiasharp-maui-skglview-gpu");
+            "skiasharp-maui-skglview-gpu"
+        );
 #endif
     }
 
@@ -129,15 +174,30 @@ internal sealed class MauiSkiaCapabilities :
         {
             var value = _renderer.Diagnostics;
             return new(
-                value.Submitted, value.Presented, value.Replayed, value.Failed,
-                value.ContextGeneration, value.SurfaceGeneration, value.PendingScene,
-                value.ShaderImageFiltersRendered, value.Backend, value.Superseded,
-                value.Dropped, value.LastInputSequence, value.LastSubmittedInputSequence,
-                value.LastPresentedInputSequence, value.ImageFilterSurfacesCreated,
-                value.ImageFilterSurfaceReuses, value.ActiveImageFilterSurfaces,
-                value.ShaderImageFilterCacheHits, value.ShaderImageFilterCacheMisses,
-                value.PictureRasterCacheHits, value.PictureRasterCacheMisses,
-                value.PictureRasterCacheEntries, value.Trace);
+                value.Submitted,
+                value.Presented,
+                value.Replayed,
+                value.Failed,
+                value.ContextGeneration,
+                value.SurfaceGeneration,
+                value.PendingScene,
+                value.ShaderImageFiltersRendered,
+                value.Backend,
+                value.Superseded,
+                value.Dropped,
+                value.LastInputSequence,
+                value.LastSubmittedInputSequence,
+                value.LastPresentedInputSequence,
+                value.ImageFilterSurfacesCreated,
+                value.ImageFilterSurfaceReuses,
+                value.ActiveImageFilterSurfaces,
+                value.ShaderImageFilterCacheHits,
+                value.ShaderImageFilterCacheMisses,
+                value.PictureRasterCacheHits,
+                value.PictureRasterCacheMisses,
+                value.PictureRasterCacheEntries,
+                value.Trace
+            );
         }
     }
 
@@ -145,60 +205,105 @@ internal sealed class MauiSkiaCapabilities :
     {
         // Diagnostic wall clock is separate from the causally clamped frame
         // timestamp. Both baseline and official candidates use the same switch.
-        frameTrace.MeasureRecordingTime = Environment.GetEnvironmentVariable("DOROTI_MAUI_WALL_TRACE") == "1";
+        frameTrace.MeasureRecordingTime =
+            Environment.GetEnvironmentVariable("DOROTI_MAUI_WALL_TRACE") == "1";
         _renderer.AttachFrameworkTrace(frameTrace);
     }
 
     internal void AttachSurface(Action invalidate) => _renderer.AttachSurface(invalidate);
 
-    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation) =>
-        _renderer.Submit(viewId, submission, invocation);
+    public void Submit(
+        ulong viewId,
+        DorotiSceneSubmission submission,
+        DartUiInvocation invocation
+    ) => _renderer.Submit(viewId, submission, invocation);
 
     internal MauiPaintCompletion? Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        out bool shouldPresent)
+        out bool shouldPresent
+    )
     {
         var result = _renderer.Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget);
         shouldPresent = result.Disposition != SkiaPaintDisposition.superseded;
         return result.Completion is { } completion
-            ? new(completion.InputSequence, completion.SceneSequence,
-                completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor)
+            ? new(
+                completion.InputSequence,
+                completion.SceneSequence,
+                completion.SurfaceGeneration,
+                completion.IsNewFrame,
+                completion.Descriptor
+            )
             : null;
     }
 
     internal void CompletePaint(MauiPaintCompletion completion) =>
-        _renderer.CompletePaint(new(
-            completion.InputSequence, completion.SceneSequence,
-            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor));
+        _renderer.CompletePaint(
+            new(
+                completion.InputSequence,
+                completion.SceneSequence,
+                completion.SurfaceGeneration,
+                completion.IsNewFrame,
+                completion.Descriptor
+            )
+        );
 
     internal void FailPaint(MauiPaintCompletion completion, string reason) =>
-        _renderer.FailPaint(new(
-            completion.InputSequence, completion.SceneSequence,
-            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor), reason);
+        _renderer.FailPaint(
+            new(
+                completion.InputSequence,
+                completion.SceneSequence,
+                completion.SurfaceGeneration,
+                completion.IsNewFrame,
+                completion.Descriptor
+            ),
+            reason
+        );
 
     internal void SupersedePaint(MauiPaintCompletion completion, string reason) =>
-        _renderer.SupersedePaint(new(
-            completion.InputSequence, completion.SceneSequence,
-            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor), reason);
+        _renderer.SupersedePaint(
+            new(
+                completion.InputSequence,
+                completion.SceneSequence,
+                completion.SurfaceGeneration,
+                completion.IsNewFrame,
+                completion.Descriptor
+            ),
+            reason
+        );
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
 
-    public ValueTask<UiImage> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
-        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
-        _renderer.DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
+    public ValueTask<UiImage> DecodeSizedAsync(
+        ReadOnlyMemory<byte> bytes,
+        Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    ) =>
+        _renderer.DecodeSizedAsync(
+            bytes,
+            targetSize,
+            allowUpscaling,
+            invocation,
+            cancellationToken
+        );
 
-    public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
-        DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
-        _renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken);
+    public ValueTask<UiImage> RasterizeAsync(
+        Picture picture,
+        int width,
+        int height,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    ) => _renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken);
 
     public ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
         DartUiInvocation invocation,
-        CancellationToken cancellationToken = default) =>
-        _renderer.DecodeAsync(bytes, invocation, cancellationToken);
+        CancellationToken cancellationToken = default
+    ) => _renderer.DecodeAsync(bytes, invocation, cancellationToken);
 
     public void SetEnabled(bool enabled, DartUiInvocation invocation) =>
         _renderer.SetEnabled(enabled, invocation);
@@ -206,18 +311,26 @@ internal sealed class MauiSkiaCapabilities :
     public void Update(SemanticsUpdate update, DartUiInvocation invocation) =>
         _renderer.Update(update, invocation);
 
-    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default) =>
-        _renderer.RegisterFontAsync(bytes, family, cancellationToken);
+    public ValueTask RegisterFontAsync(
+        ReadOnlyMemory<byte> bytes,
+        string? family,
+        CancellationToken cancellationToken = default
+    ) => _renderer.RegisterFontAsync(bytes, family, cancellationToken);
 
     public void Dispose()
     {
         if (_graphiteSurface is { } graphiteSurface)
+        {
             graphiteSurface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
+        }
+
         _graphiteSurface = null;
 #if ANDROID || (IOS && !MACCATALYST)
         _renderer.PlatformScenePainter = null;
-        _platformViewChannel?.Dispose(); _platformViewChannel = null;
-        _platformViews?.Dispose(); _platformViews = null;
+        _platformViewChannel?.Dispose();
+        _platformViewChannel = null;
+        _platformViews?.Dispose();
+        _platformViews = null;
 #endif
 #if MACOS
         _renderer.PlatformScenePainter = null;
@@ -226,7 +339,10 @@ internal sealed class MauiSkiaCapabilities :
         _platformViews?.Dispose();
         _platformViews = null;
         if (_metalSurface is { } surface)
+        {
             surface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
+        }
+
         _metalSurface = null;
 #endif
         _renderer.Dispose();
@@ -239,8 +355,7 @@ internal sealed class MauiSkiaCapabilities :
         public long InputSequence => _host.InputSequence;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
         public DorotiViewEpoch ViewEpoch => _host.ViewEpoch;
-        public DorotiResizeEpoch ResizeTarget
-            => _host.ResizeTarget;
+        public DorotiResizeEpoch ResizeTarget => _host.ResizeTarget;
         public PlatformConfiguration Configuration => _host.Configuration;
 
         public event Action<int, SemanticsAction, object?>? SemanticsAction
@@ -262,7 +377,9 @@ internal sealed class MauiSkiaCapabilities :
         }
 
         public void UpdateSemantics(SemanticsUpdate update) => _host.UpdateSemantics(update);
+
         public void ClearSemantics() => _host.ClearSemantics();
+
         public void RequestInvalidate() => _host.RequestInvalidate();
     }
 }

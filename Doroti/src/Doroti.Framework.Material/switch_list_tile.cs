@@ -9,7 +9,7 @@ namespace Doroti.Framework.Material;
 internal enum _SwitchListTileType__switch_list_tile
 {
     material,
-    adaptive
+    adaptive,
 }
 
 public class SwitchListTile : StatelessWidget
@@ -22,9 +22,17 @@ public class SwitchListTile : StatelessWidget
     public virtual Color? inactiveThumbColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
     public virtual IImageProvider? activeThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual IImageProvider? inactiveThumbImage { get; private set; } = default!;
-    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError
+    {
+        get;
+        private set;
+    }
     public virtual WidgetStateProperty<Color?>? thumbColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? trackOutlineColor { get; private set; }
@@ -46,7 +54,11 @@ public class SwitchListTile : StatelessWidget
     public virtual bool? dense { get; private set; }
     public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
     public virtual bool selected { get; private set; } = default!;
-    internal virtual _SwitchListTileType__switch_list_tile _switchListTileType { get; private set; } = default!;
+    internal virtual _SwitchListTileType__switch_list_tile _switchListTileType
+    {
+        get;
+        private set;
+    } = default!;
     public virtual ListTileControlAffinity? controlAffinity { get; private set; }
     public virtual ShapeBorder? shape { get; private set; }
     public virtual Color? selectedTileColor { get; private set; }
@@ -60,7 +72,53 @@ public class SwitchListTile : StatelessWidget
     public virtual bool? applyCupertinoTheme { get; private set; }
     public virtual bool internalAddSemanticForOnTap { get; private set; } = default!;
 
-    public SwitchListTile(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool autofocus = false, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, EdgeInsetsGeometry? contentPadding = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, ShapeBorder? shape = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, Color? hoverColor = null, bool internalAddSemanticForOnTap = false) : base(key: key)
+    public SwitchListTile(
+        Key? key = null,
+        bool value = default!,
+        Action<bool>? onChanged = default!,
+        Color? activeColor = null,
+        Color? activeThumbColor = null,
+        Color? activeTrackColor = null,
+        Color? inactiveThumbColor = null,
+        Color? inactiveTrackColor = null,
+        IImageProvider? activeThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null,
+        IImageProvider? inactiveThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null,
+        WidgetStateProperty<Color?>? thumbColor = null,
+        WidgetStateProperty<Color?>? trackColor = null,
+        WidgetStateProperty<Color?>? trackOutlineColor = null,
+        WidgetStateProperty<Icon?>? thumbIcon = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        MouseCursor? mouseCursor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        Color? tileColor = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        EdgeInsetsGeometry? contentPadding = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        ShapeBorder? shape = null,
+        Color? selectedTileColor = null,
+        VisualDensity? visualDensity = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        Color? hoverColor = null,
+        bool internalAddSemanticForOnTap = false
+    )
+        : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -107,14 +165,109 @@ public class SwitchListTile : StatelessWidget
         this.internalAddSemanticForOnTap = internalAddSemanticForOnTap;
         _switchListTileType = _SwitchListTileType__switch_list_tile.material;
         applyCupertinoTheme = false;
-        System.Diagnostics.Debug.Assert((activeThumbImage is not null) || (onActiveThumbImageError is null));
-        System.Diagnostics.Debug.Assert((inactiveThumbImage is not null) || (onInactiveThumbImageError is null));
+        System.Diagnostics.Debug.Assert(
+            (activeThumbImage is not null) || (onActiveThumbImageError is null)
+        );
+        System.Diagnostics.Debug.Assert(
+            (inactiveThumbImage is not null) || (onInactiveThumbImageError is null)
+        );
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static SwitchListTile CreateAdaptive(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, EdgeInsetsGeometry? contentPadding = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, ShapeBorder? shape = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, Color? hoverColor = null, bool internalAddSemanticForOnTap = false)
+    public static SwitchListTile CreateAdaptive(
+        Key? key = null,
+        bool value = default!,
+        Action<bool>? onChanged = default!,
+        Color? activeColor = null,
+        Color? activeThumbColor = null,
+        Color? activeTrackColor = null,
+        Color? inactiveThumbColor = null,
+        Color? inactiveTrackColor = null,
+        IImageProvider? activeThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null,
+        IImageProvider? inactiveThumbImage = null,
+        Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null,
+        WidgetStateProperty<Color?>? thumbColor = null,
+        WidgetStateProperty<Color?>? trackColor = null,
+        WidgetStateProperty<Color?>? trackOutlineColor = null,
+        WidgetStateProperty<Icon?>? thumbIcon = null,
+        MaterialTapTargetSize? materialTapTargetSize = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        MouseCursor? mouseCursor = null,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        double? splashRadius = null,
+        FocusNode? focusNode = null,
+        WidgetStatesController? statesController = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        bool? applyCupertinoTheme = null,
+        Color? tileColor = null,
+        Widget? title = null,
+        Widget? subtitle = null,
+        bool? isThreeLine = null,
+        bool? dense = null,
+        EdgeInsetsGeometry? contentPadding = null,
+        Widget? secondary = null,
+        bool selected = false,
+        ListTileControlAffinity? controlAffinity = null,
+        ShapeBorder? shape = null,
+        Color? selectedTileColor = null,
+        VisualDensity? visualDensity = null,
+        bool? enableFeedback = null,
+        double? horizontalTitleGap = null,
+        double? minVerticalPadding = null,
+        double? minLeadingWidth = null,
+        double? minTileHeight = null,
+        Color? hoverColor = null,
+        bool internalAddSemanticForOnTap = false
+    )
     {
-        var __instance = new SwitchListTile(key: key, value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeTrackColor: activeTrackColor, inactiveThumbColor: inactiveThumbColor, inactiveTrackColor: inactiveTrackColor, activeThumbImage: activeThumbImage, onActiveThumbImageError: onActiveThumbImageError, inactiveThumbImage: inactiveThumbImage, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, thumbIcon: thumbIcon, materialTapTargetSize: materialTapTargetSize, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, overlayColor: overlayColor, splashRadius: splashRadius, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, autofocus: autofocus, tileColor: tileColor, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, contentPadding: contentPadding, secondary: secondary, selected: selected, controlAffinity: controlAffinity, shape: shape, selectedTileColor: selectedTileColor, visualDensity: visualDensity, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, hoverColor: hoverColor, internalAddSemanticForOnTap: internalAddSemanticForOnTap);
+        var __instance = new SwitchListTile(
+            key: key,
+            value: value,
+            onChanged: onChanged,
+            activeColor: activeColor,
+            activeThumbColor: activeThumbColor,
+            activeTrackColor: activeTrackColor,
+            inactiveThumbColor: inactiveThumbColor,
+            inactiveTrackColor: inactiveTrackColor,
+            activeThumbImage: activeThumbImage,
+            onActiveThumbImageError: onActiveThumbImageError,
+            inactiveThumbImage: inactiveThumbImage,
+            onInactiveThumbImageError: onInactiveThumbImageError,
+            thumbColor: thumbColor,
+            trackColor: trackColor,
+            trackOutlineColor: trackOutlineColor,
+            thumbIcon: thumbIcon,
+            materialTapTargetSize: materialTapTargetSize,
+            dragStartBehavior: dragStartBehavior,
+            mouseCursor: mouseCursor,
+            overlayColor: overlayColor,
+            splashRadius: splashRadius,
+            focusNode: focusNode,
+            statesController: statesController,
+            onFocusChange: onFocusChange,
+            autofocus: autofocus,
+            tileColor: tileColor,
+            title: title,
+            subtitle: subtitle,
+            isThreeLine: isThreeLine,
+            dense: dense,
+            contentPadding: contentPadding,
+            secondary: secondary,
+            selected: selected,
+            controlAffinity: controlAffinity,
+            shape: shape,
+            selectedTileColor: selectedTileColor,
+            visualDensity: visualDensity,
+            enableFeedback: enableFeedback,
+            horizontalTitleGap: horizontalTitleGap,
+            minVerticalPadding: minVerticalPadding,
+            minLeadingWidth: minLeadingWidth,
+            minTileHeight: minTileHeight,
+            hoverColor: hoverColor,
+            internalAddSemanticForOnTap: internalAddSemanticForOnTap
+        );
         __instance.value = value;
         __instance.onChanged = onChanged;
         __instance.activeColor = activeColor;
@@ -169,30 +322,148 @@ public class SwitchListTile : StatelessWidget
         switch (_switchListTileType)
         {
             case _SwitchListTileType__switch_list_tile.adaptive:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: Switch.CreateAdaptive(value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeThumbImage: activeThumbImage, inactiveThumbImage: inactiveThumbImage, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, activeTrackColor: activeTrackColor, inactiveTrackColor: inactiveTrackColor, inactiveThumbColor: inactiveThumbColor, autofocus: autofocus, onFocusChange: onFocusChange, onActiveThumbImageError: onActiveThumbImageError, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, thumbIcon: thumbIcon, applyCupertinoTheme: applyCupertinoTheme, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, splashRadius: splashRadius, overlayColor: overlayColor)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: Switch.CreateAdaptive(
+                            value: value,
+                            onChanged: onChanged,
+                            activeColor: activeColor,
+                            activeThumbColor: activeThumbColor,
+                            activeThumbImage: activeThumbImage,
+                            inactiveThumbImage: inactiveThumbImage,
+                            materialTapTargetSize: materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            activeTrackColor: activeTrackColor,
+                            inactiveTrackColor: inactiveTrackColor,
+                            inactiveThumbColor: inactiveThumbColor,
+                            autofocus: autofocus,
+                            onFocusChange: onFocusChange,
+                            onActiveThumbImageError: onActiveThumbImageError,
+                            onInactiveThumbImageError: onInactiveThumbImageError,
+                            thumbColor: thumbColor,
+                            trackColor: trackColor,
+                            trackOutlineColor: trackOutlineColor,
+                            thumbIcon: thumbIcon,
+                            applyCupertinoTheme: applyCupertinoTheme,
+                            dragStartBehavior: dragStartBehavior,
+                            mouseCursor: mouseCursor,
+                            splashRadius: splashRadius,
+                            overlayColor: overlayColor
+                        )
+                    )
+                );
+                break;
+            }
             case _SwitchListTileType__switch_list_tile.material:
-                {
-                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: new Switch(value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeThumbImage: activeThumbImage, inactiveThumbImage: inactiveThumbImage, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, activeTrackColor: activeTrackColor, inactiveTrackColor: inactiveTrackColor, inactiveThumbColor: inactiveThumbColor, autofocus: autofocus, onFocusChange: onFocusChange, onActiveThumbImageError: onActiveThumbImageError, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, thumbIcon: thumbIcon, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, splashRadius: splashRadius, overlayColor: overlayColor)));
-                    break;
-                }
+            {
+                control = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new ExcludeFocus(
+                        child: new Switch(
+                            value: value,
+                            onChanged: onChanged,
+                            activeColor: activeColor,
+                            activeThumbColor: activeThumbColor,
+                            activeThumbImage: activeThumbImage,
+                            inactiveThumbImage: inactiveThumbImage,
+                            materialTapTargetSize: materialTapTargetSize
+                                ?? MaterialTapTargetSize.shrinkWrap,
+                            activeTrackColor: activeTrackColor,
+                            inactiveTrackColor: inactiveTrackColor,
+                            inactiveThumbColor: inactiveThumbColor,
+                            autofocus: autofocus,
+                            onFocusChange: onFocusChange,
+                            onActiveThumbImageError: onActiveThumbImageError,
+                            onInactiveThumbImageError: onInactiveThumbImageError,
+                            thumbColor: thumbColor,
+                            trackColor: trackColor,
+                            trackOutlineColor: trackOutlineColor,
+                            thumbIcon: thumbIcon,
+                            dragStartBehavior: dragStartBehavior,
+                            mouseCursor: mouseCursor,
+                            splashRadius: splashRadius,
+                            overlayColor: overlayColor
+                        )
+                    )
+                );
+                break;
+            }
         }
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
-        ListTileControlAffinity effectiveControlAffinity = (controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
+        ListTileControlAffinity effectiveControlAffinity =
+            (controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
         Widget? leadingLocal = default!;
         Widget? trailingLocal = default!;
-        DartRuntimePrimitives.Ignore((leadingLocal, trailingLocal) = effectiveControlAffinity switch { var __constant23578 when Equals(__constant23578, ListTileControlAffinity.leading) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, secondary)), var __constant23641 when Equals(__constant23641, ListTileControlAffinity.trailing) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), var __constant23677 when Equals(__constant23677, ListTileControlAffinity.platform) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Ignore(
+            (leadingLocal, trailingLocal) = effectiveControlAffinity switch
+            {
+                var __constant23578 when Equals(__constant23578, ListTileControlAffinity.leading) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, secondary)),
+                var __constant23641
+                    when Equals(__constant23641, ListTileControlAffinity.trailing) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)),
+                var __constant23677
+                    when Equals(__constant23677, ListTileControlAffinity.platform) =>
+                    DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         ThemeData theme = Theme.of(context);
         SwitchThemeData switchTheme = SwitchTheme.of(context);
-        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection23874 = new HashSet<WidgetState>(); if (selected) { __collection23874.Add(WidgetState.selected); } return __collection23874; }))();
-        Color effectiveActiveColor = ((activeThumbColor ?? activeColor) ?? (switchTheme.thumbColor?.resolve(states))) ?? theme.colorScheme.secondary;
-        return new MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: title, subtitle: subtitle, trailing: trailingLocal, isThreeLine: isThreeLine, dense: dense, contentPadding: contentPadding, enabled: onChanged is not null, onTap: (onChanged is not null) ? (() =>
-        {
-            onChanged!(!value);
-        }) : null, selected: selected, selectedTileColor: selectedTileColor, autofocus: autofocus, shape: shape, tileColor: tileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, hoverColor: hoverColor, internalAddSemanticForOnTap: internalAddSemanticForOnTap));
+        var states = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection23874 = new HashSet<WidgetState>();
+                    if (selected)
+                    {
+                        __collection23874.Add(WidgetState.selected);
+                    }
+                    return __collection23874;
+                }
+            )
+        )();
+        Color effectiveActiveColor =
+            ((activeThumbColor ?? activeColor) ?? (switchTheme.thumbColor?.resolve(states)))
+            ?? theme.colorScheme.secondary;
+        return new MergeSemantics(
+            child: new ListTile(
+                selectedColor: effectiveActiveColor,
+                leading: leadingLocal,
+                title: title,
+                subtitle: subtitle,
+                trailing: trailingLocal,
+                isThreeLine: isThreeLine,
+                dense: dense,
+                contentPadding: contentPadding,
+                enabled: onChanged is not null,
+                onTap: (onChanged is not null)
+                    ? (
+                        () =>
+                        {
+                            onChanged!(!value);
+                        }
+                    )
+                    : null,
+                selected: selected,
+                selectedTileColor: selectedTileColor,
+                autofocus: autofocus,
+                shape: shape,
+                tileColor: tileColor,
+                visualDensity: visualDensity,
+                focusNode: focusNode,
+                statesController: statesController,
+                onFocusChange: onFocusChange,
+                enableFeedback: enableFeedback,
+                horizontalTitleGap: horizontalTitleGap,
+                minVerticalPadding: minVerticalPadding,
+                minLeadingWidth: minLeadingWidth,
+                minTileHeight: minTileHeight,
+                hoverColor: hoverColor,
+                internalAddSemanticForOnTap: internalAddSemanticForOnTap
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

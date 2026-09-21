@@ -7,19 +7,673 @@ namespace Doroti.Framework.Widgets;
 public class DefaultTextEditingShortcuts : StatelessWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.delete)] = new DeleteCharacterIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, control: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, control: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, control: true)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, control: true)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: false) };
-    internal static DartMap<ShortcutActivator, Intent> _clipboardShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.keyX, control: true)] = CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyC, control: true)] = CopySelectionTextIntent.copy, [new SingleActivator(LogicalKeyboardKey.keyV, control: true)] = new PasteTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.delete, shift: true)] = CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.insert, control: true)] = CopySelectionTextIntent.copy, [new SingleActivator(LogicalKeyboardKey.insert, shift: true)] = new PasteTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] = new SelectAllTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyZ, control: true)] = new UndoTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyZ, shift: true, control: true)] = new RedoTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.space)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.enter)] = new DoNothingAndStopPropagationTextIntent() };
-    internal static DartMap<ShortcutActivator, Intent> _androidShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.end, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.home, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.end, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false) };
+    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.delete)] = new DeleteCharacterIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new ExtendSelectionByCharacterIntent(
+            forward: false,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new ExtendSelectionByCharacterIntent(
+            forward: true,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] =
+            new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] =
+            new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, control: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, control: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, control: true)] =
+            new ExtendSelectionToNextParagraphBoundaryIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, control: true)] =
+            new ExtendSelectionToNextParagraphBoundaryIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageUp)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageDown)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _clipboardShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.keyX, control: true)] =
+            CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard),
+        [new SingleActivator(LogicalKeyboardKey.keyC, control: true)] =
+            CopySelectionTextIntent.copy,
+        [new SingleActivator(LogicalKeyboardKey.keyV, control: true)] = new PasteTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.delete, shift: true)] =
+            CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard),
+        [new SingleActivator(LogicalKeyboardKey.insert, control: true)] =
+            CopySelectionTextIntent.copy,
+        [new SingleActivator(LogicalKeyboardKey.insert, shift: true)] = new PasteTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] = new SelectAllTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyZ, control: true)] = new UndoTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyZ, shift: true, control: true)] =
+            new RedoTextIntent(SelectionChangedCause.keyboard),
+        [new SingleActivator(LogicalKeyboardKey.space)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.enter)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _androidShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(
+            forward: false,
+            collapseSelection: true,
+            continuesAtWrap: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(
+            forward: true,
+            collapseSelection: true,
+            continuesAtWrap: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(
+                forward: false,
+                collapseSelection: false,
+                continuesAtWrap: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(
+                forward: true,
+                collapseSelection: false,
+                continuesAtWrap: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.home, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.end, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false),
+    };
     internal static DartMap<ShortcutActivator, Intent> _fuchsiaShortcuts = _androidShortcuts;
-    internal static DartMap<ShortcutActivator, Intent> _linuxNumpadShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.numpad6, shift: true, numLock: LockState.locked)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad4, shift: true, numLock: LockState.locked)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad8, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad2, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad6, shift: true, control: true, numLock: LockState.locked)] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad4, shift: true, control: true, numLock: LockState.locked)] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad8, shift: true, control: true, numLock: LockState.locked)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad2, shift: true, control: true, numLock: LockState.locked)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad9, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad3, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad7, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpad1, shift: true, numLock: LockState.locked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.numpadDecimal, shift: true, numLock: LockState.locked)] = new DeleteCharacterIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.numpadDecimal, shift: true, control: true, numLock: LockState.locked)] = new DeleteToNextWordBoundaryIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.numpad6, numLock: LockState.unlocked)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad4, numLock: LockState.unlocked)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad8, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad2, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad6, control: true, numLock: LockState.unlocked)] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad4, control: true, numLock: LockState.unlocked)] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad8, control: true, numLock: LockState.unlocked)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad2, control: true, numLock: LockState.unlocked)] = new ExtendSelectionToNextParagraphBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad9, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad3, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad7, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpad1, numLock: LockState.unlocked)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.numpadDecimal, numLock: LockState.unlocked)] = new DeleteCharacterIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.numpadDecimal, control: true, numLock: LockState.unlocked)] = new DeleteToNextWordBoundaryIntent(forward: true) };
-    internal static DartMap<ShortcutActivator, Intent> _linuxShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.end, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.home, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.end, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false) };
-    internal static DartMap<ShortcutActivator, Intent> _macShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] = new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] = new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] = new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] = new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, meta: true)] = new ExpandSelectionToLineBreakIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, meta: true)] = new ExpandSelectionToLineBreakIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, meta: true)] = new ExpandSelectionToDocumentBoundaryIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, meta: true)] = new ExpandSelectionToDocumentBoundaryIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.keyT, control: true)] = new TransposeCharactersIntent(), [new SingleActivator(LogicalKeyboardKey.home)] = new ScrollToDocumentBoundaryIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.end)] = new ScrollToDocumentBoundaryIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true)] = new ExpandSelectionToDocumentBoundaryIntent(forward: false), [new SingleActivator(LogicalKeyboardKey.end, shift: true)] = new ExpandSelectionToDocumentBoundaryIntent(forward: true), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page), [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.keyX, meta: true)] = CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyC, meta: true)] = CopySelectionTextIntent.copy, [new SingleActivator(LogicalKeyboardKey.keyV, meta: true)] = new PasteTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyA, meta: true)] = new SelectAllTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyZ, meta: true)] = new UndoTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyZ, shift: true, meta: true)] = new RedoTextIntent(SelectionChangedCause.keyboard), [new SingleActivator(LogicalKeyboardKey.keyE, control: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.keyF, control: true)] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.keyB, control: true)] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.keyN, control: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.keyP, control: true)] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.space)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.enter)] = new DoNothingAndStopPropagationTextIntent() };
+    internal static DartMap<ShortcutActivator, Intent> _linuxNumpadShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.numpad6, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.numpad4, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.numpad8, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad2, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad6,
+                shift: true,
+                control: true,
+                numLock: LockState.locked
+            )
+        ] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: false),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad4,
+                shift: true,
+                control: true,
+                numLock: LockState.locked
+            )
+        ] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: false),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad8,
+                shift: true,
+                control: true,
+                numLock: LockState.locked
+            )
+        ] = new ExtendSelectionToNextParagraphBoundaryIntent(
+            forward: false,
+            collapseSelection: false
+        ),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad2,
+                shift: true,
+                control: true,
+                numLock: LockState.locked
+            )
+        ] = new ExtendSelectionToNextParagraphBoundaryIntent(
+            forward: true,
+            collapseSelection: false
+        ),
+        [new SingleActivator(LogicalKeyboardKey.numpad9, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad3, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad7, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad1, shift: true, numLock: LockState.locked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpadDecimal,
+                shift: true,
+                numLock: LockState.locked
+            )
+        ] = new DeleteCharacterIntent(forward: true),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpadDecimal,
+                shift: true,
+                control: true,
+                numLock: LockState.locked
+            )
+        ] = new DeleteToNextWordBoundaryIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.numpad6, numLock: LockState.unlocked)] =
+            new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.numpad4, numLock: LockState.unlocked)] =
+            new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.numpad8, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad2, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad6,
+                control: true,
+                numLock: LockState.unlocked
+            )
+        ] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad4,
+                control: true,
+                numLock: LockState.unlocked
+            )
+        ] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad8,
+                control: true,
+                numLock: LockState.unlocked
+            )
+        ] = new ExtendSelectionToNextParagraphBoundaryIntent(
+            forward: false,
+            collapseSelection: true
+        ),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpad2,
+                control: true,
+                numLock: LockState.unlocked
+            )
+        ] = new ExtendSelectionToNextParagraphBoundaryIntent(
+            forward: true,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.numpad9, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad3, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad7, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpad1, numLock: LockState.unlocked)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.numpadDecimal, numLock: LockState.unlocked)] =
+            new DeleteCharacterIntent(forward: true),
+        [
+            new SingleActivator(
+                LogicalKeyboardKey.numpadDecimal,
+                control: true,
+                numLock: LockState.unlocked
+            )
+        ] = new DeleteToNextWordBoundaryIntent(forward: true),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _linuxShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(
+            forward: false,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(
+            forward: true,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.home, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.end, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _macShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new ExtendSelectionByCharacterIntent(
+            forward: false,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new ExtendSelectionByCharacterIntent(
+            forward: true,
+            collapseSelection: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] =
+            new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] =
+            new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] =
+            new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] =
+            new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] =
+            new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] =
+            new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] =
+            new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, meta: true)] =
+            new ExpandSelectionToLineBreakIntent(forward: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, meta: true)] =
+            new ExpandSelectionToLineBreakIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, meta: true)] =
+            new ExpandSelectionToDocumentBoundaryIntent(forward: false),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, meta: true)] =
+            new ExpandSelectionToDocumentBoundaryIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.keyT, control: true)] =
+            new TransposeCharactersIntent(),
+        [new SingleActivator(LogicalKeyboardKey.home)] = new ScrollToDocumentBoundaryIntent(
+            forward: false
+        ),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new ScrollToDocumentBoundaryIntent(
+            forward: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true)] =
+            new ExpandSelectionToDocumentBoundaryIntent(forward: false),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true)] =
+            new ExpandSelectionToDocumentBoundaryIntent(forward: true),
+        [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ScrollIntent(
+            direction: AxisDirection.up,
+            type: ScrollIncrementType.page
+        ),
+        [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ScrollIntent(
+            direction: AxisDirection.down,
+            type: ScrollIncrementType.page
+        ),
+        [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+        [new SingleActivator(LogicalKeyboardKey.keyX, meta: true)] =
+            CopySelectionTextIntent.CreateCut(SelectionChangedCause.keyboard),
+        [new SingleActivator(LogicalKeyboardKey.keyC, meta: true)] = CopySelectionTextIntent.copy,
+        [new SingleActivator(LogicalKeyboardKey.keyV, meta: true)] = new PasteTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyA, meta: true)] = new SelectAllTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyZ, meta: true)] = new UndoTextIntent(
+            SelectionChangedCause.keyboard
+        ),
+        [new SingleActivator(LogicalKeyboardKey.keyZ, shift: true, meta: true)] =
+            new RedoTextIntent(SelectionChangedCause.keyboard),
+        [new SingleActivator(LogicalKeyboardKey.keyE, control: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] =
+            new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.keyF, control: true)] =
+            new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.keyB, control: true)] =
+            new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.keyN, control: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.keyP, control: true)] =
+            new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.space)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.enter)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
     internal static DartMap<ShortcutActivator, Intent> _iOSShortcuts = _macShortcuts;
-    internal static DartMap<ShortcutActivator, Intent> _windowsShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: false, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.end, shift: true)] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: false, continuesAtWrap: true), [new SingleActivator(LogicalKeyboardKey.home, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.end, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false), [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false) };
-    internal static DartMap<ShortcutActivator, Intent> _webDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.keyX, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.keyC, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.keyV, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.keyA, meta: true)] = new DoNothingAndStopPropagationTextIntent() };
-    internal static DartMap<ShortcutActivator, Intent> _commonDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.space)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.enter)] = new DoNothingAndStopPropagationTextIntent() };
-    internal static DartMap<ShortcutActivator, Intent> _macDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.escape)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.tab)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, meta: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.end)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.home)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.end, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.home, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.end, control: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.home, control: true)] = new DoNothingAndStopPropagationTextIntent() };
-    internal static DartMap<ShortcutActivator, Intent> _iOSDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.backspace)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.backspace, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.delete)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.delete, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.backspace, alt: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: true)] = new DoNothingAndStopPropagationTextIntent(), [new SingleActivator(LogicalKeyboardKey.delete, alt: true)] = new DoNothingAndStopPropagationTextIntent() };
+    internal static DartMap<ShortcutActivator, Intent> _windowsShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.pageUp)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.pageDown)] =
+            new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.home)] = new ExtendSelectionToLineBreakIntent(
+            forward: false,
+            collapseSelection: true,
+            continuesAtWrap: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new ExtendSelectionToLineBreakIntent(
+            forward: true,
+            collapseSelection: true,
+            continuesAtWrap: true
+        ),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(
+                forward: false,
+                collapseSelection: false,
+                continuesAtWrap: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true)] =
+            new ExtendSelectionToLineBreakIntent(
+                forward: true,
+                collapseSelection: false,
+                continuesAtWrap: true
+            ),
+        [new SingleActivator(LogicalKeyboardKey.home, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.end, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: false),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true, control: true)] =
+            new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: false),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _webDisablingTextShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.keyX, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.keyC, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.keyV, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.keyA, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.keyA, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _commonDisablingTextShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.space)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.enter)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _macDisablingTextShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.escape)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.tab)] = new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowDown, shift: true, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp, shift: true, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.arrowRight, shift: true, meta: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.pageUp)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.pageDown)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.end)] = new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.home)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.pageUp, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.pageDown, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.end, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.home, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.end, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.home, control: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
+    internal static DartMap<ShortcutActivator, Intent> _iOSDisablingTextShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.backspace)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.backspace, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.delete)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.delete, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.backspace, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+        [new SingleActivator(LogicalKeyboardKey.delete, alt: true)] =
+            new DoNothingAndStopPropagationTextIntent(),
+    };
 
     static DefaultTextEditingShortcuts()
     {
@@ -28,18 +682,37 @@ public class DefaultTextEditingShortcuts : StatelessWidget
         // ensures a future regeneration preserves the same shortcuts.
         foreach (var pressShift in new[] { true, false })
         {
-            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, shift: pressShift)] = new DeleteCharacterIntent(forward: false);
-            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, control: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: false);
-            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: false);
-            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.delete, control: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: true);
-            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: true);
+            _commonShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, shift: pressShift)] =
+                new DeleteCharacterIntent(forward: false);
+            _commonShortcuts[
+                new SingleActivator(LogicalKeyboardKey.backspace, control: true, shift: pressShift)
+            ] = new DeleteToNextWordBoundaryIntent(forward: false);
+            _commonShortcuts[
+                new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: pressShift)
+            ] = new DeleteToLineBreakIntent(forward: false);
+            _commonShortcuts[
+                new SingleActivator(LogicalKeyboardKey.delete, control: true, shift: pressShift)
+            ] = new DeleteToNextWordBoundaryIntent(forward: true);
+            _commonShortcuts[
+                new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: pressShift)
+            ] = new DeleteToLineBreakIntent(forward: true);
 
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, shift: pressShift)] = new DeleteCharacterIntent(forward: false);
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: false);
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, meta: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: false);
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.delete, shift: pressShift)] = new DeleteCharacterIntent(forward: true);
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: true);
-            _macShortcuts[new SingleActivator(LogicalKeyboardKey.delete, meta: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: true);
+            _macShortcuts[new SingleActivator(LogicalKeyboardKey.backspace, shift: pressShift)] =
+                new DeleteCharacterIntent(forward: false);
+            _macShortcuts[
+                new SingleActivator(LogicalKeyboardKey.backspace, alt: true, shift: pressShift)
+            ] = new DeleteToNextWordBoundaryIntent(forward: false);
+            _macShortcuts[
+                new SingleActivator(LogicalKeyboardKey.backspace, meta: true, shift: pressShift)
+            ] = new DeleteToLineBreakIntent(forward: false);
+            _macShortcuts[new SingleActivator(LogicalKeyboardKey.delete, shift: pressShift)] =
+                new DeleteCharacterIntent(forward: true);
+            _macShortcuts[
+                new SingleActivator(LogicalKeyboardKey.delete, alt: true, shift: pressShift)
+            ] = new DeleteToNextWordBoundaryIntent(forward: true);
+            _macShortcuts[
+                new SingleActivator(LogicalKeyboardKey.delete, meta: true, shift: pressShift)
+            ] = new DeleteToLineBreakIntent(forward: true);
         }
 
         _androidShortcuts.AddRange(_commonShortcuts);
@@ -51,7 +724,8 @@ public class DefaultTextEditingShortcuts : StatelessWidget
         _windowsShortcuts.AddRange(_clipboardShortcuts);
     }
 
-    public DefaultTextEditingShortcuts(Key? key = null, Widget child = default!) : base(key: key)
+    public DefaultTextEditingShortcuts(Key? key = null, Widget child = default!)
+        : base(key: key)
     {
         this.child = child;
     }
@@ -60,9 +734,19 @@ public class DefaultTextEditingShortcuts : StatelessWidget
     {
         get
         {
-            return PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => _androidShortcuts, TargetPlatform.fuchsia => _fuchsiaShortcuts, TargetPlatform.iOS => _iOSShortcuts, TargetPlatform.linux => _linuxShortcuts, TargetPlatform.macOS => _macShortcuts, TargetPlatform.windows => _windowsShortcuts, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return PlatformLibrary.defaultTargetPlatform switch
+            {
+                TargetPlatform.android => _androidShortcuts,
+                TargetPlatform.fuchsia => _fuchsiaShortcuts,
+                TargetPlatform.iOS => _iOSShortcuts,
+                TargetPlatform.linux => _linuxShortcuts,
+                TargetPlatform.macOS => _macShortcuts,
+                TargetPlatform.windows => _windowsShortcuts,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     internal virtual DartMap<ShortcutActivator, Intent>? _getDisablingShortcut()
     {
         if (Foundation.ConstantsLibrary.kIsWeb)
@@ -70,17 +754,17 @@ public class DefaultTextEditingShortcuts : StatelessWidget
             switch (PlatformLibrary.defaultTargetPlatform)
             {
                 case TargetPlatform.linux:
-                    {
-                        return new DartMap<ShortcutActivator, Intent>();
-                    }
+                {
+                    return new DartMap<ShortcutActivator, Intent>();
+                }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.windows:
                 case TargetPlatform.iOS:
                 case TargetPlatform.macOS:
-                    {
-                        return _webDisablingTextShortcuts;
-                    }
+                {
+                    return _webDisablingTextShortcuts;
+                }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
@@ -91,17 +775,17 @@ public class DefaultTextEditingShortcuts : StatelessWidget
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
-                {
-                    return null;
-                }
+            {
+                return null;
+            }
             case TargetPlatform.iOS:
-                {
-                    return _iOSDisablingTextShortcuts;
-                }
+            {
+                return _iOSDisablingTextShortcuts;
+            }
             case TargetPlatform.macOS:
-                {
-                    return _macDisablingTextShortcuts;
-                }
+            {
+                return _macDisablingTextShortcuts;
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -114,19 +798,148 @@ public class DefaultTextEditingShortcuts : StatelessWidget
         DartMap<ShortcutActivator, Intent>? disablingShortcut = _getDisablingShortcut();
         if (disablingShortcut is not null)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(debugLabel: "<Web Disabling Text Editing Shortcuts>", shortcuts: disablingShortcut, child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Shortcuts(
+                    debugLabel: "<Web Disabling Text Editing Shortcuts>",
+                    shortcuts: disablingShortcut,
+                    child: result
+                )
+            );
         }
-        return new Shortcuts(debugLabel: "<Default Text Editing Shortcuts>", shortcuts: _shortcuts, child: result);
+        return new Shortcuts(
+            debugLabel: "<Default Text Editing Shortcuts>",
+            shortcuts: _shortcuts,
+            child: result
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Default_text_editing_shortcutsLibrary
 {
     public static Intent? intentForMacOSSelector(string selectorName)
     {
-        var selectorToIntent = new DartMap<string, Intent> { ["deleteBackward:"] = new DeleteCharacterIntent(forward: false), ["deleteWordBackward:"] = new DeleteToNextWordBoundaryIntent(forward: false), ["deleteToBeginningOfLine:"] = new DeleteToLineBreakIntent(forward: false), ["deleteForward:"] = new DeleteCharacterIntent(forward: true), ["deleteWordForward:"] = new DeleteToNextWordBoundaryIntent(forward: true), ["deleteToEndOfLine:"] = new DeleteToLineBreakIntent(forward: true), ["moveLeft:"] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), ["moveRight:"] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), ["moveForward:"] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: true), ["moveBackward:"] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: true), ["moveUp:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: true), ["moveDown:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: true), ["moveLeftAndModifySelection:"] = new ExtendSelectionByCharacterIntent(forward: false, collapseSelection: false), ["moveRightAndModifySelection:"] = new ExtendSelectionByCharacterIntent(forward: true, collapseSelection: false), ["moveUpAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: false, collapseSelection: false), ["moveDownAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(forward: true, collapseSelection: false), ["moveWordLeft:"] = new ExtendSelectionToNextWordBoundaryIntent(forward: false, collapseSelection: true), ["moveWordRight:"] = new ExtendSelectionToNextWordBoundaryIntent(forward: true, collapseSelection: true), ["moveToBeginningOfParagraph:"] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), ["moveToEndOfParagraph:"] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), ["moveWordLeftAndModifySelection:"] = new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: false), ["moveWordRightAndModifySelection:"] = new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: true), ["moveParagraphBackwardAndModifySelection:"] = new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: false), ["moveParagraphForwardAndModifySelection:"] = new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: true), ["moveToLeftEndOfLine:"] = new ExtendSelectionToLineBreakIntent(forward: false, collapseSelection: true), ["moveToRightEndOfLine:"] = new ExtendSelectionToLineBreakIntent(forward: true, collapseSelection: true), ["moveToBeginningOfDocument:"] = new ExtendSelectionToDocumentBoundaryIntent(forward: false, collapseSelection: true), ["moveToEndOfDocument:"] = new ExtendSelectionToDocumentBoundaryIntent(forward: true, collapseSelection: true), ["moveToLeftEndOfLineAndModifySelection:"] = new ExpandSelectionToLineBreakIntent(forward: false), ["moveToRightEndOfLineAndModifySelection:"] = new ExpandSelectionToLineBreakIntent(forward: true), ["moveToBeginningOfDocumentAndModifySelection:"] = new ExpandSelectionToDocumentBoundaryIntent(forward: false), ["moveToEndOfDocumentAndModifySelection:"] = new ExpandSelectionToDocumentBoundaryIntent(forward: true), ["transpose:"] = new TransposeCharactersIntent(), ["scrollToBeginningOfDocument:"] = new ScrollToDocumentBoundaryIntent(forward: false), ["scrollToEndOfDocument:"] = new ScrollToDocumentBoundaryIntent(forward: true), ["scrollPageUp:"] = new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page), ["scrollPageDown:"] = new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page), ["pageUpAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: false, collapseSelection: false), ["pageDownAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentPageIntent(forward: true, collapseSelection: false), ["cancelOperation:"] = new DismissIntent(), ["insertTab:"] = new NextFocusIntent(), ["insertBacktab:"] = new PreviousFocusIntent() };
+        var selectorToIntent = new DartMap<string, Intent>
+        {
+            ["deleteBackward:"] = new DeleteCharacterIntent(forward: false),
+            ["deleteWordBackward:"] = new DeleteToNextWordBoundaryIntent(forward: false),
+            ["deleteToBeginningOfLine:"] = new DeleteToLineBreakIntent(forward: false),
+            ["deleteForward:"] = new DeleteCharacterIntent(forward: true),
+            ["deleteWordForward:"] = new DeleteToNextWordBoundaryIntent(forward: true),
+            ["deleteToEndOfLine:"] = new DeleteToLineBreakIntent(forward: true),
+            ["moveLeft:"] = new ExtendSelectionByCharacterIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveRight:"] = new ExtendSelectionByCharacterIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveForward:"] = new ExtendSelectionByCharacterIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveBackward:"] = new ExtendSelectionByCharacterIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveUp:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveDown:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveLeftAndModifySelection:"] = new ExtendSelectionByCharacterIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+            ["moveRightAndModifySelection:"] = new ExtendSelectionByCharacterIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+            ["moveUpAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+            ["moveDownAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentLineIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+            ["moveWordLeft:"] = new ExtendSelectionToNextWordBoundaryIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveWordRight:"] = new ExtendSelectionToNextWordBoundaryIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveToBeginningOfParagraph:"] = new ExtendSelectionToLineBreakIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveToEndOfParagraph:"] = new ExtendSelectionToLineBreakIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveWordLeftAndModifySelection:"] =
+                new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: false),
+            ["moveWordRightAndModifySelection:"] =
+                new ExtendSelectionToNextWordBoundaryOrCaretLocationIntent(forward: true),
+            ["moveParagraphBackwardAndModifySelection:"] =
+                new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: false),
+            ["moveParagraphForwardAndModifySelection:"] =
+                new ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent(forward: true),
+            ["moveToLeftEndOfLine:"] = new ExtendSelectionToLineBreakIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveToRightEndOfLine:"] = new ExtendSelectionToLineBreakIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveToBeginningOfDocument:"] = new ExtendSelectionToDocumentBoundaryIntent(
+                forward: false,
+                collapseSelection: true
+            ),
+            ["moveToEndOfDocument:"] = new ExtendSelectionToDocumentBoundaryIntent(
+                forward: true,
+                collapseSelection: true
+            ),
+            ["moveToLeftEndOfLineAndModifySelection:"] = new ExpandSelectionToLineBreakIntent(
+                forward: false
+            ),
+            ["moveToRightEndOfLineAndModifySelection:"] = new ExpandSelectionToLineBreakIntent(
+                forward: true
+            ),
+            ["moveToBeginningOfDocumentAndModifySelection:"] =
+                new ExpandSelectionToDocumentBoundaryIntent(forward: false),
+            ["moveToEndOfDocumentAndModifySelection:"] =
+                new ExpandSelectionToDocumentBoundaryIntent(forward: true),
+            ["transpose:"] = new TransposeCharactersIntent(),
+            ["scrollToBeginningOfDocument:"] = new ScrollToDocumentBoundaryIntent(forward: false),
+            ["scrollToEndOfDocument:"] = new ScrollToDocumentBoundaryIntent(forward: true),
+            ["scrollPageUp:"] = new ScrollIntent(
+                direction: AxisDirection.up,
+                type: ScrollIncrementType.page
+            ),
+            ["scrollPageDown:"] = new ScrollIntent(
+                direction: AxisDirection.down,
+                type: ScrollIncrementType.page
+            ),
+            ["pageUpAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: false,
+                collapseSelection: false
+            ),
+            ["pageDownAndModifySelection:"] = new ExtendSelectionVerticallyToAdjacentPageIntent(
+                forward: true,
+                collapseSelection: false
+            ),
+            ["cancelOperation:"] = new DismissIntent(),
+            ["insertTab:"] = new NextFocusIntent(),
+            ["insertBacktab:"] = new PreviousFocusIntent(),
+        };
         return selectorToIntent.GetValueOrDefault(selectorName);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

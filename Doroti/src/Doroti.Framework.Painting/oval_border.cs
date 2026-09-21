@@ -7,14 +7,37 @@ namespace Doroti.Framework.Painting;
 
 public class OvalBorder : CircleBorder
 {
-    public OvalBorder(BorderSide side = default!, double eccentricity = 1.0) : base(side: side ?? BorderSide.none, eccentricity: eccentricity)
-    {
-    }
+    public OvalBorder(BorderSide side = default!, double eccentricity = 1.0)
+        : base(side: side ?? BorderSide.none, eccentricity: eccentricity) { }
 
-    public override ShapeBorder scale(double t) => new OvalBorder(side: side.scale(t), eccentricity: DartRuntimePrimitives.RequireValue(eccentricity));
-    public override OvalBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
+    public override ShapeBorder scale(double t) =>
+        new OvalBorder(
+            side: side.scale(t),
+            eccentricity: DartRuntimePrimitives.RequireValue(eccentricity)
+        );
+
+    public override OvalBorder copyWith(
+        BorderSide? side = null,
+        BorderRadiusGeometry? borderRadius = null,
+        double? eccentricity = null,
+        LinearBorderEdge? start = null,
+        LinearBorderEdge? end = null,
+        LinearBorderEdge? top = null,
+        LinearBorderEdge? bottom = null,
+        double? circularity = null,
+        double? rectilinearity = null,
+        double? points = null,
+        double? innerRadiusRatio = null,
+        double? pointRounding = null,
+        double? valleyRounding = null,
+        double? rotation = null,
+        double? squash = null
+    )
     {
-        return new OvalBorder(side: side ?? this.side, eccentricity: eccentricity ?? this.eccentricity);
+        return new OvalBorder(
+            side: side ?? this.side,
+            eccentricity: eccentricity ?? this.eccentricity
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -23,7 +46,20 @@ public class OvalBorder : CircleBorder
         if (a is OvalBorder)
         {
             OvalBorder a__as1519 = (OvalBorder)a;
-            return new OvalBorder(side: BorderSide.lerp(a__as1519.side, side, t), eccentricity: Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a__as1519.eccentricity, DartRuntimePrimitives.RequireValue(eccentricity), t)), 0.0, 1.0));
+            return new OvalBorder(
+                side: BorderSide.lerp(a__as1519.side, side, t),
+                eccentricity: Dart_uiLibrary.clampDouble(
+                    DartRuntimePrimitives.RequireValue(
+                        Dart_uiLibrary.lerpDouble(
+                            a__as1519.eccentricity,
+                            DartRuntimePrimitives.RequireValue(eccentricity),
+                            t
+                        )
+                    ),
+                    0.0,
+                    1.0
+                )
+            );
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -34,7 +70,20 @@ public class OvalBorder : CircleBorder
         if (b is OvalBorder)
         {
             OvalBorder b__as1828 = (OvalBorder)b;
-            return new OvalBorder(side: BorderSide.lerp(side, b__as1828.side, t), eccentricity: Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(eccentricity), b__as1828.eccentricity, t)), 0.0, 1.0));
+            return new OvalBorder(
+                side: BorderSide.lerp(side, b__as1828.side, t),
+                eccentricity: Dart_uiLibrary.clampDouble(
+                    DartRuntimePrimitives.RequireValue(
+                        Dart_uiLibrary.lerpDouble(
+                            DartRuntimePrimitives.RequireValue(eccentricity),
+                            b__as1828.eccentricity,
+                            t
+                        )
+                    ),
+                    0.0,
+                    1.0
+                )
+            );
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -49,6 +98,4 @@ public class OvalBorder : CircleBorder
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

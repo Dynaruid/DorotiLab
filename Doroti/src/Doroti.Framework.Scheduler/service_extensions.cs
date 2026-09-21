@@ -4,6 +4,5 @@ namespace Doroti.Framework.Scheduler;
 
 public enum SchedulerServiceExtensions
 {
-    timeDilation
+    timeDilation,
 }
-

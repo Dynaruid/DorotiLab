@@ -2,7 +2,8 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/material_state_mixin.dart
 namespace Doroti.Framework.Material;
 
-public interface MaterialStateMixin<T> where T : StatefulWidget
+public interface MaterialStateMixin<T>
+    where T : StatefulWidget
 {
     HashSet<WidgetState> materialStates { get; set; }
 

@@ -42,17 +42,37 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, EdgeInsetsGeometry> kCupertinoButtonPadding = new DartMap<CupertinoButtonSize, EdgeInsetsGeometry> { [CupertinoButtonSize.small] = EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12), [CupertinoButtonSize.medium] = EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15), [CupertinoButtonSize.large] = EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20) };
+    public static DartMap<CupertinoButtonSize, EdgeInsetsGeometry> kCupertinoButtonPadding =
+        new DartMap<CupertinoButtonSize, EdgeInsetsGeometry>
+        {
+            [CupertinoButtonSize.small] = EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12),
+            [CupertinoButtonSize.medium] = EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15),
+            [CupertinoButtonSize.large] = EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20),
+        };
 }
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, BorderRadius> kCupertinoButtonSizeBorderRadius = new DartMap<CupertinoButtonSize, BorderRadius> { [CupertinoButtonSize.small] = BorderRadius.CreateAll(Ui.Radius.circular(40)), [CupertinoButtonSize.medium] = BorderRadius.CreateAll(Ui.Radius.circular(40)), [CupertinoButtonSize.large] = BorderRadius.CreateAll(Ui.Radius.circular(12)) };
+    public static DartMap<CupertinoButtonSize, BorderRadius> kCupertinoButtonSizeBorderRadius =
+        new DartMap<CupertinoButtonSize, BorderRadius>
+        {
+            [CupertinoButtonSize.small] = BorderRadius.CreateAll(Ui.Radius.circular(40)),
+            [CupertinoButtonSize.medium] = BorderRadius.CreateAll(Ui.Radius.circular(40)),
+            [CupertinoButtonSize.large] = BorderRadius.CreateAll(Ui.Radius.circular(12)),
+        };
 }
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, double> kCupertinoButtonMinSize = new DartMap<CupertinoButtonSize, double> { [CupertinoButtonSize.small] = 28, [CupertinoButtonSize.medium] = 32, [CupertinoButtonSize.large] = 44 };
+    public static DartMap<CupertinoButtonSize, double> kCupertinoButtonMinSize = new DartMap<
+        CupertinoButtonSize,
+        double
+    >
+    {
+        [CupertinoButtonSize.small] = 28,
+        [CupertinoButtonSize.medium] = 32,
+        [CupertinoButtonSize.large] = 44,
+    };
 }
 
 public static partial class ConstantsLibrary

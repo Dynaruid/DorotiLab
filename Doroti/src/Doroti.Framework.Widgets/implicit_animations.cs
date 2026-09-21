@@ -7,63 +7,62 @@ namespace Doroti.Framework.Widgets;
 
 public class BoxConstraintsTween : Tween<BoxConstraints>
 {
-    public BoxConstraintsTween(BoxConstraints? begin = null, BoxConstraints? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public BoxConstraintsTween(BoxConstraints? begin = null, BoxConstraints? end = null)
+        : base(begin: begin, end: end) { }
 
-    public override BoxConstraints lerp(double t) => DartRuntimePrimitives.ConvertValue<BoxConstraints>(BoxConstraints.lerp(begin, end, t)!);
+    public override BoxConstraints lerp(double t) =>
+        DartRuntimePrimitives.ConvertValue<BoxConstraints>(BoxConstraints.lerp(begin, end, t)!);
 }
 
 public class DecorationTween : Tween<Decoration>
 {
-    public DecorationTween(Decoration? begin = null, Decoration? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public DecorationTween(Decoration? begin = null, Decoration? end = null)
+        : base(begin: begin, end: end) { }
 
-    public override Decoration lerp(double t) => DartRuntimePrimitives.ConvertValue<Decoration>(Decoration.lerp(begin, end, t)!);
+    public override Decoration lerp(double t) =>
+        DartRuntimePrimitives.ConvertValue<Decoration>(Decoration.lerp(begin, end, t)!);
 }
 
 public class EdgeInsetsTween : Tween<EdgeInsets>
 {
-    public EdgeInsetsTween(EdgeInsets? begin = null, EdgeInsets? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public EdgeInsetsTween(EdgeInsets? begin = null, EdgeInsets? end = null)
+        : base(begin: begin, end: end) { }
 
-    public override EdgeInsets lerp(double t) => DartRuntimePrimitives.ConvertValue<EdgeInsets>(EdgeInsets.lerp(begin, end, t)!);
+    public override EdgeInsets lerp(double t) =>
+        DartRuntimePrimitives.ConvertValue<EdgeInsets>(EdgeInsets.lerp(begin, end, t)!);
 }
 
 public class EdgeInsetsGeometryTween : Tween<EdgeInsetsGeometry>
 {
-    public EdgeInsetsGeometryTween(EdgeInsetsGeometry? begin = null, EdgeInsetsGeometry? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public EdgeInsetsGeometryTween(EdgeInsetsGeometry? begin = null, EdgeInsetsGeometry? end = null)
+        : base(begin: begin, end: end) { }
 
-    public override EdgeInsetsGeometry lerp(double t) => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsetsGeometry.lerp(begin, end, t)!);
+    public override EdgeInsetsGeometry lerp(double t) =>
+        DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(
+            EdgeInsetsGeometry.lerp(begin, end, t)!
+        );
 }
 
 public class BorderRadiusTween : Tween<BorderRadius?>
 {
-    public BorderRadiusTween(BorderRadius? begin = null, BorderRadius? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public BorderRadiusTween(BorderRadius? begin = null, BorderRadius? end = null)
+        : base(begin: begin, end: end) { }
 
     public override BorderRadius? lerp(double t) => BorderRadius.lerp(begin, end, t);
 }
 
 public class BorderTween : Tween<Border?>
 {
-    public BorderTween(Border? begin = null, Border? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public BorderTween(Border? begin = null, Border? end = null)
+        : base(begin: begin, end: end) { }
 
     public override Border? lerp(double t) => Border.lerp(begin, end, t);
 }
 
 public class Matrix4Tween : Tween<Matrix4>
 {
-    public Matrix4Tween(Matrix4? begin = null, Matrix4? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public Matrix4Tween(Matrix4? begin = null, Matrix4? end = null)
+        : base(begin: begin, end: end) { }
 
     public override Matrix4 lerp(double t)
     {
@@ -78,21 +77,22 @@ public class Matrix4Tween : Tween<Matrix4>
         begin!.decompose(beginTranslation, beginRotation, beginScale);
         end!.decompose(endTranslation, endRotation, endScale);
         Vector3 lerpTranslation = (beginTranslation * (1.0 - t)) + (endTranslation * t);
-        Quaternion lerpRotation = (beginRotation.scaled(1.0 - t) + endRotation.scaled(t)).normalized();
+        Quaternion lerpRotation = (
+            beginRotation.scaled(1.0 - t) + endRotation.scaled(t)
+        ).normalized();
         Vector3 lerpScale = (beginScale * (1.0 - t)) + (endScale * t);
         return Matrix4.compose(lerpTranslation, lerpRotation, lerpScale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TextStyleTween : Tween<TextStyle>
 {
-    public TextStyleTween(TextStyle? begin = null, TextStyle? end = null) : base(begin: begin, end: end)
-    {
-    }
+    public TextStyleTween(TextStyle? begin = null, TextStyle? end = null)
+        : base(begin: begin, end: end) { }
 
-    public override TextStyle lerp(double t) => DartRuntimePrimitives.ConvertValue<TextStyle>(TextStyle.lerp(begin, end, t)!);
+    public override TextStyle lerp(double t) =>
+        DartRuntimePrimitives.ConvertValue<TextStyle>(TextStyle.lerp(begin, end, t)!);
 }
 
 public abstract class ImplicitlyAnimatedWidget : StatefulWidget
@@ -101,7 +101,13 @@ public abstract class ImplicitlyAnimatedWidget : StatefulWidget
     public virtual Duration duration { get; private set; } = default!;
     public virtual Action? onEnd { get; private set; }
 
-    protected ImplicitlyAnimatedWidget(Key? key = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key)
+    protected ImplicitlyAnimatedWidget(
+        Key? key = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key)
     {
         Curve __curve = curve ?? Curves.linear;
         this.curve = __curve;
@@ -110,19 +116,24 @@ public abstract class ImplicitlyAnimatedWidget : StatefulWidget
     }
 
     public abstract override IState createState();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new IntProperty("duration", duration.inMilliseconds, unit: "ms"));
     }
-
 }
 
 public delegate Tween<T> TweenConstructor<T>(T targetValue);
 
-public delegate Tween<T>? TweenVisitor<T>(Tween<T>? tween, T targetValue, Func<T, Tween<T>> constructor);
+public delegate Tween<T>? TweenVisitor<T>(
+    Tween<T>? tween,
+    T targetValue,
+    Func<T, Tween<T>> constructor
+);
 
-public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerProviderStateMixin<T> where T : ImplicitlyAnimatedWidget
+public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerProviderStateMixin<T>
+    where T : ImplicitlyAnimatedWidget
 {
     private bool __late_controller_initialized;
     private AnimationController __late_controller = default!;
@@ -132,7 +143,13 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
         {
             if (!__late_controller_initialized)
             {
-                __late_controller = new AnimationController(duration: widget.duration, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? ((Diagnosticable)widget).toStringShort() : null, vsync: this);
+                __late_controller = new AnimationController(
+                    duration: widget.duration,
+                    debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                        ? ((Diagnosticable)widget).toStringShort()
+                        : null,
+                    vsync: this
+                );
                 __late_controller_initialized = true;
             }
             return __late_controller;
@@ -151,22 +168,30 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
             }
             return __late__animation;
         }
-        set { __late__animation = value; __late__animation_initialized = true; }
+        set
+        {
+            __late__animation = value;
+            __late__animation_initialized = true;
+        }
     }
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    public virtual Animation<double> animation => DartRuntimePrimitives.ConvertValue<Animation<double>>(_animation);
+    public virtual Animation<double> animation =>
+        DartRuntimePrimitives.ConvertValue<Animation<double>>(_animation);
+
     public override void initState()
     {
         base.initState();
-        controller.addStatusListener((status) =>
-        {
-            if (AnimationStatusMembers.isCompleted(status))
+        controller.addStatusListener(
+            (status) =>
             {
-                widget.onEnd?.Invoke();
+                if (AnimationStatusMembers.isCompleted(status))
+                {
+                    widget.onEnd?.Invoke();
+                }
             }
-        });
+        );
         _constructTweens();
         didUpdateTweens();
     }
@@ -180,24 +205,40 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
             _animation = _createCurve();
         }
         controller.duration = widget.duration;
-        using var profile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 1) : default;
+        using var profile = FrameworkWorkCounters.Enabled
+            ? FrameworkWorkProfile.Begin(GetType(), 1)
+            : default;
         FrameworkWorkCounters.Add(FrameworkWork.ImplicitTweenCheck);
         if (_constructTweens())
         {
-            forEachTween((tween, targetValue, constructor) =>
-            {
-                return ((Func<IDartTween?>)(() =>
+            forEachTween(
+                (tween, targetValue, constructor) =>
                 {
-                    var __cascade = tween;
-                    if (__cascade is null) return null;
-                    __cascade.begin = __cascade.evaluate(_animation);
-                    __cascade.end = targetValue;
-                    return __cascade;
-                }))();
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                    return (
+                        (Func<IDartTween?>)(
+                            () =>
+                            {
+                                var __cascade = tween;
+                                if (__cascade is null)
+                                {
+                                    return null;
+                                }
+
+                                __cascade.begin = __cascade.evaluate(_animation);
+                                __cascade.end = targetValue;
+                                return __cascade;
+                            }
+                        )
+                    )();
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
             FrameworkWorkCounters.Add(FrameworkWork.ImplicitAnimationRestart);
-            if (FrameworkWorkCounters.Enabled) FrameworkWorkProfile.Count(GetType(), 6);
+            if (FrameworkWorkCounters.Enabled)
+            {
+                FrameworkWorkProfile.Count(GetType(), 6);
+            }
+
             controller.forward(from: 0.0);
             didUpdateTweens();
         }
@@ -214,14 +255,32 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
         _animation.dispose();
         controller.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -230,48 +289,73 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
     internal virtual bool _constructTweens()
     {
         var shouldStartAnimation = false;
-        forEachTween((tween, targetValue, constructor) =>
-        {
-            if (targetValue is not null)
+        forEachTween(
+            (tween, targetValue, constructor) =>
             {
-                tween ??= constructor(targetValue);
-                if (!Equals(targetValue, tween.end ?? tween.begin))
+                if (targetValue is not null)
                 {
-                    shouldStartAnimation = true;
+                    tween ??= constructor(targetValue);
+                    if (!Equals(targetValue, tween.end ?? tween.begin))
+                    {
+                        shouldStartAnimation = true;
+                    }
+                    else
+                    {
+                        tween.end ??= tween.begin;
+                    }
                 }
                 else
                 {
-                    tween.end ??= tween.begin;
+                    tween = null;
                 }
+                return tween;
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            else
-            {
-                tween = null;
-            }
-            return tween;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        );
         return shouldStartAnimation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor);
-    public virtual void didUpdateTweens()
-    {
-    }
+    public abstract void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    );
+
+    public virtual void didUpdateTweens() { }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -310,13 +394,28 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
-public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState<T> where T : ImplicitlyAnimatedWidget
+public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState<T>
+    where T : ImplicitlyAnimatedWidget
 {
     public override void initState()
     {
@@ -326,11 +425,8 @@ public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState
 
     internal virtual void _handleAnimationChanged()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
-
 }
 
 public class AnimatedContainer : ImplicitlyAnimatedWidget
@@ -346,7 +442,26 @@ public class AnimatedContainer : ImplicitlyAnimatedWidget
     public virtual AlignmentGeometry? transformAlignment { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public AnimatedContainer(Key? key = null, AlignmentGeometry? alignment = null, EdgeInsetsGeometry? padding = null, Color? color = null, Decoration? decoration = null, Decoration? foregroundDecoration = null, double? width = null, double? height = null, BoxConstraints? constraints = null, EdgeInsetsGeometry? margin = null, Matrix4? transform = null, AlignmentGeometry? transformAlignment = null, Widget? child = null, Clip clipBehavior = Clip.none, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedContainer(
+        Key? key = null,
+        AlignmentGeometry? alignment = null,
+        EdgeInsetsGeometry? padding = null,
+        Color? color = null,
+        Decoration? decoration = null,
+        Decoration? foregroundDecoration = null,
+        double? width = null,
+        double? height = null,
+        BoxConstraints? constraints = null,
+        EdgeInsetsGeometry? margin = null,
+        Matrix4? transform = null,
+        AlignmentGeometry? transformAlignment = null,
+        Widget? child = null,
+        Clip clipBehavior = Clip.none,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.alignment = alignment;
         this.padding = padding;
@@ -356,8 +471,15 @@ public class AnimatedContainer : ImplicitlyAnimatedWidget
         this.transformAlignment = transformAlignment;
         this.child = child;
         this.clipBehavior = clipBehavior;
-        this.decoration = decoration ?? ((color is not null) ? new BoxDecoration(color: color) : null);
-        this.constraints = ((width is not null) || (height is not null)) ? (constraints?.tighten(width: width, height: height) ?? BoxConstraints.CreateTightFor(width: width, height: height)) : constraints;
+        this.decoration =
+            decoration ?? ((color is not null) ? new BoxDecoration(color: color) : null);
+        this.constraints =
+            ((width is not null) || (height is not null))
+                ? (
+                    constraints?.tighten(width: width, height: height)
+                    ?? BoxConstraints.CreateTightFor(width: width, height: height)
+                )
+                : constraints;
         System.Diagnostics.Debug.Assert((margin is null) || margin.isNonNegative);
         System.Diagnostics.Debug.Assert((padding is null) || padding.isNonNegative);
         System.Diagnostics.Debug.Assert((decoration is null) || decoration.debugAssertIsValid());
@@ -365,24 +487,54 @@ public class AnimatedContainer : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((color is null) || (decoration is null));
     }
 
-    public override AnimatedWidgetBaseState<AnimatedContainer> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedContainer>>(new _AnimatedContainerState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedContainer> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedContainer>>(
+            new _AnimatedContainerState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, showName: false, defaultValue: null));
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>(
+                "alignment",
+                alignment,
+                showName: false,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null)
+        );
         properties.add(new DiagnosticsProperty<Decoration>("bg", decoration, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Decoration>("fg", foregroundDecoration, defaultValue: null));
-        properties.add(new DiagnosticsProperty<BoxConstraints>("constraints", constraints, defaultValue: null, showName: false));
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("margin", margin, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<Decoration>("fg", foregroundDecoration, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<BoxConstraints>(
+                "constraints",
+                constraints,
+                defaultValue: null,
+                showName: false
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("margin", margin, defaultValue: null)
+        );
         properties.add(ObjectFlagProperty<Matrix4>.CreateHas("transform", transform));
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("transformAlignment", transformAlignment, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>(
+                "transformAlignment",
+                transformAlignment,
+                defaultValue: null
+            )
+        );
         properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior));
     }
-
 }
 
-internal class _AnimatedContainerState__implicit_animations : AnimatedWidgetBaseState<AnimatedContainer>
+internal class _AnimatedContainerState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedContainer>
 {
     internal virtual AlignmentGeometryTween? _alignment { get; set; } = default;
     internal virtual EdgeInsetsGeometryTween? _padding { get; set; } = default;
@@ -393,38 +545,134 @@ internal class _AnimatedContainerState__implicit_animations : AnimatedWidgetBase
     internal virtual Matrix4Tween? _transform { get; set; } = default;
     internal virtual AlignmentGeometryTween? _transformAlignment { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _alignment = ((AlignmentGeometryTween?)visitor(_alignment, widget.alignment, (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)))!;
-        _padding = ((EdgeInsetsGeometryTween?)visitor(_padding, widget.padding, (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)))!;
-        _decoration = ((DecorationTween?)visitor(_decoration, widget.decoration, (value) => new DecorationTween(begin: ((Decoration?)value)!)))!;
-        _foregroundDecoration = ((DecorationTween?)visitor(_foregroundDecoration, widget.foregroundDecoration, (value) => new DecorationTween(begin: ((Decoration?)value)!)))!;
-        _constraints = ((BoxConstraintsTween?)visitor(_constraints, widget.constraints, (value) => new BoxConstraintsTween(begin: ((BoxConstraints?)value)!)))!;
-        _margin = ((EdgeInsetsGeometryTween?)visitor(_margin, widget.margin, (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)))!;
-        _transform = ((Matrix4Tween?)visitor(_transform, widget.transform, (value) => new Matrix4Tween(begin: ((Matrix4?)value)!)))!;
-        _transformAlignment = ((AlignmentGeometryTween?)visitor(_transformAlignment, widget.transformAlignment, (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)))!;
+        _alignment = (
+            (AlignmentGeometryTween?)visitor(
+                _alignment,
+                widget.alignment,
+                (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)
+            )
+        )!;
+        _padding = (
+            (EdgeInsetsGeometryTween?)visitor(
+                _padding,
+                widget.padding,
+                (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)
+            )
+        )!;
+        _decoration = (
+            (DecorationTween?)visitor(
+                _decoration,
+                widget.decoration,
+                (value) => new DecorationTween(begin: ((Decoration?)value)!)
+            )
+        )!;
+        _foregroundDecoration = (
+            (DecorationTween?)visitor(
+                _foregroundDecoration,
+                widget.foregroundDecoration,
+                (value) => new DecorationTween(begin: ((Decoration?)value)!)
+            )
+        )!;
+        _constraints = (
+            (BoxConstraintsTween?)visitor(
+                _constraints,
+                widget.constraints,
+                (value) => new BoxConstraintsTween(begin: ((BoxConstraints?)value)!)
+            )
+        )!;
+        _margin = (
+            (EdgeInsetsGeometryTween?)visitor(
+                _margin,
+                widget.margin,
+                (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)
+            )
+        )!;
+        _transform = (
+            (Matrix4Tween?)visitor(
+                _transform,
+                widget.transform,
+                (value) => new Matrix4Tween(begin: ((Matrix4?)value)!)
+            )
+        )!;
+        _transformAlignment = (
+            (AlignmentGeometryTween?)visitor(
+                _transformAlignment,
+                widget.transformAlignment,
+                (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
         Animation<double> animationLocal = animation;
-        return new Container(alignment: _alignment?.evaluate(animationLocal), padding: _padding?.evaluate(animationLocal), decoration: _decoration?.evaluate(animationLocal), foregroundDecoration: _foregroundDecoration?.evaluate(animationLocal), constraints: _constraints?.evaluate(animationLocal), margin: _margin?.evaluate(animationLocal), transform: _transform?.evaluate(animationLocal), transformAlignment: _transformAlignment?.evaluate(animationLocal), clipBehavior: widget.clipBehavior, child: widget.child);
+        return new Container(
+            alignment: _alignment?.evaluate(animationLocal),
+            padding: _padding?.evaluate(animationLocal),
+            decoration: _decoration?.evaluate(animationLocal),
+            foregroundDecoration: _foregroundDecoration?.evaluate(animationLocal),
+            constraints: _constraints?.evaluate(animationLocal),
+            margin: _margin?.evaluate(animationLocal),
+            transform: _transform?.evaluate(animationLocal),
+            transformAlignment: _transformAlignment?.evaluate(animationLocal),
+            clipBehavior: widget.clipBehavior,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new DiagnosticsProperty<AlignmentGeometryTween>("alignment", _alignment, showName: false, defaultValue: null));
-        description.add(new DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", _padding, defaultValue: null));
-        description.add(new DiagnosticsProperty<DecorationTween>("bg", _decoration, defaultValue: null));
-        description.add(new DiagnosticsProperty<DecorationTween>("fg", _foregroundDecoration, defaultValue: null));
-        description.add(new DiagnosticsProperty<BoxConstraintsTween>("constraints", _constraints, showName: false, defaultValue: null));
-        description.add(new DiagnosticsProperty<EdgeInsetsGeometryTween>("margin", _margin, defaultValue: null));
+        description.add(
+            new DiagnosticsProperty<AlignmentGeometryTween>(
+                "alignment",
+                _alignment,
+                showName: false,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<EdgeInsetsGeometryTween>(
+                "padding",
+                _padding,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<DecorationTween>("bg", _decoration, defaultValue: null)
+        );
+        description.add(
+            new DiagnosticsProperty<DecorationTween>(
+                "fg",
+                _foregroundDecoration,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<BoxConstraintsTween>(
+                "constraints",
+                _constraints,
+                showName: false,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<EdgeInsetsGeometryTween>("margin", _margin, defaultValue: null)
+        );
         description.add(ObjectFlagProperty<Matrix4Tween>.CreateHas("transform", _transform));
-        description.add(new DiagnosticsProperty<AlignmentGeometryTween>("transformAlignment", _transformAlignment, defaultValue: null));
+        description.add(
+            new DiagnosticsProperty<AlignmentGeometryTween>(
+                "transformAlignment",
+                _transformAlignment,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
 public class AnimatedPadding : ImplicitlyAnimatedWidget
@@ -432,43 +680,72 @@ public class AnimatedPadding : ImplicitlyAnimatedWidget
     public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public AnimatedPadding(Key? key = null, EdgeInsetsGeometry padding = default!, Widget? child = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPadding(
+        Key? key = null,
+        EdgeInsetsGeometry padding = default!,
+        Widget? child = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.padding = padding;
         this.child = child;
         System.Diagnostics.Debug.Assert(padding.isNonNegative);
     }
 
-    public override AnimatedWidgetBaseState<AnimatedPadding> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPadding>>(new _AnimatedPaddingState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedPadding> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPadding>>(
+            new _AnimatedPaddingState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
     }
-
 }
 
 internal class _AnimatedPaddingState__implicit_animations : AnimatedWidgetBaseState<AnimatedPadding>
 {
     internal virtual EdgeInsetsGeometryTween? _padding { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _padding = ((EdgeInsetsGeometryTween?)visitor(_padding, widget.padding, (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)))!;
+        _padding = (
+            (EdgeInsetsGeometryTween?)visitor(
+                _padding,
+                widget.padding,
+                (value) => new EdgeInsetsGeometryTween(begin: ((EdgeInsetsGeometry?)value)!)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Padding(padding: _padding!.evaluate(animation).clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity), child: widget.child);
+        return new Padding(
+            padding: _padding!
+                .evaluate(animation)
+                .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity),
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", _padding, defaultValue: null));
+        description.add(
+            new DiagnosticsProperty<EdgeInsetsGeometryTween>(
+                "padding",
+                _padding,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
 public class AnimatedAlign : ImplicitlyAnimatedWidget
@@ -478,7 +755,17 @@ public class AnimatedAlign : ImplicitlyAnimatedWidget
     public virtual double? heightFactor { get; private set; }
     public virtual double? widthFactor { get; private set; }
 
-    public AnimatedAlign(Key? key = null, AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedAlign(
+        Key? key = null,
+        AlignmentGeometry alignment = default!,
+        Widget? child = null,
+        double? heightFactor = null,
+        double? widthFactor = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.alignment = alignment;
         this.child = child;
@@ -488,13 +775,16 @@ public class AnimatedAlign : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((heightFactor is null) || (heightFactor >= 0.0));
     }
 
-    public override AnimatedWidgetBaseState<AnimatedAlign> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedAlign>>(new _AnimatedAlignState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedAlign> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedAlign>>(
+            new _AnimatedAlignState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
     }
-
 }
 
 internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseState<AnimatedAlign>
@@ -503,33 +793,75 @@ internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseStat
     internal virtual Tween<double>? _heightFactorTween { get; set; } = default;
     internal virtual Tween<double>? _widthFactorTween { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _alignment = ((AlignmentGeometryTween?)visitor(_alignment, widget.alignment, (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)))!;
+        _alignment = (
+            (AlignmentGeometryTween?)visitor(
+                _alignment,
+                widget.alignment,
+                (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)
+            )
+        )!;
         if (widget.heightFactor is not null)
         {
-            _heightFactorTween = ((Tween<double>?)visitor(_heightFactorTween, widget.heightFactor, (value) => new Tween<double>(begin: (double)value)))!;
+            _heightFactorTween = (
+                (Tween<double>?)visitor(
+                    _heightFactorTween,
+                    widget.heightFactor,
+                    (value) => new Tween<double>(begin: (double)value)
+                )
+            )!;
         }
         if (widget.widthFactor is not null)
         {
-            _widthFactorTween = ((Tween<double>?)visitor(_widthFactorTween, widget.widthFactor, (value) => new Tween<double>(begin: (double)value)))!;
+            _widthFactorTween = (
+                (Tween<double>?)visitor(
+                    _widthFactorTween,
+                    widget.widthFactor,
+                    (value) => new Tween<double>(begin: (double)value)
+                )
+            )!;
         }
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Align(alignment: _alignment!.evaluate(animation)!, heightFactor: _heightFactorTween?.evaluate(animation), widthFactor: _widthFactorTween?.evaluate(animation), child: widget.child);
+        return new Align(
+            alignment: _alignment!.evaluate(animation)!,
+            heightFactor: _heightFactorTween?.evaluate(animation),
+            widthFactor: _widthFactorTween?.evaluate(animation),
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new DiagnosticsProperty<AlignmentGeometryTween>("alignment", _alignment, defaultValue: null));
-        description.add(new DiagnosticsProperty<Tween<double>>("widthFactor", _widthFactorTween, defaultValue: null));
-        description.add(new DiagnosticsProperty<Tween<double>>("heightFactor", _heightFactorTween, defaultValue: null));
+        description.add(
+            new DiagnosticsProperty<AlignmentGeometryTween>(
+                "alignment",
+                _alignment,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<Tween<double>>(
+                "widthFactor",
+                _widthFactorTween,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<Tween<double>>(
+                "heightFactor",
+                _heightFactorTween,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
 public class AnimatedPositioned : ImplicitlyAnimatedWidget
@@ -542,7 +874,20 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public AnimatedPositioned(Key? key = null, Widget child = default!, double? left = null, double? top = null, double? right = null, double? bottom = null, double? width = null, double? height = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPositioned(
+        Key? key = null,
+        Widget child = default!,
+        double? left = null,
+        double? top = null,
+        double? right = null,
+        double? bottom = null,
+        double? width = null,
+        double? height = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.left = left;
@@ -555,9 +900,28 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((top is null) || (bottom is null) || (height is null));
     }
 
-    public static AnimatedPositioned CreateFromRect(Key? key = null, Widget child = default!, Rect rect = default!, Curve curve = default!, Duration duration = default!, Action? onEnd = null)
+    public static AnimatedPositioned CreateFromRect(
+        Key? key = null,
+        Widget child = default!,
+        Rect rect = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
     {
-        var __instance = new AnimatedPositioned(key, child, default!, default!, default!, default!, default!, default!, curve, duration, onEnd);
+        var __instance = new AnimatedPositioned(
+            key,
+            child,
+            default!,
+            default!,
+            default!,
+            default!,
+            default!,
+            default!,
+            curve,
+            duration,
+            onEnd
+        );
         Curve __curve = curve ?? Curves.linear;
         __instance.child = child;
         __instance.left = rect.left;
@@ -569,7 +933,11 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
         return __instance;
     }
 
-    public override AnimatedWidgetBaseState<AnimatedPositioned> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositioned>>(new _AnimatedPositionedState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedPositioned> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositioned>>(
+            new _AnimatedPositionedState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -580,10 +948,10 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
         properties.add(new DoubleProperty("width", width, defaultValue: null));
         properties.add(new DoubleProperty("height", height, defaultValue: null));
     }
-
 }
 
-internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBaseState<AnimatedPositioned>
+internal class _AnimatedPositionedState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedPositioned>
 {
     internal virtual Tween<double>? _left { get; set; } = default;
     internal virtual Tween<double>? _top { get; set; } = default;
@@ -592,19 +960,65 @@ internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBas
     internal virtual Tween<double>? _width { get; set; } = default;
     internal virtual Tween<double>? _height { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _left = ((Tween<double>?)visitor(_left, widget.left, (value) => new Tween<double>(begin: (double)value)))!;
-        _top = ((Tween<double>?)visitor(_top, widget.top, (value) => new Tween<double>(begin: (double)value)))!;
-        _right = ((Tween<double>?)visitor(_right, widget.right, (value) => new Tween<double>(begin: (double)value)))!;
-        _bottom = ((Tween<double>?)visitor(_bottom, widget.bottom, (value) => new Tween<double>(begin: (double)value)))!;
-        _width = ((Tween<double>?)visitor(_width, widget.width, (value) => new Tween<double>(begin: (double)value)))!;
-        _height = ((Tween<double>?)visitor(_height, widget.height, (value) => new Tween<double>(begin: (double)value)))!;
+        _left = (
+            (Tween<double>?)visitor(
+                _left,
+                widget.left,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _top = (
+            (Tween<double>?)visitor(
+                _top,
+                widget.top,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _right = (
+            (Tween<double>?)visitor(
+                _right,
+                widget.right,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _bottom = (
+            (Tween<double>?)visitor(
+                _bottom,
+                widget.bottom,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _width = (
+            (Tween<double>?)visitor(
+                _width,
+                widget.width,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _height = (
+            (Tween<double>?)visitor(
+                _height,
+                widget.height,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Positioned(left: _left?.evaluate(animation), top: _top?.evaluate(animation), right: _right?.evaluate(animation), bottom: _bottom?.evaluate(animation), width: _width?.evaluate(animation), height: _height?.evaluate(animation), child: widget.child);
+        return new Positioned(
+            left: _left?.evaluate(animation),
+            top: _top?.evaluate(animation),
+            right: _right?.evaluate(animation),
+            bottom: _bottom?.evaluate(animation),
+            width: _width?.evaluate(animation),
+            height: _height?.evaluate(animation),
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -618,7 +1032,6 @@ internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBas
         description.add(ObjectFlagProperty<Tween<double>>.CreateHas("width", _width));
         description.add(ObjectFlagProperty<Tween<double>>.CreateHas("height", _height));
     }
-
 }
 
 public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
@@ -631,7 +1044,20 @@ public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public AnimatedPositionedDirectional(Key? key = null, Widget child = default!, double? start = null, double? top = null, double? end = null, double? bottom = null, double? width = null, double? height = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPositionedDirectional(
+        Key? key = null,
+        Widget child = default!,
+        double? start = null,
+        double? top = null,
+        double? end = null,
+        double? bottom = null,
+        double? width = null,
+        double? height = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.start = start;
@@ -644,7 +1070,11 @@ public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((top is null) || (bottom is null) || (height is null));
     }
 
-    public override AnimatedWidgetBaseState<AnimatedPositionedDirectional> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositionedDirectional>>(new _AnimatedPositionedDirectionalState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedPositionedDirectional> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositionedDirectional>>(
+            new _AnimatedPositionedDirectionalState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -655,10 +1085,10 @@ public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
         properties.add(new DoubleProperty("width", width, defaultValue: null));
         properties.add(new DoubleProperty("height", height, defaultValue: null));
     }
-
 }
 
-internal class _AnimatedPositionedDirectionalState__implicit_animations : AnimatedWidgetBaseState<AnimatedPositionedDirectional>
+internal class _AnimatedPositionedDirectionalState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedPositionedDirectional>
 {
     internal virtual Tween<double>? _start { get; set; } = default;
     internal virtual Tween<double>? _top { get; set; } = default;
@@ -667,20 +1097,67 @@ internal class _AnimatedPositionedDirectionalState__implicit_animations : Animat
     internal virtual Tween<double>? _width { get; set; } = default;
     internal virtual Tween<double>? _height { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _start = ((Tween<double>?)visitor(_start, widget.start, (value) => new Tween<double>(begin: (double)value)))!;
-        _top = ((Tween<double>?)visitor(_top, widget.top, (value) => new Tween<double>(begin: (double)value)))!;
-        _end = ((Tween<double>?)visitor(_end, widget.end, (value) => new Tween<double>(begin: (double)value)))!;
-        _bottom = ((Tween<double>?)visitor(_bottom, widget.bottom, (value) => new Tween<double>(begin: (double)value)))!;
-        _width = ((Tween<double>?)visitor(_width, widget.width, (value) => new Tween<double>(begin: (double)value)))!;
-        _height = ((Tween<double>?)visitor(_height, widget.height, (value) => new Tween<double>(begin: (double)value)))!;
+        _start = (
+            (Tween<double>?)visitor(
+                _start,
+                widget.start,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _top = (
+            (Tween<double>?)visitor(
+                _top,
+                widget.top,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _end = (
+            (Tween<double>?)visitor(
+                _end,
+                widget.end,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _bottom = (
+            (Tween<double>?)visitor(
+                _bottom,
+                widget.bottom,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _width = (
+            (Tween<double>?)visitor(
+                _width,
+                widget.width,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _height = (
+            (Tween<double>?)visitor(
+                _height,
+                widget.height,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
-        return Positioned.CreateDirectional(textDirection: Directionality.of(context), start: _start?.evaluate(animation), top: _top?.evaluate(animation), end: _end?.evaluate(animation), bottom: _bottom?.evaluate(animation), width: _width?.evaluate(animation), height: _height?.evaluate(animation), child: widget.child);
+        return Positioned.CreateDirectional(
+            textDirection: Directionality.of(context),
+            start: _start?.evaluate(animation),
+            top: _top?.evaluate(animation),
+            end: _end?.evaluate(animation),
+            bottom: _bottom?.evaluate(animation),
+            width: _width?.evaluate(animation),
+            height: _height?.evaluate(animation),
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -694,7 +1171,6 @@ internal class _AnimatedPositionedDirectionalState__implicit_animations : Animat
         description.add(ObjectFlagProperty<Tween<double>>.CreateHas("width", _width));
         description.add(ObjectFlagProperty<Tween<double>>.CreateHas("height", _height));
     }
-
 }
 
 public class AnimatedScale : ImplicitlyAnimatedWidget
@@ -704,7 +1180,17 @@ public class AnimatedScale : ImplicitlyAnimatedWidget
     public virtual Alignment alignment { get; private set; } = default!;
     public virtual FilterQuality? filterQuality { get; private set; }
 
-    public AnimatedScale(Key? key = null, Widget? child = null, double scale = default!, Alignment alignment = default!, FilterQuality? filterQuality = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedScale(
+        Key? key = null,
+        Widget? child = null,
+        double scale = default!,
+        Alignment alignment = default!,
+        FilterQuality? filterQuality = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         Alignment __alignment = alignment ?? Alignment.center;
         this.child = child;
@@ -714,24 +1200,41 @@ public class AnimatedScale : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedScaleState__implicit_animations();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("scale", scale));
-        properties.add(new DiagnosticsProperty<Alignment>("alignment", alignment, defaultValue: Alignment.center));
-        properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<Alignment>(
+                "alignment",
+                alignment,
+                defaultValue: Alignment.center
+            )
+        );
+        properties.add(
+            new EnumProperty<FilterQuality>("filterQuality", filterQuality, defaultValue: null)
+        );
     }
-
 }
 
-internal class _AnimatedScaleState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedScale>
+internal class _AnimatedScaleState__implicit_animations
+    : ImplicitlyAnimatedWidgetState<AnimatedScale>
 {
     internal virtual Tween<double>? _scale { get; set; } = default;
     internal virtual Animation<double> _scaleAnimation { get; set; } = default!;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _scale = ((Tween<double>?)visitor(_scale, widget.scale, (value) => new Tween<double>(begin: (double)value)))!;
+        _scale = (
+            (Tween<double>?)visitor(
+                _scale,
+                widget.scale,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override void didUpdateTweens()
@@ -741,10 +1244,14 @@ internal class _AnimatedScaleState__implicit_animations : ImplicitlyAnimatedWidg
 
     public override Widget build(BuildContext context)
     {
-        return new ScaleTransition(scale: _scaleAnimation, alignment: widget.alignment, filterQuality: widget.filterQuality, child: widget.child);
+        return new ScaleTransition(
+            scale: _scaleAnimation,
+            alignment: widget.alignment,
+            filterQuality: widget.filterQuality,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedRotation : ImplicitlyAnimatedWidget
@@ -754,7 +1261,17 @@ public class AnimatedRotation : ImplicitlyAnimatedWidget
     public virtual Alignment alignment { get; private set; } = default!;
     public virtual FilterQuality? filterQuality { get; private set; }
 
-    public AnimatedRotation(Key? key = null, Widget? child = null, double turns = default!, Alignment alignment = default!, FilterQuality? filterQuality = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedRotation(
+        Key? key = null,
+        Widget? child = null,
+        double turns = default!,
+        Alignment alignment = default!,
+        FilterQuality? filterQuality = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         Alignment __alignment = alignment ?? Alignment.center;
         this.child = child;
@@ -764,24 +1281,41 @@ public class AnimatedRotation : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedRotationState__implicit_animations();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("turns", turns));
-        properties.add(new DiagnosticsProperty<Alignment>("alignment", alignment, defaultValue: Alignment.center));
-        properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<Alignment>(
+                "alignment",
+                alignment,
+                defaultValue: Alignment.center
+            )
+        );
+        properties.add(
+            new EnumProperty<FilterQuality>("filterQuality", filterQuality, defaultValue: null)
+        );
     }
-
 }
 
-internal class _AnimatedRotationState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedRotation>
+internal class _AnimatedRotationState__implicit_animations
+    : ImplicitlyAnimatedWidgetState<AnimatedRotation>
 {
     internal virtual Tween<double>? _turns { get; set; } = default;
     internal virtual Animation<double> _turnsAnimation { get; set; } = default!;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _turns = ((Tween<double>?)visitor(_turns, widget.turns, (value) => new Tween<double>(begin: (double)value)))!;
+        _turns = (
+            (Tween<double>?)visitor(
+                _turns,
+                widget.turns,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override void didUpdateTweens()
@@ -791,10 +1325,14 @@ internal class _AnimatedRotationState__implicit_animations : ImplicitlyAnimatedW
 
     public override Widget build(BuildContext context)
     {
-        return new RotationTransition(turns: _turnsAnimation, alignment: widget.alignment, filterQuality: widget.filterQuality, child: widget.child);
+        return new RotationTransition(
+            turns: _turnsAnimation,
+            alignment: widget.alignment,
+            filterQuality: widget.filterQuality,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedSlide : ImplicitlyAnimatedWidget
@@ -802,29 +1340,47 @@ public class AnimatedSlide : ImplicitlyAnimatedWidget
     public virtual Widget? child { get; private set; }
     public virtual Offset offset { get; private set; } = default!;
 
-    public AnimatedSlide(Key? key = null, Widget? child = null, Offset offset = default!, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedSlide(
+        Key? key = null,
+        Widget? child = null,
+        Offset offset = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.offset = offset;
     }
 
     public override IState createState() => new _AnimatedSlideState__implicit_animations();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<Offset>("offset", offset));
     }
-
 }
 
-internal class _AnimatedSlideState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedSlide>
+internal class _AnimatedSlideState__implicit_animations
+    : ImplicitlyAnimatedWidgetState<AnimatedSlide>
 {
     internal virtual Tween<Offset>? _offset { get; set; } = default;
     internal virtual Animation<Offset> _offsetAnimation { get; set; } = default!;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _offset = ((Tween<Offset>?)visitor(_offset, widget.offset, (value) => new Tween<Offset>(begin: DartRuntimePrimitives.ConvertValue<Offset>(value))))!;
+        _offset = (
+            (Tween<Offset>?)visitor(
+                _offset,
+                widget.offset,
+                (value) =>
+                    new Tween<Offset>(begin: DartRuntimePrimitives.ConvertValue<Offset>(value))
+            )
+        )!;
     }
 
     public override void didUpdateTweens()
@@ -837,7 +1393,6 @@ internal class _AnimatedSlideState__implicit_animations : ImplicitlyAnimatedWidg
         return new SlideTransition(position: _offsetAnimation, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedOpacity : ImplicitlyAnimatedWidget
@@ -846,7 +1401,16 @@ public class AnimatedOpacity : ImplicitlyAnimatedWidget
     public virtual double opacity { get; private set; } = default!;
     public virtual bool alwaysIncludeSemantics { get; private set; } = default!;
 
-    public AnimatedOpacity(Key? key = null, Widget? child = null, double opacity = default!, Curve curve = default!, Duration duration = default!, Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedOpacity(
+        Key? key = null,
+        Widget? child = null,
+        double opacity = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null,
+        bool alwaysIncludeSemantics = false
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.opacity = opacity;
@@ -855,22 +1419,31 @@ public class AnimatedOpacity : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedOpacityState__implicit_animations();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("opacity", opacity));
     }
-
 }
 
-internal class _AnimatedOpacityState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedOpacity>
+internal class _AnimatedOpacityState__implicit_animations
+    : ImplicitlyAnimatedWidgetState<AnimatedOpacity>
 {
     internal virtual Tween<double>? _opacity { get; set; } = default;
     internal virtual Animation<double> _opacityAnimation { get; set; } = default!;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _opacity = ((Tween<double>?)visitor(_opacity, widget.opacity, (value) => new Tween<double>(begin: (double)value)))!;
+        _opacity = (
+            (Tween<double>?)visitor(
+                _opacity,
+                widget.opacity,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override void didUpdateTweens()
@@ -880,10 +1453,13 @@ internal class _AnimatedOpacityState__implicit_animations : ImplicitlyAnimatedWi
 
     public override Widget build(BuildContext context)
     {
-        return new FadeTransition(opacity: _opacityAnimation, alwaysIncludeSemantics: widget.alwaysIncludeSemantics, child: widget.child);
+        return new FadeTransition(
+            opacity: _opacityAnimation,
+            alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class SliverAnimatedOpacity : ImplicitlyAnimatedWidget
@@ -892,7 +1468,16 @@ public class SliverAnimatedOpacity : ImplicitlyAnimatedWidget
     public virtual double opacity { get; private set; } = default!;
     public virtual bool alwaysIncludeSemantics { get; private set; } = default!;
 
-    public SliverAnimatedOpacity(Key? key = null, Widget? sliver = null, double opacity = default!, Curve curve = default!, Duration duration = default!, Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public SliverAnimatedOpacity(
+        Key? key = null,
+        Widget? sliver = null,
+        double opacity = default!,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null,
+        bool alwaysIncludeSemantics = false
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.sliver = sliver;
         this.opacity = opacity;
@@ -901,22 +1486,31 @@ public class SliverAnimatedOpacity : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _SliverAnimatedOpacityState__implicit_animations();
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("opacity", opacity));
     }
-
 }
 
-internal class _SliverAnimatedOpacityState__implicit_animations : ImplicitlyAnimatedWidgetState<SliverAnimatedOpacity>
+internal class _SliverAnimatedOpacityState__implicit_animations
+    : ImplicitlyAnimatedWidgetState<SliverAnimatedOpacity>
 {
     internal virtual Tween<double>? _opacity { get; set; } = default;
     internal virtual Animation<double> _opacityAnimation { get; set; } = default!;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _opacity = ((Tween<double>?)visitor(_opacity, widget.opacity, (value) => new Tween<double>(begin: (double)value)))!;
+        _opacity = (
+            (Tween<double>?)visitor(
+                _opacity,
+                widget.opacity,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
     }
 
     public override void didUpdateTweens()
@@ -926,10 +1520,13 @@ internal class _SliverAnimatedOpacityState__implicit_animations : ImplicitlyAnim
 
     public override Widget build(BuildContext context)
     {
-        return new SliverFadeTransition(opacity: _opacityAnimation, sliver: widget.sliver, alwaysIncludeSemantics: widget.alwaysIncludeSemantics);
+        return new SliverFadeTransition(
+            opacity: _opacityAnimation,
+            sliver: widget.sliver,
+            alwaysIncludeSemantics: widget.alwaysIncludeSemantics
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
@@ -943,7 +1540,21 @@ public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
     public virtual TextWidthBasis textWidthBasis { get; private set; } = default!;
     public virtual TextHeightBehavior? textHeightBehavior { get; private set; }
 
-    public AnimatedDefaultTextStyle(Key? key = null, Widget child = default!, TextStyle style = default!, TextAlign? textAlign = null, bool softWrap = true, TextOverflow overflow = TextOverflow.clip, long? maxLines = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedDefaultTextStyle(
+        Key? key = null,
+        Widget child = default!,
+        TextStyle style = default!,
+        TextAlign? textAlign = null,
+        bool softWrap = true,
+        TextOverflow overflow = TextOverflow.clip,
+        long? maxLines = null,
+        TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+        TextHeightBehavior? textHeightBehavior = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.style = style;
@@ -953,39 +1564,81 @@ public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
         this.maxLines = maxLines;
         this.textWidthBasis = textWidthBasis;
         this.textHeightBehavior = textHeightBehavior;
-        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
+        System.Diagnostics.Debug.Assert(
+            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+        );
     }
 
-    public override AnimatedWidgetBaseState<AnimatedDefaultTextStyle> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedDefaultTextStyle>>(new _AnimatedDefaultTextStyleState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedDefaultTextStyle> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedDefaultTextStyle>>(
+            new _AnimatedDefaultTextStyleState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         style.debugFillProperties(properties);
         properties.add(new EnumProperty<TextAlign>("textAlign", textAlign, defaultValue: null));
-        properties.add(new FlagProperty("softWrap", value: softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(
+            new FlagProperty(
+                "softWrap",
+                value: softWrap,
+                ifTrue: "wrapping at box width",
+                ifFalse: "no wrapping except at line break characters",
+                showName: true
+            )
+        );
         properties.add(new EnumProperty<TextOverflow>("overflow", overflow, defaultValue: null));
         properties.add(new IntProperty("maxLines", maxLines, defaultValue: null));
-        properties.add(new EnumProperty<TextWidthBasis>("textWidthBasis", textWidthBasis, defaultValue: TextWidthBasis.parent));
-        properties.add(new DiagnosticsProperty<TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
+        properties.add(
+            new EnumProperty<TextWidthBasis>(
+                "textWidthBasis",
+                textWidthBasis,
+                defaultValue: TextWidthBasis.parent
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<TextHeightBehavior>(
+                "textHeightBehavior",
+                textHeightBehavior,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
-internal class _AnimatedDefaultTextStyleState__implicit_animations : AnimatedWidgetBaseState<AnimatedDefaultTextStyle>
+internal class _AnimatedDefaultTextStyleState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedDefaultTextStyle>
 {
     internal virtual TextStyleTween? _style { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _style = ((TextStyleTween?)visitor(_style, widget.style, (value) => new TextStyleTween(begin: ((TextStyle?)value)!)))!;
+        _style = (
+            (TextStyleTween?)visitor(
+                _style,
+                widget.style,
+                (value) => new TextStyleTween(begin: ((TextStyle?)value)!)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return new DefaultTextStyle(style: _style!.evaluate(animation), textAlign: widget.textAlign, softWrap: widget.softWrap, overflow: widget.overflow, maxLines: widget.maxLines, textWidthBasis: widget.textWidthBasis, textHeightBehavior: widget.textHeightBehavior, child: widget.child);
+        return new DefaultTextStyle(
+            style: _style!.evaluate(animation),
+            textAlign: widget.textAlign,
+            softWrap: widget.softWrap,
+            overflow: widget.overflow,
+            maxLines: widget.maxLines,
+            textWidthBasis: widget.textWidthBasis,
+            textHeightBehavior: widget.textHeightBehavior,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
@@ -1000,7 +1653,22 @@ public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
     public virtual Color shadowColor { get; private set; } = default!;
     public virtual bool animateShadowColor { get; private set; } = default!;
 
-    public AnimatedPhysicalModel(Key? key = null, Widget child = default!, BoxShape shape = BoxShape.rectangle, Clip clipBehavior = Clip.none, BorderRadius? borderRadius = null, double elevation = 0.0, Color color = default!, bool animateColor = true, Color shadowColor = default!, bool animateShadowColor = true, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPhysicalModel(
+        Key? key = null,
+        Widget child = default!,
+        BoxShape shape = BoxShape.rectangle,
+        Clip clipBehavior = Clip.none,
+        BorderRadius? borderRadius = null,
+        double elevation = 0.0,
+        Color color = default!,
+        bool animateColor = true,
+        Color shadowColor = default!,
+        bool animateShadowColor = true,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.shape = shape;
@@ -1014,7 +1682,11 @@ public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
-    public override AnimatedWidgetBaseState<AnimatedPhysicalModel> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPhysicalModel>>(new _AnimatedPhysicalModelState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedPhysicalModel> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPhysicalModel>>(
+            new _AnimatedPhysicalModelState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -1026,30 +1698,65 @@ public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
         properties.add(new ColorProperty("shadowColor", shadowColor));
         properties.add(new DiagnosticsProperty<bool>("animateShadowColor", animateShadowColor));
     }
-
 }
 
-internal class _AnimatedPhysicalModelState__implicit_animations : AnimatedWidgetBaseState<AnimatedPhysicalModel>
+internal class _AnimatedPhysicalModelState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedPhysicalModel>
 {
     internal virtual BorderRadiusTween? _borderRadius { get; set; } = default;
     internal virtual Tween<double>? _elevation { get; set; } = default;
     internal virtual ColorTween? _color { get; set; } = default;
     internal virtual ColorTween? _shadowColor { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _borderRadius = ((BorderRadiusTween?)visitor(_borderRadius, widget.borderRadius ?? BorderRadius.zero, (value) => new BorderRadiusTween(begin: ((BorderRadius?)value)!)))!;
-        _elevation = ((Tween<double>?)visitor(_elevation, widget.elevation, (value) => new Tween<double>(begin: (double)value)))!;
-        _color = ((ColorTween?)visitor(_color, widget.color, (value) => new ColorTween(begin: ((Color?)value)!)))!;
-        _shadowColor = ((ColorTween?)visitor(_shadowColor, widget.shadowColor, (value) => new ColorTween(begin: ((Color?)value)!)))!;
+        _borderRadius = (
+            (BorderRadiusTween?)visitor(
+                _borderRadius,
+                widget.borderRadius ?? BorderRadius.zero,
+                (value) => new BorderRadiusTween(begin: ((BorderRadius?)value)!)
+            )
+        )!;
+        _elevation = (
+            (Tween<double>?)visitor(
+                _elevation,
+                widget.elevation,
+                (value) => new Tween<double>(begin: (double)value)
+            )
+        )!;
+        _color = (
+            (ColorTween?)visitor(
+                _color,
+                widget.color,
+                (value) => new ColorTween(begin: ((Color?)value)!)
+            )
+        )!;
+        _shadowColor = (
+            (ColorTween?)visitor(
+                _shadowColor,
+                widget.shadowColor,
+                (value) => new ColorTween(begin: ((Color?)value)!)
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return new PhysicalModel(shape: widget.shape, clipBehavior: widget.clipBehavior, borderRadius: _borderRadius!.evaluate(animation), elevation: _elevation!.evaluate(animation), color: widget.animateColor ? _color!.evaluate(animation)! : widget.color, shadowColor: widget.animateShadowColor ? _shadowColor!.evaluate(animation)! : widget.shadowColor, child: widget.child);
+        return new PhysicalModel(
+            shape: widget.shape,
+            clipBehavior: widget.clipBehavior,
+            borderRadius: _borderRadius!.evaluate(animation),
+            elevation: _elevation!.evaluate(animation),
+            color: widget.animateColor ? _color!.evaluate(animation)! : widget.color,
+            shadowColor: widget.animateShadowColor
+                ? _shadowColor!.evaluate(animation)!
+                : widget.shadowColor,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
@@ -1059,7 +1766,17 @@ public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
     public virtual double? widthFactor { get; private set; }
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
 
-    public AnimatedFractionallySizedBox(Key? key = null, AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, Curve curve = default!, Duration duration = default!, Action? onEnd = null) : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedFractionallySizedBox(
+        Key? key = null,
+        AlignmentGeometry alignment = default!,
+        Widget? child = null,
+        double? heightFactor = null,
+        double? widthFactor = null,
+        Curve curve = default!,
+        Duration duration = default!,
+        Action? onEnd = null
+    )
+        : base(key: key, curve: curve ?? Curves.linear, duration: duration, onEnd: onEnd)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.alignment = __alignment;
@@ -1070,7 +1787,11 @@ public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((heightFactor is null) || (heightFactor >= 0.0));
     }
 
-    public override AnimatedWidgetBaseState<AnimatedFractionallySizedBox> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedFractionallySizedBox>>(new _AnimatedFractionallySizedBoxState__implicit_animations());
+    public override AnimatedWidgetBaseState<AnimatedFractionallySizedBox> createState() =>
+        DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedFractionallySizedBox>>(
+            new _AnimatedFractionallySizedBoxState__implicit_animations()
+        );
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -1078,40 +1799,82 @@ public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
         properties.add(new DiagnosticsProperty<double>("widthFactor", widthFactor));
         properties.add(new DiagnosticsProperty<double>("heightFactor", heightFactor));
     }
-
 }
 
-internal class _AnimatedFractionallySizedBoxState__implicit_animations : AnimatedWidgetBaseState<AnimatedFractionallySizedBox>
+internal class _AnimatedFractionallySizedBoxState__implicit_animations
+    : AnimatedWidgetBaseState<AnimatedFractionallySizedBox>
 {
     internal virtual AlignmentGeometryTween? _alignment { get; set; } = default;
     internal virtual Tween<double>? _heightFactorTween { get; set; } = default;
     internal virtual Tween<double>? _widthFactorTween { get; set; } = default;
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        _alignment = ((AlignmentGeometryTween?)visitor(_alignment, widget.alignment, (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)))!;
+        _alignment = (
+            (AlignmentGeometryTween?)visitor(
+                _alignment,
+                widget.alignment,
+                (value) => new AlignmentGeometryTween(begin: ((AlignmentGeometry?)value)!)
+            )
+        )!;
         if (widget.heightFactor is not null)
         {
-            _heightFactorTween = ((Tween<double>?)visitor(_heightFactorTween, widget.heightFactor, (value) => new Tween<double>(begin: (double)value)))!;
+            _heightFactorTween = (
+                (Tween<double>?)visitor(
+                    _heightFactorTween,
+                    widget.heightFactor,
+                    (value) => new Tween<double>(begin: (double)value)
+                )
+            )!;
         }
         if (widget.widthFactor is not null)
         {
-            _widthFactorTween = ((Tween<double>?)visitor(_widthFactorTween, widget.widthFactor, (value) => new Tween<double>(begin: (double)value)))!;
+            _widthFactorTween = (
+                (Tween<double>?)visitor(
+                    _widthFactorTween,
+                    widget.widthFactor,
+                    (value) => new Tween<double>(begin: (double)value)
+                )
+            )!;
         }
     }
 
     public override Widget build(BuildContext context)
     {
-        return new FractionallySizedBox(alignment: _alignment!.evaluate(animation)!, heightFactor: _heightFactorTween?.evaluate(animation), widthFactor: _widthFactorTween?.evaluate(animation), child: widget.child);
+        return new FractionallySizedBox(
+            alignment: _alignment!.evaluate(animation)!,
+            heightFactor: _heightFactorTween?.evaluate(animation),
+            widthFactor: _widthFactorTween?.evaluate(animation),
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new DiagnosticsProperty<AlignmentGeometryTween>("alignment", _alignment, defaultValue: null));
-        description.add(new DiagnosticsProperty<Tween<double>>("widthFactor", _widthFactorTween, defaultValue: null));
-        description.add(new DiagnosticsProperty<Tween<double>>("heightFactor", _heightFactorTween, defaultValue: null));
+        description.add(
+            new DiagnosticsProperty<AlignmentGeometryTween>(
+                "alignment",
+                _alignment,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<Tween<double>>(
+                "widthFactor",
+                _widthFactorTween,
+                defaultValue: null
+            )
+        );
+        description.add(
+            new DiagnosticsProperty<Tween<double>>(
+                "heightFactor",
+                _heightFactorTween,
+                defaultValue: null
+            )
+        );
     }
-
 }

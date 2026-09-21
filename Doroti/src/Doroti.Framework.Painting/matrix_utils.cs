@@ -11,7 +11,27 @@ public abstract class MatrixUtils
 
     public static Offset? getAsTranslation(Matrix4 transform)
     {
-        if (transform.storage is [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, double dx, double dy, 0.0, 1.0])
+        if (
+            transform.storage
+            is [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                double dx,
+                double dy,
+                0.0,
+                1.0,
+            ]
+        )
         {
             return new Offset(dx, dy);
         }
@@ -21,7 +41,28 @@ public abstract class MatrixUtils
 
     public static double? getAsScale(Matrix4 transform)
     {
-        if (transform.storage is [double diagonal1, 0.0, 0.0, 0.0, 0.0, double diagonal2, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] && diagonal1 == diagonal2)
+        if (
+            transform.storage
+                is [
+                    double diagonal1,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    double diagonal2,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                ]
+            && diagonal1 == diagonal2
+        )
         {
             return diagonal1;
         }
@@ -65,22 +106,22 @@ public abstract class MatrixUtils
         double n31 = bStorage[7L];
         double n32 = bStorage[11L];
         double n33 = bStorage[15L];
-        bStorage[0L] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
-        bStorage[4L] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
-        bStorage[8L] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
-        bStorage[12L] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
-        bStorage[1L] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
-        bStorage[5L] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
-        bStorage[9L] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
-        bStorage[13L] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
-        bStorage[2L] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
-        bStorage[6L] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
-        bStorage[10L] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
-        bStorage[14L] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
-        bStorage[3L] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
-        bStorage[7L] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
-        bStorage[11L] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
-        bStorage[15L] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
+        bStorage[0L] = (m00 * n00) + (m01 * n10) + (m02 * n20) + (m03 * n30);
+        bStorage[4L] = (m00 * n01) + (m01 * n11) + (m02 * n21) + (m03 * n31);
+        bStorage[8L] = (m00 * n02) + (m01 * n12) + (m02 * n22) + (m03 * n32);
+        bStorage[12L] = (m00 * n03) + (m01 * n13) + (m02 * n23) + (m03 * n33);
+        bStorage[1L] = (m10 * n00) + (m11 * n10) + (m12 * n20) + (m13 * n30);
+        bStorage[5L] = (m10 * n01) + (m11 * n11) + (m12 * n21) + (m13 * n31);
+        bStorage[9L] = (m10 * n02) + (m11 * n12) + (m12 * n22) + (m13 * n32);
+        bStorage[13L] = (m10 * n03) + (m11 * n13) + (m12 * n23) + (m13 * n33);
+        bStorage[2L] = (m20 * n00) + (m21 * n10) + (m22 * n20) + (m23 * n30);
+        bStorage[6L] = (m20 * n01) + (m21 * n11) + (m22 * n21) + (m23 * n31);
+        bStorage[10L] = (m20 * n02) + (m21 * n12) + (m22 * n22) + (m23 * n32);
+        bStorage[14L] = (m20 * n03) + (m21 * n13) + (m22 * n23) + (m23 * n33);
+        bStorage[3L] = (m30 * n00) + (m31 * n10) + (m32 * n20) + (m33 * n30);
+        bStorage[7L] = (m30 * n01) + (m31 * n11) + (m32 * n21) + (m33 * n31);
+        bStorage[11L] = (m30 * n02) + (m31 * n12) + (m32 * n22) + (m33 * n32);
+        bStorage[15L] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33);
     }
 
     public static bool matrixEquals(Matrix4? a, Matrix4? b)
@@ -98,13 +139,43 @@ public abstract class MatrixUtils
         {
             return isIdentity(a);
         }
-        return (a.storage[0L] == b.storage[0L]) && (a.storage[1L] == b.storage[1L]) && (a.storage[2L] == b.storage[2L]) && (a.storage[3L] == b.storage[3L]) && (a.storage[4L] == b.storage[4L]) && (a.storage[5L] == b.storage[5L]) && (a.storage[6L] == b.storage[6L]) && (a.storage[7L] == b.storage[7L]) && (a.storage[8L] == b.storage[8L]) && (a.storage[9L] == b.storage[9L]) && (a.storage[10L] == b.storage[10L]) && (a.storage[11L] == b.storage[11L]) && (a.storage[12L] == b.storage[12L]) && (a.storage[13L] == b.storage[13L]) && (a.storage[14L] == b.storage[14L]) && (a.storage[15L] == b.storage[15L]);
+        return (a.storage[0L] == b.storage[0L])
+            && (a.storage[1L] == b.storage[1L])
+            && (a.storage[2L] == b.storage[2L])
+            && (a.storage[3L] == b.storage[3L])
+            && (a.storage[4L] == b.storage[4L])
+            && (a.storage[5L] == b.storage[5L])
+            && (a.storage[6L] == b.storage[6L])
+            && (a.storage[7L] == b.storage[7L])
+            && (a.storage[8L] == b.storage[8L])
+            && (a.storage[9L] == b.storage[9L])
+            && (a.storage[10L] == b.storage[10L])
+            && (a.storage[11L] == b.storage[11L])
+            && (a.storage[12L] == b.storage[12L])
+            && (a.storage[13L] == b.storage[13L])
+            && (a.storage[14L] == b.storage[14L])
+            && (a.storage[15L] == b.storage[15L]);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isIdentity(Matrix4 a)
     {
-        return (a.storage[0L] == 1.0) && (a.storage[1L] == 0.0) && (a.storage[2L] == 0.0) && (a.storage[3L] == 0.0) && (a.storage[4L] == 0.0) && (a.storage[5L] == 1.0) && (a.storage[6L] == 0.0) && (a.storage[7L] == 0.0) && (a.storage[8L] == 0.0) && (a.storage[9L] == 0.0) && (a.storage[10L] == 1.0) && (a.storage[11L] == 0.0) && (a.storage[12L] == 0.0) && (a.storage[13L] == 0.0) && (a.storage[14L] == 0.0) && (a.storage[15L] == 1.0);
+        return (a.storage[0L] == 1.0)
+            && (a.storage[1L] == 0.0)
+            && (a.storage[2L] == 0.0)
+            && (a.storage[3L] == 0.0)
+            && (a.storage[4L] == 0.0)
+            && (a.storage[5L] == 1.0)
+            && (a.storage[6L] == 0.0)
+            && (a.storage[7L] == 0.0)
+            && (a.storage[8L] == 0.0)
+            && (a.storage[9L] == 0.0)
+            && (a.storage[10L] == 1.0)
+            && (a.storage[11L] == 0.0)
+            && (a.storage[12L] == 0.0)
+            && (a.storage[13L] == 0.0)
+            && (a.storage[14L] == 0.0)
+            && (a.storage[15L] == 1.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -130,7 +201,8 @@ public abstract class MatrixUtils
     internal static Rect _safeTransformRect(Matrix4 transform, Rect rect)
     {
         Float64List storageLocal = transform.storage;
-        bool isAffine = (storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0) && (storageLocal[15L] == 1.0);
+        bool isAffine =
+            (storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0) && (storageLocal[15L] == 1.0);
         _accumulate(storageLocal, rect.left, rect.top, true, isAffine);
         _accumulate(storageLocal, rect.right, rect.top, false, isAffine);
         _accumulate(storageLocal, rect.left, rect.bottom, false, isAffine);
@@ -240,14 +312,22 @@ public abstract class MatrixUtils
             double lly = (ry + hy) / (rw + hw);
             double lrx = (rx + wx + hx) / (rw + ww + hw);
             double lry = (ry + wy + hy) / (rw + ww + hw);
-            return Rect.fromLTRB(_min4(ulx, urx, llx, lrx), _min4(uly, ury, lly, lry), _max4(ulx, urx, llx, lrx), _max4(uly, ury, lly, lry));
+            return Rect.fromLTRB(
+                _min4(ulx, urx, llx, lrx),
+                _min4(uly, ury, lly, lry),
+                _max4(ulx, urx, llx, lrx),
+                _max4(uly, ury, lly, lry)
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static double _min4(double a, double b, double c, double d)
     {
-        var e = (DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b)) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b);
+        var e =
+            (DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b))
+                ? DartRuntimePrimitives.RequireValue(a)
+                : DartRuntimePrimitives.RequireValue(b);
         var f = (c < d) ? c : d;
         return (e < f) ? e : f;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -255,7 +335,10 @@ public abstract class MatrixUtils
 
     internal static double _max4(double a, double b, double c, double d)
     {
-        var e = (DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b)) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b);
+        var e =
+            (DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b))
+                ? DartRuntimePrimitives.RequireValue(a)
+                : DartRuntimePrimitives.RequireValue(b);
         var f = (c > d) ? c : d;
         return (e > f) ? e : f;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -267,28 +350,58 @@ public abstract class MatrixUtils
         {
             return rect;
         }
-        transform = ((Func<Matrix4>)(() =>
-{
-    var __cascade = Matrix4.copy(transform);
-    __cascade.invert();
-    return __cascade;
-}))();
+        transform = (
+            (Func<Matrix4>)(
+                () =>
+                {
+                    var __cascade = Matrix4.copy(transform);
+                    __cascade.invert();
+                    return __cascade;
+                }
+            )
+        )();
         return transformRect(transform, rect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Matrix4 createCylindricalProjectionTransform(double radius, double angle, double perspective = 0.001, Axis orientation = Axis.vertical)
+    public static Matrix4 createCylindricalProjectionTransform(
+        double radius,
+        double angle,
+        double perspective = 0.001,
+        Axis orientation = Axis.vertical
+    )
     {
         DartRuntimePrimitives.Assert(() => (perspective >= 0L) && (perspective <= 1.0));
-        var result = ((Func<Matrix4>)(() =>
-{
-    var __cascade = Matrix4.identity();
-    __cascade.setEntry(3L, 2L, -perspective);
-    __cascade.setEntry(2L, 3L, -radius);
-    __cascade.setEntry(3L, 3L, (perspective * radius) + 1.0);
-    return __cascade;
-}))();
-        result = ((Matrix4?)(object?)(result * ((orientation switch { Axis.horizontal => Matrix4.rotationY(angle), Axis.vertical => Matrix4.rotationX(angle), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) * Matrix4.translationValues(0.0, 0.0, radius))))!;
+        var result = (
+            (Func<Matrix4>)(
+                () =>
+                {
+                    var __cascade = Matrix4.identity();
+                    __cascade.setEntry(3L, 2L, -perspective);
+                    __cascade.setEntry(2L, 3L, -radius);
+                    __cascade.setEntry(3L, 3L, (perspective * radius) + 1.0);
+                    return __cascade;
+                }
+            )
+        )();
+        result = (
+            (Matrix4?)
+                (object?)(
+                    result
+                    * (
+                        (
+                            orientation switch
+                            {
+                                Axis.horizontal => Matrix4.rotationY(angle),
+                                Axis.vertical => Matrix4.rotationX(angle),
+                                _ => throw new InvalidOperationException(
+                                    "Non-exhaustive Dart switch value."
+                                ),
+                            }
+                        ) * Matrix4.translationValues(0.0, 0.0, radius)
+                    )
+                )
+        )!;
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -304,7 +417,6 @@ public abstract class MatrixUtils
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class Matrix_utilsLibrary
@@ -315,27 +427,48 @@ public static partial class Matrix_utilsLibrary
         {
             return new List<string> { "null" };
         }
-        return new List<string> { $"[0] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 3L))}", $"[1] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 3L))}", $"[2] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 3L))}", $"[3] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 3L))}" };
+        return new List<string>
+        {
+            $"[0] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 3L))}",
+            $"[1] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 3L))}",
+            $"[2] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 3L))}",
+            $"[3] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 3L))}",
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public class TransformProperty : DiagnosticsProperty<Matrix4>
 {
-    public TransformProperty(string name, Matrix4? value, bool showName = true, object? defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue, level: level)
-    {
-    }
+    public TransformProperty(
+        string name,
+        Matrix4? value,
+        bool showName = true,
+        object? defaultValue = default!,
+        DiagnosticLevel level = DiagnosticLevel.info
+    )
+        : base(
+            name,
+            value,
+            showName: showName,
+            defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue,
+            level: level
+        ) { }
 
     public virtual string valueToString(TextTreeConfiguration? parentConfiguration = null)
     {
         if ((parentConfiguration is not null) && !parentConfiguration.lineBreakProperties)
         {
-            var values = new List<string> { $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L))}", $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L))}", $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L))}", $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L))}" };
+            var values = new List<string>
+            {
+                $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L))}",
+                $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L))}",
+                $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L))}",
+                $"{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L))}",
+            };
             return $"[{string.Join("; ", values)}]";
         }
         return string.Join("\n", Matrix_utilsLibrary.debugDescribeTransform(value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

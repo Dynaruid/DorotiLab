@@ -32,7 +32,10 @@ public sealed class LicenseEntryWithLineBreaks : LicenseEntry
 
     private static IEnumerable<LicenseParagraph> Parse(string text)
     {
-        foreach (var paragraph in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split("\n\n", StringSplitOptions.None))
+        foreach (
+            var paragraph in text.Replace("\r\n", "\n", StringComparison.Ordinal)
+                .Split("\n\n", StringSplitOptions.None)
+        )
         {
             var lines = paragraph.Split('\n');
             var nonBlank = lines.Where(line => line.Length > 0).ToArray();
@@ -41,7 +44,13 @@ public sealed class LicenseEntryWithLineBreaks : LicenseEntry
                 continue;
             }
             var indent = nonBlank.Min(line => line.TakeWhile(char.IsWhiteSpace).Count());
-            yield return new LicenseParagraph(string.Join("\n", lines.Select(line => line.Length >= indent ? line[indent..] : string.Empty)), indent);
+            yield return new LicenseParagraph(
+                string.Join(
+                    "\n",
+                    lines.Select(line => line.Length >= indent ? line[indent..] : string.Empty)
+                ),
+                indent
+            );
         }
     }
 }
@@ -85,4 +94,8 @@ public static class LicenseRegistry
     }
 }
 
-internal enum _LicenseEntryWithLineBreaksParserState { beforeParagraph, inParagraph }
+internal enum _LicenseEntryWithLineBreaksParserState
+{
+    beforeParagraph,
+    inParagraph,
+}

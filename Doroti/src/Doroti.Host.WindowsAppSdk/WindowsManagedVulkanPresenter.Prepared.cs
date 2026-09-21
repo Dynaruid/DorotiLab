@@ -6,9 +6,12 @@ namespace Doroti.Host.WindowsAppSdk;
 
 internal sealed unsafe partial class WindowsManagedVulkanPresenter
 {
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_trace_prepared_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_trace_prepared_v1"
+    )]
     private static partial void TracePreparedCopyComplete();
+
     private readonly PreparedMovingFrameLedger _preparedMoving = new();
     private MovingFrameKey? _movingPrepareRequest;
     private PreparedMovingFrame? _phaseAlignedFrame;
@@ -16,16 +19,22 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     internal ulong MovingOriginWindowPosCommitAttempt { get; private set; }
     internal ulong MovingOriginWindowPosCommitMismatch { get; private set; }
     internal ulong MovingOriginWindowPosCommitFailed { get; private set; }
+
     internal void RecordPreparedMismatch()
     {
-        lock (_viewportGate) MovingOriginWindowPosCommitMismatch++;
+        lock (_viewportGate)
+        {
+            MovingOriginWindowPosCommitMismatch++;
+        }
     }
+
     internal bool LastPrepareSucceeded { get; private set; }
+
     // Retain the existing bounded resize budget. DXGI present-count receipts
     // need separate qualification from the former Presentation API statistics.
     internal uint? PreparedReceiptTimeoutForValidation { get; set; }
-    internal uint PreparedReceiptTimeoutMilliseconds => PreparedReceiptTimeoutForValidation
-        ?? (_deviceVendorId == 0x10de ? 1000u : 50u);
+    internal uint PreparedReceiptTimeoutMilliseconds =>
+        PreparedReceiptTimeoutForValidation ?? (_deviceVendorId == 0x10de ? 1000u : 50u);
     private ulong _preparedReceiptsOver50Milliseconds;
 
     internal (ulong Prepared, ulong Cancelled, ulong Committed, int Reserved) PreparedDiagnostics
@@ -33,27 +42,47 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         get
         {
             lock (_viewportGate)
-                return (_preparedMoving.Prepared, _preparedMoving.Cancelled,
-                    _preparedMoving.Committed, _preparedMoving.Current is null ? 0 : 1);
+            {
+                return (
+                    _preparedMoving.Prepared,
+                    _preparedMoving.Cancelled,
+                    _preparedMoving.Committed,
+                    _preparedMoving.Current is null ? 0 : 1
+                );
+            }
         }
     }
 
     // Raster-worker-only entry point. Ordinary frames continue to call
     // RenderAndPresent directly. The native host owns the later commit/cancel.
-    internal T RenderAndPrepare<T>(MovingFrameKey key,
-        Func<SKSurface, T> paint, Predicate<T> shouldPrepare)
+    internal T RenderAndPrepare<T>(
+        MovingFrameKey key,
+        Func<SKSurface, T> paint,
+        Predicate<T> shouldPrepare
+    )
     {
         LastPrepareSucceeded = false;
         lock (_viewportGate)
         {
             _phaseAlignedFrame = null;
-            if (!SizingEdgeMovesWindowOrigin(key.SizingEdge) ||
-                key.Width != _viewportWidth || key.Height != _viewportHeight ||
-                key.Scale != _viewportScale)
-                throw new InvalidOperationException("Prepared key differs from the exact viewport.");
+            if (
+                !SizingEdgeMovesWindowOrigin(key.SizingEdge)
+                || key.Width != _viewportWidth
+                || key.Height != _viewportHeight
+                || key.Scale != _viewportScale
+            )
+            {
+                throw new InvalidOperationException(
+                    "Prepared key differs from the exact viewport."
+                );
+            }
+
             _movingPrepareRequest = key;
         }
-        try { return RenderAndPresent(paint, shouldPrepare); }
+        try
+        {
+            return RenderAndPresent(paint, shouldPrepare);
+        }
         catch
         {
             CancelPreparedMovingFrame();
@@ -64,7 +93,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             lock (_viewportGate)
             {
                 _movingPrepareRequest = null;
-                if (!LastPrepareSucceeded) _preparedMoving.Cancel();
+                if (!LastPrepareSucceeded)
+                {
+                    _preparedMoving.Cancel();
+                }
             }
         }
     }
@@ -84,11 +116,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     {
         lock (_viewportGate)
         {
-            if (!_preparedMoving.Matches(key, _viewportRevision) ||
-                _presentationRetiring || _presentationPoisoned)
+            if (
+                !_preparedMoving.Matches(key, _viewportRevision)
+                || _presentationRetiring
+                || _presentationPoisoned
+            )
+            {
                 return 1;
+            }
+
             var frame = _preparedMoving.Current!.Value;
-            if (_phaseAlignedFrame == frame) return 0;
+            if (_phaseAlignedFrame == frame)
+            {
+                return 0;
+            }
+
             WaitForPreparedResizeClock();
             _phaseAlignedFrame = frame;
             return 0;
@@ -103,9 +145,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         lock (_viewportGate)
         {
             MovingOriginWindowPosCommitAttempt++;
-            if (!_preparedMoving.Matches(key, _viewportRevision) ||
-                _phaseAlignedFrame != _preparedMoving.Current ||
-                _presentationRetiring || _presentationPoisoned)
+            if (
+                !_preparedMoving.Matches(key, _viewportRevision)
+                || _phaseAlignedFrame != _preparedMoving.Current
+                || _presentationRetiring
+                || _presentationPoisoned
+            )
             {
                 MovingOriginWindowPosCommitMismatch++;
                 _phaseAlignedFrame = null;
@@ -118,10 +163,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             {
                 // Never inherit the ordinary post-geometry display wait.
                 if (_displayWaitViewportRevision == frame.ViewportRevision)
-                    throw new InvalidOperationException("Prepared commit inherited a display wait.");
-                PresentSlotLocked(frame.SlotIndex, frame.ViewportRevision, "moving-origin-windowpos-commit", waitForResizeReceipt: true);
+                {
+                    throw new InvalidOperationException(
+                        "Prepared commit inherited a display wait."
+                    );
+                }
+
+                PresentSlotLocked(
+                    frame.SlotIndex,
+                    frame.ViewportRevision,
+                    "moving-origin-windowpos-commit",
+                    waitForResizeReceipt: true
+                );
                 if (!LastPresentSucceeded)
+                {
                     throw new InvalidOperationException("Prepared Present did not complete.");
+                }
+
                 _preparedMoving.Complete(key, frame.ViewportRevision);
                 LastPrepareSucceeded = false;
                 return 0;
@@ -157,9 +215,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         }
         _maximumResizeClockWaitMicroseconds = Math.Max(
             _maximumResizeClockWaitMicroseconds,
-            checked((long)Stopwatch.GetElapsedTime(started).TotalMicroseconds));
+            checked((long)Stopwatch.GetElapsedTime(started).TotalMicroseconds)
+        );
         if (_lastResizeClockStatus == 0)
+        {
             _resizeClockSignalCount++;
+        }
         else
         {
             // Timeout/occlusion/failure still submits and releases the HWND;
@@ -173,9 +234,18 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     {
         lock (_viewportGate)
         {
-            if (_preparedMoving.Current is not { } frame) return false;
-            Marshal.ThrowExceptionForHR(IsCompositionBufferAvailable(
-                _presentationContext, checked((uint)frame.SlotIndex), out var available));
+            if (_preparedMoving.Current is not { } frame)
+            {
+                return false;
+            }
+
+            Marshal.ThrowExceptionForHR(
+                IsCompositionBufferAvailable(
+                    _presentationContext,
+                    checked((uint)frame.SlotIndex),
+                    out var available
+                )
+            );
             var handle = unchecked((nint)_presentationSlots[frame.SlotIndex].AvailableEvent);
             return available != 0 && WaitForMultipleObjects(1, &handle, false, 0) == WaitObject0;
         }

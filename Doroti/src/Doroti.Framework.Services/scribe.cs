@@ -35,6 +35,4 @@ public abstract class Scribe
         return _channel.invokeMethod<object?>("Scribe.startStylusHandwriting");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

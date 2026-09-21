@@ -7,11 +7,11 @@ public enum StandardComponentType
     backButton,
     closeButton,
     moreButton,
-    drawerButton
+    drawerButton,
 }
 
 public static class StandardComponentTypeMembers
 {
-    public static ValueKey<StandardComponentType> key(this StandardComponentType value) => new ValueKey<StandardComponentType>(value);
+    public static ValueKey<StandardComponentType> key(this StandardComponentType value) =>
+        new ValueKey<StandardComponentType>(value);
 }
-

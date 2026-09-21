@@ -11,6 +11,9 @@ internal sealed class QtTitlebarAppearance(Action invalidate) : IWindowTitlebarH
     public void SetTheme(WindowTitlebarTheme theme)
     {
         ArgumentNullException.ThrowIfNull(theme);
-        if (Interlocked.Exchange(ref _theme, theme) != theme) invalidate();
+        if (Interlocked.Exchange(ref _theme, theme) != theme)
+        {
+            invalidate();
+        }
     }
 }

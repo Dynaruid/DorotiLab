@@ -6,28 +6,20 @@ namespace Doroti.Framework.Foundation;
 
 public abstract class Key
 {
-    public static Key Create(string value)
-        => new ValueKey<string>(value);
+    public static Key Create(string value) => new ValueKey<string>(value);
 
-    protected Key()
-    {
-    }
-
+    protected Key() { }
 }
 
 public abstract class LocalKey : Key
 {
-    protected LocalKey() : base()
-    {
-    }
-
+    protected LocalKey()
+        : base() { }
 }
 
 public class UniqueKey : LocalKey
 {
-    public UniqueKey()
-    {
-    }
+    public UniqueKey() { }
 
     public override string ToString() => $"[#{DiagnosticsLibrary.shortHash(this)}]";
 }
@@ -44,7 +36,11 @@ public class ValueKey<T> : LocalKey
     public override bool Equals(object? other)
     {
         var __other = other as ValueKey<T>;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (__other.GetType() != GetType())
         {
             return false;
@@ -53,6 +49,7 @@ public class ValueKey<T> : LocalKey
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(GetType(), value);
+
     public override string ToString()
     {
         var valueString = (typeof(T) == typeof(string)) ? $"<'{value}'>" : $"<{value}>";
@@ -62,5 +59,4 @@ public class ValueKey<T> : LocalKey
         }
         return $"[{typeof(T)} {valueString}]";
     }
-
 }

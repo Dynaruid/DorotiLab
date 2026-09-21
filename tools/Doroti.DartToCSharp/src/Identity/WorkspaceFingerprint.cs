@@ -13,12 +13,20 @@ internal static class WorkspaceFingerprint
         ApplicationGraphPlan? applicationPlan = null;
         if (manifest.Application is not null)
         {
-            (manifest, applicationPlan) = ApplicationGraphResolver.Expand(manifest, manifestDirectory, previousOutputDirectory: null);
+            (manifest, applicationPlan) = ApplicationGraphResolver.Expand(
+                manifest,
+                manifestDirectory,
+                previousOutputDirectory: null
+            );
         }
         var analyzerHome = AnalyzerHomeResolver.Resolve(manifestPath, manifest);
         var analyzerProject = analyzerHome.AnalyzerRoot;
         var repositoryRoot = analyzerHome.DorotiRoot;
-        var compilerRoot = Path.Combine(analyzerHome.RepositoryRoot, "tools", "Doroti.DartToCSharp");
+        var compilerRoot = Path.Combine(
+            analyzerHome.RepositoryRoot,
+            "tools",
+            "Doroti.DartToCSharp"
+        );
         var buildPropsPath = Path.Combine(repositoryRoot, "Directory.Build.props");
         var inputs = new List<string>
         {
@@ -29,27 +37,57 @@ internal static class WorkspaceFingerprint
             $"flutter-baseline:{ArtifactFiles.Sha256(Path.GetFullPath(manifest.FlutterBaseline, manifestDirectory))}",
         };
 
-        inputs.AddRange(Directory.EnumerateFiles(Path.Combine(compilerRoot, "src"), "*.cs", SearchOption.AllDirectories)
-            .OrderBy(path => ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path)), StringComparer.Ordinal)
-            .Select(path => $"compiler-source:{ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path))}:{ArtifactFiles.Sha256(path)}"));
+        inputs.AddRange(
+            Directory
+                .EnumerateFiles(
+                    Path.Combine(compilerRoot, "src"),
+                    "*.cs",
+                    SearchOption.AllDirectories
+                )
+                .OrderBy(
+                    path => ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path)),
+                    StringComparer.Ordinal
+                )
+                .Select(path =>
+                    $"compiler-source:{ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path))}:{ArtifactFiles.Sha256(path)}"
+                )
+        );
 
         var runtimeRoot = Path.Combine(repositoryRoot, "src", "Doroti.Runtime");
-        inputs.AddRange(Directory.GetFiles(runtimeRoot, "*", SearchOption.TopDirectoryOnly)
-            .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
-            .OrderBy(path => path, StringComparer.Ordinal)
-            .Select(path => $"runtime-binding:{ArtifactFiles.NormalizePath(Path.GetRelativePath(repositoryRoot, path))}:{ArtifactFiles.Sha256(path)}"));
+        inputs.AddRange(
+            Directory
+                .GetFiles(runtimeRoot, "*", SearchOption.TopDirectoryOnly)
+                .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .Select(path =>
+                    $"runtime-binding:{ArtifactFiles.NormalizePath(Path.GetRelativePath(repositoryRoot, path))}:{ArtifactFiles.Sha256(path)}"
+                )
+        );
         var uiContractRoot = Path.Combine(repositoryRoot, "src", "Doroti.Ui");
-        inputs.AddRange(Directory.GetFiles(uiContractRoot, "*", SearchOption.TopDirectoryOnly)
-            .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
-            .OrderBy(path => path, StringComparer.Ordinal)
-            .Select(path => $"dart-ui-contract:{ArtifactFiles.NormalizePath(Path.GetRelativePath(repositoryRoot, path))}:{ArtifactFiles.Sha256(path)}"));
-        inputs.AddRange(manifest.Inputs
-            .OrderBy(item => item.Path, StringComparer.Ordinal)
-            .Select(item => $"input:{ArtifactFiles.NormalizePath(item.Path)}:{ArtifactFiles.Sha256(CompilerInputResolver.Resolve(manifest, manifestDirectory, item.Path))}"));
+        inputs.AddRange(
+            Directory
+                .GetFiles(uiContractRoot, "*", SearchOption.TopDirectoryOnly)
+                .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .Select(path =>
+                    $"dart-ui-contract:{ArtifactFiles.NormalizePath(Path.GetRelativePath(repositoryRoot, path))}:{ArtifactFiles.Sha256(path)}"
+                )
+        );
+        inputs.AddRange(
+            manifest
+                .Inputs.OrderBy(item => item.Path, StringComparer.Ordinal)
+                .Select(item =>
+                    $"input:{ArtifactFiles.NormalizePath(item.Path)}:{ArtifactFiles.Sha256(CompilerInputResolver.Resolve(manifest, manifestDirectory, item.Path))}"
+                )
+        );
         if (applicationPlan is not null)
         {
-            inputs.Add($"application-resource-manifest:{ArtifactFiles.Sha256(applicationPlan.ResourceManifestPath)}");
-            inputs.Add($"application-plugin-manifest:{ArtifactFiles.Sha256(applicationPlan.PluginManifestPath)}");
+            inputs.Add(
+                $"application-resource-manifest:{ArtifactFiles.Sha256(applicationPlan.ResourceManifestPath)}"
+            );
+            inputs.Add(
+                $"application-plugin-manifest:{ArtifactFiles.Sha256(applicationPlan.PluginManifestPath)}"
+            );
             inputs.Add($"application-contract:{applicationPlan.ContractSha256}");
         }
 

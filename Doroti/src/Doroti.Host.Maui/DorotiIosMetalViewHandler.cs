@@ -18,32 +18,32 @@ namespace Doroti.Host.Maui;
 /// </summary>
 public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalView>
 {
-    private static readonly PropertyMapper<ISKGLView, DorotiIosMetalViewHandler> Mapper =
-        new(ViewHandler.ViewMapper)
-        {
-            [nameof(ISKGLView.EnableTouchEvents)] = MapEnableTouchEvents,
-            [nameof(ISKGLView.IgnorePixelScaling)] = MapIgnorePixelScaling,
-            [nameof(ISKGLView.HasRenderLoop)] = MapHasRenderLoop,
-        };
+    private static readonly PropertyMapper<ISKGLView, DorotiIosMetalViewHandler> Mapper = new(
+        ViewHandler.ViewMapper
+    )
+    {
+        [nameof(ISKGLView.EnableTouchEvents)] = MapEnableTouchEvents,
+        [nameof(ISKGLView.IgnorePixelScaling)] = MapIgnorePixelScaling,
+        [nameof(ISKGLView.HasRenderLoop)] = MapHasRenderLoop,
+    };
 
-    private static readonly CommandMapper<ISKGLView, DorotiIosMetalViewHandler> Commands =
-        new(ViewHandler.ViewCommandMapper)
-        {
-            [nameof(ISKGLView.InvalidateSurface)] = InvalidateSurface,
-        };
+    private static readonly CommandMapper<ISKGLView, DorotiIosMetalViewHandler> Commands = new(
+        ViewHandler.ViewCommandMapper
+    )
+    {
+        [nameof(ISKGLView.InvalidateSurface)] = InvalidateSurface,
+    };
 
     private DorotiIosTouchRecognizer? _touchRecognizer;
     private CADisplayLink? _pendingDisplayLink;
     private SKSizeI _lastCanvasSize;
     private GRContext? _lastContext;
 
-    public DorotiIosMetalViewHandler() : base(Mapper, Commands) { }
+    public DorotiIosMetalViewHandler()
+        : base(Mapper, Commands) { }
 
-    protected override SKMetalView CreatePlatformView() => new DorotiIosMetalView
-    {
-        BackgroundColor = UIColor.Clear,
-        Opaque = false,
-    };
+    protected override SKMetalView CreatePlatformView() =>
+        new DorotiIosMetalView { BackgroundColor = UIColor.Clear, Opaque = false };
 
     protected override void ConnectHandler(SKMetalView platformView)
     {
@@ -75,7 +75,8 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
     private static void InvalidateSurface(
         DorotiIosMetalViewHandler handler,
         ISKGLView view,
-        object? args)
+        object? args
+    )
     {
         _ = view;
         _ = args;
@@ -84,8 +85,13 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
 
     private void RequestFrame()
     {
-        if (_pendingDisplayLink is not null ||
-            PlatformView is not { Paused: true, EnableSetNeedsDisplay: true }) return;
+        if (
+            _pendingDisplayLink is not null
+            || PlatformView is not { Paused: true, EnableSetNeedsDisplay: true }
+        )
+        {
+            return;
+        }
 
         _pendingDisplayLink = CADisplayLink.Create(() =>
         {
@@ -94,38 +100,60 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
             displayLink?.Invalidate();
             displayLink?.Dispose();
             if (PlatformView is { Paused: true, EnableSetNeedsDisplay: true } platformView)
+            {
                 platformView.SetNeedsDisplay();
+            }
         });
         _pendingDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
     }
 
     private static void MapHasRenderLoop(DorotiIosMetalViewHandler handler, ISKGLView view)
     {
-        if (handler.PlatformView is not { } platformView) return;
+        if (handler.PlatformView is not { } platformView)
+        {
+            return;
+        }
+
         platformView.Paused = !view.HasRenderLoop;
         platformView.EnableSetNeedsDisplay = !view.HasRenderLoop;
     }
 
     private static void MapIgnorePixelScaling(DorotiIosMetalViewHandler handler, ISKGLView view)
     {
-        if (handler.PlatformView is not DorotiIosMetalView platformView) return;
+        if (handler.PlatformView is not DorotiIosMetalView platformView)
+        {
+            return;
+        }
+
         platformView.IgnorePixelScaling = view.IgnorePixelScaling;
         platformView.SetNeedsDisplay();
     }
 
     private static void MapEnableTouchEvents(DorotiIosMetalViewHandler handler, ISKGLView view)
     {
-        if (handler.PlatformView is not { } platformView || handler._touchRecognizer is null) return;
+        if (handler.PlatformView is not { } platformView || handler._touchRecognizer is null)
+        {
+            return;
+        }
+
         var attached = platformView.GestureRecognizers?.Contains(handler._touchRecognizer) == true;
         if (view.EnableTouchEvents && !attached)
+        {
             platformView.AddGestureRecognizer(handler._touchRecognizer);
+        }
         else if (!view.EnableTouchEvents && attached)
+        {
             platformView.RemoveGestureRecognizer(handler._touchRecognizer);
+        }
     }
 
     private void HandlePaintSurface(object? sender, SKPaintMetalSurfaceEventArgs args)
     {
-        if (VirtualView is not { } view) return;
+        if (VirtualView is not { } view)
+        {
+            return;
+        }
+
         if (_lastCanvasSize != args.Info.Size)
         {
             _lastCanvasSize = args.Info.Size;
@@ -136,8 +164,15 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
             _lastContext = metalView.GRContext;
             view.OnGRContextChanged(_lastContext);
         }
-        view.OnPaintSurface(new SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs(
-            args.Surface, args.BackendRenderTarget, args.Origin, args.Info, args.RawInfo));
+        view.OnPaintSurface(
+            new SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs(
+                args.Surface,
+                args.BackendRenderTarget,
+                args.Origin,
+                args.Info,
+                args.RawInfo
+            )
+        );
     }
 
     private void HandleTouch(SKTouchEventArgs args) => VirtualView?.OnTouch(args);
@@ -161,13 +196,20 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
         public override void MovedToWindow()
         {
             base.MovedToWindow();
-            if (Window is not null) SetNeedsDisplay();
+            if (Window is not null)
+            {
+                SetNeedsDisplay();
+            }
         }
 
         public override void LayoutSubviews()
         {
             base.LayoutSubviews();
-            if (Window is null || Bounds.Size.Equals(_lastLayoutSize)) return;
+            if (Window is null || Bounds.Size.Equals(_lastLayoutSize))
+            {
+                return;
+            }
+
             _lastLayoutSize = Bounds.Size;
             SetNeedsDisplay();
         }
@@ -179,8 +221,13 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
                 var logicalSize = new SKSizeI((int)Bounds.Width, (int)Bounds.Height);
                 args.Surface.Canvas.Scale((float)ContentScaleFactor);
                 args.Surface.Canvas.Save();
-                args = new(args.Surface, args.BackendRenderTarget, args.Origin,
-                    args.Info.WithSize(logicalSize), args.Info);
+                args = new(
+                    args.Surface,
+                    args.BackendRenderTarget,
+                    args.Origin,
+                    args.Info.WithSize(logicalSize),
+                    args.Info
+                );
             }
             base.OnPaintSurface(args);
         }
@@ -188,7 +235,8 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
 
     private sealed class DorotiIosTouchRecognizer(
         Action<SKTouchEventArgs> dispatch,
-        Func<double, double, SKPoint> scale) : UIGestureRecognizer
+        Func<double, double, SKPoint> scale
+    ) : UIGestureRecognizer
     {
         public override void TouchesBegan(NSSet touches, UIEvent evt)
         {
@@ -219,7 +267,8 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
             UIEvent evt,
             SKTouchAction action,
             bool inContact,
-            bool ignoreUnhandled)
+            bool ignoreUnhandled
+        )
         {
             foreach (UITouch touch in touches.Cast<UITouch>())
             {
@@ -230,14 +279,27 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
                     UITouchType.IndirectPointer => SKTouchDeviceType.Mouse,
                     _ => SKTouchDeviceType.Touch,
                 };
-                var button = ((ulong)evt.ButtonMask & 2) != 0 ? SKMouseButton.Right
-                    : ((ulong)evt.ButtonMask & 4) != 0 ? SKMouseButton.Middle : SKMouseButton.Left;
+                var button =
+                    ((ulong)evt.ButtonMask & 2) != 0 ? SKMouseButton.Right
+                    : ((ulong)evt.ButtonMask & 4) != 0 ? SKMouseButton.Middle
+                    : SKMouseButton.Left;
                 var args = new SKTouchEventArgs(
-                    ((IntPtr)touch.Handle).ToInt64(), action,
-                    button, device, scale(location.X, location.Y), inContact, 0,
-                    touch.MaximumPossibleForce > 0 ? (float)(touch.Force / touch.MaximumPossibleForce) : 1);
+                    ((IntPtr)touch.Handle).ToInt64(),
+                    action,
+                    button,
+                    device,
+                    scale(location.X, location.Y),
+                    inContact,
+                    0,
+                    touch.MaximumPossibleForce > 0
+                        ? (float)(touch.Force / touch.MaximumPossibleForce)
+                        : 1
+                );
                 dispatch(args);
-                if (ignoreUnhandled && !args.Handled) IgnoreTouch(touch, evt);
+                if (ignoreUnhandled && !args.Handled)
+                {
+                    IgnoreTouch(touch, evt);
+                }
             }
         }
     }

@@ -21,14 +21,23 @@ public class CircularNotchedRectangle : NotchedShape
 
     public virtual Path getOuterPath(Rect host, Rect? guest)
     {
-        if ((guest is null) || !host.overlaps(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guest))))
+        if (
+            (guest is null)
+            || !host.overlaps(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guest))
+            )
+        )
         {
-            return ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRect(host);
-    return __cascade;
-}))();
+            return (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addRect(host);
+                        return __cascade;
+                    }
+                )
+            )();
         }
         double r = DartRuntimePrimitives.RequireValue(guest).width / 2.0;
         var notchRadius = Radius.circular(r);
@@ -36,17 +45,20 @@ public class CircularNotchedRectangle : NotchedShape
         var s1 = 15.0;
         var s2 = 1.0;
         double a = -r - s2;
-        double b = (inverted ? host.bottom : host.top) - DartRuntimePrimitives.RequireValue(guest).center.dy;
+        double b =
+            (inverted ? host.bottom : host.top)
+            - DartRuntimePrimitives.RequireValue(guest).center.dy;
         double n2 = Dart_mathLibrary.sqrt(b * b * r * r * ((a * a) + (b * b) - (r * r)));
-        double p2xA = (a * r * r - n2) / ((a * a) + (b * b));
-        double p2xB = (a * r * r + n2) / ((a * a) + (b * b));
+        double p2xA = ((a * r * r) - n2) / ((a * a) + (b * b));
+        double p2xB = ((a * r * r) + n2) / ((a * a) + (b * b));
         double p2yA = Dart_mathLibrary.sqrt((r * r) - (p2xA * p2xA)) * invertMultiplier;
         double p2yB = Dart_mathLibrary.sqrt((r * r) - (p2xB * p2xB)) * invertMultiplier;
         var p = new List<Offset>(Enumerable.Repeat(Offset.zero, checked((int)6L)));
         p[(int)0L] = new Offset(a - s1, b);
         p[(int)1L] = new Offset(a, b);
         var cmp = (b < 0L) ? -1.0 : 1.0;
-        p[(int)2L] = ((cmp * p2yA) > (cmp * p2yB)) ? new Offset(p2xA, p2yA) : new Offset(p2xB, p2yB);
+        p[(int)2L] =
+            ((cmp * p2yA) > (cmp * p2yB)) ? new Offset(p2xA, p2yA) : new Offset(p2xB, p2yB);
         p[(int)3L] = new Offset(-1.0 * p[(int)2L].dx, p[(int)2L].dy);
         p[(int)4L] = new Offset(-1.0 * p[(int)1L].dx, p[(int)1L].dy);
         p[(int)5L] = new Offset(-1.0 * p[(int)0L].dx, p[(int)0L].dy);
@@ -54,51 +66,86 @@ public class CircularNotchedRectangle : NotchedShape
         {
             p[(int)i] += DartRuntimePrimitives.RequireValue(guest).center;
         }
-        var path = ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.moveTo(host.left, host.top);
-    return __cascade;
-}))();
+        var path = (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.moveTo(host.left, host.top);
+                    return __cascade;
+                }
+            )
+        )();
         if (!inverted)
         {
-            ((Func<Path>)(() =>
-{
-    var __cascade = path;
-    __cascade.lineTo(p[(int)0L].dx, p[(int)0L].dy);
-    __cascade.quadraticBezierTo(p[(int)1L].dx, p[(int)1L].dy, p[(int)2L].dx, p[(int)2L].dy);
-    __cascade.arcToPoint(p[(int)3L], radius: notchRadius, clockwise: false);
-    __cascade.quadraticBezierTo(p[(int)4L].dx, p[(int)4L].dy, p[(int)5L].dx, p[(int)5L].dy);
-    __cascade.lineTo(host.right, host.top);
-    __cascade.lineTo(host.right, host.bottom);
-    __cascade.lineTo(host.left, host.bottom);
-    return __cascade;
-}))();
+            (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = path;
+                        __cascade.lineTo(p[(int)0L].dx, p[(int)0L].dy);
+                        __cascade.quadraticBezierTo(
+                            p[(int)1L].dx,
+                            p[(int)1L].dy,
+                            p[(int)2L].dx,
+                            p[(int)2L].dy
+                        );
+                        __cascade.arcToPoint(p[(int)3L], radius: notchRadius, clockwise: false);
+                        __cascade.quadraticBezierTo(
+                            p[(int)4L].dx,
+                            p[(int)4L].dy,
+                            p[(int)5L].dx,
+                            p[(int)5L].dy
+                        );
+                        __cascade.lineTo(host.right, host.top);
+                        __cascade.lineTo(host.right, host.bottom);
+                        __cascade.lineTo(host.left, host.bottom);
+                        return __cascade;
+                    }
+                )
+            )();
         }
         else
         {
-            ((Func<Path>)(() =>
-{
-    var __cascade = path;
-    __cascade.lineTo(host.right, host.top);
-    __cascade.lineTo(host.right, host.bottom);
-    __cascade.lineTo(p[(int)5L].dx, p[(int)5L].dy);
-    __cascade.quadraticBezierTo(p[(int)4L].dx, p[(int)4L].dy, p[(int)3L].dx, p[(int)3L].dy);
-    __cascade.arcToPoint(p[(int)2L], radius: notchRadius, clockwise: false);
-    __cascade.quadraticBezierTo(p[(int)1L].dx, p[(int)1L].dy, p[(int)0L].dx, p[(int)0L].dy);
-    __cascade.lineTo(host.left, host.bottom);
-    return __cascade;
-}))();
+            (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = path;
+                        __cascade.lineTo(host.right, host.top);
+                        __cascade.lineTo(host.right, host.bottom);
+                        __cascade.lineTo(p[(int)5L].dx, p[(int)5L].dy);
+                        __cascade.quadraticBezierTo(
+                            p[(int)4L].dx,
+                            p[(int)4L].dy,
+                            p[(int)3L].dx,
+                            p[(int)3L].dy
+                        );
+                        __cascade.arcToPoint(p[(int)2L], radius: notchRadius, clockwise: false);
+                        __cascade.quadraticBezierTo(
+                            p[(int)1L].dx,
+                            p[(int)1L].dy,
+                            p[(int)0L].dx,
+                            p[(int)0L].dy
+                        );
+                        __cascade.lineTo(host.left, host.bottom);
+                        return __cascade;
+                    }
+                )
+            )();
         }
-        return ((Func<Path>)(() =>
-{
-    var __cascade = path;
-    __cascade.close();
-    return __cascade;
-}))();
+        return (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = path;
+                    __cascade.close();
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class AutomaticNotchedShape : NotchedShape
@@ -118,12 +165,14 @@ public class AutomaticNotchedShape : NotchedShape
         if ((this.guest is not null) && (guest is not null))
         {
             Rect guestRect__value6659 = DartRuntimePrimitives.RequireValue(guest);
-            Path guestPath = this.guest!.getOuterPath(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guestRect__value6659)));
+            Path guestPath = this.guest!.getOuterPath(
+                DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(guestRect__value6659)
+                )
+            );
             return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
         }
         return hostPath;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

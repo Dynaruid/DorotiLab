@@ -15,7 +15,16 @@ public class AnimatedIcon : StatelessWidget
     public virtual string? semanticLabel { get; private set; }
     public virtual TextDirection? textDirection { get; private set; }
 
-    public AnimatedIcon(Key? key = null, AnimatedIconData icon = default!, Animation<double> progress = default!, Color? color = null, double? size = null, string? semanticLabel = null, TextDirection? textDirection = null) : base(key: key)
+    public AnimatedIcon(
+        Key? key = null,
+        AnimatedIconData icon = default!,
+        Animation<double> progress = default!,
+        Color? color = null,
+        double? size = null,
+        string? semanticLabel = null,
+        TextDirection? textDirection = null
+    )
+        : base(key: key)
     {
         this.icon = icon;
         this.progress = progress;
@@ -26,9 +35,12 @@ public class AnimatedIcon : StatelessWidget
     }
 
     internal static Path _pathFactory() => DartRuntimePrimitives.ConvertValue<Path>(new Path());
+
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() =>
+            Widgets.DebugLibrary.debugCheckHasDirectionality(context)
+        );
         var iconData = ((_AnimatedIconData__animated_icons_data?)icon)!;
         IconThemeData iconTheme = IconTheme.of(context);
         DartRuntimePrimitives.Assert(() => iconTheme.isConcrete);
@@ -40,10 +52,25 @@ public class AnimatedIcon : StatelessWidget
         {
             iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
         }
-        return new Widgets.Semantics(label: semanticLabel, child: new CustomPaint(size: new Size(iconSize, iconSize), painter: new _AnimatedIconPainter__animated_icons(paths: iconData.paths, progress: progress, color: iconColor, scale: iconSize / iconData.size.width, shouldMirror: Equals(DartRuntimePrimitives.RequireValue(textDirectionLocal), TextDirection.rtl) && iconData.matchTextDirection, uiPathFactory: _pathFactory)));
+        return new Widgets.Semantics(
+            label: semanticLabel,
+            child: new CustomPaint(
+                size: new Size(iconSize, iconSize),
+                painter: new _AnimatedIconPainter__animated_icons(
+                    paths: iconData.paths,
+                    progress: progress,
+                    color: iconColor,
+                    scale: iconSize / iconData.size.width,
+                    shouldMirror: Equals(
+                        DartRuntimePrimitives.RequireValue(textDirectionLocal),
+                        TextDirection.rtl
+                    ) && iconData.matchTextDirection,
+                    uiPathFactory: _pathFactory
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal delegate Path _UiPathFactory__animated_icons();
@@ -57,7 +84,15 @@ internal class _AnimatedIconPainter__animated_icons : CustomPainter
     public virtual bool shouldMirror { get; private set; } = default!;
     public virtual Func<Path> uiPathFactory { get; private set; } = default!;
 
-    internal _AnimatedIconPainter__animated_icons(List<_PathFrames__animated_icons> paths, Animation<double> progress, Color color, double scale, bool shouldMirror, Func<Path> uiPathFactory) : base(repaint: progress)
+    internal _AnimatedIconPainter__animated_icons(
+        List<_PathFrames__animated_icons> paths,
+        Animation<double> progress,
+        Color color,
+        double scale,
+        bool shouldMirror,
+        Func<Path> uiPathFactory
+    )
+        : base(repaint: progress)
     {
         this.paths = paths;
         this.progress = progress;
@@ -85,13 +120,21 @@ internal class _AnimatedIconPainter__animated_icons : CustomPainter
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_AnimatedIconPainter__animated_icons)oldDelegate;
-        return (__oldDelegate.progress.value != progress.value) || (!Equals(__oldDelegate.color, color)) || (!Equals(__oldDelegate.paths, paths)) || (__oldDelegate.scale != scale) || (!Equals(__oldDelegate.uiPathFactory, uiPathFactory));
+        return (__oldDelegate.progress.value != progress.value)
+            || (!Equals(__oldDelegate.color, color))
+            || (!Equals(__oldDelegate.paths, paths))
+            || (__oldDelegate.scale != scale)
+            || (!Equals(__oldDelegate.uiPathFactory, uiPathFactory));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool? hitTest(Offset position) => DartRuntimePrimitives.ConvertValue<bool>(null);
+    public override bool? hitTest(Offset position) =>
+        DartRuntimePrimitives.ConvertValue<bool>(null);
+
     public override bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
-    public override Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
+
+    public override Func<Size, List<CustomPainterSemantics>>? semanticsBuilder =>
+        DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
 }
 
 public class _PathFrames__animated_icons
@@ -99,7 +142,10 @@ public class _PathFrames__animated_icons
     public virtual List<_PathCommand__animated_icons> commands { get; private set; } = default!;
     public virtual List<double> opacities { get; private set; } = default!;
 
-    internal _PathFrames__animated_icons(List<_PathCommand__animated_icons> commands, List<double> opacities)
+    internal _PathFrames__animated_icons(
+        List<_PathCommand__animated_icons> commands,
+        List<double> opacities
+    )
     {
         this.commands = commands;
         this.opacities = opacities;
@@ -107,14 +153,24 @@ public class _PathFrames__animated_icons
 
     public virtual void paint(Canvas canvas, Color color, Func<Path> uiPathFactory, double progress)
     {
-        double opacityLocal = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(opacities, progress, (a, b, t) => Dart_uiLibrary.lerpDouble(a, b, t) ?? 0.0));
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.style = PaintingStyle.fill;
-    __cascade.color = color.withOpacity(color.opacity * opacityLocal);
-    return __cascade;
-}))();
+        double opacityLocal = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                opacities,
+                progress,
+                (a, b, t) => Dart_uiLibrary.lerpDouble(a, b, t) ?? 0.0
+            )
+        );
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.style = PaintingStyle.fill;
+                    __cascade.color = color.withOpacity(color.opacity * opacityLocal);
+                    return __cascade;
+                }
+            )
+        )();
         Path path = uiPathFactory();
         foreach (_PathCommand__animated_icons command in commands)
         {
@@ -122,7 +178,6 @@ public class _PathFrames__animated_icons
         }
         canvas.drawPath(path, paintLocal);
     }
-
 }
 
 public interface _PathCommand__animated_icons
@@ -141,10 +196,15 @@ internal class _PathMoveTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset offset = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
+        Offset offset = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                points,
+                progress,
+                (a, b, t) => Offset.lerp(a, b, t)!.Value
+            )
+        );
         path.moveTo(offset.dx, offset.dy);
     }
-
 }
 
 internal class _PathCubicTo__animated_icons : _PathCommand__animated_icons
@@ -153,7 +213,11 @@ internal class _PathCubicTo__animated_icons : _PathCommand__animated_icons
     public virtual List<Offset> controlPoints1 { get; private set; } = default!;
     public virtual List<Offset> targetPoints { get; private set; } = default!;
 
-    internal _PathCubicTo__animated_icons(List<Offset> controlPoints1, List<Offset> controlPoints2, List<Offset> targetPoints)
+    internal _PathCubicTo__animated_icons(
+        List<Offset> controlPoints1,
+        List<Offset> controlPoints2,
+        List<Offset> targetPoints
+    )
     {
         this.controlPoints1 = controlPoints1;
         this.controlPoints2 = controlPoints2;
@@ -162,12 +226,36 @@ internal class _PathCubicTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset controlPoint1 = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(controlPoints1, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
-        Offset controlPoint2 = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(controlPoints2, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
-        Offset targetPoint = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(targetPoints, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
-        path.cubicTo(controlPoint1.dx, controlPoint1.dy, controlPoint2.dx, controlPoint2.dy, targetPoint.dx, targetPoint.dy);
+        Offset controlPoint1 = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                controlPoints1,
+                progress,
+                (a, b, t) => Offset.lerp(a, b, t)!.Value
+            )
+        );
+        Offset controlPoint2 = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                controlPoints2,
+                progress,
+                (a, b, t) => Offset.lerp(a, b, t)!.Value
+            )
+        );
+        Offset targetPoint = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                targetPoints,
+                progress,
+                (a, b, t) => Offset.lerp(a, b, t)!.Value
+            )
+        );
+        path.cubicTo(
+            controlPoint1.dx,
+            controlPoint1.dy,
+            controlPoint2.dx,
+            controlPoint2.dy,
+            targetPoint.dx,
+            targetPoint.dy
+        );
     }
-
 }
 
 internal class _PathLineTo__animated_icons : _PathCommand__animated_icons
@@ -181,28 +269,34 @@ internal class _PathLineTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset point = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
+        Offset point = DartRuntimePrimitives.RequireValue(
+            Animated_iconsLibrary._interpolate(
+                points,
+                progress,
+                (a, b, t) => Offset.lerp(a, b, t)!.Value
+            )
+        );
         path.lineTo(point.dx, point.dy);
     }
-
 }
 
 internal class _PathClose__animated_icons : _PathCommand__animated_icons
 {
-    internal _PathClose__animated_icons()
-    {
-    }
+    internal _PathClose__animated_icons() { }
 
     public virtual void apply(Path path, double progress)
     {
         path.close();
     }
-
 }
 
 public static partial class Animated_iconsLibrary
 {
-    internal static T _interpolate<T>(List<T> values, double progress, Func<T, T, double, T> interpolator)
+    internal static T _interpolate<T>(
+        List<T> values,
+        double progress,
+        Func<T, T, double, T> interpolator
+    )
     {
         DartRuntimePrimitives.Assert(() => progress <= 1.0);
         DartRuntimePrimitives.Assert(() => progress >= 0.0);
@@ -210,7 +304,9 @@ public static partial class Animated_iconsLibrary
         {
             return values[(int)0L];
         }
-        double targetIdx = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress));
+        double targetIdx = DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress)
+        );
         long lowIdx = targetIdx.floor();
         long highIdx = targetIdx.ceil();
         double t = targetIdx - lowIdx;

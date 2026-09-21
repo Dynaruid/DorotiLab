@@ -32,7 +32,8 @@ internal sealed record CompilerProfile(
     bool EmitPackagePlatformPorts,
     bool ReferenceRuntimeBindings,
     bool EnableTypedSemanticCompiler,
-    CompatibilityRule[] CompatibilityRules)
+    CompatibilityRule[] CompatibilityRules
+)
 {
     public bool IsC5 => false;
     public bool IsFrameworkGraph => CompatibilityProfile == CompilerProfiles.Framework;
@@ -43,27 +44,42 @@ internal static class CompilerProfileRegistry
 {
     public static CompilerProfile Resolve(SelectionManifest manifest)
     {
-        if (manifest.GenerationMode != CompilerProfiles.FrameworkGenerationMode ||
-            manifest.CompatibilityProfile is not (CompilerProfiles.F0 or CompilerProfiles.Framework))
+        if (
+            manifest.GenerationMode != CompilerProfiles.FrameworkGenerationMode
+            || manifest.CompatibilityProfile
+                is not (CompilerProfiles.F0 or CompilerProfiles.Framework)
+        )
         {
             throw new InvalidDataException(
-                "Historical compatibility profiles were removed by G3-T0; use framework-semantic with flutter-framework-f0 or flutter-framework.");
+                "Historical compatibility profiles were removed by G3-T0; use framework-semantic with flutter-framework-f0 or flutter-framework."
+            );
         }
 
         if (manifest.MigrationIrVersion != CompilerVersions.FrameworkMigrationIr)
         {
             throw new InvalidDataException(
-                $"Framework selection must request IR {CompilerVersions.FrameworkMigrationIr}.");
+                $"Framework selection must request IR {CompilerVersions.FrameworkMigrationIr}."
+            );
         }
 
-        if (manifest.CompatibilityProfile == CompilerProfiles.Framework && string.IsNullOrWhiteSpace(manifest.FrameworkMilestone))
+        if (
+            manifest.CompatibilityProfile == CompilerProfiles.Framework
+            && string.IsNullOrWhiteSpace(manifest.FrameworkMilestone)
+        )
         {
-            throw new InvalidDataException("The general flutter-framework profile requires an explicit frameworkMilestone selection.");
+            throw new InvalidDataException(
+                "The general flutter-framework profile requires an explicit frameworkMilestone selection."
+            );
         }
 
-        if (manifest.Application is not null && manifest.FrameworkMilestone is not ("G5-5" or "G6-7"))
+        if (
+            manifest.Application is not null
+            && manifest.FrameworkMilestone is not ("G5-5" or "G6-7")
+        )
         {
-            throw new InvalidDataException("Application compilation requires a registered application milestone (G5-5 or G6-7).");
+            throw new InvalidDataException(
+                "Application compilation requires a registered application milestone (G5-5 or G6-7)."
+            );
         }
 
         var isGeneral = manifest.CompatibilityProfile == CompilerProfiles.Framework;
@@ -81,6 +97,7 @@ internal static class CompilerProfileRegistry
             EmitPackagePlatformPorts: false,
             ReferenceRuntimeBindings: true,
             EnableTypedSemanticCompiler: true,
-            CompatibilityRules: []);
+            CompatibilityRules: []
+        );
     }
 }

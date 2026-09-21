@@ -5,16 +5,19 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate Widget ScrollableWidgetBuilder(BuildContext context, ScrollController scrollController);
+public delegate Widget ScrollableWidgetBuilder(
+    BuildContext context,
+    ScrollController scrollController
+);
 
 public class DraggableScrollableController : ChangeNotifier
 {
-    internal virtual _DraggableScrollableSheetScrollController__draggable_scrollable_sheet? _attachedController { get; set; } = default;
-    internal virtual HashSet<AnimationController> _animationControllers { get; private set; } = new HashSet<AnimationController>();
+    internal virtual _DraggableScrollableSheetScrollController__draggable_scrollable_sheet? _attachedController { get; set; } =
+        default;
+    internal virtual HashSet<AnimationController> _animationControllers { get; private set; } =
+        new HashSet<AnimationController>();
 
-    public DraggableScrollableController()
-    {
-    }
+    public DraggableScrollableController() { }
 
     public virtual double size
     {
@@ -32,6 +35,7 @@ public class DraggableScrollableController : ChangeNotifier
             return _attachedController!.extent.currentPixels;
         }
     }
+
     public virtual double sizeToPixels(double size)
     {
         _assertAttached();
@@ -39,7 +43,11 @@ public class DraggableScrollableController : ChangeNotifier
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool isAttached => DartRuntimePrimitives.ConvertValue<bool>((_attachedController is not null) && _attachedController!.hasClients);
+    public virtual bool isAttached =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (_attachedController is not null) && _attachedController!.hasClients
+        );
+
     public virtual double pixelsToSize(double pixels)
     {
         _assertAttached();
@@ -47,12 +55,15 @@ public class DraggableScrollableController : ChangeNotifier
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future animateTo(double size, Duration duration, Curve curve)
+    public virtual async Future animateTo(double size, Duration duration, Curve curve)
     {
         _assertAttached();
         DartRuntimePrimitives.Assert(() => (size >= 0L) && (size <= 1L));
         DartRuntimePrimitives.Assert(() => !Equals(duration, Duration.zero));
-        var animationController = AnimationController.CreateUnbounded(vsync: _attachedController!.position.context.vsync, value: _attachedController!.extent.currentSize);
+        var animationController = AnimationController.CreateUnbounded(
+            vsync: _attachedController!.position.context.vsync,
+            value: _attachedController!.extent.currentSize
+        );
         _animationControllers.Add(animationController);
         _attachedController!.position.goIdle();
         _attachedController!.extent.hasDragged = false;
@@ -66,22 +77,34 @@ public class DraggableScrollableController : ChangeNotifier
         });
         animationController.addListener(() =>
         {
-            _attachedController!.extent.updateSize(animationController.value, _attachedController!.position.context.notificationContext!);
+            _attachedController!.extent.updateSize(
+                animationController.value,
+                _attachedController!.position.context.notificationContext!
+            );
         });
-        await animationController.animateTo(Dart_uiLibrary.clampDouble(size, _attachedController!.extent.minSize, _attachedController!.extent.maxSize), duration: duration, curve: curve);
+        await animationController.animateTo(
+            Dart_uiLibrary.clampDouble(
+                size,
+                _attachedController!.extent.minSize,
+                _attachedController!.extent.maxSize
+            ),
+            duration: duration,
+            curve: curve
+        );
     }
 
     public virtual void jumpTo(double size)
     {
         _assertAttached();
         DartRuntimePrimitives.Assert(() => (size >= 0L) && (size <= 1L));
-        _attachedController!.extent.startActivity(onCanceled: () =>
-        {
-        });
+        _attachedController!.extent.startActivity(onCanceled: () => { });
         _attachedController!.position.goIdle();
         _attachedController!.extent.hasDragged = false;
         _attachedController!.extent.hasChanged = true;
-        _attachedController!.extent.updateSize(size, _attachedController!.position.context.notificationContext!);
+        _attachedController!.extent.updateSize(
+            size,
+            _attachedController!.position.context.notificationContext!
+        );
     }
 
     public virtual void reset()
@@ -92,18 +115,31 @@ public class DraggableScrollableController : ChangeNotifier
 
     internal virtual void _assertAttached()
     {
-        DartRuntimePrimitives.Assert(() => isAttached, () => (object?)"DraggableScrollableController is not attached to a sheet. A DraggableScrollableController " + "must be used in a DraggableScrollableSheet before any of its methods are called.");
+        DartRuntimePrimitives.Assert(
+            () => isAttached,
+            () =>
+                (object?)
+                    "DraggableScrollableController is not attached to a sheet. A DraggableScrollableController "
+                + "must be used in a DraggableScrollableSheet before any of its methods are called."
+        );
     }
 
-    internal virtual void _attach(_DraggableScrollableSheetScrollController__draggable_scrollable_sheet scrollController)
+    internal virtual void _attach(
+        _DraggableScrollableSheetScrollController__draggable_scrollable_sheet scrollController
+    )
     {
-        DartRuntimePrimitives.Assert(() => _attachedController is null, () => (object?)"Draggable scrollable controller is already attached to a sheet.");
+        DartRuntimePrimitives.Assert(
+            () => _attachedController is null,
+            () => (object?)"Draggable scrollable controller is already attached to a sheet."
+        );
         _attachedController = scrollController;
         _attachedController!.extent._currentSize.addListener(notifyListeners);
         _attachedController!.onPositionDetached = _disposeAnimationControllers;
     }
 
-    internal virtual void _onExtentReplaced(_DraggableSheetExtent__draggable_scrollable_sheet previousExtent)
+    internal virtual void _onExtentReplaced(
+        _DraggableSheetExtent__draggable_scrollable_sheet previousExtent
+    )
     {
         _attachedController!.extent._currentSize.addListener(notifyListeners);
         if (previousExtent.currentSize != _attachedController!.extent.currentSize)
@@ -134,7 +170,6 @@ public class DraggableScrollableController : ChangeNotifier
         }
         _animationControllers.Clear();
     }
-
 }
 
 public class DraggableScrollableSheet : StatefulWidget
@@ -148,9 +183,23 @@ public class DraggableScrollableSheet : StatefulWidget
     public virtual Duration? snapAnimationDuration { get; private set; }
     public virtual DraggableScrollableController? controller { get; private set; }
     public virtual bool shouldCloseOnMinExtent { get; private set; } = default!;
-    public virtual Func<BuildContext, ScrollController, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, ScrollController, Widget> builder { get; private set; } =
+        default!;
 
-    public DraggableScrollableSheet(Key? key = null, double initialChildSize = 0.5, double minChildSize = 0.25, double maxChildSize = 1.0, bool expand = true, bool snap = false, List<double>? snapSizes = null, Duration? snapAnimationDuration = null, DraggableScrollableController? controller = null, bool shouldCloseOnMinExtent = true, Func<BuildContext, ScrollController, Widget> builder = default!) : base(key: key)
+    public DraggableScrollableSheet(
+        Key? key = null,
+        double initialChildSize = 0.5,
+        double minChildSize = 0.25,
+        double maxChildSize = 1.0,
+        bool expand = true,
+        bool snap = false,
+        List<double>? snapSizes = null,
+        Duration? snapAnimationDuration = null,
+        DraggableScrollableController? controller = null,
+        bool shouldCloseOnMinExtent = true,
+        Func<BuildContext, ScrollController, Widget> builder = default!
+    )
+        : base(key: key)
     {
         this.initialChildSize = initialChildSize;
         this.minChildSize = minChildSize;
@@ -166,10 +215,16 @@ public class DraggableScrollableSheet : StatefulWidget
         System.Diagnostics.Debug.Assert(maxChildSize <= 1.0);
         System.Diagnostics.Debug.Assert(minChildSize <= initialChildSize);
         System.Diagnostics.Debug.Assert(initialChildSize <= maxChildSize);
-        System.Diagnostics.Debug.Assert((snapAnimationDuration is null) || (DartRuntimePrimitives.RequireValue(snapAnimationDuration) > Duration.zero));
+        System.Diagnostics.Debug.Assert(
+            (snapAnimationDuration is null)
+                || (DartRuntimePrimitives.RequireValue(snapAnimationDuration) > Duration.zero)
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DraggableScrollableSheetState__draggable_scrollable_sheet());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _DraggableScrollableSheetState__draggable_scrollable_sheet()
+        );
 }
 
 public class DraggableScrollableNotification : Notification, ViewportNotificationMixin
@@ -182,7 +237,14 @@ public class DraggableScrollableNotification : Notification, ViewportNotificatio
     public virtual bool shouldCloseOnMinExtent { get; private set; } = default!;
     public virtual long _depth { get; set; } = 0L;
 
-    public DraggableScrollableNotification(double extent, double minExtent, double maxExtent, double initialExtent, BuildContext context, bool shouldCloseOnMinExtent = true)
+    public DraggableScrollableNotification(
+        double extent,
+        double minExtent,
+        double maxExtent,
+        double initialExtent,
+        BuildContext context,
+        bool shouldCloseOnMinExtent = true
+    )
     {
         this.extent = extent;
         this.minExtent = minExtent;
@@ -202,7 +264,9 @@ public class DraggableScrollableNotification : Notification, ViewportNotificatio
     {
         base.debugFillDescription(description);
         description.Add($"depth: {depth} ({((depth == 0L) ? "local" : "remote")})");
-        description.Add($"minExtent: {minExtent}, extent: {extent}, maxExtent: {maxExtent}, initialExtent: {initialExtent}");
+        description.Add(
+            $"minExtent: {minExtent}, extent: {extent}, maxExtent: {maxExtent}, initialExtent: {initialExtent}"
+        );
     }
 
     public virtual long depth => _depth;
@@ -223,7 +287,18 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
     public virtual bool hasDragged { get; set; } = default!;
     public virtual bool hasChanged { get; set; } = default!;
 
-    internal _DraggableSheetExtent__draggable_scrollable_sheet(double minSize, double maxSize, bool snap, List<double> snapSizes, double initialSize, Duration? snapAnimationDuration = null, ValueNotifier<double>? currentSize = null, bool? hasDragged = null, bool? hasChanged = null, bool shouldCloseOnMinExtent = true)
+    internal _DraggableSheetExtent__draggable_scrollable_sheet(
+        double minSize,
+        double maxSize,
+        bool snap,
+        List<double> snapSizes,
+        double initialSize,
+        Duration? snapAnimationDuration = null,
+        ValueNotifier<double>? currentSize = null,
+        bool? hasDragged = null,
+        bool? hasChanged = null,
+        bool shouldCloseOnMinExtent = true
+    )
     {
         this.minSize = minSize;
         this.maxSize = maxSize;
@@ -242,11 +317,14 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
         System.Diagnostics.Debug.Assert(initialSize <= maxSize);
     }
 
-    public virtual bool isAtMin => DartRuntimePrimitives.ConvertValue<bool>(minSize >= _currentSize.value);
-    public virtual bool isAtMax => DartRuntimePrimitives.ConvertValue<bool>(maxSize <= _currentSize.value);
+    public virtual bool isAtMin =>
+        DartRuntimePrimitives.ConvertValue<bool>(minSize >= _currentSize.value);
+    public virtual bool isAtMax =>
+        DartRuntimePrimitives.ConvertValue<bool>(maxSize <= _currentSize.value);
     public virtual double currentSize => _currentSize.value;
     public virtual double currentPixels => sizeToPixels(_currentSize.value);
     public virtual List<double> pixelSnapSizes => snapSizes.map(sizeToPixels).ToList();
+
     public virtual void startActivity(Action onCanceled)
     {
         _cancelActivity?.Invoke();
@@ -274,7 +352,14 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
             return;
         }
         _currentSize.value = clampedSize;
-        new DraggableScrollableNotification(minExtent: minSize, maxExtent: maxSize, extent: DartRuntimePrimitives.RequireValue(currentSize), initialExtent: initialSize, context: context, shouldCloseOnMinExtent: shouldCloseOnMinExtent).dispatch(context);
+        new DraggableScrollableNotification(
+            minExtent: minSize,
+            maxExtent: maxSize,
+            extent: DartRuntimePrimitives.RequireValue(currentSize),
+            initialExtent: initialSize,
+            context: context,
+            shouldCloseOnMinExtent: shouldCloseOnMinExtent
+        ).dispatch(context);
     }
 
     public virtual double pixelsToSize(double pixels)
@@ -291,28 +376,66 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _currentSize.dispose();
     }
 
-    public virtual _DraggableSheetExtent__draggable_scrollable_sheet copyWith(double minSize, double maxSize, bool snap, List<double> snapSizes, double initialSize, Duration? snapAnimationDuration, bool shouldCloseOnMinExtent)
+    public virtual _DraggableSheetExtent__draggable_scrollable_sheet copyWith(
+        double minSize,
+        double maxSize,
+        bool snap,
+        List<double> snapSizes,
+        double initialSize,
+        Duration? snapAnimationDuration,
+        bool shouldCloseOnMinExtent
+    )
     {
-        return new _DraggableSheetExtent__draggable_scrollable_sheet(minSize: minSize, maxSize: maxSize, snap: snap, snapSizes: snapSizes, snapAnimationDuration: snapAnimationDuration, initialSize: initialSize, currentSize: new ValueNotifier<double>(hasChanged ? Dart_uiLibrary.clampDouble(_currentSize.value, minSize, maxSize) : initialSize), hasDragged: hasDragged, hasChanged: hasChanged, shouldCloseOnMinExtent: shouldCloseOnMinExtent);
+        return new _DraggableSheetExtent__draggable_scrollable_sheet(
+            minSize: minSize,
+            maxSize: maxSize,
+            snap: snap,
+            snapSizes: snapSizes,
+            snapAnimationDuration: snapAnimationDuration,
+            initialSize: initialSize,
+            currentSize: new ValueNotifier<double>(
+                hasChanged
+                    ? Dart_uiLibrary.clampDouble(_currentSize.value, minSize, maxSize)
+                    : initialSize
+            ),
+            hasDragged: hasDragged,
+            hasChanged: hasChanged,
+            shouldCloseOnMinExtent: shouldCloseOnMinExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : State<DraggableScrollableSheet>
+internal class _DraggableScrollableSheetState__draggable_scrollable_sheet
+    : State<DraggableScrollableSheet>
 {
-    internal virtual _DraggableScrollableSheetScrollController__draggable_scrollable_sheet _scrollController { get; set; } = default!;
-    internal virtual _DraggableSheetExtent__draggable_scrollable_sheet _extent { get; set; } = default!;
+    internal virtual _DraggableScrollableSheetScrollController__draggable_scrollable_sheet _scrollController { get; set; } =
+        default!;
+    internal virtual _DraggableSheetExtent__draggable_scrollable_sheet _extent { get; set; } =
+        default!;
 
     public override void initState()
     {
         base.initState();
-        _extent = new _DraggableSheetExtent__draggable_scrollable_sheet(minSize: widget.minChildSize, maxSize: widget.maxChildSize, snap: widget.snap, snapSizes: _impliedSnapSizes(), snapAnimationDuration: widget.snapAnimationDuration, initialSize: widget.initialChildSize, shouldCloseOnMinExtent: widget.shouldCloseOnMinExtent);
-        _scrollController = new _DraggableScrollableSheetScrollController__draggable_scrollable_sheet(extent: _extent);
+        _extent = new _DraggableSheetExtent__draggable_scrollable_sheet(
+            minSize: widget.minChildSize,
+            maxSize: widget.maxChildSize,
+            snap: widget.snap,
+            snapSizes: _impliedSnapSizes(),
+            snapAnimationDuration: widget.snapAnimationDuration,
+            initialSize: widget.initialChildSize,
+            shouldCloseOnMinExtent: widget.shouldCloseOnMinExtent
+        );
+        _scrollController =
+            new _DraggableScrollableSheetScrollController__draggable_scrollable_sheet(
+                extent: _extent
+            );
         widget.controller?._attach(_scrollController);
     }
 
@@ -321,8 +444,18 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : Stat
         for (var index = 0L; index < (((long?)(widget.snapSizes?.Count)) ?? 0L); index += 1L)
         {
             double snapSize = widget.snapSizes![(int)index];
-            DartRuntimePrimitives.Assert(() => (snapSize >= widget.minChildSize) && (snapSize <= widget.maxChildSize), () => (object?)$"{_snapSizeErrorMessage(index)}\nSnap sizes must be between `minChildSize` and `maxChildSize`. ");
-            DartRuntimePrimitives.Assert(() => (index == 0L) || (snapSize > widget.snapSizes![(int)(index - 1L)]), () => (object?)$"{_snapSizeErrorMessage(index)}\nSnap sizes must be in ascending order. ");
+            DartRuntimePrimitives.Assert(
+                () => (snapSize >= widget.minChildSize) && (snapSize <= widget.maxChildSize),
+                () =>
+                    (object?)
+                        $"{_snapSizeErrorMessage(index)}\nSnap sizes must be between `minChildSize` and `maxChildSize`. "
+            );
+            DartRuntimePrimitives.Assert(
+                () => (index == 0L) || (snapSize > widget.snapSizes![(int)(index - 1L)]),
+                () =>
+                    (object?)
+                        $"{_snapSizeErrorMessage(index)}\nSnap sizes must be in ascending order. "
+            );
         }
         if ((widget.snapSizes is null) || !Enumerable.Any(widget.snapSizes!))
         {
@@ -354,13 +487,26 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : Stat
 
     public override Widget build(BuildContext context)
     {
-        return new ValueListenableBuilder<double>(valueListenable: _extent._currentSize, builder: (context, currentSize, child) => new LayoutBuilder(builder: (context, constraints) =>
-        {
-            _extent.availablePixels = widget.maxChildSize * constraints.biggest.height;
-            Widget sheet = new FractionallySizedBox(heightFactor: currentSize, alignment: Alignment.bottomCenter, child: child);
-            return widget.expand ? SizedBox.CreateExpand(child: sheet) : sheet;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }), child: widget.builder(context, _scrollController));
+        return new ValueListenableBuilder<double>(
+            valueListenable: _extent._currentSize,
+            builder: (context, currentSize, child) =>
+                new LayoutBuilder(
+                    builder: (context, constraints) =>
+                    {
+                        _extent.availablePixels = widget.maxChildSize * constraints.biggest.height;
+                        Widget sheet = new FractionallySizedBox(
+                            heightFactor: currentSize,
+                            alignment: Alignment.bottomCenter,
+                            child: child
+                        );
+                        return widget.expand ? SizedBox.CreateExpand(child: sheet) : sheet;
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                ),
+            child: widget.builder(context, _scrollController)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -381,54 +527,91 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : Stat
     internal virtual void _replaceExtent(DraggableScrollableSheet oldWidget)
     {
         _DraggableSheetExtent__draggable_scrollable_sheet previousExtent = _extent;
-        _extent = previousExtent.copyWith(minSize: widget.minChildSize, maxSize: widget.maxChildSize, snap: widget.snap, snapSizes: _impliedSnapSizes(), snapAnimationDuration: widget.snapAnimationDuration, initialSize: widget.initialChildSize, shouldCloseOnMinExtent: widget.shouldCloseOnMinExtent);
+        _extent = previousExtent.copyWith(
+            minSize: widget.minChildSize,
+            maxSize: widget.maxChildSize,
+            snap: widget.snap,
+            snapSizes: _impliedSnapSizes(),
+            snapAnimationDuration: widget.snapAnimationDuration,
+            initialSize: widget.initialChildSize,
+            shouldCloseOnMinExtent: widget.shouldCloseOnMinExtent
+        );
         _scrollController.extent = _extent;
         widget.controller?._onExtentReplaced(previousExtent);
         previousExtent.dispose();
-        if (widget.snap && ((widget.snap != oldWidget.snap) || (!Equals(widget.snapSizes, oldWidget.snapSizes))) && _scrollController.hasClients)
+        if (
+            widget.snap
+            && ((widget.snap != oldWidget.snap) || (!Equals(widget.snapSizes, oldWidget.snapSizes)))
+            && _scrollController.hasClients
+        )
         {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
-            {
-                for (var index = 0L; index < _scrollController.positions.Count(); index++)
+            WidgetsBinding.instance.addPostFrameCallback(
+                (timeStamp) =>
                 {
-                    var position = ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet?)_scrollController.positions.elementAt(index))!;
-                    position.goBallistic(0);
-                }
-            }, debugLabel: "DraggableScrollableSheet.snap");
+                    for (var index = 0L; index < _scrollController.positions.Count(); index++)
+                    {
+                        var position = (
+                            (_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet?)
+                                _scrollController.positions.elementAt(index)
+                        )!;
+                        position.goBallistic(0);
+                    }
+                },
+                debugLabel: "DraggableScrollableSheet.snap"
+            );
         }
     }
 
     internal virtual string _snapSizeErrorMessage(long invalidIndex)
     {
-        List<string> snapSizesWithIndicator = widget.snapSizes!.asMap().Keys.map((index) =>
-        {
-            var snapSizeString = widget.snapSizes![(int)index].ToString();
-            if (index == invalidIndex)
-            {
-                return $">>> {snapSizeString} <<<";
-            }
-            return snapSizeString;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList().ToList();
-        return $"Invalid snapSize '{widget.snapSizes![(int)invalidIndex]}' at index {invalidIndex} of:\n" + $"  {snapSizesWithIndicator}";
+        List<string> snapSizesWithIndicator = widget
+            .snapSizes!.asMap()
+            .Keys.map(
+                (index) =>
+                {
+                    var snapSizeString = widget.snapSizes![(int)index].ToString();
+                    if (index == invalidIndex)
+                    {
+                        return $">>> {snapSizeString} <<<";
+                    }
+                    return snapSizeString;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+            .ToList()
+            .ToList();
+        return $"Invalid snapSize '{widget.snapSizes![(int)invalidIndex]}' at index {invalidIndex} of:\n"
+            + $"  {snapSizesWithIndicator}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _DraggableScrollableSheetScrollController__draggable_scrollable_sheet : ScrollController
+internal class _DraggableScrollableSheetScrollController__draggable_scrollable_sheet
+    : ScrollController
 {
-    public virtual _DraggableSheetExtent__draggable_scrollable_sheet extent { get; set; } = default!;
+    public virtual _DraggableSheetExtent__draggable_scrollable_sheet extent { get; set; } =
+        default!;
     public virtual Action? onPositionDetached { get; set; } = default;
 
-    internal _DraggableScrollableSheetScrollController__draggable_scrollable_sheet(_DraggableSheetExtent__draggable_scrollable_sheet extent)
+    internal _DraggableScrollableSheetScrollController__draggable_scrollable_sheet(
+        _DraggableSheetExtent__draggable_scrollable_sheet extent
+    )
     {
         this.extent = extent;
     }
 
-    public override _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
+    public override _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet createScrollPosition(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition
+    )
     {
-        return new _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(physics: physics.applyTo(new AlwaysScrollableScrollPhysics()), context: context, oldPosition: oldPosition, getExtent: () => extent);
+        return new _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(
+            physics: physics.applyTo(new AlwaysScrollableScrollPhysics()),
+            context: context,
+            oldPosition: oldPosition,
+            getExtent: () => extent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -438,7 +621,9 @@ internal class _DraggableScrollableSheetScrollController__draggable_scrollable_s
         description.Add($"extent: {extent}");
     }
 
-    public override _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet position => ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet?)base.position)!;
+    public override _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet position =>
+        ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet?)base.position)!;
+
     public virtual void reset()
     {
         extent._cancelActivity?.Invoke();
@@ -446,7 +631,9 @@ internal class _DraggableScrollableSheetScrollController__draggable_scrollable_s
         extent.hasChanged = false;
         if (offset != 0.0)
         {
-            DartRuntimePrimitives.Ignore(animateTo(0.0, duration: Duration.Create(milliseconds: 1L), curve: Curves.linear));
+            DartRuntimePrimitives.Ignore(
+                animateTo(0.0, duration: Duration.Create(milliseconds: 1L), curve: Curves.linear)
+            );
         }
         extent.updateSize(extent.initialSize, position.context.notificationContext!);
     }
@@ -456,22 +643,34 @@ internal class _DraggableScrollableSheetScrollController__draggable_scrollable_s
         onPositionDetached?.Invoke();
         base.detach(position);
     }
-
 }
 
-public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet : ScrollPositionWithSingleContext
+public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
+    : ScrollPositionWithSingleContext
 {
     internal virtual Action? _dragCancelCallback { get; set; } = default;
-    public virtual Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent { get; private set; } = default!;
-    internal virtual HashSet<AnimationController> _ballisticControllers { get; private set; } = new HashSet<AnimationController>();
+    public virtual Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent
+    {
+        get;
+        private set;
+    } = default!;
+    internal virtual HashSet<AnimationController> _ballisticControllers { get; private set; } =
+        new HashSet<AnimationController>();
 
-    internal _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition = null, Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent = default!) : base(physics: physics, context: context, oldPosition: oldPosition)
+    internal _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition = null,
+        Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent = default!
+    )
+        : base(physics: physics, context: context, oldPosition: oldPosition)
     {
         this.getExtent = getExtent;
     }
 
     public virtual bool listShouldScroll => DartRuntimePrimitives.ConvertValue<bool>(pixels > 0.0);
     public virtual _DraggableSheetExtent__draggable_scrollable_sheet extent => getExtent();
+
     public override void absorb(ScrollPosition other)
     {
         base.absorb(other);
@@ -480,10 +679,19 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         {
             return;
         }
-        if (((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other)._dragCancelCallback is not null)
+        if (
+            (
+                (_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other
+            )._dragCancelCallback
+            is not null
+        )
         {
-            _dragCancelCallback = ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other)._dragCancelCallback;
-            ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other)._dragCancelCallback = null;
+            _dragCancelCallback = (
+                (_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other
+            )._dragCancelCallback;
+            (
+                (_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other
+            )._dragCancelCallback = null;
         }
     }
 
@@ -498,7 +706,14 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
 
     public override void applyUserOffset(double delta)
     {
-        if (!listShouldScroll && (!(extent.isAtMin || extent.isAtMax) || extent.isAtMin && (delta < 0L) || extent.isAtMax && (delta > 0L)))
+        if (
+            !listShouldScroll
+            && (
+                !(extent.isAtMin || extent.isAtMax)
+                || (extent.isAtMin && (delta < 0L))
+                || (extent.isAtMax && (delta > 0L))
+            )
+        )
         {
             extent.addPixelDelta(-delta, context.notificationContext!);
         }
@@ -510,16 +725,25 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
 
     internal virtual double? _getCurrentSnapSize()
     {
-        return extent.snapSizes.firstWhereOrNull((snapSize) =>
-        {
-            return (extent.currentSize - snapSize).abs() <= extent.pixelsToSize(physics.toleranceFor(this).distance);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return extent.snapSizes.firstWhereOrNull(
+            (snapSize) =>
+            {
+                return (extent.currentSize - snapSize).abs()
+                    <= extent.pixelsToSize(physics.toleranceFor(this).distance);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _isAtSnapSize() => DartRuntimePrimitives.ConvertValue<bool>(_getCurrentSnapSize() is not null);
-    internal virtual bool _shouldSnap() => DartRuntimePrimitives.ConvertValue<bool>(extent.snap && extent.hasDragged && !_isAtSnapSize());
+    internal virtual bool _isAtSnapSize() =>
+        DartRuntimePrimitives.ConvertValue<bool>(_getCurrentSnapSize() is not null);
+
+    internal virtual bool _shouldSnap() =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            extent.snap && extent.hasDragged && !_isAtSnapSize()
+        );
+
     public override void dispose()
     {
         foreach (AnimationController ballisticController in _ballisticControllers)
@@ -532,7 +756,11 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
 
     public override void goBallistic(double velocity)
     {
-        if ((velocity == 0.0) && !_shouldSnap() || (velocity < 0.0) && listShouldScroll || (velocity > 0.0) && extent.isAtMax)
+        if (
+            ((velocity == 0.0) && !_shouldSnap())
+            || ((velocity < 0.0) && listShouldScroll)
+            || ((velocity > 0.0) && extent.isAtMax)
+        )
         {
             base.goBallistic(velocity);
             return;
@@ -542,13 +770,33 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         Physics.Simulation simulation = default!;
         if (extent.snap)
         {
-            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(new _SnappingSimulation__draggable_scrollable_sheet(position: extent.currentPixels, initialVelocity: velocity, pixelSnapSize: extent.pixelSnapSizes, snapAnimationDuration: extent.snapAnimationDuration, tolerance: physics.toleranceFor(this)));
+            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(
+                new _SnappingSimulation__draggable_scrollable_sheet(
+                    position: extent.currentPixels,
+                    initialVelocity: velocity,
+                    pixelSnapSize: extent.pixelSnapSizes,
+                    snapAnimationDuration: extent.snapAnimationDuration,
+                    tolerance: physics.toleranceFor(this)
+                )
+            );
         }
         else
         {
-            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(new ClampingScrollSimulation(position: extent.currentPixels, velocity: velocity, tolerance: physics.toleranceFor(this)));
+            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(
+                new ClampingScrollSimulation(
+                    position: extent.currentPixels,
+                    velocity: velocity,
+                    tolerance: physics.toleranceFor(this)
+                )
+            );
         }
-        var ballisticController = AnimationController.CreateUnbounded(debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(this, "_DraggableScrollableSheetPosition"), vsync: context.vsync);
+        var ballisticController = AnimationController.CreateUnbounded(
+            debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(
+                this,
+                "_DraggableScrollableSheetPosition"
+            ),
+            vsync: context.vsync
+        );
         _ballisticControllers.Add(ballisticController);
         double lastPosition = extent.currentPixels;
         void tick()
@@ -556,9 +804,14 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
             double delta = ballisticController.value - lastPosition;
             lastPosition = ballisticController.value;
             extent.addPixelDelta(delta, context.notificationContext!);
-            if ((velocity > 0L) && extent.isAtMax || (velocity < 0L) && extent.isAtMin)
+            if (((velocity > 0L) && extent.isAtMax) || ((velocity < 0L) && extent.isAtMin))
             {
-                velocity = ballisticController.velocity + physics.toleranceFor(this).velocity * Math.Sign(ballisticController.velocity);
+                velocity =
+                    ballisticController.velocity
+                    + (
+                        physics.toleranceFor(this).velocity
+                        * Math.Sign(ballisticController.velocity)
+                    );
                 base.goBallistic(velocity);
                 ballisticController.stop();
             }
@@ -569,27 +822,42 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
                     double? snapSize = _getCurrentSnapSize();
                     if (snapSize is not null)
                     {
-                        double snapSize__39055__value39101 = DartRuntimePrimitives.RequireValue(snapSize);
-                        extent.updateSize(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(snapSize__39055__value39101)), context.notificationContext!);
+                        double snapSize__39055__value39101 = DartRuntimePrimitives.RequireValue(
+                            snapSize
+                        );
+                        extent.updateSize(
+                            DartRuntimePrimitives.RequireValue(
+                                DartRuntimePrimitives.RequireValue(snapSize__39055__value39101)
+                            ),
+                            context.notificationContext!
+                        );
                     }
                     base.goBallistic(0);
                 }
             }
         }
-        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = ballisticController;
-    __cascade.addListener(tick);
-    __cascade.animateWith(simulation).whenCompleteOrCancel(() =>
-    {
-        if (_ballisticControllers.Contains(ballisticController))
-        {
-            _ballisticControllers.Remove(ballisticController);
-            ballisticController.dispose();
-        }
-    });
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = ballisticController;
+                        __cascade.addListener(tick);
+                        __cascade
+                            .animateWith(simulation)
+                            .whenCompleteOrCancel(() =>
+                            {
+                                if (_ballisticControllers.Contains(ballisticController))
+                                {
+                                    _ballisticControllers.Remove(ballisticController);
+                                    ballisticController.dispose();
+                                }
+                            });
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
 
     public override Drag drag(DragStartDetails details, Action dragCancelCallback)
@@ -598,35 +866,44 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         return base.drag(details, () => dragCancelCallback());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class DraggableScrollableActuator : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public DraggableScrollableActuator(Key? key = null, Widget child = default!) : base(key: key)
+    public DraggableScrollableActuator(Key? key = null, Widget child = default!)
+        : base(key: key)
     {
         this.child = child;
     }
 
     public static bool reset(BuildContext context)
     {
-        _InheritedResetNotifier__draggable_scrollable_sheet? notifier = context.dependOnInheritedWidgetOfExactType<_InheritedResetNotifier__draggable_scrollable_sheet>();
+        _InheritedResetNotifier__draggable_scrollable_sheet? notifier =
+            context.dependOnInheritedWidgetOfExactType<_InheritedResetNotifier__draggable_scrollable_sheet>();
         return notifier?._sendReset() ?? false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DraggableScrollableActuatorState__draggable_scrollable_sheet());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _DraggableScrollableActuatorState__draggable_scrollable_sheet()
+        );
 }
 
-internal class _DraggableScrollableActuatorState__draggable_scrollable_sheet : State<DraggableScrollableActuator>
+internal class _DraggableScrollableActuatorState__draggable_scrollable_sheet
+    : State<DraggableScrollableActuator>
 {
-    internal virtual _ResetNotifier__draggable_scrollable_sheet _notifier { get; private set; } = new _ResetNotifier__draggable_scrollable_sheet();
+    internal virtual _ResetNotifier__draggable_scrollable_sheet _notifier { get; private set; } =
+        new _ResetNotifier__draggable_scrollable_sheet();
 
     public override Widget build(BuildContext context)
     {
-        return new _InheritedResetNotifier__draggable_scrollable_sheet(notifier: _notifier, child: widget.child);
+        return new _InheritedResetNotifier__draggable_scrollable_sheet(
+            notifier: _notifier,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -635,16 +912,13 @@ internal class _DraggableScrollableActuatorState__draggable_scrollable_sheet : S
         _notifier.dispose();
         base.dispose();
     }
-
 }
 
 public class _ResetNotifier__draggable_scrollable_sheet : ChangeNotifier
 {
     internal virtual bool _wasCalled { get; set; } = false;
 
-    internal _ResetNotifier__draggable_scrollable_sheet()
-    {
-    }
+    internal _ResetNotifier__draggable_scrollable_sheet() { }
 
     public virtual bool sendReset()
     {
@@ -657,31 +931,36 @@ public class _ResetNotifier__draggable_scrollable_sheet : ChangeNotifier
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _InheritedResetNotifier__draggable_scrollable_sheet : InheritedNotifier<_ResetNotifier__draggable_scrollable_sheet>
+internal class _InheritedResetNotifier__draggable_scrollable_sheet
+    : InheritedNotifier<_ResetNotifier__draggable_scrollable_sheet>
 {
-    internal _InheritedResetNotifier__draggable_scrollable_sheet(Widget child, _ResetNotifier__draggable_scrollable_sheet notifier) : base(child: child, notifier: notifier)
-    {
-    }
+    internal _InheritedResetNotifier__draggable_scrollable_sheet(
+        Widget child,
+        _ResetNotifier__draggable_scrollable_sheet notifier
+    )
+        : base(child: child, notifier: notifier) { }
 
     internal virtual bool _sendReset() => notifier!.sendReset();
+
     public static bool shouldReset(BuildContext context)
     {
-        InheritedWidget? widget = context.dependOnInheritedWidgetOfExactType<_InheritedResetNotifier__draggable_scrollable_sheet>();
+        InheritedWidget? widget =
+            context.dependOnInheritedWidgetOfExactType<_InheritedResetNotifier__draggable_scrollable_sheet>();
         if (widget is null)
         {
             return false;
         }
-        DartRuntimePrimitives.Assert(() => widget is _InheritedResetNotifier__draggable_scrollable_sheet);
+        DartRuntimePrimitives.Assert(() =>
+            widget is _InheritedResetNotifier__draggable_scrollable_sheet
+        );
         var inheritedNotifier = ((_InheritedResetNotifier__draggable_scrollable_sheet?)widget)!;
         bool wasCalled = inheritedNotifier.notifier!._wasCalled;
         inheritedNotifier.notifier!._wasCalled = false;
         return wasCalled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulation
@@ -691,7 +970,14 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
     public const double minimumSpeed = 1600.0;
     internal virtual double _pixelSnapSize { get; private set; } = default!;
 
-    internal _SnappingSimulation__draggable_scrollable_sheet(double position, double initialVelocity, List<double> pixelSnapSize, Duration? snapAnimationDuration = null, Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
+    internal _SnappingSimulation__draggable_scrollable_sheet(
+        double position,
+        double initialVelocity,
+        List<double> pixelSnapSize,
+        Duration? snapAnimationDuration = null,
+        Physics.Tolerance tolerance = default!
+    )
+        : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.position = position;
     }
@@ -715,7 +1001,10 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
     public override double x(double time)
     {
         double newPosition = position + (velocity * time);
-        if ((velocity >= 0L) && (newPosition > _pixelSnapSize) || (velocity < 0L) && (newPosition < _pixelSnapSize))
+        if (
+            ((velocity >= 0L) && (newPosition > _pixelSnapSize))
+            || ((velocity < 0L) && (newPosition < _pixelSnapSize))
+        )
         {
             return _pixelSnapSize;
         }
@@ -754,5 +1043,4 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
         return pixelSnapSizes[(int)indexOfNextSize];
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

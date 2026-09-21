@@ -34,12 +34,17 @@ internal sealed class AppKitWindowBackdrop : IDisposable
     private NSView? _effect;
 
     internal AppKitWindowBackdrop(DorotiMacOSMetalView surface) => _surface = surface;
+
     internal WindowBackdropMode AppliedMode { get; private set; }
 
     internal void Configure(WindowAppearanceOptions appearance)
     {
         ArgumentNullException.ThrowIfNull(appearance);
-        if (_appearance == appearance) { Synchronize(); return; }
+        if (_appearance == appearance)
+        {
+            Synchronize();
+            return;
+        }
         Detach();
         _appearance = appearance;
         _options = appearance.ResolveBackdrop(isMacOS: true);
@@ -48,8 +53,16 @@ internal sealed class AppKitWindowBackdrop : IDisposable
 
     internal void Synchronize()
     {
-        if (_window != _surface.Window) Detach();
-        if (_surface.Window is not { } window || _surface.Superview is not { } parent) return;
+        if (_window != _surface.Window)
+        {
+            Detach();
+        }
+
+        if (_surface.Window is not { } window || _surface.Superview is not { } parent)
+        {
+            return;
+        }
+
         if (_window is null)
         {
             _window = window;
@@ -58,8 +71,13 @@ internal sealed class AppKitWindowBackdrop : IDisposable
             _originalTitlebarTransparent = window.TitlebarAppearsTransparent;
             _originalTitlebarSeparator = window.TitlebarSeparatorStyle;
             AppliedMode = _options.mode;
-            if (AppliedMode == WindowBackdropMode.liquidGlass && !OperatingSystem.IsMacOSVersionAtLeast(26))
+            if (
+                AppliedMode == WindowBackdropMode.liquidGlass
+                && !OperatingSystem.IsMacOSVersionAtLeast(26)
+            )
+            {
                 AppliedMode = WindowBackdropMode.acrylic;
+            }
 
             switch (AppliedMode)
             {
@@ -75,8 +93,10 @@ internal sealed class AppKitWindowBackdrop : IDisposable
                 case WindowBackdropMode.transparent:
                     break;
                 default:
-                    AppliedMode = _options.fallback == WindowBackdropFallback.solid
-                        ? WindowBackdropMode.solid : WindowBackdropMode.transparent;
+                    AppliedMode =
+                        _options.fallback == WindowBackdropFallback.solid
+                            ? WindowBackdropMode.solid
+                            : WindowBackdropMode.transparent;
                     break;
             }
             if (AppliedMode != WindowBackdropMode.system)
@@ -91,53 +111,83 @@ internal sealed class AppKitWindowBackdrop : IDisposable
                 _effect.Appearance = _options.theme switch
                 {
                     WindowBackdropTheme.light => NSAppearance.GetAppearance(NSAppearance.NameAqua),
-                    WindowBackdropTheme.dark => NSAppearance.GetAppearance(NSAppearance.NameDarkAqua),
+                    WindowBackdropTheme.dark => NSAppearance.GetAppearance(
+                        NSAppearance.NameDarkAqua
+                    ),
                     _ => null,
                 };
             }
         }
-        if (_effect is not { } effect) return;
+        if (_effect is not { } effect)
+        {
+            return;
+        }
         // A single material covers both titlebar and body, without stacking a
         // second blur over the titlebar. Keep the renderer's layout untouched.
-        var fullSizeContent = window.StyleMask.HasFlag(NSWindowStyle.FullSizeContentView) && window.ContentView is not null;
-        var fullWindow = fullSizeContent && _appearance.titlebarStyle == WindowTitlebarStyle.unified;
+        var fullSizeContent =
+            window.StyleMask.HasFlag(NSWindowStyle.FullSizeContentView)
+            && window.ContentView is not null;
+        var fullWindow =
+            fullSizeContent && _appearance.titlebarStyle == WindowTitlebarStyle.unified;
         if (fullSizeContent)
         {
             _changedTitlebar = true;
-            if (window.TitlebarAppearsTransparent != fullWindow) window.TitlebarAppearsTransparent = fullWindow;
-            var separator = fullWindow ? NSTitlebarSeparatorStyle.None : NSTitlebarSeparatorStyle.Automatic;
-            if (window.TitlebarSeparatorStyle != separator) window.TitlebarSeparatorStyle = separator;
+            if (window.TitlebarAppearsTransparent != fullWindow)
+            {
+                window.TitlebarAppearsTransparent = fullWindow;
+            }
+
+            var separator = fullWindow
+                ? NSTitlebarSeparatorStyle.None
+                : NSTitlebarSeparatorStyle.Automatic;
+            if (window.TitlebarSeparatorStyle != separator)
+            {
+                window.TitlebarSeparatorStyle = separator;
+            }
         }
-        if (fullWindow) parent = window.ContentView!;
+        if (fullWindow)
+        {
+            parent = window.ContentView!;
+        }
+
         if (effect.Superview != parent)
         {
             effect.RemoveFromSuperview();
             parent.AddSubview(effect, NSWindowOrderingMode.Below, fullWindow ? null : _surface);
         }
         effect.AutoresizingMask = fullWindow
-            ? NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable : NSViewResizingMask.NotSizable;
+            ? NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable
+            : NSViewResizingMask.NotSizable;
         effect.Frame = fullWindow ? parent.Bounds : _surface.Frame;
     }
 
-    private NSView CreateBlur() => new BlurView
-    {
-        BlendingMode = NSVisualEffectBlendingMode.BehindWindow,
-        State = NSVisualEffectState.FollowsWindowActiveState,
-        Material = _options.acrylicKind switch
+    private NSView CreateBlur() =>
+        new BlurView
         {
-            WindowAcrylicKind.thin => NSVisualEffectMaterial.UnderWindowBackground,
-            WindowAcrylicKind.@base => NSVisualEffectMaterial.WindowBackground,
-            _ => NSVisualEffectMaterial.Sidebar,
-        },
-    };
+            BlendingMode = NSVisualEffectBlendingMode.BehindWindow,
+            State = NSVisualEffectState.FollowsWindowActiveState,
+            Material = _options.acrylicKind switch
+            {
+                WindowAcrylicKind.thin => NSVisualEffectMaterial.UnderWindowBackground,
+                WindowAcrylicKind.@base => NSVisualEffectMaterial.WindowBackground,
+                _ => NSVisualEffectMaterial.Sidebar,
+            },
+        };
 
     [SupportedOSPlatform("macos26.0")]
     private NSView CreateGlass()
     {
         var glass = new GlassView { CornerRadius = 0 };
         if (_options.tintColor is { } tint)
-            glass.TintColor = NSColor.FromRgba((nfloat)tint.r, (nfloat)tint.g, (nfloat)tint.b,
-                (nfloat)Math.Clamp(_options.tintOpacity ?? tint.a, 0, 1));
+        {
+            glass.TintColor = NSColor.FromRgba(
+                (nfloat)tint.r,
+                (nfloat)tint.g,
+                (nfloat)tint.b,
+                (nfloat)Math.Clamp(_options.tintOpacity ?? tint.a, 0, 1)
+            );
+        }
+
         return glass;
     }
 
@@ -149,7 +199,10 @@ internal sealed class AppKitWindowBackdrop : IDisposable
         if (_changedWindow && _window is { } window)
         {
             window.IsOpaque = _originalOpaque;
-            if (_originalBackground is { } background) window.BackgroundColor = background;
+            if (_originalBackground is { } background)
+            {
+                window.BackgroundColor = background;
+            }
         }
         if (_changedTitlebar && _window is { } titledWindow)
         {

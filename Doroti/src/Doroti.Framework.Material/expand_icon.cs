@@ -18,7 +18,19 @@ public class ExpandIcon : StatefulWidget
     public virtual Color? splashColor { get; private set; }
     public virtual Color? highlightColor { get; private set; }
 
-    public ExpandIcon(Key? key = null, bool isExpanded = false, double size = 24.0, Action<bool>? onPressed = default!, EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
+    public ExpandIcon(
+        Key? key = null,
+        bool isExpanded = false,
+        double size = 24.0,
+        Action<bool>? onPressed = default!,
+        EdgeInsetsGeometry padding = default!,
+        Color? color = null,
+        Color? disabledColor = null,
+        Color? expandedColor = null,
+        Color? splashColor = null,
+        Color? highlightColor = null
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.isExpanded = isExpanded;
@@ -32,21 +44,30 @@ public class ExpandIcon : StatefulWidget
         this.highlightColor = highlightColor;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ExpandIconState__expand_icon());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ExpandIconState__expand_icon());
 }
 
-internal class _ExpandIconState__expand_icon : State<ExpandIcon>, SingleTickerProviderStateMixin<ExpandIcon>
+internal class _ExpandIconState__expand_icon
+    : State<ExpandIcon>,
+        SingleTickerProviderStateMixin<ExpandIcon>
 {
     internal virtual AnimationController _controller { get; set; } = default!;
     internal virtual Animation<double> _iconTurns { get; set; } = default!;
-    internal static Animatable<double> _iconTurnTween = new Tween<double>(begin: 0.0, end: 0.5).chain(new CurveTween(curve: Curves.fastOutSlowIn));
+    internal static Animatable<double> _iconTurnTween = new Tween<double>(
+        begin: 0.0,
+        end: 0.5
+    ).chain(new CurveTween(curve: Curves.fastOutSlowIn));
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _controller = new AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
+        _controller = new AnimationController(
+            duration: ThemeLibrary.kThemeAnimationDuration,
+            vsync: this
+        );
         _iconTurns = _controller.drive(_iconTurnTween);
         if (widget.isExpanded)
         {
@@ -58,13 +79,31 @@ internal class _ExpandIconState__expand_icon : State<ExpandIcon>, SingleTickerPr
     {
         _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((_ticker is null) || !_ticker!.isActive)
             {
-                if ((_ticker is null) || !_ticker!.isActive)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
-            });
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary($"{this} was disposed with an active Ticker."),
+                        new ErrorDescription(
+                            $"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time "
+                                + "dispose() was called on the mixin, that Ticker was still active. The Ticker must "
+                                + "be disposed before calling super.dispose()."
+                        ),
+                        new ErrorHint(
+                            "Tickers used by AnimationControllers "
+                                + "should be disposed by calling dispose() on the AnimationController itself. "
+                                + "Otherwise, the ticker will leak."
+                        ),
+                        _ticker!.describeForError("The offending ticker was"),
+                    }
+                )
+            );
+        });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
@@ -103,30 +142,75 @@ internal class _ExpandIconState__expand_icon : State<ExpandIcon>, SingleTickerPr
             {
                 return widget.color!;
             }
-            return Theme.brightnessOf(context) switch { Brightness.light => Colors.black54, Brightness.dark => Colors.white60, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return Theme.brightnessOf(context) switch
+            {
+                Brightness.light => Colors.black54,
+                Brightness.dark => Colors.white60,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
     }
+
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        string onTapHintLocal = widget.isExpanded ? localizations.expandedIconTapHint : localizations.collapsedIconTapHint;
-        return new Widgets.Semantics(onTapHint: (widget.onPressed is null) ? null : onTapHintLocal, child: new IconButton(padding: widget.padding, iconSize: widget.size, highlightColor: widget.highlightColor, splashColor: widget.splashColor, color: _iconColor, disabledColor: widget.disabledColor, onPressed: (widget.onPressed is null) ? null : _handlePressed, icon: new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more))));
+        string onTapHintLocal = widget.isExpanded
+            ? localizations.expandedIconTapHint
+            : localizations.collapsedIconTapHint;
+        return new Widgets.Semantics(
+            onTapHint: (widget.onPressed is null) ? null : onTapHintLocal,
+            child: new IconButton(
+                padding: widget.padding,
+                iconSize: widget.size,
+                highlightColor: widget.highlightColor,
+                splashColor: widget.splashColor,
+                color: _iconColor,
+                disabledColor: widget.disabledColor,
+                onPressed: (widget.onPressed is null) ? null : _handlePressed,
+                icon: new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more))
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_ticker is null)
             {
-                if (_ticker is null)
-                {
-                    return true;
-                }
-                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
-            });
-        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+                return true;
+            }
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."
+                        ),
+                        new ErrorDescription(
+                            "A SingleTickerProviderStateMixin can only be used as a TickerProvider once."
+                        ),
+                        new ErrorHint(
+                            "If a State is used for multiple AnimationController objects, or if it is passed to other "
+                                + "objects and those objects might use it more than one time in total, then instead of "
+                                + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin."
+                        ),
+                    }
+                )
+            );
+        });
+        _ticker = new Scheduler.Ticker(
+            onTick,
+            debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                : null
+        );
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -165,8 +249,22 @@ internal class _ExpandIconState__expand_icon : State<ExpandIcon>, SingleTickerPr
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch
+        {
+            (true, true) => "active but muted",
+            (true, _) => "active",
+            (false, true) => "inactive and muted",
+            (false, _) => "inactive",
+            (null, _) => DartRuntimePrimitives.ConvertValue<string>(null),
+        };
+        properties.add(
+            new DiagnosticsProperty<Scheduler.Ticker>(
+                "ticker",
+                _ticker,
+                description: tickerDescription,
+                showSeparator: false,
+                defaultValue: default
+            )
+        );
     }
-
 }

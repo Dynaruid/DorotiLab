@@ -19,9 +19,9 @@ using WindowBackdropOptions = Doroti.Ui.WindowBackdropOptions;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed unsafe partial class WindowsManagedVulkanPresenter :
-    WindowsManagedHwndPresenterBase,
-    IWindowsAcrylicPresenter
+internal sealed unsafe partial class WindowsManagedVulkanPresenter
+    : WindowsManagedHwndPresenterBase,
+        IWindowsAcrylicPresenter
 {
     private const ulong FenceTimeoutNanoseconds = 5_000_000_000;
     private const ulong MaximumRetainedStorageAllocationBytes = 512UL * 1024 * 1024;
@@ -86,8 +86,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private bool _acquired;
     private uint _acquiredImageIndex;
     private bool _copySubmissionPending;
-    private readonly PresentationSlot[] _presentationSlots =
-        [new(), new(), new()];
+    private readonly PresentationSlot[] _presentationSlots = [new(), new(), new()];
     private nint _presentationContext;
     private int _selectedSlot = -1;
     private long _selectedViewportRevision;
@@ -108,12 +107,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private nint _topLevelWindow;
     internal nint PlatformRasterWindow { get; set; }
     internal bool PreservePrimaryRaster { get; set; }
+
     internal void WaitForPrimaryCopyCompletion() =>
         Marshal.ThrowExceptionForHR(UnbindCompositionBuffer(_presentationContext, 0, out _));
+
     internal nint CreatePlatformRasterSurface(nint window)
     {
-        if (_presentationContext == 0) throw new InvalidOperationException("Composition device is not ready.");
-        Marshal.ThrowExceptionForHR(CreateCompositionRaster(_presentationContext, unchecked((ulong)window), out var raster));
+        if (_presentationContext == 0)
+        {
+            throw new InvalidOperationException("Composition device is not ready.");
+        }
+
+        Marshal.ThrowExceptionForHR(
+            CreateCompositionRaster(_presentationContext, unchecked((ulong)window), out var raster)
+        );
         return raster;
     }
 
@@ -197,59 +204,81 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal WindowsManagedVulkanPresenter(
         bool enableDiagnostics,
         WindowBackdropOptions? acrylicOptions = null,
-        Brightness systemBrightness = Brightness.light)
+        Brightness systemBrightness = Brightness.light
+    )
     {
         _diagnosticsEnabled = enableDiagnostics;
-        if (_useGraphite) ConfigureGraphiteLibrary();
+        if (_useGraphite)
+        {
+            ConfigureGraphiteLibrary();
+        }
+
         if (acrylicOptions is not null)
-            _acrylicOptions = new WindowsAcrylicOptionsState(
-                acrylicOptions, systemBrightness);
-        _loaderPath = Path.GetFullPath(Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll"));
+        {
+            _acrylicOptions = new WindowsAcrylicOptionsState(acrylicOptions, systemBrightness);
+        }
+
+        _loaderPath = Path.GetFullPath(
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.System),
+                "vulkan-1.dll"
+            )
+        );
         if (!File.Exists(_loaderPath))
+        {
             throw new FileNotFoundException("The System32 Vulkan loader is missing.", _loaderPath);
+        }
+
         using (var loaderStream = File.OpenRead(_loaderPath))
+        {
             _loaderSha256 = Convert.ToHexString(SHA256.HashData(loaderStream)).ToLowerInvariant();
+        }
+
         _vk = new Vk(new DefaultNativeContext(_loaderPath));
         RecordEvent($"loader-open path={_loaderPath}");
     }
 
-    internal override string BackendName => _useGraphite ? "Graphite/Vulkan/D3D12/DXGI" : "Vulkan/D3D12/DXGI";
-    internal override string RuntimeEffectsBackend => _useGraphite
-        ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
+    internal override string BackendName =>
+        _useGraphite ? "Graphite/Vulkan/D3D12/DXGI" : "Vulkan/D3D12/DXGI";
+    internal override string RuntimeEffectsBackend =>
+        _useGraphite
+            ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
+            : DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
     internal override ulong NativeRequiredFeatures =>
-        WindowsNativeV1.PostPresentDwmFlushFeature |
-        WindowsNativeV1.RetainedOversizedChildSurfaceFeature |
-        WindowsNativeV1.CompositionPresentationFeature |
-        WindowsNativeV1.PreparedGeometryReceiptFeature |
-        (_acrylicOptions is null
-            ? 0
-            : WindowsNativeV1.ExperimentalAcrylicFeature |
-              WindowsNativeV1.VulkanAcrylicFeature);
+        WindowsNativeV1.PostPresentDwmFlushFeature
+        | WindowsNativeV1.RetainedOversizedChildSurfaceFeature
+        | WindowsNativeV1.CompositionPresentationFeature
+        | WindowsNativeV1.PreparedGeometryReceiptFeature
+        | (
+            _acrylicOptions is null
+                ? 0
+                : WindowsNativeV1.ExperimentalAcrylicFeature | WindowsNativeV1.VulkanAcrylicFeature
+        );
     internal override bool UsesCompositionTopology => true;
-    internal override string VisibleOwner => PlatformRasterWindow != 0
-        ? "background Vulkan child HWND with live native and GPU-raster sibling HWNDs"
-        : _acrylicOptions is null
-        ? "top-level HWND DirectComposition D3D12 DXGI target"
+    internal override string VisibleOwner =>
+        PlatformRasterWindow != 0
+            ? "background Vulkan child HWND with live native and GPU-raster sibling HWNDs"
+        : _acrylicOptions is null ? "top-level HWND DirectComposition D3D12 DXGI target"
         : "top-level HWND DirectComposition D3D12 DXGI target over a top-level Desktop Acrylic window target";
-    internal override string TopologySlug => PlatformRasterWindow != 0
-        ? "hwnd-interleaved-graphite-readback"
-        : _acrylicOptions is null
-        ? "top-level-dcomp-vulkan-presentation-synchronous"
+    internal override string TopologySlug =>
+        PlatformRasterWindow != 0 ? "hwnd-interleaved-graphite-readback"
+        : _acrylicOptions is null ? "top-level-dcomp-vulkan-presentation-synchronous"
         : "top-level-dcomp-vulkan-presentation-synchronous-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
-    internal override string DiagnosticCoverage => PlatformRasterWindow != 0
-        ? "Graphite/Vulkan shared-recorder raster atlas, immutable same-adapter GPU shared textures after producer completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; " +
-          "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
-        :
-        "Vulkan 1.2 retained offscreen backing, exact-LUID D3D12 output resources, dedicated D3D12_RESOURCE imports and DXGI swapchain, " +
-        "external queue-family ownership transfers, shared Vulkan timeline signal and D3D12 queue wait, CPU Vulkan frame completion, three shared source slots retired by the D3D12 copy fence, " +
-        "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM boundary wait; moving-origin display waits use DXGI present-count statistics, a native topmost DirectComposition target on the top-level HWND, " +
-        "identity full-capacity DXGI coverage clipped by the single top-level client geometry, " +
-        (_acrylicOptions is null
-            ? "opaque alpha, "
-            : "premultiplied content over a host-backdrop-enabled DesktopAcrylicController window target with a DWM transient-backdrop resize underlay, ") +
-        "checked VkResult/HRESULT values, and bounded actual-size fallback";
+    internal override string DiagnosticCoverage =>
+        PlatformRasterWindow != 0
+            ? "Graphite/Vulkan shared-recorder raster atlas, immutable same-adapter GPU shared textures after producer completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; "
+                + "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
+            : "Vulkan 1.2 retained offscreen backing, exact-LUID D3D12 output resources, dedicated D3D12_RESOURCE imports and DXGI swapchain, "
+                + "external queue-family ownership transfers, shared Vulkan timeline signal and D3D12 queue wait, CPU Vulkan frame completion, three shared source slots retired by the D3D12 copy fence, "
+                + "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM boundary wait; moving-origin display waits use DXGI present-count statistics, a native topmost DirectComposition target on the top-level HWND, "
+                + "identity full-capacity DXGI coverage clipped by the single top-level client geometry, "
+                + (
+                    _acrylicOptions is null
+                        ? "opaque alpha, "
+                        : "premultiplied content over a host-backdrop-enabled DesktopAcrylicController window target with a DWM transient-backdrop resize underlay, "
+                )
+                + "checked VkResult/HRESULT values, and bounded actual-size fallback";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
@@ -266,76 +295,113 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal override ulong OperationalDebugWarningCount { get; set; }
     internal override string AdapterDescription { get; set; } = "uninitialized";
 
-    internal VulkanPresenterSnapshot Snapshot() => new(
-        _loaderPath, _loaderSha256, FormatVersion(_loaderApiVersion),
-        typeof(Vk).Assembly.GetName().Version?.ToString() ?? "unknown",
-        AdapterDescription, _deviceType, _deviceVendorId, _deviceId, _driverVersion,
-        FormatVersion(_deviceApiVersion), _deviceLuid, _queueFamily,
-        _format.ToString(), _colorSpace, _compositeAlpha, _presentMode,
-        BufferCount, _surfaceWidth, _surfaceHeight,
-        _retainedSurfaceReuseCount, 0,
-        _backingCapacityWidth, _backingCapacityHeight,
-        _backingAllocationSize, _retainedFrameAllocationSize, _retainedFrameInitialized,
-        _backingAllocationCount, _backingReuseCount,
-        _deferredCopySubmissionCount, _copyFenceWaitCount,
-        _lastCopyFenceWaitMicroseconds, _maximumCopyFenceWaitMicroseconds,
-        Width, Height, _swapchainGeneration,
-        _acquiredCount, _presentTerminalCount, PresentCount,
-        _acquired ? 1 : 0, _acquired ? checked((int)_acquiredImageIndex) : -1,
-        _copySubmissionPending ? 1 : 0,
-        _maximumOutstandingAcquired, _deviceLostCount, _surfaceLostCount,
-        _outOfDateCount, _suboptimalCount,
-        _lastAcquireResult.ToString(), _lastSubmitResult.ToString(),
-        _lastPresentResult.ToString(),
-        ActiveSwapchains: 0,
-        RetiredSwapchains: 0,
-        ValidationEnabled: _validationEnabled,
-        MaximumRetiredSwapchains: 0,
-        LastRecreateReason: _lastRecreateReason,
-        LastRetirementLatencyMicroseconds: _lastRetirementLatencyMicroseconds,
-        LastRecreateLatencyMicroseconds: _lastRecreateLatencyMicroseconds,
-        MaximumRecreateLatencyMicroseconds: _maximumRecreateLatencyMicroseconds,
-        LastSwapchainCreateLatencyMicroseconds: _lastSwapchainCreateLatencyMicroseconds,
-        MaximumSwapchainCreateLatencyMicroseconds: _maximumSwapchainCreateLatencyMicroseconds,
-        LastBackingWrapLatencyMicroseconds: _lastBackingWrapLatencyMicroseconds,
-        MaximumBackingWrapLatencyMicroseconds: _maximumBackingWrapLatencyMicroseconds,
-        FirstPresentQpc: _firstPresentQpc,
-        LastTargetQpc: _lastTargetQpc,
-        LastPresentQpc: _lastPresentQpc,
-        RetirementMode: "d3d12-copy-fence-source-reuse-dxgi-owned-display-buffers",
-        QueueIdleRetirementWaits: 0,
-        CompositionFrameWaits: _compositionFrameWaitCount,
-        CompositionFrameObserved: _compositionFrameObservedCount,
-        CompositionFrameWaitTimeouts: _compositionFrameWaitTimeoutCount,
-        FixedOriginPreGeometryAdmissions: _fixedOriginPreGeometryAdmissionCount,
-        MovingOriginPreGeometryAdmissions: _movingOriginPreGeometryAdmissionCount,
-        MovingOriginPreGeometryDisplayWaits: _movingOriginPreGeometryDisplayWaitCount,
-        MovingOriginPrepared: PreparedDiagnostics.Prepared,
-        MovingOriginWindowPosCommitAttempt: MovingOriginWindowPosCommitAttempt,
-        MovingOriginWindowPosCommitted: PreparedDiagnostics.Committed,
-        MovingOriginWindowPosMismatch: MovingOriginWindowPosCommitMismatch,
-        MovingOriginWindowPosCancelled: PreparedDiagnostics.Cancelled,
-        MovingOriginWindowPosFailed: MovingOriginWindowPosCommitFailed,
-        MovingOriginReserved: PreparedDiagnostics.Reserved,
-        ClockWait: 0, ClockWaitObserved: 0, ClockWaitTimeout: 0,
-        PostGeometryFallback: _postGeometryFallback,
-        CandidatePolicy: "moving-origin-clock-geometry-prepared-commit-receipt",
-        LastCompositionFrameWaitMicroseconds: _lastCompositionFrameWaitMicroseconds,
-        MaximumCompositionFrameWaitMicroseconds: _maximumCompositionFrameWaitMicroseconds,
-        ResizeClockWaits: _resizeClockWaitCount,
-        ResizeClockSignals: _resizeClockSignalCount,
-        ResizeClockFailures: _resizeClockFailureCount,
-        LastResizeClockStatus: _lastResizeClockStatus,
-        MaximumResizeClockWaitMicroseconds: _maximumResizeClockWaitMicroseconds,
-        RecentEvents: SnapshotEvents(),
-        PreparedReceiptTimeoutMilliseconds: PreparedReceiptTimeoutMilliseconds,
-        PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds,
-        ValidationErrors: _validationErrors, ValidationWarnings: _validationWarnings,
-        ValidationCallbackFault: _validationCallbackFault, ValidationMessages: ValidationMessages(),
-        UsesPackagedGraphiteAsset: _usesPackagedGraphiteAsset, GraphiteNativePath: _actualGraphiteLibraryPath,
-        GraphiteNativeSha256: _graphiteNativeHash, D3D12Output: D3D12Snapshot(),
-        DepthStencilBarrierStageCorrections: _retiredDepthStencilBarrierStageCorrections +
-            (_stockObserver?.DepthStencilBarrierStageCorrections ?? 0));
+    internal VulkanPresenterSnapshot Snapshot() =>
+        new(
+            _loaderPath,
+            _loaderSha256,
+            FormatVersion(_loaderApiVersion),
+            typeof(Vk).Assembly.GetName().Version?.ToString() ?? "unknown",
+            AdapterDescription,
+            _deviceType,
+            _deviceVendorId,
+            _deviceId,
+            _driverVersion,
+            FormatVersion(_deviceApiVersion),
+            _deviceLuid,
+            _queueFamily,
+            _format.ToString(),
+            _colorSpace,
+            _compositeAlpha,
+            _presentMode,
+            BufferCount,
+            _surfaceWidth,
+            _surfaceHeight,
+            _retainedSurfaceReuseCount,
+            0,
+            _backingCapacityWidth,
+            _backingCapacityHeight,
+            _backingAllocationSize,
+            _retainedFrameAllocationSize,
+            _retainedFrameInitialized,
+            _backingAllocationCount,
+            _backingReuseCount,
+            _deferredCopySubmissionCount,
+            _copyFenceWaitCount,
+            _lastCopyFenceWaitMicroseconds,
+            _maximumCopyFenceWaitMicroseconds,
+            Width,
+            Height,
+            _swapchainGeneration,
+            _acquiredCount,
+            _presentTerminalCount,
+            PresentCount,
+            _acquired ? 1 : 0,
+            _acquired ? checked((int)_acquiredImageIndex) : -1,
+            _copySubmissionPending ? 1 : 0,
+            _maximumOutstandingAcquired,
+            _deviceLostCount,
+            _surfaceLostCount,
+            _outOfDateCount,
+            _suboptimalCount,
+            _lastAcquireResult.ToString(),
+            _lastSubmitResult.ToString(),
+            _lastPresentResult.ToString(),
+            ActiveSwapchains: 0,
+            RetiredSwapchains: 0,
+            ValidationEnabled: _validationEnabled,
+            MaximumRetiredSwapchains: 0,
+            LastRecreateReason: _lastRecreateReason,
+            LastRetirementLatencyMicroseconds: _lastRetirementLatencyMicroseconds,
+            LastRecreateLatencyMicroseconds: _lastRecreateLatencyMicroseconds,
+            MaximumRecreateLatencyMicroseconds: _maximumRecreateLatencyMicroseconds,
+            LastSwapchainCreateLatencyMicroseconds: _lastSwapchainCreateLatencyMicroseconds,
+            MaximumSwapchainCreateLatencyMicroseconds: _maximumSwapchainCreateLatencyMicroseconds,
+            LastBackingWrapLatencyMicroseconds: _lastBackingWrapLatencyMicroseconds,
+            MaximumBackingWrapLatencyMicroseconds: _maximumBackingWrapLatencyMicroseconds,
+            FirstPresentQpc: _firstPresentQpc,
+            LastTargetQpc: _lastTargetQpc,
+            LastPresentQpc: _lastPresentQpc,
+            RetirementMode: "d3d12-copy-fence-source-reuse-dxgi-owned-display-buffers",
+            QueueIdleRetirementWaits: 0,
+            CompositionFrameWaits: _compositionFrameWaitCount,
+            CompositionFrameObserved: _compositionFrameObservedCount,
+            CompositionFrameWaitTimeouts: _compositionFrameWaitTimeoutCount,
+            FixedOriginPreGeometryAdmissions: _fixedOriginPreGeometryAdmissionCount,
+            MovingOriginPreGeometryAdmissions: _movingOriginPreGeometryAdmissionCount,
+            MovingOriginPreGeometryDisplayWaits: _movingOriginPreGeometryDisplayWaitCount,
+            MovingOriginPrepared: PreparedDiagnostics.Prepared,
+            MovingOriginWindowPosCommitAttempt: MovingOriginWindowPosCommitAttempt,
+            MovingOriginWindowPosCommitted: PreparedDiagnostics.Committed,
+            MovingOriginWindowPosMismatch: MovingOriginWindowPosCommitMismatch,
+            MovingOriginWindowPosCancelled: PreparedDiagnostics.Cancelled,
+            MovingOriginWindowPosFailed: MovingOriginWindowPosCommitFailed,
+            MovingOriginReserved: PreparedDiagnostics.Reserved,
+            ClockWait: 0,
+            ClockWaitObserved: 0,
+            ClockWaitTimeout: 0,
+            PostGeometryFallback: _postGeometryFallback,
+            CandidatePolicy: "moving-origin-clock-geometry-prepared-commit-receipt",
+            LastCompositionFrameWaitMicroseconds: _lastCompositionFrameWaitMicroseconds,
+            MaximumCompositionFrameWaitMicroseconds: _maximumCompositionFrameWaitMicroseconds,
+            ResizeClockWaits: _resizeClockWaitCount,
+            ResizeClockSignals: _resizeClockSignalCount,
+            ResizeClockFailures: _resizeClockFailureCount,
+            LastResizeClockStatus: _lastResizeClockStatus,
+            MaximumResizeClockWaitMicroseconds: _maximumResizeClockWaitMicroseconds,
+            RecentEvents: SnapshotEvents(),
+            PreparedReceiptTimeoutMilliseconds: PreparedReceiptTimeoutMilliseconds,
+            PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds,
+            ValidationErrors: _validationErrors,
+            ValidationWarnings: _validationWarnings,
+            ValidationCallbackFault: _validationCallbackFault,
+            ValidationMessages: ValidationMessages(),
+            UsesPackagedGraphiteAsset: _usesPackagedGraphiteAsset,
+            GraphiteNativePath: _actualGraphiteLibraryPath,
+            GraphiteNativeSha256: _graphiteNativeHash,
+            D3D12Output: D3D12Snapshot(),
+            DepthStencilBarrierStageCorrections: _retiredDepthStencilBarrierStageCorrections
+                + (_stockObserver?.DepthStencilBarrierStageCorrections ?? 0)
+        );
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
 
@@ -349,33 +415,45 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     ValueTask<ReadOnlyMemory<byte>?> IWindowsAcrylicPresenter.HandleRuntimeMessageAsync(
         ReadOnlyMemory<byte>? data,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        var options = _acrylicOptions ?? throw new InvalidOperationException(
-            "The Vulkan presenter was not configured for Acrylic.");
-        return options.HandleRuntimeMessageAsync(
-            data, cancellationToken, CreateAcrylicSnapshot);
+        var options =
+            _acrylicOptions
+            ?? throw new InvalidOperationException(
+                "The Vulkan presenter was not configured for Acrylic."
+            );
+        return options.HandleRuntimeMessageAsync(data, cancellationToken, CreateAcrylicSnapshot);
     }
 
-    AcrylicPresenterSnapshot IWindowsAcrylicPresenter.Snapshot() =>
-        CreateAcrylicSnapshot();
+    AcrylicPresenterSnapshot IWindowsAcrylicPresenter.Snapshot() => CreateAcrylicSnapshot();
 
     private AcrylicPresenterSnapshot CreateAcrylicSnapshot()
     {
-        var state = _acrylicOptions ?? throw new InvalidOperationException(
-            "The Vulkan presenter was not configured for Acrylic.");
+        var state =
+            _acrylicOptions
+            ?? throw new InvalidOperationException(
+                "The Vulkan presenter was not configured for Acrylic."
+            );
         var options = state.Options;
-        var backdropState = _composition is not null && _acrylicScene is not null
-            ? _composition.Invoke(() => _acrylicScene.State)
-            : null;
+        var backdropState =
+            _composition is not null && _acrylicScene is not null
+                ? _composition.Invoke(() => _acrylicScene.State)
+                : null;
         return new AcrylicPresenterSnapshot(
-            options.mode.ToString(), options.mode.ToString(), null,
+            options.mode.ToString(),
+            options.mode.ToString(),
+            null,
             _presentationContext != 0,
             false,
             $"{_adapterLuidHigh}:{_adapterLuidLow}",
-            _deviceVendorId, _deviceId,
-            options.acrylicKind.ToString(), state.EffectiveTheme,
-            options.tintColor?.value, options.tintOpacity, options.luminosityOpacity,
+            _deviceVendorId,
+            _deviceId,
+            options.acrylicKind.ToString(),
+            state.EffectiveTheme,
+            options.tintColor?.value,
+            options.tintOpacity,
+            options.luminosityOpacity,
             WindowsManagedAcrylicCompositionPresenter.LogicalEdgeBudget,
             WindowsManagedAcrylicCompositionPresenter.PhysicalEdgeBudget,
             _maximumRegisteredPresentationSlots,
@@ -392,16 +470,19 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             BackdropTransport: "DesktopAcrylicController",
             SystemBackdropType: _dwmSystemBackdropEnabled ? "TransientWindowUnderlay" : null,
             RedirectionBitmapAlphaEnabled: false,
-            BackdropState: backdropState);
+            BackdropState: backdropState
+        );
     }
 
     internal bool HasPendingInjectedResult
     {
         get
         {
-            var requested = Environment.GetEnvironmentVariable(
-                "DOROTI_WINDOWS_VULKAN_INJECT_RESULT")?.Trim();
-            return !string.IsNullOrWhiteSpace(requested) && !_consumedInjections.Contains(requested);
+            var requested = Environment
+                .GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT")
+                ?.Trim();
+            return !string.IsNullOrWhiteSpace(requested)
+                && !_consumedInjections.Contains(requested);
         }
     }
 
@@ -413,9 +494,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal void AttachTopLevelWindow(nint topLevelWindow)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (topLevelWindow == 0) throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
+        if (topLevelWindow == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
+        }
+
         if (_topLevelWindow != 0)
-            throw new InvalidOperationException("The Vulkan Composition presenter already owns a window.");
+        {
+            throw new InvalidOperationException(
+                "The Vulkan Composition presenter already owns a window."
+            );
+        }
 
         _compositionReleased = false;
         _topLevelWindow = topLevelWindow;
@@ -424,11 +513,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             if (_acrylicOptions is not null)
             {
                 InitializeAcrylicTarget(topLevelWindow);
-                RecordEvent("Desktop Acrylic window target connected; synchronous top-level Vulkan target pending first surface");
+                RecordEvent(
+                    "Desktop Acrylic window target connected; synchronous top-level Vulkan target pending first surface"
+                );
             }
             else
             {
-                RecordEvent("top-level HWND attached; synchronous Vulkan target pending first surface");
+                RecordEvent(
+                    "top-level HWND attached; synchronous Vulkan target pending first surface"
+                );
             }
         }
         catch
@@ -442,48 +535,97 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private void InitializeAcrylicTarget(nint topLevelWindow)
     {
         if (_composition is not null || _acrylicScene is not null)
-            throw new InvalidOperationException("The Vulkan Acrylic window-target topology is already initialized.");
-        var acrylic = _acrylicOptions ?? throw new InvalidOperationException(
-            "The Vulkan presenter was not configured for Acrylic.");
+        {
+            throw new InvalidOperationException(
+                "The Vulkan Acrylic window-target topology is already initialized."
+            );
+        }
+
+        var acrylic =
+            _acrylicOptions
+            ?? throw new InvalidOperationException(
+                "The Vulkan presenter was not configured for Acrylic."
+            );
         if (!DesktopAcrylicController.IsSupported())
+        {
             throw new PlatformNotSupportedException(
-                "Desktop Acrylic is not supported by this Windows session.");
+                "Desktop Acrylic is not supported by this Windows session."
+            );
+        }
 
         SetHostBackdropBrush(topLevelWindow, enabled: true, throwOnFailure: true);
         SetDwmSystemBackdrop(topLevelWindow, enabled: true, throwOnFailure: true);
 
         _composition = new SystemCompositionWorker();
         var composition = _composition;
-        _acrylicScene = composition.Invoke(() => new VulkanAcrylicScene(
-            composition.Compositor, topLevelWindow,
-            acrylic.Options, acrylic.SystemBrightness));
+        _acrylicScene = composition.Invoke(() =>
+            new VulkanAcrylicScene(
+                composition.Compositor,
+                topLevelWindow,
+                acrylic.Options,
+                acrylic.SystemBrightness
+            )
+        );
         _backdropTargetAdded = _acrylicScene.BackdropTargetAdded;
         _desktopWindowTargetConnected = _acrylicScene.DesktopWindowTargetConnected;
         if (!_backdropTargetAdded)
+        {
             throw new InvalidOperationException(
-                "DesktopAcrylicController.SetTarget did not attach to the top-level window target.");
+                "DesktopAcrylicController.SetTarget did not attach to the top-level window target."
+            );
+        }
+
         if (!_desktopWindowTargetConnected)
+        {
             throw new InvalidOperationException(
-                "The Vulkan Desktop Acrylic window target did not connect.");
+                "The Vulkan Desktop Acrylic window target did not connect."
+            );
+        }
+
         var scene = _acrylicScene;
-        acrylic.Attach((options, brightness) =>
-            composition.Invoke(() => scene.ApplyAcrylic(options, brightness)));
+        acrylic.Attach(
+            (options, brightness) =>
+                composition.Invoke(() => scene.ApplyAcrylic(options, brightness))
+        );
     }
 
     internal override void ResizeViewport(
-        int width, int height, double scale, uint sizingEdge, bool preGeometry)
+        int width,
+        int height,
+        double scale,
+        uint sizingEdge,
+        bool preGeometry
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
-        if (!double.IsFinite(scale) || scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale));
+        if (width <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
+
+        if (!double.IsFinite(scale) || scale <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(scale));
+        }
+
         if (_topLevelWindow == 0)
+        {
             throw new InvalidOperationException("The Vulkan top-level window is not attached.");
+        }
 
         lock (_viewportGate)
         {
             var movingOrigin = SizingEdgeMovesWindowOrigin(sizingEdge);
-            if (!preGeometry && _viewportRevision != 0) _postGeometryFallback++;
+            if (!preGeometry && _viewportRevision != 0)
+            {
+                _postGeometryFallback++;
+            }
+
             _preparedMoving.Cancel();
             _movingPrepareRequest = null;
             _phaseAlignedFrame = null;
@@ -499,39 +641,67 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             if (preGeometry && sizingEdge != 0)
             {
                 if (movingOrigin)
+                {
                     _movingOriginPreGeometryAdmissionCount++;
+                }
                 else
+                {
                     _fixedOriginPreGeometryAdmissionCount++;
+                }
             }
             var waitForDisplayBoundary = !preGeometry || !movingOrigin;
             if (preGeometry && movingOrigin && waitForDisplayBoundary)
+            {
                 _movingOriginPreGeometryDisplayWaitCount++;
-            _displayWaitViewportRevision = waitForDisplayBoundary
-                ? _viewportRevision
-                : 0;
+            }
+
+            _displayWaitViewportRevision = waitForDisplayBoundary ? _viewportRevision : 0;
         }
     }
 
     private static bool SizingEdgeMovesWindowOrigin(uint sizingEdge) =>
-        sizingEdge is WmszLeft or WmszTop or WmszTopLeft or
-            WmszTopRight or WmszBottomLeft;
+        sizingEdge is WmszLeft or WmszTop or WmszTopLeft or WmszTopRight or WmszBottomLeft;
 
     internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         LastPresentSucceeded = false;
-        if (childWindow == 0) throw new ArgumentOutOfRangeException(nameof(childWindow));
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        if (childWindow == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(childWindow));
+        }
+
+        if (width <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
+
         _lastTargetQpc = Stopwatch.GetTimestamp();
 
         if (_topLevelWindow == 0)
+        {
             throw new InvalidOperationException("The Vulkan top-level topology is not attached.");
+        }
+
         if (_presentationPoisoned)
+        {
             throw new InvalidOperationException(
-                "The Vulkan Composition manager is poisoned after an indeterminate Present failure.");
+                "The Vulkan Composition manager is poisoned after an indeterminate Present failure."
+            );
+        }
+
         if (_window != 0 && _window != childWindow)
-            throw new InvalidOperationException("The Vulkan bootstrap child HWND changed unexpectedly.");
+        {
+            throw new InvalidOperationException(
+                "The Vulkan bootstrap child HWND changed unexpectedly."
+            );
+        }
+
         _window = childWindow;
         EnsureDevice(childWindow);
 
@@ -554,14 +724,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (_presentationSlots.All(static slot => !slot.Registered))
         {
             for (var index = 0; index < BufferCount; index++)
+            {
                 ReplacePresentationSlot(index, _backingCapacityWidth, _backingCapacityHeight);
+            }
         }
 
         _selectedSlot = SelectAvailablePresentationSlot(
-            _backingCapacityWidth, _backingCapacityHeight);
+            _backingCapacityWidth,
+            _backingCapacityHeight
+        );
         if (_selectedSlot < 0 && WaitForAnyPresentationSlot())
+        {
             _selectedSlot = SelectAvailablePresentationSlot(
-                _backingCapacityWidth, _backingCapacityHeight);
+                _backingCapacityWidth,
+                _backingCapacityHeight
+            );
+        }
+
         if (_selectedSlot < 0)
         {
             _lastAcquireResult = Result.NotReady;
@@ -569,15 +748,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             return false;
         }
         var slot = _presentationSlots[_selectedSlot];
-        if (!slot.Registered || slot.CapacityWidth != _backingCapacityWidth ||
-            slot.CapacityHeight != _backingCapacityHeight)
-            ReplacePresentationSlot(
-                _selectedSlot, _backingCapacityWidth, _backingCapacityHeight);
+        if (
+            !slot.Registered
+            || slot.CapacityWidth != _backingCapacityWidth
+            || slot.CapacityHeight != _backingCapacityHeight
+        )
+        {
+            ReplacePresentationSlot(_selectedSlot, _backingCapacityWidth, _backingCapacityHeight);
+        }
 
         lock (_viewportGate)
         {
-            if (_presentationRetiring || _viewportRevision == 0 ||
-                _viewportWidth != width || _viewportHeight != height)
+            if (
+                _presentationRetiring
+                || _viewportRevision == 0
+                || _viewportWidth != width
+                || _viewportHeight != height
+            )
             {
                 _selectedSlot = -1;
                 return false;
@@ -586,7 +773,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Height = height;
             _selectedViewportRevision = _viewportRevision;
         }
-        if (resized) ResizeBuffersCount++;
+        if (resized)
+        {
+            ResizeBuffersCount++;
+        }
+
         _acquired = true;
         _acquiredImageIndex = checked((uint)_selectedSlot);
         _maximumOutstandingAcquired = Math.Max(_maximumOutstandingAcquired, 1);
@@ -609,35 +800,57 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ArgumentNullException.ThrowIfNull(shouldPresent);
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_selectedSlot is < 0 or >= BufferCount || _presentationContext == 0)
+        {
             throw new InvalidOperationException("No Vulkan Composition buffer is admitted.");
+        }
 
         LastPresentSucceeded = false;
         PreservePrimaryRaster = false;
         MovingFrameKey? prepareRequest;
-        lock (_viewportGate) prepareRequest = _movingPrepareRequest;
+        lock (_viewportGate)
+        {
+            prepareRequest = _movingPrepareRequest;
+        }
+
         try
         {
             if (_useGraphite)
             {
-                _graphiteFrame = (_graphite ?? throw new InvalidOperationException("Graphite context is unavailable."))
-                    .BeginVulkanFrame(_graphiteTarget ?? throw new InvalidOperationException("Graphite target is unavailable."));
+                _graphiteFrame = (
+                    _graphite
+                    ?? throw new InvalidOperationException("Graphite context is unavailable.")
+                ).BeginVulkanFrame(
+                    _graphiteTarget
+                        ?? throw new InvalidOperationException("Graphite target is unavailable.")
+                );
                 _graphiteSubmissionAttempted = false;
             }
-            var backing = _graphiteFrame?.Surface ?? _backingSurface
-                ?? throw new InvalidOperationException("The managed Vulkan backing surface is unavailable.");
+            var backing =
+                _graphiteFrame?.Surface
+                ?? _backingSurface
+                ?? throw new InvalidOperationException(
+                    "The managed Vulkan backing surface is unavailable."
+                );
             // The raster target and client clip share one top-level HWND geometry.
             // Paint replacements at the same origin; an edge-based
             // offset would make the entire scene jump at raster cadence.
             var result = paint(backing);
             if (!_useGraphite)
             {
-                var context = _context ?? throw new InvalidOperationException("The managed Vulkan Skia context is unavailable.");
+                var context =
+                    _context
+                    ?? throw new InvalidOperationException(
+                        "The managed Vulkan Skia context is unavailable."
+                    );
                 backing.Canvas.Flush();
                 context.Flush(backing);
                 context.Submit(false);
                 GpuSubmitCount++;
             }
-            if (!shouldPresent(result)) return result;
+            if (!shouldPresent(result))
+            {
+                return result;
+            }
 
             if (TakeInjectedResult("OUT_OF_DATE"))
             {
@@ -651,24 +864,31 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 _surfaceLostCount++;
                 _lastAcquireResult = Result.ErrorSurfaceLostKhr;
                 throw new WindowsManagedVulkanSurfaceLostException(
-                    "Synthetic Composition surface loss was requested before copy.");
+                    "Synthetic Composition surface loss was requested before copy."
+                );
             }
             if (TakeInjectedResult("DEVICE_LOST"))
             {
                 _deviceLostCount++;
                 _lastSubmitResult = Result.ErrorDeviceLost;
                 throw new WindowsManagedVulkanDeviceLostException(
-                    "Synthetic Vulkan device loss was requested before copy.");
+                    "Synthetic Vulkan device loss was requested before copy."
+                );
             }
 
             var slotIndex = _selectedSlot;
             var slot = _presentationSlots[slotIndex];
             lock (_viewportGate)
             {
-                if (!shouldPresent(result) ||
-                    _viewportRevision != _selectedViewportRevision ||
-                    _viewportWidth != Width || _viewportHeight != Height)
+                if (
+                    !shouldPresent(result)
+                    || _viewportRevision != _selectedViewportRevision
+                    || _viewportWidth != Width
+                    || _viewportHeight != Height
+                )
+                {
                     return result;
+                }
                 // Keep the viewport authority stable while the retained guard
                 // is updated and committed. Otherwise a superseded raster could
                 // replace pixels that belong to the last displayed geometry.
@@ -676,64 +896,105 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 {
                     DelayGraphiteProducerForQualification();
                     _graphiteSubmissionAttempted = true;
-                    try { _graphiteFrame.Submit(); }
+                    try
+                    {
+                        _graphiteFrame.Submit();
+                    }
                     catch (InvalidOperationException) when (_graphite!.IsDeviceLost)
-                    { throw new WindowsManagedVulkanDeviceLostException("Graphite Vulkan submission reported device loss."); }
+                    {
+                        throw new WindowsManagedVulkanDeviceLostException(
+                            "Graphite Vulkan submission reported device loss."
+                        );
+                    }
                     GpuSubmitCount++;
                 }
                 CopyBackingToPresentation(slot);
                 if (_graphiteFrame is not null)
                 {
                     ReturnGraphiteFrameAfterGpuCompletion();
-                    _graphiteTarget!.SetStateAfterGpuCompletion((int)_graphiteCopyRestoreLayout, _queueFamily);
+                    _graphiteTarget!.SetStateAfterGpuCompletion(
+                        (int)_graphiteCopyRestoreLayout,
+                        _queueFamily
+                    );
                 }
                 GpuCopyCount++;
                 if (prepareRequest is { } prepareKey)
                 {
-                    if (_movingPrepareRequest != prepareRequest) return result;
-                    _preparedMoving.Reserve(new PreparedMovingFrame(
-                        prepareKey, slotIndex, _viewportRevision));
+                    if (_movingPrepareRequest != prepareRequest)
+                    {
+                        return result;
+                    }
+
+                    _preparedMoving.Reserve(
+                        new PreparedMovingFrame(prepareKey, slotIndex, _viewportRevision)
+                    );
                     TracePreparedCopyComplete();
                     LastPrepareSucceeded = true;
                     return result;
                 }
                 PresentSlotLocked(
-                    slotIndex, _viewportRevision,
+                    slotIndex,
+                    _viewportRevision,
                     _displayWaitViewportRevision == _viewportRevision
                         ? "pregeometry-display-gated-or-exact-fallback"
-                        : "pregeometry-moving-origin-submit");
+                        : "pregeometry-moving-origin-submit"
+                );
             }
-            if (LastPresentSucceeded &&
-                Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+            if (
+                LastPresentSucceeded
+                && Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1"
+            )
+            {
                 Marshal.ThrowExceptionForHR(DwmFlush());
+            }
+
             return result;
         }
         finally
         {
-            if (_graphiteFrame is not null && !_graphiteSubmissionAttempted) ReturnGraphiteFrameAfterGpuCompletion();
+            if (_graphiteFrame is not null && !_graphiteSubmissionAttempted)
+            {
+                ReturnGraphiteFrameAfterGpuCompletion();
+            }
+
             _selectedSlot = -1;
             _selectedViewportRevision = 0;
             _acquired = false;
         }
     }
 
-    private void PresentSlotLocked(int slotIndex, long viewportRevision, string admission, bool waitForResizeReceipt = false)
+    private void PresentSlotLocked(
+        int slotIndex,
+        long viewportRevision,
+        string admission,
+        bool waitForResizeReceipt = false
+    )
     {
         var slot = _presentationSlots[slotIndex];
-        var waitForCompositionFrame = waitForResizeReceipt || _displayWaitViewportRevision == viewportRevision;
+        var waitForCompositionFrame =
+            waitForResizeReceipt || _displayWaitViewportRevision == viewportRevision;
         var waitStarted = waitForCompositionFrame ? Stopwatch.GetTimestamp() : 0;
         // Keep the full retained buffer at identity. The top-level client is
         // the only raster clip; no transform moves the scene independently
         // from HWND geometry.
         var present = PresentCropped(
-            _presentationContext, checked((uint)slotIndex),
-            0, 0,
+            _presentationContext,
+            checked((uint)slotIndex),
+            0,
+            0,
             checked((uint)slot.CapacityWidth),
-            checked((uint)slot.CapacityHeight), ++_presentTag,
-            waitForResizeReceipt ? 2u : waitForCompositionFrame ? 1u : 0u,
-            waitForResizeReceipt ? PreparedReceiptTimeoutMilliseconds : CompositionFrameWaitMilliseconds,
+            checked((uint)slot.CapacityHeight),
+            ++_presentTag,
+            waitForResizeReceipt ? 2u
+                : waitForCompositionFrame ? 1u
+                : 0u,
+            waitForResizeReceipt
+                ? PreparedReceiptTimeoutMilliseconds
+                : CompositionFrameWaitMilliseconds,
             out var compositionFrameObserved,
-            out var presentId, out var retiringFenceValue);
+            out var presentId,
+            out var retiringFenceValue
+        );
         if (present < 0)
         {
             slot.Poisoned = true;
@@ -750,18 +1011,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (waitForCompositionFrame)
         {
             _compositionFrameWaitCount++;
-            _lastCompositionFrameWaitMicroseconds = checked((long)
-                Stopwatch.GetElapsedTime(waitStarted).TotalMicroseconds);
+            _lastCompositionFrameWaitMicroseconds = checked(
+                (long)Stopwatch.GetElapsedTime(waitStarted).TotalMicroseconds
+            );
             _maximumCompositionFrameWaitMicroseconds = Math.Max(
                 _maximumCompositionFrameWaitMicroseconds,
-                _lastCompositionFrameWaitMicroseconds);
+                _lastCompositionFrameWaitMicroseconds
+            );
             compositionFrameWasObserved = compositionFrameObserved != 0;
             compositionFrameReady = compositionFrameWasObserved;
             if (compositionFrameReady)
             {
                 _compositionFrameObservedCount++;
                 if (waitForResizeReceipt && _lastCompositionFrameWaitMicroseconds > 50_000)
+                {
                     _preparedReceiptsOver50Milliseconds++;
+                }
+
                 _displayWaitViewportRevision = 0;
             }
             else
@@ -771,7 +1037,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         var suboptimal = TakeInjectedResult("SUBOPTIMAL");
         _lastPresentResult = suboptimal ? Result.SuboptimalKhr : Result.Success;
-        if (suboptimal) _suboptimalCount++;
+        if (suboptimal)
+        {
+            _suboptimalCount++;
+        }
+
         _acquiredCount++;
         _presentTerminalCount++;
         _surfaceWidth = slot.CapacityWidth;
@@ -781,41 +1051,56 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             LastPresentSucceeded = true;
             _lastPresentQpc = Stopwatch.GetTimestamp();
-            if (_firstPresentQpc == 0) _firstPresentQpc = _lastPresentQpc;
+            if (_firstPresentQpc == 0)
+            {
+                _firstPresentQpc = _lastPresentQpc;
+            }
         }
         RecordEvent(
-            $"composition present slot={slotIndex} id={presentId} retiring={retiringFenceValue} " +
-            $"source=0,0,{slot.CapacityWidth}x{slot.CapacityHeight} " +
-            $"viewport={Width}x{Height}@0,0 admission={admission} " +
-            $"displayWait={(waitForCompositionFrame ? 1 : 0)} " +
-            $"displayObserved={(compositionFrameWasObserved ? 1 : 0)}");
+            $"composition present slot={slotIndex} id={presentId} retiring={retiringFenceValue} "
+                + $"source=0,0,{slot.CapacityWidth}x{slot.CapacityHeight} "
+                + $"viewport={Width}x{Height}@0,0 admission={admission} "
+                + $"displayWait={(waitForCompositionFrame ? 1 : 0)} "
+                + $"displayObserved={(compositionFrameWasObserved ? 1 : 0)}"
+        );
     }
 
     private void EnsureBackingCapacity(int requestedWidth, int requestedHeight)
     {
-        if (_backingImage.Handle != 0 &&
-            _backingCapacityWidth >= requestedWidth &&
-            _backingCapacityHeight >= requestedHeight)
+        if (
+            _backingImage.Handle != 0
+            && _backingCapacityWidth >= requestedWidth
+            && _backingCapacityHeight >= requestedHeight
+        )
         {
             _backingReuseCount++;
             _retainedSurfaceReuseCount++;
             return;
         }
 
-        if (_backingImage.Handle != 0) WaitIdle();
+        if (_backingImage.Handle != 0)
+        {
+            WaitIdle();
+        }
+
         var started = Stopwatch.GetTimestamp();
         CreateBacking(requestedWidth, requestedHeight);
-        _lastBackingWrapLatencyMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(started).TotalMicroseconds);
+        _lastBackingWrapLatencyMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(started).TotalMicroseconds
+        );
         _maximumBackingWrapLatencyMicroseconds = Math.Max(
-            _maximumBackingWrapLatencyMicroseconds, _lastBackingWrapLatencyMicroseconds);
+            _maximumBackingWrapLatencyMicroseconds,
+            _lastBackingWrapLatencyMicroseconds
+        );
         _surfaceWidth = _backingCapacityWidth;
         _surfaceHeight = _backingCapacityHeight;
         _swapchainGeneration++;
-        _lastRecreateReason = _swapchainGeneration == 1 ? "composition-initial" : "composition-capacity-grow";
+        _lastRecreateReason =
+            _swapchainGeneration == 1 ? "composition-initial" : "composition-capacity-grow";
         RecordEvent(
-            $"composition backing generation={_swapchainGeneration} " +
-            $"capacity={_backingCapacityWidth}x{_backingCapacityHeight}");
+            $"composition backing generation={_swapchainGeneration} "
+                + $"capacity={_backingCapacityWidth}x{_backingCapacityHeight}"
+        );
     }
 
     private int SelectAvailablePresentationSlot(int requiredWidth, int requiredHeight)
@@ -823,28 +1108,76 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         for (var index = 0; index < BufferCount; index++)
         {
             lock (_viewportGate)
-                if (_preparedMoving.IsReserved(index)) continue;
+            {
+                if (_preparedMoving.IsReserved(index))
+                {
+                    continue;
+                }
+            }
+
             var slot = _presentationSlots[index];
-            if (slot.Poisoned) continue;
-            if (!slot.Registered) return index;
-            if (slot.CapacityWidth != requiredWidth || slot.CapacityHeight != requiredHeight)
+            if (slot.Poisoned)
+            {
                 continue;
+            }
+
+            if (!slot.Registered)
+            {
+                return index;
+            }
+
+            if (slot.CapacityWidth != requiredWidth || slot.CapacityHeight != requiredHeight)
+            {
+                continue;
+            }
+
             var result = IsCompositionBufferAvailable(
-                _presentationContext, checked((uint)index), out var available);
-            if (result < 0) Marshal.ThrowExceptionForHR(result);
-            if (available != 0) return index;
+                _presentationContext,
+                checked((uint)index),
+                out var available
+            );
+            if (result < 0)
+            {
+                Marshal.ThrowExceptionForHR(result);
+            }
+
+            if (available != 0)
+            {
+                return index;
+            }
         }
         for (var index = 0; index < BufferCount; index++)
         {
             var slot = _presentationSlots[index];
-            if (slot.Poisoned) continue;
-            if (!slot.Registered) return index;
-            if (slot.CapacityWidth == requiredWidth && slot.CapacityHeight == requiredHeight)
+            if (slot.Poisoned)
+            {
                 continue;
+            }
+
+            if (!slot.Registered)
+            {
+                return index;
+            }
+
+            if (slot.CapacityWidth == requiredWidth && slot.CapacityHeight == requiredHeight)
+            {
+                continue;
+            }
+
             var result = IsCompositionBufferAvailable(
-                _presentationContext, checked((uint)index), out var available);
-            if (result < 0) Marshal.ThrowExceptionForHR(result);
-            if (available != 0) return index;
+                _presentationContext,
+                checked((uint)index),
+                out var available
+            );
+            if (result < 0)
+            {
+                Marshal.ThrowExceptionForHR(result);
+            }
+
+            if (available != 0)
+            {
+                return index;
+            }
         }
         return -1;
     }
@@ -856,43 +1189,90 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         for (var index = 0; index < _presentationSlots.Length; index++)
         {
             lock (_viewportGate)
-                if (_preparedMoving.IsReserved(index)) continue;
+            {
+                if (_preparedMoving.IsReserved(index))
+                {
+                    continue;
+                }
+            }
+
             var slot = _presentationSlots[index];
-            if (slot.Poisoned || !slot.Registered || slot.AvailableEvent == 0) continue;
+            if (slot.Poisoned || !slot.Registered || slot.AvailableEvent == 0)
+            {
+                continue;
+            }
+
             handles[count++] = unchecked((nint)slot.AvailableEvent);
         }
-        if (count == 0) return false;
+        if (count == 0)
+        {
+            return false;
+        }
+
         var result = WaitForMultipleObjects(
-            count, handles, false, BufferAvailabilityWaitMilliseconds);
+            count,
+            handles,
+            false,
+            BufferAvailabilityWaitMilliseconds
+        );
         if (result == WaitFailed)
+        {
             throw new Win32Exception(
                 Marshal.GetLastWin32Error(),
-                "Waiting for a Vulkan Composition buffer failed.");
+                "Waiting for a Vulkan Composition buffer failed."
+            );
+        }
+
         return result >= WaitObject0 && result < WaitObject0 + count;
     }
 
     private void ReplacePresentationSlot(int index, int width, int height)
     {
         lock (_viewportGate)
+        {
             if (_preparedMoving.IsReserved(index))
-                throw new InvalidOperationException("A prepared Presentation slot cannot be replaced.");
+            {
+                throw new InvalidOperationException(
+                    "A prepared Presentation slot cannot be replaced."
+                );
+            }
+        }
+
         var slot = _presentationSlots[index];
         if (slot.Poisoned)
-            throw new InvalidOperationException("A failed Presentation slot cannot be replaced in-place.");
+        {
+            throw new InvalidOperationException(
+                "A failed Presentation slot cannot be replaced in-place."
+            );
+        }
+
         ReleasePresentationSlotVulkan(slot);
         var result = ReplaceCompositionBuffer(
-            _presentationContext, checked((uint)index), checked((uint)width), checked((uint)height),
-            out var sharedHandle, out var availableEvent);
-        if (result < 0) Marshal.ThrowExceptionForHR(result);
+            _presentationContext,
+            checked((uint)index),
+            checked((uint)width),
+            checked((uint)height),
+            out var sharedHandle,
+            out var availableEvent
+        );
+        if (result < 0)
+        {
+            Marshal.ThrowExceptionForHR(result);
+        }
+
         if (sharedHandle == 0 || availableEvent == 0)
+        {
             throw new InvalidOperationException("The D3D12 output resource is incomplete.");
+        }
+
         slot.Registered = true;
         slot.AvailableEvent = availableEvent;
         slot.CapacityWidth = width;
         slot.CapacityHeight = height;
         _maximumRegisteredPresentationSlots = Math.Max(
             _maximumRegisteredPresentationSlots,
-            checked((ulong)_presentationSlots.Count(static item => item.Registered)));
+            checked((ulong)_presentationSlots.Count(static item => item.Registered))
+        );
         try
         {
             ImportPresentationTexture(slot, sharedHandle);
@@ -900,7 +1280,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         finally
         {
             if (!CloseHandle(unchecked((nint)sharedHandle)))
-                RecordEvent($"CloseHandle(shared texture) failed win32={Marshal.GetLastWin32Error()}");
+            {
+                RecordEvent(
+                    $"CloseHandle(shared texture) failed win32={Marshal.GetLastWin32Error()}"
+                );
+            }
         }
     }
 
@@ -918,7 +1302,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             ImageType = ImageType.Type2D,
             Format = Format.B8G8R8A8Unorm,
             Extent = new Extent3D(
-                checked((uint)slot.CapacityWidth), checked((uint)slot.CapacityHeight), 1),
+                checked((uint)slot.CapacityWidth),
+                checked((uint)slot.CapacityHeight),
+                1
+            ),
             MipLevels = 1,
             ArrayLayers = 1,
             Samples = SampleCountFlags.Count1Bit,
@@ -927,8 +1314,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             SharingMode = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
-        Check(_vk.CreateImage(_device, &imageInfo, null, out slot.Image),
-            "vkCreateImage(D3D12 import)");
+        Check(
+            _vk.CreateImage(_device, &imageInfo, null, out slot.Image),
+            "vkCreateImage(D3D12 import)"
+        );
         try
         {
             _vk.GetImageMemoryRequirements(_device, slot.Image, out var requirements);
@@ -936,14 +1325,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             {
                 SType = StructureType.MemoryWin32HandlePropertiesKhr,
             };
-            Check(_externalMemoryApi!.GetMemoryWin32HandleProperties(
-                _device, ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
-                unchecked((nint)sharedHandle), &handleProperties),
-                "vkGetMemoryWin32HandlePropertiesKHR(D3D12_RESOURCE)");
+            Check(
+                _externalMemoryApi!.GetMemoryWin32HandleProperties(
+                    _device,
+                    ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
+                    unchecked((nint)sharedHandle),
+                    &handleProperties
+                ),
+                "vkGetMemoryWin32HandlePropertiesKHR(D3D12_RESOURCE)"
+            );
             var memoryTypeBits = requirements.MemoryTypeBits & handleProperties.MemoryTypeBits;
             if (memoryTypeBits == 0)
+            {
                 throw new PlatformNotSupportedException(
-                    "The D3D12 resource exposes no Vulkan-compatible memory type.");
+                    "The D3D12 resource exposes no Vulkan-compatible memory type."
+                );
+            }
+
             var dedicated = new MemoryDedicatedAllocateInfo
             {
                 SType = StructureType.MemoryDedicatedAllocateInfo,
@@ -963,17 +1361,29 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 AllocationSize = requirements.Size,
                 MemoryTypeIndex = FindCompatibleMemoryType(memoryTypeBits),
             };
-            Check(_vk.AllocateMemory(_device, &allocation, null, out slot.Memory),
-                "vkAllocateMemory(D3D12 import)");
-            Check(_vk.BindImageMemory(_device, slot.Image, slot.Memory, 0),
-                "vkBindImageMemory(D3D12 import)");
+            Check(
+                _vk.AllocateMemory(_device, &allocation, null, out slot.Memory),
+                "vkAllocateMemory(D3D12 import)"
+            );
+            Check(
+                _vk.BindImageMemory(_device, slot.Image, slot.Memory, 0),
+                "vkBindImageMemory(D3D12 import)"
+            );
             slot.Layout = ImageLayout.Undefined;
         }
         catch
         {
-            if (slot.Memory.Handle != 0) _vk.FreeMemory(_device, slot.Memory, null);
+            if (slot.Memory.Handle != 0)
+            {
+                _vk.FreeMemory(_device, slot.Memory, null);
+            }
+
             slot.Memory = default;
-            if (slot.Image.Handle != 0) _vk.DestroyImage(_device, slot.Image, null);
+            if (slot.Image.Handle != 0)
+            {
+                _vk.DestroyImage(_device, slot.Image, null);
+            }
+
             slot.Image = default;
             throw;
         }
@@ -983,54 +1393,111 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         _vk.GetPhysicalDeviceMemoryProperties(_physicalDevice, out var properties);
         for (uint index = 0; index < properties.MemoryTypeCount; index++)
-            if ((typeFilter & (1u << checked((int)index))) != 0 &&
-                (properties.MemoryTypes[checked((int)index)].PropertyFlags &
-                 MemoryPropertyFlags.DeviceLocalBit) != 0)
+        {
+            if (
+                (typeFilter & (1u << checked((int)index))) != 0
+                && (
+                    properties.MemoryTypes[checked((int)index)].PropertyFlags
+                    & MemoryPropertyFlags.DeviceLocalBit
+                ) != 0
+            )
+            {
                 return index;
+            }
+        }
+
         for (uint index = 0; index < properties.MemoryTypeCount; index++)
-            if ((typeFilter & (1u << checked((int)index))) != 0) return index;
+        {
+            if ((typeFilter & (1u << checked((int)index))) != 0)
+            {
+                return index;
+            }
+        }
+
         throw new PlatformNotSupportedException(
-            "No Vulkan memory type is compatible with the imported D3D12 resource.");
+            "No Vulkan memory type is compatible with the imported D3D12 resource."
+        );
     }
 
     private void CopyBackingToPresentation(PresentationSlot slot)
     {
         if (_retainedFrameImage.Handle == 0)
+        {
             throw new InvalidOperationException("The Vulkan retained-frame image is unavailable.");
-        if (Width <= 0 || Height <= 0 ||
-            Width > _backingCapacityWidth || Height > _backingCapacityHeight)
+        }
+
+        if (
+            Width <= 0
+            || Height <= 0
+            || Width > _backingCapacityWidth
+            || Height > _backingCapacityHeight
+        )
+        {
             throw new InvalidOperationException(
-                $"The Vulkan viewport {Width}x{Height} exceeds retained capacity " +
-                $"{_backingCapacityWidth}x{_backingCapacityHeight}.");
+                $"The Vulkan viewport {Width}x{Height} exceeds retained capacity "
+                    + $"{_backingCapacityWidth}x{_backingCapacityHeight}."
+            );
+        }
 
         BeginCommands();
-        foreach (var raster in _sharedRasters) raster.RecordCopy(_commandBuffer);
+        foreach (var raster in _sharedRasters)
+        {
+            raster.RecordCopy(_commandBuffer);
+        }
+
         var acquireBarriers = stackalloc ImageMemoryBarrier[3];
         var graphiteState = _graphiteTarget?.GetState();
-        _graphiteCopyRestoreLayout = _stockObserver != null && graphiteState is { } observed ? (ImageLayout)observed.Layout : ImageLayout.ColorAttachmentOptimal;
+        _graphiteCopyRestoreLayout =
+            _stockObserver != null && graphiteState is { } observed
+                ? (ImageLayout)observed.Layout
+                : ImageLayout.ColorAttachmentOptimal;
         if (graphiteState is { } state && state.QueueFamily != _queueFamily)
+        {
             throw new InvalidOperationException("Graphite backing has unexpected queue ownership.");
+        }
+
         acquireBarriers[0] = ImageBarrier(
-            _backingImage, graphiteState is { } tracked ? (ImageLayout)tracked.Layout : ImageLayout.ColorAttachmentOptimal,
+            _backingImage,
+            graphiteState is { } tracked
+                ? (ImageLayout)tracked.Layout
+                : ImageLayout.ColorAttachmentOptimal,
             ImageLayout.TransferSrcOptimal,
-            _useGraphite ? AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit, AccessFlags.TransferReadBit);
+            _useGraphite ? AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit,
+            AccessFlags.TransferReadBit
+        );
         var preservePrimary = PreservePrimaryRaster && _retainedFrameInitialized;
         acquireBarriers[1] = ImageBarrier(
-            _retainedFrameImage, _retainedFrameLayout, preservePrimary ? ImageLayout.TransferSrcOptimal : ImageLayout.TransferDstOptimal,
-            _retainedFrameLayout == ImageLayout.Undefined
-                ? 0
-                : AccessFlags.TransferReadBit,
-            preservePrimary ? AccessFlags.TransferReadBit : AccessFlags.TransferWriteBit);
+            _retainedFrameImage,
+            _retainedFrameLayout,
+            preservePrimary ? ImageLayout.TransferSrcOptimal : ImageLayout.TransferDstOptimal,
+            _retainedFrameLayout == ImageLayout.Undefined ? 0 : AccessFlags.TransferReadBit,
+            preservePrimary ? AccessFlags.TransferReadBit : AccessFlags.TransferWriteBit
+        );
         acquireBarriers[2] = ExternalImageBarrier(
-            slot.Image, slot.Layout, ImageLayout.TransferDstOptimal,
-            Vk.QueueFamilyExternal, _queueFamily,
-            0, AccessFlags.TransferWriteBit);
+            slot.Image,
+            slot.Layout,
+            ImageLayout.TransferDstOptimal,
+            Vk.QueueFamilyExternal,
+            _queueFamily,
+            0,
+            AccessFlags.TransferWriteBit
+        );
         ObservedPipelineBarrier(
             _commandBuffer,
-            (_useGraphite ? PipelineStageFlags.AllCommandsBit : PipelineStageFlags.TopOfPipeBit | PipelineStageFlags.ColorAttachmentOutputBit) |
+            (
+                _useGraphite
+                    ? PipelineStageFlags.AllCommandsBit
+                    : PipelineStageFlags.TopOfPipeBit | PipelineStageFlags.ColorAttachmentOutputBit
+            ) | PipelineStageFlags.TransferBit,
             PipelineStageFlags.TransferBit,
-            PipelineStageFlags.TransferBit, 0,
-            0, null, 0, null, 3, acquireBarriers);
+            0,
+            0,
+            null,
+            0,
+            null,
+            3,
+            acquireBarriers
+        );
 
         // Ordinary frames refresh the full retained capacity. Platform raster
         // frames preserve the previous primary image until the UI can switch
@@ -1041,21 +1508,41 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             DstSubresource = ColorSubresourceLayers(),
             Extent = new Extent3D(
                 checked((uint)_backingCapacityWidth),
-                checked((uint)_backingCapacityHeight), 1),
+                checked((uint)_backingCapacityHeight),
+                1
+            ),
         };
         if (!preservePrimary)
         {
             _vk.CmdCopyImage(
-                _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
-                _retainedFrameImage, ImageLayout.TransferDstOptimal, 1,
-                &retainedCopyFromBacking);
+                _commandBuffer,
+                _backingImage,
+                ImageLayout.TransferSrcOptimal,
+                _retainedFrameImage,
+                ImageLayout.TransferDstOptimal,
+                1,
+                &retainedCopyFromBacking
+            );
 
             var retainedReady = ImageBarrier(
-                _retainedFrameImage, ImageLayout.TransferDstOptimal, ImageLayout.TransferSrcOptimal,
-                AccessFlags.TransferWriteBit, AccessFlags.TransferReadBit);
+                _retainedFrameImage,
+                ImageLayout.TransferDstOptimal,
+                ImageLayout.TransferSrcOptimal,
+                AccessFlags.TransferWriteBit,
+                AccessFlags.TransferReadBit
+            );
             ObservedPipelineBarrier(
-                _commandBuffer, PipelineStageFlags.TransferBit, PipelineStageFlags.TransferBit,
-                0, 0, null, 0, null, 1, &retainedReady);
+                _commandBuffer,
+                PipelineStageFlags.TransferBit,
+                PipelineStageFlags.TransferBit,
+                0,
+                0,
+                null,
+                0,
+                null,
+                1,
+                &retainedReady
+            );
         }
 
         var retainedCopy = new ImageCopy
@@ -1064,35 +1551,76 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             DstSubresource = ColorSubresourceLayers(),
             Extent = new Extent3D(
                 checked((uint)_backingCapacityWidth),
-                checked((uint)_backingCapacityHeight), 1),
+                checked((uint)_backingCapacityHeight),
+                1
+            ),
         };
         _vk.CmdCopyImage(
-            _commandBuffer, _retainedFrameImage, ImageLayout.TransferSrcOptimal,
-            slot.Image, ImageLayout.TransferDstOptimal, 1, &retainedCopy);
+            _commandBuffer,
+            _retainedFrameImage,
+            ImageLayout.TransferSrcOptimal,
+            slot.Image,
+            ImageLayout.TransferDstOptimal,
+            1,
+            &retainedCopy
+        );
 
         var releaseBarriers = stackalloc ImageMemoryBarrier[2];
         releaseBarriers[0] = ImageBarrier(
-            _backingImage, ImageLayout.TransferSrcOptimal, _graphiteCopyRestoreLayout,
-            AccessFlags.TransferReadBit, _stockObserver != null ? AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit);
+            _backingImage,
+            ImageLayout.TransferSrcOptimal,
+            _graphiteCopyRestoreLayout,
+            AccessFlags.TransferReadBit,
+            _stockObserver != null
+                ? AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit
+                : AccessFlags.ColorAttachmentWriteBit
+        );
         releaseBarriers[1] = ExternalImageBarrier(
-            slot.Image, ImageLayout.TransferDstOptimal, ImageLayout.General,
-            _queueFamily, Vk.QueueFamilyExternal,
-            AccessFlags.TransferWriteBit, 0);
+            slot.Image,
+            ImageLayout.TransferDstOptimal,
+            ImageLayout.General,
+            _queueFamily,
+            Vk.QueueFamilyExternal,
+            AccessFlags.TransferWriteBit,
+            0
+        );
         ObservedPipelineBarrier(
-            _commandBuffer, PipelineStageFlags.TransferBit,
-            _stockObserver != null ? PipelineStageFlags.AllCommandsBit : PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
-            0, 0, null, 0, null, 2, releaseBarriers);
+            _commandBuffer,
+            PipelineStageFlags.TransferBit,
+            _stockObserver != null
+                ? PipelineStageFlags.AllCommandsBit
+                : PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
+            0,
+            0,
+            null,
+            0,
+            null,
+            2,
+            releaseBarriers
+        );
 
         var started = Stopwatch.GetTimestamp();
         var producerValue = checked(++_d3d12ProducerValue);
-        SubmitCommands("Vulkan D3D12 output copy", signalSemaphore: _d3d12ProducerSemaphore,
-            waitForCompletion: true, signalValue: producerValue);
-        Marshal.ThrowExceptionForHR(SetD3D12OutputReady(
-            _presentationContext, checked((uint)Array.IndexOf(_presentationSlots, slot)), producerValue));
-        _lastCopyFenceWaitMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(started).TotalMicroseconds);
+        SubmitCommands(
+            "Vulkan D3D12 output copy",
+            signalSemaphore: _d3d12ProducerSemaphore,
+            waitForCompletion: true,
+            signalValue: producerValue
+        );
+        Marshal.ThrowExceptionForHR(
+            SetD3D12OutputReady(
+                _presentationContext,
+                checked((uint)Array.IndexOf(_presentationSlots, slot)),
+                producerValue
+            )
+        );
+        _lastCopyFenceWaitMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(started).TotalMicroseconds
+        );
         _maximumCopyFenceWaitMicroseconds = Math.Max(
-            _maximumCopyFenceWaitMicroseconds, _lastCopyFenceWaitMicroseconds);
+            _maximumCopyFenceWaitMicroseconds,
+            _lastCopyFenceWaitMicroseconds
+        );
         _copyFenceWaitCount++;
         _retainedFrameLayout = ImageLayout.TransferSrcOptimal;
         _retainedFrameInitialized = true;
@@ -1100,39 +1628,59 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     }
 
     private static ImageMemoryBarrier ExternalImageBarrier(
-        VkImage image, ImageLayout oldLayout, ImageLayout newLayout,
-        uint sourceQueueFamily, uint destinationQueueFamily,
-        AccessFlags sourceAccess, AccessFlags destinationAccess) => new()
-    {
-        SType = StructureType.ImageMemoryBarrier,
-        OldLayout = oldLayout,
-        NewLayout = newLayout,
-        SrcQueueFamilyIndex = sourceQueueFamily,
-        DstQueueFamilyIndex = destinationQueueFamily,
-        Image = image,
-        SubresourceRange = new ImageSubresourceRange(
-            ImageAspectFlags.ColorBit, 0, 1, 0, 1),
-        SrcAccessMask = sourceAccess,
-        DstAccessMask = destinationAccess,
-    };
+        VkImage image,
+        ImageLayout oldLayout,
+        ImageLayout newLayout,
+        uint sourceQueueFamily,
+        uint destinationQueueFamily,
+        AccessFlags sourceAccess,
+        AccessFlags destinationAccess
+    ) =>
+        new()
+        {
+            SType = StructureType.ImageMemoryBarrier,
+            OldLayout = oldLayout,
+            NewLayout = newLayout,
+            SrcQueueFamilyIndex = sourceQueueFamily,
+            DstQueueFamilyIndex = destinationQueueFamily,
+            Image = image,
+            SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, 1),
+            SrcAccessMask = sourceAccess,
+            DstAccessMask = destinationAccess,
+        };
 
     private static int RoundCapacity(int value) =>
         checked((value + CapacityQuantum - 1) / CapacityQuantum * CapacityQuantum);
 
     private bool TryAcquireNextImage(Func<bool> shouldContinue, out uint imageIndex)
     {
-        if (_acquired) throw new InvalidOperationException("A Vulkan swapchain image is already acquired.");
+        if (_acquired)
+        {
+            throw new InvalidOperationException("A Vulkan swapchain image is already acquired.");
+        }
+
         imageIndex = 0;
         uint acquiredIndex = 0;
         var deadline = Environment.TickCount64 + 5_000;
         while (true)
         {
-            if (!shouldContinue()) return false;
-            var acquire = TakeInjectedResult("OUT_OF_DATE") ? Result.ErrorOutOfDateKhr :
-                TakeInjectedResult("SURFACE_LOST") ? Result.ErrorSurfaceLostKhr :
-                TakeInjectedResult("DEVICE_LOST") ? Result.ErrorDeviceLost :
-                _swapchainApi!.AcquireNextImage(
-                    _device, _swapchain, 10_000_000, _acquireSemaphore, default, &acquiredIndex);
+            if (!shouldContinue())
+            {
+                return false;
+            }
+
+            var acquire =
+                TakeInjectedResult("OUT_OF_DATE") ? Result.ErrorOutOfDateKhr
+                : TakeInjectedResult("SURFACE_LOST") ? Result.ErrorSurfaceLostKhr
+                : TakeInjectedResult("DEVICE_LOST") ? Result.ErrorDeviceLost
+                : _swapchainApi!.AcquireNextImage(
+                    _device,
+                    _swapchain,
+                    10_000_000,
+                    _acquireSemaphore,
+                    default,
+                    &acquiredIndex
+                );
             _lastAcquireResult = acquire;
             if (acquire is Result.Success or Result.SuboptimalKhr)
             {
@@ -1157,36 +1705,63 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 _surfaceLostCount++;
                 RecordEvent($"acquire result={acquire}");
                 throw new WindowsManagedVulkanSurfaceLostException(
-                    "vkAcquireNextImageKHR reported ErrorSurfaceLostKhr.");
+                    "vkAcquireNextImageKHR reported ErrorSurfaceLostKhr."
+                );
             }
             if (acquire is Result.ErrorDeviceLost)
             {
                 _deviceLostCount++;
                 RecordEvent($"acquire result={acquire}");
                 throw new WindowsManagedVulkanDeviceLostException(
-                    "vkAcquireNextImageKHR reported ErrorDeviceLost.");
+                    "vkAcquireNextImageKHR reported ErrorDeviceLost."
+                );
             }
             if (acquire is not (Result.NotReady or Result.Timeout))
+            {
                 Check(acquire, "vkAcquireNextImageKHR");
+            }
+
             if (Environment.TickCount64 >= deadline)
+            {
                 throw new TimeoutException("Vulkan acquire did not become ready within 5 seconds.");
+            }
+
             Thread.Yield();
         }
     }
 
     private bool TakeInjectedResult(string result)
     {
-        var requested = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT")?.Trim();
-        if (!string.Equals(requested, result, StringComparison.OrdinalIgnoreCase) ||
-            _consumedInjections.Contains(result))
+        var requested = Environment
+            .GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT")
+            ?.Trim();
+        if (
+            !string.Equals(requested, result, StringComparison.OrdinalIgnoreCase)
+            || _consumedInjections.Contains(result)
+        )
+        {
             return false;
+        }
+
         var minimumPresents = 0UL;
         var configured = Environment.GetEnvironmentVariable(
-            "DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS");
-        if (!string.IsNullOrWhiteSpace(configured) && !ulong.TryParse(configured, out minimumPresents))
+            "DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS"
+        );
+        if (
+            !string.IsNullOrWhiteSpace(configured)
+            && !ulong.TryParse(configured, out minimumPresents)
+        )
+        {
             throw new InvalidOperationException(
-                "DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS must be an unsigned integer.");
-        if (PresentCount < minimumPresents) return false;
+                "DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS must be an unsigned integer."
+            );
+        }
+
+        if (PresentCount < minimumPresents)
+        {
+            return false;
+        }
+
         _consumedInjections.Add(result);
         return true;
     }
@@ -1212,13 +1787,19 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ReleaseCompositionTopology()
     {
-        if (_compositionReleased) return;
+        if (_compositionReleased)
+        {
+            return;
+        }
+
         _compositionReleased = true;
         _acrylicOptions?.Detach();
         ReleaseAcrylicTarget();
-        RecordEvent(_acrylicOptions is null
-            ? "synchronous top-level Vulkan topology released"
-            : "synchronous top-level Vulkan plus Desktop Acrylic window-target topology released");
+        RecordEvent(
+            _acrylicOptions is null
+                ? "synchronous top-level Vulkan topology released"
+                : "synchronous top-level Vulkan plus Desktop Acrylic window-target topology released"
+        );
         _compositionSurfaceConnected = false;
         _topLevelWindow = 0;
         _backdropTargetAdded = false;
@@ -1228,28 +1809,44 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ClearCompositionSurfaceBinding()
     {
-        if (!_compositionSurfaceConnected) return;
+        if (!_compositionSurfaceConnected)
+        {
+            return;
+        }
+
         _compositionSurfaceConnected = false;
     }
 
     private void ReleaseAcrylicTarget()
     {
         if (_acrylicScene is not null && _composition is not null)
+        {
             _composition.Invoke(_acrylicScene.Dispose);
+        }
+
         _acrylicScene = null;
         _composition?.Dispose();
         _composition = null;
         if (_dwmSystemBackdropEnabled && _topLevelWindow != 0)
+        {
             SetDwmSystemBackdrop(_topLevelWindow, enabled: false, throwOnFailure: false);
+        }
+
         if (_hostBackdropBrushEnabled && _topLevelWindow != 0)
+        {
             SetHostBackdropBrush(_topLevelWindow, enabled: false, throwOnFailure: false);
+        }
     }
 
     internal override bool PrepareForRendererGpuResourceRelease()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         CancelPreparedMovingFrame();
-        if (_instance.Handle == 0) return false;
+        if (_instance.Handle == 0)
+        {
+            return false;
+        }
+
         _rendererReleasePreflightReportedDeviceLoss = false;
         try
         {
@@ -1274,7 +1871,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             // Skia wrappers are abandoned before renderer cache destruction and
             // the original failure is preserved. Because idleness was not
             // established, callers must not destroy native child objects.
-            if (!_useGraphite) AbandonContextForDeviceLossCore();
+            if (!_useGraphite)
+            {
+                AbandonContextForDeviceLossCore();
+            }
+
             TryRecordEvent("renderer-release preflight failed; quarantining unsafe Vulkan context");
             throw;
         }
@@ -1282,9 +1883,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     internal override bool TryAbandonGpuContextAfterRendererReleasePreflightFailure()
     {
-        if (_useGraphite) return false; // Retain the whole state if GPU idleness is unknown.
+        if (_useGraphite)
+        {
+            return false; // Retain the whole state if GPU idleness is unknown.
+        }
+
         AbandonContextForDeviceLossCore();
-        TryRecordEvent("renderer-release preflight threw; abandoning Vulkan context before renderer cleanup");
+        TryRecordEvent(
+            "renderer-release preflight threw; abandoning Vulkan context before renderer cleanup"
+        );
         return _context is null || _contextAbandoned;
     }
 
@@ -1292,7 +1899,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (deviceLost)
+        {
             RecordRendererReleaseTeardown();
+        }
+
         ReleaseDevice(deviceLost, waitForIdle: false);
     }
 
@@ -1314,39 +1924,72 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal void RecoverAfterSurfaceLoss(bool deviceLost)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        RecordEvent(deviceLost
-            ? "surface-loss recovery observed device loss during preflight"
-            : "surface-loss recovery");
+        RecordEvent(
+            deviceLost
+                ? "surface-loss recovery observed device loss during preflight"
+                : "surface-loss recovery"
+        );
         if (deviceLost)
+        {
             RecordRendererReleaseTeardown();
-        _pendingRecreateReason = deviceLost ? "device-loss-during-surface-recovery" : "surface-loss-recovery";
+        }
+
+        _pendingRecreateReason = deviceLost
+            ? "device-loss-during-surface-recovery"
+            : "surface-loss-recovery";
         ReleaseDevice(deviceLost, waitForIdle: false);
     }
 
     private void EnsureDevice(nint childWindow)
     {
-        if (_device.Handle != 0) return;
+        if (_device.Handle != 0)
+        {
+            return;
+        }
+
         _window = childWindow;
         CreateInstance();
         SelectPhysicalDeviceAndQueue();
         RequireExternalImageImportSupport();
         CreateLogicalDevice();
         CreateSkiaContext();
-        Marshal.ThrowExceptionForHR(CreateComposition(
-            _adapterLuidLow, _adapterLuidHigh, out _presentationContext, out var sharedFence));
+        Marshal.ThrowExceptionForHR(
+            CreateComposition(
+                _adapterLuidLow,
+                _adapterLuidHigh,
+                out _presentationContext,
+                out var sharedFence
+            )
+        );
         if (_presentationContext == 0 || sharedFence == 0)
-            throw new InvalidOperationException("D3D12 output did not return its owner and shared fence.");
-        try { ImportD3D12ProducerFence(sharedFence); }
-        finally { CloseHandle(unchecked((nint)sharedFence)); }
+        {
+            throw new InvalidOperationException(
+                "D3D12 output did not return its owner and shared fence."
+            );
+        }
+
+        try
+        {
+            ImportD3D12ProducerFence(sharedFence);
+        }
+        finally
+        {
+            CloseHandle(unchecked((nint)sharedFence));
+        }
         if (_acrylicOptions is not null)
         {
             var alpha = SetCompositionPremultipliedAlpha(_presentationContext, 1);
-            if (alpha < 0) Marshal.ThrowExceptionForHR(alpha);
+            if (alpha < 0)
+            {
+                Marshal.ThrowExceptionForHR(alpha);
+            }
         }
         ConnectCompositionSurface();
-        RecordEvent(_acrylicOptions is null
-            ? "Vulkan/D3D12 DXGI output connected to top-level DirectComposition"
-            : "premultiplied synchronous top-level Vulkan surface connected over Desktop Acrylic window target");
+        RecordEvent(
+            _acrylicOptions is null
+                ? "Vulkan/D3D12 DXGI output connected to top-level DirectComposition"
+                : "premultiplied synchronous top-level Vulkan surface connected over Desktop Acrylic window target"
+        );
         _format = Format.B8G8R8A8Unorm;
         _colorSpace = "RGB_FULL_G22_NONE_P709";
         _compositeAlpha = _acrylicOptions is null ? "Ignore" : "Premultiplied";
@@ -1362,20 +2005,38 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void EnsureAcrylicTarget()
     {
-        if (_acrylicOptions is null) return;
+        if (_acrylicOptions is null)
+        {
+            return;
+        }
+
         if (_composition is null || _acrylicScene is null)
+        {
             throw new InvalidOperationException("The Vulkan Acrylic window target is unavailable.");
+        }
     }
 
     private void ConnectCompositionSurface()
     {
         if (_presentationContext == 0)
+        {
             throw new InvalidOperationException("The D3D12 output is unavailable.");
+        }
+
         if (_topLevelWindow == 0)
+        {
             throw new InvalidOperationException("The Vulkan top-level HWND is unavailable.");
-        var attach = AttachCompositionWindow(_presentationContext,
-            unchecked((ulong)(PlatformRasterWindow != 0 ? PlatformRasterWindow : _topLevelWindow)));
-        if (attach < 0) Marshal.ThrowExceptionForHR(attach);
+        }
+
+        var attach = AttachCompositionWindow(
+            _presentationContext,
+            unchecked((ulong)(PlatformRasterWindow != 0 ? PlatformRasterWindow : _topLevelWindow))
+        );
+        if (attach < 0)
+        {
+            Marshal.ThrowExceptionForHR(attach);
+        }
+
         _compositionSurfaceConnected = true;
     }
 
@@ -1385,11 +2046,24 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         Check(_vk.EnumerateInstanceVersion(&loaderApiVersion), "vkEnumerateInstanceVersion");
         _loaderApiVersion = loaderApiVersion;
         if (_loaderApiVersion < RequiredVulkanApiVersion)
+        {
             throw new InvalidOperationException(
-                $"The Vulkan loader API {FormatVersion(_loaderApiVersion)} is below {FormatVersion(RequiredVulkanApiVersion)}.");
+                $"The Vulkan loader API {FormatVersion(_loaderApiVersion)} is below {FormatVersion(RequiredVulkanApiVersion)}."
+            );
+        }
+
         var applicationName = (byte*)SilkMarshal.StringToPtr("Doroti");
         var engineName = (byte*)SilkMarshal.StringToPtr("Doroti");
-        var validationNames = _validationEnabled ? new[] { "VK_EXT_debug_utils", "VK_EXT_validation_features", "VK_LAYER_KHRONOS_validation" }.Select(Marshal.StringToCoTaskMemUTF8).ToArray() : [];
+        var validationNames = _validationEnabled
+            ? new[]
+            {
+                "VK_EXT_debug_utils",
+                "VK_EXT_validation_features",
+                "VK_LAYER_KHRONOS_validation",
+            }
+                .Select(Marshal.StringToCoTaskMemUTF8)
+                .ToArray()
+            : [];
         try
         {
             var applicationInfo = new ApplicationInfo
@@ -1408,24 +2082,38 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             };
             var debug = ValidationDebugInfo();
             var synchronization = ValidationFeatureEnableEXT.SynchronizationValidationExt;
-            var validation = new ValidationFeaturesEXT { SType = StructureType.ValidationFeaturesExt, PNext = &debug,
-                EnabledValidationFeatureCount = 1, PEnabledValidationFeatures = &synchronization };
+            var validation = new ValidationFeaturesEXT
+            {
+                SType = StructureType.ValidationFeaturesExt,
+                PNext = &debug,
+                EnabledValidationFeatureCount = 1,
+                PEnabledValidationFeatures = &synchronization,
+            };
             fixed (nint* names = validationNames)
             {
                 if (_validationEnabled)
                 {
-                    createInfo.EnabledExtensionCount = 2; createInfo.PpEnabledExtensionNames = (byte**)names;
-                    createInfo.EnabledLayerCount = 1; createInfo.PpEnabledLayerNames = (byte**)(names + 2); createInfo.PNext = &validation;
+                    createInfo.EnabledExtensionCount = 2;
+                    createInfo.PpEnabledExtensionNames = (byte**)names;
+                    createInfo.EnabledLayerCount = 1;
+                    createInfo.PpEnabledLayerNames = (byte**)(names + 2);
+                    createInfo.PNext = &validation;
                 }
                 Check(_vk.CreateInstance(&createInfo, null, out _instance), "vkCreateInstance");
             }
-            if (_validationEnabled) CreateValidationMessenger(&debug);
+            if (_validationEnabled)
+            {
+                CreateValidationMessenger(&debug);
+            }
         }
         finally
         {
             SilkMarshal.Free((nint)applicationName);
             SilkMarshal.Free((nint)engineName);
-            foreach (var name in validationNames) Marshal.FreeCoTaskMem(name);
+            foreach (var name in validationNames)
+            {
+                Marshal.FreeCoTaskMem(name);
+            }
         }
     }
 
@@ -1437,21 +2125,42 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Hinstance = GetModuleHandle(null),
             Hwnd = childWindow,
         };
-        Check(_win32SurfaceApi!.CreateWin32Surface(_instance, &createInfo, null, out _surface),
-            "vkCreateWin32SurfaceKHR");
+        Check(
+            _win32SurfaceApi!.CreateWin32Surface(_instance, &createInfo, null, out _surface),
+            "vkCreateWin32SurfaceKHR"
+        );
     }
 
     private void SelectPhysicalDeviceAndQueue()
     {
         uint deviceCount = 0;
-        Check(_vk.EnumeratePhysicalDevices(_instance, &deviceCount, null), "vkEnumeratePhysicalDevices(count)");
-        if (deviceCount == 0) throw new InvalidOperationException("No Vulkan physical device is available.");
+        Check(
+            _vk.EnumeratePhysicalDevices(_instance, &deviceCount, null),
+            "vkEnumeratePhysicalDevices(count)"
+        );
+        if (deviceCount == 0)
+        {
+            throw new InvalidOperationException("No Vulkan physical device is available.");
+        }
+
         var devices = new PhysicalDevice[deviceCount];
         fixed (PhysicalDevice* devicesPointer = devices)
-            Check(_vk.EnumeratePhysicalDevices(_instance, &deviceCount, devicesPointer), "vkEnumeratePhysicalDevices");
+        {
+            Check(
+                _vk.EnumeratePhysicalDevices(_instance, &deviceCount, devicesPointer),
+                "vkEnumeratePhysicalDevices"
+            );
+        }
 
-        var candidates = new List<(PhysicalDevice Device, uint QueueFamily, PhysicalDeviceProperties Properties,
-            string Name, string Luid, HashSet<string> Extensions)>();
+        var candidates =
+            new List<(
+                PhysicalDevice Device,
+                uint QueueFamily,
+                PhysicalDeviceProperties Properties,
+                string Name,
+                string Luid,
+                HashSet<string> Extensions
+            )>();
         var rejectedCandidates = new List<string>();
         foreach (var candidate in devices)
         {
@@ -1466,17 +2175,33 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             };
             _vk.GetPhysicalDeviceProperties2(candidate, &properties2);
             var properties = properties2.Properties;
-            var name = Marshal.PtrToStringUTF8((nint)properties.DeviceName) ?? "unnamed Vulkan device";
+            var name =
+                Marshal.PtrToStringUTF8((nint)properties.DeviceName) ?? "unnamed Vulkan device";
             var extensions = EnumerateDeviceExtensions(candidate);
             uint familyCount = 0;
             _vk.GetPhysicalDeviceQueueFamilyProperties(candidate, &familyCount, null);
-            if (familyCount == 0) continue;
+            if (familyCount == 0)
+            {
+                continue;
+            }
+
             var families = new QueueFamilyProperties[familyCount];
             fixed (QueueFamilyProperties* familiesPointer = families)
-                _vk.GetPhysicalDeviceQueueFamilyProperties(candidate, &familyCount, familiesPointer);
+            {
+                _vk.GetPhysicalDeviceQueueFamilyProperties(
+                    candidate,
+                    &familyCount,
+                    familiesPointer
+                );
+            }
+
             for (uint family = 0; family < familyCount; family++)
             {
-                if ((families[family].QueueFlags & QueueFlags.GraphicsBit) == 0) continue;
+                if ((families[family].QueueFlags & QueueFlags.GraphicsBit) == 0)
+                {
+                    continue;
+                }
+
                 if (!id.DeviceLuidvalid)
                 {
                     rejectedCandidates.Add($"{name}: no valid Windows adapter LUID");
@@ -1490,7 +2215,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                     "VK_KHR_get_memory_requirements2",
                     "VK_KHR_dedicated_allocation",
                 };
-                var missing = requiredExtensions.Where(value => !extensions.Contains(value)).ToArray();
+                var missing = requiredExtensions
+                    .Where(value => !extensions.Contains(value))
+                    .ToArray();
                 if (missing.Length != 0)
                 {
                     rejectedCandidates.Add($"{name}: missing {string.Join(", ", missing)}");
@@ -1506,34 +2233,62 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             }
         }
         if (candidates.Count == 0)
+        {
             throw new InvalidOperationException(
-                "No Vulkan device satisfies the graphics/LUID/external-memory requirements" +
-                (rejectedCandidates.Count == 0 ? "." : $": {string.Join("; ", rejectedCandidates)}."));
+                "No Vulkan device satisfies the graphics/LUID/external-memory requirements"
+                    + (
+                        rejectedCandidates.Count == 0
+                            ? "."
+                            : $": {string.Join("; ", rejectedCandidates)}."
+                    )
+            );
+        }
+
         var selector = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_DEVICE")?.Trim();
         var preference = WindowsGpuSelection.RequestedPreference;
         var selected = candidates[0];
         if (!string.IsNullOrWhiteSpace(selector))
         {
-            var matches = candidates.Where(value =>
-                value.Name.Equals(selector, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var matches = candidates
+                .Where(value => value.Name.Equals(selector, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
             if (matches.Length == 0)
-                matches = candidates.Where(value =>
-                    value.Name.Contains(selector, StringComparison.OrdinalIgnoreCase)).ToArray();
+            {
+                matches = candidates
+                    .Where(value =>
+                        value.Name.Contains(selector, StringComparison.OrdinalIgnoreCase)
+                    )
+                    .ToArray();
+            }
+
             if (matches.Length != 1)
+            {
                 throw new InvalidOperationException(
-                    $"DOROTI_WINDOWS_VULKAN_DEVICE='{selector}' did not match exactly one Vulkan device " +
-                    $"(matched {matches.Length}). Available devices: {string.Join(", ", candidates.Select(value => value.Name))}.");
+                    $"DOROTI_WINDOWS_VULKAN_DEVICE='{selector}' did not match exactly one Vulkan device "
+                        + $"(matched {matches.Length}). Available devices: {string.Join(", ", candidates.Select(value => value.Name))}."
+                );
+            }
+
             selected = matches[0];
         }
         else
         {
-            var eligibleLuids = candidates.Select(value => WindowsGpuSelection.ParseVulkanLuid(value.Luid)).ToArray();
+            var eligibleLuids = candidates
+                .Select(value => WindowsGpuSelection.ParseVulkanLuid(value.Luid))
+                .ToArray();
             var luid = WindowsGpuSelection.SelectAdapter(preference, eligibleLuids);
             selected = candidates[Array.IndexOf(eligibleLuids, luid)];
         }
-        RecordEvent($"gpu-selection preference={preference} override={selector ?? "none"} device={selected.Name} luid={selected.Luid}");
+        RecordEvent(
+            $"gpu-selection preference={preference} override={selector ?? "none"} device={selected.Name} luid={selected.Luid}"
+        );
         if (selected.Properties.ApiVersion < RequiredVulkanApiVersion)
-            throw new InvalidOperationException($"Vulkan device '{selected.Name}' does not support the required Vulkan 1.2 profile.");
+        {
+            throw new InvalidOperationException(
+                $"Vulkan device '{selected.Name}' does not support the required Vulkan 1.2 profile."
+            );
+        }
+
         _physicalDevice = selected.Device;
         _queueFamily = selected.QueueFamily;
         _deviceApiVersion = selected.Properties.ApiVersion;
@@ -1554,20 +2309,25 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         };
         _vk.GetPhysicalDeviceProperties2(_physicalDevice, &selectedProperties);
         if (!selectedId.DeviceLuidvalid)
+        {
             throw new PlatformNotSupportedException(
-                $"Vulkan device '{selected.Name}' does not expose a valid Windows adapter LUID.");
+                $"Vulkan device '{selected.Name}' does not expose a valid Windows adapter LUID."
+            );
+        }
+
         _adapterLuidLow =
-            selectedId.DeviceLuid[0] |
-            (uint)selectedId.DeviceLuid[1] << 8 |
-            (uint)selectedId.DeviceLuid[2] << 16 |
-            (uint)selectedId.DeviceLuid[3] << 24;
+            selectedId.DeviceLuid[0]
+            | ((uint)selectedId.DeviceLuid[1] << 8)
+            | ((uint)selectedId.DeviceLuid[2] << 16)
+            | ((uint)selectedId.DeviceLuid[3] << 24);
         _adapterLuidHigh =
-            selectedId.DeviceLuid[4] |
-            selectedId.DeviceLuid[5] << 8 |
-            selectedId.DeviceLuid[6] << 16 |
-            selectedId.DeviceLuid[7] << 24;
-        AdapterDescription = $"{selected.Name}; vendor=0x{selected.Properties.VendorID:x4}; " +
-            $"device=0x{selected.Properties.DeviceID:x4}; api={FormatVersion(selected.Properties.ApiVersion)}";
+            selectedId.DeviceLuid[4]
+            | (selectedId.DeviceLuid[5] << 8)
+            | (selectedId.DeviceLuid[6] << 16)
+            | (selectedId.DeviceLuid[7] << 24);
+        AdapterDescription =
+            $"{selected.Name}; vendor=0x{selected.Properties.VendorID:x4}; "
+            + $"device=0x{selected.Properties.DeviceID:x4}; api={FormatVersion(selected.Properties.ApiVersion)}";
     }
 
     private void CreateLogicalDevice()
@@ -1589,11 +2349,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             "VK_KHR_dedicated_allocation",
         };
         var availableExtensions = EnumerateDeviceExtensions(_physicalDevice);
-        if (_useGraphite) extensionNames = [.. extensionNames, "VK_KHR_driver_properties"];
-        var missingExtensions = extensionNames.Where(value => !availableExtensions.Contains(value)).ToArray();
+        if (_useGraphite)
+        {
+            extensionNames = [.. extensionNames, "VK_KHR_driver_properties"];
+        }
+
+        var missingExtensions = extensionNames
+            .Where(value => !availableExtensions.Contains(value))
+            .ToArray();
         if (missingExtensions.Length != 0)
+        {
             throw new PlatformNotSupportedException(
-                $"Vulkan device is missing required Composition import extension(s): {string.Join(", ", missingExtensions)}.");
+                $"Vulkan device is missing required Composition import extension(s): {string.Join(", ", missingExtensions)}."
+            );
+        }
+
         var extensions = (byte**)SilkMarshal.StringArrayToPtr(extensionNames);
         try
         {
@@ -1605,28 +2375,54 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 EnabledExtensionCount = checked((uint)extensionNames.Length),
                 PpEnabledExtensionNames = extensions,
             };
-            var timeline = new PhysicalDeviceTimelineSemaphoreFeatures { SType = StructureType.PhysicalDeviceTimelineSemaphoreFeatures };
-            var features = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &timeline };
+            var timeline = new PhysicalDeviceTimelineSemaphoreFeatures
+            {
+                SType = StructureType.PhysicalDeviceTimelineSemaphoreFeatures,
+            };
+            var features = new PhysicalDeviceFeatures2
+            {
+                SType = StructureType.PhysicalDeviceFeatures2,
+                PNext = &timeline,
+            };
             _vk.GetPhysicalDeviceFeatures2(_physicalDevice, &features);
-            if (!timeline.TimelineSemaphore) throw new PlatformNotSupportedException("D3D12 output requires Vulkan timeline semaphores.");
+            if (!timeline.TimelineSemaphore)
+            {
+                throw new PlatformNotSupportedException(
+                    "D3D12 output requires Vulkan timeline semaphores."
+                );
+            }
+
             createInfo.PNext = &timeline;
-            Check(_vk.CreateDevice(_physicalDevice, &createInfo, null, out _device), "vkCreateDevice");
+            Check(
+                _vk.CreateDevice(_physicalDevice, &createInfo, null, out _device),
+                "vkCreateDevice"
+            );
         }
         finally
         {
             FreeStringArray(extensions, extensionNames.Length);
         }
         _vk.GetDeviceQueue(_device, _queueFamily, 0, out _queue);
-        if (!_vk.TryGetDeviceExtension(_instance, _device, out _externalMemoryApi) ||
-            _externalMemoryApi is null)
-            throw new InvalidOperationException("VK_KHR_external_memory_win32 could not be loaded.");
+        if (
+            !_vk.TryGetDeviceExtension(_instance, _device, out _externalMemoryApi)
+            || _externalMemoryApi is null
+        )
+        {
+            throw new InvalidOperationException(
+                "VK_KHR_external_memory_win32 could not be loaded."
+            );
+        }
+
         var poolInfo = new CommandPoolCreateInfo
         {
             SType = StructureType.CommandPoolCreateInfo,
             QueueFamilyIndex = _queueFamily,
             Flags = CommandPoolCreateFlags.ResetCommandBufferBit,
         };
-        Check(_vk.CreateCommandPool(_device, &poolInfo, null, out _commandPool), "vkCreateCommandPool");
+        Check(
+            _vk.CreateCommandPool(_device, &poolInfo, null, out _commandPool),
+            "vkCreateCommandPool"
+        );
         var allocateInfo = new CommandBufferAllocateInfo
         {
             SType = StructureType.CommandBufferAllocateInfo,
@@ -1634,7 +2430,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Level = CommandBufferLevel.Primary,
             CommandBufferCount = 1,
         };
-        Check(_vk.AllocateCommandBuffers(_device, &allocateInfo, out _commandBuffer), "vkAllocateCommandBuffers");
+        Check(
+            _vk.AllocateCommandBuffers(_device, &allocateInfo, out _commandBuffer),
+            "vkAllocateCommandBuffers"
+        );
         var fenceInfo = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
         Check(_vk.CreateFence(_device, &fenceInfo, null, out _fence), "vkCreateFence");
     }
@@ -1664,15 +2463,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             SType = StructureType.ImageFormatProperties2,
             PNext = &externalProperties,
         };
-        Check(_vk.GetPhysicalDeviceImageFormatProperties2(
-            _physicalDevice, &imageInfo, &properties),
-            "vkGetPhysicalDeviceImageFormatProperties2(D3D12_RESOURCE)");
+        Check(
+            _vk.GetPhysicalDeviceImageFormatProperties2(_physicalDevice, &imageInfo, &properties),
+            "vkGetPhysicalDeviceImageFormatProperties2(D3D12_RESOURCE)"
+        );
         var memory = externalProperties.ExternalMemoryProperties;
-        if ((memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.ImportableBit) == 0 ||
-            (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.DedicatedOnlyBit) == 0 ||
-            (memory.CompatibleHandleTypes & ExternalMemoryHandleTypeFlags.D3D12ResourceBit) == 0)
+        if (
+            (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.ImportableBit) == 0
+            || (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.DedicatedOnlyBit) == 0
+            || (memory.CompatibleHandleTypes & ExternalMemoryHandleTypeFlags.D3D12ResourceBit) == 0
+        )
+        {
             throw new PlatformNotSupportedException(
-                "BGRA8 D3D12_RESOURCE import is not dedicated-only, importable, and compatible.");
+                "BGRA8 D3D12_RESOURCE import is not dedicated-only, importable, and compatible."
+            );
+        }
     }
 
     private void CreateSkiaContext()
@@ -1698,7 +2503,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             _instance,
             _physicalDevice,
             instanceExtensions,
-            deviceExtensions);
+            deviceExtensions
+        );
         _skiaBackend = new GRSilkNetBackendContext
         {
             VkInstance = _instance,
@@ -1710,15 +2516,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Extensions = _skiaExtensions,
             MaxAPIVersion = Math.Min(VulkanApiVersion11, _deviceApiVersion),
         };
-        _context = GRContext.CreateVulkan(_skiaBackend)
-            ?? throw new InvalidOperationException("Skia could not create the managed Vulkan context.");
+        _context =
+            GRContext.CreateVulkan(_skiaBackend)
+            ?? throw new InvalidOperationException(
+                "Skia could not create the managed Vulkan context."
+            );
         _contextAbandoned = false;
     }
 
-    private nint GetVulkanProcedureAddress(
-        string name, Instance instance, VkDevice device)
+    private nint GetVulkanProcedureAddress(string name, Instance instance, VkDevice device)
     {
-        if (device.Handle != 0) return _vk.GetDeviceProcAddr(device, name);
+        if (device.Handle != 0)
+        {
+            return _vk.GetDeviceProcAddr(device, name);
+        }
+
         return _vk.GetInstanceProcAddr(instance, name);
     }
 
@@ -1726,40 +2538,102 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         var recreateStarted = Stopwatch.GetTimestamp();
         if (_acquired)
+        {
             throw new InvalidOperationException(
-                "Swapchain recreation cannot begin inside an acquire-as-presentation-commit transaction.");
+                "Swapchain recreation cannot begin inside an acquire-as-presentation-commit transaction."
+            );
+        }
+
         var oldSwapchain = _swapchain;
-        if (oldSwapchain.Handle != 0) _maximumRetiredSwapchains = Math.Max(_maximumRetiredSwapchains, 1);
+        if (oldSwapchain.Handle != 0)
+        {
+            _maximumRetiredSwapchains = Math.Max(_maximumRetiredSwapchains, 1);
+        }
+
         var retirementStarted = Stopwatch.GetTimestamp();
         WaitForPresentRetirement();
-        _lastRetirementLatencyMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(retirementStarted).TotalMicroseconds);
-        Check(_surfaceApi!.GetPhysicalDeviceSurfaceCapabilities(
-            _physicalDevice, _surface, out var capabilities),
-            "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+        _lastRetirementLatencyMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(retirementStarted).TotalMicroseconds
+        );
+        Check(
+            _surfaceApi!.GetPhysicalDeviceSurfaceCapabilities(
+                _physicalDevice,
+                _surface,
+                out var capabilities
+            ),
+            "vkGetPhysicalDeviceSurfaceCapabilitiesKHR"
+        );
         if ((capabilities.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) == 0)
+        {
             throw new PlatformNotSupportedException(
-                "The Vulkan Win32 surface does not support transfer-destination swapchain images.");
+                "The Vulkan Win32 surface does not support transfer-destination swapchain images."
+            );
+        }
+
         uint formatCount = 0;
-        Check(_surfaceApi.GetPhysicalDeviceSurfaceFormats(_physicalDevice, _surface, &formatCount, null),
-            "vkGetPhysicalDeviceSurfaceFormatsKHR(count)");
-        if (formatCount == 0) throw new InvalidOperationException("The Vulkan Win32 surface exposes no formats.");
+        Check(
+            _surfaceApi.GetPhysicalDeviceSurfaceFormats(
+                _physicalDevice,
+                _surface,
+                &formatCount,
+                null
+            ),
+            "vkGetPhysicalDeviceSurfaceFormatsKHR(count)"
+        );
+        if (formatCount == 0)
+        {
+            throw new InvalidOperationException("The Vulkan Win32 surface exposes no formats.");
+        }
+
         var formats = new SurfaceFormatKHR[formatCount];
         fixed (SurfaceFormatKHR* formatsPointer = formats)
-            Check(_surfaceApi.GetPhysicalDeviceSurfaceFormats(
-                _physicalDevice, _surface, &formatCount, formatsPointer), "vkGetPhysicalDeviceSurfaceFormatsKHR");
+        {
+            Check(
+                _surfaceApi.GetPhysicalDeviceSurfaceFormats(
+                    _physicalDevice,
+                    _surface,
+                    &formatCount,
+                    formatsPointer
+                ),
+                "vkGetPhysicalDeviceSurfaceFormatsKHR"
+            );
+        }
+
         var selected = formats.FirstOrDefault(value =>
-            value.Format == Format.B8G8R8A8Unorm && value.ColorSpace == ColorSpaceKHR.SpaceSrgbNonlinearKhr);
-        if (selected.Format == Format.Undefined) selected = formats[0];
+            value.Format == Format.B8G8R8A8Unorm
+            && value.ColorSpace == ColorSpaceKHR.SpaceSrgbNonlinearKhr
+        );
+        if (selected.Format == Format.Undefined)
+        {
+            selected = formats[0];
+        }
+
         if (selected.Format is not (Format.B8G8R8A8Unorm or Format.R8G8B8A8Unorm))
-            throw new InvalidOperationException($"Unsupported Vulkan swapchain format: {selected.Format}.");
-        var extent = capabilities.CurrentExtent.Width != uint.MaxValue
-            ? capabilities.CurrentExtent
-            : new Extent2D(
-                Math.Clamp(checked((uint)width), capabilities.MinImageExtent.Width, capabilities.MaxImageExtent.Width),
-                Math.Clamp(checked((uint)height), capabilities.MinImageExtent.Height, capabilities.MaxImageExtent.Height));
+        {
+            throw new InvalidOperationException(
+                $"Unsupported Vulkan swapchain format: {selected.Format}."
+            );
+        }
+
+        var extent =
+            capabilities.CurrentExtent.Width != uint.MaxValue
+                ? capabilities.CurrentExtent
+                : new Extent2D(
+                    Math.Clamp(
+                        checked((uint)width),
+                        capabilities.MinImageExtent.Width,
+                        capabilities.MaxImageExtent.Width
+                    ),
+                    Math.Clamp(
+                        checked((uint)height),
+                        capabilities.MinImageExtent.Height,
+                        capabilities.MaxImageExtent.Height
+                    )
+                );
         if (extent.Width < width || extent.Height < height)
+        {
             return false;
+        }
         // The presenter owns a single acquired/copy slot. Requesting an extra
         // FIFO image only multiplies driver allocation during every Win32
         // extent change without enabling another frame in flight.
@@ -1785,11 +2659,18 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         };
         var createStarted = Stopwatch.GetTimestamp();
         var createResult = _swapchainApi!.CreateSwapchain(
-            _device, &createInfo, null, out var newSwapchain);
-        _lastSwapchainCreateLatencyMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(createStarted).TotalMicroseconds);
+            _device,
+            &createInfo,
+            null,
+            out var newSwapchain
+        );
+        _lastSwapchainCreateLatencyMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(createStarted).TotalMicroseconds
+        );
         _maximumSwapchainCreateLatencyMicroseconds = Math.Max(
-            _maximumSwapchainCreateLatencyMicroseconds, _lastSwapchainCreateLatencyMicroseconds);
+            _maximumSwapchainCreateLatencyMicroseconds,
+            _lastSwapchainCreateLatencyMicroseconds
+        );
         if (createResult != Result.Success)
         {
             // oldSwapchain may be retired by a failed replacement attempt.
@@ -1810,78 +2691,148 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _presentMode = presentMode.ToString();
         _compositeAlpha = compositeAlpha.ToString();
         _swapchain = newSwapchain;
-        if (oldSwapchain.Handle != 0) _swapchainApi.DestroySwapchain(_device, oldSwapchain, null);
+        if (oldSwapchain.Handle != 0)
+        {
+            _swapchainApi.DestroySwapchain(_device, oldSwapchain, null);
+        }
+
         ReleaseSwapchainSynchronization();
         uint swapchainImageCount = 0;
-        Check(_swapchainApi.GetSwapchainImages(_device, _swapchain, &swapchainImageCount, null),
-            "vkGetSwapchainImagesKHR(count)");
+        Check(
+            _swapchainApi.GetSwapchainImages(_device, _swapchain, &swapchainImageCount, null),
+            "vkGetSwapchainImagesKHR(count)"
+        );
         _swapchainImages = new VkImage[swapchainImageCount];
         fixed (VkImage* imagesPointer = _swapchainImages)
-            Check(_swapchainApi.GetSwapchainImages(_device, _swapchain, &swapchainImageCount, imagesPointer),
-                "vkGetSwapchainImagesKHR");
-        _swapchainLayouts = Enumerable.Repeat(ImageLayout.Undefined, checked((int)swapchainImageCount)).ToArray();
+        {
+            Check(
+                _swapchainApi.GetSwapchainImages(
+                    _device,
+                    _swapchain,
+                    &swapchainImageCount,
+                    imagesPointer
+                ),
+                "vkGetSwapchainImagesKHR"
+            );
+        }
+
+        _swapchainLayouts = Enumerable
+            .Repeat(ImageLayout.Undefined, checked((int)swapchainImageCount))
+            .ToArray();
         _renderFinishedSemaphores = new VkSemaphore[swapchainImageCount];
         var semaphoreInfo = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
         for (var index = 0; index < swapchainImageCount; index++)
-            Check(_vk.CreateSemaphore(_device, &semaphoreInfo, null, out _renderFinishedSemaphores[index]),
-                "vkCreateSemaphore(render-finished)");
+        {
+            Check(
+                _vk.CreateSemaphore(
+                    _device,
+                    &semaphoreInfo,
+                    null,
+                    out _renderFinishedSemaphores[index]
+                ),
+                "vkCreateSemaphore(render-finished)"
+            );
+        }
+
         _surfaceWidth = checked((int)extent.Width);
         _surfaceHeight = checked((int)extent.Height);
         var backingStarted = Stopwatch.GetTimestamp();
         CreateBacking(_surfaceWidth, _surfaceHeight);
-        _lastBackingWrapLatencyMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(backingStarted).TotalMicroseconds);
+        _lastBackingWrapLatencyMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(backingStarted).TotalMicroseconds
+        );
         _maximumBackingWrapLatencyMicroseconds = Math.Max(
-            _maximumBackingWrapLatencyMicroseconds, _lastBackingWrapLatencyMicroseconds);
+            _maximumBackingWrapLatencyMicroseconds,
+            _lastBackingWrapLatencyMicroseconds
+        );
         _swapchainGeneration++;
         _surfaceRecreateCount++;
         _lastRecreateReason = reason;
         Width = width;
         Height = height;
-        _lastRecreateLatencyMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(recreateStarted).TotalMicroseconds);
+        _lastRecreateLatencyMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(recreateStarted).TotalMicroseconds
+        );
         _maximumRecreateLatencyMicroseconds = Math.Max(
-            _maximumRecreateLatencyMicroseconds, _lastRecreateLatencyMicroseconds);
+            _maximumRecreateLatencyMicroseconds,
+            _lastRecreateLatencyMicroseconds
+        );
         RecordEvent(
-            $"swapchain generation={_swapchainGeneration} reason={reason} " +
-            $"viewport={width}x{height} surface={_surfaceWidth}x{_surfaceHeight} " +
-            $"backingCapacity={_backingCapacityWidth}x{_backingCapacityHeight} " +
-            $"recreateUs={_lastRecreateLatencyMicroseconds} createUs={_lastSwapchainCreateLatencyMicroseconds} " +
-            $"backingUs={_lastBackingWrapLatencyMicroseconds} retirementUs={_lastRetirementLatencyMicroseconds}");
+            $"swapchain generation={_swapchainGeneration} reason={reason} "
+                + $"viewport={width}x{height} surface={_surfaceWidth}x{_surfaceHeight} "
+                + $"backingCapacity={_backingCapacityWidth}x{_backingCapacityHeight} "
+                + $"recreateUs={_lastRecreateLatencyMicroseconds} createUs={_lastSwapchainCreateLatencyMicroseconds} "
+                + $"backingUs={_lastBackingWrapLatencyMicroseconds} retirementUs={_lastRetirementLatencyMicroseconds}"
+        );
         return true;
     }
 
     private PresentModeKHR SelectPresentMode()
     {
         uint count = 0;
-        Check(_surfaceApi!.GetPhysicalDeviceSurfacePresentModes(_physicalDevice, _surface, &count, null),
-            "vkGetPhysicalDeviceSurfacePresentModesKHR(count)");
+        Check(
+            _surfaceApi!.GetPhysicalDeviceSurfacePresentModes(
+                _physicalDevice,
+                _surface,
+                &count,
+                null
+            ),
+            "vkGetPhysicalDeviceSurfacePresentModesKHR(count)"
+        );
         var modes = new PresentModeKHR[count];
         fixed (PresentModeKHR* modesPointer = modes)
-            Check(_surfaceApi.GetPhysicalDeviceSurfacePresentModes(_physicalDevice, _surface, &count, modesPointer),
-                "vkGetPhysicalDeviceSurfacePresentModesKHR");
+        {
+            Check(
+                _surfaceApi.GetPhysicalDeviceSurfacePresentModes(
+                    _physicalDevice,
+                    _surface,
+                    &count,
+                    modesPointer
+                ),
+                "vkGetPhysicalDeviceSurfacePresentModesKHR"
+            );
+        }
+
         if (!modes.Contains(PresentModeKHR.FifoKhr))
-            throw new InvalidOperationException("The Vulkan Win32 surface does not expose mandatory FIFO present mode.");
+        {
+            throw new InvalidOperationException(
+                "The Vulkan Win32 surface does not expose mandatory FIFO present mode."
+            );
+        }
+
         return PresentModeKHR.FifoKhr;
     }
 
     private static CompositeAlphaFlagsKHR SelectCompositeAlpha(CompositeAlphaFlagsKHR supported)
     {
-        foreach (var candidate in new[]
-                 {
-                     CompositeAlphaFlagsKHR.OpaqueBitKhr,
-                     CompositeAlphaFlagsKHR.PreMultipliedBitKhr,
-                     CompositeAlphaFlagsKHR.PostMultipliedBitKhr,
-                     CompositeAlphaFlagsKHR.InheritBitKhr,
-                 })
-            if ((supported & candidate) != 0) return candidate;
-        throw new InvalidOperationException("The Vulkan Win32 surface exposes no composite-alpha mode.");
+        foreach (
+            var candidate in new[]
+            {
+                CompositeAlphaFlagsKHR.OpaqueBitKhr,
+                CompositeAlphaFlagsKHR.PreMultipliedBitKhr,
+                CompositeAlphaFlagsKHR.PostMultipliedBitKhr,
+                CompositeAlphaFlagsKHR.InheritBitKhr,
+            }
+        )
+        {
+            if ((supported & candidate) != 0)
+            {
+                return candidate;
+            }
+        }
+
+        throw new InvalidOperationException(
+            "The Vulkan Win32 surface exposes no composite-alpha mode."
+        );
     }
 
     private void CreateBacking(int width, int height)
     {
-        var reuseStorage = _backingImage.Handle != 0 && _backingFormat == _format &&
-            _backingCapacityWidth >= width && _backingCapacityHeight >= height;
+        var reuseStorage =
+            _backingImage.Handle != 0
+            && _backingFormat == _format
+            && _backingCapacityWidth >= width
+            && _backingCapacityHeight >= height;
         ReleaseBackingSurface();
         if (!reuseStorage)
         {
@@ -1894,19 +2845,27 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             if (!TryAllocateBackingStorage())
             {
                 if (_backingCapacityWidth == width && _backingCapacityHeight == height)
+                {
                     throw new InvalidOperationException(
-                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated " +
-                        $"within the {MaximumRetainedStorageAllocationBytes}-byte retained-storage bound.");
+                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated "
+                            + $"within the {MaximumRetainedStorageAllocationBytes}-byte retained-storage bound."
+                    );
+                }
+
                 RecordEvent(
-                    $"backing capacity fallback requested={width}x{height} " +
-                    $"candidate={capacityWidth}x{capacityHeight} " +
-                    $"boundBytes={MaximumRetainedStorageAllocationBytes}");
+                    $"backing capacity fallback requested={width}x{height} "
+                        + $"candidate={capacityWidth}x{capacityHeight} "
+                        + $"boundBytes={MaximumRetainedStorageAllocationBytes}"
+                );
                 _backingCapacityWidth = width;
                 _backingCapacityHeight = height;
                 if (!TryAllocateBackingStorage())
+                {
                     throw new InvalidOperationException(
-                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated " +
-                        $"within the {MaximumRetainedStorageAllocationBytes}-byte retained-storage bound.");
+                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated "
+                            + $"within the {MaximumRetainedStorageAllocationBytes}-byte retained-storage bound."
+                    );
+                }
             }
             _backingAllocationCount++;
         }
@@ -1926,14 +2885,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             ImageType = ImageType.Type2D,
             Format = _format,
             Extent = new Extent3D(
-                checked((uint)_backingCapacityWidth), checked((uint)_backingCapacityHeight), 1),
+                checked((uint)_backingCapacityWidth),
+                checked((uint)_backingCapacityHeight),
+                1
+            ),
             MipLevels = 1,
             ArrayLayers = 1,
             Samples = SampleCountFlags.Count1Bit,
             Tiling = ImageTiling.Optimal,
-            Usage = ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransferSrcBit |
-                    ImageUsageFlags.TransferDstBit | ImageUsageFlags.SampledBit |
-                    (_useGraphite ? ImageUsageFlags.InputAttachmentBit : 0),
+            Usage =
+                ImageUsageFlags.ColorAttachmentBit
+                | ImageUsageFlags.TransferSrcBit
+                | ImageUsageFlags.TransferDstBit
+                | ImageUsageFlags.SampledBit
+                | (_useGraphite ? ImageUsageFlags.InputAttachmentBit : 0),
             SharingMode = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
@@ -1962,9 +2927,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             SType = StructureType.MemoryAllocateInfo,
             AllocationSize = requirements.Size,
-            MemoryTypeIndex = FindMemoryType(requirements.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit),
+            MemoryTypeIndex = FindMemoryType(
+                requirements.MemoryTypeBits,
+                MemoryPropertyFlags.DeviceLocalBit
+            ),
         };
-        var allocationResult = _vk.AllocateMemory(_device, &allocationInfo, null, out _backingMemory);
+        var allocationResult = _vk.AllocateMemory(
+            _device,
+            &allocationInfo,
+            null,
+            out _backingMemory
+        );
         if (allocationResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
         {
             _vk.DestroyImage(_device, _backingImage, null);
@@ -2010,7 +2983,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             ImageType = ImageType.Type2D,
             Format = _format,
             Extent = new Extent3D(
-                checked((uint)_backingCapacityWidth), checked((uint)_backingCapacityHeight), 1),
+                checked((uint)_backingCapacityWidth),
+                checked((uint)_backingCapacityHeight),
+                1
+            ),
             MipLevels = 1,
             ArrayLayers = 1,
             Samples = SampleCountFlags.Count1Bit,
@@ -2019,8 +2995,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             SharingMode = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
-        var createResult = _vk.CreateImage(
-            _device, &imageInfo, null, out _retainedFrameImage);
+        var createResult = _vk.CreateImage(_device, &imageInfo, null, out _retainedFrameImage);
         if (createResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
         {
             _retainedFrameImage = default;
@@ -2028,10 +3003,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         Check(createResult, "vkCreateImage(retained frame)");
 
-        _vk.GetImageMemoryRequirements(
-            _device, _retainedFrameImage, out var requirements);
-        if (_backingAllocationSize > MaximumRetainedStorageAllocationBytes ||
-            requirements.Size > MaximumRetainedStorageAllocationBytes - _backingAllocationSize)
+        _vk.GetImageMemoryRequirements(_device, _retainedFrameImage, out var requirements);
+        if (
+            _backingAllocationSize > MaximumRetainedStorageAllocationBytes
+            || requirements.Size > MaximumRetainedStorageAllocationBytes - _backingAllocationSize
+        )
         {
             _vk.DestroyImage(_device, _retainedFrameImage, null);
             _retainedFrameImage = default;
@@ -2044,10 +3020,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             SType = StructureType.MemoryAllocateInfo,
             AllocationSize = requirements.Size,
             MemoryTypeIndex = FindMemoryType(
-                requirements.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit),
+                requirements.MemoryTypeBits,
+                MemoryPropertyFlags.DeviceLocalBit
+            ),
         };
         var allocationResult = _vk.AllocateMemory(
-            _device, &allocationInfo, null, out _retainedFrameMemory);
+            _device,
+            &allocationInfo,
+            null,
+            out _retainedFrameMemory
+        );
         if (allocationResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
         {
             _vk.DestroyImage(_device, _retainedFrameImage, null);
@@ -2058,8 +3040,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         Check(allocationResult, "vkAllocateMemory(retained frame)");
 
-        var bindResult = _vk.BindImageMemory(
-            _device, _retainedFrameImage, _retainedFrameMemory, 0);
+        var bindResult = _vk.BindImageMemory(_device, _retainedFrameImage, _retainedFrameMemory, 0);
         if (bindResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
         {
             _vk.FreeMemory(_device, _retainedFrameMemory, null);
@@ -2073,15 +3054,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _retainedFrameLayout = ImageLayout.Undefined;
         _retainedFrameInitialized = false;
         RecordEvent(
-            $"retained frame allocated capacity={_backingCapacityWidth}x{_backingCapacityHeight} " +
-            $"bytes={_retainedFrameAllocationSize} totalBytes=" +
-            $"{_backingAllocationSize + _retainedFrameAllocationSize}");
+            $"retained frame allocated capacity={_backingCapacityWidth}x{_backingCapacityHeight} "
+                + $"bytes={_retainedFrameAllocationSize} totalBytes="
+                + $"{_backingAllocationSize + _retainedFrameAllocationSize}"
+        );
         return true;
     }
 
     private void WrapBackingSurface(int width, int height)
     {
-        if (_useGraphite) { WrapGraphiteBacking(width, height); return; }
+        if (_useGraphite)
+        {
+            WrapGraphiteBacking(width, height);
+            return;
+        }
         var skiaImageInfo = new GRVkImageInfo
         {
             Image = _backingImage.Handle,
@@ -2094,35 +3080,51 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             ImageTiling = (uint)ImageTiling.Optimal,
             ImageLayout = (uint)ImageLayout.ColorAttachmentOptimal,
             Format = (uint)_format,
-            ImageUsageFlags = (uint)(ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransferSrcBit |
-                                     ImageUsageFlags.TransferDstBit | ImageUsageFlags.SampledBit),
+            ImageUsageFlags = (uint)(
+                ImageUsageFlags.ColorAttachmentBit
+                | ImageUsageFlags.TransferSrcBit
+                | ImageUsageFlags.TransferDstBit
+                | ImageUsageFlags.SampledBit
+            ),
             SampleCount = 1,
             LevelCount = 1,
             CurrentQueueFamily = _queueFamily,
         };
         _context!.ResetContext();
         _backingTarget = new GRBackendRenderTarget(width, height, skiaImageInfo);
-        var colorType = _format == Format.B8G8R8A8Unorm ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
-        _backingSurface = SKSurface.Create(
-            _context!, _backingTarget, GRSurfaceOrigin.TopLeft, colorType)
+        var colorType =
+            _format == Format.B8G8R8A8Unorm ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
+        _backingSurface =
+            SKSurface.Create(_context!, _backingTarget, GRSurfaceOrigin.TopLeft, colorType)
             ?? throw new InvalidOperationException(
-                $"Skia could not wrap the managed Vulkan backing image " +
-                $"(targetValid={_backingTarget.IsValid}, backend={_backingTarget.Backend}, " +
-                $"format={_format}, colorType={colorType}, maxSamples={_context!.GetMaxSurfaceSampleCount(colorType)}).");
+                $"Skia could not wrap the managed Vulkan backing image "
+                    + $"(targetValid={_backingTarget.IsValid}, backend={_backingTarget.Backend}, "
+                    + $"format={_format}, colorType={colorType}, maxSamples={_context!.GetMaxSurfaceSampleCount(colorType)})."
+            );
     }
 
     private int GrowBackingDimension(int current, int required)
     {
         if (_maximumImageDimension2D != 0 && required > _maximumImageDimension2D)
+        {
             throw new InvalidOperationException(
-                $"Vulkan backing dimension {required} exceeds the device limit {_maximumImageDimension2D}.");
-        if (current >= required) return current;
-        var desired = current == 0
-            ? required
-            : Math.Max(required, current + Math.Max(256L, current / 4L));
+                $"Vulkan backing dimension {required} exceeds the device limit {_maximumImageDimension2D}."
+            );
+        }
+
+        if (current >= required)
+        {
+            return current;
+        }
+
+        var desired =
+            current == 0 ? required : Math.Max(required, current + Math.Max(256L, current / 4L));
         var aligned = checked((desired + 255L) & ~255L);
         if (_maximumImageDimension2D != 0 && aligned > _maximumImageDimension2D)
+        {
             aligned = required;
+        }
+
         return checked((int)aligned);
     }
 
@@ -2130,9 +3132,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         _vk.GetPhysicalDeviceMemoryProperties(_physicalDevice, out var properties);
         for (uint index = 0; index < properties.MemoryTypeCount; index++)
-            if ((typeFilter & (1u << checked((int)index))) != 0 &&
-                (properties.MemoryTypes[checked((int)index)].PropertyFlags & required) == required)
+        {
+            if (
+                (typeFilter & (1u << checked((int)index))) != 0
+                && (properties.MemoryTypes[checked((int)index)].PropertyFlags & required)
+                    == required
+            )
+            {
                 return index;
+            }
+        }
+
         throw new InvalidOperationException("No device-local Vulkan memory type is available.");
     }
 
@@ -2140,29 +3150,61 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         BeginCommands();
         var barrier = ImageBarrier(
-            _backingImage, ImageLayout.Undefined, ImageLayout.ColorAttachmentOptimal,
-            0, AccessFlags.ColorAttachmentWriteBit);
+            _backingImage,
+            ImageLayout.Undefined,
+            ImageLayout.ColorAttachmentOptimal,
+            0,
+            AccessFlags.ColorAttachmentWriteBit
+        );
         ObservedPipelineBarrier(
-            _commandBuffer, PipelineStageFlags.TopOfPipeBit, PipelineStageFlags.ColorAttachmentOutputBit,
-            0, 0, null, 0, null, 1, &barrier);
+            _commandBuffer,
+            PipelineStageFlags.TopOfPipeBit,
+            PipelineStageFlags.ColorAttachmentOutputBit,
+            0,
+            0,
+            null,
+            0,
+            null,
+            1,
+            &barrier
+        );
         SubmitCommands("Vulkan backing initialization", waitForCompletion: true);
     }
 
-    private void CopyBackingToSwapchain(VkImage destination, uint imageIndex, VkSemaphore renderFinished)
+    private void CopyBackingToSwapchain(
+        VkImage destination,
+        uint imageIndex,
+        VkSemaphore renderFinished
+    )
     {
         BeginCommands();
         var barriers = stackalloc ImageMemoryBarrier[2];
         barriers[0] = ImageBarrier(
-            _backingImage, ImageLayout.ColorAttachmentOptimal, ImageLayout.TransferSrcOptimal,
-            AccessFlags.ColorAttachmentWriteBit, AccessFlags.TransferReadBit);
+            _backingImage,
+            ImageLayout.ColorAttachmentOptimal,
+            ImageLayout.TransferSrcOptimal,
+            AccessFlags.ColorAttachmentWriteBit,
+            AccessFlags.TransferReadBit
+        );
         barriers[1] = ImageBarrier(
-            destination, _swapchainLayouts[checked((int)imageIndex)], ImageLayout.TransferDstOptimal,
-            0, AccessFlags.TransferWriteBit);
+            destination,
+            _swapchainLayouts[checked((int)imageIndex)],
+            ImageLayout.TransferDstOptimal,
+            0,
+            AccessFlags.TransferWriteBit
+        );
         ObservedPipelineBarrier(
             _commandBuffer,
             PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.TransferBit,
             PipelineStageFlags.TransferBit,
-            0, 0, null, 0, null, 2, barriers);
+            0,
+            0,
+            null,
+            0,
+            null,
+            2,
+            barriers
+        );
 
         var copy = new ImageCopy
         {
@@ -2171,74 +3213,135 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Extent = new Extent3D(checked((uint)_surfaceWidth), checked((uint)_surfaceHeight), 1),
         };
         _vk.CmdCopyImage(
-            _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
-            destination, ImageLayout.TransferDstOptimal, 1, &copy);
+            _commandBuffer,
+            _backingImage,
+            ImageLayout.TransferSrcOptimal,
+            destination,
+            ImageLayout.TransferDstOptimal,
+            1,
+            &copy
+        );
 
         barriers[0] = ImageBarrier(
-            _backingImage, ImageLayout.TransferSrcOptimal, ImageLayout.ColorAttachmentOptimal,
-            AccessFlags.TransferReadBit, AccessFlags.ColorAttachmentWriteBit);
+            _backingImage,
+            ImageLayout.TransferSrcOptimal,
+            ImageLayout.ColorAttachmentOptimal,
+            AccessFlags.TransferReadBit,
+            AccessFlags.ColorAttachmentWriteBit
+        );
         barriers[1] = ImageBarrier(
-            destination, ImageLayout.TransferDstOptimal, ImageLayout.PresentSrcKhr,
-            AccessFlags.TransferWriteBit, 0);
+            destination,
+            ImageLayout.TransferDstOptimal,
+            ImageLayout.PresentSrcKhr,
+            AccessFlags.TransferWriteBit,
+            0
+        );
         ObservedPipelineBarrier(
-            _commandBuffer, PipelineStageFlags.TransferBit,
+            _commandBuffer,
+            PipelineStageFlags.TransferBit,
             PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
-            0, 0, null, 0, null, 2, barriers);
+            0,
+            0,
+            null,
+            0,
+            null,
+            2,
+            barriers
+        );
         _swapchainLayouts[checked((int)imageIndex)] = ImageLayout.PresentSrcKhr;
         SubmitCommands(
-            "Vulkan backing copy", _acquireSemaphore, renderFinished,
-            waitForCompletion: false);
+            "Vulkan backing copy",
+            _acquireSemaphore,
+            renderFinished,
+            waitForCompletion: false
+        );
     }
 
     private static ImageMemoryBarrier ImageBarrier(
-        VkImage image, ImageLayout oldLayout, ImageLayout newLayout,
-        AccessFlags sourceAccess, AccessFlags destinationAccess) => new()
-    {
-        SType = StructureType.ImageMemoryBarrier,
-        OldLayout = oldLayout,
-        NewLayout = newLayout,
-        SrcQueueFamilyIndex = Vk.QueueFamilyIgnored,
-        DstQueueFamilyIndex = Vk.QueueFamilyIgnored,
-        Image = image,
-        SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, 1),
-        SrcAccessMask = sourceAccess,
-        DstAccessMask = destinationAccess,
-    };
+        VkImage image,
+        ImageLayout oldLayout,
+        ImageLayout newLayout,
+        AccessFlags sourceAccess,
+        AccessFlags destinationAccess
+    ) =>
+        new()
+        {
+            SType = StructureType.ImageMemoryBarrier,
+            OldLayout = oldLayout,
+            NewLayout = newLayout,
+            SrcQueueFamilyIndex = Vk.QueueFamilyIgnored,
+            DstQueueFamilyIndex = Vk.QueueFamilyIgnored,
+            Image = image,
+            SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, 1),
+            SrcAccessMask = sourceAccess,
+            DstAccessMask = destinationAccess,
+        };
 
-    private static ImageSubresourceLayers ColorSubresourceLayers() => new()
-    {
-        AspectMask = ImageAspectFlags.ColorBit,
-        MipLevel = 0,
-        BaseArrayLayer = 0,
-        LayerCount = 1,
-    };
+    private static ImageSubresourceLayers ColorSubresourceLayers() =>
+        new()
+        {
+            AspectMask = ImageAspectFlags.ColorBit,
+            MipLevel = 0,
+            BaseArrayLayer = 0,
+            LayerCount = 1,
+        };
 
     private void BeginCommands()
     {
-        if (_stockObserver != null && !_stockObserver.Journal.Buffers.ContainsKey(_commandBuffer.Handle))
+        if (
+            _stockObserver != null
+            && !_stockObserver.Journal.Buffers.ContainsKey(_commandBuffer.Handle)
+        )
+        {
             _stockObserver.Journal.Allocate(_commandBuffer.Handle, _commandPool.Handle);
-        Check(_stockObserver == null ? _vk.ResetCommandBuffer(_commandBuffer, 0) :
-            _stockObserver.Call<Skia.Vulkan.VulkanObserver.ResetCommandBufferDelegate>("vkResetCommandBuffer")(_commandBuffer, 0), "vkResetCommandBuffer");
+        }
+
+        Check(
+            _stockObserver == null
+                ? _vk.ResetCommandBuffer(_commandBuffer, 0)
+                : _stockObserver.Call<Skia.Vulkan.VulkanObserver.ResetCommandBufferDelegate>(
+                    "vkResetCommandBuffer"
+                )(_commandBuffer, 0),
+            "vkResetCommandBuffer"
+        );
         var beginInfo = new CommandBufferBeginInfo
         {
             SType = StructureType.CommandBufferBeginInfo,
             Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
         };
-        Check(_stockObserver == null ? _vk.BeginCommandBuffer(_commandBuffer, &beginInfo) :
-            _stockObserver.Call<Skia.Vulkan.VulkanObserver.BeginCommandBufferDelegate>("vkBeginCommandBuffer")(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
+        Check(
+            _stockObserver == null
+                ? _vk.BeginCommandBuffer(_commandBuffer, &beginInfo)
+                : _stockObserver.Call<Skia.Vulkan.VulkanObserver.BeginCommandBufferDelegate>(
+                    "vkBeginCommandBuffer"
+                )(_commandBuffer, &beginInfo),
+            "vkBeginCommandBuffer"
+        );
     }
 
     private void SubmitCommands(
         string identity,
         VkSemaphore waitSemaphore = default,
         VkSemaphore signalSemaphore = default,
-        bool waitForCompletion = true, ulong signalValue = 0)
+        bool waitForCompletion = true,
+        ulong signalValue = 0
+    )
     {
         if (_copySubmissionPending)
+        {
             throw new InvalidOperationException(
-                "The Vulkan copy command buffer cannot be reused before its fence completes.");
-        Check(_stockObserver == null ? _vk.EndCommandBuffer(_commandBuffer) :
-            _stockObserver.Call<Skia.Vulkan.VulkanObserver.EndCommandBufferDelegate>("vkEndCommandBuffer")(_commandBuffer), "vkEndCommandBuffer");
+                "The Vulkan copy command buffer cannot be reused before its fence completes."
+            );
+        }
+
+        Check(
+            _stockObserver == null
+                ? _vk.EndCommandBuffer(_commandBuffer)
+                : _stockObserver.Call<Skia.Vulkan.VulkanObserver.EndCommandBufferDelegate>(
+                    "vkEndCommandBuffer"
+                )(_commandBuffer),
+            "vkEndCommandBuffer"
+        );
         _stockObserver?.Check();
         ResetFence();
         var commandBuffer = _commandBuffer;
@@ -2266,9 +3369,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             SignalSemaphoreValueCount = signalValue == 0 ? 0u : 1u,
             PSignalSemaphoreValues = &signalValue,
         };
-        if (signalValue != 0) submitInfo.PNext = &timeline;
-        _lastSubmitResult = _stockObserver == null ? _vk.QueueSubmit(_queue, 1, &submitInfo, _fence) :
-            _stockObserver.Call<Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 1, &submitInfo, _fence);
+        if (signalValue != 0)
+        {
+            submitInfo.PNext = &timeline;
+        }
+
+        _lastSubmitResult =
+            _stockObserver == null
+                ? _vk.QueueSubmit(_queue, 1, &submitInfo, _fence)
+                : _stockObserver.Call<Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>(
+                    "vkQueueSubmit"
+                )(_queue, 1, &submitInfo, _fence);
         Check(_lastSubmitResult, "vkQueueSubmit");
         _stockObserver?.Check();
         GpuSubmitCount++;
@@ -2285,32 +3396,46 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void WaitForPendingCopySubmission()
     {
-        if (!_copySubmissionPending) return;
+        if (!_copySubmissionPending)
+        {
+            return;
+        }
+
         var started = Stopwatch.GetTimestamp();
         WaitFence("previous Vulkan backing copy");
-        _lastCopyFenceWaitMicroseconds = checked((long)
-            Stopwatch.GetElapsedTime(started).TotalMicroseconds);
+        _lastCopyFenceWaitMicroseconds = checked(
+            (long)Stopwatch.GetElapsedTime(started).TotalMicroseconds
+        );
         _maximumCopyFenceWaitMicroseconds = Math.Max(
-            _maximumCopyFenceWaitMicroseconds, _lastCopyFenceWaitMicroseconds);
+            _maximumCopyFenceWaitMicroseconds,
+            _lastCopyFenceWaitMicroseconds
+        );
         _copyFenceWaitCount++;
         _copySubmissionPending = false;
     }
 
     private void ResetFence() => Check(_vk.ResetFences(_device, 1, in _fence), "vkResetFences");
 
-    private void WaitFence(string identity)
-        => WaitFence(_fence, identity);
+    private void WaitFence(string identity) => WaitFence(_fence, identity);
 
     private void WaitFence(Fence fence, string identity)
     {
         var result = _vk.WaitForFences(_device, 1, in fence, true, FenceTimeoutNanoseconds);
-        if (result == Result.Timeout) throw new TimeoutException($"{identity} fence timed out after 5 seconds.");
+        if (result == Result.Timeout)
+        {
+            throw new TimeoutException($"{identity} fence timed out after 5 seconds.");
+        }
+
         Check(result, "vkWaitForFences");
     }
 
     private void WaitForPresentRetirement()
     {
-        if (_swapchain.Handle == 0) return;
+        if (_swapchain.Handle == 0)
+        {
+            return;
+        }
+
         Check(_vk.QueueWaitIdle(_queue), "vkQueueWaitIdle(swapchain retirement)");
         _copySubmissionPending = false;
         _queueIdleRetirementWaitCount++;
@@ -2319,14 +3444,24 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private void ReleaseSwapchainSynchronization()
     {
         foreach (var semaphore in _renderFinishedSemaphores)
-            if (semaphore.Handle != 0) _vk.DestroySemaphore(_device, semaphore, null);
+        {
+            if (semaphore.Handle != 0)
+            {
+                _vk.DestroySemaphore(_device, semaphore, null);
+            }
+        }
+
         _renderFinishedSemaphores = [];
         _swapchainLayouts = [];
     }
 
     private void WaitIdle()
     {
-        if (_device.Handle == 0) return;
+        if (_device.Handle == 0)
+        {
+            return;
+        }
+
         var result = TakeInjectedResult("DEVICE_LOST_ON_WAIT_IDLE")
             ? Result.ErrorDeviceLost
             : _vk.DeviceWaitIdle(_device);
@@ -2355,34 +3490,60 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private void ReleaseBackingAllocationHandles()
     {
         if (_retainedFrameImage.Handle != 0)
+        {
             _vk.DestroyImage(_device, _retainedFrameImage, null);
+        }
+
         _retainedFrameImage = default;
         if (_retainedFrameMemory.Handle != 0)
+        {
             _vk.FreeMemory(_device, _retainedFrameMemory, null);
+        }
+
         _retainedFrameMemory = default;
         _retainedFrameAllocationSize = 0;
         _retainedFrameLayout = ImageLayout.Undefined;
         _retainedFrameInitialized = false;
 
-        if (_backingImage.Handle != 0) { _stockObserver?.ForgetHostTarget(_backingImage.Handle); _vk.DestroyImage(_device, _backingImage, null); }
+        if (_backingImage.Handle != 0)
+        {
+            _stockObserver?.ForgetHostTarget(_backingImage.Handle);
+            _vk.DestroyImage(_device, _backingImage, null);
+        }
         _backingImage = default;
-        if (_backingMemory.Handle != 0) _vk.FreeMemory(_device, _backingMemory, null);
+        if (_backingMemory.Handle != 0)
+        {
+            _vk.FreeMemory(_device, _backingMemory, null);
+        }
+
         _backingMemory = default;
         _backingAllocationSize = 0;
     }
 
     private void ReleasePresentationSlotVulkan(PresentationSlot slot)
     {
-        if (slot.Image.Handle != 0) _vk.DestroyImage(_device, slot.Image, null);
+        if (slot.Image.Handle != 0)
+        {
+            _vk.DestroyImage(_device, slot.Image, null);
+        }
+
         slot.Image = default;
-        if (slot.Memory.Handle != 0) _vk.FreeMemory(_device, slot.Memory, null);
+        if (slot.Memory.Handle != 0)
+        {
+            _vk.FreeMemory(_device, slot.Memory, null);
+        }
+
         slot.Memory = default;
         slot.Layout = ImageLayout.Undefined;
     }
 
     private void WaitForPresentationRetirement()
     {
-        if (_presentationContext == 0) return;
+        if (_presentationContext == 0)
+        {
+            return;
+        }
+
         var deadline = Environment.TickCount64 + 5_000;
         nint* handles = stackalloc nint[BufferCount];
         while (true)
@@ -2392,30 +3553,60 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             for (var index = 0; index < BufferCount; index++)
             {
                 var slot = _presentationSlots[index];
-                if (!slot.Registered) continue;
+                if (!slot.Registered)
+                {
+                    continue;
+                }
+
                 var result = IsCompositionBufferAvailable(
-                    _presentationContext, checked((uint)index), out var available);
-                if (result < 0) Marshal.ThrowExceptionForHR(result);
-                if (available != 0) continue;
+                    _presentationContext,
+                    checked((uint)index),
+                    out var available
+                );
+                if (result < 0)
+                {
+                    Marshal.ThrowExceptionForHR(result);
+                }
+
+                if (available != 0)
+                {
+                    continue;
+                }
+
                 allAvailable = false;
                 if (slot.AvailableEvent != 0)
+                {
                     handles[count++] = unchecked((nint)slot.AvailableEvent);
+                }
             }
-            if (allAvailable) return;
+            if (allAvailable)
+            {
+                return;
+            }
+
             if (Environment.TickCount64 >= deadline)
-                throw new TimeoutException(
-                    "Presentation buffers did not retire within 5 seconds.");
+            {
+                throw new TimeoutException("Presentation buffers did not retire within 5 seconds.");
+            }
+
             if (count == 0)
             {
                 Thread.Yield();
                 continue;
             }
             var wait = WaitForMultipleObjects(
-                count, handles, false, BufferAvailabilityWaitMilliseconds);
+                count,
+                handles,
+                false,
+                BufferAvailabilityWaitMilliseconds
+            );
             if (wait == WaitFailed)
+            {
                 throw new Win32Exception(
                     Marshal.GetLastWin32Error(),
-                    "Waiting for Vulkan Composition buffer retirement failed.");
+                    "Waiting for Vulkan Composition buffer retirement failed."
+                );
+            }
         }
     }
 
@@ -2428,9 +3619,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             _presentationRetiring = true;
             context = _presentationContext;
-            if (context == 0 || _presentationDrainCommitted ||
-                !_presentationSlots.Any(static slot => slot.Registered))
+            if (
+                context == 0
+                || _presentationDrainCommitted
+                || !_presentationSlots.Any(static slot => slot.Registered)
+            )
+            {
                 return;
+            }
+
             _presentationDrainCommitted = true;
             tag = ++_presentTag;
         }
@@ -2439,11 +3636,18 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         try
         {
             result = UnbindCompositionBuffer(context, tag, out presentId);
-            if (result < 0) Marshal.ThrowExceptionForHR(result);
+            if (result < 0)
+            {
+                Marshal.ThrowExceptionForHR(result);
+            }
         }
         catch
         {
-            lock (_viewportGate) _presentationDrainCommitted = false;
+            lock (_viewportGate)
+            {
+                _presentationDrainCommitted = false;
+            }
+
             throw;
         }
         RecordEvent($"D3D12 output drained copy fence={presentId}");
@@ -2452,7 +3656,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private void ReleaseDevice(bool deviceLost, bool waitForIdle = true)
     {
         CancelPreparedMovingFrame();
-        if (_instance.Handle == 0) return;
+        if (_instance.Handle == 0)
+        {
+            return;
+        }
+
         if (!deviceLost && waitForIdle)
         {
             try
@@ -2495,44 +3703,77 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _context = null;
         _graphite?.Dispose();
         _graphite = null;
-        if (_sharedRasterDevice != 0) { Marshal.Release(_sharedRasterDevice); _sharedRasterDevice = 0; }
+        if (_sharedRasterDevice != 0)
+        {
+            Marshal.Release(_sharedRasterDevice);
+            _sharedRasterDevice = 0;
+        }
         _contextAbandoned = false;
         _skiaBackend?.Dispose();
         _skiaBackend = null;
         _skiaExtensions?.Dispose();
         _skiaExtensions = null;
         ReleaseBackingStorage();
-        foreach (var slot in _presentationSlots) ReleasePresentationSlotVulkan(slot);
+        foreach (var slot in _presentationSlots)
+        {
+            ReleasePresentationSlotVulkan(slot);
+        }
+
         ClearCompositionSurfaceBinding();
         if (_presentationContext != 0)
         {
             D3D12Snapshot();
             Marshal.ThrowExceptionForHR(DestroyComposition(_presentationContext));
-            if (_lastD3D12Snapshot is { } snapshot) _lastD3D12Snapshot = snapshot with { ActiveSwapchains = 0 };
+            if (_lastD3D12Snapshot is { } snapshot)
+            {
+                _lastD3D12Snapshot = snapshot with { ActiveSwapchains = 0 };
+            }
         }
         lock (_viewportGate)
         {
             _presentationContext = 0;
             _presentationDrainCommitted = false;
         }
-        foreach (var slot in _presentationSlots) slot.ResetNativeState();
+        foreach (var slot in _presentationSlots)
+        {
+            slot.ResetNativeState();
+        }
+
         _presentationPoisoned = false;
         _selectedSlot = -1;
         ReleaseSwapchainSynchronization();
-        if (_swapchain.Handle != 0) _swapchainApi?.DestroySwapchain(_device, _swapchain, null);
+        if (_swapchain.Handle != 0)
+        {
+            _swapchainApi?.DestroySwapchain(_device, _swapchain, null);
+        }
+
         _swapchain = default;
         _swapchainImages = [];
-        if (_fence.Handle != 0) _vk.DestroyFence(_device, _fence, null);
+        if (_fence.Handle != 0)
+        {
+            _vk.DestroyFence(_device, _fence, null);
+        }
+
         _fence = default;
-        if (_acquireSemaphore.Handle != 0) _vk.DestroySemaphore(_device, _acquireSemaphore, null);
+        if (_acquireSemaphore.Handle != 0)
+        {
+            _vk.DestroySemaphore(_device, _acquireSemaphore, null);
+        }
+
         _acquireSemaphore = default;
-        if (_commandPool.Handle != 0) _vk.DestroyCommandPool(_device, _commandPool, null);
+        if (_commandPool.Handle != 0)
+        {
+            _vk.DestroyCommandPool(_device, _commandPool, null);
+        }
+
         if (_stockObserver != null)
         {
             _stockObserver.Journal.FreePool(_commandPool.Handle);
             _stockObserver.Check();
-            _retiredDepthStencilBarrierStageCorrections += _stockObserver.DepthStencilBarrierStageCorrections;
-            _stockObserver.Dispose(); _stockObserver = null;
+            _retiredDepthStencilBarrierStageCorrections +=
+                _stockObserver.DepthStencilBarrierStageCorrections;
+            _stockObserver.Dispose();
+            _stockObserver = null;
         }
         _commandPool = default;
         _commandBuffer = default;
@@ -2542,10 +3783,18 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _swapchainApi?.Dispose();
         _swapchainApi = null;
         ReleaseDiagnosticProducer();
-        if (_device.Handle != 0) _vk.DestroyDevice(_device, null);
+        if (_device.Handle != 0)
+        {
+            _vk.DestroyDevice(_device, null);
+        }
+
         _device = default;
         _queue = default;
-        if (_surface.Handle != 0) _surfaceApi?.DestroySurface(_instance, _surface, null);
+        if (_surface.Handle != 0)
+        {
+            _surfaceApi?.DestroySurface(_instance, _surface, null);
+        }
+
         _surface = default;
         _win32SurfaceApi?.Dispose();
         _win32SurfaceApi = null;
@@ -2570,7 +3819,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             _contextAbandoned = true;
             return;
         }
-        if (_context is null || _contextAbandoned) return;
+        if (_context is null || _contextAbandoned)
+        {
+            return;
+        }
+
         _context.AbandonContext(false);
         _contextAbandoned = true;
         TryRecordEvent("Vulkan context abandoned before renderer invalidation");
@@ -2578,76 +3831,120 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void Check(Result result, string operation, bool allowSuboptimal = false)
     {
-        if (result == Result.Success || allowSuboptimal && result == Result.SuboptimalKhr) return;
+        if (result == Result.Success || (allowSuboptimal && result == Result.SuboptimalKhr))
+        {
+            return;
+        }
+
         RecordEvent($"failure operation={operation} result={result}");
         if (result == Result.ErrorDeviceLost)
         {
             _deviceLostCount++;
             throw new WindowsManagedVulkanDeviceLostException(
-                $"{operation} failed with Vulkan result {result}.");
+                $"{operation} failed with Vulkan result {result}."
+            );
         }
         if (result == Result.ErrorSurfaceLostKhr)
         {
             _surfaceLostCount++;
             throw new WindowsManagedVulkanSurfaceLostException(
-                $"{operation} failed with Vulkan result {result}.");
+                $"{operation} failed with Vulkan result {result}."
+            );
         }
-        throw RecordOperationalFailure($"{operation} failed with Vulkan result {result}.", resize: false);
+        throw RecordOperationalFailure(
+            $"{operation} failed with Vulkan result {result}.",
+            resize: false
+        );
     }
 
     private static void FreeStringArray(byte** values, int count)
     {
-        if (values is null) return;
+        if (values is null)
+        {
+            return;
+        }
+
         for (var index = 0; index < count; index++)
+        {
             SilkMarshal.Free((nint)values[index]);
+        }
+
         SilkMarshal.Free((nint)values);
     }
 
     private void RequireInstanceExtensions(IReadOnlyCollection<string> required)
     {
         uint count = 0;
-        Check(_vk.EnumerateInstanceExtensionProperties((byte*)null, &count, null),
-            "vkEnumerateInstanceExtensionProperties(count)");
+        Check(
+            _vk.EnumerateInstanceExtensionProperties((byte*)null, &count, null),
+            "vkEnumerateInstanceExtensionProperties(count)"
+        );
         var properties = new ExtensionProperties[count];
         fixed (ExtensionProperties* pointer = properties)
-            Check(_vk.EnumerateInstanceExtensionProperties((byte*)null, &count, pointer),
-                "vkEnumerateInstanceExtensionProperties");
-        var available = properties.Select(value =>
-            Marshal.PtrToStringUTF8((nint)value.ExtensionName) ?? string.Empty).ToHashSet(StringComparer.Ordinal);
+        {
+            Check(
+                _vk.EnumerateInstanceExtensionProperties((byte*)null, &count, pointer),
+                "vkEnumerateInstanceExtensionProperties"
+            );
+        }
+
+        var available = properties
+            .Select(value => Marshal.PtrToStringUTF8((nint)value.ExtensionName) ?? string.Empty)
+            .ToHashSet(StringComparer.Ordinal);
         var missing = required.Where(value => !available.Contains(value)).ToArray();
         if (missing.Length != 0)
+        {
             throw new InvalidOperationException(
-                $"Missing required Vulkan instance extension(s): {string.Join(", ", missing)}.");
+                $"Missing required Vulkan instance extension(s): {string.Join(", ", missing)}."
+            );
+        }
     }
 
     private HashSet<string> EnumerateDeviceExtensions(PhysicalDevice device)
     {
         uint count = 0;
-        Check(_vk.EnumerateDeviceExtensionProperties(device, (byte*)null, &count, null),
-            "vkEnumerateDeviceExtensionProperties(count)");
+        Check(
+            _vk.EnumerateDeviceExtensionProperties(device, (byte*)null, &count, null),
+            "vkEnumerateDeviceExtensionProperties(count)"
+        );
         var properties = new ExtensionProperties[count];
         fixed (ExtensionProperties* pointer = properties)
-            Check(_vk.EnumerateDeviceExtensionProperties(device, (byte*)null, &count, pointer),
-                "vkEnumerateDeviceExtensionProperties");
-        return properties.Select(value =>
-            Marshal.PtrToStringUTF8((nint)value.ExtensionName) ?? string.Empty).ToHashSet(StringComparer.Ordinal);
+        {
+            Check(
+                _vk.EnumerateDeviceExtensionProperties(device, (byte*)null, &count, pointer),
+                "vkEnumerateDeviceExtensionProperties"
+            );
+        }
+
+        return properties
+            .Select(value => Marshal.PtrToStringUTF8((nint)value.ExtensionName) ?? string.Empty)
+            .ToHashSet(StringComparer.Ordinal);
     }
 
     private static string DeviceLuid(PhysicalDeviceIDProperties value)
     {
-        if (!value.DeviceLuidvalid) return string.Empty;
+        if (!value.DeviceLuidvalid)
+        {
+            return string.Empty;
+        }
+
         return Convert.ToHexString(
-            new ReadOnlySpan<byte>(value.DeviceLuid, checked((int)Vk.LuidSize)));
+            new ReadOnlySpan<byte>(value.DeviceLuid, checked((int)Vk.LuidSize))
+        );
     }
 
     private static string FormatVersion(uint version) =>
-        $"{version >> 22}.{version >> 12 & 0x3ff}.{version & 0xfff}";
+        $"{version >> 22}.{(version >> 12) & 0x3ff}.{version & 0xfff}";
 
     private void RecordEvent(string value)
     {
         lock (_eventGate)
         {
-            while (_recentEvents.Count >= 256) _recentEvents.Dequeue();
+            while (_recentEvents.Count >= 256)
+            {
+                _recentEvents.Dequeue();
+            }
+
             _recentEvents.Enqueue($"qpc={Stopwatch.GetTimestamp()} {value}");
         }
     }
@@ -2666,26 +3963,37 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void RecordRendererReleaseTeardown()
     {
-        TryRecordEvent(_rendererReleasePreflightReportedDeviceLoss
-            ? "device-loss renderer resources invalidated; starting native teardown"
-            : "unsafe-backend renderer resources invalidated; starting native teardown");
+        TryRecordEvent(
+            _rendererReleasePreflightReportedDeviceLoss
+                ? "device-loss renderer resources invalidated; starting native teardown"
+                : "unsafe-backend renderer resources invalidated; starting native teardown"
+        );
         _rendererReleasePreflightReportedDeviceLoss = false;
     }
 
     private string[] SnapshotEvents()
     {
-        lock (_eventGate) return _recentEvents.ToArray();
+        lock (_eventGate)
+        {
+            return _recentEvents.ToArray();
+        }
     }
 
-    private void SetHostBackdropBrush(
-        nint window, bool enabled, bool throwOnFailure)
+    private void SetHostBackdropBrush(nint window, bool enabled, bool throwOnFailure)
     {
         var requested = enabled ? 1 : 0;
         try
         {
             var set = DwmSetWindowAttribute(
-                window, DwmwaUseHostBackdropBrush, ref requested, sizeof(int));
-            if (set < 0) Marshal.ThrowExceptionForHR(set);
+                window,
+                DwmwaUseHostBackdropBrush,
+                ref requested,
+                sizeof(int)
+            );
+            if (set < 0)
+            {
+                Marshal.ThrowExceptionForHR(set);
+            }
             // DWMWA_USE_HOSTBACKDROPBRUSH is accepted by DwmSetWindowAttribute
             // on supported systems but DwmGetWindowAttribute returns
             // E_INVALIDARG on current Windows builds. Treat the checked set
@@ -2699,19 +4007,26 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
     }
 
-    private void SetDwmSystemBackdrop(
-        nint window, bool enabled, bool throwOnFailure)
+    private void SetDwmSystemBackdrop(nint window, bool enabled, bool throwOnFailure)
     {
-        var requested = enabled
-            ? DwmSystemBackdropTransientWindow
-            : DwmSystemBackdropAuto;
+        var requested = enabled ? DwmSystemBackdropTransientWindow : DwmSystemBackdropAuto;
         try
         {
             var set = DwmSetWindowAttribute(
-                window, DwmwaSystemBackdropType, ref requested, sizeof(int));
-            if (set < 0) Marshal.ThrowExceptionForHR(set);
+                window,
+                DwmwaSystemBackdropType,
+                ref requested,
+                sizeof(int)
+            );
+            if (set < 0)
+            {
+                Marshal.ThrowExceptionForHR(set);
+            }
+
             _dwmSystemBackdropEnabled = enabled;
-            RecordEvent($"DWM transient backdrop underlay enabled={(_dwmSystemBackdropEnabled ? 1 : 0)}");
+            RecordEvent(
+                $"DWM transient backdrop underlay enabled={(_dwmSystemBackdropEnabled ? 1 : 0)}"
+            );
         }
         catch when (!throwOnFailure)
         {
@@ -2721,7 +4036,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private Exception RecordOperationalFailure(string message, bool resize)
     {
-        if (resize) ResizeInvalidCallCount++;
+        if (resize)
+        {
+            ResizeInvalidCallCount++;
+        }
+
         if (_debugBaselineSealed)
         {
             OperationalDebugMessageCount++;
@@ -2737,7 +4056,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     public override void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         ReleaseCompositionTopology();
         ReleaseDevice(deviceLost: false);
         _vk.Dispose();
@@ -2746,9 +4069,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     internal override void DisposeAfterRendererGpuResourceRelease(bool deviceLost)
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         if (deviceLost)
+        {
             RecordRendererReleaseTeardown();
+        }
+
         ReleaseCompositionTopology();
         ReleaseDevice(deviceLost, waitForIdle: false);
         _vk.Dispose();
@@ -2757,7 +4087,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     internal override void DisposeAfterRendererGpuResourceReleaseFailure()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
 
         ReleaseCompositionTopology();
 
@@ -2779,23 +4112,48 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             }
         }
 
-        if (_backingSurface is { } surface) Cleanup(surface.Dispose);
+        if (_backingSurface is { } surface)
+        {
+            Cleanup(surface.Dispose);
+        }
+
         _backingSurface = null;
-        if (_backingTarget is { } target) Cleanup(target.Dispose);
+        if (_backingTarget is { } target)
+        {
+            Cleanup(target.Dispose);
+        }
+
         _backingTarget = null;
-        if (_context is { } context) Cleanup(context.Dispose);
+        if (_context is { } context)
+        {
+            Cleanup(context.Dispose);
+        }
+
         _context = null;
-        if (_skiaBackend is { } backend) Cleanup(backend.Dispose);
+        if (_skiaBackend is { } backend)
+        {
+            Cleanup(backend.Dispose);
+        }
+
         _skiaBackend = null;
-        if (_skiaExtensions is { } extensions) Cleanup(extensions.Dispose);
+        if (_skiaExtensions is { } extensions)
+        {
+            Cleanup(extensions.Dispose);
+        }
+
         _skiaExtensions = null;
         _disposed = true;
         TryRecordEvent("unsafe Vulkan native objects quarantined after failed idle preflight");
 
         if (failures.Count == 1)
+        {
             System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+        }
+
         if (failures.Count > 1)
+        {
             throw new AggregateException("Unsafe Vulkan managed-wrapper cleanup failed.", failures);
+        }
     }
 
     private sealed class PresentationSlot
@@ -2828,54 +4186,92 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         internal int Bottom;
     }
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_raster_create_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_raster_create_v1"
+    )]
     private static partial int CreateCompositionRaster(nint context, ulong window, out nint raster);
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_create_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_create_v1"
+    )]
     private static partial int CreateComposition(
-        uint adapterLuidLow, int adapterLuidHigh,
-        out nint context, out ulong sharedFence);
+        uint adapterLuidLow,
+        int adapterLuidHigh,
+        out nint context,
+        out ulong sharedFence
+    );
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_alpha_v1")]
-    private static partial int SetCompositionPremultipliedAlpha(
-        nint context, uint enabled);
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_alpha_v1"
+    )]
+    private static partial int SetCompositionPremultipliedAlpha(nint context, uint enabled);
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_attach_v1")]
-    private static partial int AttachCompositionWindow(
-        nint context, ulong targetWindow);
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_attach_v1"
+    )]
+    private static partial int AttachCompositionWindow(nint context, ulong targetWindow);
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_destroy_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_destroy_v1"
+    )]
     private static partial int DestroyComposition(nint context);
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_replace_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_replace_v1"
+    )]
     private static partial int ReplaceCompositionBuffer(
-        nint context, uint slotIndex, uint width, uint height,
-        out ulong sharedTextureHandle, out ulong availableEvent);
+        nint context,
+        uint slotIndex,
+        uint width,
+        uint height,
+        out ulong sharedTextureHandle,
+        out ulong availableEvent
+    );
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_available_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_available_v1"
+    )]
     private static partial int IsCompositionBufferAvailable(
-        nint context, uint slotIndex, out uint available);
+        nint context,
+        uint slotIndex,
+        out uint available
+    );
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_present_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_present_v1"
+    )]
     private static partial int PresentCropped(
-        nint context, uint slotIndex,
-        uint sourceX, uint sourceY, uint width, uint height, ulong tag,
-        uint waitForCompositionFrame, uint waitTimeoutMilliseconds,
+        nint context,
+        uint slotIndex,
+        uint sourceX,
+        uint sourceY,
+        uint width,
+        uint height,
+        ulong tag,
+        uint waitForCompositionFrame,
+        uint waitTimeoutMilliseconds,
         out uint compositionFrameObserved,
-        out ulong presentId, out ulong retiringFenceValue);
+        out ulong presentId,
+        out ulong retiringFenceValue
+    );
 
-    [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_d3d12_output_drain_v1")]
+    [LibraryImport(
+        WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_d3d12_output_drain_v1"
+    )]
     private static partial int UnbindCompositionBuffer(
-        nint context, ulong tag, out ulong presentId);
+        nint context,
+        ulong tag,
+        out ulong presentId
+    );
 
     [LibraryImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
@@ -2883,27 +4279,40 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     private static partial uint WaitForMultipleObjects(
-        uint count, nint* handles,
-        [MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)] bool waitAll, uint milliseconds);
+        uint count,
+        nint* handles,
+        [MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)] bool waitAll,
+        uint milliseconds
+    );
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
     private static partial bool CloseHandle(nint handle);
 
-    [LibraryImport("kernel32.dll", EntryPoint = "GetModuleHandleW", StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(
+        "kernel32.dll",
+        EntryPoint = "GetModuleHandleW",
+        StringMarshalling = StringMarshalling.Utf16
+    )]
     private static partial nint GetModuleHandle(string? moduleName);
 
     [LibraryImport("dcomp.dll")]
     private static partial uint DCompositionWaitForCompositorClock(
-        uint count, nint handles, uint timeoutInMs);
+        uint count,
+        nint handles,
+        uint timeoutInMs
+    );
 
     [DllImport("dwmapi.dll", ExactSpelling = true)]
     private static extern int DwmFlush();
 
     [LibraryImport("dwmapi.dll")]
     private static partial int DwmSetWindowAttribute(
-        nint window, int attribute, ref int value, int valueSize);
-
+        nint window,
+        int attribute,
+        ref int value,
+        int valueSize
+    );
 }
 
 internal sealed class SystemCompositionWorker : IDisposable
@@ -2927,35 +4336,67 @@ internal sealed class SystemCompositionWorker : IDisposable
     internal T Invoke<T>(Func<T> callback)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (ThreadId != 0 && Environment.CurrentManagedThreadId == ThreadId) return callback();
+        if (ThreadId != 0 && Environment.CurrentManagedThreadId == ThreadId)
+        {
+            return callback();
+        }
+
         using var completed = new ManualResetEventSlim();
         Exception? failure = null;
         T? result = default;
-        if (!_dispatcher.DispatcherQueue.TryEnqueue(() =>
+        if (
+            !_dispatcher.DispatcherQueue.TryEnqueue(() =>
             {
-                try { result = callback(); }
-                catch (Exception exception) { failure = exception; }
-                finally { completed.Set(); }
-            }))
-            throw new InvalidOperationException("System Composition DispatcherQueue rejected work.");
+                try
+                {
+                    result = callback();
+                }
+                catch (Exception exception)
+                {
+                    failure = exception;
+                }
+                finally
+                {
+                    completed.Set();
+                }
+            })
+        )
+        {
+            throw new InvalidOperationException(
+                "System Composition DispatcherQueue rejected work."
+            );
+        }
+
         if (!completed.Wait(TimeSpan.FromSeconds(15)))
+        {
             throw new TimeoutException("System Composition DispatcherQueue work timed out.");
+        }
+
         if (failure is not null)
+        {
             throw new InvalidOperationException(
                 $"System Composition DispatcherQueue work failed: {failure.GetType().Name}: {failure.Message}",
-                failure);
+                failure
+            );
+        }
+
         return result!;
     }
 
-    internal void Invoke(Action callback) => Invoke(() =>
-    {
-        callback();
-        return true;
-    });
+    internal void Invoke(Action callback) =>
+        Invoke(() =>
+        {
+            callback();
+            return true;
+        });
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         Invoke(Compositor.Dispose);
         _disposed = true;
         _dispatcher.ShutdownQueueAsync().AsTask().GetAwaiter().GetResult();
@@ -2974,18 +4415,26 @@ internal sealed class VulkanAcrylicScene : IDisposable
         SystemComposition.Compositor compositor,
         nint topLevelWindow,
         WindowBackdropOptions acrylicOptions,
-        Brightness systemBrightness)
+        Brightness systemBrightness
+    )
     {
         if (topLevelWindow == 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
+        }
+
         _root = compositor.CreateContainerVisual();
         _target = SystemDesktopCompositionInterop.CreateDesktopWindowTarget(
-            compositor, topLevelWindow);
+            compositor,
+            topLevelWindow
+        );
         _target.Root = _root;
         _configuration = new SystemBackdropConfiguration { IsInputActive = true };
         _backdrop = new DesktopAcrylicController();
         BackdropTargetAdded = _backdrop.SetTarget(
-            Microsoft.UI.Win32Interop.GetWindowIdFromWindow(topLevelWindow), _target);
+            Microsoft.UI.Win32Interop.GetWindowIdFromWindow(topLevelWindow),
+            _target
+        );
         DesktopWindowTargetConnected = _target.Root is not null;
         ApplyAcrylic(acrylicOptions, systemBrightness);
     }
@@ -2994,9 +4443,7 @@ internal sealed class VulkanAcrylicScene : IDisposable
     internal bool DesktopWindowTargetConnected { get; }
     internal string State => _backdrop.State.ToString();
 
-    internal void ApplyAcrylic(
-        WindowBackdropOptions options,
-        Brightness systemBrightness)
+    internal void ApplyAcrylic(WindowBackdropOptions options, Brightness systemBrightness)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _backdrop.ResetProperties();
@@ -3010,26 +4457,40 @@ internal sealed class VulkanAcrylicScene : IDisposable
         {
             var value = tint.value;
             _backdrop.TintColor = Windows.UI.Color.FromArgb(
-                (byte)(value >> 24), (byte)(value >> 16),
-                (byte)(value >> 8), (byte)value);
+                (byte)(value >> 24),
+                (byte)(value >> 16),
+                (byte)(value >> 8),
+                (byte)value
+            );
         }
         if (options.tintOpacity is { } tintOpacity)
+        {
             _backdrop.TintOpacity = (float)tintOpacity;
+        }
+
         if (options.luminosityOpacity is { } luminosityOpacity)
+        {
             _backdrop.LuminosityOpacity = (float)luminosityOpacity;
+        }
+
         _configuration.Theme = options.theme switch
         {
             Ui.WindowBackdropTheme.light => SystemBackdropTheme.Light,
             Ui.WindowBackdropTheme.dark => SystemBackdropTheme.Dark,
             _ => systemBrightness == Brightness.dark
-                ? SystemBackdropTheme.Dark : SystemBackdropTheme.Light,
+                ? SystemBackdropTheme.Dark
+                : SystemBackdropTheme.Light,
         };
         _backdrop.SetSystemBackdropConfiguration(_configuration);
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         _backdrop.Dispose();
         _target.Root = null;
@@ -3040,26 +4501,40 @@ internal sealed class VulkanAcrylicScene : IDisposable
 
 internal static class SystemDesktopCompositionInterop
 {
-    private static readonly Guid CompositorDesktopInteropIid =
-        new("29E691FA-4567-4DCA-B319-D0F207EB6807");
+    private static readonly Guid CompositorDesktopInteropIid = new(
+        "29E691FA-4567-4DCA-B319-D0F207EB6807"
+    );
 
     internal static unsafe SystemCompositionDesktop.DesktopWindowTarget CreateDesktopWindowTarget(
         SystemComposition.Compositor compositor,
-        nint window, bool topmost = false)
+        nint window,
+        bool topmost = false
+    )
     {
         ArgumentNullException.ThrowIfNull(compositor);
-        if (window == 0) throw new ArgumentOutOfRangeException(nameof(window));
+        if (window == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(window));
+        }
+
         using var interop = ((WinRT.IWinRTObject)compositor).NativeObject.As(
-            CompositorDesktopInteropIid);
+            CompositorDesktopInteropIid
+        );
         var thisPointer = interop.ThisPtr;
         var vtable = *(nint**)thisPointer;
         var create = (delegate* unmanaged[Stdcall]<nint, nint, int, nint*, int>)vtable[3];
         nint result = 0;
         var hresult = create(thisPointer, window, topmost ? 1 : 0, &result);
-        if (hresult < 0) Marshal.ThrowExceptionForHR(hresult);
+        if (hresult < 0)
+        {
+            Marshal.ThrowExceptionForHR(hresult);
+        }
+
         try
         {
-            return WinRT.MarshalInterface<SystemCompositionDesktop.DesktopWindowTarget>.FromAbi(result);
+            return WinRT.MarshalInterface<SystemCompositionDesktop.DesktopWindowTarget>.FromAbi(
+                result
+            );
         }
         finally
         {
@@ -3177,4 +4652,5 @@ internal sealed record VulkanPresenterSnapshot(
     string? GraphiteNativePath = null,
     string? GraphiteNativeSha256 = null,
     D3D12OutputSnapshot? D3D12Output = null,
-    long DepthStencilBarrierStageCorrections = 0);
+    long DepthStencilBarrierStageCorrections = 0
+);

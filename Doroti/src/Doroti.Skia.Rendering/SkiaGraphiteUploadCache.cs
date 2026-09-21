@@ -28,8 +28,16 @@ internal sealed class SkiaGraphiteUploadCache : IDisposable
         // shard contains one image so cancellation can release only new uploads.
         var cache = new SKGraphiteImageCache();
         var uploaded = cache.FindOrCreate(recorder, image, mipmapped);
-        if (uploaded is null) { cache.Dispose(); return null; }
-        while (_entries.Count >= Capacity) Remove(_lru.First!.Value);
+        if (uploaded is null)
+        {
+            cache.Dispose();
+            return null;
+        }
+        while (_entries.Count >= Capacity)
+        {
+            Remove(_lru.First!.Value);
+        }
+
         _entries.Add(key, new(cache, _lru.AddLast(key)));
         _pending.Add(key);
         Uploads++;
@@ -37,19 +45,40 @@ internal sealed class SkiaGraphiteUploadCache : IDisposable
     }
 
     internal void Commit() => _pending.Clear();
+
     internal void Cancel()
     {
-        foreach (var key in _pending.ToArray()) { Remove(key); Discarded++; }
+        foreach (var key in _pending.ToArray())
+        {
+            Remove(key);
+            Discarded++;
+        }
     }
+
     private void Remove((uint Id, bool Mipmapped) key)
     {
-        if (_entries.Remove(key, out var entry)) { _lru.Remove(entry.Node); entry.Cache.Dispose(); }
+        if (_entries.Remove(key, out var entry))
+        {
+            _lru.Remove(entry.Node);
+            entry.Cache.Dispose();
+        }
         _pending.Remove(key);
     }
+
     public void Dispose()
     {
-        foreach (var entry in _entries.Values) entry.Cache.Dispose();
-        _entries.Clear(); _lru.Clear(); _pending.Clear();
+        foreach (var entry in _entries.Values)
+        {
+            entry.Cache.Dispose();
+        }
+
+        _entries.Clear();
+        _lru.Clear();
+        _pending.Clear();
     }
-    private sealed record Entry(SKGraphiteImageCache Cache, LinkedListNode<(uint Id, bool Mipmapped)> Node);
+
+    private sealed record Entry(
+        SKGraphiteImageCache Cache,
+        LinkedListNode<(uint Id, bool Mipmapped)> Node
+    );
 }

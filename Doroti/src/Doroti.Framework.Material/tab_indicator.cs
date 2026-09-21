@@ -12,7 +12,11 @@ public class UnderlineTabIndicator : Decoration
     public virtual BorderSide borderSide { get; private set; } = default!;
     public virtual EdgeInsetsGeometry insets { get; private set; } = default!;
 
-    public UnderlineTabIndicator(BorderRadius? borderRadius = null, BorderSide borderSide = default!, EdgeInsetsGeometry insets = default!)
+    public UnderlineTabIndicator(
+        BorderRadius? borderRadius = null,
+        BorderSide borderSide = default!,
+        EdgeInsetsGeometry insets = default!
+    )
     {
         BorderSide __borderSide = borderSide ?? new BorderSide(width: 2.0, color: Colors.white);
         EdgeInsetsGeometry __insets = insets ?? EdgeInsets.zero;
@@ -26,7 +30,11 @@ public class UnderlineTabIndicator : Decoration
         if (a is UnderlineTabIndicator)
         {
             UnderlineTabIndicator a__as1729 = (UnderlineTabIndicator)a;
-            return (Decoration?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(a__as1729.borderSide, borderSide, t), insets: EdgeInsetsGeometry.lerp(a__as1729.insets, insets, t)!);
+            return (Decoration?)
+                new UnderlineTabIndicator(
+                    borderSide: BorderSide.lerp(a__as1729.borderSide, borderSide, t),
+                    insets: EdgeInsetsGeometry.lerp(a__as1729.insets, insets, t)!
+                );
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -37,7 +45,11 @@ public class UnderlineTabIndicator : Decoration
         if (b is UnderlineTabIndicator)
         {
             UnderlineTabIndicator b__as2045 = (UnderlineTabIndicator)b;
-            return (Decoration?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(borderSide, b__as2045.borderSide, t), insets: EdgeInsetsGeometry.lerp(insets, b__as2045.insets, t)!);
+            return (Decoration?)
+                new UnderlineTabIndicator(
+                    borderSide: BorderSide.lerp(borderSide, b__as2045.borderSide, t),
+                    insets: EdgeInsetsGeometry.lerp(insets, b__as2045.insets, t)!
+                );
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -52,7 +64,12 @@ public class UnderlineTabIndicator : Decoration
     internal virtual Rect _indicatorRectFor(Rect rect, TextDirection textDirection)
     {
         Rect indicator = insets.resolve(textDirection).deflateRect(rect);
-        return Rect.fromLTWH(indicator.left, indicator.bottom - borderSide.width, indicator.width, borderSide.width);
+        return Rect.fromLTWH(
+            indicator.left,
+            indicator.bottom - borderSide.width,
+            indicator.width,
+            borderSide.width
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -60,22 +77,31 @@ public class UnderlineTabIndicator : Decoration
     {
         if (borderRadius is not null)
         {
-            return ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRRect(borderRadius!.toRRect(_indicatorRectFor(rect, textDirection)));
-    return __cascade;
-}))();
+            return (
+                (Func<Path>)(
+                    () =>
+                    {
+                        var __cascade = new Path();
+                        __cascade.addRRect(
+                            borderRadius!.toRRect(_indicatorRectFor(rect, textDirection))
+                        );
+                        return __cascade;
+                    }
+                )
+            )();
         }
-        return ((Func<Path>)(() =>
-{
-    var __cascade = new Path();
-    __cascade.addRect(_indicatorRectFor(rect, textDirection));
-    return __cascade;
-}))();
+        return (
+            (Func<Path>)(
+                () =>
+                {
+                    var __cascade = new Path();
+                    __cascade.addRect(_indicatorRectFor(rect, textDirection));
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _UnderlinePainter__tab_indicator : BoxPainter
@@ -83,7 +109,12 @@ internal class _UnderlinePainter__tab_indicator : BoxPainter
     public virtual UnderlineTabIndicator decoration { get; private set; } = default!;
     public virtual BorderRadius? borderRadius { get; private set; }
 
-    internal _UnderlinePainter__tab_indicator(UnderlineTabIndicator decoration, BorderRadius? borderRadius, Action? onChanged) : base(onChanged)
+    internal _UnderlinePainter__tab_indicator(
+        UnderlineTabIndicator decoration,
+        BorderRadius? borderRadius,
+        Action? onChanged
+    )
+        : base(onChanged)
     {
         this.decoration = decoration;
         this.borderRadius = borderRadius;
@@ -93,31 +124,48 @@ internal class _UnderlinePainter__tab_indicator : BoxPainter
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
         Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
-        TextDirection textDirectionLocal = DartRuntimePrimitives.RequireValue(configuration.textDirection);
+        TextDirection textDirectionLocal = DartRuntimePrimitives.RequireValue(
+            configuration.textDirection
+        );
         Paint paintLocal = default!;
         if (borderRadius is not null)
         {
-            paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = decoration.borderSide.color;
-    return __cascade;
-}))();
+            paintLocal = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = decoration.borderSide.color;
+                        return __cascade;
+                    }
+                )
+            )();
             Rect indicator = decoration._indicatorRectFor(rect, textDirectionLocal);
-            var rrect = RRect.fromRectAndCorners(indicator, topLeft: borderRadius!.topLeft, topRight: borderRadius!.topRight, bottomRight: borderRadius!.bottomRight, bottomLeft: borderRadius!.bottomLeft);
+            var rrect = RRect.fromRectAndCorners(
+                indicator,
+                topLeft: borderRadius!.topLeft,
+                topRight: borderRadius!.topRight,
+                bottomRight: borderRadius!.bottomRight,
+                bottomLeft: borderRadius!.bottomLeft
+            );
             canvas.drawRRect(rrect, paintLocal);
         }
         else
         {
-            paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = decoration.borderSide.toPaint();
-    __cascade.strokeCap = StrokeCap.square;
-    return __cascade;
-}))();
-            Rect indicatorLocal = decoration._indicatorRectFor(rect, textDirectionLocal).deflate(decoration.borderSide.width / 2.0);
+            paintLocal = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = decoration.borderSide.toPaint();
+                        __cascade.strokeCap = StrokeCap.square;
+                        return __cascade;
+                    }
+                )
+            )();
+            Rect indicatorLocal = decoration
+                ._indicatorRectFor(rect, textDirectionLocal)
+                .deflate(decoration.borderSide.width / 2.0);
             canvas.drawLine(indicatorLocal.bottomLeft, indicatorLocal.bottomRight, paintLocal);
         }
     }
-
 }

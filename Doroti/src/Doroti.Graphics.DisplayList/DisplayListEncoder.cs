@@ -8,23 +8,31 @@ namespace Doroti.Graphics.DisplayList;
 public static class DisplayListEncoder
 {
     private const DisplayListFlags KnownFlags =
-        DisplayListFlags.ChecksumPresent |
-        DisplayListFlags.DiagnosticCapture;
+        DisplayListFlags.ChecksumPresent | DisplayListFlags.DiagnosticCapture;
     private const DisplayResourceFlags KnownResourceFlags = DisplayResourceFlags.Recoverable;
 
     public static byte[] Encode(DisplayListDocument document) => Encode(document, null);
 
-    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache) => Encode(document, cache, null);
+    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache) =>
+        Encode(document, cache, null);
 
     // A platform can supply an equivalent CRC32 implementation. The callback
     // must leave the owned buffer unchanged and treat checksum bytes as zero.
-    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache,
-        Action<string, TimeSpan>? traceStage, Func<byte[], uint>? computeChecksum = null)
+    public static byte[] Encode(
+        DisplayListDocument document,
+        DisplayListEncodingCache? cache,
+        Action<string, TimeSpan>? traceStage,
+        Func<byte[], uint>? computeChecksum = null
+    )
     {
         var stageStarted = traceStage is null ? 0 : Stopwatch.GetTimestamp();
         void Trace(string stage)
         {
-            if (traceStage is null) return;
+            if (traceStage is null)
+            {
+                return;
+            }
+
             traceStage(stage, Stopwatch.GetElapsedTime(stageStarted));
             stageStarted = Stopwatch.GetTimestamp();
         }
@@ -33,28 +41,45 @@ public static class DisplayListEncoder
         ValidateScene(document.Scene);
         if ((document.Flags & ~KnownFlags) != 0)
         {
-            throw new ArgumentException($"DisplayList flags contain unsupported bits: {document.Flags}.", nameof(document));
+            throw new ArgumentException(
+                $"DisplayList flags contain unsupported bits: {document.Flags}.",
+                nameof(document)
+            );
         }
 
         if (document.Commands.Count > DisplayListFormat.MaximumCommandCount)
         {
-            throw new ArgumentException("The DisplayList command limit was exceeded.", nameof(document));
+            throw new ArgumentException(
+                "The DisplayList command limit was exceeded.",
+                nameof(document)
+            );
         }
 
         if (document.Resources.Count > DisplayListFormat.MaximumResourceCount)
         {
-            throw new ArgumentException("The DisplayList resource limit was exceeded.", nameof(document));
+            throw new ArgumentException(
+                "The DisplayList resource limit was exceeded.",
+                nameof(document)
+            );
         }
 
         var resources = CanonicalizeResources(document.Resources);
         var resourceCatalog = resources.ToDictionary(resource => resource.Reference);
         List<(string Value, byte[] Bytes)> strings;
         Dictionary<string, uint> stringIds;
-        if (cache is null || !cache.TryGetStringTable(document.Commands, out strings, out stringIds))
+        if (
+            cache is null
+            || !cache.TryGetStringTable(document.Commands, out strings, out stringIds)
+        )
         {
             strings = CanonicalizeStrings(document.Commands);
-            stringIds = strings.Select((value, index) => (value, index))
-                .ToDictionary(item => item.value.Value, item => checked((uint)item.index), StringComparer.Ordinal);
+            stringIds = strings
+                .Select((value, index) => (value, index))
+                .ToDictionary(
+                    item => item.value.Value,
+                    item => checked((uint)item.index),
+                    StringComparer.Ordinal
+                );
             cache?.RememberStringTable(document.Commands, strings, stringIds);
         }
         cache?.SetTables(strings, resources);
@@ -72,18 +97,38 @@ public static class DisplayListEncoder
 
         if (stringByteLength > DisplayListFormat.MaximumStringTableByteLength)
         {
-            throw new ArgumentException("The DisplayList string-table byte limit was exceeded.", nameof(document));
+            throw new ArgumentException(
+                "The DisplayList string-table byte limit was exceeded.",
+                nameof(document)
+            );
         }
 
         var commandWriter = new DisplayListBinaryWriter(cache?.CommandCapacityHint ?? 256);
         var context = new EncoderContext(resourceCatalog, stringIds);
-        for (var blockStart = 0; blockStart < document.Commands.Count; blockStart += DisplayListEncodingCache.BlockLength)
+        for (
+            var blockStart = 0;
+            blockStart < document.Commands.Count;
+            blockStart += DisplayListEncodingCache.BlockLength
+        )
         {
-            var blockCount = Math.Min(DisplayListEncodingCache.BlockLength, document.Commands.Count - blockStart);
-            if (cache is not null && cache.TryGetBlock(document.Commands, blockStart, blockCount, out var blockBytes))
-            { commandWriter.WriteBytes(blockBytes); continue; }
+            var blockCount = Math.Min(
+                DisplayListEncodingCache.BlockLength,
+                document.Commands.Count - blockStart
+            );
+            if (
+                cache is not null
+                && cache.TryGetBlock(document.Commands, blockStart, blockCount, out var blockBytes)
+            )
+            {
+                commandWriter.WriteBytes(blockBytes);
+                continue;
+            }
             var blockOffset = commandWriter.Length;
-            for (var commandIndex = blockStart; commandIndex < blockStart + blockCount; commandIndex++)
+            for (
+                var commandIndex = blockStart;
+                commandIndex < blockStart + blockCount;
+                commandIndex++
+            )
             {
                 var command = document.Commands[commandIndex];
                 ArgumentNullException.ThrowIfNull(command);
@@ -104,21 +149,31 @@ public static class DisplayListEncoder
                 WriteCommandPayload(commandWriter, command, context);
                 commandWriter.PatchUInt32(
                     payloadLengthOffset,
-                    checked((uint)(commandWriter.Length - payloadOffset)));
+                    checked((uint)(commandWriter.Length - payloadOffset))
+                );
                 cache?.Add(command, commandWriter.WrittenSpan[commandOffset..]);
             }
-            cache?.AddBlock(document.Commands, blockStart, blockCount, commandWriter.WrittenSpan[blockOffset..]);
+            cache?.AddBlock(
+                document.Commands,
+                blockStart,
+                blockCount,
+                commandWriter.WrittenSpan[blockOffset..]
+            );
         }
 
         var byteLength = checked(
-            DisplayListFormat.HeaderSize +
-            resourceByteLength +
-            stringByteLength +
-            commandWriter.Length);
+            DisplayListFormat.HeaderSize
+            + resourceByteLength
+            + stringByteLength
+            + commandWriter.Length
+        );
         Trace("commands");
         if (byteLength > DisplayListFormat.MaximumByteLength)
         {
-            throw new ArgumentException("The DisplayList byte limit was exceeded.", nameof(document));
+            throw new ArgumentException(
+                "The DisplayList byte limit was exceeded.",
+                nameof(document)
+            );
         }
 
         var buffer = new byte[byteLength];
@@ -129,7 +184,10 @@ public static class DisplayListEncoder
         BinaryPrimitives.WriteUInt32LittleEndian(header[8..], checked((uint)byteLength));
         BinaryPrimitives.WriteUInt32LittleEndian(header[12..], (uint)document.Flags);
         WriteScene(header, document.Scene);
-        BinaryPrimitives.WriteUInt32LittleEndian(header[84..], checked((uint)document.Commands.Count));
+        BinaryPrimitives.WriteUInt32LittleEndian(
+            header[84..],
+            checked((uint)document.Commands.Count)
+        );
         BinaryPrimitives.WriteUInt32LittleEndian(header[88..], checked((uint)resources.Count));
         BinaryPrimitives.WriteUInt32LittleEndian(header[92..], checked((uint)stringByteLength));
         BinaryPrimitives.WriteUInt32LittleEndian(header[96..], checked((uint)commandWriter.Length));
@@ -140,12 +198,18 @@ public static class DisplayListEncoder
         var destinationOffset = (int)DisplayListFormat.HeaderSize;
         foreach (var resource in resources)
         {
-            WriteResourceDescriptor(buffer.AsSpan(destinationOffset, DisplayListFormat.ResourceEntrySize), resource);
+            WriteResourceDescriptor(
+                buffer.AsSpan(destinationOffset, DisplayListFormat.ResourceEntrySize),
+                resource
+            );
             destinationOffset += DisplayListFormat.ResourceEntrySize;
         }
         foreach (var value in strings)
         {
-            BinaryPrimitives.WriteUInt32LittleEndian(buffer.AsSpan(destinationOffset), checked((uint)value.Bytes.Length));
+            BinaryPrimitives.WriteUInt32LittleEndian(
+                buffer.AsSpan(destinationOffset),
+                checked((uint)value.Bytes.Length)
+            );
             destinationOffset += sizeof(uint);
             value.Bytes.CopyTo(buffer.AsSpan(destinationOffset));
             destinationOffset += value.Bytes.Length;
@@ -157,7 +221,10 @@ public static class DisplayListEncoder
         {
             BinaryPrimitives.WriteUInt32LittleEndian(
                 header[DisplayListFormat.ChecksumOffset..],
-                computeChecksum is null ? DisplayListChecksum.Compute(buffer) : computeChecksum(buffer));
+                computeChecksum is null
+                    ? DisplayListChecksum.Compute(buffer)
+                    : computeChecksum(buffer)
+            );
         }
 
         cache?.RecordCommandLength(commandWriter.Length);
@@ -173,18 +240,28 @@ public static class DisplayListEncoder
         BinaryPrimitives.WriteUInt64LittleEndian(header[40..], scene.ResizeEpoch);
         BinaryPrimitives.WriteUInt64LittleEndian(header[48..], scene.SurfaceGeneration);
         BinaryPrimitives.WriteUInt64LittleEndian(header[56..], scene.ContextGeneration);
-        BinaryPrimitives.WriteInt32LittleEndian(header[64..], CanonicalSingleBits(scene.LogicalWidth));
-        BinaryPrimitives.WriteInt32LittleEndian(header[68..], CanonicalSingleBits(scene.LogicalHeight));
+        BinaryPrimitives.WriteInt32LittleEndian(
+            header[64..],
+            CanonicalSingleBits(scene.LogicalWidth)
+        );
+        BinaryPrimitives.WriteInt32LittleEndian(
+            header[68..],
+            CanonicalSingleBits(scene.LogicalHeight)
+        );
         BinaryPrimitives.WriteUInt32LittleEndian(header[72..], scene.PhysicalWidth);
         BinaryPrimitives.WriteUInt32LittleEndian(header[76..], scene.PhysicalHeight);
-        BinaryPrimitives.WriteInt32LittleEndian(header[80..], CanonicalSingleBits(scene.DevicePixelRatio));
+        BinaryPrimitives.WriteInt32LittleEndian(
+            header[80..],
+            CanonicalSingleBits(scene.DevicePixelRatio)
+        );
     }
 
     private static int CanonicalSingleBits(float value) =>
         BitConverter.SingleToInt32Bits(value == 0 ? 0 : value);
 
     private static List<DisplayResourceDescriptor> CanonicalizeResources(
-        IReadOnlyList<DisplayResourceDescriptor> resources)
+        IReadOnlyList<DisplayResourceDescriptor> resources
+    )
     {
         var result = resources
             .OrderBy(resource => resource.Reference.Kind)
@@ -197,12 +274,18 @@ public static class DisplayListEncoder
             ValidateResourceReference(resource.Reference, null);
             if ((resource.Flags & ~KnownResourceFlags) != 0)
             {
-                throw new ArgumentException($"Resource {resource.Reference} contains unsupported flags.", nameof(resources));
+                throw new ArgumentException(
+                    $"Resource {resource.Reference} contains unsupported flags.",
+                    nameof(resources)
+                );
             }
 
             if (previous == resource.Reference)
             {
-                throw new ArgumentException($"Resource {resource.Reference} is declared more than once.", nameof(resources));
+                throw new ArgumentException(
+                    $"Resource {resource.Reference} is declared more than once.",
+                    nameof(resources)
+                );
             }
 
             previous = resource.Reference;
@@ -211,7 +294,9 @@ public static class DisplayListEncoder
         return result;
     }
 
-    private static List<(string Value, byte[] Bytes)> CanonicalizeStrings(IReadOnlyList<DisplayListCommand> commands)
+    private static List<(string Value, byte[] Bytes)> CanonicalizeStrings(
+        IReadOnlyList<DisplayListCommand> commands
+    )
     {
         var values = new HashSet<string>(StringComparer.Ordinal);
         foreach (var command in commands)
@@ -233,9 +318,20 @@ public static class DisplayListEncoder
                 AddString(values, run.Text);
                 AddString(values, run.FontFamily);
                 AddString(values, run.Locale);
-                foreach (var family in run.FontFamilyFallback) AddString(values, family);
-                foreach (var feature in run.FontFeatures) AddString(values, feature.Name);
-                foreach (var variation in run.FontVariations) AddString(values, variation.Axis);
+                foreach (var family in run.FontFamilyFallback)
+                {
+                    AddString(values, family);
+                }
+
+                foreach (var feature in run.FontFeatures)
+                {
+                    AddString(values, feature.Name);
+                }
+
+                foreach (var variation in run.FontVariations)
+                {
+                    AddString(values, variation.Axis);
+                }
             }
         }
 
@@ -252,7 +348,11 @@ public static class DisplayListEncoder
             }
             catch (EncoderFallbackException exception)
             {
-                throw new ArgumentException("DisplayList strings must contain valid Unicode scalar values.", nameof(value), exception);
+                throw new ArgumentException(
+                    "DisplayList strings must contain valid Unicode scalar values.",
+                    nameof(value),
+                    exception
+                );
             }
         }
         encoded.Sort((left, right) => DisplayListUtf8.Compare(left.Bytes, right.Bytes));
@@ -267,7 +367,8 @@ public static class DisplayListEncoder
 
     private static void WriteResourceDescriptor(
         Span<byte> destination,
-        DisplayResourceDescriptor descriptor)
+        DisplayResourceDescriptor descriptor
+    )
     {
         BinaryPrimitives.WriteUInt16LittleEndian(destination, (ushort)descriptor.Reference.Kind);
         BinaryPrimitives.WriteUInt16LittleEndian(destination[2..], (ushort)descriptor.Flags);
@@ -280,7 +381,8 @@ public static class DisplayListEncoder
     private static void WriteCommandPayload(
         DisplayListBinaryWriter writer,
         DisplayListCommand command,
-        EncoderContext context)
+        EncoderContext context
+    )
     {
         switch (command)
         {
@@ -424,35 +526,55 @@ public static class DisplayListEncoder
             case DisplayDrawRetainedSceneCommand value:
                 context.WriteResource(writer, value.Scene, DisplayResourceKind.RetainedScene);
                 WritePoint(writer, value.Offset);
-                if ((value.CacheHint & ~(DisplayRetainedSceneCacheHint.IsComplex | DisplayRetainedSceneCacheHint.WillChange)) != 0)
+                if (
+                    (
+                        value.CacheHint
+                        & ~(
+                            DisplayRetainedSceneCacheHint.IsComplex
+                            | DisplayRetainedSceneCacheHint.WillChange
+                        )
+                    ) != 0
+                )
                 {
-                    throw new ArgumentException("Retained-scene cache hints contain unsupported bits.", nameof(command));
+                    throw new ArgumentException(
+                        "Retained-scene cache hints contain unsupported bits.",
+                        nameof(command)
+                    );
                 }
 
                 writer.WriteByte((byte)value.CacheHint);
                 return;
             default:
-                throw new ArgumentException($"Command type {command.GetType().FullName} is not supported by DisplayList v2.", nameof(command));
+                throw new ArgumentException(
+                    $"Command type {command.GetType().FullName} is not supported by DisplayList v2.",
+                    nameof(command)
+                );
         }
     }
 
     private static void WriteParagraph(
         DisplayListBinaryWriter writer,
         DisplayParagraphRecipe paragraph,
-        EncoderContext context)
+        EncoderContext context
+    )
     {
         ArgumentNullException.ThrowIfNull(paragraph);
         writer.WriteUInt32(context.StringId(paragraph.Text));
         context.WriteResource(writer, paragraph.Font, DisplayResourceKind.Font);
         writer.WriteUInt32(context.StringId(paragraph.FontFamily));
         writer.WriteUInt32(context.StringId(paragraph.Locale));
-        writer.WriteUInt32(paragraph.Ellipsis is null ? uint.MaxValue : context.StringId(paragraph.Ellipsis));
+        writer.WriteUInt32(
+            paragraph.Ellipsis is null ? uint.MaxValue : context.StringId(paragraph.Ellipsis)
+        );
         WritePositiveSingle(writer, paragraph.FontSize, nameof(paragraph.FontSize));
         WritePositiveSingle(writer, paragraph.HeightMultiplier, nameof(paragraph.HeightMultiplier));
         writer.WriteUInt32(paragraph.Color);
         if (paragraph.FontWeight is < 1 or > 1000)
         {
-            throw new ArgumentOutOfRangeException(nameof(paragraph), "Font weight must be between 1 and 1000.");
+            throw new ArgumentOutOfRangeException(
+                nameof(paragraph),
+                "Font weight must be between 1 and 1000."
+            );
         }
 
         writer.WriteInt32(paragraph.FontWeight);
@@ -470,15 +592,33 @@ public static class DisplayListEncoder
         {
             context.WriteResource(writer, fallback, DisplayResourceKind.Font);
         }
-        if (paragraph.TextRuns.Count != 0 &&
-            !string.Equals(string.Concat(paragraph.TextRuns.Select(run => run?.Text)), paragraph.Text, StringComparison.Ordinal))
-            throw new ArgumentException("Paragraph text runs must concatenate to the paragraph text.", nameof(paragraph));
+        if (
+            paragraph.TextRuns.Count != 0
+            && !string.Equals(
+                string.Concat(paragraph.TextRuns.Select(run => run?.Text)),
+                paragraph.Text,
+                StringComparison.Ordinal
+            )
+        )
+        {
+            throw new ArgumentException(
+                "Paragraph text runs must concatenate to the paragraph text.",
+                nameof(paragraph)
+            );
+        }
+
         writer.WriteUInt32(CheckedCount(paragraph.TextRuns.Count, "paragraph text run"));
         foreach (var run in paragraph.TextRuns)
         {
             ArgumentNullException.ThrowIfNull(run);
             if (run.Text.Length == 0)
-                throw new ArgumentException("Paragraph text runs must be nonempty.", nameof(paragraph));
+            {
+                throw new ArgumentException(
+                    "Paragraph text runs must be nonempty.",
+                    nameof(paragraph)
+                );
+            }
+
             writer.WriteUInt32(context.StringId(run.Text));
             writer.WriteUInt32(context.StringId(run.FontFamily));
             writer.WriteUInt32(context.StringId(run.Locale));
@@ -486,23 +626,51 @@ public static class DisplayListEncoder
             WritePositiveSingle(writer, run.HeightMultiplier, nameof(run.HeightMultiplier));
             writer.WriteUInt32(run.Color);
             if (run.FontWeight is < 1 or > 1000)
-                throw new ArgumentOutOfRangeException(nameof(paragraph), "Run font weight must be between 1 and 1000.");
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(paragraph),
+                    "Run font weight must be between 1 and 1000."
+                );
+            }
+
             writer.WriteInt32(run.FontWeight);
             WriteEnumByte(writer, run.FontSlant, "run font slant");
             if ((run.Decoration & ~7u) != 0)
-                throw new ArgumentOutOfRangeException(nameof(paragraph), "Run decoration contains unknown bits.");
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(paragraph),
+                    "Run decoration contains unknown bits."
+                );
+            }
+
             writer.WriteUInt32(run.Decoration);
             WriteOptionalUInt32(writer, run.BackgroundColor);
             WriteOptionalUInt32(writer, run.DecorationColor);
             WriteOptionalEnumByte(writer, run.DecorationStyle, "run decoration style");
-            WriteOptionalNonnegativeSingle(writer, run.DecorationThickness, "run decoration thickness");
+            WriteOptionalNonnegativeSingle(
+                writer,
+                run.DecorationThickness,
+                "run decoration thickness"
+            );
             WriteOptionalEnumByte(writer, run.TextBaseline, "run text baseline");
             WriteOptionalFiniteSingle(writer, run.LetterSpacing, "run letter spacing");
             WriteOptionalFiniteSingle(writer, run.WordSpacing, "run word spacing");
-            writer.WriteByte(run.HalfLeading switch { null => 0, false => 1, true => 2 });
-            writer.WriteUInt32(CheckedCount(run.FontFamilyFallback.Count, "run fallback font family"));
+            writer.WriteByte(
+                run.HalfLeading switch
+                {
+                    null => 0,
+                    false => 1,
+                    true => 2,
+                }
+            );
+            writer.WriteUInt32(
+                CheckedCount(run.FontFamilyFallback.Count, "run fallback font family")
+            );
             foreach (var family in run.FontFamilyFallback)
+            {
                 writer.WriteUInt32(context.StringId(family));
+            }
+
             writer.WriteUInt32(CheckedCount(run.Shadows.Count, "run shadow"));
             foreach (var shadow in run.Shadows)
             {
@@ -532,41 +700,58 @@ public static class DisplayListEncoder
     private static void WriteOptionalUInt32(DisplayListBinaryWriter writer, uint? value)
     {
         writer.WriteBoolean(value.HasValue);
-        if (value.HasValue) writer.WriteUInt32(value.Value);
+        if (value.HasValue)
+        {
+            writer.WriteUInt32(value.Value);
+        }
     }
 
     private static void WriteOptionalEnumByte<T>(
         DisplayListBinaryWriter writer,
         T? value,
-        string name) where T : struct, Enum
+        string name
+    )
+        where T : struct, Enum
     {
         writer.WriteBoolean(value.HasValue);
-        if (value.HasValue) WriteEnumByte(writer, value.Value, name);
+        if (value.HasValue)
+        {
+            WriteEnumByte(writer, value.Value, name);
+        }
     }
 
     private static void WriteOptionalFiniteSingle(
         DisplayListBinaryWriter writer,
         float? value,
-        string name)
+        string name
+    )
     {
         writer.WriteBoolean(value.HasValue);
-        if (value.HasValue) WriteFiniteSingle(writer, value.Value, name);
+        if (value.HasValue)
+        {
+            WriteFiniteSingle(writer, value.Value, name);
+        }
     }
 
     private static void WriteOptionalNonnegativeSingle(
         DisplayListBinaryWriter writer,
         float? value,
-        string name)
+        string name
+    )
     {
         writer.WriteBoolean(value.HasValue);
-        if (value.HasValue) WriteNonnegativeSingle(writer, value.Value, name);
+        if (value.HasValue)
+        {
+            WriteNonnegativeSingle(writer, value.Value, name);
+        }
     }
 
     private static void WriteOptionalPaint(
         DisplayListBinaryWriter writer,
         DisplayPaint? paint,
         EncoderContext context,
-        int depth)
+        int depth
+    )
     {
         writer.WriteBoolean(paint is not null);
         if (paint is not null)
@@ -579,7 +764,8 @@ public static class DisplayListEncoder
         DisplayListBinaryWriter writer,
         DisplayPaint paint,
         EncoderContext context,
-        int depth)
+        int depth
+    )
     {
         ArgumentNullException.ThrowIfNull(paint);
         RequireDepth(depth);
@@ -605,7 +791,8 @@ public static class DisplayListEncoder
         DisplayShader? shader,
         EncoderContext context,
         int depth,
-        bool allowNull)
+        bool allowNull
+    )
     {
         RequireDepth(depth);
         switch (shader)
@@ -659,7 +846,9 @@ public static class DisplayListEncoder
             case DisplayRuntimeEffectShader value:
                 writer.WriteByte(5);
                 context.WriteResource(writer, value.Effect, DisplayResourceKind.RuntimeEffect);
-                writer.WriteUInt32(CheckedCount(value.Uniforms.Count, "runtime-effect uniform byte"));
+                writer.WriteUInt32(
+                    CheckedCount(value.Uniforms.Count, "runtime-effect uniform byte")
+                );
                 writer.WriteBytes(value.Uniforms.ToArray());
                 writer.WriteUInt32(CheckedCount(value.Children.Count, "runtime-effect child"));
                 foreach (var child in value.Children)
@@ -669,18 +858,25 @@ public static class DisplayListEncoder
 
                 return;
             default:
-                throw new ArgumentException($"Shader type {shader.GetType().FullName} is not supported by DisplayList v2.", nameof(shader));
+                throw new ArgumentException(
+                    $"Shader type {shader.GetType().FullName} is not supported by DisplayList v2.",
+                    nameof(shader)
+                );
         }
     }
 
     private static void WriteGradient(
         DisplayListBinaryWriter writer,
         IReadOnlyList<uint> colors,
-        IReadOnlyList<float> stops)
+        IReadOnlyList<float> stops
+    )
     {
         if (colors.Count < 2 || colors.Count != stops.Count)
         {
-            throw new ArgumentException("A gradient requires matching color and stop arrays with at least two entries.", nameof(colors));
+            throw new ArgumentException(
+                "A gradient requires matching color and stop arrays with at least two entries.",
+                nameof(colors)
+            );
         }
 
         writer.WriteUInt32(CheckedCount(colors.Count, "gradient stop"));
@@ -690,7 +886,10 @@ public static class DisplayListEncoder
             var stop = stops[index];
             if (!float.IsFinite(stop) || stop < previousStop)
             {
-                throw new ArgumentException("Gradient stops must be finite and nondecreasing.", nameof(stops));
+                throw new ArgumentException(
+                    "Gradient stops must be finite and nondecreasing.",
+                    nameof(stops)
+                );
             }
 
             writer.WriteUInt32(colors[index]);
@@ -704,7 +903,8 @@ public static class DisplayListEncoder
         DisplayColorFilter? filter,
         EncoderContext context,
         int depth,
-        bool allowNull)
+        bool allowNull
+    )
     {
         _ = context;
         RequireDepth(depth);
@@ -735,7 +935,10 @@ public static class DisplayListEncoder
                 writer.WriteByte(4);
                 return;
             default:
-                throw new ArgumentException($"Color-filter type {filter.GetType().FullName} is not supported by DisplayList v2.", nameof(filter));
+                throw new ArgumentException(
+                    $"Color-filter type {filter.GetType().FullName} is not supported by DisplayList v2.",
+                    nameof(filter)
+                );
         }
     }
 
@@ -756,7 +959,8 @@ public static class DisplayListEncoder
         DisplayImageFilter? filter,
         EncoderContext context,
         int depth,
-        bool allowNull)
+        bool allowNull
+    )
     {
         RequireDepth(depth);
         switch (filter)
@@ -802,7 +1006,10 @@ public static class DisplayListEncoder
                 writer.WriteBoolean(value.ShadowOnly);
                 return;
             default:
-                throw new ArgumentException($"Image-filter type {filter.GetType().FullName} is not supported by DisplayList v2.", nameof(filter));
+                throw new ArgumentException(
+                    $"Image-filter type {filter.GetType().FullName} is not supported by DisplayList v2.",
+                    nameof(filter)
+                );
         }
     }
 
@@ -811,7 +1018,10 @@ public static class DisplayListEncoder
         ArgumentNullException.ThrowIfNull(path);
         if (!Enum.IsDefined(path.FillType))
         {
-            throw new ArgumentOutOfRangeException(nameof(path), "The path fill type is not defined.");
+            throw new ArgumentOutOfRangeException(
+                nameof(path),
+                "The path fill type is not defined."
+            );
         }
 
         writer.WriteByte((byte)path.FillType);
@@ -824,7 +1034,10 @@ public static class DisplayListEncoder
         {
             if (!Enum.IsDefined(verb))
             {
-                throw new ArgumentOutOfRangeException(nameof(path), "The path contains an unknown verb.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(path),
+                    "The path contains an unknown verb."
+                );
             }
 
             writer.WriteByte((byte)verb);
@@ -835,7 +1048,8 @@ public static class DisplayListEncoder
         {
             throw new ArgumentException(
                 $"The path verb stream requires {expectedValueCount} values but contains {path.Values.Count}.",
-                nameof(path));
+                nameof(path)
+            );
         }
 
         foreach (var value in path.Values)
@@ -844,22 +1058,23 @@ public static class DisplayListEncoder
         }
     }
 
-    private static int ValuesForVerb(DisplayPathVerb verb) => verb switch
-    {
-        DisplayPathVerb.MoveTo or
-        DisplayPathVerb.LineTo or
-        DisplayPathVerb.RelativeMoveTo or
-        DisplayPathVerb.RelativeLineTo => 2,
-        DisplayPathVerb.QuadraticTo => 4,
-        DisplayPathVerb.ConicTo => 5,
-        DisplayPathVerb.CubicTo => 6,
-        DisplayPathVerb.AddRect or DisplayPathVerb.AddOval => 4,
-        DisplayPathVerb.AddArc => 6,
-        DisplayPathVerb.AddRoundedRect or DisplayPathVerb.AddSuperellipse => 12,
-        DisplayPathVerb.ArcToPoint or DisplayPathVerb.ArcTo => 7,
-        DisplayPathVerb.Close => 0,
-        _ => throw new ArgumentOutOfRangeException(nameof(verb)),
-    };
+    private static int ValuesForVerb(DisplayPathVerb verb) =>
+        verb switch
+        {
+            DisplayPathVerb.MoveTo
+            or DisplayPathVerb.LineTo
+            or DisplayPathVerb.RelativeMoveTo
+            or DisplayPathVerb.RelativeLineTo => 2,
+            DisplayPathVerb.QuadraticTo => 4,
+            DisplayPathVerb.ConicTo => 5,
+            DisplayPathVerb.CubicTo => 6,
+            DisplayPathVerb.AddRect or DisplayPathVerb.AddOval => 4,
+            DisplayPathVerb.AddArc => 6,
+            DisplayPathVerb.AddRoundedRect or DisplayPathVerb.AddSuperellipse => 12,
+            DisplayPathVerb.ArcToPoint or DisplayPathVerb.ArcTo => 7,
+            DisplayPathVerb.Close => 0,
+            _ => throw new ArgumentOutOfRangeException(nameof(verb)),
+        };
 
     private static void WritePoint(DisplayListBinaryWriter writer, DisplayPoint point)
     {
@@ -884,7 +1099,10 @@ public static class DisplayListEncoder
         }
     }
 
-    private static void WriteRoundedRect(DisplayListBinaryWriter writer, DisplayRoundedRect roundedRect)
+    private static void WriteRoundedRect(
+        DisplayListBinaryWriter writer,
+        DisplayRoundedRect roundedRect
+    )
     {
         WriteRect(writer, roundedRect.Bounds);
         WriteNonnegativeSingle(writer, roundedRect.TopLeftX, nameof(roundedRect.TopLeftX));
@@ -925,7 +1143,11 @@ public static class DisplayListEncoder
         writer.WriteSingle(value);
     }
 
-    private static void WritePositiveSingle(DisplayListBinaryWriter writer, float value, string name)
+    private static void WritePositiveSingle(
+        DisplayListBinaryWriter writer,
+        float value,
+        string name
+    )
     {
         if (!float.IsFinite(value) || value <= 0)
         {
@@ -935,11 +1157,18 @@ public static class DisplayListEncoder
         writer.WriteSingle(value);
     }
 
-    private static void WriteNonnegativeSingle(DisplayListBinaryWriter writer, float value, string name)
+    private static void WriteNonnegativeSingle(
+        DisplayListBinaryWriter writer,
+        float value,
+        string name
+    )
     {
         if (!float.IsFinite(value) || value < 0)
         {
-            throw new ArgumentOutOfRangeException(name, "The value must be finite and nonnegative.");
+            throw new ArgumentOutOfRangeException(
+                name,
+                "The value must be finite and nonnegative."
+            );
         }
 
         writer.WriteSingle(value);
@@ -958,7 +1187,8 @@ public static class DisplayListEncoder
     private static void WriteEnumByte<TEnum>(
         DisplayListBinaryWriter writer,
         TEnum value,
-        string name)
+        string name
+    )
         where TEnum : struct, Enum
     {
         if (!Enum.IsDefined(value))
@@ -977,7 +1207,10 @@ public static class DisplayListEncoder
     {
         if (count < 0 || count > DisplayListFormat.MaximumCollectionCount)
         {
-            throw new ArgumentOutOfRangeException(name, $"The DisplayList {name} count exceeds the format limit.");
+            throw new ArgumentOutOfRangeException(
+                name,
+                $"The DisplayList {name} count exceeds the format limit."
+            );
         }
 
         return checked((uint)count);
@@ -993,51 +1226,79 @@ public static class DisplayListEncoder
 
     private static void ValidateScene(DisplayListSceneMetadata scene)
     {
-        if (scene.ViewId == 0 || scene.SceneSequence == 0 || scene.BuildToken == 0 ||
-            scene.ResizeEpoch == 0 || scene.SurfaceGeneration == 0 || scene.ContextGeneration == 0)
+        if (
+            scene.ViewId == 0
+            || scene.SceneSequence == 0
+            || scene.BuildToken == 0
+            || scene.ResizeEpoch == 0
+            || scene.SurfaceGeneration == 0
+            || scene.ContextGeneration == 0
+        )
         {
-            throw new ArgumentException("DisplayList scene identities and generations must be nonzero.", nameof(scene));
+            throw new ArgumentException(
+                "DisplayList scene identities and generations must be nonzero.",
+                nameof(scene)
+            );
         }
 
-        if (!float.IsFinite(scene.LogicalWidth) || scene.LogicalWidth <= 0 ||
-            !float.IsFinite(scene.LogicalHeight) || scene.LogicalHeight <= 0 ||
-            scene.PhysicalWidth == 0 || scene.PhysicalHeight == 0 ||
-            !float.IsFinite(scene.DevicePixelRatio) || scene.DevicePixelRatio <= 0)
+        if (
+            !float.IsFinite(scene.LogicalWidth)
+            || scene.LogicalWidth <= 0
+            || !float.IsFinite(scene.LogicalHeight)
+            || scene.LogicalHeight <= 0
+            || scene.PhysicalWidth == 0
+            || scene.PhysicalHeight == 0
+            || !float.IsFinite(scene.DevicePixelRatio)
+            || scene.DevicePixelRatio <= 0
+        )
         {
-            throw new ArgumentException("DisplayList scene geometry must be finite and positive.", nameof(scene));
+            throw new ArgumentException(
+                "DisplayList scene geometry must be finite and positive.",
+                nameof(scene)
+            );
         }
     }
 
     private static void ValidateResourceReference(
         DisplayResourceReference reference,
-        DisplayResourceKind? expectedKind)
+        DisplayResourceKind? expectedKind
+    )
     {
         if (!Enum.IsDefined(reference.Kind) || reference.Id == 0 || reference.Version == 0)
         {
-            throw new ArgumentException($"DisplayList resource reference {reference} is invalid.", nameof(reference));
+            throw new ArgumentException(
+                $"DisplayList resource reference {reference} is invalid.",
+                nameof(reference)
+            );
         }
 
         if (expectedKind is not null && reference.Kind != expectedKind)
         {
             throw new ArgumentException(
                 $"DisplayList resource {reference} must have kind {expectedKind}.",
-                nameof(reference));
+                nameof(reference)
+            );
         }
     }
 
     private sealed class EncoderContext(
         IReadOnlyDictionary<DisplayResourceReference, DisplayResourceDescriptor> resources,
-        IReadOnlyDictionary<string, uint> stringIds)
+        IReadOnlyDictionary<string, uint> stringIds
+    )
     {
         internal void WriteResource(
             DisplayListBinaryWriter writer,
             DisplayResourceReference reference,
-            DisplayResourceKind? expectedKind)
+            DisplayResourceKind? expectedKind
+        )
         {
             ValidateResourceReference(reference, expectedKind);
             if (!resources.ContainsKey(reference))
             {
-                throw new ArgumentException($"DisplayList resource {reference} is referenced but not declared.", nameof(reference));
+                throw new ArgumentException(
+                    $"DisplayList resource {reference} is referenced but not declared.",
+                    nameof(reference)
+                );
             }
 
             writer.WriteUInt16((ushort)reference.Kind);
@@ -1050,7 +1311,10 @@ public static class DisplayListEncoder
         {
             if (!stringIds.TryGetValue(value, out var id))
             {
-                throw new ArgumentException("DisplayList string was not collected into the canonical string table.", nameof(value));
+                throw new ArgumentException(
+                    "DisplayList string was not collected into the canonical string table.",
+                    nameof(value)
+                );
             }
 
             return id;

@@ -17,15 +17,29 @@ public class DeviceGestureSettings
     public static DeviceGestureSettings CreateFromView(DorotiView view)
     {
         double? physicalTouchSlopLocal = view.gestureSettings.physicalTouchSlop;
-        return new DeviceGestureSettings(touchSlop: (physicalTouchSlopLocal is null) ? null : (DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal) / view.devicePixelRatio));
+        return new DeviceGestureSettings(
+            touchSlop: (physicalTouchSlopLocal is null)
+                ? null
+                : (
+                    DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal)
+                    / view.devicePixelRatio
+                )
+        );
     }
 
-    public virtual double? panSlop => (touchSlop is not null) ? (DartRuntimePrimitives.RequireValue(touchSlop) * 2L) : null;
+    public virtual double? panSlop =>
+        (touchSlop is not null) ? (DartRuntimePrimitives.RequireValue(touchSlop) * 2L) : null;
+
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(touchSlop, 23L);
+
     public override bool Equals(object? other)
     {
         var __other = other as DeviceGestureSettings;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
@@ -35,4 +49,3 @@ public class DeviceGestureSettings
 
     public override string ToString() => $"DeviceGestureSettings(touchSlop: {touchSlop})";
 }
-

@@ -10,16 +10,27 @@ internal interface IInheritedModelAspect
     bool isSupportedAspect(object aspect);
 }
 
-public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect where T : notnull
+public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
+    where T : notnull
 {
-    protected InheritedModel(Key? key = null, Widget child = default!) : base(key: key, child: child)
-    {
-    }
+    protected InheritedModel(Key? key = null, Widget child = default!)
+        : base(key: key, child: child) { }
 
     public override InheritedModelElement<T> createElement() => new InheritedModelElement<T>(this);
-    public abstract bool updateShouldNotifyDependent(InheritedModel<T> oldWidget, HashSet<T> dependencies);
+
+    public abstract bool updateShouldNotifyDependent(
+        InheritedModel<T> oldWidget,
+        HashSet<T> dependencies
+    );
+
     public virtual bool isSupportedAspect(object aspect) => true;
-    internal static void _findModels<TModel>(BuildContext context, object aspect, List<InheritedElement> results) where TModel : InheritedWidget
+
+    internal static void _findModels<TModel>(
+        BuildContext context,
+        object aspect,
+        List<InheritedElement> results
+    )
+        where TModel : InheritedWidget
     {
         InheritedElement? model = context.getElementForInheritedWidgetOfExactType<TModel>();
         if (model is null)
@@ -34,12 +45,14 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
             return;
         }
         Element? modelParent = default!;
-        model.visitAncestorElements((ancestor) =>
-        {
-            modelParent = ancestor;
-            return false;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        model.visitAncestorElements(
+            (ancestor) =>
+            {
+                modelParent = ancestor;
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         if (modelParent is null)
         {
             return;
@@ -47,7 +60,8 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
         _findModels<TModel>(modelParent, aspect, results);
     }
 
-    public static TModel? inheritFrom<TModel>(BuildContext context, object? aspect = null) where TModel : InheritedWidget
+    public static TModel? inheritFrom<TModel>(BuildContext context, object? aspect = null)
+        where TModel : InheritedWidget
     {
         if (aspect is null)
         {
@@ -72,14 +86,13 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
         return default;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class InheritedModelElement<T> : InheritedElement where T : notnull
+public class InheritedModelElement<T> : InheritedElement
+    where T : notnull
 {
-    public InheritedModelElement(InheritedModel<T> widget) : base(widget)
-    {
-    }
+    public InheritedModelElement(InheritedModel<T> widget)
+        : base(widget) { }
 
     public override void updateDependencies(Element dependent, object? aspect)
     {
@@ -95,12 +108,19 @@ public class InheritedModelElement<T> : InheritedElement where T : notnull
         else
         {
             DartRuntimePrimitives.Assert(() => aspect is T);
-            setDependencies(dependent, ((Func<HashSet<T>>)(() =>
-{
-    var __cascade = dependencies ?? new HashSet<T>();
-    __cascade.Add(((T?)(object?)aspect)!);
-    return __cascade;
-}))());
+            setDependencies(
+                dependent,
+                (
+                    (Func<HashSet<T>>)(
+                        () =>
+                        {
+                            var __cascade = dependencies ?? new HashSet<T>();
+                            __cascade.Add(((T?)(object?)aspect)!);
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
         }
     }
 
@@ -112,10 +132,12 @@ public class InheritedModelElement<T> : InheritedElement where T : notnull
         {
             return;
         }
-        if (!Enumerable.Any(dependencies) || ((InheritedModel<T>?)widget)!.updateShouldNotifyDependent(__oldWidget, dependencies))
+        if (
+            !Enumerable.Any(dependencies)
+            || ((InheritedModel<T>?)widget)!.updateShouldNotifyDependent(__oldWidget, dependencies)
+        )
         {
             dependent.didChangeDependencies();
         }
     }
-
 }

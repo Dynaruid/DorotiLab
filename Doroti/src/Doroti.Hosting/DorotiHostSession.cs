@@ -34,7 +34,8 @@ public sealed class DorotiHostSession : IDisposable
 
     public DorotiHostSession(
         IDorotiFrameworkEntrypoint entrypoint,
-        IDartPerformanceModeCapability? performanceModeCapability = null)
+        IDartPerformanceModeCapability? performanceModeCapability = null
+    )
     {
         _entrypoint = entrypoint ?? throw new ArgumentNullException(nameof(entrypoint));
         dispatcher = new(performanceModeCapability);
@@ -74,7 +75,9 @@ public sealed class DorotiHostSession : IDisposable
         ArgumentNullException.ThrowIfNull(view);
         if (state != DorotiHostSessionState.running)
         {
-            throw new InvalidOperationException("The Flutter host session must be running before a view is attached.");
+            throw new InvalidOperationException(
+                "The Flutter host session must be running before a view is attached."
+            );
         }
         if (_entrypoint is not IDorotiViewEntrypoint viewEntrypoint)
         {
@@ -83,7 +86,8 @@ public sealed class DorotiHostSession : IDisposable
                 view.viewId,
                 DartUiInvocation.Managed("package:flutter/widgets.dart#runApp"),
                 $"entrypoint {_entrypoint.GetType().FullName} does not implement {nameof(IDorotiViewEntrypoint)}",
-                view.targetIdentity);
+                view.targetIdentity
+            );
         }
         if (_deferFrameworkBootstrap && !_bootstrapped)
         {
@@ -101,7 +105,9 @@ public sealed class DorotiHostSession : IDisposable
         }
         if (!_views.TryAdd(view.viewId, view))
         {
-            throw new InvalidOperationException($"Flutter view {view.viewId} is already attached to this session.");
+            throw new InvalidOperationException(
+                $"Flutter view {view.viewId} is already attached to this session."
+            );
         }
         try
         {

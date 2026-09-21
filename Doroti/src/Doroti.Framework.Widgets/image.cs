@@ -7,66 +7,120 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class ImageLibrary
 {
-    public static ImageConfiguration createLocalImageConfiguration(BuildContext context, Size? size = null)
+    public static ImageConfiguration createLocalImageConfiguration(
+        BuildContext context,
+        Size? size = null
+    )
     {
-        return new ImageConfiguration(bundle: DefaultAssetBundle.of(context), devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0, locale: Localizations.maybeLocaleOf(context), textDirection: Directionality.maybeOf(context), size: size, platform: PlatformLibrary.defaultTargetPlatform);
+        return new ImageConfiguration(
+            bundle: DefaultAssetBundle.of(context),
+            devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0,
+            locale: Localizations.maybeLocaleOf(context),
+            textDirection: Directionality.maybeOf(context),
+            size: size,
+            platform: PlatformLibrary.defaultTargetPlatform
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class ImageLibrary
 {
-    public static Future precacheImage(IImageProvider provider, BuildContext context, Size? size = null, Action<object, System.Diagnostics.StackTrace?>? onError = null)
+    public static Future precacheImage(
+        IImageProvider provider,
+        BuildContext context,
+        Size? size = null,
+        Action<object, System.Diagnostics.StackTrace?>? onError = null
+    )
     {
         ImageConfiguration config = createLocalImageConfiguration(context, size: size);
         var completer = new Completer<object?>();
         ImageStream stream = provider.resolve(config);
         ImageStreamListener? listener = default!;
-        listener = new ImageStreamListener((image, sync) =>
-        {
-            if (!completer.isCompleted)
+        listener = new ImageStreamListener(
+            (image, sync) =>
             {
-                completer.complete();
-            }
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                if (!completer.isCompleted)
+                {
+                    completer.complete();
+                }
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                    (timeStamp) =>
+                    {
+                        image?.dispose();
+                        stream.removeListener(listener!);
+                    },
+                    debugLabel: "precacheImage.removeListener"
+                );
+            },
+            onError: (exception, stackTrace) =>
             {
-                image?.dispose();
+                if (!completer.isCompleted)
+                {
+                    completer.complete();
+                }
                 stream.removeListener(listener!);
-            }, debugLabel: "precacheImage.removeListener");
-        }, onError: (exception, stackTrace) =>
-        {
-            if (!completer.isCompleted)
-            {
-                completer.complete();
+                if (onError is not null)
+                {
+                    onError(exception, stackTrace);
+                }
+                else
+                {
+                    FlutterError.reportError(
+                        new FlutterErrorDetails(
+                            context: new ErrorDescription("image failed to precache"),
+                            library: "image resource service",
+                            exception: exception,
+                            stack: stackTrace,
+                            silent: true
+                        )
+                    );
+                }
             }
-            stream.removeListener(listener!);
-            if (onError is not null)
-            {
-                onError(exception, stackTrace);
-            }
-            else
-            {
-                FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
-            }
-        });
+        );
         stream.addListener(listener);
         return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public delegate Widget ImageFrameBuilder(BuildContext context, Widget child, long? frame, bool wasSynchronouslyLoaded);
+public delegate Widget ImageFrameBuilder(
+    BuildContext context,
+    Widget child,
+    long? frame,
+    bool wasSynchronouslyLoaded
+);
 
-public delegate Widget ImageLoadingBuilder(BuildContext context, Widget child, ImageChunkEvent? loadingProgress);
+public delegate Widget ImageLoadingBuilder(
+    BuildContext context,
+    Widget child,
+    ImageChunkEvent? loadingProgress
+);
 
-public delegate Widget ImageErrorWidgetBuilder(BuildContext context, object error, System.Diagnostics.StackTrace? stackTrace);
+public delegate Widget ImageErrorWidgetBuilder(
+    BuildContext context,
+    object error,
+    System.Diagnostics.StackTrace? stackTrace
+);
 
 public class Image : StatefulWidget
 {
     public virtual IImageProvider image { get; private set; } = default!;
-    public virtual Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder { get; private set; }
-    public virtual Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder { get; private set; }
-    public virtual Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder { get; private set; }
+    public virtual Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder
+    {
+        get;
+        private set;
+    }
+    public virtual Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder
+    {
+        get;
+        private set;
+    }
+    public virtual Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder
+    {
+        get;
+        private set;
+    }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
     public virtual Color? color { get; private set; }
@@ -83,7 +137,29 @@ public class Image : StatefulWidget
     public virtual bool excludeFromSemantics { get; private set; } = default!;
     public virtual bool isAntiAlias { get; private set; } = default!;
 
-    public Image(Key? key = null, IImageProvider image = default!, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium) : base(key: key)
+    public Image(
+        Key? key = null,
+        IImageProvider image = default!,
+        Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,
+        Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null,
+        Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null,
+        string? semanticLabel = null,
+        bool excludeFromSemantics = false,
+        double? width = null,
+        double? height = null,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        bool gaplessPlayback = false,
+        bool isAntiAlias = false,
+        FilterQuality filterQuality = FilterQuality.medium
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
@@ -107,9 +183,56 @@ public class Image : StatefulWidget
         this.filterQuality = filterQuality;
     }
 
-    public static Image CreateNetwork(string src, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, FilterQuality filterQuality = FilterQuality.medium, bool isAntiAlias = false, DartMap<string, string>? headers = null, long? cacheWidth = null, long? cacheHeight = null, WebHtmlElementStrategy webHtmlElementStrategy = WebHtmlElementStrategy.never)
+    public static Image CreateNetwork(
+        string src,
+        Key? key = null,
+        double scale = 1.0,
+        Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,
+        Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null,
+        Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null,
+        string? semanticLabel = null,
+        bool excludeFromSemantics = false,
+        double? width = null,
+        double? height = null,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        bool gaplessPlayback = false,
+        FilterQuality filterQuality = FilterQuality.medium,
+        bool isAntiAlias = false,
+        DartMap<string, string>? headers = null,
+        long? cacheWidth = null,
+        long? cacheHeight = null,
+        WebHtmlElementStrategy webHtmlElementStrategy = WebHtmlElementStrategy.never
+    )
     {
-        var __instance = new Image(key, default!, frameBuilder, loadingBuilder, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
+        var __instance = new Image(
+            key,
+            default!,
+            frameBuilder,
+            loadingBuilder,
+            errorBuilder,
+            semanticLabel,
+            excludeFromSemantics,
+            width,
+            height,
+            color,
+            opacity,
+            colorBlendMode,
+            fit,
+            alignment,
+            repeat,
+            centerSlice,
+            matchTextDirection,
+            gaplessPlayback,
+            isAntiAlias,
+            filterQuality
+        );
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.loadingBuilder = loadingBuilder;
@@ -129,13 +252,68 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.filterQuality = filterQuality;
         __instance.isAntiAlias = isAntiAlias;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new NetworkImageIo(src, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), headers: headers, webHtmlElementStrategy: webHtmlElementStrategy));
+        __instance.image = ResizeImage.resizeIfNeeded(
+            cacheWidth,
+            cacheHeight,
+            new NetworkImageIo(
+                src,
+                scale: DartRuntimePrimitives.RequireValue(
+                    DartRuntimePrimitives.RequireValue(scale)
+                ),
+                headers: headers,
+                webHtmlElementStrategy: webHtmlElementStrategy
+            )
+        );
         return __instance;
     }
 
-    public static Image CreateFile(DartFile file, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateFile(
+        DartFile file,
+        Key? key = null,
+        double scale = 1.0,
+        Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,
+        Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null,
+        string? semanticLabel = null,
+        bool excludeFromSemantics = false,
+        double? width = null,
+        double? height = null,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        bool gaplessPlayback = false,
+        bool isAntiAlias = false,
+        FilterQuality filterQuality = FilterQuality.medium,
+        long? cacheWidth = null,
+        long? cacheHeight = null
+    )
     {
-        var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
+        var __instance = new Image(
+            key,
+            default!,
+            frameBuilder,
+            default!,
+            errorBuilder,
+            semanticLabel,
+            excludeFromSemantics,
+            width,
+            height,
+            color,
+            opacity,
+            colorBlendMode,
+            fit,
+            alignment,
+            repeat,
+            centerSlice,
+            matchTextDirection,
+            gaplessPlayback,
+            isAntiAlias,
+            filterQuality
+        );
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
@@ -154,14 +332,67 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new FileImage(file, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
+        __instance.image = ResizeImage.resizeIfNeeded(
+            cacheWidth,
+            cacheHeight,
+            new FileImage(
+                file,
+                scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))
+            )
+        );
         __instance.loadingBuilder = null;
         return __instance;
     }
 
-    public static Image CreateAsset(string name, Key? key = null, AssetBundle? bundle = null, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? scale = null, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, string? package = null, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateAsset(
+        string name,
+        Key? key = null,
+        AssetBundle? bundle = null,
+        Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,
+        Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null,
+        string? semanticLabel = null,
+        bool excludeFromSemantics = false,
+        double? scale = null,
+        double? width = null,
+        double? height = null,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        bool gaplessPlayback = false,
+        bool isAntiAlias = false,
+        string? package = null,
+        FilterQuality filterQuality = FilterQuality.medium,
+        long? cacheWidth = null,
+        long? cacheHeight = null
+    )
     {
-        var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
+        var __instance = new Image(
+            key,
+            default!,
+            frameBuilder,
+            default!,
+            errorBuilder,
+            semanticLabel,
+            excludeFromSemantics,
+            width,
+            height,
+            color,
+            opacity,
+            colorBlendMode,
+            fit,
+            alignment,
+            repeat,
+            centerSlice,
+            matchTextDirection,
+            gaplessPlayback,
+            isAntiAlias,
+            filterQuality
+        );
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
@@ -180,14 +411,75 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, (scale is not null) ? new global::Doroti.Framework.Painting.ExactAssetImage(name, bundle: bundle, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), package: package) : new global::Doroti.Framework.Painting.AssetImage(name, bundle: bundle, package: package));
+        __instance.image = ResizeImage.resizeIfNeeded(
+            cacheWidth,
+            cacheHeight,
+            (scale is not null)
+                ? new global::Doroti.Framework.Painting.ExactAssetImage(
+                    name,
+                    bundle: bundle,
+                    scale: DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(scale)
+                    ),
+                    package: package
+                )
+                : new global::Doroti.Framework.Painting.AssetImage(
+                    name,
+                    bundle: bundle,
+                    package: package
+                )
+        );
         __instance.loadingBuilder = null;
         return __instance;
     }
 
-    public static Image CreateMemory(Uint8List bytes, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateMemory(
+        Uint8List bytes,
+        Key? key = null,
+        double scale = 1.0,
+        Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,
+        Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null,
+        string? semanticLabel = null,
+        bool excludeFromSemantics = false,
+        double? width = null,
+        double? height = null,
+        Color? color = null,
+        Animation<double>? opacity = null,
+        BlendMode? colorBlendMode = null,
+        BoxFit? fit = null,
+        AlignmentGeometry alignment = default!,
+        ImageRepeat repeat = ImageRepeat.noRepeat,
+        Rect? centerSlice = null,
+        bool matchTextDirection = false,
+        bool gaplessPlayback = false,
+        bool isAntiAlias = false,
+        FilterQuality filterQuality = FilterQuality.medium,
+        long? cacheWidth = null,
+        long? cacheHeight = null
+    )
     {
-        var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
+        var __instance = new Image(
+            key,
+            default!,
+            frameBuilder,
+            default!,
+            errorBuilder,
+            semanticLabel,
+            excludeFromSemantics,
+            width,
+            height,
+            color,
+            opacity,
+            colorBlendMode,
+            fit,
+            alignment,
+            repeat,
+            centerSlice,
+            matchTextDirection,
+            gaplessPlayback,
+            isAntiAlias,
+            filterQuality
+        );
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
@@ -206,12 +498,21 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new MemoryImage(bytes, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
+        __instance.image = ResizeImage.resizeIfNeeded(
+            cacheWidth,
+            cacheHeight,
+            new MemoryImage(
+                bytes,
+                scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))
+            )
+        );
         __instance.loadingBuilder = null;
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ImageState__image());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _ImageState__image());
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -221,18 +522,35 @@ public class Image : StatefulWidget
         properties.add(new DoubleProperty("width", width, defaultValue: null));
         properties.add(new DoubleProperty("height", height, defaultValue: null));
         properties.add(new ColorProperty("color", color, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null));
-        properties.add(new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null)
+        );
+        properties.add(
+            new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null)
+        );
         properties.add(new EnumProperty<BoxFit>("fit", fit, defaultValue: null));
-        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null));
-        properties.add(new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null));
-        properties.add(new FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
+        properties.add(
+            new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null)
+        );
+        properties.add(
+            new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat)
+        );
+        properties.add(
+            new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null)
+        );
+        properties.add(
+            new FlagProperty(
+                "matchTextDirection",
+                value: matchTextDirection,
+                ifTrue: "match text direction"
+            )
+        );
         properties.add(new StringProperty("semanticLabel", semanticLabel, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("this.excludeFromSemantics", excludeFromSemantics));
+        properties.add(
+            new DiagnosticsProperty<bool>("this.excludeFromSemantics", excludeFromSemantics)
+        );
         properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality));
     }
-
 }
 
 internal class _ImageState__image : State<Image>, WidgetsBindingObserver
@@ -244,7 +562,8 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     internal virtual bool _invertColors { get; set; } = default!;
     internal virtual long? _frameNumber { get; set; } = default;
     internal virtual bool _wasSynchronouslyLoaded { get; set; } = false;
-    internal virtual DisposableBuildContext<State<Image>> _scrollAwareContext { get; set; } = default!;
+    internal virtual DisposableBuildContext<State<Image>> _scrollAwareContext { get; set; } =
+        default!;
     internal virtual object? _lastException { get; set; } = default;
     internal virtual System.Diagnostics.StackTrace? _lastStack { get; set; } = default;
     internal virtual ImageStreamCompleterHandle? _completerHandle { get; set; } = default;
@@ -273,7 +592,8 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     {
         _updateInvertColors();
         _resolveImage();
-        _isPaused = !TickerMode.of(context) || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+        _isPaused =
+            !TickerMode.of(context) || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
         if (_isPaused && (_frameNumber is not null))
         {
             _stopListeningToStream(keepStreamAlive: true);
@@ -288,7 +608,10 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     public override void didUpdateWidget(Image oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (_isListeningToStream && (widget.loadingBuilder is null != oldWidget.loadingBuilder is null))
+        if (
+            _isListeningToStream
+            && ((widget.loadingBuilder is null) != (oldWidget.loadingBuilder is null))
+        )
         {
             ImageStreamListener oldListener = _getListener();
             _imageStream!.addListener(_getListener(recreateListener: true));
@@ -318,7 +641,9 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual void _updateInvertColors()
     {
-        _invertColors = MediaQuery.maybeInvertColorsOf(context) ?? Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors;
+        _invertColors =
+            MediaQuery.maybeInvertColorsOf(context)
+            ?? Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors;
     }
 
     private ScrollAwareImageProvider CreateScrollAwareProvider(IImageProvider imageProvider) =>
@@ -327,7 +652,17 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     internal virtual void _resolveImage()
     {
         IImageProvider provider = CreateScrollAwareProvider(widget.image);
-        ImageStream newStream = provider.resolve(ImageLibrary.createLocalImageConfiguration(context, size: ((widget.width is not null) && (widget.height is not null)) ? new Size(DartRuntimePrimitives.RequireValue(widget.width), DartRuntimePrimitives.RequireValue(widget.height)) : null));
+        ImageStream newStream = provider.resolve(
+            ImageLibrary.createLocalImageConfiguration(
+                context,
+                size: ((widget.width is not null) && (widget.height is not null))
+                    ? new Size(
+                        DartRuntimePrimitives.RequireValue(widget.width),
+                        DartRuntimePrimitives.RequireValue(widget.height)
+                    )
+                    : null
+            )
+        );
         _updateSourceStream(newStream);
     }
 
@@ -337,23 +672,36 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         {
             _lastException = null;
             _lastStack = null;
-            _imageStreamListener = new ImageStreamListener(_handleImageFrame, onChunk: (widget.loadingBuilder is null) ? null : _handleImageChunk, onError: ((widget.errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
-            {
-                setState(() =>
-                {
-                    _lastException = error;
-                    _lastStack = stackTrace;
-                });
-                DartRuntimePrimitives.Assert(() =>
-                    {
-                        if (widget.errorBuilder is null)
+            _imageStreamListener = new ImageStreamListener(
+                _handleImageFrame,
+                onChunk: (widget.loadingBuilder is null) ? null : _handleImageChunk,
+                onError: (
+                    (widget.errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode
+                )
+                    ? (
+                        (error, stackTrace) =>
                         {
-                            throw DartRuntimePrimitives.AsException(error);
+                            setState(() =>
+                            {
+                                _lastException = error;
+                                _lastStack = stackTrace;
+                            });
+                            DartRuntimePrimitives.Assert(() =>
+                            {
+                                if (widget.errorBuilder is null)
+                                {
+                                    throw DartRuntimePrimitives.AsException(error);
+                                }
+                                return true;
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            });
                         }
-                        return true;
-                        throw new InvalidOperationException("Dart closure completed without a value.");
-                    });
-            }) : null, reportErrors: widget.errorBuilder is null);
+                    )
+                    : null,
+                reportErrors: widget.errorBuilder is null
+            );
         }
         return _imageStreamListener!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -367,7 +715,10 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
             _loadingProgress = null;
             _lastException = null;
             _lastStack = null;
-            _frameNumber = (_frameNumber is null) ? 0L : (DartRuntimePrimitives.RequireValue(_frameNumber) + 1L);
+            _frameNumber =
+                (_frameNumber is null)
+                    ? 0L
+                    : (DartRuntimePrimitives.RequireValue(_frameNumber) + 1L);
             _wasSynchronouslyLoaded = _wasSynchronouslyLoaded | synchronousCall;
         });
         if (_isPaused)
@@ -392,7 +743,13 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         ImageInfo? oldImageInfo = _imageInfo;
         if (oldImageInfo is not null)
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) => { oldImageInfo.dispose(); }, debugLabel: "Image.disposeOldInfo");
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                (duration) =>
+                {
+                    oldImageInfo.dispose();
+                },
+                debugLabel: "Image.disposeOldInfo"
+            );
         }
         _imageInfo = info;
     }
@@ -451,9 +808,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         }
         if ((_imageStream!.completer is not null) && (widget.errorBuilder is not null))
         {
-            _imageStream!.completer!.addEphemeralErrorListener((exception, stackTrace) =>
-            {
-            });
+            _imageStream!.completer!.addEphemeralErrorListener((exception, stackTrace) => { });
         }
         _imageStream!.removeListener(_getListener());
         _isListeningToStream = false;
@@ -461,7 +816,26 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual Widget _debugBuildErrorWidget(BuildContext context, object error)
     {
-        return new Stack(alignment: Alignment.center, children: new List<Widget> { Positioned.CreateFill(child: new Placeholder(color: new Color(3482124831L))), new Padding(padding: EdgeInsets.CreateAll(4.0), child: new FittedBox(child: new Text($"{error}", textAlign: TextAlign.center, textDirection: TextDirection.ltr, style: new TextStyle(shadows: new List<Shadow> { new Shadow(blurRadius: 1.0) })))) });
+        return new Stack(
+            alignment: Alignment.center,
+            children: new List<Widget>
+            {
+                Positioned.CreateFill(child: new Placeholder(color: new Color(3482124831L))),
+                new Padding(
+                    padding: EdgeInsets.CreateAll(4.0),
+                    child: new FittedBox(
+                        child: new Text(
+                            $"{error}",
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.ltr,
+                            style: new TextStyle(
+                                shadows: new List<Shadow> { new Shadow(blurRadius: 1.0) }
+                            )
+                        )
+                    )
+                ),
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -481,15 +855,51 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         Widget result = default!;
         if (_imageInfo is WebImageInfoIo webImage)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawWebImageIo(image: webImage, debugImageLabel: _imageInfo?.debugLabel, width: widget.width, height: widget.height, fit: widget.fit, alignment: widget.alignment, matchTextDirection: widget.matchTextDirection));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RawWebImageIo(
+                    image: webImage,
+                    debugImageLabel: _imageInfo?.debugLabel,
+                    width: widget.width,
+                    height: widget.height,
+                    fit: widget.fit,
+                    alignment: widget.alignment,
+                    matchTextDirection: widget.matchTextDirection
+                )
+            );
         }
         else
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawImage(image: _imageInfo?.image, debugImageLabel: _imageInfo?.debugLabel, width: widget.width, height: widget.height, scale: _imageInfo?.scale ?? 1.0, color: widget.color, opacity: widget.opacity, colorBlendMode: widget.colorBlendMode, fit: widget.fit, alignment: widget.alignment, repeat: widget.repeat, centerSlice: widget.centerSlice, matchTextDirection: widget.matchTextDirection, invertColors: _invertColors, isAntiAlias: widget.isAntiAlias, filterQuality: widget.filterQuality));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new RawImage(
+                    image: _imageInfo?.image,
+                    debugImageLabel: _imageInfo?.debugLabel,
+                    width: widget.width,
+                    height: widget.height,
+                    scale: _imageInfo?.scale ?? 1.0,
+                    color: widget.color,
+                    opacity: widget.opacity,
+                    colorBlendMode: widget.colorBlendMode,
+                    fit: widget.fit,
+                    alignment: widget.alignment,
+                    repeat: widget.repeat,
+                    centerSlice: widget.centerSlice,
+                    matchTextDirection: widget.matchTextDirection,
+                    invertColors: _invertColors,
+                    isAntiAlias: widget.isAntiAlias,
+                    filterQuality: widget.filterQuality
+                )
+            );
         }
         if (!widget.excludeFromSemantics)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: widget.semanticLabel is not null, image: true, label: widget.semanticLabel ?? "", child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Semantics(
+                    container: widget.semanticLabel is not null,
+                    image: true,
+                    label: widget.semanticLabel ?? "",
+                    child: result
+                )
+            );
         }
         if (widget.frameBuilder is not null)
         {
@@ -508,10 +918,12 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new DiagnosticsProperty<ImageStream>("stream", _imageStream));
         description.add(new DiagnosticsProperty<ImageInfo>("pixels", _imageInfo));
-        description.add(new DiagnosticsProperty<ImageChunkEvent>("loadingProgress", _loadingProgress));
+        description.add(
+            new DiagnosticsProperty<ImageChunkEvent>("loadingProgress", _loadingProgress)
+        );
         description.add(new DiagnosticsProperty<long>("frameNumber", _frameNumber));
-        description.add(new DiagnosticsProperty<bool>("wasSynchronouslyLoaded", _wasSynchronouslyLoaded));
+        description.add(
+            new DiagnosticsProperty<bool>("wasSynchronouslyLoaded", _wasSynchronouslyLoaded)
+        );
     }
-
 }
-

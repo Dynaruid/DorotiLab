@@ -20,10 +20,18 @@ public sealed class DorotiMacOSLayoutHandler : Microsoft.Maui.Platforms.MacOS.Ha
         {
             switch (command)
             {
-                case nameof(ILayoutHandler.Add): Add(update.View); return;
-                case nameof(ILayoutHandler.Remove): Remove(update.View); return;
-                case nameof(ILayoutHandler.Insert): Insert(update.Index, update.View); return;
-                case nameof(ILayoutHandler.Update): Update(update.Index, update.View); return;
+                case nameof(ILayoutHandler.Add):
+                    Add(update.View);
+                    return;
+                case nameof(ILayoutHandler.Remove):
+                    Remove(update.View);
+                    return;
+                case nameof(ILayoutHandler.Insert):
+                    Insert(update.Index, update.View);
+                    return;
+                case nameof(ILayoutHandler.Update):
+                    Update(update.Index, update.View);
+                    return;
             }
         }
         base.Invoke(command, args);

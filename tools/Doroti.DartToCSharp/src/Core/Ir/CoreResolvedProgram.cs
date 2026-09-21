@@ -16,9 +16,14 @@ internal sealed record CoreResolvedElement(
     CoreType? ResolvedReturnType,
     CoreResolvedParameter[]? Parameters,
     bool IsAbstract,
-    bool IsPrivate);
+    bool IsPrivate
+);
 
-internal sealed record CoreResolvedTypeParameter(string Name, string? Bound, CoreType? ResolvedBound);
+internal sealed record CoreResolvedTypeParameter(
+    string Name,
+    string? Bound,
+    CoreType? ResolvedBound
+);
 
 internal sealed record CoreResolvedParameter(
     string Name,
@@ -27,7 +32,8 @@ internal sealed record CoreResolvedParameter(
     string Kind,
     string? DefaultValue,
     bool IsInitializingFormal,
-    bool IsSuperFormal);
+    bool IsSuperFormal
+);
 
 internal sealed record CoreAstNode(
     CoreNodeKind Kind,
@@ -40,15 +46,15 @@ internal sealed record CoreAstNode(
     RuntimeIntrinsic? RuntimeIntrinsic,
     FlutterBinding? FlutterBinding,
     IReadOnlyDictionary<string, string?> Properties,
-    CoreAstNode[] Children)
+    CoreAstNode[] Children
+)
 {
     public int Offset => Origin.Offset;
     public int Length => Origin.Length;
     public string? StaticType { get; init; }
     public string? ElementId => ResolvedElement?.Value;
 
-    public string? Text(CoreProperty property) =>
-        Properties.GetValueOrDefault(property.ToString());
+    public string? Text(CoreProperty property) => Properties.GetValueOrDefault(property.ToString());
 
     public CoreAstNode? Child(CoreChildRole role)
     {
@@ -58,8 +64,11 @@ internal sealed record CoreAstNode(
             : null;
     }
 
-    public string? ParameterType(int index) => Properties.GetValueOrDefault($"parameter{index}Type");
-    public string? ParameterName(int index) => Properties.GetValueOrDefault($"parameter{index}Name");
+    public string? ParameterType(int index) =>
+        Properties.GetValueOrDefault($"parameter{index}Type");
+
+    public string? ParameterName(int index) =>
+        Properties.GetValueOrDefault($"parameter{index}Name");
 }
 
 internal sealed record CoreResolvedDeclaration(
@@ -69,7 +78,8 @@ internal sealed record CoreResolvedDeclaration(
     int Length,
     CoreResolvedElement Element,
     CoreAstNode Ast,
-    CoreResolvedMember[] Members);
+    CoreResolvedMember[] Members
+);
 
 internal sealed record CoreResolvedMember(
     string Kind,
@@ -86,4 +96,5 @@ internal sealed record CoreResolvedMember(
     bool IsGetter,
     bool IsSetter,
     bool IsOperator,
-    bool IsFactory);
+    bool IsFactory
+);

@@ -25,31 +25,51 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         for (var index = 0; index < UnsafeGpuQuarantine.Length; index++)
         {
             if (Interlocked.CompareExchange(ref UnsafeGpuQuarantine[index], state, null) is null)
+            {
                 return;
+            }
         }
         Environment.FailFast(
-            "The unsafe GPU quarantine is full; continuing could finalize wrappers against an idle-unverified device.");
+            "The unsafe GPU quarantine is full; continuing could finalize wrappers against an idle-unverified device."
+        );
     }
 
     public static int Run(DorotiApplicationDescriptor descriptor)
     {
         ArgumentNullException.ThrowIfNull(descriptor);
         if (!OperatingSystem.IsWindows())
-            throw new PlatformNotSupportedException("Doroti.Host.WindowsAppSdk can only launch on Windows.");
+        {
+            throw new PlatformNotSupportedException(
+                "Doroti.Host.WindowsAppSdk can only launch on Windows."
+            );
+        }
+
         var adapter = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER");
-        if (!string.IsNullOrWhiteSpace(adapter) &&
-            !adapter.Equals("HwndExactCpp", StringComparison.OrdinalIgnoreCase))
+        if (
+            !string.IsNullOrWhiteSpace(adapter)
+            && !adapter.Equals("HwndExactCpp", StringComparison.OrdinalIgnoreCase)
+        )
+        {
             throw new InvalidOperationException(
-                $"Unsupported Windows App SDK adapter '{adapter}'. Expected HwndExactCpp.");
+                $"Unsupported Windows App SDK adapter '{adapter}'. Expected HwndExactCpp."
+            );
+        }
 
         var selectedPresenter = WindowsManagedState.ResolveRequestedPresenter();
         if (selectedPresenter == "Vulkan" && WindowsManagedVulkanPresenter.GraphiteEnabled)
+        {
             WindowsManagedVulkanPresenter.ConfigureGraphiteLibrary();
+        }
+
         LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading(selectedPresenter);
         WindowsNativeV1.ValidateLayout();
         WindowsNativeV1.EnsureSelfContainedWindowsAppRuntime();
         var initializeResult = RoInitialize(0);
-        if (initializeResult < 0) Marshal.ThrowExceptionForHR(initializeResult);
+        if (initializeResult < 0)
+        {
+            Marshal.ThrowExceptionForHR(initializeResult);
+        }
+
         try
         {
             return RunCore(descriptor, selectedPresenter);
@@ -75,16 +95,26 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 descriptor.ManifestAssembly,
                 descriptor.ApplicationAssembly,
                 descriptor.LaunchContext.RuntimeIdentifier,
-                descriptor.NativePluginHandlers, platformViews.CreateFactories());
+                descriptor.NativePluginHandlers,
+                platformViews.CreateFactories()
+            );
             session = new DorotiHostSession(descriptor.EntrypointFactory());
-            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration, selectedPresenter,
-                application.Manifest.PlatformViews.Length == 0 ? null : platformViews);
+            state = new WindowsManagedState(
+                session,
+                application,
+                descriptor.ViewConfiguration,
+                selectedPresenter,
+                application.Manifest.PlatformViews.Length == 0 ? null : platformViews
+            );
             // Presenter-specific Composition activation must occur on the HWND
             // thread during host-ready. Its process-wide DLL search restriction
             // is applied there immediately after attach and before first show.
             // Opaque does not need that delayed WinRT activation.
             if ((state.NativeRequiredFeatures & WindowsNativeV1.ExperimentalAcrylicFeature) == 0)
+            {
                 WindowsNativeV1.RestrictProcessDllSearch();
+            }
+
             handle = GCHandle.Alloc(state);
             session.Start(deferFrameworkBootstrap: true);
             var applicationId = Encoding.UTF8.GetBytes(application.Manifest.ApplicationId);
@@ -99,12 +129,21 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     StructSize = checked((uint)sizeof(WindowsNativeV1.Configuration)),
                     ApplicationId = Utf8(applicationIdData, applicationId.Length),
                     Title = Utf8(titleData, title.Length),
-                    InitialWidthPx = ToDimension(descriptor.ViewConfiguration.logicalSize.width * initialScale),
-                    InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height * initialScale),
+                    InitialWidthPx = ToDimension(
+                        descriptor.ViewConfiguration.logicalSize.width * initialScale
+                    ),
+                    InitialHeightPx = ToDimension(
+                        descriptor.ViewConfiguration.logicalSize.height * initialScale
+                    ),
                     NCmdShow = 1,
-                    RequiredFeatures = state.NativeRequiredFeatures |
-                        (descriptor.ViewConfiguration.ResolveAppearance().titlebarStyle == WindowTitlebarStyle.unified
-                            ? WindowsNativeV1.UnifiedTitlebarFeature : WindowsNativeV1.SolidTitlebarFeature),
+                    RequiredFeatures =
+                        state.NativeRequiredFeatures
+                        | (
+                            descriptor.ViewConfiguration.ResolveAppearance().titlebarStyle
+                            == WindowTitlebarStyle.unified
+                                ? WindowsNativeV1.UnifiedTitlebarFeature
+                                : WindowsNativeV1.SolidTitlebarFeature
+                        ),
                     CompositionBackgroundArgb =
                         state.EffectiveMode == "opaque" && state.Presenter.UsesCompositionTopology
                             ? descriptor.ViewConfiguration.backgroundColor?.value ?? 0xff000000U
@@ -115,31 +154,65 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     AbiVersion = WindowsNativeV1.AbiVersion,
                     StructSize = checked((uint)sizeof(WindowsNativeV1.Callbacks)),
                     CallbackContext = GCHandle.ToIntPtr(handle),
-                    HostReady = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Host*, void>)&OnHostReady,
-                    Metrics = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Metrics*, void>)&OnMetrics,
-                    Render = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.FrameRequest*, uint>)&OnRender,
-                    FrameTerminal = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.FrameTerminal*, void>)&OnFrameTerminal,
-                    Log = (nint)(delegate* unmanaged[Cdecl]<nint, uint, WindowsNativeV1.Utf8, void>)&OnLog,
-                    Pointer = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Pointer*, void>)&OnPointer,
-                    Key = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Key*, void>)&OnKey,
-                    Focus = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnFocus,
-                    Clipboard = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, WindowsNativeV1.Utf8, void>)&OnClipboard,
-                    TextEditing = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, void>)&OnTextEditing,
+                    HostReady = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Host*, void>)&OnHostReady,
+                    Metrics = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Metrics*, void>)
+                            &OnMetrics,
+                    Render = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.FrameRequest*, uint>)
+                            &OnRender,
+                    FrameTerminal = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.FrameTerminal*, void>)
+                            &OnFrameTerminal,
+                    Log = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, uint, WindowsNativeV1.Utf8, void>)&OnLog,
+                    Pointer = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Pointer*, void>)
+                            &OnPointer,
+                    Key = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Key*, void>)&OnKey,
+                    Focus = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnFocus,
+                    Clipboard = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, ulong, WindowsNativeV1.Utf8, void>)
+                            &OnClipboard,
+                    TextEditing = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, void>)
+                            &OnTextEditing,
                     TextAction = (nint)(delegate* unmanaged[Cdecl]<nint, uint, void>)&OnTextAction,
-                    SemanticsAction = (nint)(delegate* unmanaged[Cdecl]<nint, long, long, WindowsNativeV1.Utf8, void>)&OnSemanticsAction,
-                    Lifecycle = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnLifecycle,
-                    PlatformBrightness = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, void>)&OnPlatformBrightness,
-                    PlatformResourcesShutdown = (nint)(delegate* unmanaged[Cdecl]<nint, void>)&OnPlatformResourcesShutdown,
-                    CompositionResize = (nint)(delegate* unmanaged[Cdecl]<nint, uint, uint, double, uint, uint, void>)&OnCompositionResize,
-                    MovingFrame = (nint)(delegate* unmanaged[Cdecl]<nint, uint, WindowsNativeV1.MovingFrame*, int>)&OnMovingFrame,
+                    SemanticsAction = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, long, long, WindowsNativeV1.Utf8, void>)
+                            &OnSemanticsAction,
+                    Lifecycle = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnLifecycle,
+                    PlatformBrightness = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, ulong, uint, void>)&OnPlatformBrightness,
+                    PlatformResourcesShutdown = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, void>)&OnPlatformResourcesShutdown,
+                    CompositionResize = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, uint, uint, double, uint, uint, void>)
+                            &OnCompositionResize,
+                    MovingFrame = (nint)
+                        (delegate* unmanaged[Cdecl]<nint, uint, WindowsNativeV1.MovingFrame*, int>)
+                            &OnMovingFrame,
                 };
                 var status = WindowsNativeV1.Run(in configuration, in callbacks);
                 state.MarkNativeStopped();
                 state.ThrowIfFatal();
                 if (status != WindowsNativeV1.Status.Ok)
-                    throw new InvalidOperationException($"Native HwndExactCpp product host failed: {status}.");
+                {
+                    throw new InvalidOperationException(
+                        $"Native HwndExactCpp product host failed: {status}."
+                    );
+                }
+
                 state.ValidateTerminalCoverage();
-                if (ShouldWriteDiagnostics()) state.WriteDiagnostics();
+                if (ShouldWriteDiagnostics())
+                {
+                    state.WriteDiagnostics();
+                }
+
                 return 0;
             }
         }
@@ -163,23 +236,46 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 }
             }
 
-            if (handle.IsAllocated) Cleanup(handle.Free);
-            if (state is { } activeState) Cleanup(activeState.Dispose);
+            if (handle.IsAllocated)
+            {
+                Cleanup(handle.Free);
+            }
+
+            if (state is { } activeState)
+            {
+                Cleanup(activeState.Dispose);
+            }
+
             if (state is not { UnsafeGpuCleanupQuarantined: true })
             {
-                if (session is { } activeSession) Cleanup(activeSession.Dispose);
-                if (application is { } activeApplication) Cleanup(activeApplication.Dispose);
+                if (session is { } activeSession)
+                {
+                    Cleanup(activeSession.Dispose);
+                }
+
+                if (application is { } activeApplication)
+                {
+                    Cleanup(activeApplication.Dispose);
+                }
             }
             if (cleanupFailures.Count != 0)
             {
                 if (runFailure is not null)
+                {
                     cleanupFailures.Insert(0, runFailure);
+                }
+
                 if (cleanupFailures.Count == 1)
-                    System.Runtime.ExceptionServices.ExceptionDispatchInfo
-                        .Capture(cleanupFailures[0]).Throw();
+                {
+                    System
+                        .Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(cleanupFailures[0])
+                        .Throw();
+                }
+
                 throw new AggregateException(
                     "The Windows host run or one or more cleanup stages failed.",
-                    cleanupFailures);
+                    cleanupFailures
+                );
             }
         }
     }
@@ -220,7 +316,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal WindowsManagedState(
             DorotiHostSession session,
             DorotiApplicationBoundary application,
-            DorotiViewConfiguration configuration, string selectedPresenter, WindowsPlatformViewHost? platformViews)
+            DorotiViewConfiguration configuration,
+            string selectedPresenter,
+            WindowsPlatformViewHost? platformViews
+        )
         {
             _session = session;
             _application = application;
@@ -229,51 +328,73 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _requestedDeviceResets = ResolveRequestedDeviceResets();
             RequestedPresenter = selectedPresenter;
             var backdrop = configuration.ResolveAppearance().ResolveBackdrop(isMacOS: false);
-            var acrylicRequested = backdrop.mode is
-                WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic;
+            var acrylicRequested =
+                backdrop.mode
+                is WindowBackdropMode.acrylic
+                    or WindowBackdropMode.experimentalAcrylic;
             RequestedMode = acrylicRequested ? backdrop.mode.ToString() : "opaque";
             if (acrylicRequested && RequestedPresenter == "Vulkan")
             {
                 Presenter = new WindowsManagedVulkanPresenter(
-                    ShouldWriteDiagnostics(), backdrop, Brightness.light);
+                    ShouldWriteDiagnostics(),
+                    backdrop,
+                    Brightness.light
+                );
                 EffectiveMode = RequestedMode;
             }
             else if (acrylicRequested && RequestedPresenter != "AngleD3D11")
+            {
                 throw new InvalidOperationException(
-                    $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with Acrylic. " +
-                    "Only AngleD3D11 and Vulkan support the Acrylic topology.");
+                    $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with Acrylic. "
+                        + "Only AngleD3D11 and Vulkan support the Acrylic topology."
+                );
+            }
             else if (acrylicRequested)
             {
                 try
                 {
                     if (ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-start");
+                    {
+                        Console.Error.WriteLine(
+                            "doroti.windows.experimental-acrylic=pre-window-probe-start"
+                        );
+                    }
+
                     Presenter = new WindowsManagedAcrylicCompositionPresenter(
                         ShouldWriteDiagnostics(),
                         backdrop,
-                        Brightness.light);
+                        Brightness.light
+                    );
                     EffectiveMode = RequestedMode;
                     NativeRequiredFeatures = WindowsNativeV1.ExperimentalAcrylicFeature;
                     if (ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-pass");
+                    {
+                        Console.Error.WriteLine(
+                            "doroti.windows.experimental-acrylic=pre-window-probe-pass"
+                        );
+                    }
                 }
                 catch (Exception exception)
                 {
                     FallbackReason = $"pre-window:{exception.GetType().Name}:{exception.Message}";
-                    Presenter = CreatePresenter(
-                        ShouldWriteDiagnostics(), RequestedPresenter);
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                     EffectiveMode = "opaque";
                 }
             }
             else
             {
-                Presenter = CreatePresenter(
-                    ShouldWriteDiagnostics(), RequestedPresenter);
+                Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                 EffectiveMode = "opaque";
             }
             NativeRequiredFeatures |= Presenter.NativeRequiredFeatures;
-            if (_platformViews is not null && Presenter is WindowsManagedVulkanPresenter && WindowsManagedVulkanPresenter.GraphiteEnabled)
+            if (
+                _platformViews is not null
+                && Presenter is WindowsManagedVulkanPresenter
+                && WindowsManagedVulkanPresenter.GraphiteEnabled
+            )
+            {
                 NativeRequiredFeatures |= WindowsNativeV1.PlatformViewSiblingWindowsFeature;
+            }
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
@@ -297,86 +418,159 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 {
                     var acrylic = Presenter as IWindowsAcrylicPresenter;
                     if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=backdrop-topology-attach-start");
+                    {
+                        Console.Error.WriteLine(
+                            "doroti.windows.experimental-acrylic=backdrop-topology-attach-start"
+                        );
+                    }
+
                     if (acrylic is { AcrylicEnabled: true })
+                    {
                         acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
+                    }
+
                     if (Presenter is WindowsManagedVulkanPresenter vulkan)
+                    {
                         vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
+                    }
                     else
+                    {
                         Presenter.AttachWindow(native.TopLevelHwnd);
+                    }
+
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
-                    if (acrylic is { AcrylicEnabled: true } && string.Equals(
-                            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"),
-                            "1", StringComparison.Ordinal))
-                        _optionSmoke = Task.Run(() => RunAcrylicOptionSmoke(
-                            acrylic, systemMaterialOnly: false));
+                    if (
+                        acrylic is { AcrylicEnabled: true }
+                        && string.Equals(
+                            Environment.GetEnvironmentVariable(
+                                "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"
+                            ),
+                            "1",
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        _optionSmoke = Task.Run(() =>
+                            RunAcrylicOptionSmoke(acrylic, systemMaterialOnly: false)
+                        );
+                    }
+
                     if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=backdrop-topology-attach-pass");
+                    {
+                        Console.Error.WriteLine(
+                            "doroti.windows.experimental-acrylic=backdrop-topology-attach-pass"
+                        );
+                    }
                 }
-                catch (Exception exception) when (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+                catch (Exception exception)
+                    when (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
                 {
                     acrylic.ReleaseCompositionResources();
-                    var fallback = (delegate* unmanaged[Cdecl]<nint, uint>)native.RequestOpaqueFallback;
+                    var fallback = (delegate* unmanaged[Cdecl]<nint, uint>)
+                        native.RequestOpaqueFallback;
                     var fallbackStatus = fallback(native.HostContext);
                     if (fallbackStatus != 0)
+                    {
                         throw new InvalidOperationException(
                             $"experimentalAcrylic initialization failed and opaque fallback returned {fallbackStatus}.",
-                            exception);
+                            exception
+                        );
+                    }
+
                     FallbackReason = $"pre-show:{exception.GetType().Name}:{exception.Message}";
                     EffectiveMode = "opaque";
-                    Presenter = CreatePresenter(
-                        ShouldWriteDiagnostics(), RequestedPresenter);
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
                 }
             }
             WindowsNativeV1.RestrictProcessDllSearch();
-            var host = new WindowsManagedProductHost(in effectiveNative,
+            var host = new WindowsManagedProductHost(
+                in effectiveNative,
                 checked((int)_configuration.logicalSize.width),
-                checked((int)_configuration.logicalSize.height));
-            if (_platformViews is not null && WindowsManagedVulkanPresenter.GraphiteEnabled && Presenter is WindowsManagedVulkanPresenter platformPresenter)
+                checked((int)_configuration.logicalSize.height)
+            );
+            if (
+                _platformViews is not null
+                && WindowsManagedVulkanPresenter.GraphiteEnabled
+                && Presenter is WindowsManagedVulkanPresenter platformPresenter
+            )
+            {
                 platformPresenter.PlatformRasterWindow = host.ChildHwnd;
+            }
+
             var presenterSlug = Presenter.BackendName.ToLowerInvariant().Replace('/', '-');
             var topology = Presenter.TopologySlug;
             var target = $"win-x64/windowsappsdk-2.4/{topology}/managed-{presenterSlug}-skia";
             var renderer = new SkiaSceneRenderer(
-                1, host, _configuration.backgroundColor, _configuration.darkBackgroundColor,
-                target, Presenter.RuntimeEffectsBackend,
+                1,
+                host,
+                _configuration.backgroundColor,
+                _configuration.darkBackgroundColor,
+                target,
+                Presenter.RuntimeEffectsBackend,
                 $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed",
-                enablePictureRasterCache: Presenter.RuntimeEffectsBackend != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend);
+                enablePictureRasterCache: Presenter.RuntimeEffectsBackend
+                    != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
+            );
             var messages = new WindowsAppSdkPlatformMessageCapability();
             if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } activeAcrylic)
+            {
                 messages.SetMessageHandler(
                     WindowsManagedAcrylicCompositionPresenter.RuntimeChannel,
-                    activeAcrylic.HandleRuntimeMessageAsync);
+                    activeAcrylic.HandleRuntimeMessageAsync
+                );
+            }
+
             var capabilities = new DorotiViewCapabilities(target)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
                 .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
-                .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+                .Register<IPlatformServicesHostCapability>(
+                    DorotiCapabilityIds.PlatformServices,
+                    host
+                )
                 .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, host)
-                .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host)
+                .Register<IPlatformEnvironmentHostCapability>(
+                    DorotiCapabilityIds.PlatformEnvironment,
+                    host
+                )
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
-            capabilities.Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, renderer);
+            capabilities.Register<ISemanticsHostCapability>(
+                DorotiCapabilityIds.AccessibilitySemantics,
+                renderer
+            );
             Host = host;
             Renderer = renderer;
             _capabilities = capabilities;
             if (_platformViews is { } platformViews)
             {
-                var dispatcher = platformViews.Bind(host,
-                    WindowsManagedVulkanPresenter.GraphiteEnabled ? Presenter as WindowsManagedVulkanPresenter : null, _application.ApplicationResources);
+                var dispatcher = platformViews.Bind(
+                    host,
+                    WindowsManagedVulkanPresenter.GraphiteEnabled
+                        ? Presenter as WindowsManagedVulkanPresenter
+                        : null,
+                    _application.ApplicationResources
+                );
                 var coordinator = _application.ConfigurePlatformViews(capabilities, 1, dispatcher);
                 platformViews.Configure(coordinator);
-                var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+                var channel = new Framework.Services.PlatformViewChannelAdapter(
+                    coordinator,
+                    messages
+                );
                 _application.Configure(capabilities, channel);
                 renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
                     platformViews.Draw(renderer, canvas, commands, descriptor, width, height);
             }
-            else _application.Configure(capabilities, messages);
+            else
+            {
+                _application.Configure(capabilities, messages);
+            }
+
             DorotiView? view = null;
             try
             {
@@ -385,8 +579,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 if (_platformViews is { } nativeViews)
                 {
                     var platformViewOwner = view;
-                    nativeViews.RequestFrameworkFrame = () => host.DispatchPlatformViewEvent(() =>
-                        platformViewOwner.ScheduleFrame(DartUiInvocation.Managed("Windows.PlatformView.nativeRevision")));
+                    nativeViews.RequestFrameworkFrame = () =>
+                        host.DispatchPlatformViewEvent(() =>
+                            platformViewOwner.ScheduleFrame(
+                                DartUiInvocation.Managed("Windows.PlatformView.nativeRevision")
+                            )
+                        );
                 }
                 renderer.AttachFrameworkTrace(_session.dispatcher.frameTrace);
                 Host = host;
@@ -401,8 +599,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 Host = null;
                 Renderer = null;
-                if (view is null) capabilities.Dispose();
-                else view.Dispose();
+                if (view is null)
+                {
+                    capabilities.Dispose();
+                }
+                else
+                {
+                    view.Dispose();
+                }
+
                 renderer.Dispose();
                 host.Dispose();
                 throw;
@@ -410,16 +615,22 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         }
 
         internal void ApplyMetrics(in WindowsNativeV1.Metrics metrics) =>
-            (Host ?? throw new InvalidOperationException("Metrics arrived before host-ready."))
-                .ApplyMetrics(in metrics);
+            (
+                Host ?? throw new InvalidOperationException("Metrics arrived before host-ready.")
+            ).ApplyMetrics(in metrics);
 
         private MovingFrameKey? _movingFrame;
         private bool _preparedMismatchInjected;
 
         internal int MovingFrame(uint action, in WindowsNativeV1.MovingFrame nativeKey)
         {
-            if (Presenter is not WindowsManagedVulkanPresenter vulkan) return 1;
-            var host = Host ?? throw new InvalidOperationException("Moving frame before host-ready.");
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan)
+            {
+                return 1;
+            }
+
+            var host =
+                Host ?? throw new InvalidOperationException("Moving frame before host-ready.");
             lock (_gate)
             {
                 if (action == 4)
@@ -439,45 +650,81 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     _movingFrame = nativeKey.ToKey(host.InputSequence);
                     return 0;
                 }
-                if (action is not (2 or 5) || _movingFrame is not { } key) return 1;
-                if (action == 2) _movingFrame = null;
-                if (!_preparedMismatchInjected &&
-                    Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PREPARED_FRAME_TEST_MISMATCH") == "1")
+                if (action is not (2 or 5) || _movingFrame is not { } key)
+                {
+                    return 1;
+                }
+
+                if (action == 2)
+                {
+                    _movingFrame = null;
+                }
+
+                if (
+                    !_preparedMismatchInjected
+                    && Environment.GetEnvironmentVariable(
+                        "DOROTI_WINDOWS_PREPARED_FRAME_TEST_MISMATCH"
+                    ) == "1"
+                )
                 {
                     _preparedMismatchInjected = true;
                     vulkan.RecordPreparedMismatch();
                     vulkan.CancelPreparedMovingFrame();
                     return 1;
                 }
-                if (key != nativeKey.ToKey(key.InputSequence) ||
-                    !host.IsInputSequenceCurrent(key.InputSequence) ||
-                    !host.IsLatestResizeGeneration(key.MetricsGeneration))
+                if (
+                    key != nativeKey.ToKey(key.InputSequence)
+                    || !host.IsInputSequenceCurrent(key.InputSequence)
+                    || !host.IsLatestResizeGeneration(key.MetricsGeneration)
+                )
                 {
                     vulkan.RecordPreparedMismatch();
                     vulkan.CancelPreparedMovingFrame();
                     return 1;
                 }
-                if (action == 5) return vulkan.AlignPreparedMovingFrame(key);
+                if (action == 5)
+                {
+                    return vulkan.AlignPreparedMovingFrame(key);
+                }
+
                 var status = vulkan.CommitPreparedMovingFrame(key);
-                if (status == 0) _lastPresentedResizeGeneration = key.MetricsGeneration;
+                if (status == 0)
+                {
+                    _lastPresentedResizeGeneration = key.MetricsGeneration;
+                }
+
                 return status;
             }
         }
 
         internal void ResizeComposition(
-            uint width, uint height, double scale, uint sizingEdge, uint resizePhase)
+            uint width,
+            uint height,
+            double scale,
+            uint sizingEdge,
+            uint resizePhase
+        )
         {
             if (!Presenter.UsesCompositionTopology)
+            {
                 throw new InvalidOperationException(
-                    "A Composition viewport resize arrived without a Composition presenter.");
+                    "A Composition viewport resize arrived without a Composition presenter."
+                );
+            }
+
             Presenter.ResizeViewport(
-                checked((int)width), checked((int)height), scale,
-                sizingEdge, resizePhase == 1);
+                checked((int)width),
+                checked((int)height),
+                scale,
+                sizingEdge,
+                resizePhase == 1
+            );
         }
 
         private static void RunAcrylicOptionSmoke(
             IWindowsAcrylicPresenter acrylic,
-            bool systemMaterialOnly)
+            bool systemMaterialOnly
+        )
         {
             const int requestCount = 500;
             var requests = new Task<ReadOnlyMemory<byte>?>[requestCount];
@@ -485,49 +732,89 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 var kind = systemMaterialOnly
                     ? "default"
-                    : (index % 3) switch { 0 => "default", 1 => "base", _ => "thin" };
-                var theme = index % 2 == 0 ? "light" : "dark";
-                var payload = Encoding.UTF8.GetBytes(systemMaterialOnly
-                    ? JsonSerializer.Serialize(new { kind, theme })
-                    : JsonSerializer.Serialize(new
+                    : (index % 3) switch
                     {
-                        kind,
-                        theme,
-                        tintColor = 0xff204060u + (uint)(index & 0x1f),
-                        tintOpacity = index % 11 / 10d,
-                        luminosityOpacity = index % 6 / 5d,
-                    }));
-                requests[index] = acrylic.HandleRuntimeMessageAsync(payload, CancellationToken.None).AsTask();
+                        0 => "default",
+                        1 => "base",
+                        _ => "thin",
+                    };
+                var theme = index % 2 == 0 ? "light" : "dark";
+                var payload = Encoding.UTF8.GetBytes(
+                    systemMaterialOnly
+                        ? JsonSerializer.Serialize(new { kind, theme })
+                        : JsonSerializer.Serialize(
+                            new
+                            {
+                                kind,
+                                theme,
+                                tintColor = 0xff204060u + (uint)(index & 0x1f),
+                                tintOpacity = index % 11 / 10d,
+                                luminosityOpacity = index % 6 / 5d,
+                            }
+                        )
+                );
+                requests[index] = acrylic
+                    .HandleRuntimeMessageAsync(payload, CancellationToken.None)
+                    .AsTask();
             }
             Task.WaitAll(requests);
-            var terminals = requests.Select(task => task.Result)
-                .Select(result => result is { } value
-                    ? JsonDocument.Parse(value)
-                    : throw new InvalidDataException("Acrylic option smoke returned no terminal."))
+            var terminals = requests
+                .Select(task => task.Result)
+                .Select(result =>
+                    result is { } value
+                        ? JsonDocument.Parse(value)
+                        : throw new InvalidDataException(
+                            "Acrylic option smoke returned no terminal."
+                        )
+                )
                 .ToArray();
             try
             {
-                if (terminals.Any(terminal =>
-                        !terminal.RootElement.TryGetProperty("status", out var status) ||
-                        status.GetString() is not ("applied" or "superseded")))
-                    throw new InvalidDataException("Acrylic option smoke returned a failed or malformed terminal.");
-                if (terminals[^1].RootElement.GetProperty("status").GetString() != "applied")
-                    throw new InvalidDataException("Acrylic option smoke did not apply the last request.");
-                var snapshot = acrylic.Snapshot();
-                if (snapshot.AcceptedOptionRevisions != requestCount || snapshot.FailedOptionRevisions != 0 ||
-                    snapshot.AppliedOptionRevisions + snapshot.SupersededOptionRevisions != requestCount ||
-                    snapshot.AcrylicKind != (systemMaterialOnly ? "default" : "base") ||
-                    snapshot.Theme != "Dark")
+                if (
+                    terminals.Any(terminal =>
+                        !terminal.RootElement.TryGetProperty("status", out var status)
+                        || status.GetString() is not ("applied" or "superseded")
+                    )
+                )
+                {
                     throw new InvalidDataException(
-                        $"Acrylic option smoke counters or last-request-wins state differ: {snapshot}.");
+                        "Acrylic option smoke returned a failed or malformed terminal."
+                    );
+                }
+
+                if (terminals[^1].RootElement.GetProperty("status").GetString() != "applied")
+                {
+                    throw new InvalidDataException(
+                        "Acrylic option smoke did not apply the last request."
+                    );
+                }
+
+                var snapshot = acrylic.Snapshot();
+                if (
+                    snapshot.AcceptedOptionRevisions != requestCount
+                    || snapshot.FailedOptionRevisions != 0
+                    || snapshot.AppliedOptionRevisions + snapshot.SupersededOptionRevisions
+                        != requestCount
+                    || snapshot.AcrylicKind != (systemMaterialOnly ? "default" : "base")
+                    || snapshot.Theme != "Dark"
+                )
+                {
+                    throw new InvalidDataException(
+                        $"Acrylic option smoke counters or last-request-wins state differ: {snapshot}."
+                    );
+                }
             }
             finally
             {
-                foreach (var terminal in terminals) terminal.Dispose();
+                foreach (var terminal in terminals)
+                {
+                    terminal.Dispose();
+                }
             }
         }
 
         private bool _nativeRenderWorkerJoined;
+
         internal void MarkNativeStopped()
         {
             _nativeRenderWorkerJoined = true;
@@ -547,7 +834,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)
                 {
                     if (_optionSmoke is { } smoke && !smoke.Wait(TimeSpan.FromSeconds(5)))
-                        throw new TimeoutException("Acrylic option smoke did not drain before platform shutdown.");
+                    {
+                        throw new TimeoutException(
+                            "Acrylic option smoke did not drain before platform shutdown."
+                        );
+                    }
+
                     _releasedAcrylicSnapshot = acrylic.Snapshot();
                     _releasedAdapterDescription = Presenter.AdapterDescription;
                 }
@@ -558,22 +850,27 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal uint Render(in WindowsNativeV1.FrameRequest request)
         {
             RecordThread(ref _rasterThreadId, "raster");
-            var host = Host ?? throw new InvalidOperationException("Render arrived before host-ready.");
-            var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.");
+            var host =
+                Host ?? throw new InvalidOperationException("Render arrived before host-ready.");
+            var renderer =
+                Renderer ?? throw new InvalidOperationException("Renderer is unavailable.");
             var width = checked((int)request.WidthPx);
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
             var dispatchedFrameworkFrame = host.BeginFrame(in request);
             var requiresPresenterQualification =
-                _platformViews is { NeedsReplay: true } ||
-                _completedDeviceResets < _requestedDeviceResets ||
-                _vulkanRecoveryPending ||
-                Presenter is WindowsManagedVulkanPresenter { HasPendingInjectedResult: true };
-            if (!dispatchedFrameworkFrame &&
-                !requiresPresenterQualification &&
-                _lastPresentedResizeGeneration == resizeGeneration &&
-                Presenter.Width == width && Presenter.Height == height)
+                _platformViews is { NeedsReplay: true }
+                || _completedDeviceResets < _requestedDeviceResets
+                || _vulkanRecoveryPending
+                || Presenter is WindowsManagedVulkanPresenter { HasPendingInjectedResult: true };
+            if (
+                !dispatchedFrameworkFrame
+                && !requiresPresenterQualification
+                && _lastPresentedResizeGeneration == resizeGeneration
+                && Presenter.Width == width
+                && Presenter.Height == height
+            )
             {
                 // The exact surface for this generation is already visible
                 // and no framework callback produced newer scene work. Treat
@@ -582,8 +879,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Interlocked.Increment(ref _renderCallbacks);
                 return (uint)WindowsNativeV1.FrameTerminalKind.Presented;
             }
-            if (_completedDeviceResets < _requestedDeviceResets &&
-                Interlocked.Read(ref _renderCallbacks) >= 1)
+            if (
+                _completedDeviceResets < _requestedDeviceResets
+                && Interlocked.Read(ref _renderCallbacks) >= 1
+            )
             {
                 var deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 renderer.InvalidateGpuContextResources();
@@ -600,23 +899,36 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 var deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 renderer.InvalidateGpuContextResources();
                 if (Presenter is WindowsManagedAngleEglPresenter)
+                {
                     Presenter.ResetDevice();
+                }
                 else if (deviceLost)
+                {
                     Presenter.ResetDeviceAfterRendererGpuResourceRelease(deviceLost: true);
+                }
             }
-            var stableMoveRefresh = _presenterResizeGeneration > 0 &&
-                _presenterResizeGeneration != resizeGeneration &&
-                _presenterScale == scale && Presenter.Width == width && Presenter.Height == height;
+            var stableMoveRefresh =
+                _presenterResizeGeneration > 0
+                && _presenterResizeGeneration != resizeGeneration
+                && _presenterScale == scale
+                && Presenter.Width == width
+                && Presenter.Height == height;
             if (stableMoveRefresh && Presenter is WindowsManagedAngleEglPresenter movePresenter)
             {
                 renderer.InvalidateWindowSurfaceResources();
                 movePresenter.ResetWindowSurfaceAfterInteractiveMove();
             }
             var windowSurfaceChanged = Presenter.Width != width || Presenter.Height != height;
-            if (windowSurfaceChanged && !stableMoveRefresh &&
-                !Presenter.UsesCompositionTopology &&
-                Presenter.InvalidatesRendererSurfaceResourcesOnResize)
+            if (
+                windowSurfaceChanged
+                && !stableMoveRefresh
+                && !Presenter.UsesCompositionTopology
+                && Presenter.InvalidatesRendererSurfaceResourcesOnResize
+            )
+            {
                 renderer.InvalidateWindowSurfaceResources();
+            }
+
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
                 Interlocked.Increment(ref _renderCallbacks);
@@ -629,35 +941,63 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var presented = false;
             var staleInputPrevented = false;
             MovingFrameKey? prepareKey;
-            lock (_gate) prepareKey = _movingFrame;
+            lock (_gate)
+            {
+                prepareKey = _movingFrame;
+            }
+
             SkiaPaintResult Paint(SKSurface surface)
+            {
+                var paintResult = renderer.Paint(
+                    surface,
+                    width,
+                    height,
+                    host.ResizeTarget,
+                    causalFrameId
+                );
+                if (ShouldDrawValidationFrameMarker())
                 {
-                    var paintResult = renderer.Paint(
-                        surface, width, height, host.ResizeTarget, causalFrameId);
-                    if (ShouldDrawValidationFrameMarker())
-                        DrawValidationFrameMarker(
-                            surface.Canvas, width, height, scale, checked((long)resizeGeneration));
-                    return paintResult;
+                    DrawValidationFrameMarker(
+                        surface.Canvas,
+                        width,
+                        height,
+                        scale,
+                        checked((long)resizeGeneration)
+                    );
                 }
+
+                return paintResult;
+            }
             bool ShouldPresent(SkiaPaintResult value)
+            {
+                if (!value.ShouldPresent || value.Completion is not { } candidate)
                 {
-                    if (!value.ShouldPresent || value.Completion is not { } candidate)
-                        return presented = false;
-                    if (!host.IsInputSequenceCurrent(candidate.InputSequence))
-                    {
-                        staleInputPrevented = true;
-                        return presented = false;
-                    }
-                    return presented = host.IsLatestResizeGeneration(resizeGeneration);
+                    return presented = false;
                 }
-            var preparing = prepareKey is { } pending && pending.MetricsGeneration == resizeGeneration;
-            var result = preparing && Presenter is WindowsManagedVulkanPresenter preparingVulkan
-                ? preparingVulkan.RenderAndPrepare(prepareKey!.Value, Paint, ShouldPresent)
-                : Presenter.RenderAndPresent(Paint, ShouldPresent);
-            var prepared = preparing && Presenter is WindowsManagedVulkanPresenter { LastPrepareSucceeded: true };
+
+                if (!host.IsInputSequenceCurrent(candidate.InputSequence))
+                {
+                    staleInputPrevented = true;
+                    return presented = false;
+                }
+                return presented = host.IsLatestResizeGeneration(resizeGeneration);
+            }
+            var preparing =
+                prepareKey is { } pending && pending.MetricsGeneration == resizeGeneration;
+            var result =
+                preparing && Presenter is WindowsManagedVulkanPresenter preparingVulkan
+                    ? preparingVulkan.RenderAndPrepare(prepareKey!.Value, Paint, ShouldPresent)
+                    : Presenter.RenderAndPresent(Paint, ShouldPresent);
+            var prepared =
+                preparing
+                && Presenter is WindowsManagedVulkanPresenter { LastPrepareSucceeded: true };
             presented &= Presenter.LastPresentSucceeded;
             _platformViews?.FinishRaster(causalFrameId, presented || prepared);
-            if (staleInputPrevented) Interlocked.Increment(ref _staleInputPresentPrevented);
+            if (staleInputPrevented)
+            {
+                Interlocked.Increment(ref _staleInputPresentPrevented);
+            }
+
             if (!presented && !prepared && result.Completion is { IsNewFrame: true } stale)
             {
                 var reason = host.IsInputSequenceCurrent(stale.InputSequence)
@@ -667,28 +1007,49 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
+            {
                 throw new InvalidOperationException(
-                    $"Managed {Presenter.BackendName} presentation emitted " +
-                    $"{Presenter.OperationalDebugErrorCount} operational GPU errors.");
+                    $"Managed {Presenter.BackendName} presentation emitted "
+                        + $"{Presenter.OperationalDebugErrorCount} operational GPU errors."
+                );
+            }
+
             Interlocked.Increment(ref _renderCallbacks);
             if (presented)
+            {
                 _lastPresentedResizeGeneration = resizeGeneration;
+            }
+
             if ((presented || prepared) && result.Completion is { } completion)
             {
-                lock (_gate) _paintCompletions.Add(request.CausalFrameId, completion);
+                lock (_gate)
+                {
+                    _paintCompletions.Add(request.CausalFrameId, completion);
+                }
             }
-            return prepared ? (uint)WindowsNativeV1.FrameTerminalKind.Prepared : presented
-                ? (uint)WindowsNativeV1.FrameTerminalKind.Presented
+            return prepared ? (uint)WindowsNativeV1.FrameTerminalKind.Prepared
+                : presented ? (uint)WindowsNativeV1.FrameTerminalKind.Presented
                 : (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
         }
 
         internal uint RecoverVulkanDeviceLoss(Exception failure)
         {
-            if (Presenter is not WindowsManagedVulkanPresenter vulkan) throw failure;
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan)
+            {
+                throw failure;
+            }
+
             if (Interlocked.Increment(ref _vulkanDeviceLossRecoveries) != 1)
+            {
                 throw new InvalidOperationException(
-                    "The Vulkan device was lost again after the single allowed recovery.", failure);
-            var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
+                    "The Vulkan device was lost again after the single allowed recovery.",
+                    failure
+                );
+            }
+
+            var renderer =
+                Renderer
+                ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
             renderer.FailOutstandingGpuPaints(failure.Message);
             // A genuinely lost device must be abandoned before cached Skia GPU
             // objects run their destructors. Native Vulkan handles are released
@@ -704,11 +1065,22 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal uint RecoverVulkanSurfaceLoss(Exception failure)
         {
-            if (Presenter is not WindowsManagedVulkanPresenter vulkan) throw failure;
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan)
+            {
+                throw failure;
+            }
+
             if (Interlocked.Increment(ref _vulkanSurfaceLossRecoveries) != 1)
+            {
                 throw new InvalidOperationException(
-                    "The Vulkan Win32 surface was lost again after the single allowed recovery.", failure);
-            var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
+                    "The Vulkan Win32 surface was lost again after the single allowed recovery.",
+                    failure
+                );
+            }
+
+            var renderer =
+                Renderer
+                ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
             renderer.FailOutstandingGpuPaints(failure.Message);
             var deviceLost = vulkan.PrepareForRendererGpuResourceRelease();
             renderer.InvalidateGpuContextResources();
@@ -721,33 +1093,52 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)
         {
-            var host = Host ?? throw new InvalidOperationException("Terminal arrived before host-ready.");
+            var host =
+                Host ?? throw new InvalidOperationException("Terminal arrived before host-ready.");
             host.CompleteTerminal(in terminal);
-            var compositionCommitted = _platformViews?.Terminal(checked((long)terminal.CausalFrameId),
-                terminal.TerminalKind == (uint)WindowsNativeV1.FrameTerminalKind.Presented,
-                checked((long)terminal.Generation)) ?? true;
+            var compositionCommitted =
+                _platformViews?.Terminal(
+                    checked((long)terminal.CausalFrameId),
+                    terminal.TerminalKind == (uint)WindowsNativeV1.FrameTerminalKind.Presented,
+                    checked((long)terminal.Generation)
+                ) ?? true;
             SkiaPaintCompletion? completion = null;
             lock (_gate)
             {
-                if (_paintCompletions.Remove(terminal.CausalFrameId, out var value)) completion = value;
+                if (_paintCompletions.Remove(terminal.CausalFrameId, out var value))
+                {
+                    completion = value;
+                }
             }
             switch ((WindowsNativeV1.FrameTerminalKind)terminal.TerminalKind)
             {
                 case WindowsNativeV1.FrameTerminalKind.Presented:
                     if (completion is { } painted)
                     {
-                        if (compositionCommitted) Renderer?.CompletePaint(painted);
+                        if (compositionCommitted)
+                        {
+                            Renderer?.CompletePaint(painted);
+                        }
                         else
                         {
-                            Renderer?.SupersedePaint(painted, "Native placement did not commit with this raster frame.");
+                            Renderer?.SupersedePaint(
+                                painted,
+                                "Native placement did not commit with this raster frame."
+                            );
                             // Rebuild a scene on the framework owner. A deferred native
                             // batch must not acknowledge a new scene as visible, nor
                             // merely replay the preceding successfully presented scene.
-                            host.DispatchPlatformViewEvent(() => View?.DispatchPlatformEvent(_session.dispatcher.scheduleFrame));
+                            host.DispatchPlatformViewEvent(() =>
+                                View?.DispatchPlatformEvent(_session.dispatcher.scheduleFrame)
+                            );
                         }
                     }
                     _visibleAfterExactPresent |= IsWindowVisible(host.TopLevelHwnd);
-                    if (_visibleAfterExactPresent) WriteReadyFile(host.TopLevelHwnd);
+                    if (_visibleAfterExactPresent)
+                    {
+                        WriteReadyFile(host.TopLevelHwnd);
+                    }
+
                     Interlocked.Increment(ref _presented);
                     break;
                 case WindowsNativeV1.FrameTerminalKind.Superseded:
@@ -757,20 +1148,34 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     Interlocked.Increment(ref _failed);
                     break;
                 default:
-                    throw new InvalidDataException($"Unknown native terminal {terminal.TerminalKind}.");
+                    throw new InvalidDataException(
+                        $"Unknown native terminal {terminal.TerminalKind}."
+                    );
             }
         }
 
         private static bool ShouldDrawValidationFrameMarker() =>
             string.Equals(
                 Environment.GetEnvironmentVariable(
-                    "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER"),
-                "1", StringComparison.Ordinal);
+                    "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER"
+                ),
+                "1",
+                StringComparison.Ordinal
+            );
 
         private static void DrawValidationFrameMarker(
-            SKCanvas canvas, int width, int height, double scale, long resizeGeneration)
+            SKCanvas canvas,
+            int width,
+            int height,
+            double scale,
+            long resizeGeneration
+        )
         {
-            if (resizeGeneration <= 0 || width <= 0 || height <= 0) return;
+            if (resizeGeneration <= 0 || width <= 0 || height <= 0)
+            {
+                return;
+            }
+
             var markerScale = Math.Max(1d, scale);
             // Keep the diagnostic stripe below half of the minimum client
             // width. The visual oracle samples the app bar by row; the old
@@ -783,65 +1188,93 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             const int generationBitCount = 12;
             const int checksumBitCount = 8;
             const int bitCount = preambleBitCount + generationBitCount + checksumBitCount;
-            var stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
+            var stripWidth = (bitCount * bitSize) + ((bitCount - 1) * bitGap);
             var horizontalMargin = Math.Max(4, checked((int)Math.Round(4 * markerScale)));
             var verticalMargin = Math.Max(1, checked((int)Math.Round(5 * markerScale)));
-            var corner = Environment.GetEnvironmentVariable(
-                "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER_CORNER") ?? "TopRight";
+            var corner =
+                Environment.GetEnvironmentVariable(
+                    "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER_CORNER"
+                ) ?? "TopRight";
             var left = corner.EndsWith("Left", StringComparison.OrdinalIgnoreCase);
             var bottom = corner.StartsWith("Bottom", StringComparison.OrdinalIgnoreCase);
             var startX = left ? horizontalMargin : width - stripWidth - horizontalMargin;
             var startY = bottom ? height - bitSize - verticalMargin : verticalMargin;
-            if (startX < 0 || startY + bitSize > height) return;
+            if (startX < 0 || startY + bitSize > height)
+            {
+                return;
+            }
+
             var binary = checked((int)(resizeGeneration & 0xFFF));
             var gray = binary ^ (binary >> 1);
             var checksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
-            var payload = preamble |
-                (gray << preambleBitCount) |
-                (checksum << (preambleBitCount + generationBitCount));
+            var payload =
+                preamble
+                | (gray << preambleBitCount)
+                | (checksum << (preambleBitCount + generationBitCount));
             using var paint = new SKPaint { IsAntialias = false };
             for (var bit = 0; bit < bitCount; bit++)
             {
                 paint.Color = (payload & (1 << bit)) != 0 ? SKColors.White : SKColors.Black;
                 canvas.DrawRect(
-                    startX + bit * (bitSize + bitGap), startY,
-                    bitSize, bitSize, paint);
+                    startX + (bit * (bitSize + bitGap)),
+                    startY,
+                    bitSize,
+                    bitSize,
+                    paint
+                );
             }
         }
 
         internal void ApplyPointer(in WindowsNativeV1.Pointer pointer)
         {
             RecordThread(ref _inputThreadId, "input");
-            (Host ?? throw new InvalidOperationException("Pointer arrived before host-ready."))
-                .ApplyPointer(in pointer);
+            (
+                Host ?? throw new InvalidOperationException("Pointer arrived before host-ready.")
+            ).ApplyPointer(in pointer);
         }
 
         internal void ApplyKey(in WindowsNativeV1.Key key, string character)
         {
             RecordThread(ref _inputThreadId, "input");
-            (Host ?? throw new InvalidOperationException("Key arrived before host-ready."))
-                .ApplyKey(in key, character);
+            (
+                Host ?? throw new InvalidOperationException("Key arrived before host-ready.")
+            ).ApplyKey(in key, character);
         }
 
         internal void ApplyFocus(bool focused, long timestampQpc)
         {
             RecordThread(ref _inputThreadId, "input");
-            (Host ?? throw new InvalidOperationException("Focus arrived before host-ready."))
-                .ApplyFocus(focused, timestampQpc);
+            (
+                Host ?? throw new InvalidOperationException("Focus arrived before host-ready.")
+            ).ApplyFocus(focused, timestampQpc);
         }
 
         internal void ApplyPlatformBrightness(uint brightness)
         {
-            (Host ?? throw new InvalidOperationException("Platform brightness arrived before host-ready."))
-                .ApplyPlatformBrightness(brightness);
+            (
+                Host
+                ?? throw new InvalidOperationException(
+                    "Platform brightness arrived before host-ready."
+                )
+            ).ApplyPlatformBrightness(brightness);
             if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)
+            {
                 acrylic.ApplySystemBrightness((Brightness)brightness);
+            }
         }
 
         internal void CaptureFatal(Exception exception)
         {
-            lock (_gate) _fatal ??= exception;
-            try { Host?.Close(); } catch { }
+            lock (_gate)
+            {
+                _fatal ??= exception;
+            }
+
+            try
+            {
+                Host?.Close();
+            }
+            catch { }
         }
 
         internal void ThrowIfFatal()
@@ -849,29 +1282,52 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             lock (_gate)
             {
                 if (_fatal is { } fatal)
-                    throw new InvalidOperationException("The managed product callback entered a fatal state.", fatal);
+                {
+                    throw new InvalidOperationException(
+                        "The managed product callback entered a fatal state.",
+                        fatal
+                    );
+                }
             }
         }
 
         internal void ValidateTerminalCoverage()
         {
             var rendered = Interlocked.Read(ref _renderCallbacks);
-            var terminals = Interlocked.Read(ref _presented) + Interlocked.Read(ref _superseded) +
-                Interlocked.Read(ref _failed);
+            var terminals =
+                Interlocked.Read(ref _presented)
+                + Interlocked.Read(ref _superseded)
+                + Interlocked.Read(ref _failed);
             LastRunDiagnostics = CreateDiagnostics();
             if (rendered == 0 || terminals < rendered)
-                throw new InvalidOperationException($"Product terminal coverage differs: render={rendered}, terminal={terminals}.");
+            {
+                throw new InvalidOperationException(
+                    $"Product terminal coverage differs: render={rendered}, terminal={terminals}."
+                );
+            }
+
             var resize = Host?.ResizeSnapshot;
-            if (resize is null || resize.UnterminatedCount != 0 || resize.DuplicateTerminalCount != 0)
+            if (
+                resize is null
+                || resize.UnterminatedCount != 0
+                || resize.DuplicateTerminalCount != 0
+            )
+            {
                 throw new InvalidOperationException(
-                    $"Product resize coordinator did not drain exactly once: " +
-                    $"accepted={resize?.AcceptedCount}, presented={resize?.PresentedCount}, " +
-                    $"superseded={resize?.SupersededCount}, failed={resize?.FailedCount}, " +
-                    $"unterminated={resize?.UnterminatedCount}, duplicate={resize?.DuplicateTerminalCount}.");
+                    $"Product resize coordinator did not drain exactly once: "
+                        + $"accepted={resize?.AcceptedCount}, presented={resize?.PresentedCount}, "
+                        + $"superseded={resize?.SupersededCount}, failed={resize?.FailedCount}, "
+                        + $"unterminated={resize?.UnterminatedCount}, duplicate={resize?.DuplicateTerminalCount}."
+                );
+            }
+
             if (!_visibleAfterExactPresent)
+            {
                 throw new InvalidOperationException(
-                    $"The product HWND was not visible after an exact managed present: " +
-                    $"presented={_presented}, superseded={_superseded}, failed={_failed}.");
+                    $"The product HWND was not visible after an exact managed present: "
+                        + $"presented={_presented}, superseded={_superseded}, failed={_failed}."
+                );
+            }
         }
 
         internal void WriteDiagnostics()
@@ -883,60 +1339,113 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 var fullPath = System.IO.Path.GetFullPath(reportPath);
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath)!);
-                File.WriteAllText(fullPath, JsonSerializer.Serialize(DiagnosticDocument(), new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                }));
+                File.WriteAllText(
+                    fullPath,
+                    JsonSerializer.Serialize(
+                        DiagnosticDocument(),
+                        new JsonSerializerOptions
+                        {
+                            WriteIndented = true,
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        }
+                    )
+                );
             }
         }
 
         private void WriteReadyFile(nint topLevelHwnd)
         {
-            if (_readyFileWritten) return;
-            var readyPath = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_READY_FILE");
-            if (string.IsNullOrWhiteSpace(readyPath)) return;
+            if (_readyFileWritten)
+            {
+                return;
+            }
+
+            var readyPath = Environment.GetEnvironmentVariable(
+                "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_READY_FILE"
+            );
+            if (string.IsNullOrWhiteSpace(readyPath))
+            {
+                return;
+            }
+
             var fullPath = System.IO.Path.GetFullPath(readyPath);
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath)!);
-            File.WriteAllText(fullPath, JsonSerializer.Serialize(new
-            {
-                schemaVersion = "doroti.windows.experimental-acrylic-ready/v1",
-                hwnd = topLevelHwnd.ToInt64(),
-                processId = Environment.ProcessId,
-                title = _configuration.title,
-                requestedMode = RequestedMode,
-                effectiveMode = EffectiveMode,
-            }, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText(
+                fullPath,
+                JsonSerializer.Serialize(
+                    new
+                    {
+                        schemaVersion = "doroti.windows.experimental-acrylic-ready/v1",
+                        hwnd = topLevelHwnd.ToInt64(),
+                        processId = Environment.ProcessId,
+                        title = _configuration.title,
+                        requestedMode = RequestedMode,
+                        effectiveMode = EffectiveMode,
+                    },
+                    new JsonSerializerOptions { WriteIndented = true }
+                )
+            );
             _readyFileWritten = true;
         }
 
         private WindowsProductRunDiagnostics CreateDiagnostics()
         {
-            var resize = Host?.ResizeSnapshot ?? throw new InvalidOperationException("Product host diagnostics are unavailable.");
-            var renderer = Renderer?.Diagnostics ?? throw new InvalidOperationException("Product renderer diagnostics are unavailable.");
+            var resize =
+                Host?.ResizeSnapshot
+                ?? throw new InvalidOperationException("Product host diagnostics are unavailable.");
+            var renderer =
+                Renderer?.Diagnostics
+                ?? throw new InvalidOperationException(
+                    "Product renderer diagnostics are unavailable."
+                );
             return new(
-                Presenter.BackendName, Presenter.DiagnosticCoverage,
+                Presenter.BackendName,
+                Presenter.DiagnosticCoverage,
                 _releasedAdapterDescription ?? Presenter.AdapterDescription,
-                RequestedPresenter, Presenter.BackendName,
-                RequestedMode, EffectiveMode, FallbackReason,
-                _releasedAcrylicSnapshot ??
-                    (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic
-                        ? acrylic.Snapshot()
-                        : null),
+                RequestedPresenter,
+                Presenter.BackendName,
+                RequestedMode,
+                EffectiveMode,
+                FallbackReason,
+                _releasedAcrylicSnapshot
+                    ?? (
+                        Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic
+                            ? acrylic.Snapshot()
+                            : null
+                    ),
                 (Presenter as WindowsManagedVulkanPresenter)?.Snapshot(),
-                _platformThreadId, _rasterThreadId, _inputThreadId,
-                _renderCallbacks, _presented, _superseded, _failed,
+                _platformThreadId,
+                _rasterThreadId,
+                _inputThreadId,
+                _renderCallbacks,
+                _presented,
+                _superseded,
+                _failed,
                 _visibleAfterExactPresent,
-                resize.AcceptedCount, resize.PresentedCount, resize.SupersededCount,
-                resize.FailedCount, resize.UnterminatedCount, resize.DuplicateTerminalCount,
-                Presenter.DeviceGeneration, Presenter.ResizeBuffersCount, Presenter.PresentCount,
-                Presenter.GpuSubmitCount, Presenter.GpuCopyCount,
-                Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
-                renderer.Submitted, renderer.Presented, renderer.Replayed,
+                resize.AcceptedCount,
+                resize.PresentedCount,
+                resize.SupersededCount,
+                resize.FailedCount,
+                resize.UnterminatedCount,
+                resize.DuplicateTerminalCount,
+                Presenter.DeviceGeneration,
+                Presenter.ResizeBuffersCount,
+                Presenter.PresentCount,
+                Presenter.GpuSubmitCount,
+                Presenter.GpuCopyCount,
+                Presenter.InitializationDebugErrorCount,
+                Presenter.OperationalDebugErrorCount,
+                renderer.Submitted,
+                renderer.Presented,
+                renderer.Replayed,
                 _staleInputPresentPrevented,
-                _vulkanDeviceLossRecoveries, _vulkanSurfaceLossRecoveries,
-                _requestedDeviceResets, _completedDeviceResets,
-                LastNativeProvenance ?? throw new InvalidOperationException("Native provenance is unavailable."));
+                _vulkanDeviceLossRecoveries,
+                _vulkanSurfaceLossRecoveries,
+                _requestedDeviceResets,
+                _completedDeviceResets,
+                LastNativeProvenance
+                    ?? throw new InvalidOperationException("Native provenance is unavailable.")
+            );
         }
 
         private static void RecordThread(ref uint owner, string role)
@@ -946,11 +1455,17 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (existing == 0)
             {
                 existing = Interlocked.CompareExchange(ref owner, current, 0);
-                if (existing == 0) return;
+                if (existing == 0)
+                {
+                    return;
+                }
             }
             if (existing != current)
+            {
                 throw new InvalidOperationException(
-                    $"The managed {role} callback moved from thread {existing} to {current}.");
+                    $"The managed {role} callback moved from thread {existing} to {current}."
+                );
+            }
         }
 
         internal object DiagnosticDocument()
@@ -968,8 +1483,17 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     visibleOwner = Presenter.VisibleOwner,
                     abiGpuPointerCount = 0,
                 },
-                mode = new { requested = RequestedMode, effective = EffectiveMode, fallbackReason = FallbackReason },
-                presenter = new { requested = RequestedPresenter, effective = Presenter.BackendName },
+                mode = new
+                {
+                    requested = RequestedMode,
+                    effective = EffectiveMode,
+                    fallbackReason = FallbackReason,
+                },
+                presenter = new
+                {
+                    requested = RequestedPresenter,
+                    effective = Presenter.BackendName,
+                },
                 acrylic = diagnostics.Acrylic,
                 vulkan = diagnostics.Vulkan,
                 frames = diagnostics,
@@ -980,7 +1504,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         public void Dispose()
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             _disposed = true;
 
             var failures = new List<Exception>();
@@ -1008,16 +1536,22 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 });
             }
             var preflightCompleted = false;
-            if (shutdownOwnerReady) Cleanup(() =>
+            if (shutdownOwnerReady)
             {
-                deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
-                preflightCompleted = true;
-            });
+                Cleanup(() =>
+                {
+                    deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
+                    preflightCompleted = true;
+                });
+            }
+
             var contextAbandoned = preflightCompleted && deviceLost;
             if (!preflightCompleted)
             {
-                Cleanup(() => contextAbandoned =
-                    Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure());
+                Cleanup(() =>
+                    contextAbandoned =
+                        Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure()
+                );
             }
             if (!preflightCompleted && !contextAbandoned)
             {
@@ -1026,7 +1560,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
 
             if (!UnsafeGpuCleanupQuarantined && _platformViews is { } platformViews)
+            {
                 Cleanup(platformViews.Dispose);
+            }
 
             var rendererCleanupCompleted = Renderer is null;
             if (!UnsafeGpuCleanupQuarantined && Renderer is { } renderer)
@@ -1037,8 +1573,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     rendererCleanupCompleted = true;
                 });
                 if (!rendererCleanupCompleted && !contextAbandoned)
-                    Cleanup(() => contextAbandoned =
-                        Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure());
+                {
+                    Cleanup(() =>
+                        contextAbandoned =
+                            Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure()
+                    );
+                }
+
                 if (!rendererCleanupCompleted && !contextAbandoned)
                 {
                     UnsafeGpuCleanupQuarantined = true;
@@ -1067,15 +1608,29 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
             if (!UnsafeGpuCleanupQuarantined)
             {
-                if (Host is { } host) Cleanup(host.Dispose);
+                if (Host is { } host)
+                {
+                    Cleanup(host.Dispose);
+                }
+
                 Host = null;
-                if (_capabilities is { } capabilities) Cleanup(capabilities.Dispose);
+                if (_capabilities is { } capabilities)
+                {
+                    Cleanup(capabilities.Dispose);
+                }
+
                 _capabilities = null;
             }
 
             if (failures.Count == 1)
+            {
                 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
-            if (failures.Count > 1) throw new AggregateException("Windows runner cleanup failed.", failures);
+            }
+
+            if (failures.Count > 1)
+            {
+                throw new AggregateException("Windows runner cleanup failed.", failures);
+            }
         }
 
         internal static string ResolveRequestedPresenter() =>
@@ -1086,37 +1641,50 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     "AngleD3D11",
                 var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>
                     "Vulkan",
-                var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
-                    "D3D12",
+                var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) => "D3D12",
                 var value => throw new InvalidOperationException(
-                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11, Vulkan, or D3D12."),
+                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11, Vulkan, or D3D12."
+                ),
             };
 
         private static int ResolveRequestedDeviceResets()
         {
-            var value = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT");
+            var value = Environment.GetEnvironmentVariable(
+                "DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT"
+            );
             if (!string.IsNullOrWhiteSpace(value))
             {
                 if (!int.TryParse(value, out var count) || count is < 0 or > 100)
+                {
                     throw new InvalidOperationException(
-                        "DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT must be between 0 and 100.");
+                        "DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT must be between 0 and 100."
+                    );
+                }
+
                 return count;
             }
-            return Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1" ? 1 : 0;
+            return Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1"
+                ? 1
+                : 0;
         }
 
         private static WindowsManagedHwndPresenterBase CreatePresenter(
             bool diagnosticsEnabled,
-            string requestedPresenter) => requestedPresenter switch
+            string requestedPresenter
+        ) =>
+            requestedPresenter switch
             {
                 "AngleD3D11" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
                 "Vulkan" => new WindowsManagedVulkanPresenter(diagnosticsEnabled),
                 "D3D12" => CreateDiagnosticPresenter(diagnosticsEnabled),
                 _ => throw new InvalidOperationException(
-                    $"Unsupported canonical Windows presenter '{requestedPresenter}'."),
+                    $"Unsupported canonical Windows presenter '{requestedPresenter}'."
+                ),
             };
 
-        private static WindowsManagedHwndPresenterBase CreateDiagnosticPresenter(bool diagnosticsEnabled)
+        private static WindowsManagedHwndPresenterBase CreateDiagnosticPresenter(
+            bool diagnosticsEnabled
+        )
         {
             const string assemblyName = "Doroti.Host.WindowsAppSdk.Diagnostics";
             const string typeName = "Doroti.Host.WindowsAppSdk.WindowsManagedHwndPresenter";
@@ -1124,51 +1692,84 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 var assembly = Assembly.Load(assemblyName);
                 var type = assembly.GetType(typeName, throwOnError: true)!;
-                return (WindowsManagedHwndPresenterBase)(Activator.CreateInstance(
-                    type,
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                    binder: null,
-                    args: [diagnosticsEnabled],
-                    culture: null) ?? throw new InvalidOperationException($"{typeName} did not produce an instance."));
+                return (WindowsManagedHwndPresenterBase)(
+                    Activator.CreateInstance(
+                        type,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                        binder: null,
+                        args: [diagnosticsEnabled],
+                        culture: null
+                    )
+                    ?? throw new InvalidOperationException(
+                        $"{typeName} did not produce an instance."
+                    )
+                );
             }
-            catch (Exception exception) when (exception is FileNotFoundException or FileLoadException or TypeLoadException)
+            catch (Exception exception)
+                when (exception is FileNotFoundException or FileLoadException or TypeLoadException)
             {
                 throw new InvalidOperationException(
                     "D3D12 is a separate diagnostic artifact. Deploy Doroti.Host.WindowsAppSdk.Diagnostics explicitly before selecting DOROTI_WINDOWS_PRESENTER=D3D12.",
-                    exception);
+                    exception
+                );
             }
         }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnHostReady(nint context, WindowsNativeV1.Host* host) =>
-        GuardVoid(context, state =>
-        {
-            if (host is null) throw new InvalidDataException("Native host-ready supplied null.");
-            state.SetHost(in *host);
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (host is null)
+                {
+                    throw new InvalidDataException("Native host-ready supplied null.");
+                }
+
+                state.SetHost(in *host);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnMetrics(nint context, WindowsNativeV1.Metrics* metrics) =>
-        GuardVoid(context, state =>
-        {
-            if (metrics is null) throw new InvalidDataException("Native metrics supplied null.");
-            state.ApplyMetrics(in *metrics);
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (metrics is null)
+                {
+                    throw new InvalidDataException("Native metrics supplied null.");
+                }
+
+                state.ApplyMetrics(in *metrics);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCompositionResize(
-        nint context, uint width, uint height, double scale,
-        uint sizingEdge, uint resizePhase) =>
-        GuardVoid(context, state => state.ResizeComposition(
-            width, height, scale, sizingEdge, resizePhase));
+        nint context,
+        uint width,
+        uint height,
+        double scale,
+        uint sizingEdge,
+        uint resizePhase
+    ) =>
+        GuardVoid(
+            context,
+            state => state.ResizeComposition(width, height, scale, sizingEdge, resizePhase)
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static int OnMovingFrame(nint context, uint action, WindowsNativeV1.MovingFrame* key)
     {
         try
         {
-            if (key is null) return -1;
+            if (key is null)
+            {
+                return -1;
+            }
+
             return GetState(context).MovingFrame(action, in *key);
         }
         catch (Exception exception)
@@ -1183,12 +1784,19 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     {
         try
         {
-            if (request is null) throw new InvalidDataException("Native render supplied null.");
+            if (request is null)
+            {
+                throw new InvalidDataException("Native render supplied null.");
+            }
+
             return GetState(context).Render(in *request);
         }
         catch (WindowsManagedVulkanDeviceLostException exception)
         {
-            try { return GetState(context).RecoverVulkanDeviceLoss(exception); }
+            try
+            {
+                return GetState(context).RecoverVulkanDeviceLoss(exception);
+            }
             catch (Exception recoveryFailure)
             {
                 TryCaptureFatal(context, recoveryFailure);
@@ -1197,7 +1805,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         }
         catch (WindowsManagedVulkanSurfaceLostException exception)
         {
-            try { return GetState(context).RecoverVulkanSurfaceLoss(exception); }
+            try
+            {
+                return GetState(context).RecoverVulkanSurfaceLoss(exception);
+            }
             catch (Exception recoveryFailure)
             {
                 TryCaptureFatal(context, recoveryFailure);
@@ -1213,91 +1824,182 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnFrameTerminal(nint context, WindowsNativeV1.FrameTerminal* terminal) =>
-        GuardVoid(context, state =>
-        {
-            if (terminal is null) throw new InvalidDataException("Native terminal supplied null.");
-            state.CompleteTerminal(in *terminal);
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (terminal is null)
+                {
+                    throw new InvalidDataException("Native terminal supplied null.");
+                }
+
+                state.CompleteTerminal(in *terminal);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnLog(nint context, uint level, WindowsNativeV1.Utf8 message) =>
-        GuardVoid(context, _ => Console.Error.WriteLine($"doroti.windows.native[{level}]={Decode(message)}"));
+        GuardVoid(
+            context,
+            _ => Console.Error.WriteLine($"doroti.windows.native[{level}]={Decode(message)}")
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnPointer(nint context, WindowsNativeV1.Pointer* pointer) =>
-        GuardVoid(context, state =>
-        {
-            if (pointer is null) throw new InvalidDataException("Native pointer supplied null.");
-            state.ApplyPointer(in *pointer);
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (pointer is null)
+                {
+                    throw new InvalidDataException("Native pointer supplied null.");
+                }
+
+                state.ApplyPointer(in *pointer);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnKey(nint context, WindowsNativeV1.Key* key) =>
-        GuardVoid(context, state =>
-        {
-            if (key is null) throw new InvalidDataException("Native key supplied null.");
-            state.ApplyKey(in *key, Decode(key->Character));
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (key is null)
+                {
+                    throw new InvalidDataException("Native key supplied null.");
+                }
+
+                state.ApplyKey(in *key, Decode(key->Character));
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnFocus(nint context, ulong viewId, uint focused, long timestampQpc) =>
-        GuardVoid(context, state =>
-        {
-            if (viewId != 1) throw new InvalidDataException("Native focus view id differs.");
-            state.ApplyFocus(focused != 0, timestampQpc);
-        });
+        GuardVoid(
+            context,
+            state =>
+            {
+                if (viewId != 1)
+                {
+                    throw new InvalidDataException("Native focus view id differs.");
+                }
+
+                state.ApplyFocus(focused != 0, timestampQpc);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnClipboard(nint context, ulong requestId, WindowsNativeV1.Utf8 text) =>
-        GuardVoid(context, state =>
-            (state.Host ?? throw new InvalidOperationException("Clipboard arrived before host-ready."))
-                .CompleteClipboard(requestId, Decode(text)));
+        GuardVoid(
+            context,
+            state =>
+                (
+                    state.Host
+                    ?? throw new InvalidOperationException("Clipboard arrived before host-ready.")
+                ).CompleteClipboard(requestId, Decode(text))
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnTextEditing(nint context, WindowsNativeV1.TextState* state) =>
-        GuardVoid(context, managed =>
-        {
-            if (state is null || state->AbiVersion != WindowsNativeV1.AbiVersion ||
-                state->StructSize < sizeof(WindowsNativeV1.TextState))
-                throw new InvalidDataException("Native text editing supplied an invalid state.");
-            (managed.Host ?? throw new InvalidOperationException("Text editing arrived before host-ready."))
-                .ApplyTextEditing(Decode(state->Text), state->SelectionBase, state->SelectionExtent,
-                    state->ComposingBase, state->ComposingExtent);
-        });
+        GuardVoid(
+            context,
+            managed =>
+            {
+                if (
+                    state is null
+                    || state->AbiVersion != WindowsNativeV1.AbiVersion
+                    || state->StructSize < sizeof(WindowsNativeV1.TextState)
+                )
+                {
+                    throw new InvalidDataException(
+                        "Native text editing supplied an invalid state."
+                    );
+                }
+
+                (
+                    managed.Host
+                    ?? throw new InvalidOperationException(
+                        "Text editing arrived before host-ready."
+                    )
+                ).ApplyTextEditing(
+                    Decode(state->Text),
+                    state->SelectionBase,
+                    state->SelectionExtent,
+                    state->ComposingBase,
+                    state->ComposingExtent
+                );
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnTextAction(nint context, uint action) =>
-        GuardVoid(context, managed =>
-            (managed.Host ?? throw new InvalidOperationException("Text action arrived before host-ready."))
-                .ApplyTextAction(action));
+        GuardVoid(
+            context,
+            managed =>
+                (
+                    managed.Host
+                    ?? throw new InvalidOperationException("Text action arrived before host-ready.")
+                ).ApplyTextAction(action)
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static void OnSemanticsAction(nint context, long nodeId, long action,
-        WindowsNativeV1.Utf8 arguments) =>
-        GuardVoid(context, managed =>
-        {
-            (managed.Host ?? throw new InvalidOperationException("Semantics action arrived before host-ready."))
-                .ApplySemanticsAction(nodeId, action, Decode(arguments));
-        });
+    private static void OnSemanticsAction(
+        nint context,
+        long nodeId,
+        long action,
+        WindowsNativeV1.Utf8 arguments
+    ) =>
+        GuardVoid(
+            context,
+            managed =>
+            {
+                (
+                    managed.Host
+                    ?? throw new InvalidOperationException(
+                        "Semantics action arrived before host-ready."
+                    )
+                ).ApplySemanticsAction(nodeId, action, Decode(arguments));
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnLifecycle(nint context, ulong viewId, uint state, long timestampQpc) =>
-        GuardVoid(context, managed =>
-        {
-            _ = timestampQpc;
-            if (viewId != 1) throw new InvalidDataException("Native lifecycle view id differs.");
-            (managed.Host ?? throw new InvalidOperationException("Lifecycle arrived before host-ready."))
-                .ApplyLifecycle(state);
-            if (state == 0) managed._platformViews?.BeginClose();
-        });
+        GuardVoid(
+            context,
+            managed =>
+            {
+                _ = timestampQpc;
+                if (viewId != 1)
+                {
+                    throw new InvalidDataException("Native lifecycle view id differs.");
+                }
+
+                (
+                    managed.Host
+                    ?? throw new InvalidOperationException("Lifecycle arrived before host-ready.")
+                ).ApplyLifecycle(state);
+                if (state == 0)
+                {
+                    managed._platformViews?.BeginClose();
+                }
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnPlatformBrightness(nint context, ulong viewId, uint brightness) =>
-        GuardVoid(context, managed =>
-        {
-            if (viewId != 1) throw new InvalidDataException("Native platform-brightness view id differs.");
-            managed.ApplyPlatformBrightness(brightness);
-        });
+        GuardVoid(
+            context,
+            managed =>
+            {
+                if (viewId != 1)
+                {
+                    throw new InvalidDataException("Native platform-brightness view id differs.");
+                }
+
+                managed.ApplyPlatformBrightness(brightness);
+            }
+        );
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnPlatformResourcesShutdown(nint context) =>
@@ -1305,45 +2007,78 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
     private static void GuardVoid(nint context, Action<WindowsManagedState> callback)
     {
-        try { callback(GetState(context)); }
-        catch (Exception exception) { TryCaptureFatal(context, exception); }
+        try
+        {
+            callback(GetState(context));
+        }
+        catch (Exception exception)
+        {
+            TryCaptureFatal(context, exception);
+        }
     }
 
     private static void TryCaptureFatal(nint context, Exception exception)
     {
-        try { GetState(context).CaptureFatal(exception); }
+        try
+        {
+            GetState(context).CaptureFatal(exception);
+        }
         catch { }
     }
 
     private static WindowsManagedState GetState(nint context) =>
-        (WindowsManagedState)(GCHandle.FromIntPtr(context).Target ??
-            throw new InvalidOperationException("The Windows managed callback context is unavailable."));
+        (WindowsManagedState)(
+            GCHandle.FromIntPtr(context).Target
+            ?? throw new InvalidOperationException(
+                "The Windows managed callback context is unavailable."
+            )
+        );
 
-    private static WindowsNativeV1.Utf8 Utf8(byte* data, int length) => new()
-    {
-        AbiVersion = WindowsNativeV1.AbiVersion,
-        StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
-        Data = (nint)data,
-        ByteLength = checked((ulong)length),
-    };
+    private static WindowsNativeV1.Utf8 Utf8(byte* data, int length) =>
+        new()
+        {
+            AbiVersion = WindowsNativeV1.AbiVersion,
+            StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
+            Data = (nint)data,
+            ByteLength = checked((ulong)length),
+        };
 
     private static string Decode(WindowsNativeV1.Utf8 value)
     {
-        if (value.Data == 0 || value.ByteLength == 0) return string.Empty;
-        if (value.ByteLength > int.MaxValue) throw new InvalidDataException("Native UTF-8 payload is too large.");
-        return Encoding.UTF8.GetString(new ReadOnlySpan<byte>((void*)value.Data, checked((int)value.ByteLength)));
+        if (value.Data == 0 || value.ByteLength == 0)
+        {
+            return string.Empty;
+        }
+
+        if (value.ByteLength > int.MaxValue)
+        {
+            throw new InvalidDataException("Native UTF-8 payload is too large.");
+        }
+
+        return Encoding.UTF8.GetString(
+            new ReadOnlySpan<byte>((void*)value.Data, checked((int)value.ByteLength))
+        );
     }
 
     private static uint ToDimension(double value)
     {
         if (!double.IsFinite(value) || value <= 0 || value > uint.MaxValue)
+        {
             throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
         return checked((uint)Math.Round(value));
     }
 
     private static bool ShouldWriteDiagnostics() =>
-        string.Equals(Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS"), "1", StringComparison.Ordinal) ||
-        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS"));
+        string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS"),
+            "1",
+            StringComparison.Ordinal
+        )
+        || !string.IsNullOrWhiteSpace(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS")
+        );
 
     [LibraryImport("combase.dll")]
     private static partial int RoInitialize(uint initializationType);
@@ -1402,4 +2137,5 @@ internal sealed record WindowsProductRunDiagnostics(
     long VulkanSurfaceLossRecoveries,
     int RequestedDeviceResets,
     int CompletedDeviceResets,
-    NativeHostProvenance NativeProvenance);
+    NativeHostProvenance NativeProvenance
+);

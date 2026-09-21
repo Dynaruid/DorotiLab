@@ -23,7 +23,8 @@ public sealed record FrameworkShaderAsset(
     IReadOnlyList<FrameworkShaderUniform> Uniforms,
     IReadOnlyList<FrameworkShaderSampler> Samplers,
     string License,
-    IReadOnlyList<string> TargetSupport);
+    IReadOnlyList<string> TargetSupport
+);
 
 /// <summary>
 /// The closed framework shader manifest shared by framework ports and all GPU hosts.
@@ -63,7 +64,8 @@ public static class FrameworkShaderManifest
             ],
             Samplers: [],
             License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "maccatalyst", "web"]),
+            TargetSupport: ["android", "windows", "maccatalyst", "web"]
+        ),
         new FrameworkShaderAsset(
             Id: "widgets.stretch-effect",
             FlutterAssetKey: "shaders/stretch_effect.frag",
@@ -83,21 +85,25 @@ public static class FrameworkShaderManifest
             ],
             Samplers: [new("u_texture", 0)],
             License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "maccatalyst", "web"]),
+            TargetSupport: ["android", "windows", "maccatalyst", "web"]
+        ),
     ];
 
     public static IReadOnlyList<FrameworkShaderAsset> Assets => _assets;
 
     public static FrameworkShaderAsset Get(string id) =>
         _assets.FirstOrDefault(asset => string.Equals(asset.Id, id, StringComparison.Ordinal))
-        ?? throw new KeyNotFoundException($"Framework shader '{id}' is not registered in the closed manifest.");
+        ?? throw new KeyNotFoundException(
+            $"Framework shader '{id}' is not registered in the closed manifest."
+        );
 }
 
 public sealed record FrameworkShaderDiagnostic(
     string Code,
     string AssetId,
     string Message,
-    Exception? Error = null);
+    Exception? Error = null
+);
 
 /// <summary>
 /// One asynchronous loader for framework and application runtime-effect assets.
@@ -106,15 +112,26 @@ public sealed record FrameworkShaderDiagnostic(
 /// </summary>
 public static partial class FrameworkShaderLoader
 {
-    private static readonly ConcurrentDictionary<string, Assembly> ResourceOwners = new(StringComparer.Ordinal);
+    private static readonly ConcurrentDictionary<string, Assembly> ResourceOwners = new(
+        StringComparer.Ordinal
+    );
 
     /// <summary>Register an embedded-resource owner using typeof(Owner).Assembly before loading its shaders.</summary>
     public static void RegisterResourceOwner(Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);
-        var name = assembly.GetName().Name ?? throw new ArgumentException("A resource owner must have an assembly name.", nameof(assembly));
+        var name =
+            assembly.GetName().Name
+            ?? throw new ArgumentException(
+                "A resource owner must have an assembly name.",
+                nameof(assembly)
+            );
         if (!ReferenceEquals(ResourceOwners.GetOrAdd(name, assembly), assembly))
-            throw new InvalidOperationException($"Shader resource owner '{name}' is already registered by another assembly.");
+        {
+            throw new InvalidOperationException(
+                $"Shader resource owner '{name}' is already registered by another assembly."
+            );
+        }
     }
 
     private static readonly ConcurrentDictionary<string, Lazy<Task<FragmentProgram>>> ProgramCache =
@@ -127,11 +144,15 @@ public static partial class FrameworkShaderLoader
 
     public static Future<FragmentProgram> LoadProgram(string assetId)
     {
-        var task = ProgramCache.GetOrAdd(
-            assetId,
-            static id => new Lazy<Task<FragmentProgram>>(
-                () => LoadProgramAsync(FrameworkShaderManifest.Get(id)),
-                LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+        var task = ProgramCache
+            .GetOrAdd(
+                assetId,
+                static id => new Lazy<Task<FragmentProgram>>(
+                    () => LoadProgramAsync(FrameworkShaderManifest.Get(id)),
+                    LazyThreadSafetyMode.ExecutionAndPublication
+                )
+            )
+            .Value;
         return Future<FragmentProgram>.fromTask(task);
     }
 
@@ -139,7 +160,8 @@ public static partial class FrameworkShaderLoader
     public static void BeginLoad(
         string assetId,
         Action<FragmentProgram> onReady,
-        Action<Exception>? onError = null)
+        Action<Exception>? onError = null
+    )
     {
         ArgumentNullException.ThrowIfNull(onReady);
         _ = ObserveLoadAsync(assetId, onReady, onError);
@@ -150,7 +172,8 @@ public static partial class FrameworkShaderLoader
     private static async Task ObserveLoadAsync(
         string assetId,
         Action<FragmentProgram> onReady,
-        Action<Exception>? onError)
+        Action<Exception>? onError
+    )
     {
         try
         {
@@ -158,11 +181,14 @@ public static partial class FrameworkShaderLoader
         }
         catch (Exception error)
         {
-            Publish(new FrameworkShaderDiagnostic(
-                "DOROTI_SHADER_ASSET_LOAD_FAILED",
-                assetId,
-                $"Framework shader asset '{assetId}' could not be loaded or its ABI verified.",
-                error));
+            Publish(
+                new FrameworkShaderDiagnostic(
+                    "DOROTI_SHADER_ASSET_LOAD_FAILED",
+                    assetId,
+                    $"Framework shader asset '{assetId}' could not be loaded or its ABI verified.",
+                    error
+                )
+            );
             if (onError is not null)
             {
                 try
@@ -171,11 +197,14 @@ public static partial class FrameworkShaderLoader
                 }
                 catch (Exception callbackError)
                 {
-                    Publish(new FrameworkShaderDiagnostic(
-                        "DOROTI_SHADER_ASSET_ERROR_CALLBACK_FAILED",
-                        assetId,
-                        "The framework shader error callback failed while reporting the original load error.",
-                        callbackError));
+                    Publish(
+                        new FrameworkShaderDiagnostic(
+                            "DOROTI_SHADER_ASSET_ERROR_CALLBACK_FAILED",
+                            assetId,
+                            "The framework shader error callback failed while reporting the original load error.",
+                            callbackError
+                        )
+                    );
                 }
             }
         }
@@ -184,42 +213,57 @@ public static partial class FrameworkShaderLoader
     private static async Task<FragmentProgram> LoadProgramAsync(FrameworkShaderAsset asset)
     {
         var assembly = ResolveAssembly(asset.OwningAssembly);
-        await using var stream = assembly.GetManifestResourceStream(asset.EmbeddedResourceName)
+        await using var stream =
+            assembly.GetManifestResourceStream(asset.EmbeddedResourceName)
             ?? throw new InvalidDataException(
-                $"Framework shader '{asset.Id}' is missing embedded resource '{asset.EmbeddedResourceName}'.");
+                $"Framework shader '{asset.Id}' is missing embedded resource '{asset.EmbeddedResourceName}'."
+            );
         using var buffer = new MemoryStream();
         await stream.CopyToAsync(buffer).ConfigureAwait(false);
         var bytes = buffer.ToArray();
         var adaptedHash = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
         if (!string.Equals(adaptedHash, asset.AdaptedSourceSha256, StringComparison.Ordinal))
+        {
             throw new InvalidDataException(
-                $"Framework shader '{asset.Id}' packaged hash mismatch: expected {asset.AdaptedSourceSha256}, got {adaptedHash}.");
+                $"Framework shader '{asset.Id}' packaged hash mismatch: expected {asset.AdaptedSourceSha256}, got {adaptedHash}."
+            );
+        }
+
         var source = Encoding.UTF8.GetString(bytes);
         if (string.IsNullOrWhiteSpace(source))
+        {
             throw new InvalidDataException($"Framework shader '{asset.Id}' is empty.");
+        }
+
         ValidateAbi(asset, source);
         return FragmentProgram.fromSource(source, asset.FlutterAssetKey);
     }
 
     private static Assembly ResolveAssembly(string name) =>
-        ResourceOwners.TryGetValue(name, out var assembly) ? assembly :
-            throw new InvalidOperationException(
-                $"Shader resource owner '{name}' is not registered. Call FrameworkShaderLoader.RegisterResourceOwner(typeof(Owner).Assembly) before loading it.");
+        ResourceOwners.TryGetValue(name, out var assembly)
+            ? assembly
+            : throw new InvalidOperationException(
+                $"Shader resource owner '{name}' is not registered. Call FrameworkShaderLoader.RegisterResourceOwner(typeof(Owner).Assembly) before loading it."
+            );
 
     private static void ValidateAbi(FrameworkShaderAsset asset, string source)
     {
-        var uniforms = UniformRegex().Matches(source)
+        var uniforms = UniformRegex()
+            .Matches(source)
             .Select(match => new FrameworkShaderUniform(
                 match.Groups["name"].Value,
-                match.Groups["type"].Value.Replace("half", "float", StringComparison.Ordinal)))
+                match.Groups["type"].Value.Replace("half", "float", StringComparison.Ordinal)
+            ))
             .ToArray();
-        var samplers = SamplerRegex().Matches(source)
+        var samplers = SamplerRegex()
+            .Matches(source)
             .Select((match, index) => new FrameworkShaderSampler(match.Groups["name"].Value, index))
             .ToArray();
         if (!asset.Uniforms.SequenceEqual(uniforms) || !asset.Samplers.SequenceEqual(samplers))
         {
             throw new InvalidDataException(
-                $"Framework shader '{asset.Id}' uniform/sampler ABI drifted from the manifest.");
+                $"Framework shader '{asset.Id}' uniform/sampler ABI drifted from the manifest."
+            );
         }
     }
 
@@ -236,7 +280,9 @@ public static partial class FrameworkShaderLoader
         }
     }
 
-    [GeneratedRegex(@"(?m)^\s*uniform\s+(?<type>(?:float|half)(?:[234])?)\s+(?<name>[A-Za-z_]\w*)\s*;")]
+    [GeneratedRegex(
+        @"(?m)^\s*uniform\s+(?<type>(?:float|half)(?:[234])?)\s+(?<name>[A-Za-z_]\w*)\s*;"
+    )]
     private static partial Regex UniformRegex();
 
     [GeneratedRegex(@"(?m)^\s*uniform\s+shader\s+(?<name>[A-Za-z_]\w*)\s*;")]

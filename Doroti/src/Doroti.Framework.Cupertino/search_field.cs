@@ -52,14 +52,52 @@ public class CupertinoSearchTextField : StatefulWidget
     public virtual bool cursorOpacityAnimates { get; private set; } = default!;
     public virtual Color? cursorColor { get; private set; }
 
-    public CupertinoSearchTextField(Key? key = null, TextEditingController? controller = null, Action<string>? onChanged = null, Action<string>? onSubmitted = null, TextStyle? style = null, string? placeholder = null, TextStyle? placeholderStyle = null, BoxDecoration? decoration = null, Color? backgroundColor = null, BorderRadius? borderRadius = null, TextInputType? keyboardType = default!, EdgeInsetsGeometry padding = default!, Color itemColor = default!, double itemSize = 20.0, EdgeInsetsGeometry prefixInsets = default!, Widget prefixIcon = default!, EdgeInsetsGeometry suffixInsets = default!, Icon suffixIcon = default!, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.editing, Action? onSuffixTap = null, string? restorationId = null, FocusNode? focusNode = null, SmartQuotesType? smartQuotesType = null, SmartDashesType? smartDashesType = null, bool enableIMEPersonalizedLearning = true, bool autofocus = false, Action? onTap = null, bool autocorrect = true, bool? enabled = null, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null) : base(key: key)
+    public CupertinoSearchTextField(
+        Key? key = null,
+        TextEditingController? controller = null,
+        Action<string>? onChanged = null,
+        Action<string>? onSubmitted = null,
+        TextStyle? style = null,
+        string? placeholder = null,
+        TextStyle? placeholderStyle = null,
+        BoxDecoration? decoration = null,
+        Color? backgroundColor = null,
+        BorderRadius? borderRadius = null,
+        TextInputType? keyboardType = default!,
+        EdgeInsetsGeometry padding = default!,
+        Color itemColor = default!,
+        double itemSize = 20.0,
+        EdgeInsetsGeometry prefixInsets = default!,
+        Widget prefixIcon = default!,
+        EdgeInsetsGeometry suffixInsets = default!,
+        Icon suffixIcon = default!,
+        OverlayVisibilityMode suffixMode = OverlayVisibilityMode.editing,
+        Action? onSuffixTap = null,
+        string? restorationId = null,
+        FocusNode? focusNode = null,
+        SmartQuotesType? smartQuotesType = null,
+        SmartDashesType? smartDashesType = null,
+        bool enableIMEPersonalizedLearning = true,
+        bool autofocus = false,
+        Action? onTap = null,
+        bool autocorrect = true,
+        bool? enabled = null,
+        double cursorWidth = 2.0,
+        double? cursorHeight = null,
+        Radius? cursorRadius = null,
+        bool cursorOpacityAnimates = true,
+        Color? cursorColor = null
+    )
+        : base(key: key)
     {
         TextInputType? __keyboardType = keyboardType ?? TextInputType.text;
         EdgeInsetsGeometry __padding = padding ?? EdgeInsetsGeometry.CreateFromSTEB(5.5, 8, 5.5, 8);
         Color __itemColor = itemColor ?? CupertinoColors.secondaryLabel;
-        EdgeInsetsGeometry __prefixInsets = prefixInsets ?? EdgeInsetsGeometry.CreateFromSTEB(6, 8, 0, 8);
+        EdgeInsetsGeometry __prefixInsets =
+            prefixInsets ?? EdgeInsetsGeometry.CreateFromSTEB(6, 8, 0, 8);
         Widget __prefixIcon = prefixIcon ?? new Icon(CupertinoIcons.search);
-        EdgeInsetsGeometry __suffixInsets = suffixInsets ?? EdgeInsetsGeometry.CreateFromSTEB(0, 8, 5, 8);
+        EdgeInsetsGeometry __suffixInsets =
+            suffixInsets ?? EdgeInsetsGeometry.CreateFromSTEB(0, 8, 5, 8);
         Icon __suffixIcon = suffixIcon ?? new Icon(CupertinoIcons.xmark_circle_fill);
         Radius __cursorRadius = cursorRadius ?? Radius.CreateCircular(2.0);
         this.controller = controller;
@@ -99,25 +137,39 @@ public class CupertinoSearchTextField : StatefulWidget
         System.Diagnostics.Debug.Assert(!(decoration is not null && borderRadius is not null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoSearchTextFieldState__search_field());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _CupertinoSearchTextFieldState__search_field()
+        );
 }
 
-internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSearchTextField>, RestorationMixin<CupertinoSearchTextField>
+internal class _CupertinoSearchTextFieldState__search_field
+    : State<CupertinoSearchTextField>,
+        RestorationMixin<CupertinoSearchTextField>
 {
-    internal virtual BorderRadius _kDefaultBorderRadius { get; private set; } = BorderRadius.CreateAll(Radius.circular(9.0));
+    internal virtual BorderRadius _kDefaultBorderRadius { get; private set; } =
+        BorderRadius.CreateAll(Radius.circular(9.0));
     internal virtual RestorableTextEditingController? _controller { get; set; } = default;
     internal virtual FocusNode? _focusNode { get; set; } = default;
-    internal virtual ScrollNotificationObserverState? _scrollNotificationObserver { get; set; } = default;
+    internal virtual ScrollNotificationObserverState? _scrollNotificationObserver { get; set; } =
+        default;
     internal virtual double _scaledIconSize { get; set; } = default!;
     internal virtual double _fadeExtent { get; set; } = 0.0;
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
 
-    internal virtual TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<TextEditingController>(widget.controller ?? _controller!.value);
-    internal virtual FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _focusNode!);
+    internal virtual TextEditingController _effectiveController =>
+        DartRuntimePrimitives.ConvertValue<TextEditingController>(
+            widget.controller ?? _controller!.value
+        );
+    internal virtual FocusNode _effectiveFocusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _focusNode!);
+
     public override void initState()
     {
         base.initState();
@@ -137,7 +189,10 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -206,13 +261,15 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         {
             _controller?.dispose();
         }
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -227,7 +284,10 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
     internal virtual void _createLocalController(TextEditingValue? value = null)
     {
         DartRuntimePrimitives.Assert(() => _controller is null);
-        _controller = (value is null) ? RestorableTextEditingController.Create() : new RestorableTextEditingController(value);
+        _controller =
+            (value is null)
+                ? RestorableTextEditingController.Create()
+                : new RestorableTextEditingController(value);
         if (!restorePending)
         {
             _registerController();
@@ -235,6 +295,7 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
     }
 
     public virtual string? restorationId => widget.restorationId;
+
     internal virtual void _defaultOnSuffixTap()
     {
         bool textChanged = _effectiveController.text.Length != 0;
@@ -253,7 +314,11 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
             double currentHeight = context.size?.height ?? 0.0;
             setState(() =>
             {
-                _fadeExtent = _calculateScrollOpacity(currentHeight, _scaledIconSize + Math.Max(widget.prefixInsets.vertical, widget.suffixInsets.vertical));
+                _fadeExtent = _calculateScrollOpacity(
+                    currentHeight,
+                    _scaledIconSize
+                        + Math.Max(widget.prefixInsets.vertical, widget.suffixInsets.vertical)
+                );
             });
         }
     }
@@ -281,31 +346,107 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual EdgeInsetsGeometry _animatedInsets(BuildContext context, EdgeInsetsGeometry insets)
+    internal virtual EdgeInsetsGeometry _animatedInsets(
+        BuildContext context,
+        EdgeInsetsGeometry insets
+    )
     {
         EdgeInsets currentInsets = insets.resolve(Directionality.of(context));
-        EdgeInsetsGeometry? animatedInsets = EdgeInsetsGeometry.lerp(insets, currentInsets.copyWith(top: currentInsets.top / 2L), _fadeExtent);
+        EdgeInsetsGeometry? animatedInsets = EdgeInsetsGeometry.lerp(
+            insets,
+            currentInsets.copyWith(top: currentInsets.top / 2L),
+            _fadeExtent
+        );
         return animatedInsets ?? insets;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        string placeholderLocal = widget.placeholder ?? CupertinoLocalizations.of(context).searchTextFieldPlaceholderLabel;
-        Color defaultPlaceholderColor = CupertinoDynamicColor.resolve(CupertinoColors.secondaryLabel, context);
-        TextStyle placeholderStyleLocal = widget.placeholderStyle ?? new TextStyle(color: defaultPlaceholderColor.withAlpha((255L * (defaultPlaceholderColor.a * (1L - _fadeExtent))).round()));
+        string placeholderLocal =
+            widget.placeholder
+            ?? CupertinoLocalizations.of(context).searchTextFieldPlaceholderLabel;
+        Color defaultPlaceholderColor = CupertinoDynamicColor.resolve(
+            CupertinoColors.secondaryLabel,
+            context
+        );
+        TextStyle placeholderStyleLocal =
+            widget.placeholderStyle
+            ?? new TextStyle(
+                color: defaultPlaceholderColor.withAlpha(
+                    (255L * (defaultPlaceholderColor.a * (1L - _fadeExtent))).round()
+                )
+            );
         _scaledIconSize = MediaQuery.textScalerOf(context).scale(widget.itemSize);
-        BoxDecoration decorationLocal = widget.decoration ?? new BoxDecoration(color: widget.backgroundColor ?? CupertinoColors.tertiarySystemFill, borderRadius: widget.borderRadius ?? _kDefaultBorderRadius);
+        BoxDecoration decorationLocal =
+            widget.decoration
+            ?? new BoxDecoration(
+                color: widget.backgroundColor ?? CupertinoColors.tertiarySystemFill,
+                borderRadius: widget.borderRadius ?? _kDefaultBorderRadius
+            );
         Color iconColor = CupertinoDynamicColor.resolve(widget.itemColor, context);
         var suffixIconThemeData = new IconThemeData(color: iconColor, size: _scaledIconSize);
-        var prefixIconThemeData = new IconThemeData(color: iconColor, size: ((_scaledIconSize >= Search_fieldLibrary._kMaxPrefixIconSize) && _effectiveFocusNode.hasFocus) ? 0.0 : _scaledIconSize);
-        Widget prefixLocal = new Opacity(opacity: 1.0 - _fadeExtent, child: new Padding(padding: _animatedInsets(context, widget.prefixInsets), child: new IconTheme(data: prefixIconThemeData, child: widget.prefixIcon)));
-        Widget suffixLocal = new Opacity(opacity: 1.0 - _fadeExtent, child: new Padding(padding: _animatedInsets(context, widget.suffixInsets), child: new CupertinoButton(onPressed: widget.onSuffixTap ?? _defaultOnSuffixTap, minSize: 0, padding: EdgeInsets.zero, child: new IconTheme(data: suffixIconThemeData, child: widget.suffixIcon))));
-        return new CupertinoTextField(controller: _effectiveController, decoration: decorationLocal, style: widget.style, prefix: prefixLocal, suffix: suffixLocal, keyboardType: widget.keyboardType, onTap: widget.onTap, enabled: widget.enabled ?? true, cursorWidth: widget.cursorWidth, cursorHeight: widget.cursorHeight, cursorRadius: widget.cursorRadius, cursorOpacityAnimates: widget.cursorOpacityAnimates, cursorColor: widget.cursorColor, suffixMode: widget.suffixMode, placeholder: placeholderLocal, placeholderStyle: placeholderStyleLocal, padding: _animatedInsets(context, widget.padding), onChanged: widget.onChanged, onSubmitted: widget.onSubmitted, focusNode: _effectiveFocusNode, autofocus: widget.autofocus, autocorrect: widget.autocorrect, smartQuotesType: widget.smartQuotesType, smartDashesType: widget.smartDashesType, enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning, textInputAction: TextInputAction.search);
+        var prefixIconThemeData = new IconThemeData(
+            color: iconColor,
+            size: (
+                (_scaledIconSize >= Search_fieldLibrary._kMaxPrefixIconSize)
+                && _effectiveFocusNode.hasFocus
+            )
+                ? 0.0
+                : _scaledIconSize
+        );
+        Widget prefixLocal = new Opacity(
+            opacity: 1.0 - _fadeExtent,
+            child: new Padding(
+                padding: _animatedInsets(context, widget.prefixInsets),
+                child: new IconTheme(data: prefixIconThemeData, child: widget.prefixIcon)
+            )
+        );
+        Widget suffixLocal = new Opacity(
+            opacity: 1.0 - _fadeExtent,
+            child: new Padding(
+                padding: _animatedInsets(context, widget.suffixInsets),
+                child: new CupertinoButton(
+                    onPressed: widget.onSuffixTap ?? _defaultOnSuffixTap,
+                    minSize: 0,
+                    padding: EdgeInsets.zero,
+                    child: new IconTheme(data: suffixIconThemeData, child: widget.suffixIcon)
+                )
+            )
+        );
+        return new CupertinoTextField(
+            controller: _effectiveController,
+            decoration: decorationLocal,
+            style: widget.style,
+            prefix: prefixLocal,
+            suffix: suffixLocal,
+            keyboardType: widget.keyboardType,
+            onTap: widget.onTap,
+            enabled: widget.enabled ?? true,
+            cursorWidth: widget.cursorWidth,
+            cursorHeight: widget.cursorHeight,
+            cursorRadius: widget.cursorRadius,
+            cursorOpacityAnimates: widget.cursorOpacityAnimates,
+            cursorColor: widget.cursorColor,
+            suffixMode: widget.suffixMode,
+            placeholder: placeholderLocal,
+            placeholderStyle: placeholderStyleLocal,
+            padding: _animatedInsets(context, widget.padding),
+            onChanged: widget.onChanged,
+            onSubmitted: widget.onSubmitted,
+            focusNode: _effectiveFocusNode,
+            autofocus: widget.autofocus,
+            autocorrect: widget.autocorrect,
+            smartQuotesType: widget.smartQuotesType,
+            smartDashesType: widget.smartDashesType,
+            enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
+            textInputAction: TextInputAction.search
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -313,10 +454,22 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -331,17 +484,21 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -359,7 +516,10 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -381,35 +541,77 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection41817 = new List<DiagnosticsNode>();
+                                    __collection41817.Add(
+                                        new ErrorSummary(
+                                            "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                                        )
+                                    );
+                                    __collection41817.Add(
+                                        new ErrorDescription(
+                                            $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                                + "\"restoreState\" was called:"
+                                        )
+                                    );
+                                    __collection41817.AddRange(
+                                        _debugPropertiesWaitingForReregistration!.map<
+                                            IRestorableProperty,
+                                            DiagnosticsNode
+                                        >(
+                                            (property) =>
+                                                new ErrorDescription(
+                                                    $" * {property._restorationId}"
+                                                )
+                                        )
+                                    );
+                                    return __collection41817;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -417,7 +619,10 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -441,7 +646,9 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -465,12 +672,11 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
         property.removeListener(listener);
         property._unregister();
     }
-
 }

@@ -54,10 +54,11 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     }
 
     internal override string BackendName => "ANGLE/EGL-D3D11";
-    internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
+    internal override string RuntimeEffectsBackend =>
+        DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
     internal override string DiagnosticCoverage =>
-        "exact GPU backing raster, full-frame Src blit to EGL_FIXED_SIZE_ANGLE, hardware D3D11 enforcement, " +
-        "checked EGL/GLES calls, and first-surface/resize-present DwmFlush";
+        "exact GPU backing raster, full-frame Src blit to EGL_FIXED_SIZE_ANGLE, hardware D3D11 enforcement, "
+        + "checked EGL/GLES calls, and first-surface/resize-present DwmFlush";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
@@ -78,12 +79,26 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         LastPresentSucceeded = false;
-        if (childWindow == 0) throw new ArgumentOutOfRangeException(nameof(childWindow));
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        if (childWindow == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(childWindow));
+        }
+
+        if (width <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height));
+        }
 
         if (_window != 0 && _window != childWindow)
+        {
             ReleaseDevice();
+        }
+
         EnsureDevice();
         _window = childWindow;
         if (_eglSurface != 0 && Width == width && Height == height)
@@ -97,19 +112,29 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         ReleaseWindowSurface();
         var surfaceAttributes = new[]
         {
-            EglFixedSizeAngle, 1,
-            EglWidth, width,
-            EglHeight, height,
+            EglFixedSizeAngle,
+            1,
+            EglWidth,
+            width,
+            EglHeight,
+            height,
             EglNone,
         };
         _eglSurface = EglCreateWindowSurface(_display, _config, childWindow, surfaceAttributes);
-        if (_eglSurface == 0) ThrowEgl("eglCreateWindowSurface(EGL_FIXED_SIZE_ANGLE)");
+        if (_eglSurface == 0)
+        {
+            ThrowEgl("eglCreateWindowSurface(EGL_FIXED_SIZE_ANGLE)");
+        }
+
         Width = width;
         Height = height;
         MakeCurrent();
         ApplyRequestedSwapInterval();
         EnsureSkiaTargets(width, height);
-        if (resized) ResizeBuffersCount++;
+        if (resized)
+        {
+            ResizeBuffersCount++;
+        }
         // A newly attached ANGLE HWND surface is not guaranteed to reach DWM
         // merely because eglSwapBuffers returned. Flush the first swap as well
         // as resize recreations before native publishes the exact terminal and
@@ -120,14 +145,22 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
 
     internal override void SealInitializationDebugBaseline()
     {
-        if (_debugBaselineSealed) return;
+        if (_debugBaselineSealed)
+        {
+            return;
+        }
+
         CaptureGlErrors("initialization", initialization: true);
         _debugBaselineSealed = true;
     }
 
     internal override void CaptureOperationalDebugMessages()
     {
-        if (!_debugBaselineSealed || _eglSurface == 0) return;
+        if (!_debugBaselineSealed || _eglSurface == 0)
+        {
+            return;
+        }
+
         MakeCurrent();
         CaptureGlErrors("operation", initialization: false);
     }
@@ -139,16 +172,32 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         ObjectDisposedException.ThrowIf(_disposed, this);
         LastPresentSucceeded = false;
         MakeCurrent();
-        var context = _context ?? throw new InvalidOperationException("The managed ANGLE Skia context is unavailable.");
-        var windowSurface = _windowSurface ?? throw new InvalidOperationException("The ANGLE window surface is unavailable.");
-        var backingSurface = _backingSurface ?? throw new InvalidOperationException("The exact ANGLE GPU backing surface is unavailable.");
+        var context =
+            _context
+            ?? throw new InvalidOperationException(
+                "The managed ANGLE Skia context is unavailable."
+            );
+        var windowSurface =
+            _windowSurface
+            ?? throw new InvalidOperationException("The ANGLE window surface is unavailable.");
+        var backingSurface =
+            _backingSurface
+            ?? throw new InvalidOperationException(
+                "The exact ANGLE GPU backing surface is unavailable."
+            );
         var result = paint(backingSurface);
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
 
         backingSurface.Canvas.Flush();
         using (var image = backingSurface.Snapshot())
         using (var copy = new SKPaint { BlendMode = SKBlendMode.Src })
+        {
             windowSurface.Canvas.DrawImage(image, 0, 0, SKSamplingOptions.Default, copy);
+        }
+
         GpuCopyCount++;
         // ImageFilter.shader and picture caches only touch texture-backed
         // surfaces. Reset GL state before the one full-frame default-FBO blit
@@ -159,15 +208,28 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         context.Flush(windowSurface);
         context.Submit(false);
         GpuSubmitCount++;
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
+
         ThrowIfGlErrors("managed Skia direct submit");
-        if (!shouldPresent(result)) return result;
+        if (!shouldPresent(result))
+        {
+            return result;
+        }
+
         if (EglSwapBuffers(_display, _eglSurface) == EglFalse)
+        {
             ThrowEgl("eglSwapBuffers");
+        }
+
         PresentCount++;
         LastPresentSucceeded = true;
-        if (_flushAfterSurfaceCreationPresent ||
-            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+        if (
+            _flushAfterSurfaceCreationPresent
+            || Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1"
+        )
         {
             Marshal.ThrowExceptionForHR(DwmFlush());
             _flushAfterSurfaceCreationPresent = false;
@@ -190,97 +252,184 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     private void EnsureSkiaTargets(int width, int height)
     {
         if (_windowSurface is not null && _backingSurface is not null && _windowTarget is not null)
+        {
             return;
-        var context = _context ?? throw new InvalidOperationException("The managed ANGLE Skia context is unavailable.");
+        }
+
+        var context =
+            _context
+            ?? throw new InvalidOperationException(
+                "The managed ANGLE Skia context is unavailable."
+            );
         context.ResetContext(GRGlBackendState.All);
         GlGetIntegerv(GlSamples, out var sampleCount);
         GlGetIntegerv(GlStencilBits, out var stencilBits);
         ThrowIfGlErrors("default-framebuffer query");
         _windowTarget = new GRBackendRenderTarget(
-            width, height, Math.Max(0, sampleCount), Math.Max(0, stencilBits),
-            new GRGlFramebufferInfo(0, GlRgba8));
-        _windowSurface = SKSurface.Create(
-            context, _windowTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
-            ?? throw new InvalidOperationException("Skia could not wrap the ANGLE default framebuffer.");
-        _backingSurface = SKSurface.Create(
-            context,
-            true,
-            new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul),
-            0,
-            GRSurfaceOrigin.TopLeft)
-            ?? throw new InvalidOperationException("Skia could not create the exact ANGLE GPU backing surface.");
+            width,
+            height,
+            Math.Max(0, sampleCount),
+            Math.Max(0, stencilBits),
+            new GRGlFramebufferInfo(0, GlRgba8)
+        );
+        _windowSurface =
+            SKSurface.Create(
+                context,
+                _windowTarget,
+                GRSurfaceOrigin.BottomLeft,
+                SKColorType.Rgba8888
+            )
+            ?? throw new InvalidOperationException(
+                "Skia could not wrap the ANGLE default framebuffer."
+            );
+        _backingSurface =
+            SKSurface.Create(
+                context,
+                true,
+                new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul),
+                0,
+                GRSurfaceOrigin.TopLeft
+            )
+            ?? throw new InvalidOperationException(
+                "Skia could not create the exact ANGLE GPU backing surface."
+            );
     }
 
     private void EnsureDevice()
     {
-        if (_display != 0) return;
+        if (_display != 0)
+        {
+            return;
+        }
+
         var platformAttributes = WindowsGpuSelection.AnglePlatformAttributes();
         _display = EglGetPlatformDisplayExt(EglPlatformAngle, 0, platformAttributes);
-        if (_display == 0) ThrowEgl("eglGetPlatformDisplayEXT(D3D11 hardware)");
-        if (EglInitialize(_display, out _, out _) == EglFalse) ThrowEgl("eglInitialize");
-        if (EglBindApi(EglOpenGlesApi) == EglFalse) ThrowEgl("eglBindAPI(EGL_OPENGL_ES_API)");
+        if (_display == 0)
+        {
+            ThrowEgl("eglGetPlatformDisplayEXT(D3D11 hardware)");
+        }
+
+        if (EglInitialize(_display, out _, out _) == EglFalse)
+        {
+            ThrowEgl("eglInitialize");
+        }
+
+        if (EglBindApi(EglOpenGlesApi) == EglFalse)
+        {
+            ThrowEgl("eglBindAPI(EGL_OPENGL_ES_API)");
+        }
+
         var configAttributes = new[]
         {
-            EglSurfaceType, EglWindowBit,
-            EglRenderableType, EglOpenGles2Bit,
-            EglRedSize, 8,
-            EglGreenSize, 8,
-            EglBlueSize, 8,
-            EglAlphaSize, 8,
-            EglDepthSize, 0,
-            EglStencilSize, 8,
+            EglSurfaceType,
+            EglWindowBit,
+            EglRenderableType,
+            EglOpenGles2Bit,
+            EglRedSize,
+            8,
+            EglGreenSize,
+            8,
+            EglBlueSize,
+            8,
+            EglAlphaSize,
+            8,
+            EglDepthSize,
+            0,
+            EglStencilSize,
+            8,
             EglNone,
         };
-        if (EglChooseConfig(_display, configAttributes, out _config, 1, out var configCount) == EglFalse ||
-            configCount <= 0 || _config == 0)
+        if (
+            EglChooseConfig(_display, configAttributes, out _config, 1, out var configCount)
+                == EglFalse
+            || configCount <= 0
+            || _config == 0
+        )
+        {
             ThrowEgl("eglChooseConfig(window RGBA8/stencil8/GLES2)");
+        }
+
         var contextAttributes = new[] { EglContextClientVersion, 2, EglNone };
         _eglContext = EglCreateContext(_display, _config, 0, contextAttributes);
-        if (_eglContext == 0) ThrowEgl("eglCreateContext(GLES2)");
+        if (_eglContext == 0)
+        {
+            ThrowEgl("eglCreateContext(GLES2)");
+        }
+
         _debugBaselineSealed = false;
     }
 
     private void CompleteContextInitialization()
     {
-        if (_context is not null) return;
-        _glInterface = GRGlInterface.CreateGles(EglGetProcAddress)
-            ?? throw new InvalidOperationException("Skia could not resolve the ANGLE GLES interface.");
-        _context = GRContext.CreateGl(_glInterface)
-            ?? throw new InvalidOperationException("Skia could not create a managed ANGLE GLES context.");
+        if (_context is not null)
+        {
+            return;
+        }
+
+        _glInterface =
+            GRGlInterface.CreateGles(EglGetProcAddress)
+            ?? throw new InvalidOperationException(
+                "Skia could not resolve the ANGLE GLES interface."
+            );
+        _context =
+            GRContext.CreateGl(_glInterface)
+            ?? throw new InvalidOperationException(
+                "Skia could not create a managed ANGLE GLES context."
+            );
         var renderer = GlGetString(GlRenderer);
-        AdapterDescription = renderer == 0
-            ? "ANGLE renderer unavailable"
-            : Marshal.PtrToStringAnsi(renderer) ?? "ANGLE renderer unavailable";
+        AdapterDescription =
+            renderer == 0
+                ? "ANGLE renderer unavailable"
+                : Marshal.PtrToStringAnsi(renderer) ?? "ANGLE renderer unavailable";
         var isAngle = AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase);
-        var isD3D11 = AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
-                      AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase);
+        var isD3D11 =
+            AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase)
+            || AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase);
         if (!isAngle || !isD3D11)
+        {
             throw new InvalidOperationException(
-                $"ANGLE did not select a D3D11 renderer: '{AdapterDescription}'.");
+                $"ANGLE did not select a D3D11 renderer: '{AdapterDescription}'."
+            );
+        }
+
         DeviceGeneration++;
     }
 
     private void ApplyRequestedSwapInterval()
     {
         var requested = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EGL_SWAP_INTERVAL");
-        if (requested is not ("0" or "1")) return;
+        if (requested is not ("0" or "1"))
+        {
+            return;
+        }
+
         if (EglSwapInterval(_display, requested == "0" ? 0 : 1) == EglFalse)
+        {
             ThrowEgl($"eglSwapInterval({requested})");
+        }
     }
 
     private void MakeCurrent()
     {
         if (_display == 0 || _eglSurface == 0 || _eglContext == 0)
+        {
             throw new InvalidOperationException("The managed ANGLE EGL target is incomplete.");
+        }
+
         if (EglMakeCurrent(_display, _eglSurface, _eglSurface, _eglContext) == EglFalse)
+        {
             ThrowEgl("eglMakeCurrent");
+        }
+
         CompleteContextInitialization();
     }
 
     private void ThrowIfGlErrors(string operation)
     {
         if (CaptureGlErrors(operation, initialization: !_debugBaselineSealed) != 0)
+        {
             throw new InvalidOperationException($"{operation} emitted one or more GLES errors.");
+        }
     }
 
     private ulong CaptureGlErrors(string stage, bool initialization)
@@ -289,11 +438,19 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         for (var index = 0; index < 16; index++)
         {
             var error = GlGetError();
-            if (error == GlNoError) break;
+            if (error == GlNoError)
+            {
+                break;
+            }
+
             count++;
             Console.Error.WriteLine($"GLES {stage} error=0x{error:x4}");
         }
-        if (!_diagnosticsEnabled && count == 0) return 0;
+        if (!_diagnosticsEnabled && count == 0)
+        {
+            return 0;
+        }
+
         if (initialization)
         {
             InitializationDebugMessageCount += count;
@@ -310,7 +467,11 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     private void ThrowEgl(string operation)
     {
         var error = EglGetError();
-        if (error is EglBadParameter or EglBadMatch) ResizeInvalidCallCount++;
+        if (error is EglBadParameter or EglBadMatch)
+        {
+            ResizeInvalidCallCount++;
+        }
+
         if (_debugBaselineSealed)
         {
             OperationalDebugMessageCount++;
@@ -327,7 +488,10 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     private void ReleaseWindowSurface()
     {
         if (_display != 0 && _eglSurface != 0 && _eglContext != 0)
+        {
             EglMakeCurrent(_display, _eglSurface, _eglSurface, _eglContext);
+        }
+
         _windowSurface?.Dispose();
         _windowSurface = null;
         _backingSurface?.Dispose();
@@ -346,9 +510,16 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
 
     private void ReleaseDevice()
     {
-        if (_display == 0) return;
+        if (_display == 0)
+        {
+            return;
+        }
+
         if (_eglSurface != 0 && _eglContext != 0)
+        {
             EglMakeCurrent(_display, _eglSurface, _eglSurface, _eglContext);
+        }
+
         _windowSurface?.Dispose();
         _windowSurface = null;
         _backingSurface?.Dispose();
@@ -361,8 +532,16 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         _glInterface?.Dispose();
         _glInterface = null;
         EglMakeCurrent(_display, 0, 0, 0);
-        if (_eglSurface != 0) EglDestroySurface(_display, _eglSurface);
-        if (_eglContext != 0) EglDestroyContext(_display, _eglContext);
+        if (_eglSurface != 0)
+        {
+            EglDestroySurface(_display, _eglSurface);
+        }
+
+        if (_eglContext != 0)
+        {
+            EglDestroyContext(_display, _eglContext);
+        }
+
         EglTerminate(_display);
         _display = _config = _eglContext = _eglSurface = _window = 0;
         _flushAfterSurfaceCreationPresent = false;
@@ -372,13 +551,21 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
 
     public override void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         ReleaseDevice();
         _disposed = true;
     }
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_GetPlatformDisplayEXT", ExactSpelling = true)]
-    private static extern nint EglGetPlatformDisplayExt(uint platform, nint nativeDisplay, int[] attributes);
+    private static extern nint EglGetPlatformDisplayExt(
+        uint platform,
+        nint nativeDisplay,
+        int[] attributes
+    );
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_Initialize", ExactSpelling = true)]
     private static extern int EglInitialize(nint display, out int major, out int minor);
@@ -388,19 +575,36 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_ChooseConfig", ExactSpelling = true)]
     private static extern int EglChooseConfig(
-        nint display, int[] attributes, out nint config, int configSize, out int configCount);
+        nint display,
+        int[] attributes,
+        out nint config,
+        int configSize,
+        out int configCount
+    );
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_CreateContext", ExactSpelling = true)]
     private static extern nint EglCreateContext(
-        nint display, nint config, nint sharedContext, int[] attributes);
+        nint display,
+        nint config,
+        nint sharedContext,
+        int[] attributes
+    );
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_CreateWindowSurface", ExactSpelling = true)]
     private static extern nint EglCreateWindowSurface(
-        nint display, nint config, nint nativeWindow, int[] attributes);
+        nint display,
+        nint config,
+        nint nativeWindow,
+        int[] attributes
+    );
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_MakeCurrent", ExactSpelling = true)]
     private static extern int EglMakeCurrent(
-        nint display, nint drawSurface, nint readSurface, nint context);
+        nint display,
+        nint drawSurface,
+        nint readSurface,
+        nint context
+    );
 
     [DllImport(AngleLibrary, EntryPoint = "EGL_SwapInterval", ExactSpelling = true)]
     private static extern int EglSwapInterval(nint display, int interval);
@@ -420,7 +624,12 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     [DllImport(AngleLibrary, EntryPoint = "EGL_GetError", ExactSpelling = true)]
     private static extern int EglGetError();
 
-    [DllImport(AngleLibrary, EntryPoint = "EGL_GetProcAddress", ExactSpelling = true, CharSet = CharSet.Ansi)]
+    [DllImport(
+        AngleLibrary,
+        EntryPoint = "EGL_GetProcAddress",
+        ExactSpelling = true,
+        CharSet = CharSet.Ansi
+    )]
     private static extern nint EglGetProcAddress(string name);
 
     [DllImport(AngleLibrary, EntryPoint = "glGetError", ExactSpelling = true)]

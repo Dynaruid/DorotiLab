@@ -14,7 +14,17 @@ public class UndoHistory<T> : StatefulWidget
     public virtual UndoHistoryController? controller { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public UndoHistory(Key? key = null, Func<T?, T, bool>? shouldChangeUndoStack = null, ValueNotifier<T> value = default!, Action<T> onTriggered = default!, FocusNode focusNode = default!, Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
+    public UndoHistory(
+        Key? key = null,
+        Func<T?, T, bool>? shouldChangeUndoStack = null,
+        ValueNotifier<T> value = default!,
+        Action<T> onTriggered = default!,
+        FocusNode focusNode = default!,
+        Func<T, T>? undoStackModifier = null,
+        UndoHistoryController? controller = null,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         this.shouldChangeUndoStack = shouldChangeUndoStack;
         this.value = value;
@@ -25,12 +35,14 @@ public class UndoHistory<T> : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new UndoHistoryState<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new UndoHistoryState<T>());
 }
 
 public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
 {
-    internal virtual _UndoStack__undo_history<T> _stack { get; private set; } = new _UndoStack__undo_history<T>();
+    internal virtual _UndoStack__undo_history<T> _stack { get; private set; } =
+        new _UndoStack__undo_history<T>();
     internal virtual Func<T, Timer> _throttledPush { get; private set; } = default!;
     internal virtual Timer? _throttleTimer { get; set; } = default;
     internal virtual bool _duringTrigger { get; set; } = false;
@@ -38,7 +50,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
     internal virtual T? _lastValue { get; set; } = default;
     internal virtual UndoHistoryController? _controller { get; set; } = default;
 
-    internal virtual UndoHistoryController _effectiveController => DartRuntimePrimitives.ConvertValue<UndoHistoryController>(widget.controller ?? (_controller ??= new UndoHistoryController()));
+    internal virtual UndoHistoryController _effectiveController =>
+        DartRuntimePrimitives.ConvertValue<UndoHistoryController>(
+            widget.controller ?? (_controller ??= new UndoHistoryController())
+        );
+
     public virtual void undo()
     {
         if (_stack.currentValue is null)
@@ -65,6 +81,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
 
     public virtual bool canUndo => _stack.canUndo;
     public virtual bool canRedo => _stack.canRedo;
+
     internal virtual void _updateState()
     {
         _effectiveController.value = new UndoHistoryValue(canUndo: canUndo, canRedo: canRedo);
@@ -121,11 +138,19 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
         {
             return;
         }
-        if (!(widget.shouldChangeUndoStack is null ? true : widget.shouldChangeUndoStack.Invoke(_lastValue, widget.value.value)))
+        if (
+            !(
+                widget.shouldChangeUndoStack is null
+                    ? true
+                    : widget.shouldChangeUndoStack.Invoke(_lastValue, widget.value.value)
+            )
+        )
         {
             return;
         }
-        T nextValue = widget.undoStackModifier is null ? widget.value.value : widget.undoStackModifier.Invoke(widget.value.value);
+        T nextValue = widget.undoStackModifier is null
+            ? widget.value.value
+            : widget.undoStackModifier.Invoke(widget.value.value);
         if (EqualityComparer<T>.Default.Equals(nextValue, _lastValue))
         {
             return;
@@ -153,26 +178,29 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
         switch (direction)
         {
             case UndoDirection.undo:
-                {
-                    undo();
-                    break;
-                }
+            {
+                undo();
+                break;
+            }
             case UndoDirection.redo:
-                {
-                    redo();
-                    break;
-                }
+            {
+                redo();
+                break;
+            }
         }
     }
 
     public override void initState()
     {
         base.initState();
-        _throttledPush = Undo_historyLibrary._throttle<T>(duration: _kThrottleDuration, function: (currentValue) =>
-        {
-            _stack.push(currentValue);
-            _updateState();
-        });
+        _throttledPush = Undo_historyLibrary._throttle<T>(
+            duration: _kThrottleDuration,
+            function: (currentValue) =>
+            {
+                _stack.push(currentValue);
+                _updateState();
+            }
+        );
         _push();
         widget.value.addListener(_push);
         _handleFocus();
@@ -223,10 +251,34 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
 
     public override Widget build(BuildContext context)
     {
-        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = IntentAction<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((Action<UndoTextIntent>)_undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = IntentAction<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((Action<RedoTextIntent>)_redoFromIntent)(__arg0); return default!; })) }, child: widget.child);
+        return new Actions(
+            actions: new DartMap<Type, dynamic>
+            {
+                [typeof(UndoTextIntent)] = IntentAction<UndoTextIntent>.CreateOverridable(
+                    context: context,
+                    defaultAction: new CallbackAction<UndoTextIntent>(
+                        onInvoke: (__arg0) =>
+                        {
+                            ((Action<UndoTextIntent>)_undoFromIntent)(__arg0);
+                            return default!;
+                        }
+                    )
+                ),
+                [typeof(RedoTextIntent)] = IntentAction<RedoTextIntent>.CreateOverridable(
+                    context: context,
+                    defaultAction: new CallbackAction<RedoTextIntent>(
+                        onInvoke: (__arg0) =>
+                        {
+                            ((Action<RedoTextIntent>)_redoFromIntent)(__arg0);
+                            return default!;
+                        }
+                    )
+                ),
+            },
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class UndoHistoryValue
@@ -241,19 +293,30 @@ public class UndoHistoryValue
         this.canRedo = canRedo;
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue")}(canUndo: {canUndo}, canRedo: {canRedo})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue")}(canUndo: {canUndo}, canRedo: {canRedo})";
+
     public override bool Equals(object? other)
     {
         var __other = other as UndoHistoryValue;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
         }
-        return (__other is UndoHistoryValue) && (__other.canUndo == canUndo) && (__other.canRedo == canRedo);
+        return (__other is UndoHistoryValue)
+            && (__other.canUndo == canUndo)
+            && (__other.canRedo == canRedo);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(canUndo.GetHashCode(), canRedo.GetHashCode()));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(canUndo.GetHashCode(), canRedo.GetHashCode())
+        );
 }
 
 public class UndoHistoryController : ValueNotifier<UndoHistoryValue>
@@ -261,9 +324,8 @@ public class UndoHistoryController : ValueNotifier<UndoHistoryValue>
     public virtual ChangeNotifier onUndo { get; private set; } = new ChangeNotifier();
     public virtual ChangeNotifier onRedo { get; private set; } = new ChangeNotifier();
 
-    public UndoHistoryController(UndoHistoryValue? value = null) : base(value ?? UndoHistoryValue.empty)
-    {
-    }
+    public UndoHistoryController(UndoHistoryValue? value = null)
+        : base(value ?? UndoHistoryValue.empty) { }
 
     public virtual void undo()
     {
@@ -289,7 +351,6 @@ public class UndoHistoryController : ValueNotifier<UndoHistoryValue>
         onRedo.dispose();
         base.dispose();
     }
-
 }
 
 internal class _UndoStack__undo_history<T>
@@ -297,13 +358,16 @@ internal class _UndoStack__undo_history<T>
     internal virtual List<T> _list { get; private set; } = new List<T>();
     internal virtual long _index { get; set; } = -1L;
 
-    internal _UndoStack__undo_history()
-    {
-    }
+    internal _UndoStack__undo_history() { }
 
     public virtual T? currentValue => !Enumerable.Any(_list) ? default(T) : _list[(int)_index];
-    public virtual bool canUndo => DartRuntimePrimitives.ConvertValue<bool>(Enumerable.Any(_list) && (_index > 0L));
-    public virtual bool canRedo => DartRuntimePrimitives.ConvertValue<bool>(Enumerable.Any(_list) && (_index < (checked(_list.Count) - 1L)));
+    public virtual bool canUndo =>
+        DartRuntimePrimitives.ConvertValue<bool>(Enumerable.Any(_list) && (_index > 0L));
+    public virtual bool canRedo =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            Enumerable.Any(_list) && (_index < (checked(_list.Count) - 1L))
+        );
+
     public virtual void push(T value)
     {
         if (!Enumerable.Any(_list))
@@ -319,7 +383,10 @@ internal class _UndoStack__undo_history<T>
         }
         if (_index != (checked(_list.Count) - 1L))
         {
-            _list.RemoveRange(checked((int)(_index + 1L)), checked((int)checked((long)_list.Count)));
+            _list.RemoveRange(
+                checked((int)(_index + 1L)),
+                checked((int)checked((long)_list.Count))
+            );
         }
         _list.Add(value);
         _index = checked(_list.Count) - 1L;
@@ -366,7 +433,6 @@ internal class _UndoStack__undo_history<T>
         return $"_UndoStack {_list}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal delegate void _Throttleable__undo_history<T>(T currentArg);
@@ -386,15 +452,17 @@ public static partial class Undo_historyLibrary
             {
                 return timer!;
             }
-            timer = new Timer(duration, () =>
-            {
-                function(arg);
-                timer = null;
-            });
+            timer = new Timer(
+                duration,
+                () =>
+                {
+                    function(arg);
+                    timer = null;
+                }
+            );
             return timer!;
             throw new InvalidOperationException("Dart closure completed without a value.");
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

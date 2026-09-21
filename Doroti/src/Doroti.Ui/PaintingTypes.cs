@@ -2,52 +2,262 @@ using Doroti.Runtime;
 
 namespace Doroti.Ui;
 
-public enum BlendMode { clear, src, dst, srcOver, dstOver, srcIn, dstIn, srcOut, dstOut, srcATop, dstATop, xor, plus, modulate, screen, overlay, darken, lighten, colorDodge, colorBurn, hardLight, softLight, difference, exclusion, multiply, hue, saturation, color, luminosity }
-public enum BlurStyle { normal, solid, outer, inner }
-public enum BoxHeightStyle { tight, max, includeLineSpacingMiddle, includeLineSpacingTop, includeLineSpacingBottom, strut }
-public enum BoxWidthStyle { tight, max }
-public enum Clip { none, hardEdge, antiAlias, antiAliasWithSaveLayer }
-public enum FilterQuality { none, low, medium, high }
-public enum FontStyle { normal, italic }
-public enum PlaceholderAlignment { baseline, aboveBaseline, belowBaseline, top, bottom, middle }
-public enum TextBaseline { alphabetic, ideographic }
-public enum TextLeadingDistribution { proportional, even }
-public enum TileMode { clamp, repeated, mirror, decal }
-public enum PathFillType { nonZero, evenOdd }
-public enum PathOperation { difference, intersect, union, xor, reverseDifference }
-public enum TextDecorationStyle { solid, doubleLine, dotted, dashed, wavy }
+public enum BlendMode
+{
+    clear,
+    src,
+    dst,
+    srcOver,
+    dstOver,
+    srcIn,
+    dstIn,
+    srcOut,
+    dstOut,
+    srcATop,
+    dstATop,
+    xor,
+    plus,
+    modulate,
+    screen,
+    overlay,
+    darken,
+    lighten,
+    colorDodge,
+    colorBurn,
+    hardLight,
+    softLight,
+    difference,
+    exclusion,
+    multiply,
+    hue,
+    saturation,
+    color,
+    luminosity,
+}
+
+public enum BlurStyle
+{
+    normal,
+    solid,
+    outer,
+    inner,
+}
+
+public enum BoxHeightStyle
+{
+    tight,
+    max,
+    includeLineSpacingMiddle,
+    includeLineSpacingTop,
+    includeLineSpacingBottom,
+    strut,
+}
+
+public enum BoxWidthStyle
+{
+    tight,
+    max,
+}
+
+public enum Clip
+{
+    none,
+    hardEdge,
+    antiAlias,
+    antiAliasWithSaveLayer,
+}
+
+public enum FilterQuality
+{
+    none,
+    low,
+    medium,
+    high,
+}
+
+public enum FontStyle
+{
+    normal,
+    italic,
+}
+
+public enum PlaceholderAlignment
+{
+    baseline,
+    aboveBaseline,
+    belowBaseline,
+    top,
+    bottom,
+    middle,
+}
+
+public enum TextBaseline
+{
+    alphabetic,
+    ideographic,
+}
+
+public enum TextLeadingDistribution
+{
+    proportional,
+    even,
+}
+
+public enum TileMode
+{
+    clamp,
+    repeated,
+    mirror,
+    decal,
+}
+
+public enum PathFillType
+{
+    nonZero,
+    evenOdd,
+}
+
+public enum PathOperation
+{
+    difference,
+    intersect,
+    union,
+    xor,
+    reverseDifference,
+}
+
+public enum TextDecorationStyle
+{
+    solid,
+    doubleLine,
+    dotted,
+    dashed,
+    wavy,
+}
 
 public readonly record struct Radius(double x, double y)
 {
-    public Radius(double radius) : this(radius, radius) { }
+    public Radius(double radius)
+        : this(radius, radius) { }
+
     public static Radius zero { get; } = new(0, 0);
+
     public static Radius circular(double radius) => new(radius, radius);
+
     public static Radius CreateCircular(double radius) => circular(radius);
+
     public static Radius elliptical(double x, double y) => new(x, y);
-    public Radius clamp(Radius? minimum = null, Radius? maximum = null) => new(
-        Math.Clamp(x, minimum?.x ?? double.NegativeInfinity, maximum?.x ?? double.PositiveInfinity),
-        Math.Clamp(y, minimum?.y ?? double.NegativeInfinity, maximum?.y ?? double.PositiveInfinity));
-    public static Radius operator +(Radius left, Radius right) => new(left.x + right.x, left.y + right.y);
-    public static Radius operator -(Radius left, Radius right) => new(left.x - right.x, left.y - right.y);
+
+    public Radius clamp(Radius? minimum = null, Radius? maximum = null) =>
+        new(
+            Math.Clamp(
+                x,
+                minimum?.x ?? double.NegativeInfinity,
+                maximum?.x ?? double.PositiveInfinity
+            ),
+            Math.Clamp(
+                y,
+                minimum?.y ?? double.NegativeInfinity,
+                maximum?.y ?? double.PositiveInfinity
+            )
+        );
+
+    public static Radius operator +(Radius left, Radius right) =>
+        new(left.x + right.x, left.y + right.y);
+
+    public static Radius operator -(Radius left, Radius right) =>
+        new(left.x - right.x, left.y - right.y);
+
     public static Radius operator -(Radius value) => new(-value.x, -value.y);
-    public static Radius operator *(Radius value, double operand) => new(value.x * operand, value.y * operand);
-    public static Radius operator /(Radius value, double operand) => new(value.x / operand, value.y / operand);
-    public static Radius operator %(Radius value, double operand) => new(value.x % operand, value.y % operand);
-    public Radius ___(double operand) => new(Math.Truncate(x / operand), Math.Truncate(y / operand));
+
+    public static Radius operator *(Radius value, double operand) =>
+        new(value.x * operand, value.y * operand);
+
+    public static Radius operator /(Radius value, double operand) =>
+        new(value.x / operand, value.y / operand);
+
+    public static Radius operator %(Radius value, double operand) =>
+        new(value.x % operand, value.y % operand);
+
+    public Radius ___(double operand) =>
+        new(Math.Truncate(x / operand), Math.Truncate(y / operand));
 }
 
-public sealed record RRect(Rect outerRect, Radius tlRadius, Radius trRadius, Radius brRadius, Radius blRadius)
+public sealed record RRect(
+    Rect outerRect,
+    Radius tlRadius,
+    Radius trRadius,
+    Radius brRadius,
+    Radius blRadius
+)
 {
-    public RRect(Rect rect, Radius radius) : this(rect, radius, radius, radius, radius) { }
-    public static RRect fromRectAndRadius(Rect rect, Radius radius) => new(rect, radius, radius, radius, radius);
-    public static RRect fromLTRBAndRadius(double left, double top, double right, double bottom, Radius radius) => fromRectAndRadius(new(left, top, right, bottom), radius);
-    public static RRect fromLTRBAndCorners(double left, double top, double right, double bottom, Radius? topLeft = null, Radius? topRight = null, Radius? bottomRight = null, Radius? bottomLeft = null) =>
-        fromRectAndCorners(new(left, top, right, bottom), topLeft, topRight, bottomRight, bottomLeft);
-    public static RRect fromRectXY(Rect rect, double radiusX, double radiusY) => fromRectAndRadius(rect, new(radiusX, radiusY));
-    public static RRect fromLTRBXY(double left, double top, double right, double bottom, double radiusX, double radiusY) => fromRectXY(new(left, top, right, bottom), radiusX, radiusY);
-    public static RRect fromLTRBR(double left, double top, double right, double bottom, Radius radius) => fromRectAndRadius(new(left, top, right, bottom), radius);
-    public static RRect fromRectAndCorners(Rect rect, Radius? topLeft = null, Radius? topRight = null, Radius? bottomRight = null, Radius? bottomLeft = null) =>
-        new(rect, topLeft ?? Radius.zero, topRight ?? Radius.zero, bottomRight ?? Radius.zero, bottomLeft ?? Radius.zero);
+    public RRect(Rect rect, Radius radius)
+        : this(rect, radius, radius, radius, radius) { }
+
+    public static RRect fromRectAndRadius(Rect rect, Radius radius) =>
+        new(rect, radius, radius, radius, radius);
+
+    public static RRect fromLTRBAndRadius(
+        double left,
+        double top,
+        double right,
+        double bottom,
+        Radius radius
+    ) => fromRectAndRadius(new(left, top, right, bottom), radius);
+
+    public static RRect fromLTRBAndCorners(
+        double left,
+        double top,
+        double right,
+        double bottom,
+        Radius? topLeft = null,
+        Radius? topRight = null,
+        Radius? bottomRight = null,
+        Radius? bottomLeft = null
+    ) =>
+        fromRectAndCorners(
+            new(left, top, right, bottom),
+            topLeft,
+            topRight,
+            bottomRight,
+            bottomLeft
+        );
+
+    public static RRect fromRectXY(Rect rect, double radiusX, double radiusY) =>
+        fromRectAndRadius(rect, new(radiusX, radiusY));
+
+    public static RRect fromLTRBXY(
+        double left,
+        double top,
+        double right,
+        double bottom,
+        double radiusX,
+        double radiusY
+    ) => fromRectXY(new(left, top, right, bottom), radiusX, radiusY);
+
+    public static RRect fromLTRBR(
+        double left,
+        double top,
+        double right,
+        double bottom,
+        Radius radius
+    ) => fromRectAndRadius(new(left, top, right, bottom), radius);
+
+    public static RRect fromRectAndCorners(
+        Rect rect,
+        Radius? topLeft = null,
+        Radius? topRight = null,
+        Radius? bottomRight = null,
+        Radius? bottomLeft = null
+    ) =>
+        new(
+            rect,
+            topLeft ?? Radius.zero,
+            topRight ?? Radius.zero,
+            bottomRight ?? Radius.zero,
+            bottomLeft ?? Radius.zero
+        );
+
     public Rect outerRectValue => outerRect;
     public double left => outerRect.left;
     public double top => outerRect.top;
@@ -65,42 +275,109 @@ public sealed record RRect(Rect outerRect, Radius tlRadius, Radius trRadius, Rad
     public double brRadiusY => brRadius.y;
     public double blRadiusX => blRadius.x;
     public double blRadiusY => blRadius.y;
-    public RRect inflate(double delta) => new(outerRect.inflate(delta), Inflate(tlRadius, delta), Inflate(trRadius, delta), Inflate(brRadius, delta), Inflate(blRadius, delta));
+
+    public RRect inflate(double delta) =>
+        new(
+            outerRect.inflate(delta),
+            Inflate(tlRadius, delta),
+            Inflate(trRadius, delta),
+            Inflate(brRadius, delta),
+            Inflate(blRadius, delta)
+        );
+
     public RRect deflate(double delta) => inflate(-delta);
+
     public RRect shift(Offset offset) => this with { outerRect = outerRect.shift(offset) };
+
     public RRect scaleRadii() => this;
+
     public bool contains(Offset point)
     {
-        if (!outerRect.contains(point)) return false;
-        return CornerContains(point, left, top, tlRadius, 1, 1) &&
-            CornerContains(point, right, top, trRadius, -1, 1) &&
-            CornerContains(point, right, bottom, brRadius, -1, -1) &&
-            CornerContains(point, left, bottom, blRadius, 1, -1);
+        if (!outerRect.contains(point))
+        {
+            return false;
+        }
+
+        return CornerContains(point, left, top, tlRadius, 1, 1)
+            && CornerContains(point, right, top, trRadius, -1, 1)
+            && CornerContains(point, right, bottom, brRadius, -1, -1)
+            && CornerContains(point, left, bottom, blRadius, 1, -1);
     }
-    private static bool CornerContains(Offset point, double x, double y, Radius radius, double xDirection, double yDirection)
+
+    private static bool CornerContains(
+        Offset point,
+        double x,
+        double y,
+        Radius radius,
+        double xDirection,
+        double yDirection
+    )
     {
-        if (radius.x <= 0 || radius.y <= 0) return true;
+        if (radius.x <= 0 || radius.y <= 0)
+        {
+            return true;
+        }
+
         var centerX = x + (xDirection * radius.x);
         var centerY = y + (yDirection * radius.y);
-        if ((point.dx - centerX) * xDirection >= 0 || (point.dy - centerY) * yDirection >= 0) return true;
+        if ((point.dx - centerX) * xDirection >= 0 || (point.dy - centerY) * yDirection >= 0)
+        {
+            return true;
+        }
+
         var normalizedX = (point.dx - centerX) / radius.x;
         var normalizedY = (point.dy - centerY) / radius.y;
         return (normalizedX * normalizedX) + (normalizedY * normalizedY) <= 1;
     }
-    private static Radius Inflate(Radius radius, double delta) => new(Math.Max(0, radius.x + delta), Math.Max(0, radius.y + delta));
+
+    private static Radius Inflate(Radius radius, double delta) =>
+        new(Math.Max(0, radius.x + delta), Math.Max(0, radius.y + delta));
 }
 
-public sealed record RSuperellipse(Rect outerRect, Radius tlRadius, Radius trRadius, Radius brRadius, Radius blRadius)
+public sealed record RSuperellipse(
+    Rect outerRect,
+    Radius tlRadius,
+    Radius trRadius,
+    Radius brRadius,
+    Radius blRadius
+)
 {
-    public RSuperellipse(Rect rect, Radius radius) : this(rect, radius, radius, radius, radius) { }
-    public static RSuperellipse fromRectAndCorners(Rect rect, Radius? topLeft = null, Radius? topRight = null, Radius? bottomRight = null, Radius? bottomLeft = null) =>
-        new(rect, topLeft ?? Radius.zero, topRight ?? Radius.zero, bottomRight ?? Radius.zero, bottomLeft ?? Radius.zero);
-    public static RSuperellipse fromRectAndRadius(Rect rect, Radius radius) => new(rect, radius, radius, radius, radius);
-    public RSuperellipse inflate(double delta) => new(outerRect.inflate(delta),
-        Inflate(tlRadius, delta), Inflate(trRadius, delta), Inflate(brRadius, delta), Inflate(blRadius, delta));
+    public RSuperellipse(Rect rect, Radius radius)
+        : this(rect, radius, radius, radius, radius) { }
+
+    public static RSuperellipse fromRectAndCorners(
+        Rect rect,
+        Radius? topLeft = null,
+        Radius? topRight = null,
+        Radius? bottomRight = null,
+        Radius? bottomLeft = null
+    ) =>
+        new(
+            rect,
+            topLeft ?? Radius.zero,
+            topRight ?? Radius.zero,
+            bottomRight ?? Radius.zero,
+            bottomLeft ?? Radius.zero
+        );
+
+    public static RSuperellipse fromRectAndRadius(Rect rect, Radius radius) =>
+        new(rect, radius, radius, radius, radius);
+
+    public RSuperellipse inflate(double delta) =>
+        new(
+            outerRect.inflate(delta),
+            Inflate(tlRadius, delta),
+            Inflate(trRadius, delta),
+            Inflate(brRadius, delta),
+            Inflate(blRadius, delta)
+        );
+
     public RSuperellipse deflate(double delta) => inflate(-delta);
+
     public RSuperellipse shift(Offset offset) => this with { outerRect = outerRect.shift(offset) };
+
     public bool contains(Offset point) => outerRect.contains(point);
+
     public double tlRadiusX => tlRadius.x;
     public double tlRadiusY => tlRadius.y;
     public double trRadiusX => trRadius.x;
@@ -109,32 +386,149 @@ public sealed record RSuperellipse(Rect outerRect, Radius tlRadius, Radius trRad
     public double brRadiusY => brRadius.y;
     public double blRadiusX => blRadius.x;
     public double blRadiusY => blRadius.y;
-    private static Radius Inflate(Radius radius, double delta) => new(Math.Max(0, radius.x + delta), Math.Max(0, radius.y + delta));
+
+    private static Radius Inflate(Radius radius, double delta) =>
+        new(Math.Max(0, radius.x + delta), Math.Max(0, radius.y + delta));
 }
 
 public abstract class Shader;
 
 public sealed class Gradient : Shader
 {
-    private enum GradientKind { Linear, Radial, Sweep }
-    private Gradient(GradientKind kind, Offset? begin = null, Offset? end = null, Offset? center = null, double radius = 0, Offset? focal = null, double focalRadius = 0, double startAngle = 0, double endAngle = Math.PI * 2, TileMode tileMode = TileMode.clamp, IReadOnlyList<Color>? colors = null, IReadOnlyList<double>? colorStops = null, IReadOnlyList<double>? matrix4 = null)
+    private enum GradientKind
+    {
+        Linear,
+        Radial,
+        Sweep,
+    }
+
+    private Gradient(
+        GradientKind kind,
+        Offset? begin = null,
+        Offset? end = null,
+        Offset? center = null,
+        double radius = 0,
+        Offset? focal = null,
+        double focalRadius = 0,
+        double startAngle = 0,
+        double endAngle = Math.PI * 2,
+        TileMode tileMode = TileMode.clamp,
+        IReadOnlyList<Color>? colors = null,
+        IReadOnlyList<double>? colorStops = null,
+        IReadOnlyList<double>? matrix4 = null
+    )
     {
         this.kind = kind;
-        this.begin = begin; this.end = end; this.center = center; this.radius = radius; this.focal = focal;
-        this.focalRadius = focalRadius; this.startAngle = startAngle; this.endAngle = endAngle; this.tileMode = tileMode;
-        this.colors = Array.AsReadOnly((colors ?? throw new ArgumentNullException(nameof(colors))).ToArray());
-        if (this.colors.Count < 2) throw new ArgumentException("A gradient requires at least two colors.", nameof(colors));
-        var stops = colorStops?.ToArray() ?? Enumerable.Range(0, this.colors.Count).Select(index => index / (double)(this.colors.Count - 1)).ToArray();
-        if (stops.Length != this.colors.Count || stops.Any(value => !double.IsFinite(value)) || stops.Zip(stops.Skip(1)).Any(pair => pair.First > pair.Second))
-            throw new ArgumentException("Gradient stops must be finite, ordered, and match the color count.", nameof(colorStops));
+        this.begin = begin;
+        this.end = end;
+        this.center = center;
+        this.radius = radius;
+        this.focal = focal;
+        this.focalRadius = focalRadius;
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
+        this.tileMode = tileMode;
+        this.colors = Array.AsReadOnly(
+            (colors ?? throw new ArgumentNullException(nameof(colors))).ToArray()
+        );
+        if (this.colors.Count < 2)
+        {
+            throw new ArgumentException("A gradient requires at least two colors.", nameof(colors));
+        }
+
+        var stops =
+            colorStops?.ToArray()
+            ?? Enumerable
+                .Range(0, this.colors.Count)
+                .Select(index => index / (double)(this.colors.Count - 1))
+                .ToArray();
+        if (
+            stops.Length != this.colors.Count
+            || stops.Any(value => !double.IsFinite(value))
+            || stops.Zip(stops.Skip(1)).Any(pair => pair.First > pair.Second)
+        )
+        {
+            throw new ArgumentException(
+                "Gradient stops must be finite, ordered, and match the color count.",
+                nameof(colorStops)
+            );
+        }
+
         this.colorStops = Array.AsReadOnly(stops);
-        if (matrix4 is not null && (matrix4.Count != 16 || matrix4.Any(value => !double.IsFinite(value))))
-            throw new ArgumentException("A gradient matrix must contain 16 finite values.", nameof(matrix4));
+        if (
+            matrix4 is not null
+            && (matrix4.Count != 16 || matrix4.Any(value => !double.IsFinite(value)))
+        )
+        {
+            throw new ArgumentException(
+                "A gradient matrix must contain 16 finite values.",
+                nameof(matrix4)
+            );
+        }
+
         this.matrix4 = matrix4 is null ? null : Array.AsReadOnly(matrix4.ToArray());
     }
-    public Gradient(Offset from, Offset to, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null) : this(GradientKind.Linear, begin: from, end: to, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
-    public Gradient(Offset center, double radius, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null, Offset? focal = null, double focalRadius = 0) : this(GradientKind.Radial, center: center, radius: radius, focal: focal, focalRadius: focalRadius, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
-    public Gradient(Offset center, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, double startAngle = 0, double endAngle = Math.PI * 2, IReadOnlyList<double>? matrix4 = null) : this(GradientKind.Sweep, center: center, startAngle: startAngle, endAngle: endAngle, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
+
+    public Gradient(
+        Offset from,
+        Offset to,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        IReadOnlyList<double>? matrix4 = null
+    )
+        : this(
+            GradientKind.Linear,
+            begin: from,
+            end: to,
+            tileMode: tileMode,
+            colors: colors,
+            colorStops: colorStops,
+            matrix4: matrix4
+        ) { }
+
+    public Gradient(
+        Offset center,
+        double radius,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        IReadOnlyList<double>? matrix4 = null,
+        Offset? focal = null,
+        double focalRadius = 0
+    )
+        : this(
+            GradientKind.Radial,
+            center: center,
+            radius: radius,
+            focal: focal,
+            focalRadius: focalRadius,
+            tileMode: tileMode,
+            colors: colors,
+            colorStops: colorStops,
+            matrix4: matrix4
+        ) { }
+
+    public Gradient(
+        Offset center,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        double startAngle = 0,
+        double endAngle = Math.PI * 2,
+        IReadOnlyList<double>? matrix4 = null
+    )
+        : this(
+            GradientKind.Sweep,
+            center: center,
+            startAngle: startAngle,
+            endAngle: endAngle,
+            tileMode: tileMode,
+            colors: colors,
+            colorStops: colorStops,
+            matrix4: matrix4
+        ) { }
+
     private GradientKind kind { get; }
     public Offset? begin { get; }
     public Offset? end { get; }
@@ -148,12 +542,45 @@ public sealed class Gradient : Shader
     public IReadOnlyList<Color> colors { get; }
     public IReadOnlyList<double> colorStops { get; }
     public IReadOnlyList<double>? matrix4 { get; }
-    public static Gradient linear(Offset from, Offset to, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null) => new(from, to, colors, colorStops, tileMode, matrix4);
-    public static Gradient radial(Offset center, double radius, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null, Offset? focal = null, double focalRadius = 0) => new(center, radius, colors, colorStops, tileMode, matrix4, focal, focalRadius);
-    public static Gradient sweep(Offset center, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, double startAngle = 0, double endAngle = Math.PI * 2, IReadOnlyList<double>? matrix4 = null) => new(center, colors, colorStops, tileMode, startAngle, endAngle, matrix4);
+
+    public static Gradient linear(
+        Offset from,
+        Offset to,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        IReadOnlyList<double>? matrix4 = null
+    ) => new(from, to, colors, colorStops, tileMode, matrix4);
+
+    public static Gradient radial(
+        Offset center,
+        double radius,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        IReadOnlyList<double>? matrix4 = null,
+        Offset? focal = null,
+        double focalRadius = 0
+    ) => new(center, radius, colors, colorStops, tileMode, matrix4, focal, focalRadius);
+
+    public static Gradient sweep(
+        Offset center,
+        IReadOnlyList<Color> colors,
+        IReadOnlyList<double>? colorStops = null,
+        TileMode tileMode = TileMode.clamp,
+        double startAngle = 0,
+        double endAngle = Math.PI * 2,
+        IReadOnlyList<double>? matrix4 = null
+    ) => new(center, colors, colorStops, tileMode, startAngle, endAngle, matrix4);
 }
 
-public sealed class ImageShader(Image image, TileMode tmx, TileMode tmy, Matrix4 matrix4, FilterQuality? filterQuality = null) : Shader
+public sealed class ImageShader(
+    Image image,
+    TileMode tmx,
+    TileMode tmy,
+    Matrix4 matrix4,
+    FilterQuality? filterQuality = null
+) : Shader
 {
     public Image image { get; } = image;
     public TileMode tmx { get; } = tmx;
@@ -162,26 +589,57 @@ public sealed class ImageShader(Image image, TileMode tmx, TileMode tmy, Matrix4
     public FilterQuality? filterQuality { get; } = filterQuality;
 }
 
-public enum ColorFilterKind { mode, matrix, linearToSrgbGamma, srgbToLinearGamma }
+public enum ColorFilterKind
+{
+    mode,
+    matrix,
+    linearToSrgbGamma,
+    srgbToLinearGamma,
+}
 
 public sealed record ColorFilter
 {
-    private ColorFilter(ColorFilterKind kind, Color? color = null, BlendMode blendMode = BlendMode.srcOver, IReadOnlyList<double>? values = null)
+    private ColorFilter(
+        ColorFilterKind kind,
+        Color? color = null,
+        BlendMode blendMode = BlendMode.srcOver,
+        IReadOnlyList<double>? values = null
+    )
     {
         this.kind = kind;
         this.color = color;
         this.blendMode = blendMode;
-        if (kind == ColorFilterKind.matrix && (values is not { Count: 20 } || values.Any(value => !double.IsFinite(value))))
-            throw new ArgumentException("A color matrix must contain 20 finite values.", nameof(values));
+        if (
+            kind == ColorFilterKind.matrix
+            && (values is not { Count: 20 } || values.Any(value => !double.IsFinite(value)))
+        )
+        {
+            throw new ArgumentException(
+                "A color matrix must contain 20 finite values.",
+                nameof(values)
+            );
+        }
+
         matrixValues = values is null ? null : Array.AsReadOnly(values.ToArray());
     }
+
     public ColorFilterKind kind { get; }
     public Color? color { get; }
     public BlendMode blendMode { get; }
     public IReadOnlyList<double>? matrixValues { get; }
-    public static ColorFilter mode(Color color, BlendMode blendMode) => new(ColorFilterKind.mode, color ?? throw new ArgumentNullException(nameof(color)), blendMode);
-    public static ColorFilter matrix(IReadOnlyList<double> matrix) => new(ColorFilterKind.matrix, values: matrix);
+
+    public static ColorFilter mode(Color color, BlendMode blendMode) =>
+        new(
+            ColorFilterKind.mode,
+            color ?? throw new ArgumentNullException(nameof(color)),
+            blendMode
+        );
+
+    public static ColorFilter matrix(IReadOnlyList<double> matrix) =>
+        new(ColorFilterKind.matrix, values: matrix);
+
     public static ColorFilter linearToSrgbGamma() => new(ColorFilterKind.linearToSrgbGamma);
+
     public static ColorFilter srgbToLinearGamma() => new(ColorFilterKind.srgbToLinearGamma);
 }
 
@@ -189,7 +647,12 @@ public sealed record ImageFilter
 {
     public static bool isShaderFilterSupported => true;
 
-    public ImageFilter(double sigmaX = 0, double sigmaY = 0, TileMode tileMode = TileMode.clamp, Rect? bounds = null)
+    public ImageFilter(
+        double sigmaX = 0,
+        double sigmaY = 0,
+        TileMode tileMode = TileMode.clamp,
+        Rect? bounds = null
+    )
     {
         this.sigmaX = sigmaX;
         this.sigmaY = sigmaY;
@@ -214,7 +677,10 @@ public sealed record ImageFilter
         colorFilter = filter;
     }
 
-    public ImageFilter(IReadOnlyList<double> matrix4, FilterQuality filterQuality = FilterQuality.low)
+    public ImageFilter(
+        IReadOnlyList<double> matrix4,
+        FilterQuality filterQuality = FilterQuality.low
+    )
     {
         this.matrix4 = matrix4;
         this.filterQuality = filterQuality;
@@ -227,16 +693,30 @@ public sealed record ImageFilter
         var source = shader.program.source;
         var firstFloatUniform = System.Text.RegularExpressions.Regex.Match(
             source,
-            @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+[A-Za-z_]\w*\s*(?:\[\s*\d+\s*\])?\s*;");
-        if (!firstFloatUniform.Success ||
-            firstFloatUniform.Groups["type"].Value is not ("float2" or "half2"))
+            @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+[A-Za-z_]\w*\s*(?:\[\s*\d+\s*\])?\s*;"
+        );
+        if (
+            !firstFloatUniform.Success
+            || firstFloatUniform.Groups["type"].Value is not ("float2" or "half2")
+        )
+        {
             throw new InvalidOperationException(
-                "ImageFilter.shader requires the first float uniform to be a float2 input size.");
-        if (!System.Text.RegularExpressions.Regex.IsMatch(
+                "ImageFilter.shader requires the first float uniform to be a float2 input size."
+            );
+        }
+
+        if (
+            !System.Text.RegularExpressions.Regex.IsMatch(
                 source,
-                @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+shader\s+[A-Za-z_]\w*\s*;"))
+                @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+shader\s+[A-Za-z_]\w*\s*;"
+            )
+        )
+        {
             throw new InvalidOperationException(
-                "ImageFilter.shader requires at least one shader sampler for the filtered child.");
+                "ImageFilter.shader requires at least one shader sampler for the filtered child."
+            );
+        }
+
         this.filterQuality = filterQuality;
     }
 
@@ -253,32 +733,43 @@ public sealed record ImageFilter
     internal long shaderRevision { get; }
     public IReadOnlyList<double>? matrix4 { get; }
     public FilterQuality filterQuality { get; }
-    public string debugShortDescription => outer is not null && inner is not null
-        ? $"{inner.debugShortDescription} -> {outer.debugShortDescription}"
-        : shader is not null ? "shader" : matrix4 is not null ? "matrix" : "blur";
+    public string debugShortDescription =>
+        outer is not null && inner is not null
+            ? $"{inner.debugShortDescription} -> {outer.debugShortDescription}"
+        : shader is not null ? "shader"
+        : matrix4 is not null ? "matrix"
+        : "blur";
 }
 
 public sealed record MaskFilter
 {
     private MaskFilter(BlurStyle style, double sigma)
     {
-        if (!double.IsFinite(sigma) || sigma < 0) throw new ArgumentOutOfRangeException(nameof(sigma));
+        if (!double.IsFinite(sigma) || sigma < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(sigma));
+        }
+
         this.style = style;
         this.sigma = sigma;
     }
+
     public BlurStyle style { get; }
     public double sigma { get; }
+
     public static MaskFilter blur(BlurStyle style, double sigma) => new(style, sigma);
 }
 
 public class Shadow(Color color, Offset offset, double blurRadius)
 {
-    public Shadow(double blurRadius = 0) : this(new Color(0xFF000000L), Offset.zero, blurRadius) { }
+    public Shadow(double blurRadius = 0)
+        : this(new Color(0xFF000000L), Offset.zero, blurRadius) { }
 
     public Color color { get; } = color;
     public Offset offset { get; } = offset;
     public double blurRadius { get; } = blurRadius;
-    public double blurSigma => blurRadius * 0.57735 + 0.5;
+    public double blurSigma => (blurRadius * 0.57735) + 0.5;
+
     public Paint toPaint() => new() { color = color };
 }
 
@@ -287,10 +778,9 @@ public sealed class Picture : IDisposable
     private static long _nextSnapshotIdentity;
     internal long SnapshotIdentity { get; } = Interlocked.Increment(ref _nextSnapshotIdentity);
     private int _disposed;
+
     public Picture(IReadOnlyList<PathCommand>? commands = null)
-        : this((commands ?? []).ToArray())
-    {
-    }
+        : this((commands ?? []).ToArray()) { }
 
     private Picture(PathCommand[] ownedCommands) => Commands = Array.AsReadOnly(ownedCommands);
 
@@ -299,19 +789,47 @@ public sealed class Picture : IDisposable
 
     public IReadOnlyList<PathCommand> Commands { get; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
+
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
+
     public void dispose() => Dispose();
+
     public Future<Image> toImage(long width, long height)
     {
         ObjectDisposedException.ThrowIf(debugDisposed, this);
-        if (width <= 0 || height <= 0 || width > int.MaxValue || height > int.MaxValue || width * height > int.MaxValue / 4)
-            throw new ArgumentOutOfRangeException(nameof(width), "Image dimensions must be positive and fit an RGBA byte buffer.");
+        if (
+            width <= 0
+            || height <= 0
+            || width > int.MaxValue
+            || height > int.MaxValue
+            || width * height > int.MaxValue / 4
+        )
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(width),
+                "Image dimensions must be positive and fit an RGBA byte buffer."
+            );
+        }
+
         var invocation = DartUiInvocation.Managed("dart:ui#Picture.toImage");
         var dispatcher = PlatformDispatcher.instance;
-        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsImage, null, invocation, "picture rasterization requires an attached view");
-        return Future<Image>.fromTask(view.RequireCapability<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, invocation)
-            .RasterizeAsync(this, (int)width, (int)height, invocation).AsTask());
+        var view =
+            dispatcher.implicitView
+            ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(
+                DorotiCapabilityIds.GraphicsImage,
+                null,
+                invocation,
+                "picture rasterization requires an attached view"
+            );
+        return Future<Image>.fromTask(
+            view.RequireCapability<IImageHostCapability>(
+                    DorotiCapabilityIds.GraphicsImage,
+                    invocation
+                )
+                .RasterizeAsync(this, (int)width, (int)height, invocation)
+                .AsTask()
+        );
     }
 }
 
@@ -320,6 +838,7 @@ public sealed class PictureRecorder
     private readonly List<PathCommand> _commands = [];
     public bool isRecording { get; private set; } = true;
     internal List<PathCommand> commands => _commands;
+
     public Picture endRecording()
     {
         isRecording = false;
@@ -328,6 +847,7 @@ public sealed class PictureRecorder
 }
 
 public sealed record TargetImageSize(long? width, long? height);
+
 public delegate TargetImageSize TargetImageSizeCallback(long intrinsicWidth, long intrinsicHeight);
 
 public sealed record FrameInfo(Image image, Duration duration);
@@ -336,22 +856,42 @@ public sealed class Codec : IDisposable
 {
     private readonly IReadOnlyList<FrameInfo> _frames;
     private int _next;
-    public Codec(IReadOnlyList<FrameInfo> frames, long repetitionCount = 0) { _frames = frames; this.repetitionCount = repetitionCount; }
+
+    public Codec(IReadOnlyList<FrameInfo> frames, long repetitionCount = 0)
+    {
+        _frames = frames;
+        this.repetitionCount = repetitionCount;
+    }
+
     public long frameCount => _frames.Count;
     public long repetitionCount { get; }
+
     public Future<FrameInfo> getNextFrame()
     {
-        if (_frames.Count == 0) return Future<FrameInfo>.error(new InvalidOperationException("codec has no frames"));
+        if (_frames.Count == 0)
+        {
+            return Future<FrameInfo>.error(new InvalidOperationException("codec has no frames"));
+        }
+
         var frame = _frames[_next++ % _frames.Count];
         return Future<FrameInfo>.value(frame);
     }
+
     public void Dispose() { }
+
     public void dispose() => Dispose();
 }
 
-public sealed record TextBox(double left, double top, double right, double bottom, TextDirection direction)
+public sealed record TextBox(
+    double left,
+    double top,
+    double right,
+    double bottom,
+    TextDirection direction
+)
 {
     public Rect toRect() => new(left, top, right, bottom);
+
     public double start => direction == TextDirection.ltr ? left : right;
     public double end => direction == TextDirection.ltr ? right : left;
 }
@@ -359,11 +899,13 @@ public sealed record TextBox(double left, double top, double right, double botto
 public sealed record TextHeightBehavior(
     bool applyHeightToFirstAscent = true,
     bool applyHeightToLastDescent = true,
-    TextLeadingDistribution? leadingDistribution = TextLeadingDistribution.proportional);
+    TextLeadingDistribution? leadingDistribution = TextLeadingDistribution.proportional
+);
 
 public sealed record FontFeature(string feature, long value = 1)
 {
     public static FontFeature enable(string feature) => new(feature);
+
     public static FontFeature disable(string feature) => new(feature, 0);
 }
 
@@ -375,18 +917,38 @@ public sealed record TextDecoration(long mask)
     public static TextDecoration underline { get; } = new(1);
     public static TextDecoration overline { get; } = new(2);
     public static TextDecoration lineThrough { get; } = new(4);
-    public static TextDecoration combine(IReadOnlyList<TextDecoration> decorations) => new(decorations.Aggregate(0L, (mask, item) => mask | item.mask));
+
+    public static TextDecoration combine(IReadOnlyList<TextDecoration> decorations) =>
+        new(decorations.Aggregate(0L, (mask, item) => mask | item.mask));
+
     public bool contains(TextDecoration other) => (mask & other.mask) == other.mask;
 }
 
 public sealed class TextStyle
 {
-    public TextStyle(Color? color = null, TextDecoration? decoration = null, Color? decorationColor = null, TextDecorationStyle? decorationStyle = null,
-        double? decorationThickness = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, TextBaseline? textBaseline = null,
-        string? fontFamily = null, IReadOnlyList<string>? fontFamilyFallback = null, double? fontSize = null, double? letterSpacing = null,
-        double? wordSpacing = null, double? height = null, TextLeadingDistribution? leadingDistribution = null, Locale? locale = null,
-        Paint? foreground = null, Paint? background = null, IReadOnlyList<Shadow>? shadows = null, IReadOnlyList<FontFeature>? fontFeatures = null,
-        IReadOnlyList<FontVariation>? fontVariations = null)
+    public TextStyle(
+        Color? color = null,
+        TextDecoration? decoration = null,
+        Color? decorationColor = null,
+        TextDecorationStyle? decorationStyle = null,
+        double? decorationThickness = null,
+        FontWeight? fontWeight = null,
+        FontStyle? fontStyle = null,
+        TextBaseline? textBaseline = null,
+        string? fontFamily = null,
+        IReadOnlyList<string>? fontFamilyFallback = null,
+        double? fontSize = null,
+        double? letterSpacing = null,
+        double? wordSpacing = null,
+        double? height = null,
+        TextLeadingDistribution? leadingDistribution = null,
+        Locale? locale = null,
+        Paint? foreground = null,
+        Paint? background = null,
+        IReadOnlyList<Shadow>? shadows = null,
+        IReadOnlyList<FontFeature>? fontFeatures = null,
+        IReadOnlyList<FontVariation>? fontVariations = null
+    )
     {
         this.color = color;
         this.decoration = decoration;
@@ -433,45 +995,77 @@ public sealed class TextStyle
     public IReadOnlyList<FontFeature>? fontFeatures { get; }
     public IReadOnlyList<FontVariation>? fontVariations { get; }
 
-    internal TextStyle SnapshotForPainting() => new(
-        color, decoration, decorationColor, decorationStyle, decorationThickness,
-        fontWeight, fontStyle, textBaseline, fontFamily, fontFamilyFallback, fontSize,
-        letterSpacing, wordSpacing, height, leadingDistribution, locale,
-        foreground?.SnapshotForText(), background?.SnapshotForText(), shadows, fontFeatures, fontVariations);
+    internal TextStyle SnapshotForPainting() =>
+        new(
+            color,
+            decoration,
+            decorationColor,
+            decorationStyle,
+            decorationThickness,
+            fontWeight,
+            fontStyle,
+            textBaseline,
+            fontFamily,
+            fontFamilyFallback,
+            fontSize,
+            letterSpacing,
+            wordSpacing,
+            height,
+            leadingDistribution,
+            locale,
+            foreground?.SnapshotForText(),
+            background?.SnapshotForText(),
+            shadows,
+            fontFeatures,
+            fontVariations
+        );
 
-    internal TextStyle Merge(TextStyle overlay) => new(
-        color: overlay.foreground is null
-            ? overlay.color ?? (foreground is null ? color : null)
-            : null,
-        decoration: overlay.decoration ?? decoration,
-        decorationColor: overlay.decorationColor ?? decorationColor,
-        decorationStyle: overlay.decorationStyle ?? decorationStyle,
-        decorationThickness: overlay.decorationThickness ?? decorationThickness,
-        fontWeight: overlay.fontWeight ?? fontWeight,
-        fontStyle: overlay.fontStyle ?? fontStyle,
-        textBaseline: overlay.textBaseline ?? textBaseline,
-        fontFamily: overlay.fontFamily ?? fontFamily,
-        fontFamilyFallback: overlay.fontFamilyFallback ?? fontFamilyFallback,
-        fontSize: overlay.fontSize ?? fontSize,
-        letterSpacing: overlay.letterSpacing ?? letterSpacing,
-        wordSpacing: overlay.wordSpacing ?? wordSpacing,
-        height: overlay.height ?? height,
-        leadingDistribution: overlay.leadingDistribution ?? leadingDistribution,
-        locale: overlay.locale ?? locale,
-        foreground: overlay.foreground ?? (overlay.color is null ? foreground : null),
-        background: overlay.background ?? background,
-        shadows: overlay.shadows ?? shadows,
-        fontFeatures: overlay.fontFeatures ?? fontFeatures,
-        fontVariations: overlay.fontVariations ?? fontVariations);
+    internal TextStyle Merge(TextStyle overlay) =>
+        new(
+            color: overlay.foreground is null
+                ? overlay.color ?? (foreground is null ? color : null)
+                : null,
+            decoration: overlay.decoration ?? decoration,
+            decorationColor: overlay.decorationColor ?? decorationColor,
+            decorationStyle: overlay.decorationStyle ?? decorationStyle,
+            decorationThickness: overlay.decorationThickness ?? decorationThickness,
+            fontWeight: overlay.fontWeight ?? fontWeight,
+            fontStyle: overlay.fontStyle ?? fontStyle,
+            textBaseline: overlay.textBaseline ?? textBaseline,
+            fontFamily: overlay.fontFamily ?? fontFamily,
+            fontFamilyFallback: overlay.fontFamilyFallback ?? fontFamilyFallback,
+            fontSize: overlay.fontSize ?? fontSize,
+            letterSpacing: overlay.letterSpacing ?? letterSpacing,
+            wordSpacing: overlay.wordSpacing ?? wordSpacing,
+            height: overlay.height ?? height,
+            leadingDistribution: overlay.leadingDistribution ?? leadingDistribution,
+            locale: overlay.locale ?? locale,
+            foreground: overlay.foreground ?? (overlay.color is null ? foreground : null),
+            background: overlay.background ?? background,
+            shadows: overlay.shadows ?? shadows,
+            fontFeatures: overlay.fontFeatures ?? fontFeatures,
+            fontVariations: overlay.fontVariations ?? fontVariations
+        );
 }
 
 public sealed record ParagraphTextRun(string Text, TextStyle Style);
 
 public sealed class ParagraphStyle
 {
-    public ParagraphStyle(TextAlign? textAlign = null, TextDirection? textDirection = null, long? maxLines = null, string? fontFamily = null,
-        double? fontSize = null, double? height = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null,
-        StrutStyle? strutStyle = null, string? ellipsis = null, Locale? locale = null, TextHeightBehavior? textHeightBehavior = null)
+    public ParagraphStyle(
+        TextAlign? textAlign = null,
+        TextDirection? textDirection = null,
+        long? maxLines = null,
+        string? fontFamily = null,
+        double? fontSize = null,
+        double? height = null,
+        FontWeight? fontWeight = null,
+        FontStyle? fontStyle = null,
+        StrutStyle? strutStyle = null,
+        string? ellipsis = null,
+        Locale? locale = null,
+        TextHeightBehavior? textHeightBehavior = null
+    )
     {
         this.textAlign = textAlign;
         this.textDirection = textDirection;
@@ -501,10 +1095,17 @@ public sealed class ParagraphStyle
 
 public sealed class StrutStyle
 {
-    public StrutStyle(string? fontFamily = null, IReadOnlyList<string>? fontFamilyFallback = null, double? fontSize = null, double? height = null,
-        TextLeadingDistribution? leadingDistribution = null, double? leading = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null,
-        bool? forceStrutHeight = false)
-    { }
+    public StrutStyle(
+        string? fontFamily = null,
+        IReadOnlyList<string>? fontFamilyFallback = null,
+        double? fontSize = null,
+        double? height = null,
+        TextLeadingDistribution? leadingDistribution = null,
+        double? leading = null,
+        FontWeight? fontWeight = null,
+        FontStyle? fontStyle = null,
+        bool? forceStrutHeight = false
+    ) { }
 }
 
 public readonly record struct ParagraphConstraints(double width);
@@ -516,6 +1117,7 @@ public sealed class ParagraphBuilder
     private readonly Stack<TextStyle> _styles = new();
     private readonly List<ParagraphTextRun> _runs = [];
     private readonly TextStyle _paragraphTextStyle;
+
     public ParagraphBuilder(ParagraphStyle style)
     {
         _style = style ?? throw new ArgumentNullException(nameof(style));
@@ -526,28 +1128,56 @@ public sealed class ParagraphBuilder
             fontFamily: style.fontFamily,
             fontSize: style.fontSize ?? 14,
             height: style.height,
-            locale: style.locale);
+            locale: style.locale
+        );
     }
+
     public long placeholderCount => _text.LongCount(value => value == "\uFFFC");
+
     public void pushStyle(TextStyle style)
     {
         ArgumentNullException.ThrowIfNull(style);
         _styles.Push((_styles.Count == 0 ? _paragraphTextStyle : _styles.Peek()).Merge(style));
     }
-    public void pop() { if (_styles.Count > 0) _styles.Pop(); }
+
+    public void pop()
+    {
+        if (_styles.Count > 0)
+        {
+            _styles.Pop();
+        }
+    }
+
     public void addText(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
         _text.Add(text);
         if (text.Length != 0)
-            _runs.Add(new ParagraphTextRun(text, _styles.Count == 0 ? _paragraphTextStyle : _styles.Peek()));
+        {
+            _runs.Add(
+                new ParagraphTextRun(
+                    text,
+                    _styles.Count == 0 ? _paragraphTextStyle : _styles.Peek()
+                )
+            );
+        }
     }
-    public void addPlaceholder(double width, double height, PlaceholderAlignment alignment, double scale = 1, double? baselineOffset = null, TextBaseline? baseline = null) => addText("\uFFFC");
+
+    public void addPlaceholder(
+        double width,
+        double height,
+        PlaceholderAlignment alignment,
+        double scale = 1,
+        double? baselineOffset = null,
+        TextBaseline? baseline = null
+    ) => addText("\uFFFC");
+
     public Paragraph build()
     {
-        var fontSize = _runs.Count == 0
-            ? _paragraphTextStyle.fontSize ?? 14
-            : _runs.Max(run => run.Style.fontSize ?? 14);
+        var fontSize =
+            _runs.Count == 0
+                ? _paragraphTextStyle.fontSize ?? 14
+                : _runs.Max(run => run.Style.fontSize ?? 14);
         var text = string.Concat(_text);
         var firstRunStyle = _runs.Count == 0 ? _paragraphTextStyle : _runs[0].Style;
         var fontFamily = firstRunStyle.fontFamily ?? _paragraphTextStyle.fontFamily;
@@ -564,29 +1194,75 @@ public sealed class ParagraphBuilder
         if (view is not null)
         {
             return view.LayoutParagraph(
-                new ParagraphRequest(text, double.PositiveInfinity, fontFamily, fontSize,
-                    _style.maxLines, color, lineHeight, _style.textAlign,
-                    _style.textDirection, _style.locale, _style.ellipsis, _runs.ToArray()) { DeferLayout = true },
-                DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build"));
+                new ParagraphRequest(
+                    text,
+                    double.PositiveInfinity,
+                    fontFamily,
+                    fontSize,
+                    _style.maxLines,
+                    color,
+                    lineHeight,
+                    _style.textAlign,
+                    _style.textDirection,
+                    _style.locale,
+                    _style.ellipsis,
+                    _runs.ToArray()
+                )
+                {
+                    DeferLayout = true,
+                },
+                DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build")
+            );
         }
 
         // Unit-level dart:ui use can intentionally run without a host view.
-        return new(text, 0, lineHeight ?? fontSize * 1.2, fontSize, _style.maxLines, fontFamily, color,
-            textRuns: _runs.ToArray());
+        return new(
+            text,
+            0,
+            lineHeight ?? (fontSize * 1.2),
+            fontSize,
+            _style.maxLines,
+            fontFamily,
+            color,
+            textRuns: _runs.ToArray()
+        );
     }
 }
 
-public sealed record LineMetrics(bool hardBreak, double ascent, double descent, double unscaledAscent, double height, double width, double left, double baseline, long lineNumber);
-public sealed record GlyphInfo(Rect graphemeClusterLayoutBounds, TextRange graphemeClusterCodeUnitRange, TextDirection writingDirection);
+public sealed record LineMetrics(
+    bool hardBreak,
+    double ascent,
+    double descent,
+    double unscaledAscent,
+    double height,
+    double width,
+    double left,
+    double baseline,
+    long lineNumber
+);
+
+public sealed record GlyphInfo(
+    Rect graphemeClusterLayoutBounds,
+    TextRange graphemeClusterCodeUnitRange,
+    TextDirection writingDirection
+);
 
 public abstract record StringAttribute(TextRange range)
 {
-    public StringAttribute copy(TextRange? range = null) => this switch
-    {
-        LocaleStringAttribute locale => new LocaleStringAttribute(range ?? this.range, locale.locale),
-        SpellOutStringAttribute => new SpellOutStringAttribute(range ?? this.range),
-        _ => throw new InvalidOperationException($"Unsupported string attribute type {GetType().Name}."),
-    };
+    public StringAttribute copy(TextRange? range = null) =>
+        this switch
+        {
+            LocaleStringAttribute locale => new LocaleStringAttribute(
+                range ?? this.range,
+                locale.locale
+            ),
+            SpellOutStringAttribute => new SpellOutStringAttribute(range ?? this.range),
+            _ => throw new InvalidOperationException(
+                $"Unsupported string attribute type {GetType().Name}."
+            ),
+        };
 }
+
 public sealed record LocaleStringAttribute(TextRange range, Locale locale) : StringAttribute(range);
+
 public sealed record SpellOutStringAttribute(TextRange range) : StringAttribute(range);

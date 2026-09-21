@@ -6,9 +6,14 @@ namespace Doroti.Framework.Gestures;
 
 public class EagerGestureRecognizer : OneSequenceGestureRecognizer
 {
-    public EagerGestureRecognizer(HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
-    {
-    }
+    public EagerGestureRecognizer(
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!
+    )
+        : base(
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior
+        ) { }
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
@@ -18,13 +23,8 @@ public class EagerGestureRecognizer : OneSequenceGestureRecognizer
     }
 
     public override string debugDescription => "eager";
-    public override void didStopTrackingLastPointer(long pointer)
-    {
-    }
 
-    public override void handleEvent(PointerEvent @event)
-    {
-    }
+    public override void didStopTrackingLastPointer(long pointer) { }
 
+    public override void handleEvent(PointerEvent @event) { }
 }
-

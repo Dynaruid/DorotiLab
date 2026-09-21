@@ -6,19 +6,29 @@ public sealed record DisplayCornerRadii(
     double topLeft,
     double topRight,
     double bottomRight,
-    double bottomLeft);
+    double bottomLeft
+);
 
 public readonly record struct Offset(double dx, double dy) : IDartTweenValue<Offset>
 {
     public static Offset zero { get; } = new(0, 0);
     public static Offset infinite { get; } = new(double.PositiveInfinity, double.PositiveInfinity);
+
     public static Offset fromSize(Size value) => new(value.width, value.height);
+
     public static Offset? lerp(Offset? a, Offset? b, double t)
     {
-        if (a is null && b is null) return null;
+        if (a is null && b is null)
+        {
+            return null;
+        }
+
         var begin = a ?? zero;
         var end = b ?? zero;
-        return new Offset(begin.dx + ((end.dx - begin.dx) * t), begin.dy + ((end.dy - begin.dy) * t));
+        return new Offset(
+            begin.dx + ((end.dx - begin.dx) * t),
+            begin.dy + ((end.dy - begin.dy) * t)
+        );
     }
 
     public bool IsFinite => double.IsFinite(dx) && double.IsFinite(dy);
@@ -26,20 +36,37 @@ public readonly record struct Offset(double dx, double dy) : IDartTweenValue<Off
     public double distanceSquared => (dx * dx) + (dy * dy);
     public double distance => Math.Sqrt(distanceSquared);
     public double direction => Math.Atan2(dy, dx);
-    public static Offset operator +(Offset left, Offset right) => new(left.dx + right.dx, left.dy + right.dy);
-    public static Offset operator -(Offset left, Offset right) => new(left.dx - right.dx, left.dy - right.dy);
+
+    public static Offset operator +(Offset left, Offset right) =>
+        new(left.dx + right.dx, left.dy + right.dy);
+
+    public static Offset operator -(Offset left, Offset right) =>
+        new(left.dx - right.dx, left.dy - right.dy);
+
     public static Offset operator -(Offset value) => new(-value.dx, -value.dy);
-    public static Offset operator *(Offset value, double operand) => new(value.dx * operand, value.dy * operand);
-    public static Offset operator /(Offset value, double operand) => new(value.dx / operand, value.dy / operand);
-    public static Rect operator &(Offset offset, Size size) => new(offset.dx, offset.dy, offset.dx + size.width, offset.dy + size.height);
-    public Offset translate(double translateX, double translateY) => new(dx + translateX, dy + translateY);
+
+    public static Offset operator *(Offset value, double operand) =>
+        new(value.dx * operand, value.dy * operand);
+
+    public static Offset operator /(Offset value, double operand) =>
+        new(value.dx / operand, value.dy / operand);
+
+    public static Rect operator &(Offset offset, Size size) =>
+        new(offset.dx, offset.dy, offset.dx + size.width, offset.dy + size.height);
+
+    public Offset translate(double translateX, double translateY) =>
+        new(dx + translateX, dy + translateY);
+
     public Offset scale(double scaleX, double scaleY) => new(dx * scaleX, dy * scaleY);
-    public Offset LerpTo(Offset end, double t) => new(dx + ((end.dx - dx) * t), dy + ((end.dy - dy) * t));
+
+    public Offset LerpTo(Offset end, double t) =>
+        new(dx + ((end.dx - dx) * t), dy + ((end.dy - dy) * t));
 }
 
 public class Size : IEquatable<Size>, IDartTweenValue<Size>
 {
-    public Size(double dimension) : this(dimension, dimension) { }
+    public Size(double dimension)
+        : this(dimension, dimension) { }
 
     public Size(double width, double height)
     {
@@ -47,24 +74,39 @@ public class Size : IEquatable<Size>, IDartTweenValue<Size>
         this.height = height;
     }
 
-    protected Size(Size source) : this(source.width, source.height) { }
+    protected Size(Size source)
+        : this(source.width, source.height) { }
 
     public double width { get; }
     public double height { get; }
     public static Size zero { get; } = new(0, 0);
     public static Size infinite { get; } = new(double.PositiveInfinity, double.PositiveInfinity);
+
     public static Size fromOffset(Offset value) => new(value.dx, value.dy);
+
     public static Size fromRadius(double radius) => new(radius * 2, radius * 2);
+
     public static Size square(double dimension) => new(dimension, dimension);
+
     public static Size CreateSquare(double dimension) => square(dimension);
+
     public static Size? lerp(Size? a, Size? b, double t)
     {
-        if (a is null && b is null) return null;
+        if (a is null && b is null)
+        {
+            return null;
+        }
+
         var begin = a ?? zero;
         var end = b ?? zero;
-        return new Size(begin.width + ((end.width - begin.width) * t), begin.height + ((end.height - begin.height) * t));
+        return new Size(
+            begin.width + ((end.width - begin.width) * t),
+            begin.height + ((end.height - begin.height) * t)
+        );
     }
+
     public static Size fromWidth(double width) => new(width, double.PositiveInfinity);
+
     public static Size fromHeight(double height) => new(double.PositiveInfinity, height);
 
     public bool IsFinite => double.IsFinite(width) && double.IsFinite(height);
@@ -75,56 +117,123 @@ public class Size : IEquatable<Size>, IDartTweenValue<Size>
     public double shortestSide => Math.Min(Math.Abs(width), Math.Abs(height));
     public double longestSide => Math.Max(Math.Abs(width), Math.Abs(height));
     public Size flipped => new(height, width);
+
     public Offset bottomRight(Offset origin) => new(origin.dx + width, origin.dy + height);
+
     public Offset bottomLeft(Offset origin) => new(origin.dx, origin.dy + height);
+
     public Offset topRight(Offset origin) => new(origin.dx + width, origin.dy);
+
     public Offset topLeft(Offset origin) => origin;
+
     public Offset center(Offset origin) => new(origin.dx + (width / 2), origin.dy + (height / 2));
+
     public Offset centerLeft(Offset origin) => new(origin.dx, origin.dy + (height / 2));
+
     public Offset centerRight(Offset origin) => new(origin.dx + width, origin.dy + (height / 2));
+
     public bool contains(Offset point) =>
         point.dx >= 0 && point.dx < width && point.dy >= 0 && point.dy < height;
-    public static Size operator +(Size left, Offset right) => new(left.width + right.dx, left.height + right.dy);
-    public static Size operator -(Size left, Offset right) => new(left.width - right.dx, left.height - right.dy);
-    public static Offset operator -(Size left, Size right) => new(left.width - right.width, left.height - right.height);
-    public static Size operator *(Size value, double operand) => new(value.width * operand, value.height * operand);
-    public static Size operator /(Size value, double operand) => new(value.width / operand, value.height / operand);
-    public static bool operator <(Size left, Size right) => left.width < right.width && left.height < right.height;
-    public static bool operator >(Size left, Size right) => left.width > right.width && left.height > right.height;
-    public static bool operator <=(Size left, Size right) => left.width <= right.width && left.height <= right.height;
-    public static bool operator >=(Size left, Size right) => left.width >= right.width && left.height >= right.height;
-    public Size LerpTo(Size end, double t) => new(width + ((end.width - width) * t), height + ((end.height - height) * t));
-    public bool Equals(Size? other) => other is not null && width.Equals(other.width) && height.Equals(other.height);
+
+    public static Size operator +(Size left, Offset right) =>
+        new(left.width + right.dx, left.height + right.dy);
+
+    public static Size operator -(Size left, Offset right) =>
+        new(left.width - right.dx, left.height - right.dy);
+
+    public static Offset operator -(Size left, Size right) =>
+        new(left.width - right.width, left.height - right.height);
+
+    public static Size operator *(Size value, double operand) =>
+        new(value.width * operand, value.height * operand);
+
+    public static Size operator /(Size value, double operand) =>
+        new(value.width / operand, value.height / operand);
+
+    public static bool operator <(Size left, Size right) =>
+        left.width < right.width && left.height < right.height;
+
+    public static bool operator >(Size left, Size right) =>
+        left.width > right.width && left.height > right.height;
+
+    public static bool operator <=(Size left, Size right) =>
+        left.width <= right.width && left.height <= right.height;
+
+    public static bool operator >=(Size left, Size right) =>
+        left.width >= right.width && left.height >= right.height;
+
+    public Size LerpTo(Size end, double t) =>
+        new(width + ((end.width - width) * t), height + ((end.height - height) * t));
+
+    public bool Equals(Size? other) =>
+        other is not null && width.Equals(other.width) && height.Equals(other.height);
+
     public override bool Equals(object? obj) => obj is Size other && Equals(other);
+
     public override int GetHashCode() => HashCode.Combine(width, height);
+
     public static bool operator ==(Size? left, Size? right) => Equals(left, right);
+
     public static bool operator !=(Size? left, Size? right) => !Equals(left, right);
 }
 
-public readonly record struct ViewConstraints(double minWidth, double maxWidth, double minHeight, double maxHeight)
+public readonly record struct ViewConstraints(
+    double minWidth,
+    double maxWidth,
+    double minHeight,
+    double maxHeight
+)
 {
-    public static ViewConstraints tight(Size size) => new(size.width, size.width, size.height, size.height);
+    public static ViewConstraints tight(Size size) =>
+        new(size.width, size.width, size.height, size.height);
 }
 
-public readonly record struct Rect(double left, double top, double right, double bottom) : IDartTweenValue<Rect>
+public readonly record struct Rect(double left, double top, double right, double bottom)
+    : IDartTweenValue<Rect>
 {
     public static Rect zero { get; } = new(0, 0, 0, 0);
+
     // Flutter's kGiantRect bounds must remain finite when converted to Skia floats.
     // Double extrema become infinities and invalidate inverse magnifier clips.
     public static Rect largest { get; } = new(-1.0e9, -1.0e9, 1.0e9, 1.0e9);
-    public static Rect fromLTWH(double left, double top, double width, double height) => new(left, top, left + width, top + height);
-    public static Rect fromLTRB(double left, double top, double right, double bottom) => new(left, top, right, bottom);
-    public static Rect fromCircle(Offset center, double radius) => new(center.dx - radius, center.dy - radius, center.dx + radius, center.dy + radius);
-    public static Rect fromCenter(Offset center, double width, double height) => new(center.dx - width / 2, center.dy - height / 2, center.dx + width / 2, center.dy + height / 2);
-    public static Rect fromPoints(Offset a, Offset b) => new(Math.Min(a.dx, b.dx), Math.Min(a.dy, b.dy), Math.Max(a.dx, b.dx), Math.Max(a.dy, b.dy));
+
+    public static Rect fromLTWH(double left, double top, double width, double height) =>
+        new(left, top, left + width, top + height);
+
+    public static Rect fromLTRB(double left, double top, double right, double bottom) =>
+        new(left, top, right, bottom);
+
+    public static Rect fromCircle(Offset center, double radius) =>
+        new(center.dx - radius, center.dy - radius, center.dx + radius, center.dy + radius);
+
+    public static Rect fromCenter(Offset center, double width, double height) =>
+        new(
+            center.dx - (width / 2),
+            center.dy - (height / 2),
+            center.dx + (width / 2),
+            center.dy + (height / 2)
+        );
+
+    public static Rect fromPoints(Offset a, Offset b) =>
+        new(Math.Min(a.dx, b.dx), Math.Min(a.dy, b.dy), Math.Max(a.dx, b.dx), Math.Max(a.dy, b.dy));
+
     public double width => right - left;
 
     public double height => bottom - top;
 
-    public bool IsFinite => double.IsFinite(left) && double.IsFinite(top) && double.IsFinite(right) && double.IsFinite(bottom);
+    public bool IsFinite =>
+        double.IsFinite(left)
+        && double.IsFinite(top)
+        && double.IsFinite(right)
+        && double.IsFinite(bottom);
     public bool isFinite => IsFinite;
-    public bool hasNaN => double.IsNaN(left) || double.IsNaN(top) || double.IsNaN(right) || double.IsNaN(bottom);
-    public bool isInfinite => double.IsInfinity(left) || double.IsInfinity(top) || double.IsInfinity(right) || double.IsInfinity(bottom);
+    public bool hasNaN =>
+        double.IsNaN(left) || double.IsNaN(top) || double.IsNaN(right) || double.IsNaN(bottom);
+    public bool isInfinite =>
+        double.IsInfinity(left)
+        || double.IsInfinity(top)
+        || double.IsInfinity(right)
+        || double.IsInfinity(bottom);
     public bool isEmpty => left >= right || top >= bottom;
     public Size size => new(width, height);
     public Offset center => new((left + right) / 2, (top + bottom) / 2);
@@ -138,19 +247,47 @@ public readonly record struct Rect(double left, double top, double right, double
     public Offset bottomCenter => new((left + right) / 2, bottom);
     public double shortestSide => Math.Min(Math.Abs(width), Math.Abs(height));
     public double longestSide => Math.Max(Math.Abs(width), Math.Abs(height));
-    public Rect inflate(double delta) => new(left - delta, top - delta, right + delta, bottom + delta);
+
+    public Rect inflate(double delta) =>
+        new(left - delta, top - delta, right + delta, bottom + delta);
+
     public Rect deflate(double delta) => inflate(-delta);
-    public Rect shift(Offset offset) => new(left + offset.dx, top + offset.dy, right + offset.dx, bottom + offset.dy);
-    public Rect translate(double translateX, double translateY) => shift(new(translateX, translateY));
-    public Rect intersect(Rect other) => new(Math.Max(left, other.left), Math.Max(top, other.top), Math.Min(right, other.right), Math.Min(bottom, other.bottom));
-    public Rect expandToInclude(Rect other) => new(Math.Min(left, other.left), Math.Min(top, other.top), Math.Max(right, other.right), Math.Max(bottom, other.bottom));
-    public bool overlaps(Rect other) => left < other.right && other.left < right && top < other.bottom && other.top < bottom;
-    public bool contains(Offset offset) => offset.dx >= left && offset.dx < right && offset.dy >= top && offset.dy < bottom;
-    public Rect LerpTo(Rect end, double t) => new(
-        left + ((end.left - left) * t),
-        top + ((end.top - top) * t),
-        right + ((end.right - right) * t),
-        bottom + ((end.bottom - bottom) * t));
+
+    public Rect shift(Offset offset) =>
+        new(left + offset.dx, top + offset.dy, right + offset.dx, bottom + offset.dy);
+
+    public Rect translate(double translateX, double translateY) =>
+        shift(new(translateX, translateY));
+
+    public Rect intersect(Rect other) =>
+        new(
+            Math.Max(left, other.left),
+            Math.Max(top, other.top),
+            Math.Min(right, other.right),
+            Math.Min(bottom, other.bottom)
+        );
+
+    public Rect expandToInclude(Rect other) =>
+        new(
+            Math.Min(left, other.left),
+            Math.Min(top, other.top),
+            Math.Max(right, other.right),
+            Math.Max(bottom, other.bottom)
+        );
+
+    public bool overlaps(Rect other) =>
+        left < other.right && other.left < right && top < other.bottom && other.top < bottom;
+
+    public bool contains(Offset offset) =>
+        offset.dx >= left && offset.dx < right && offset.dy >= top && offset.dy < bottom;
+
+    public Rect LerpTo(Rect end, double t) =>
+        new(
+            left + ((end.left - left) * t),
+            top + ((end.top - top) * t),
+            right + ((end.right - right) * t),
+            bottom + ((end.bottom - bottom) * t)
+        );
 }
 
 public readonly record struct ViewPadding(double left, double top, double right, double bottom)
@@ -186,9 +323,19 @@ public enum HostOperatingSystem
     windows,
 }
 
-public readonly record struct Locale(string languageCode, string? countryCode = null, string? scriptCode = null)
+public readonly record struct Locale(
+    string languageCode,
+    string? countryCode = null,
+    string? scriptCode = null
+)
 {
-    public string toLanguageTag() => string.Join('-', new[] { languageCode, scriptCode, countryCode }.Where(value => !string.IsNullOrEmpty(value)));
+    public string toLanguageTag() =>
+        string.Join(
+            '-',
+            new[] { languageCode, scriptCode, countryCode }.Where(value =>
+                !string.IsNullOrEmpty(value)
+            )
+        );
 }
 
 public sealed record ViewMetrics(
@@ -199,9 +346,11 @@ public sealed record ViewMetrics(
     ViewPadding systemGestureInsets,
     AppLifecycleState lifecycleState,
     long generation,
-    long surfaceGeneration)
+    long surfaceGeneration
+)
 {
     private IReadOnlyList<DisplayFeature> _displayFeatures = Array.Empty<DisplayFeature>();
+
     /// <summary>View-local logical bounds, matching FlutterView.displayFeatures.</summary>
     public IReadOnlyList<DisplayFeature> displayFeatures
     {
@@ -210,11 +359,13 @@ public sealed record ViewMetrics(
     }
     public DisplayCornerRadii? displayCornerRadii { get; init; }
     public GestureSettings gestureSettings { get; init; } = new();
-    public ViewPadding padding => new(
-        Math.Max(0, viewPadding.left - viewInsets.left),
-        Math.Max(0, viewPadding.top - viewInsets.top),
-        Math.Max(0, viewPadding.right - viewInsets.right),
-        Math.Max(0, viewPadding.bottom - viewInsets.bottom));
+    public ViewPadding padding =>
+        new(
+            Math.Max(0, viewPadding.left - viewInsets.left),
+            Math.Max(0, viewPadding.top - viewInsets.top),
+            Math.Max(0, viewPadding.right - viewInsets.right),
+            Math.Max(0, viewPadding.bottom - viewInsets.bottom)
+        );
 
     internal ViewMetrics ReuseDisplayFeatures(ViewMetrics previous)
     {
@@ -225,31 +376,77 @@ public sealed record ViewMetrics(
 
     public ViewMetrics Validate()
     {
-        if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
-            !physicalSize.IsFinite || physicalSize.width < 0 || physicalSize.height < 0)
-            throw new ArgumentOutOfRangeException(nameof(devicePixelRatio), "Invalid view geometry.");
+        if (
+            !double.IsFinite(devicePixelRatio)
+            || devicePixelRatio <= 0
+            || !physicalSize.IsFinite
+            || physicalSize.width < 0
+            || physicalSize.height < 0
+        )
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(devicePixelRatio),
+                "Invalid view geometry."
+            );
+        }
+
         foreach (var inset in new[] { viewPadding, viewInsets, systemGestureInsets })
-            if (new[] { inset.left, inset.top, inset.right, inset.bottom }.Any(v => !double.IsFinite(v) || v < 0))
-                throw new ArgumentOutOfRangeException(nameof(viewPadding), "Insets must be finite and non-negative.");
+        {
+            if (
+                new[] { inset.left, inset.top, inset.right, inset.bottom }.Any(v =>
+                    !double.IsFinite(v) || v < 0
+                )
+            )
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(viewPadding),
+                    "Insets must be finite and non-negative."
+                );
+            }
+        }
+
         if (displayFeatures.Any(f => !f.bounds.IsFinite))
+        {
             throw new ArgumentOutOfRangeException(nameof(displayFeatures));
+        }
+
         if (gestureSettings.physicalTouchSlop is { } slop && (!double.IsFinite(slop) || slop < 0))
+        {
             throw new ArgumentOutOfRangeException(nameof(gestureSettings));
-        if (displayCornerRadii is { } corners && new[] { corners.topLeft, corners.topRight, corners.bottomRight, corners.bottomLeft }.Any(v => !double.IsFinite(v) || v < 0))
+        }
+
+        if (
+            displayCornerRadii is { } corners
+            && new[]
+            {
+                corners.topLeft,
+                corners.topRight,
+                corners.bottomRight,
+                corners.bottomLeft,
+            }.Any(v => !double.IsFinite(v) || v < 0)
+        )
+        {
             throw new ArgumentOutOfRangeException(nameof(displayCornerRadii));
+        }
+
         return this;
     }
 
     public bool HasSameEnvironment(ViewMetrics other) =>
-        physicalSize == other.physicalSize && devicePixelRatio == other.devicePixelRatio &&
-        viewPadding == other.viewPadding && viewInsets == other.viewInsets &&
-        systemGestureInsets == other.systemGestureInsets && lifecycleState == other.lifecycleState &&
-        displayFeatures.SequenceEqual(other.displayFeatures) && displayCornerRadii == other.displayCornerRadii &&
-        gestureSettings == other.gestureSettings;
+        physicalSize == other.physicalSize
+        && devicePixelRatio == other.devicePixelRatio
+        && viewPadding == other.viewPadding
+        && viewInsets == other.viewInsets
+        && systemGestureInsets == other.systemGestureInsets
+        && lifecycleState == other.lifecycleState
+        && displayFeatures.SequenceEqual(other.displayFeatures)
+        && displayCornerRadii == other.displayCornerRadii
+        && gestureSettings == other.gestureSettings;
 
-    public Size logicalSize => devicePixelRatio > 0
-        ? new(physicalSize.width / devicePixelRatio, physicalSize.height / devicePixelRatio)
-        : Size.zero;
+    public Size logicalSize =>
+        devicePixelRatio > 0
+            ? new(physicalSize.width / devicePixelRatio, physicalSize.height / devicePixelRatio)
+            : Size.zero;
 }
 
 public sealed record PlatformConfiguration(
@@ -265,14 +462,22 @@ public sealed record PlatformConfiguration(
     double? wordSpacingOverride = null,
     double? paragraphSpacingOverride = null,
     AccessibilityFeatures? accessibilityFeatures = null,
-    Func<double, double>? fontSizeScaler = null)
+    Func<double, double>? fontSizeScaler = null
+)
 {
     public PlatformConfiguration Snapshot()
     {
         if (!double.IsFinite(textScaleFactor) || textScaleFactor <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(textScaleFactor));
-        return this with { locales = Array.AsReadOnly(locales.ToArray()) };
+        }
+
+        return this with
+        {
+            locales = Array.AsReadOnly(locales.ToArray()),
+        };
     }
+
     public bool HasSameValues(PlatformConfiguration other) =>
         locales.SequenceEqual(other.locales) && (this with { locales = other.locales }) == other;
 }
@@ -286,12 +491,14 @@ public static class PlatformEnvironmentContext
     private static readonly AsyncLocal<PlatformConfiguration?> CurrentValue = new();
     internal static PlatformConfiguration? currentOrNull => CurrentValue.Value;
 
-    public static PlatformConfiguration current => CurrentValue.Value ??
-        throw new DorotiCapabilityException(
+    public static PlatformConfiguration current =>
+        CurrentValue.Value
+        ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
             null,
             DartUiInvocation.Managed("dart:ui#PlatformConfiguration.operatingSystem"),
-            "no active Flutter view callback supplied platform.environment");
+            "no active Flutter view callback supplied platform.environment"
+        );
 
     public static IDisposable Enter(PlatformConfiguration configuration)
     {
@@ -326,7 +533,8 @@ public sealed record ViewConfiguration(
     double devicePixelRatio,
     ViewPadding viewPadding,
     ViewPadding viewInsets,
-    ViewPadding systemGestureInsets);
+    ViewPadding systemGestureInsets
+);
 
 public enum FramePhase
 {
@@ -344,17 +552,24 @@ public sealed record FrameTiming(
     TimeSpan buildFinish,
     TimeSpan rasterStart,
     TimeSpan rasterFinish,
-    long frameNumber = 0)
+    long frameNumber = 0
+)
 {
-    public long timestampInMicroseconds(FramePhase phase) => checked((long)(phase switch
-    {
-        FramePhase.vsyncStart => vsyncStart,
-        FramePhase.buildStart => buildStart,
-        FramePhase.buildFinish => buildFinish,
-        FramePhase.rasterStart => rasterStart,
-        FramePhase.rasterFinish or FramePhase.rasterFinishWallTime => rasterFinish,
-        _ => throw new ArgumentOutOfRangeException(nameof(phase)),
-    }).TotalMicroseconds);
+    public long timestampInMicroseconds(FramePhase phase) =>
+        checked(
+            (long)
+                (
+                    phase switch
+                    {
+                        FramePhase.vsyncStart => vsyncStart,
+                        FramePhase.buildStart => buildStart,
+                        FramePhase.buildFinish => buildFinish,
+                        FramePhase.rasterStart => rasterStart,
+                        FramePhase.rasterFinish or FramePhase.rasterFinishWallTime => rasterFinish,
+                        _ => throw new ArgumentOutOfRangeException(nameof(phase)),
+                    }
+                ).TotalMicroseconds
+        );
 
     public Duration totalSpan => (Duration)(rasterFinish - vsyncStart);
     public Duration buildDuration => (Duration)(buildFinish - buildStart);
@@ -401,7 +616,8 @@ public sealed record AccessibilityFeatures(
     bool highContrast,
     bool onOffSwitchLabels,
     bool supportsAnnounce,
-    bool reduceMotion = false);
+    bool reduceMotion = false
+);
 
 public sealed record GestureSettings(double? physicalTouchSlop = null);
 
@@ -475,7 +691,8 @@ public readonly record struct PointerData(
     double panDeltaY = 0,
     double scale = 1,
     double rotation = 0,
-    Action<bool>? respond = null);
+    Action<bool>? respond = null
+);
 
 public sealed record PointerDataPacket(IReadOnlyList<PointerData> data);
 
@@ -494,34 +711,46 @@ public readonly record struct KeyData(
     long logical,
     bool synthesized,
     string? character = null,
-    long modifiers = 0)
+    long modifiers = 0
+)
 {
     public KeyEventDeviceType deviceType => KeyEventDeviceType.keyboard;
 }
 
 public static class Platform
 {
-    public static bool isIOS => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.iOS;
-    public static bool isAndroid => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.android;
-    public static bool isWindows => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.windows;
-    public static bool isLinux => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.linux;
-    public static bool isMacOS => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.macOS;
+    public static bool isIOS =>
+        PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.iOS;
+    public static bool isAndroid =>
+        PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.android;
+    public static bool isWindows =>
+        PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.windows;
+    public static bool isLinux =>
+        PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.linux;
+    public static bool isMacOS =>
+        PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.macOS;
     public static DartMap<string, string> environment
     {
         get
         {
             var result = new DartMap<string, string>();
-            foreach (System.Collections.DictionaryEntry item in Environment.GetEnvironmentVariables())
+            foreach (
+                System.Collections.DictionaryEntry item in Environment.GetEnvironmentVariables()
+            )
+            {
                 result[item.Key.ToString()!] = item.Value?.ToString() ?? string.Empty;
+            }
+
             return result;
         }
     }
-    public static string operatingSystem => PlatformEnvironmentContext.current.operatingSystem switch
-    {
-        HostOperatingSystem.iOS => "ios",
-        HostOperatingSystem.macOS => "macos",
-        var value => value.ToString(),
-    };
+    public static string operatingSystem =>
+        PlatformEnvironmentContext.current.operatingSystem switch
+        {
+            HostOperatingSystem.iOS => "ios",
+            HostOperatingSystem.macOS => "macos",
+            var value => value.ToString(),
+        };
     public static string pathSeparator => System.IO.Path.DirectorySeparatorChar.ToString();
     public static string resolvedExecutable => Environment.ProcessPath ?? string.Empty;
 }
@@ -631,9 +860,7 @@ public interface IExactFrameHostCapability
 /// </summary>
 public interface ILatestMetricsFrameHostCapability : IExactFrameHostCapability
 {
-    void ScheduleFrame(
-        DorotiViewEpoch expectedEpoch,
-        Action<TimeSpan, DorotiViewEpoch> callback);
+    void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan, DorotiViewEpoch> callback);
 }
 
 public interface IPlatformEnvironmentHostCapability
@@ -648,17 +875,20 @@ public enum WindowBackdropMode
     system,
     solid,
     transparent,
+
     /// <summary>
     /// Requests Acrylic for this window. Windows App SDK supports this with
     /// the Vulkan (default) and ANGLE presenters on Windows 11 24H2 or newer.
     /// Native macOS uses an AppKit behind-window visual effect material.
     /// </summary>
     acrylic,
+
     /// <summary>
     /// Legacy explicit Acrylic mode, using the same Windows composition path
     /// as <see cref="acrylic"/>. Neither is selected by <see cref="system"/>.
     /// </summary>
     experimentalAcrylic,
+
     /// <summary>
     /// Requests native Liquid Glass on macOS 26 or newer. Native macOS hosts
     /// use the acrylic visual effect material on earlier macOS versions.
@@ -691,6 +921,7 @@ public enum WindowTitlebarStyle
 {
     /// <summary>Extends Acrylic or Liquid Glass behind the title and window controls, without a separator.</summary>
     unified,
+
     /// <summary>Keeps a separate native titlebar background above the window's backdrop.</summary>
     solid,
 }
@@ -702,13 +933,15 @@ public sealed record WindowBackdropOptions(
     WindowBackdropTheme theme = WindowBackdropTheme.system,
     Color? tintColor = null,
     double? tintOpacity = null,
-    double? luminosityOpacity = null);
+    double? luminosityOpacity = null
+);
 
 /// <summary>Window material and chrome. A macOS override allows Liquid Glass there while other desktops use Acrylic.</summary>
 public sealed record WindowAppearanceOptions(
     WindowBackdropOptions? backdrop = null,
     WindowTitlebarStyle titlebarStyle = WindowTitlebarStyle.unified,
-    WindowBackdropOptions? macOSBackdrop = null)
+    WindowBackdropOptions? macOSBackdrop = null
+)
 {
     public WindowBackdropOptions ResolveBackdrop(bool isMacOS) =>
         (isMacOS ? macOSBackdrop : null) ?? backdrop ?? new();
@@ -721,7 +954,8 @@ public sealed record DorotiViewConfiguration(
     Color? darkBackgroundColor = null,
     WindowBackdropOptions? backdrop = null,
     bool terminateAfterLastWindowClosed = false,
-    WindowAppearanceOptions? appearance = null)
+    WindowAppearanceOptions? appearance = null
+)
 {
     /// <summary>Explicit appearance takes precedence over the legacy backdrop-only option.</summary>
     public WindowAppearanceOptions ResolveAppearance() => appearance ?? new(backdrop);

@@ -15,34 +15,83 @@ public class TextSelectionToolbarAnchors
         this.secondaryAnchor = secondaryAnchor;
     }
 
-    public static TextSelectionToolbarAnchors CreateFromSelection(RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<TextSelectionPoint> selectionEndpoints)
+    public static TextSelectionToolbarAnchors CreateFromSelection(
+        RenderBox renderBox,
+        double startGlyphHeight,
+        double endGlyphHeight,
+        List<TextSelectionPoint> selectionEndpoints
+    )
     {
-        Rect selectionRect = getSelectionRect(renderBox, startGlyphHeight, endGlyphHeight, selectionEndpoints);
+        Rect selectionRect = getSelectionRect(
+            renderBox,
+            startGlyphHeight,
+            endGlyphHeight,
+            selectionEndpoints
+        );
         if (Equals(selectionRect, Rect.zero))
         {
             return new TextSelectionToolbarAnchors(primaryAnchor: Offset.zero);
         }
         Rect editingRegion = _getEditingRegion(renderBox);
-        return new TextSelectionToolbarAnchors(primaryAnchor: new Offset(selectionRect.left + (selectionRect.width / 2L), Dart_uiLibrary.clampDouble(selectionRect.top, editingRegion.top, editingRegion.bottom)), secondaryAnchor: new Offset(selectionRect.left + (selectionRect.width / 2L), Dart_uiLibrary.clampDouble(selectionRect.bottom, editingRegion.top, editingRegion.bottom)));
+        return new TextSelectionToolbarAnchors(
+            primaryAnchor: new Offset(
+                selectionRect.left + (selectionRect.width / 2L),
+                Dart_uiLibrary.clampDouble(
+                    selectionRect.top,
+                    editingRegion.top,
+                    editingRegion.bottom
+                )
+            ),
+            secondaryAnchor: new Offset(
+                selectionRect.left + (selectionRect.width / 2L),
+                Dart_uiLibrary.clampDouble(
+                    selectionRect.bottom,
+                    editingRegion.top,
+                    editingRegion.bottom
+                )
+            )
+        );
     }
 
     internal static Rect _getEditingRegion(RenderBox renderBox)
     {
-        return Rect.fromPoints(renderBox.localToGlobal(Offset.zero), renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero)));
+        return Rect.fromPoints(
+            renderBox.localToGlobal(Offset.zero),
+            renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Rect getSelectionRect(RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<TextSelectionPoint> selectionEndpoints)
+    public static Rect getSelectionRect(
+        RenderBox renderBox,
+        double startGlyphHeight,
+        double endGlyphHeight,
+        List<TextSelectionPoint> selectionEndpoints
+    )
     {
         Rect editingRegion = _getEditingRegion(renderBox);
-        if (double.IsNaN(editingRegion.left) || double.IsNaN(editingRegion.top) || double.IsNaN(editingRegion.right) || double.IsNaN(editingRegion.bottom))
+        if (
+            double.IsNaN(editingRegion.left)
+            || double.IsNaN(editingRegion.top)
+            || double.IsNaN(editingRegion.right)
+            || double.IsNaN(editingRegion.bottom)
+        )
         {
             return Rect.zero;
         }
-        bool isMultiline = (selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy) > (endGlyphHeight / 2L);
-        return Rect.fromLTRB(isMultiline ? editingRegion.left : (editingRegion.left + selectionEndpoints.First().point.dx), editingRegion.top + selectionEndpoints.First().point.dy - startGlyphHeight, isMultiline ? editingRegion.right : (editingRegion.left + selectionEndpoints.Last().point.dx), editingRegion.top + selectionEndpoints.Last().point.dy);
+        bool isMultiline =
+            (selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy)
+            > (endGlyphHeight / 2L);
+        return Rect.fromLTRB(
+            isMultiline
+                ? editingRegion.left
+                : (editingRegion.left + selectionEndpoints.First().point.dx),
+            editingRegion.top + selectionEndpoints.First().point.dy - startGlyphHeight,
+            isMultiline
+                ? editingRegion.right
+                : (editingRegion.left + selectionEndpoints.Last().point.dx),
+            editingRegion.top + selectionEndpoints.Last().point.dy
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

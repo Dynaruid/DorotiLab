@@ -8,7 +8,7 @@ namespace Doroti.Framework.Widgets;
 public enum ScrollViewKeyboardDismissBehavior
 {
     manual,
-    onDrag
+    onDrag,
 }
 
 public abstract class ScrollView : StatelessWidget
@@ -32,7 +32,28 @@ public abstract class ScrollView : StatelessWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual HitTestBehavior hitTestBehavior { get; private set; } = default!;
 
-    protected ScrollView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, ScrollBehavior? scrollBehavior = null, bool shrinkWrap = false, Key? center = null, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key)
+    protected ScrollView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        ScrollBehavior? scrollBehavior = null,
+        bool shrinkWrap = false,
+        Key? center = null,
+        double anchor = 0.0,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(key: key)
     {
         this.scrollDirection = scrollDirection;
         this.reverse = reverse;
@@ -51,7 +72,20 @@ public abstract class ScrollView : StatelessWidget
         this.restorationId = restorationId;
         this.clipBehavior = clipBehavior;
         this.hitTestBehavior = hitTestBehavior;
-        this.physics = physics ?? (((primary ?? false) || (primary is null) && (controller is null) && DartRuntimePrimitives.Identical(scrollDirection, Axis.vertical)) ? new AlwaysScrollableScrollPhysics() : null);
+        this.physics =
+            physics
+            ?? (
+                (
+                    (primary ?? false)
+                    || (
+                        (primary is null)
+                        && (controller is null)
+                        && DartRuntimePrimitives.Identical(scrollDirection, Axis.vertical)
+                    )
+                )
+                    ? new AlwaysScrollableScrollPhysics()
+                    : null
+            );
         System.Diagnostics.Debug.Assert(!((controller is not null) && (primary ?? false)));
         System.Diagnostics.Debug.Assert(!shrinkWrap || (center is null));
         System.Diagnostics.Debug.Assert((anchor >= 0.0) && (anchor <= 1.0));
@@ -60,38 +94,77 @@ public abstract class ScrollView : StatelessWidget
 
     public virtual AxisDirection getDirection(BuildContext context)
     {
-        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, scrollDirection, reverse);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(
+            context,
+            scrollDirection,
+            reverse
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract List<Widget> buildSlivers(BuildContext context);
-    public virtual Widget buildViewport(BuildContext context, ViewportOffset offset, AxisDirection axisDirection, List<Widget> slivers)
+
+    public virtual Widget buildViewport(
+        BuildContext context,
+        ViewportOffset offset,
+        AxisDirection axisDirection,
+        List<Widget> slivers
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            switch (axisDirection)
             {
-                switch (axisDirection)
+                case AxisDirection.up:
+                case AxisDirection.down:
                 {
-                    case AxisDirection.up:
-                    case AxisDirection.down:
-                        {
-                            return DebugLibrary.debugCheckHasDirectionality(context, why: "to determine the cross-axis direction of the scroll view", hint: "Vertical scroll views create Viewport widgets that try to determine their cross axis direction " + "from the ambient Directionality.");
-                        }
-                    case AxisDirection.left:
-                    case AxisDirection.right:
-                        {
-                            return true;
-                        }
-                    default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    return DebugLibrary.debugCheckHasDirectionality(
+                        context,
+                        why: "to determine the cross-axis direction of the scroll view",
+                        hint: "Vertical scroll views create Viewport widgets that try to determine their cross axis direction "
+                            + "from the ambient Directionality."
+                    );
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-        ScrollCacheExtent? effectiveScrollCacheExtent = scrollCacheExtent ?? ((cacheExtent is not null) ? ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)) : null);
+                case AxisDirection.left:
+                case AxisDirection.right:
+                {
+                    return true;
+                }
+                default:
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
+        ScrollCacheExtent? effectiveScrollCacheExtent =
+            scrollCacheExtent
+            ?? (
+                (cacheExtent is not null)
+                    ? ScrollCacheExtent.CreatePixels(
+                        DartRuntimePrimitives.RequireValue(cacheExtent)
+                    )
+                    : null
+            );
         if (shrinkWrap)
         {
-            return new ShrinkWrappingViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: effectiveScrollCacheExtent);
+            return new ShrinkWrappingViewport(
+                axisDirection: axisDirection,
+                offset: offset,
+                slivers: slivers,
+                paintOrder: paintOrder,
+                clipBehavior: clipBehavior,
+                scrollCacheExtent: effectiveScrollCacheExtent
+            );
         }
-        return new Viewport(axisDirection: axisDirection, offset: offset, slivers: slivers, scrollCacheExtent: effectiveScrollCacheExtent, center: center, anchor: anchor, paintOrder: paintOrder, clipBehavior: clipBehavior);
+        return new Viewport(
+            axisDirection: axisDirection,
+            offset: offset,
+            slivers: slivers,
+            scrollCacheExtent: effectiveScrollCacheExtent,
+            center: center,
+            anchor: anchor,
+            paintOrder: paintOrder,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,27 +172,56 @@ public abstract class ScrollView : StatelessWidget
     {
         List<Widget> slivers = buildSlivers(context);
         AxisDirection axisDirectionLocal = getDirection(context);
-        bool effectivePrimary = primary ?? ((controller is null) && PrimaryScrollController.shouldInherit(context, scrollDirection));
-        ScrollController? scrollController = effectivePrimary ? PrimaryScrollController.maybeOf(context) : controller;
-        var scrollable = new Scrollable(dragStartBehavior: dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: physics, scrollBehavior: scrollBehavior, semanticChildCount: semanticChildCount, restorationId: restorationId, hitTestBehavior: hitTestBehavior, viewportBuilder: (context, offset) =>
-        {
-            return buildViewport(context, offset, axisDirectionLocal, slivers);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, clipBehavior: clipBehavior);
-        Widget scrollableResult = (effectivePrimary && (scrollController is not null)) ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable;
-        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
+        bool effectivePrimary =
+            primary
+            ?? (
+                (controller is null)
+                && PrimaryScrollController.shouldInherit(context, scrollDirection)
+            );
+        ScrollController? scrollController = effectivePrimary
+            ? PrimaryScrollController.maybeOf(context)
+            : controller;
+        var scrollable = new Scrollable(
+            dragStartBehavior: dragStartBehavior,
+            axisDirection: axisDirectionLocal,
+            controller: scrollController,
+            physics: physics,
+            scrollBehavior: scrollBehavior,
+            semanticChildCount: semanticChildCount,
+            restorationId: restorationId,
+            hitTestBehavior: hitTestBehavior,
+            viewportBuilder: (context, offset) =>
+            {
+                return buildViewport(context, offset, axisDirectionLocal, slivers);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            clipBehavior: clipBehavior
+        );
+        Widget scrollableResult =
+            (effectivePrimary && (scrollController is not null))
+                ? PrimaryScrollController.CreateNone(child: scrollable)
+                : scrollable;
+        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior =
+            keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
         if (Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag))
         {
-            return new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: (notification) =>
-            {
-                FocusScopeNode currentScope = FocusScope.of(context);
-                if ((notification.dragDetails is not null) && !currentScope.hasPrimaryFocus && currentScope.hasFocus)
+            return new NotificationListener<ScrollUpdateNotification>(
+                child: scrollableResult,
+                onNotification: (notification) =>
                 {
-                    FocusManager.instance.primaryFocus?.unfocus();
+                    FocusScopeNode currentScope = FocusScope.of(context);
+                    if (
+                        (notification.dragDetails is not null)
+                        && !currentScope.hasPrimaryFocus
+                        && currentScope.hasFocus
+                    )
+                    {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                    return false;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
         else
         {
@@ -132,21 +234,98 @@ public abstract class ScrollView : StatelessWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new EnumProperty<Axis>("scrollDirection", scrollDirection));
-        properties.add(new FlagProperty("reverse", value: reverse, ifTrue: "reversed", showName: true));
-        properties.add(new DiagnosticsProperty<ScrollController>("controller", controller, showName: false, defaultValue: null));
-        properties.add(new FlagProperty("primary", value: primary, ifTrue: "using primary controller", showName: true));
-        properties.add(new DiagnosticsProperty<ScrollPhysics>("physics", physics, showName: false, defaultValue: null));
-        properties.add(new FlagProperty("shrinkWrap", value: shrinkWrap, ifTrue: "shrink-wrapping", showName: true));
-        properties.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent, defaultValue: null));
+        properties.add(
+            new FlagProperty("reverse", value: reverse, ifTrue: "reversed", showName: true)
+        );
+        properties.add(
+            new DiagnosticsProperty<ScrollController>(
+                "controller",
+                controller,
+                showName: false,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "primary",
+                value: primary,
+                ifTrue: "using primary controller",
+                showName: true
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<ScrollPhysics>(
+                "physics",
+                physics,
+                showName: false,
+                defaultValue: null
+            )
+        );
+        properties.add(
+            new FlagProperty(
+                "shrinkWrap",
+                value: shrinkWrap,
+                ifTrue: "shrink-wrapping",
+                showName: true
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<ScrollCacheExtent>(
+                "scrollCacheExtent",
+                scrollCacheExtent,
+                defaultValue: null
+            )
+        );
     }
-
 }
 
 public class CustomScrollView : ScrollView
 {
     public virtual List<Widget> slivers { get; private set; } = default!;
 
-    public CustomScrollView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, ScrollBehavior? scrollBehavior = null, bool shrinkWrap = false, Key? center = null, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, List<Widget> slivers = default!, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, scrollBehavior: scrollBehavior, shrinkWrap: shrinkWrap, center: center, anchor: anchor, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, paintOrder: paintOrder, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior)
+    public CustomScrollView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        ScrollBehavior? scrollBehavior = null,
+        bool shrinkWrap = false,
+        Key? center = null,
+        double anchor = 0.0,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop,
+        List<Widget> slivers = default!,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            scrollBehavior: scrollBehavior,
+            shrinkWrap: shrinkWrap,
+            center: center,
+            anchor: anchor,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            paintOrder: paintOrder,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        )
     {
         List<Widget> __slivers = slivers ?? new List<Widget>();
         this.slivers = __slivers;
@@ -159,7 +338,41 @@ public abstract class BoxScrollView : ScrollView
 {
     public virtual EdgeInsetsGeometry? padding { get; private set; }
 
-    protected BoxScrollView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior)
+    protected BoxScrollView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        )
     {
         this.padding = padding;
     }
@@ -173,27 +386,50 @@ public abstract class BoxScrollView : ScrollView
             MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
             if (mediaQuery is not null)
             {
-                EdgeInsets mediaQueryHorizontalPadding = mediaQuery.padding.copyWith(top: 0.0, bottom: 0.0);
-                EdgeInsets mediaQueryVerticalPadding = mediaQuery.padding.copyWith(left: 0.0, right: 0.0);
-                effectivePadding = DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(Equals(scrollDirection, Axis.vertical) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding);
-                sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: mediaQuery.copyWith(padding: Equals(scrollDirection, Axis.vertical) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding), child: sliverLocal));
+                EdgeInsets mediaQueryHorizontalPadding = mediaQuery.padding.copyWith(
+                    top: 0.0,
+                    bottom: 0.0
+                );
+                EdgeInsets mediaQueryVerticalPadding = mediaQuery.padding.copyWith(
+                    left: 0.0,
+                    right: 0.0
+                );
+                effectivePadding = DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(
+                    Equals(scrollDirection, Axis.vertical)
+                        ? mediaQueryVerticalPadding
+                        : mediaQueryHorizontalPadding
+                );
+                sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new MediaQuery(
+                        data: mediaQuery.copyWith(
+                            padding: Equals(scrollDirection, Axis.vertical)
+                                ? mediaQueryHorizontalPadding
+                                : mediaQueryVerticalPadding
+                        ),
+                        child: sliverLocal
+                    )
+                );
             }
         }
         if (effectivePadding is not null)
         {
-            sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: effectivePadding, sliver: sliverLocal));
+            sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new SliverPadding(padding: effectivePadding, sliver: sliverLocal)
+            );
         }
         return new List<Widget> { sliverLocal };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract Widget buildChildLayout(BuildContext context);
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null)
+        );
     }
-
 }
 
 public class ListView : BoxScrollView
@@ -203,57 +439,277 @@ public class ListView : BoxScrollView
     public virtual Widget? prototypeItem { get; private set; }
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
 
-    public ListView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, semanticChildCount: semanticChildCount ?? checked((children ?? new List<Widget>()).Count))
+    public ListView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        List<Widget> children = default!,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior,
+            semanticChildCount: semanticChildCount
+                ?? checked((children ?? new List<Widget>()).Count)
+        )
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.itemExtent = itemExtent;
         this.itemExtentBuilder = itemExtentBuilder;
         this.prototypeItem = prototypeItem;
-        childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
-        System.Diagnostics.Debug.Assert((itemExtent is null) && (prototypeItem is null) || (itemExtent is null) && (itemExtentBuilder is null) || (prototypeItem is null) && (itemExtentBuilder is null));
+        childrenDelegate = new SliverChildListDelegate(
+            children ?? new List<Widget>(),
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
+        System.Diagnostics.Debug.Assert(
+            ((itemExtent is null) && (prototypeItem is null))
+                || ((itemExtent is null) && (itemExtentBuilder is null))
+                || ((prototypeItem is null) && (itemExtentBuilder is null))
+        );
     }
 
-    public static ListView CreateBuilder(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static ListView CreateBuilder(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        double? itemExtent = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        Widget? prototypeItem = null,
+        Func<BuildContext, long, Widget?> itemBuilder = default!,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long? itemCount = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new ListView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, itemExtent: itemExtent, itemExtentBuilder: itemExtentBuilder, prototypeItem: prototypeItem, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, children: new List<Widget>(), semanticChildCount: semanticChildCount ?? itemCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
+        var __instance = new ListView(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            itemExtent: itemExtent,
+            itemExtentBuilder: itemExtentBuilder,
+            prototypeItem: prototypeItem,
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            children: new List<Widget>(),
+            semanticChildCount: semanticChildCount ?? itemCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        );
         __instance.itemExtent = itemExtent;
         __instance.itemExtentBuilder = itemExtentBuilder;
         __instance.prototypeItem = prototypeItem;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate(itemBuilder, findChildIndexCallback: findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback: findChildIndexCallback,
+            childCount: itemCount,
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
         return __instance;
     }
 
-    public static ListView CreateSeparated(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, Func<Key, long?>? findItemIndexCallback = null, Func<BuildContext, long, Widget> separatorBuilder = default!, long itemCount = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static ListView CreateSeparated(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        Func<BuildContext, long, Widget?> itemBuilder = default!,
+        Func<Key, long?>? findChildIndexCallback = null,
+        Func<Key, long?>? findItemIndexCallback = null,
+        Func<BuildContext, long, Widget> separatorBuilder = default!,
+        long itemCount = default!,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new ListView(key, scrollDirection, reverse, controller, primary, physics, shrinkWrap, padding, default!, default!, default!, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, cacheExtent, scrollCacheExtent, default!, default!, dragStartBehavior, keyboardDismissBehavior, restorationId, clipBehavior, hitTestBehavior);
+        var __instance = new ListView(
+            key,
+            scrollDirection,
+            reverse,
+            controller,
+            primary,
+            physics,
+            shrinkWrap,
+            padding,
+            default!,
+            default!,
+            default!,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes,
+            cacheExtent,
+            scrollCacheExtent,
+            default!,
+            default!,
+            dragStartBehavior,
+            keyboardDismissBehavior,
+            restorationId,
+            clipBehavior,
+            hitTestBehavior
+        );
         __instance.itemExtent = null;
         __instance.itemExtentBuilder = null;
         __instance.prototypeItem = null;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate((context, index) =>
-        {
-            long itemIndex = checked(index / 2L);
-            if ((checked(index) & 1L) == 0L)
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(
+            (context, index) =>
             {
-                return itemBuilder(context, itemIndex);
+                long itemIndex = checked(index / 2L);
+                if ((checked(index) & 1L) == 0L)
+                {
+                    return itemBuilder(context, itemIndex);
+                }
+                return separatorBuilder(context, itemIndex);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            findChildIndexCallback: (findItemIndexCallback is not null)
+                ? (
+                    (key) =>
+                    {
+                        long? itemIndexLocal = findItemIndexCallback(key);
+                        return (itemIndexLocal is null)
+                            ? null
+                            : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L);
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+                : findChildIndexCallback,
+            childCount: _computeActualChildCount(
+                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))
+            ),
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes,
+            semanticIndexCallback: (widget, index) =>
+            {
+                return ((checked(index) & 1L) == 0L) ? checked(index / 2L) : null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            return separatorBuilder(context, itemIndex);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, findChildIndexCallback: (findItemIndexCallback is not null) ? ((key) =>
-        {
-            long? itemIndexLocal = findItemIndexCallback(key);
-            return (itemIndexLocal is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }) : findChildIndexCallback, childCount: _computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: (widget, index) =>
-        {
-            return ((checked(index) & 1L) == 0L) ? checked(index / 2L) : null;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        );
         return __instance;
     }
 
-    public static ListView CreateCustom(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, double? itemExtent = null, Widget? prototypeItem = null, ItemExtentBuilder? itemExtentBuilder = null, SliverChildDelegate childrenDelegate = default!, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static ListView CreateCustom(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        double? itemExtent = null,
+        Widget? prototypeItem = null,
+        ItemExtentBuilder? itemExtentBuilder = null,
+        SliverChildDelegate childrenDelegate = default!,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new ListView(key, scrollDirection, reverse, controller, primary, physics, shrinkWrap, padding, itemExtent, itemExtentBuilder, prototypeItem, default!, default!, default!, cacheExtent, scrollCacheExtent, default!, semanticChildCount, dragStartBehavior, keyboardDismissBehavior, restorationId, clipBehavior, hitTestBehavior);
+        var __instance = new ListView(
+            key,
+            scrollDirection,
+            reverse,
+            controller,
+            primary,
+            physics,
+            shrinkWrap,
+            padding,
+            itemExtent,
+            itemExtentBuilder,
+            prototypeItem,
+            default!,
+            default!,
+            default!,
+            cacheExtent,
+            scrollCacheExtent,
+            default!,
+            semanticChildCount,
+            dragStartBehavior,
+            keyboardDismissBehavior,
+            restorationId,
+            clipBehavior,
+            hitTestBehavior
+        );
         __instance.itemExtent = itemExtent;
         __instance.prototypeItem = prototypeItem;
         __instance.itemExtentBuilder = itemExtentBuilder;
@@ -266,19 +722,28 @@ public class ListView : BoxScrollView
         if (itemExtent is not null)
         {
             double itemExtent__value70683 = DartRuntimePrimitives.RequireValue(itemExtent);
-            return new SliverFixedExtentList(@delegate: childrenDelegate, itemExtent: DartRuntimePrimitives.RequireValue(itemExtent));
+            return new SliverFixedExtentList(
+                @delegate: childrenDelegate,
+                itemExtent: DartRuntimePrimitives.RequireValue(itemExtent)
+            );
         }
         else
         {
             if (itemExtentBuilder is not null)
             {
-                return new SliverVariedExtentList(@delegate: childrenDelegate, itemExtentBuilder: itemExtentBuilder!);
+                return new SliverVariedExtentList(
+                    @delegate: childrenDelegate,
+                    itemExtentBuilder: itemExtentBuilder!
+                );
             }
             else
             {
                 if (prototypeItem is not null)
                 {
-                    return new SliverPrototypeExtentList(@delegate: childrenDelegate, prototypeItem: prototypeItem!);
+                    return new SliverPrototypeExtentList(
+                        @delegate: childrenDelegate,
+                        prototypeItem: prototypeItem!
+                    );
                 }
             }
         }
@@ -297,7 +762,6 @@ public class ListView : BoxScrollView
         return Math.Max(0L, (DartRuntimePrimitives.RequireValue(itemCount) * 2L) - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class GridView : BoxScrollView
@@ -305,44 +769,282 @@ public class GridView : BoxScrollView
     public virtual SliverGridDelegate gridDelegate { get; private set; } = default!;
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
 
-    public GridView(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, SliverGridDelegate gridDelegate = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, clipBehavior: clipBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior, semanticChildCount: semanticChildCount ?? checked((children ?? new List<Widget>()).Count))
+    public GridView(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        SliverGridDelegate gridDelegate = default!,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        List<Widget> children = default!,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        Clip clipBehavior = Clip.hardEdge,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            dragStartBehavior: dragStartBehavior,
+            clipBehavior: clipBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            hitTestBehavior: hitTestBehavior,
+            semanticChildCount: semanticChildCount
+                ?? checked((children ?? new List<Widget>()).Count)
+        )
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.gridDelegate = gridDelegate;
-        childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        childrenDelegate = new SliverChildListDelegate(
+            children ?? new List<Widget>(),
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
     }
 
-    public static GridView CreateBuilder(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, SliverGridDelegate gridDelegate = default!, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static GridView CreateBuilder(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        SliverGridDelegate gridDelegate = default!,
+        Func<BuildContext, long, Widget?> itemBuilder = default!,
+        Func<Key, long?>? findChildIndexCallback = null,
+        long? itemCount = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new GridView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
+        var __instance = new GridView(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        );
         __instance.gridDelegate = gridDelegate;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate(itemBuilder, findChildIndexCallback: findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback: findChildIndexCallback,
+            childCount: itemCount,
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
         return __instance;
     }
 
-    public static GridView CreateCustom(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, SliverGridDelegate gridDelegate = default!, SliverChildDelegate childrenDelegate = default!, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static GridView CreateCustom(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        SliverGridDelegate gridDelegate = default!,
+        SliverChildDelegate childrenDelegate = default!,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new GridView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
+        var __instance = new GridView(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        );
         __instance.gridDelegate = gridDelegate;
         __instance.childrenDelegate = childrenDelegate;
         return __instance;
     }
 
-    public static GridView CreateCount(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, long crossAxisCount = default!, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, double? mainAxisExtent = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static GridView CreateCount(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        long crossAxisCount = default!,
+        double mainAxisSpacing = 0.0,
+        double crossAxisSpacing = 0.0,
+        double childAspectRatio = 1.0,
+        double? mainAxisExtent = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        List<Widget> children = default!,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new GridView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
+        var __instance = new GridView(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        );
         List<Widget> __children = children ?? new List<Widget>();
-        __instance.gridDelegate = new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio, mainAxisExtent: mainAxisExtent);
-        __instance.childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.gridDelegate = new SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: mainAxisSpacing,
+            crossAxisSpacing: crossAxisSpacing,
+            childAspectRatio: childAspectRatio,
+            mainAxisExtent: mainAxisExtent
+        );
+        __instance.childrenDelegate = new SliverChildListDelegate(
+            children ?? new List<Widget>(),
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
         return __instance;
     }
 
-    public static GridView CreateExtent(Key? key = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, EdgeInsetsGeometry? padding = null, double maxCrossAxisExtent = default!, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, double? mainAxisExtent = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
+    public static GridView CreateExtent(
+        Key? key = null,
+        Axis scrollDirection = Axis.vertical,
+        bool reverse = false,
+        ScrollController? controller = null,
+        bool? primary = null,
+        ScrollPhysics? physics = null,
+        bool shrinkWrap = false,
+        EdgeInsetsGeometry? padding = null,
+        double maxCrossAxisExtent = default!,
+        double mainAxisSpacing = 0.0,
+        double crossAxisSpacing = 0.0,
+        double childAspectRatio = 1.0,
+        double? mainAxisExtent = null,
+        bool addAutomaticKeepAlives = true,
+        bool addRepaintBoundaries = true,
+        bool addSemanticIndexes = true,
+        double? cacheExtent = null,
+        ScrollCacheExtent? scrollCacheExtent = null,
+        List<Widget> children = default!,
+        long? semanticChildCount = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null,
+        string? restorationId = null,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
     {
-        var __instance = new GridView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
+        var __instance = new GridView(
+            key: key,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            cacheExtent: cacheExtent,
+            scrollCacheExtent: scrollCacheExtent,
+            semanticChildCount: semanticChildCount,
+            dragStartBehavior: dragStartBehavior,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            restorationId: restorationId,
+            clipBehavior: clipBehavior,
+            hitTestBehavior: hitTestBehavior
+        );
         List<Widget> __children = children ?? new List<Widget>();
-        __instance.gridDelegate = new SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: maxCrossAxisExtent, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio, mainAxisExtent: mainAxisExtent);
-        __instance.childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.gridDelegate = new SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: maxCrossAxisExtent,
+            mainAxisSpacing: mainAxisSpacing,
+            crossAxisSpacing: crossAxisSpacing,
+            childAspectRatio: childAspectRatio,
+            mainAxisExtent: mainAxisExtent
+        );
+        __instance.childrenDelegate = new SliverChildListDelegate(
+            children ?? new List<Widget>(),
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes
+        );
         return __instance;
     }
 
@@ -351,5 +1053,4 @@ public class GridView : BoxScrollView
         return new SliverGrid(@delegate: childrenDelegate, gridDelegate: gridDelegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

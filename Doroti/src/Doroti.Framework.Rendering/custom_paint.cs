@@ -17,13 +17,21 @@ public abstract class CustomPainter : Listenable
     }
 
     public virtual void addListener(Action listener) => _repaint?.addListener(listener);
+
     public virtual void removeListener(Action listener) => _repaint?.removeListener(listener);
+
     public abstract void paint(Canvas canvas, Size size);
     public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => null;
-    public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => shouldRepaint(oldDelegate);
+
+    public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) =>
+        shouldRepaint(oldDelegate);
+
     public abstract bool shouldRepaint(CustomPainter oldDelegate);
+
     public virtual bool? hitTest(Offset position) => null;
-    public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({_repaint?.ToString() ?? ""})";
+
+    public override string ToString() =>
+        $"{DiagnosticsLibrary.describeIdentity(this)}({_repaint?.ToString() ?? ""})";
 }
 
 public class CustomPainterSemantics
@@ -34,7 +42,13 @@ public class CustomPainterSemantics
     public virtual SemanticsProperties properties { get; private set; } = default!;
     public virtual HashSet<SemanticsTag>? tags { get; private set; }
 
-    public CustomPainterSemantics(Key? key = null, Rect rect = default!, SemanticsProperties properties = default!, Matrix4? transform = null, HashSet<SemanticsTag>? tags = null)
+    public CustomPainterSemantics(
+        Key? key = null,
+        Rect rect = default!,
+        SemanticsProperties properties = default!,
+        Matrix4? transform = null,
+        HashSet<SemanticsTag>? tags = null
+    )
     {
         this.key = key;
         this.rect = rect;
@@ -42,7 +56,6 @@ public class CustomPainterSemantics
         this.transform = transform;
         this.tags = tags;
     }
-
 }
 
 public class RenderCustomPaint : RenderProxyBox
@@ -52,12 +65,26 @@ public class RenderCustomPaint : RenderProxyBox
     internal virtual Size _preferredSize { get; set; } = default!;
     public virtual bool isComplex { get; set; } = default!;
     public virtual bool willChange { get; set; } = default!;
-    internal virtual Func<Size, List<CustomPainterSemantics>>? _backgroundSemanticsBuilder { get; set; } = default;
-    internal virtual Func<Size, List<CustomPainterSemantics>>? _foregroundSemanticsBuilder { get; set; } = default;
+    internal virtual Func<
+        Size,
+        List<CustomPainterSemantics>
+    >? _backgroundSemanticsBuilder { get; set; } = default;
+    internal virtual Func<
+        Size,
+        List<CustomPainterSemantics>
+    >? _foregroundSemanticsBuilder { get; set; } = default;
     internal virtual List<SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
     internal virtual List<SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
 
-    public RenderCustomPaint(CustomPainter? painter = null, CustomPainter? foregroundPainter = null, Size? preferredSize = null, bool isComplex = false, bool willChange = false, RenderBox? child = null) : base(child)
+    public RenderCustomPaint(
+        CustomPainter? painter = null,
+        CustomPainter? foregroundPainter = null,
+        Size? preferredSize = null,
+        bool isComplex = false,
+        bool willChange = false,
+        RenderBox? child = null
+    )
+        : base(child)
     {
         this.isComplex = isComplex;
         this.willChange = willChange;
@@ -96,6 +123,7 @@ public class RenderCustomPaint : RenderProxyBox
             _didUpdatePainter(_foregroundPainter, oldPainter);
         }
     }
+
     internal virtual void _didUpdatePainter(CustomPainter? newPainter, CustomPainter? oldPainter)
     {
         if (newPainter is null)
@@ -105,7 +133,16 @@ public class RenderCustomPaint : RenderProxyBox
         }
         else
         {
-            if ((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter))) || newPainter.shouldRepaint(oldPainter))
+            if (
+                (oldPainter is null)
+                || (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newPainter),
+                        DartRuntimePrimitives.RuntimeType(oldPainter)
+                    )
+                )
+                || newPainter.shouldRepaint(oldPainter)
+            )
             {
                 markNeedsPaint();
             }
@@ -125,7 +162,16 @@ public class RenderCustomPaint : RenderProxyBox
         }
         else
         {
-            if ((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter))) || newPainter.shouldRebuildSemantics(oldPainter))
+            if (
+                (oldPainter is null)
+                || (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newPainter),
+                        DartRuntimePrimitives.RuntimeType(oldPainter)
+                    )
+                )
+                || newPainter.shouldRebuildSemantics(oldPainter)
+            )
             {
                 markNeedsSemanticsUpdate();
             }
@@ -146,6 +192,7 @@ public class RenderCustomPaint : RenderProxyBox
             markNeedsLayout();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         if (child is null)
@@ -233,28 +280,60 @@ public class RenderCustomPaint : RenderProxyBox
         long debugPreviousCanvasSaveCount = default!;
         canvas.save();
         DartRuntimePrimitives.Assert(() =>
-            {
-                debugPreviousCanvasSaveCount = canvas.getSaveCount();
-                return true;
-            });
+        {
+            debugPreviousCanvasSaveCount = canvas.getSaveCount();
+            return true;
+        });
         if (!Equals(offset, Offset.zero))
         {
             canvas.translate(offset.dx, offset.dy);
         }
         painter.paint(canvas, size);
         DartRuntimePrimitives.Assert(() =>
+        {
+            long debugNewCanvasSaveCount = canvas.getSaveCount();
+            if (debugNewCanvasSaveCount > debugPreviousCanvasSaveCount)
             {
-                long debugNewCanvasSaveCount = canvas.getSaveCount();
-                if (debugNewCanvasSaveCount > debugPreviousCanvasSaveCount)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.save() or canvas.saveLayer() at least " + $"{debugNewCanvasSaveCount - debugPreviousCanvasSaveCount} more " + $"time{(((debugNewCanvasSaveCount - debugPreviousCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.restore()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will probably result in a broken display."), new ErrorHint("You must pair each call to save()/saveLayer() with a later matching call to restore().") });
-                }
-                if (debugNewCanvasSaveCount < debugPreviousCanvasSaveCount)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.restore() " + $"{debugPreviousCanvasSaveCount - debugNewCanvasSaveCount} more " + $"time{(((debugPreviousCanvasSaveCount - debugNewCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.save() or canvas.saveLayer()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will result in a broken display."), new ErrorHint("You should only call restore() if you first called save() or saveLayer().") });
-                }
-                return debugNewCanvasSaveCount == debugPreviousCanvasSaveCount;
-            });
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"The {painter} custom painter called canvas.save() or canvas.saveLayer() at least "
+                                + $"{debugNewCanvasSaveCount - debugPreviousCanvasSaveCount} more "
+                                + $"time{(((debugNewCanvasSaveCount - debugPreviousCanvasSaveCount) == 1L) ? "" : "s")} "
+                                + "than it called canvas.restore()."
+                        ),
+                        new ErrorDescription(
+                            "This leaves the canvas in an inconsistent state and will probably result in a broken display."
+                        ),
+                        new ErrorHint(
+                            "You must pair each call to save()/saveLayer() with a later matching call to restore()."
+                        ),
+                    }
+                );
+            }
+            if (debugNewCanvasSaveCount < debugPreviousCanvasSaveCount)
+            {
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"The {painter} custom painter called canvas.restore() "
+                                + $"{debugPreviousCanvasSaveCount - debugNewCanvasSaveCount} more "
+                                + $"time{(((debugPreviousCanvasSaveCount - debugNewCanvasSaveCount) == 1L) ? "" : "s")} "
+                                + "than it called canvas.save() or canvas.saveLayer()."
+                        ),
+                        new ErrorDescription(
+                            "This leaves the canvas in an inconsistent state and will result in a broken display."
+                        ),
+                        new ErrorHint(
+                            "You should only call restore() if you first called save() or saveLayer()."
+                        ),
+                    }
+                );
+            }
+            return debugNewCanvasSaveCount == debugPreviousCanvasSaveCount;
+        });
         canvas.restore();
     }
 
@@ -290,25 +369,52 @@ public class RenderCustomPaint : RenderProxyBox
         base.describeSemanticsConfiguration(config);
         _backgroundSemanticsBuilder = painter?.semanticsBuilder;
         _foregroundSemanticsBuilder = foregroundPainter?.semanticsBuilder;
-        config.isSemanticBoundary = (_backgroundSemanticsBuilder is not null) || (_foregroundSemanticsBuilder is not null);
+        config.isSemanticBoundary =
+            (_backgroundSemanticsBuilder is not null) || (_foregroundSemanticsBuilder is not null);
     }
 
-    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
+    public override void assembleSemanticsNode(
+        SemanticsNode node,
+        SemanticsConfiguration config,
+        IEnumerable<SemanticsNode> children
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if ((child is null) && (children.Count() != 0))
             {
-                if ((child is null) && (children.Count() != 0))
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} does not have a child widget but received a non-empty list of child SemanticsNode:\n" + $"{string.Join("\n", children)}") });
-                }
-                return true;
-            });
-        List<CustomPainterSemantics> backgroundSemantics = _backgroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : _backgroundSemanticsBuilder.Invoke(size);
-        _backgroundSemanticsNodes = _updateSemanticsChildren(_backgroundSemanticsNodes, backgroundSemantics);
-        List<CustomPainterSemantics> foregroundSemantics = _foregroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : _foregroundSemanticsBuilder.Invoke(size);
-        _foregroundSemanticsNodes = _updateSemanticsChildren(_foregroundSemanticsNodes, foregroundSemantics);
-        bool hasBackgroundSemantics = (_backgroundSemanticsNodes is not null) && (checked((long)_backgroundSemanticsNodes!.Count) != 0);
-        bool hasForegroundSemantics = (_foregroundSemanticsNodes is not null) && (checked((long)_foregroundSemanticsNodes!.Count) != 0);
+                throw new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            $"{GetType()} does not have a child widget but received a non-empty list of child SemanticsNode:\n"
+                                + $"{string.Join("\n", children)}"
+                        ),
+                    }
+                );
+            }
+            return true;
+        });
+        List<CustomPainterSemantics> backgroundSemantics = _backgroundSemanticsBuilder is null
+            ? new List<CustomPainterSemantics>()
+            : _backgroundSemanticsBuilder.Invoke(size);
+        _backgroundSemanticsNodes = _updateSemanticsChildren(
+            _backgroundSemanticsNodes,
+            backgroundSemantics
+        );
+        List<CustomPainterSemantics> foregroundSemantics = _foregroundSemanticsBuilder is null
+            ? new List<CustomPainterSemantics>()
+            : _foregroundSemanticsBuilder.Invoke(size);
+        _foregroundSemanticsNodes = _updateSemanticsChildren(
+            _foregroundSemanticsNodes,
+            foregroundSemantics
+        );
+        bool hasBackgroundSemantics =
+            (_backgroundSemanticsNodes is not null)
+            && (checked((long)_backgroundSemanticsNodes!.Count) != 0);
+        bool hasForegroundSemantics =
+            (_foregroundSemanticsNodes is not null)
+            && (checked((long)_foregroundSemanticsNodes!.Count) != 0);
         var finalChildren = new List<SemanticsNode>();
         base.assembleSemanticsNode(node, config, finalChildren);
     }
@@ -320,38 +426,53 @@ public class RenderCustomPaint : RenderProxyBox
         _foregroundSemanticsNodes = null;
     }
 
-    internal static List<SemanticsNode> _updateSemanticsChildren(List<SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
+    internal static List<SemanticsNode> _updateSemanticsChildren(
+        List<SemanticsNode>? oldSemantics,
+        List<CustomPainterSemantics>? newChildSemantics
+    )
     {
         oldSemantics = oldSemantics ?? new List<SemanticsNode>();
         newChildSemantics = newChildSemantics ?? new List<CustomPainterSemantics>();
         DartRuntimePrimitives.Assert(() =>
+        {
+            DartMap<Key, long> keys = new DartMap<Key, long>();
+            var information = new List<DiagnosticsNode>();
+            for (var i = 0L; i < checked(newChildSemantics!.Count); i += 1L)
             {
-                DartMap<Key, long> keys = new DartMap<Key, long>();
-                var information = new List<DiagnosticsNode>();
-                for (var i = 0L; i < checked(newChildSemantics!.Count); i += 1L)
+                CustomPainterSemantics child = newChildSemantics[(int)i];
+                if (child.key is not null)
                 {
-                    CustomPainterSemantics child = newChildSemantics[(int)i];
-                    if (child.key is not null)
+                    if (keys.ContainsKey(child.key))
                     {
-                        if (keys.ContainsKey(child.key))
-                        {
-                            information.Add(new ErrorDescription($"- duplicate key {child.key} found at position {i}"));
-                        }
-                        keys[child.key!] = i;
+                        information.Add(
+                            new ErrorDescription(
+                                $"- duplicate key {child.key} found at position {i}"
+                            )
+                        );
                     }
+                    keys[child.key!] = i;
                 }
-                if (checked((long)information.Count) != 0)
-                {
-                    information.Insert(checked((int)0L), new ErrorSummary("Failed to update the list of CustomPainterSemantics:"));
-                    throw new FlutterError(information);
-                }
-                return true;
-            });
+            }
+            if (checked((long)information.Count) != 0)
+            {
+                information.Insert(
+                    checked((int)0L),
+                    new ErrorSummary("Failed to update the list of CustomPainterSemantics:")
+                );
+                throw new FlutterError(information);
+            }
+            return true;
+        });
         var newChildrenTop = 0L;
         var oldChildrenTop = 0L;
         long newChildrenBottom = checked(newChildSemantics.Count) - 1L;
         long oldChildrenBottom = checked(oldSemantics.Count) - 1L;
-        var newChildren = new List<SemanticsNode?>(Enumerable.Repeat<SemanticsNode?>(null, checked((int)checked((long)newChildSemantics.Count))));
+        var newChildren = new List<SemanticsNode?>(
+            Enumerable.Repeat<SemanticsNode?>(
+                null,
+                checked((int)checked((long)newChildSemantics.Count))
+            )
+        );
         while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
             SemanticsNode oldChild = oldSemantics[(int)oldChildrenTop];
@@ -414,49 +535,73 @@ public class RenderCustomPaint : RenderProxyBox
                     }
                 }
             }
-            DartRuntimePrimitives.Assert(() => (oldChildNested is null) || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal));
-            SemanticsNode newChildAlternate = _updateSemanticsChild(oldChildNested, newSemanticsLocal);
-            DartRuntimePrimitives.Assert(() => Equals(oldChildNested, newChildAlternate) || (oldChildNested is null));
+            DartRuntimePrimitives.Assert(() =>
+                (oldChildNested is null)
+                || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal)
+            );
+            SemanticsNode newChildAlternate = _updateSemanticsChild(
+                oldChildNested,
+                newSemanticsLocal
+            );
+            DartRuntimePrimitives.Assert(() =>
+                Equals(oldChildNested, newChildAlternate) || (oldChildNested is null)
+            );
             newChildren[(int)newChildrenTop] = newChildAlternate;
             newChildrenTop += 1L;
         }
         DartRuntimePrimitives.Assert(() => oldChildrenTop == (oldChildrenBottom + 1L));
         DartRuntimePrimitives.Assert(() => newChildrenTop == (newChildrenBottom + 1L));
-        DartRuntimePrimitives.Assert(() => (checked(newChildSemantics.Count) - newChildrenTop) == (checked(oldSemantics.Count) - oldChildrenTop));
+        DartRuntimePrimitives.Assert(() =>
+            (checked(newChildSemantics.Count) - newChildrenTop)
+            == (checked(oldSemantics.Count) - oldChildrenTop)
+        );
         newChildrenBottom = checked(newChildSemantics.Count) - 1L;
         oldChildrenBottom = checked(oldSemantics.Count) - 1L;
         while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
             SemanticsNode oldChildCurrent = oldSemantics[(int)oldChildrenTop];
             CustomPainterSemantics newSemanticsAlternate = newChildSemantics[(int)newChildrenTop];
-            DartRuntimePrimitives.Assert(() => _canUpdateSemanticsChild(oldChildCurrent, newSemanticsAlternate));
-            SemanticsNode newChildNested = _updateSemanticsChild(oldChildCurrent, newSemanticsAlternate);
+            DartRuntimePrimitives.Assert(() =>
+                _canUpdateSemanticsChild(oldChildCurrent, newSemanticsAlternate)
+            );
+            SemanticsNode newChildNested = _updateSemanticsChild(
+                oldChildCurrent,
+                newSemanticsAlternate
+            );
             DartRuntimePrimitives.Assert(() => Equals(oldChildCurrent, newChildNested));
             newChildren[(int)newChildrenTop] = newChildNested;
             newChildrenTop += 1L;
             oldChildrenTop += 1L;
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            foreach (var node in newChildren)
             {
-                foreach (var node in newChildren)
-                {
-                    DartRuntimePrimitives.Assert(() => node is not null);
-                }
-                return true;
-            });
+                DartRuntimePrimitives.Assert(() => node is not null);
+            }
+            return true;
+        });
         return newChildren.cast<SemanticsNode>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _canUpdateSemanticsChild(SemanticsNode oldChild, CustomPainterSemantics newSemantics)
+    internal static bool _canUpdateSemanticsChild(
+        SemanticsNode oldChild,
+        CustomPainterSemantics newSemantics
+    )
     {
         return Equals(oldChild.key, newSemantics.key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static SemanticsNode _updateSemanticsChild(SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
+    internal static SemanticsNode _updateSemanticsChild(
+        SemanticsNode? oldChild,
+        CustomPainterSemantics newSemantics
+    )
     {
-        DartRuntimePrimitives.Assert(() => (oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics));
+        DartRuntimePrimitives.Assert(() =>
+            (oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics)
+        );
         SemanticsNode newChild = oldChild ?? new SemanticsNode(key: newSemantics.key);
         SemanticsProperties propertiesLocal = newSemantics.properties;
         var configLocal = new SemanticsConfiguration();
@@ -506,7 +651,9 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.keyboardKey is not null)
         {
-            configLocal.isKeyboardKey = DartRuntimePrimitives.RequireValue(propertiesLocal.keyboardKey);
+            configLocal.isKeyboardKey = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.keyboardKey
+            );
         }
         if (propertiesLocal.readOnly is not null)
         {
@@ -522,7 +669,9 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.accessibilityFocusBlockType is not null)
         {
-            configLocal.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(propertiesLocal.accessibilityFocusBlockType);
+            configLocal.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.accessibilityFocusBlockType
+            );
         }
         if (propertiesLocal.enabled is not null)
         {
@@ -530,7 +679,9 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.inMutuallyExclusiveGroup is not null)
         {
-            configLocal.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(propertiesLocal.inMutuallyExclusiveGroup);
+            configLocal.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.inMutuallyExclusiveGroup
+            );
         }
         if (propertiesLocal.obscured is not null)
         {
@@ -550,11 +701,15 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.headingLevel is not null)
         {
-            configLocal.headingLevel = DartRuntimePrimitives.RequireValue(propertiesLocal.headingLevel);
+            configLocal.headingLevel = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.headingLevel
+            );
         }
         if (propertiesLocal.scopesRoute is not null)
         {
-            configLocal.scopesRoute = DartRuntimePrimitives.RequireValue(propertiesLocal.scopesRoute);
+            configLocal.scopesRoute = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.scopesRoute
+            );
         }
         if (propertiesLocal.namesRoute is not null)
         {
@@ -646,7 +801,9 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.hitTestBehavior is not null)
         {
-            configLocal.hitTestBehavior = DartRuntimePrimitives.RequireValue(propertiesLocal.hitTestBehavior);
+            configLocal.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+                propertiesLocal.hitTestBehavior
+            );
         }
         if (propertiesLocal.inputType is not null)
         {
@@ -706,11 +863,13 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.onMoveCursorForwardByCharacter is not null)
         {
-            configLocal.onMoveCursorForwardByCharacter = propertiesLocal.onMoveCursorForwardByCharacter;
+            configLocal.onMoveCursorForwardByCharacter =
+                propertiesLocal.onMoveCursorForwardByCharacter;
         }
         if (propertiesLocal.onMoveCursorBackwardByCharacter is not null)
         {
-            configLocal.onMoveCursorBackwardByCharacter = propertiesLocal.onMoveCursorBackwardByCharacter;
+            configLocal.onMoveCursorBackwardByCharacter =
+                propertiesLocal.onMoveCursorBackwardByCharacter;
         }
         if (propertiesLocal.onMoveCursorForwardByWord is not null)
         {
@@ -752,15 +911,22 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.onCollapse = propertiesLocal.onCollapse;
         }
-        newChild.updateWith(config: configLocal, childrenInInversePaintOrder: new List<SemanticsNode>());
-        ((Func<SemanticsNode>)(() =>
-{
-    var __cascade = newChild;
-    __cascade.rect = newSemantics.rect;
-    __cascade.transform = newSemantics.transform;
-    __cascade.tags = newSemantics.tags;
-    return __cascade;
-}))();
+        newChild.updateWith(
+            config: configLocal,
+            childrenInInversePaintOrder: new List<SemanticsNode>()
+        );
+        (
+            (Func<SemanticsNode>)(
+                () =>
+                {
+                    var __cascade = newChild;
+                    __cascade.rect = newSemantics.rect;
+                    __cascade.transform = newSemantics.transform;
+                    __cascade.tags = newSemantics.tags;
+                    return __cascade;
+                }
+            )
+        )();
         return newChild;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -769,10 +935,19 @@ public class RenderCustomPaint : RenderProxyBox
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new MessageProperty("painter", $"{painter}"));
-        properties.add(new MessageProperty("foregroundPainter", $"{foregroundPainter}", level: (foregroundPainter is not null) ? DiagnosticLevel.info : DiagnosticLevel.fine));
-        properties.add(new DiagnosticsProperty<Size>("preferredSize", preferredSize, defaultValue: Size.zero));
+        properties.add(
+            new MessageProperty(
+                "foregroundPainter",
+                $"{foregroundPainter}",
+                level: (foregroundPainter is not null) ? DiagnosticLevel.info : DiagnosticLevel.fine
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Size>("preferredSize", preferredSize, defaultValue: Size.zero)
+        );
         properties.add(new DiagnosticsProperty<bool>("isComplex", isComplex, defaultValue: false));
-        properties.add(new DiagnosticsProperty<bool>("willChange", willChange, defaultValue: false));
+        properties.add(
+            new DiagnosticsProperty<bool>("willChange", willChange, defaultValue: false)
+        );
     }
-
 }

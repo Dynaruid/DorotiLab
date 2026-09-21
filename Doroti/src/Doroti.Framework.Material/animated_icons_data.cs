@@ -21,7 +21,6 @@ public abstract class AnimatedIcons
     public static AnimatedIconData play_pause = Animated_iconsLibrary.__play_pause;
     public static AnimatedIconData search_ellipsis = Animated_iconsLibrary.__search_ellipsis;
     public static AnimatedIconData view_list = Animated_iconsLibrary.__view_list;
-
 }
 
 public interface AnimatedIconData
@@ -35,11 +34,14 @@ internal class _AnimatedIconData__animated_icons_data : AnimatedIconData
     public virtual List<_PathFrames__animated_icons> paths { get; private set; } = default!;
     public virtual bool matchTextDirection { get; private set; } = default!;
 
-    internal _AnimatedIconData__animated_icons_data(Size size, List<_PathFrames__animated_icons> paths, bool matchTextDirection = false)
+    internal _AnimatedIconData__animated_icons_data(
+        Size size,
+        List<_PathFrames__animated_icons> paths,
+        bool matchTextDirection = false
+    )
     {
         this.size = size;
         this.paths = paths;
         this.matchTextDirection = matchTextDirection;
     }
-
 }

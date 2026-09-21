@@ -24,4 +24,3 @@ public static partial class Image_decoderLibrary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

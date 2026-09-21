@@ -42,7 +42,19 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     public const long modifierNumLock = 2097152L;
     public const long modifierScrollLock = 4194304L;
 
-    public RawKeyEventDataAndroid(long flags = 0, long codePoint = 0, long plainCodePoint = 0, long keyCode = 0, long scanCode = 0, long metaState = 0, long eventSource = 0, long vendorId = 0, long productId = 0, long deviceId = 0, long repeatCount = 0)
+    public RawKeyEventDataAndroid(
+        long flags = 0,
+        long codePoint = 0,
+        long plainCodePoint = 0,
+        long keyCode = 0,
+        long scanCode = 0,
+        long metaState = 0,
+        long eventSource = 0,
+        long vendorId = 0,
+        long productId = 0,
+        long deviceId = 0,
+        long repeatCount = 0
+    )
     {
         this.flags = flags;
         this.codePoint = codePoint;
@@ -57,7 +69,14 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         this.repeatCount = repeatCount;
     }
 
-    public override string keyLabel => (plainCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)(plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask)));
+    public override string keyLabel =>
+        (plainCodePoint == 0L)
+            ? ""
+            : char.ConvertFromUtf32(
+                checked(
+                    (int)(plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask)
+                )
+            );
     public override PhysicalKeyboardKey physicalKey
     {
         get
@@ -68,7 +87,8 @@ public class RawKeyEventDataAndroid : RawKeyEventData
             }
             if ((eventSource & _sourceJoystick) == _sourceJoystick)
             {
-                LogicalKeyboardKey? foundKey = Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+                LogicalKeyboardKey? foundKey =
+                    Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
                 if (Equals(foundKey, LogicalKeyboardKey.arrowUp))
                 {
                     return PhysicalKeyboardKey.arrowUp;
@@ -93,18 +113,23 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey =
+                Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
             if (numPadKey is not null)
             {
                 return numPadKey;
             }
             if ((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel))
             {
-                long combinedCodePoint = plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask;
-                long keyId = LogicalKeyboardKey.unicodePlane | combinedCodePoint & LogicalKeyboardKey.valueMask;
+                long combinedCodePoint =
+                    plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask;
+                long keyId =
+                    LogicalKeyboardKey.unicodePlane
+                    | (combinedCodePoint & LogicalKeyboardKey.valueMask);
                 return LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId);
             }
-            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey =
+                Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
             if (newKey is not null)
             {
                 return newKey;
@@ -112,19 +137,76 @@ public class RawKeyEventDataAndroid : RawKeyEventData
             return new LogicalKeyboardKey(keyCode | LogicalKeyboardKey.androidPlane);
         }
     }
-    internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
+
+    internal virtual bool _isLeftRightModifierPressed(
+        KeyboardSide side,
+        long anyMask,
+        long leftMask,
+        long rightMask
+    )
     {
         if ((metaState & anyMask) == 0L)
         {
             return false;
         }
-        return side switch { var __case8577 when Equals(__case8577, KeyboardSide.any) => true, var __case8609 when Equals(__case8609, KeyboardSide.all) => (metaState & leftMask) != 0L && (metaState & rightMask) != 0L, var __case8696 when Equals(__case8696, KeyboardSide.left) => (metaState & leftMask) != 0L, var __case8750 when Equals(__case8750, KeyboardSide.right) => (metaState & rightMask) != 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return side switch
+        {
+            var __case8577 when Equals(__case8577, KeyboardSide.any) => true,
+            var __case8609 when Equals(__case8609, KeyboardSide.all) => (metaState & leftMask) != 0L
+                && (metaState & rightMask) != 0L,
+            var __case8696 when Equals(__case8696, KeyboardSide.left) => (metaState & leftMask)
+                != 0L,
+            var __case8750 when Equals(__case8750, KeyboardSide.right) => (metaState & rightMask)
+                != 0L,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
     {
-        return key switch { var __case8940 when Equals(__case8940, ModifierKey.controlModifier) => _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl), var __case9113 when Equals(__case9113, ModifierKey.shiftModifier) => _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift), var __case9278 when Equals(__case9278, ModifierKey.altModifier) => _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt), var __case9435 when Equals(__case9435, ModifierKey.metaModifier) => _isLeftRightModifierPressed(side, modifierMeta, modifierLeftMeta, modifierRightMeta), var __case9596 when Equals(__case9596, ModifierKey.capsLockModifier) => (metaState & modifierCapsLock) != 0L, var __case9669 when Equals(__case9669, ModifierKey.numLockModifier) => (metaState & modifierNumLock) != 0L, var __case9740 when Equals(__case9740, ModifierKey.scrollLockModifier) => (metaState & modifierScrollLock) != 0L, var __case9817 when Equals(__case9817, ModifierKey.functionModifier) => (metaState & modifierFunction) != 0L, var __case9890 when Equals(__case9890, ModifierKey.symbolModifier) => (metaState & modifierSym) != 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return key switch
+        {
+            var __case8940 when Equals(__case8940, ModifierKey.controlModifier) =>
+                _isLeftRightModifierPressed(
+                    side,
+                    modifierControl,
+                    modifierLeftControl,
+                    modifierRightControl
+                ),
+            var __case9113 when Equals(__case9113, ModifierKey.shiftModifier) =>
+                _isLeftRightModifierPressed(
+                    side,
+                    modifierShift,
+                    modifierLeftShift,
+                    modifierRightShift
+                ),
+            var __case9278 when Equals(__case9278, ModifierKey.altModifier) =>
+                _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt),
+            var __case9435 when Equals(__case9435, ModifierKey.metaModifier) =>
+                _isLeftRightModifierPressed(
+                    side,
+                    modifierMeta,
+                    modifierLeftMeta,
+                    modifierRightMeta
+                ),
+            var __case9596 when Equals(__case9596, ModifierKey.capsLockModifier) => (
+                metaState & modifierCapsLock
+            ) != 0L,
+            var __case9669 when Equals(__case9669, ModifierKey.numLockModifier) => (
+                metaState & modifierNumLock
+            ) != 0L,
+            var __case9740 when Equals(__case9740, ModifierKey.scrollLockModifier) => (
+                metaState & modifierScrollLock
+            ) != 0L,
+            var __case9817 when Equals(__case9817, ModifierKey.functionModifier) => (
+                metaState & modifierFunction
+            ) != 0L,
+            var __case9890 when Equals(__case9890, ModifierKey.symbolModifier) => (
+                metaState & modifierSym
+            ) != 0L,
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -162,29 +244,29 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         switch (key)
         {
             case var __case10758 when Equals(__case10758, ModifierKey.controlModifier):
-                {
-                    return findSide(modifierControl, modifierLeftControl, modifierRightControl);
-                }
+            {
+                return findSide(modifierControl, modifierLeftControl, modifierRightControl);
+            }
             case var __case10883 when Equals(__case10883, ModifierKey.shiftModifier):
-                {
-                    return findSide(modifierShift, modifierLeftShift, modifierRightShift);
-                }
+            {
+                return findSide(modifierShift, modifierLeftShift, modifierRightShift);
+            }
             case var __case11000 when Equals(__case11000, ModifierKey.altModifier):
-                {
-                    return findSide(modifierAlt, modifierLeftAlt, modifierRightAlt);
-                }
+            {
+                return findSide(modifierAlt, modifierLeftAlt, modifierRightAlt);
+            }
             case var __case11109 when Equals(__case11109, ModifierKey.metaModifier):
-                {
-                    return findSide(modifierMeta, modifierLeftMeta, modifierRightMeta);
-                }
+            {
+                return findSide(modifierMeta, modifierLeftMeta, modifierRightMeta);
+            }
             case var __case11222 when Equals(__case11222, ModifierKey.capsLockModifier):
             case var __case11263 when Equals(__case11263, ModifierKey.numLockModifier):
             case var __case11303 when Equals(__case11303, ModifierKey.scrollLockModifier):
             case var __case11346 when Equals(__case11346, ModifierKey.functionModifier):
             case var __case11387 when Equals(__case11387, ModifierKey.symbolModifier):
-                {
-                    return KeyboardSide.all;
-                }
+            {
+                return KeyboardSide.all;
+            }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -203,7 +285,11 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     public override bool Equals(object? other)
     {
         var __other = other as RawKeyEventDataAndroid;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -212,9 +298,22 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         {
             return false;
         }
-        return (__other is RawKeyEventDataAndroid) && (__other.flags == flags) && (__other.codePoint == codePoint) && (__other.plainCodePoint == plainCodePoint) && (__other.keyCode == keyCode) && (__other.scanCode == scanCode) && (__other.metaState == metaState);
+        return (__other is RawKeyEventDataAndroid)
+            && (__other.flags == flags)
+            && (__other.codePoint == codePoint)
+            && (__other.plainCodePoint == plainCodePoint)
+            && (__other.keyCode == keyCode)
+            && (__other.scanCode == scanCode)
+            && (__other.metaState == metaState);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(flags, codePoint, plainCodePoint, keyCode, scanCode, metaState);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(
+            flags,
+            codePoint,
+            plainCodePoint,
+            keyCode,
+            scanCode,
+            metaState
+        );
 }
-

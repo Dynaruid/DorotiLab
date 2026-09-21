@@ -44,7 +44,7 @@ public enum DismissDirection
     startToEnd,
     up,
     down,
-    none
+    none,
 }
 
 public class Dismissible : StatefulWidget
@@ -57,17 +57,36 @@ public class Dismissible : StatefulWidget
     public virtual Action<DismissDirection>? onDismissed { get; private set; }
     public virtual DismissDirection direction { get; private set; } = default!;
     public virtual Duration? resizeDuration { get; private set; }
-    public virtual DartMap<DismissDirection, double> dismissThresholds { get; private set; } = default!;
+    public virtual DartMap<DismissDirection, double> dismissThresholds { get; private set; } =
+        default!;
     public virtual Duration movementDuration { get; private set; } = default!;
     public virtual double crossAxisEndOffset { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual HitTestBehavior behavior { get; private set; } = default!;
     public virtual Action<DismissUpdateDetails>? onUpdate { get; private set; }
 
-    public Dismissible(Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, Func<DismissDirection, Future<bool?>>? confirmDismiss = null, Action? onResize = null, Action<DismissUpdateDetails>? onUpdate = null, Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, DragStartBehavior dragStartBehavior = DragStartBehavior.start, HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
+    public Dismissible(
+        Key key,
+        Widget child,
+        Widget? background = null,
+        Widget? secondaryBackground = null,
+        Func<DismissDirection, Future<bool?>>? confirmDismiss = null,
+        Action? onResize = null,
+        Action<DismissUpdateDetails>? onUpdate = null,
+        Action<DismissDirection>? onDismissed = null,
+        DismissDirection direction = DismissDirection.horizontal,
+        Duration? resizeDuration = null,
+        DartMap<DismissDirection, double> dismissThresholds = default!,
+        Duration? movementDuration = null,
+        double crossAxisEndOffset = 0.0,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        HitTestBehavior behavior = HitTestBehavior.opaque
+    )
+        : base(key: key)
     {
         Duration? __resizeDuration = resizeDuration ?? Duration.Create(milliseconds: 300);
-        DartMap<DismissDirection, double> __dismissThresholds = dismissThresholds ?? new DartMap<DismissDirection, double>();
+        DartMap<DismissDirection, double> __dismissThresholds =
+            dismissThresholds ?? new DartMap<DismissDirection, double>();
         Duration __movementDuration = movementDuration ?? Duration.Create(milliseconds: 200);
         this.child = child;
         this.background = background;
@@ -86,7 +105,8 @@ public class Dismissible : StatefulWidget
         System.Diagnostics.Debug.Assert((secondaryBackground is null) || (background is not null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DismissibleState__dismissible());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DismissibleState__dismissible());
 }
 
 public class DismissUpdateDetails
@@ -96,14 +116,18 @@ public class DismissUpdateDetails
     public virtual bool previousReached { get; private set; } = default!;
     public virtual double progress { get; private set; } = default!;
 
-    public DismissUpdateDetails(DismissDirection direction = DismissDirection.horizontal, bool reached = false, bool previousReached = false, double progress = 0.0)
+    public DismissUpdateDetails(
+        DismissDirection direction = DismissDirection.horizontal,
+        bool reached = false,
+        bool previousReached = false,
+        double progress = 0.0
+    )
     {
         this.direction = direction;
         this.reached = reached;
         this.previousReached = previousReached;
         this.progress = progress;
     }
-
 }
 
 internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
@@ -111,7 +135,8 @@ internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
     public virtual Axis axis { get; private set; } = default!;
     public virtual Animation<Offset> moveAnimation { get; private set; } = default!;
 
-    internal _DismissibleClipper__dismissible(Axis axis, Animation<Offset> moveAnimation) : base(reclip: moveAnimation)
+    internal _DismissibleClipper__dismissible(Axis axis, Animation<Offset> moveAnimation)
+        : base(reclip: moveAnimation)
     {
         this.axis = axis;
         this.moveAnimation = moveAnimation;
@@ -122,23 +147,23 @@ internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
         switch (axis)
         {
             case Axis.horizontal:
+            {
+                double offset = moveAnimation.value.dx * size.width;
+                if (offset < 0L)
                 {
-                    double offset = moveAnimation.value.dx * size.width;
-                    if (offset < 0L)
-                    {
-                        return Rect.fromLTRB(size.width + offset, 0.0, size.width, size.height);
-                    }
-                    return Rect.fromLTRB(0.0, 0.0, offset, size.height);
+                    return Rect.fromLTRB(size.width + offset, 0.0, size.width, size.height);
                 }
+                return Rect.fromLTRB(0.0, 0.0, offset, size.height);
+            }
             case Axis.vertical:
+            {
+                double offsetLocal = moveAnimation.value.dy * size.height;
+                if (offsetLocal < 0L)
                 {
-                    double offsetLocal = moveAnimation.value.dy * size.height;
-                    if (offsetLocal < 0L)
-                    {
-                        return Rect.fromLTRB(0.0, size.height + offsetLocal, size.width, size.height);
-                    }
-                    return Rect.fromLTRB(0.0, 0.0, size.width, offsetLocal);
+                    return Rect.fromLTRB(0.0, size.height + offsetLocal, size.width, size.height);
                 }
+                return Rect.fromLTRB(0.0, 0.0, size.width, offsetLocal);
+            }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
@@ -146,23 +171,27 @@ internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
     }
 
     public override Rect getApproximateClipRect(Size size) => getClip(size);
+
     public override bool shouldReclip(CustomClipper<Rect> oldClipper)
     {
         var __oldClipper = (_DismissibleClipper__dismissible)oldClipper;
-        return (!Equals(__oldClipper.axis, axis)) || (!Equals(__oldClipper.moveAnimation.value, moveAnimation.value));
+        return (!Equals(__oldClipper.axis, axis))
+            || (!Equals(__oldClipper.moveAnimation.value, moveAnimation.value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal enum _FlingGestureKind__dismissible
 {
     none,
     forward,
-    reverse
+    reverse,
 }
 
-internal class _DismissibleState__dismissible : State<Dismissible>, TickerProviderStateMixin<Dismissible>, AutomaticKeepAliveClientMixin<Dismissible>
+internal class _DismissibleState__dismissible
+    : State<Dismissible>,
+        TickerProviderStateMixin<Dismissible>,
+        AutomaticKeepAliveClientMixin<Dismissible>
 {
     private bool __late__moveController_initialized;
     private AnimationController __late__moveController = default!;
@@ -172,7 +201,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             if (!__late__moveController_initialized)
             {
-                __late__moveController = new AnimationController(duration: widget.movementDuration, vsync: this);
+                __late__moveController = new AnimationController(
+                    duration: widget.movementDuration,
+                    vsync: this
+                );
                 __late__moveController_initialized = true;
             }
             return __late__moveController;
@@ -186,7 +218,8 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     internal virtual bool _dragUnderway { get; set; } = false;
     internal virtual Size? _sizePriorToCollapse { get; set; } = default;
     internal virtual bool _dismissThresholdReached { get; set; } = false;
-    internal virtual GlobalKey<IState> _contentKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _contentKey { get; private set; } =
+        GlobalKey<IState>.Create();
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
@@ -198,36 +231,69 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             _ensureKeepAlive();
         }
-        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _moveController;
-    __cascade.addStatusListener((AnimationStatus __status) => { _ = _handleDismissStatusChanged(__status); });
-    __cascade.addListener(_handleDismissUpdateValueChanged);
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = _moveController;
+                        __cascade.addStatusListener(
+                            (AnimationStatus __status) =>
+                            {
+                                _ = _handleDismissStatusChanged(__status);
+                            }
+                        );
+                        __cascade.addListener(_handleDismissUpdateValueChanged);
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         _updateMoveAnimation();
     }
 
-    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>(_moveController.isAnimating || (_resizeController?.isAnimating ?? false));
+    public virtual bool wantKeepAlive =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _moveController.isAnimating || (_resizeController?.isAnimating ?? false)
+        );
+
     public override void dispose()
     {
         _moveController.dispose();
         _resizeController?.dispose();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -237,9 +303,12 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     {
         get
         {
-            return Equals(widget.direction, DismissDirection.horizontal) || Equals(widget.direction, DismissDirection.endToStart) || Equals(widget.direction, DismissDirection.startToEnd);
+            return Equals(widget.direction, DismissDirection.horizontal)
+                || Equals(widget.direction, DismissDirection.endToStart)
+                || Equals(widget.direction, DismissDirection.startToEnd);
         }
     }
+
     internal virtual DismissDirection _extentToDirection(double extent)
     {
         if (extent == 0.0)
@@ -248,14 +317,27 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
         if (_directionIsXAxis)
         {
-            return Directionality.of(context) switch { TextDirection.rtl when extent < 0L => DismissDirection.startToEnd, TextDirection.ltr when extent > 0L => DismissDirection.startToEnd, TextDirection.rtl => DismissDirection.endToStart, TextDirection.ltr => DismissDirection.endToStart, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return Directionality.of(context) switch
+            {
+                TextDirection.rtl when extent < 0L => DismissDirection.startToEnd,
+                TextDirection.ltr when extent > 0L => DismissDirection.startToEnd,
+                TextDirection.rtl => DismissDirection.endToStart,
+                TextDirection.ltr => DismissDirection.endToStart,
+                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
         return (extent > 0L) ? DismissDirection.down : DismissDirection.up;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual DismissDirection _dismissDirection => _extentToDirection(_dragExtent);
-    internal virtual double _dismissThreshold => DartRuntimePrimitives.ConvertValue<double>(DartCollectionRuntime.NullableMapValue<double>(widget.dismissThresholds, _dismissDirection) ?? DismissibleLibrary._kDismissThreshold);
+    internal virtual double _dismissThreshold =>
+        DartRuntimePrimitives.ConvertValue<double>(
+            DartCollectionRuntime.NullableMapValue<double>(
+                widget.dismissThresholds,
+                _dismissDirection
+            ) ?? DismissibleLibrary._kDismissThreshold
+        );
     internal virtual double _overallDragAxisExtent
     {
         get
@@ -264,6 +346,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             return _directionIsXAxis ? sizeLocal.width : sizeLocal.height;
         }
     }
+
     internal virtual void _handleDragStart(DragStartDetails details)
     {
         if (_confirming)
@@ -299,77 +382,77 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             case DismissDirection.horizontal:
             case DismissDirection.vertical:
+            {
+                _dragExtent += delta;
+                break;
+            }
+            case DismissDirection.up:
+            {
+                if ((_dragExtent + delta) < 0L)
                 {
                     _dragExtent += delta;
-                    break;
                 }
-            case DismissDirection.up:
-                {
-                    if ((_dragExtent + delta) < 0L)
-                    {
-                        _dragExtent += delta;
-                    }
-                    break;
-                }
+                break;
+            }
             case DismissDirection.down:
+            {
+                if ((_dragExtent + delta) > 0L)
                 {
-                    if ((_dragExtent + delta) > 0L)
-                    {
-                        _dragExtent += delta;
-                    }
-                    break;
+                    _dragExtent += delta;
                 }
+                break;
+            }
             case DismissDirection.endToStart:
+            {
+                switch (Directionality.of(context))
                 {
-                    switch (Directionality.of(context))
+                    case TextDirection.rtl:
                     {
-                        case TextDirection.rtl:
-                            {
-                                if ((_dragExtent + delta) > 0L)
-                                {
-                                    _dragExtent += delta;
-                                }
-                                break;
-                            }
-                        case TextDirection.ltr:
-                            {
-                                if ((_dragExtent + delta) < 0L)
-                                {
-                                    _dragExtent += delta;
-                                }
-                                break;
-                            }
+                        if ((_dragExtent + delta) > 0L)
+                        {
+                            _dragExtent += delta;
+                        }
+                        break;
                     }
-                    break;
+                    case TextDirection.ltr:
+                    {
+                        if ((_dragExtent + delta) < 0L)
+                        {
+                            _dragExtent += delta;
+                        }
+                        break;
+                    }
                 }
+                break;
+            }
             case DismissDirection.startToEnd:
+            {
+                switch (Directionality.of(context))
                 {
-                    switch (Directionality.of(context))
+                    case TextDirection.rtl:
                     {
-                        case TextDirection.rtl:
-                            {
-                                if ((_dragExtent + delta) < 0L)
-                                {
-                                    _dragExtent += delta;
-                                }
-                                break;
-                            }
-                        case TextDirection.ltr:
-                            {
-                                if ((_dragExtent + delta) > 0L)
-                                {
-                                    _dragExtent += delta;
-                                }
-                                break;
-                            }
+                        if ((_dragExtent + delta) < 0L)
+                        {
+                            _dragExtent += delta;
+                        }
+                        break;
                     }
-                    break;
+                    case TextDirection.ltr:
+                    {
+                        if ((_dragExtent + delta) > 0L)
+                        {
+                            _dragExtent += delta;
+                        }
+                        break;
+                    }
                 }
+                break;
+            }
             case DismissDirection.none:
-                {
-                    _dragExtent = 0;
-                    break;
-                }
+            {
+                _dragExtent = 0;
+                break;
+            }
         }
         if (Math.Sign(oldDragExtent) != Math.Sign(_dragExtent))
         {
@@ -390,7 +473,12 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             bool oldDismissThresholdReached = _dismissThresholdReached;
             _dismissThresholdReached = _moveController.value > _dismissThreshold;
-            var details = new DismissUpdateDetails(direction: _dismissDirection, reached: _dismissThresholdReached, previousReached: oldDismissThresholdReached, progress: _moveController.value);
+            var details = new DismissUpdateDetails(
+                direction: _dismissDirection,
+                reached: _dismissThresholdReached,
+                previousReached: oldDismissThresholdReached,
+                progress: _moveController.value
+            );
             widget.onUpdate!(details);
         }
     }
@@ -398,7 +486,14 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     internal virtual void _updateMoveAnimation()
     {
         double endLocal = Math.Sign(_dragExtent);
-        _moveAnimation = _moveController.drive(new Tween<Offset>(begin: Offset.zero, end: _directionIsXAxis ? new Offset(endLocal, widget.crossAxisEndOffset) : new Offset(widget.crossAxisEndOffset, endLocal)));
+        _moveAnimation = _moveController.drive(
+            new Tween<Offset>(
+                begin: Offset.zero,
+                end: _directionIsXAxis
+                    ? new Offset(endLocal, widget.crossAxisEndOffset)
+                    : new Offset(widget.crossAxisEndOffset, endLocal)
+            )
+        );
     }
 
     internal virtual _FlingGestureKind__dismissible _describeFlingGesture(Velocity velocity)
@@ -412,7 +507,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         DismissDirection flingDirection = default!;
         if (_directionIsXAxis)
         {
-            if (((vx.abs() - vy.abs()) < DismissibleLibrary._kMinFlingVelocityDelta) || (vx.abs() < DismissibleLibrary._kMinFlingVelocity))
+            if (
+                ((vx.abs() - vy.abs()) < DismissibleLibrary._kMinFlingVelocityDelta)
+                || (vx.abs() < DismissibleLibrary._kMinFlingVelocity)
+            )
             {
                 return _FlingGestureKind__dismissible.none;
             }
@@ -421,7 +519,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
         else
         {
-            if (((vy.abs() - vx.abs()) < DismissibleLibrary._kMinFlingVelocityDelta) || (vy.abs() < DismissibleLibrary._kMinFlingVelocity))
+            if (
+                ((vy.abs() - vx.abs()) < DismissibleLibrary._kMinFlingVelocityDelta)
+                || (vy.abs() < DismissibleLibrary._kMinFlingVelocity)
+            )
             {
                 return _FlingGestureKind__dismissible.none;
             }
@@ -448,49 +549,55 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             DartRuntimePrimitives.Ignore(_handleMoveCompleted());
             return;
         }
-        double flingVelocity = _directionIsXAxis ? details.velocity.pixelsPerSecond.dx : details.velocity.pixelsPerSecond.dy;
+        double flingVelocity = _directionIsXAxis
+            ? details.velocity.pixelsPerSecond.dx
+            : details.velocity.pixelsPerSecond.dy;
         switch (_describeFlingGesture(details.velocity))
         {
             case _FlingGestureKind__dismissible.forward:
+            {
+                DartRuntimePrimitives.Assert(() => _dragExtent != 0.0);
+                DartRuntimePrimitives.Assert(() => !_moveController.isDismissed);
+                if (_dismissThreshold >= 1.0)
                 {
-                    DartRuntimePrimitives.Assert(() => _dragExtent != 0.0);
-                    DartRuntimePrimitives.Assert(() => !_moveController.isDismissed);
-                    if (_dismissThreshold >= 1.0)
+                    _moveController.reverse();
+                    break;
+                }
+                _dragExtent = Math.Sign(flingVelocity);
+                _moveController.fling(
+                    velocity: flingVelocity.abs() * DismissibleLibrary._kFlingVelocityScale
+                );
+                break;
+            }
+            case _FlingGestureKind__dismissible.reverse:
+            {
+                DartRuntimePrimitives.Assert(() => _dragExtent != 0.0);
+                DartRuntimePrimitives.Assert(() => !_moveController.isDismissed);
+                _dragExtent = Math.Sign(flingVelocity);
+                _moveController.fling(
+                    velocity: -flingVelocity.abs() * DismissibleLibrary._kFlingVelocityScale
+                );
+                break;
+            }
+            case _FlingGestureKind__dismissible.none:
+            {
+                if (!_moveController.isDismissed)
+                {
+                    if (_moveController.value > _dismissThreshold)
+                    {
+                        _moveController.forward();
+                    }
+                    else
                     {
                         _moveController.reverse();
-                        break;
                     }
-                    _dragExtent = Math.Sign(flingVelocity);
-                    _moveController.fling(velocity: flingVelocity.abs() * DismissibleLibrary._kFlingVelocityScale);
-                    break;
                 }
-            case _FlingGestureKind__dismissible.reverse:
-                {
-                    DartRuntimePrimitives.Assert(() => _dragExtent != 0.0);
-                    DartRuntimePrimitives.Assert(() => !_moveController.isDismissed);
-                    _dragExtent = Math.Sign(flingVelocity);
-                    _moveController.fling(velocity: -flingVelocity.abs() * DismissibleLibrary._kFlingVelocityScale);
-                    break;
-                }
-            case _FlingGestureKind__dismissible.none:
-                {
-                    if (!_moveController.isDismissed)
-                    {
-                        if (_moveController.value > _dismissThreshold)
-                        {
-                            _moveController.forward();
-                        }
-                        else
-                        {
-                            _moveController.reverse();
-                        }
-                    }
-                    break;
-                }
+                break;
+            }
         }
     }
 
-    internal async virtual Future _handleDismissStatusChanged(AnimationStatus status)
+    internal virtual async Future _handleDismissStatusChanged(AnimationStatus status)
     {
         if (AnimationStatusMembers.isCompleted(status) && !_dragUnderway)
         {
@@ -502,7 +609,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
     }
 
-    internal async virtual Future _handleMoveCompleted()
+    internal virtual async Future _handleMoveCompleted()
     {
         if (_dismissThreshold >= 1.0)
         {
@@ -523,7 +630,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
     }
 
-    internal async virtual Future<bool> _confirmStartResizeAnimation()
+    internal virtual async Future<bool> _confirmStartResizeAnimation()
     {
         if (widget.confirmDismiss is not null)
         {
@@ -557,18 +664,27 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
         else
         {
-            _resizeController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: widget.resizeDuration, vsync: this);
-    __cascade.addListener(_handleResizeProgressChanged);
-    __cascade.addStatusListener((status) => updateKeepAlive());
-    return __cascade;
-}))();
+            _resizeController = (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = new AnimationController(
+                            duration: widget.resizeDuration,
+                            vsync: this
+                        );
+                        __cascade.addListener(_handleResizeProgressChanged);
+                        __cascade.addStatusListener((status) => updateKeepAlive());
+                        return __cascade;
+                    }
+                )
+            )();
             _resizeController!.forward();
             setState(() =>
             {
                 _sizePriorToCollapse = context.size;
-                _resizeAnimation = _resizeController!.drive(new CurveTween(curve: DismissibleLibrary._kResizeTimeCurve)).drive(new Tween<double>(begin: 1.0, end: 0.0));
+                _resizeAnimation = _resizeController!
+                    .drive(new CurveTween(curve: DismissibleLibrary._kResizeTimeCurve))
+                    .drive(new Tween<double>(begin: 1.0, end: 0.0));
             });
         }
     }
@@ -591,12 +707,17 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             _ensureKeepAlive();
         }
-        DartRuntimePrimitives.Assert(() => !_directionIsXAxis || DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() =>
+            !_directionIsXAxis || DebugLibrary.debugCheckHasDirectionality(context)
+        );
         Widget? backgroundLocal = widget.background;
         if (widget.secondaryBackground is not null)
         {
             DismissDirection directionLocal = _dismissDirection;
-            if (Equals(directionLocal, DismissDirection.endToStart) || Equals(directionLocal, DismissDirection.up))
+            if (
+                Equals(directionLocal, DismissDirection.endToStart)
+                || Equals(directionLocal, DismissDirection.up)
+            )
             {
                 backgroundLocal = widget.secondaryBackground;
             }
@@ -604,27 +725,63 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         if (_resizeAnimation is not null)
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (!Equals(_resizeAnimation!.status, AnimationStatus.forward))
                 {
-                    if (!Equals(_resizeAnimation!.status, AnimationStatus.forward))
-                    {
-                        DartRuntimePrimitives.Assert(() => _resizeAnimation!.isCompleted);
-                        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A dismissed Dismissible widget is still part of the tree."), new ErrorHint("Make sure to implement the onDismissed handler and to immediately remove the Dismissible " + "widget from the application once that handler has fired.") }));
-                    }
-                    return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
-            return new SizeTransition(sizeFactor: _resizeAnimation!, axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal, child: new SizedBox(width: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).width, height: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).height, child: backgroundLocal));
+                    DartRuntimePrimitives.Assert(() => _resizeAnimation!.isCompleted);
+                    throw DartRuntimePrimitives.AsException(
+                        new FlutterError(
+                            new List<DiagnosticsNode>
+                            {
+                                new ErrorSummary(
+                                    "A dismissed Dismissible widget is still part of the tree."
+                                ),
+                                new ErrorHint(
+                                    "Make sure to implement the onDismissed handler and to immediately remove the Dismissible "
+                                        + "widget from the application once that handler has fired."
+                                ),
+                            }
+                        )
+                    );
+                }
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
+            return new SizeTransition(
+                sizeFactor: _resizeAnimation!,
+                axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal,
+                child: new SizedBox(
+                    width: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).width,
+                    height: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).height,
+                    child: backgroundLocal
+                )
+            );
         }
-        Widget content = new SlideTransition(position: _moveAnimation, child: new KeyedSubtree(key: _contentKey, child: widget.child));
+        Widget content = new SlideTransition(
+            position: _moveAnimation,
+            child: new KeyedSubtree(key: _contentKey, child: widget.child)
+        );
         if (backgroundLocal is not null)
         {
-            content = DartRuntimePrimitives.ConvertValue<Widget>(new Stack(children: new List<Widget> { content }));
+            content = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Stack(children: new List<Widget> { content })
+            );
         }
         if (Equals(widget.direction, DismissDirection.none))
         {
             return content;
         }
-        return new GestureDetector(onHorizontalDragStart: _directionIsXAxis ? _handleDragStart : null, onHorizontalDragUpdate: _directionIsXAxis ? _handleDragUpdate : null, onHorizontalDragEnd: _directionIsXAxis ? _handleDragEnd : null, onVerticalDragStart: _directionIsXAxis ? null : _handleDragStart, onVerticalDragUpdate: _directionIsXAxis ? null : _handleDragUpdate, onVerticalDragEnd: _directionIsXAxis ? null : _handleDragEnd, behavior: widget.behavior, dragStartBehavior: widget.dragStartBehavior, child: content);
+        return new GestureDetector(
+            onHorizontalDragStart: _directionIsXAxis ? _handleDragStart : null,
+            onHorizontalDragUpdate: _directionIsXAxis ? _handleDragUpdate : null,
+            onHorizontalDragEnd: _directionIsXAxis ? _handleDragEnd : null,
+            onVerticalDragStart: _directionIsXAxis ? null : _handleDragStart,
+            onVerticalDragUpdate: _directionIsXAxis ? null : _handleDragUpdate,
+            onVerticalDragEnd: _directionIsXAxis ? null : _handleDragEnd,
+            behavior: widget.behavior,
+            dragStartBehavior: widget.dragStartBehavior,
+            child: content
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -637,13 +794,23 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -692,7 +859,16 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
 
     public virtual void _ensureKeepAlive()
@@ -734,5 +910,4 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
         base.deactivate();
     }
-
 }

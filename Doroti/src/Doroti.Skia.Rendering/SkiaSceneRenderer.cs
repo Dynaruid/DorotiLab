@@ -9,13 +9,13 @@ using UiPath = Doroti.Ui.Path;
 
 namespace Doroti.Skia.Rendering;
 
-public sealed partial class SkiaSceneRenderer :
-    ISceneHostCapability,
-    IParagraphHostCapability,
-    IFontHostCapability,
-    IImageHostCapability,
-    ISemanticsHostCapability,
-    IDisposable
+public sealed partial class SkiaSceneRenderer
+    : ISceneHostCapability,
+        IParagraphHostCapability,
+        IFontHostCapability,
+        IImageHostCapability,
+        ISemanticsHostCapability,
+        IDisposable
 {
     private const int PictureRasterWarmupFrames = 2;
     private const int PictureRasterComplexityThreshold = 8;
@@ -42,10 +42,12 @@ public sealed partial class SkiaSceneRenderer :
     private readonly object _paintGate = new();
     private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
-    private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache =
-        new(ReferenceEqualityComparer.Instance);
-    private readonly Dictionary<object, PictureRasterWarmup> _pictureRasterWarmups =
-        new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache = new(
+        ReferenceEqualityComparer.Instance
+    );
+    private readonly Dictionary<object, PictureRasterWarmup> _pictureRasterWarmups = new(
+        ReferenceEqualityComparer.Instance
+    );
     private readonly LinkedList<object> _pictureRasterWarmupOrder = new();
     private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
@@ -95,7 +97,8 @@ public sealed partial class SkiaSceneRenderer :
         string runtimeEffectBackend,
         string diagnosticsBackend,
         bool enablePictureRasterCache = true,
-        SkiaFallbackFontCollection? fallbackFonts = null)
+        SkiaFallbackFontCollection? fallbackFonts = null
+    )
     {
         _viewId = viewId;
         _host = host;
@@ -114,7 +117,11 @@ public sealed partial class SkiaSceneRenderer :
     }
 
     private Action<SemanticsActionEvent>? _action;
-    public event Action<SemanticsActionEvent>? Action { add => _action += value; remove => _action -= value; }
+    public event Action<SemanticsActionEvent>? Action
+    {
+        add => _action += value;
+        remove => _action -= value;
+    }
 
     /// <summary>
     /// Observes terminal native paint submissions.  It is intentionally a
@@ -125,7 +132,13 @@ public sealed partial class SkiaSceneRenderer :
 
     /// <summary>Optional native compositor entry point, called under the render lock after exact-frame validation.
     /// The host must draw every raster part and retain native resources until its GPU work retires.</summary>
-    public Action<SKCanvas, IReadOnlyList<SceneCommand>, DorotiFrameDescriptor, int, int>? PlatformScenePainter { get; set; }
+    public Action<
+        SKCanvas,
+        IReadOnlyList<SceneCommand>,
+        DorotiFrameDescriptor,
+        int,
+        int
+    >? PlatformScenePainter { get; set; }
     public SKColor PlatformBackgroundColor => _backgroundColor;
 
     public SkiaFrameDiagnostics Diagnostics
@@ -134,29 +147,61 @@ public sealed partial class SkiaSceneRenderer :
         {
             var imageFilterSurfaces = DorotiSkiaImageFilterRenderer.Diagnostics;
             lock (_gate)
-                return new(_submitted, _presented, _replayed, _failed, _contextGeneration,
-                    _host.SurfaceGeneration, _pendingFrame is not null,
+            {
+                return new(
+                    _submitted,
+                    _presented,
+                    _replayed,
+                    _failed,
+                    _contextGeneration,
+                    _host.SurfaceGeneration,
+                    _pendingFrame is not null,
                     Volatile.Read(ref _shaderImageFiltersRendered),
-                    _diagnosticsBackend, _superseded, _dropped,
-                    _host.InputSequence, _lastSubmittedInputSequence, _lastPresentedInputSequence,
-                    imageFilterSurfaces.Created, imageFilterSurfaces.Reused, imageFilterSurfaces.Active,
-                    imageFilterSurfaces.CacheHits, imageFilterSurfaces.CacheMisses,
+                    _diagnosticsBackend,
+                    _superseded,
+                    _dropped,
+                    _host.InputSequence,
+                    _lastSubmittedInputSequence,
+                    _lastPresentedInputSequence,
+                    imageFilterSurfaces.Created,
+                    imageFilterSurfaces.Reused,
+                    imageFilterSurfaces.Active,
+                    imageFilterSurfaces.CacheHits,
+                    imageFilterSurfaces.CacheMisses,
                     Volatile.Read(ref _pictureRasterCacheHits),
                     Volatile.Read(ref _pictureRasterCacheMisses),
                     Volatile.Read(ref _pictureRasterCacheEntries),
-                    _frameTrace.Snapshot(), _sceneAccepted, _causalPaintAttempts,
+                    _frameTrace.Snapshot(),
+                    _sceneAccepted,
+                    _causalPaintAttempts,
                     _terminalLedger.Diagnostics,
-                    new(_pictureRasterCacheMisses, _promotionMicroseconds, _promotionMaximumMicroseconds,
-                        _paragraphCount, _paragraphMicroseconds, _pictureRasterWarmups.Count,
-                        _pictureRasterPixels, _textRenderResources.Count,
-                        _pictureCommandHits, _pictureCommandRecordings, _pictureCommandCache.Count, _pictureCommandCount, _pictureCommandBytes));
+                    new(
+                        _pictureRasterCacheMisses,
+                        _promotionMicroseconds,
+                        _promotionMaximumMicroseconds,
+                        _paragraphCount,
+                        _paragraphMicroseconds,
+                        _pictureRasterWarmups.Count,
+                        _pictureRasterPixels,
+                        _textRenderResources.Count,
+                        _pictureCommandHits,
+                        _pictureCommandRecordings,
+                        _pictureCommandCache.Count,
+                        _pictureCommandCount,
+                        _pictureCommandBytes
+                    )
+                );
+            }
         }
     }
 
     public void AttachFrameworkTrace(DorotiFrameTrace frameTrace)
     {
         ArgumentNullException.ThrowIfNull(frameTrace);
-        lock (_gate) _frameTrace = frameTrace;
+        lock (_gate)
+        {
+            _frameTrace = frameTrace;
+        }
     }
 
     public void AttachSurface(Action invalidate)
@@ -175,12 +220,21 @@ public sealed partial class SkiaSceneRenderer :
                 hasFrame = _pendingFrame is not null || _presentedFrame is not null;
             }
             DorotiSkiaRuntimeEffects.InvalidateContext(
-                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
+                RuntimeEffectBackend,
+                contextGeneration,
+                _runtimeEffectContextOwner
+            );
             DorotiSkiaImageFilterRenderer.InvalidateContext(
-                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
+                RuntimeEffectBackend,
+                contextGeneration,
+                _runtimeEffectContextOwner
+            );
             ClearPictureRasterCache();
         }
-        if (hasFrame) invalidate();
+        if (hasFrame)
+        {
+            invalidate();
+        }
     }
 
     /// <summary>
@@ -194,7 +248,10 @@ public sealed partial class SkiaSceneRenderer :
         lock (_paintGate)
         {
             DorotiSkiaImageFilterRenderer.InvalidateSurface(
-                RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
+                RuntimeEffectBackend,
+                _contextGeneration,
+                _runtimeEffectContextOwner
+            );
             ClearPictureRasterCache();
         }
     }
@@ -215,10 +272,20 @@ public sealed partial class SkiaSceneRenderer :
                 contextGeneration = _contextGeneration;
             }
             DorotiSkiaRuntimeEffects.InvalidateContext(
-                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
+                RuntimeEffectBackend,
+                contextGeneration,
+                _runtimeEffectContextOwner
+            );
             DorotiSkiaImageFilterRenderer.InvalidateContext(
-                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
-            foreach (var filter in _imageFilterResources.Values) filter.Dispose();
+                RuntimeEffectBackend,
+                contextGeneration,
+                _runtimeEffectContextOwner
+            );
+            foreach (var filter in _imageFilterResources.Values)
+            {
+                filter.Dispose();
+            }
+
             _imageFilterResources.Clear();
             ClearPictureRasterCache();
         }
@@ -231,26 +298,44 @@ public sealed partial class SkiaSceneRenderer :
     public void FailOutstandingGpuPaints(string reason)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         List<SkiaFrameReceipt> receipts = [];
         lock (_gate)
         {
             foreach (var pair in _rasterizedFrames.ToArray())
             {
                 var frame = pair.Value;
-                if (MarkTerminal(frame, DorotiFrameTerminal.failed, reason, _host.SurfaceGeneration))
+                if (
+                    MarkTerminal(frame, DorotiFrameTerminal.failed, reason, _host.SurfaceGeneration)
+                )
                 {
                     var completion = new SkiaPaintCompletion(
-                        frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
-                        IsNewFrame: true, frame.Descriptor);
-                    receipts.Add(CreateFrameReceipt(
-                        completion, DorotiFrameTerminal.failed,
-                        SkiaPaintDisposition.exact, reason));
+                        frame.InputSequence,
+                        frame.SceneSequence,
+                        _host.SurfaceGeneration,
+                        IsNewFrame: true,
+                        frame.Descriptor
+                    );
+                    receipts.Add(
+                        CreateFrameReceipt(
+                            completion,
+                            DorotiFrameTerminal.failed,
+                            SkiaPaintDisposition.exact,
+                            reason
+                        )
+                    );
                 }
             }
             _rasterizedFrames.Clear();
         }
-        foreach (var receipt in receipts) PublishFrameReceipt(receipt);
+        foreach (var receipt in receipts)
+        {
+            PublishFrameReceipt(receipt);
+        }
     }
 
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
@@ -260,8 +345,16 @@ public sealed partial class SkiaSceneRenderer :
         var scene = submission.Scene;
         ArgumentNullException.ThrowIfNull(scene);
         if (viewId != _viewId || scene.viewId != _viewId)
-            throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsScene, viewId, invocation,
-                "scene/view ownership mismatch", _targetIdentity);
+        {
+            throw new DorotiCapabilityException(
+                DorotiCapabilityIds.GraphicsScene,
+                viewId,
+                invocation,
+                "scene/view ownership mismatch",
+                _targetIdentity
+            );
+        }
+
         Action? invalidate;
         var timestamp = DorotiFrameClock.Now;
         lock (_gate)
@@ -275,14 +368,21 @@ public sealed partial class SkiaSceneRenderer :
                 _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.dropped);
                 submission.FrameTransaction?.TryComplete(
                     DorotiFrameTerminal.dropped,
-                    "scene submitted outside a framework frame");
+                    "scene submitted outside a framework frame"
+                );
                 _dropped++;
-                _frameTrace.Record(DorotiFramePhase.dropped, _viewId, timestamp,
-                    inputSequence, sceneSequence, _host.SurfaceGeneration,
+                _frameTrace.Record(
+                    DorotiFramePhase.dropped,
+                    _viewId,
+                    timestamp,
+                    inputSequence,
+                    sceneSequence,
+                    _host.SurfaceGeneration,
                     $"{DorotiFrameMismatch.missingBuildToken}: scene submitted outside a framework frame",
                     resizeTargetGeneration: _host.ViewEpoch.ResizeTargetGeneration,
                     metricsGeneration: _host.ViewEpoch.MetricsGeneration,
-                    contextGeneration: _contextGeneration);
+                    contextGeneration: _contextGeneration
+                );
                 return;
             }
             // The producer hands raster an immutable command array. It never
@@ -297,44 +397,63 @@ public sealed partial class SkiaSceneRenderer :
                 _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.failed);
                 submission.FrameTransaction?.TryComplete(
                     DorotiFrameTerminal.failed,
-                    $"scene transaction admission failed: {exception.Message}");
+                    $"scene transaction admission failed: {exception.Message}"
+                );
                 throw;
             }
             var incoming = new SceneFrame(
-                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands,
-                submission.FrameTransaction);
+                sceneSequence,
+                inputSequence,
+                timestamp,
+                descriptor,
+                scene.Commands,
+                submission.FrameTransaction
+            );
             if (_pendingFrame is { } pending)
             {
                 if (descriptor.CompareAdmissionTo(pending.Descriptor) < 0)
                 {
-                    MarkTerminal(incoming, DorotiFrameTerminal.superseded,
-                        "older viewport epoch cannot replace pending scene");
+                    MarkTerminal(
+                        incoming,
+                        DorotiFrameTerminal.superseded,
+                        "older viewport epoch cannot replace pending scene"
+                    );
                     return;
                 }
-                MarkTerminal(pending, DorotiFrameTerminal.superseded,
-                    "latest immutable scene replaced before raster");
+                MarkTerminal(
+                    pending,
+                    DorotiFrameTerminal.superseded,
+                    "latest immutable scene replaced before raster"
+                );
             }
             _pendingFrame = incoming;
             invalidate = _invalidate;
-            _frameTrace.Record(DorotiFramePhase.sceneSubmitted, _viewId, timestamp,
-                inputSequence, sceneSequence, _host.SurfaceGeneration, invocation.ElementId,
+            _frameTrace.Record(
+                DorotiFramePhase.sceneSubmitted,
+                _viewId,
+                timestamp,
+                inputSequence,
+                sceneSequence,
+                _host.SurfaceGeneration,
+                invocation.ElementId,
                 resizeTargetGeneration: descriptor.ResizeTargetGeneration,
                 metricsGeneration: descriptor.MetricsGeneration,
                 frameworkFrameNumber: descriptor.FrameworkFrameNumber,
-                contextGeneration: _contextGeneration);
+                contextGeneration: _contextGeneration
+            );
         }
         invalidate?.Invoke();
     }
 
-    public SkiaPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight)
-        => Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget, causalFrameId: 0).Completion;
+    public SkiaPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight) =>
+        Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget, causalFrameId: 0).Completion;
 
     public SkiaPaintResult Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        DorotiResizeEpoch desiredTarget)
-        => Paint(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId: 0);
+        DorotiResizeEpoch desiredTarget
+    ) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId: 0);
 
     /// <summary>
     /// Rasters an exact immutable target under a host-generated causal frame
@@ -346,18 +465,29 @@ public sealed partial class SkiaSceneRenderer :
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch desiredTarget,
-        long causalFrameId)
+        long causalFrameId
+    )
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(desiredTarget);
-        if (causalFrameId < 0) throw new ArgumentOutOfRangeException(nameof(causalFrameId));
+        if (causalFrameId < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(causalFrameId));
+        }
+
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_paintGate)
         {
             var previousScale = _shadowDeviceScale;
             _shadowDeviceScale = desiredTarget.DeviceScaleY;
-            try { return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId); }
-            finally { _shadowDeviceScale = previousScale; }
+            try
+            {
+                return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId);
+            }
+            finally
+            {
+                _shadowDeviceScale = previousScale;
+            }
         }
     }
 
@@ -366,7 +496,8 @@ public sealed partial class SkiaSceneRenderer :
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch desiredTarget,
-        long causalFrameId)
+        long causalFrameId
+    )
     {
         SceneFrame? frame;
         bool isNewFrame;
@@ -374,8 +505,14 @@ public sealed partial class SkiaSceneRenderer :
         {
             frame = _pendingFrame;
             isNewFrame = frame is not null;
-            if (isNewFrame) _pendingFrame = null;
-            else frame = _presentedFrame;
+            if (isNewFrame)
+            {
+                _pendingFrame = null;
+            }
+            else
+            {
+                frame = _presentedFrame;
+            }
         }
 
         var currentEpoch = _host.ViewEpoch;
@@ -385,14 +522,20 @@ public sealed partial class SkiaSceneRenderer :
             pixelWidth,
             pixelHeight,
             desiredTarget.DeviceScaleX,
-            desiredTarget.DeviceScaleY);
+            desiredTarget.DeviceScaleY
+        );
         if (frame is not null && match is { IsExact: false })
         {
             if (isNewFrame)
             {
                 lock (_gate)
-                    MarkTerminal(frame, DorotiFrameTerminal.superseded,
-                        $"{match.MismatchCode}: {match.Detail}");
+                {
+                    MarkTerminal(
+                        frame,
+                        DorotiFrameTerminal.superseded,
+                        $"{match.MismatchCode}: {match.Detail}"
+                    );
+                }
             }
             return new(SkiaPaintDisposition.superseded, null, frame.Descriptor, match);
         }
@@ -421,37 +564,63 @@ public sealed partial class SkiaSceneRenderer :
             // into physical pixels. Applying host DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
             BeginPictureRasterFrame();
-            DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
-            _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
-                frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
-                isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt,
+            DorotiSkiaImageFilterRenderer.BeginFrame(
+                RuntimeEffectBackend,
+                _contextGeneration,
+                _runtimeEffectContextOwner
+            );
+            _frameTrace.Record(
+                DorotiFramePhase.raster,
+                _viewId,
+                rasterStart,
+                frame.InputSequence,
+                frame.SceneSequence,
+                _host.SurfaceGeneration,
+                isNewFrame ? null : "retained scene replay",
+                rasterStart - frame.SubmittedAt,
                 resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
                 metricsGeneration: frame.Descriptor.MetricsGeneration,
                 frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
                 causalFrameId: causalFrameId,
-                contextGeneration: _contextGeneration);
+                contextGeneration: _contextGeneration
+            );
             canvas.Save();
-            canvas.ClipRect(SKRect.Create(pixelWidth, pixelHeight), SKClipOperation.Intersect, false);
+            canvas.ClipRect(
+                SKRect.Create(pixelWidth, pixelHeight),
+                SKClipOperation.Intersect,
+                false
+            );
             try
             {
                 if (PlatformScenePainter is { } painter)
+                {
                     painter(canvas, frame.Commands, frame.Descriptor, pixelWidth, pixelHeight);
+                }
                 else
+                {
                     DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+                }
             }
             finally
             {
                 canvas.Restore();
             }
             var rasterEnd = DorotiFrameClock.Now;
-            _frameTrace.Record(DorotiFramePhase.rasterEnd, _viewId, rasterEnd,
-                frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
-                "Doroti draw complete", rasterEnd - rasterStart,
+            _frameTrace.Record(
+                DorotiFramePhase.rasterEnd,
+                _viewId,
+                rasterEnd,
+                frame.InputSequence,
+                frame.SceneSequence,
+                _host.SurfaceGeneration,
+                "Doroti draw complete",
+                rasterEnd - rasterStart,
                 resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
                 metricsGeneration: frame.Descriptor.MetricsGeneration,
                 frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
                 causalFrameId: causalFrameId,
-                contextGeneration: _contextGeneration);
+                contextGeneration: _contextGeneration
+            );
 #if !WINDOWS
             canvas.Flush();
 #endif
@@ -463,7 +632,8 @@ public sealed partial class SkiaSceneRenderer :
                     pixelWidth,
                     pixelHeight,
                     desiredTarget.DeviceScaleX,
-                    desiredTarget.DeviceScaleY);
+                    desiredTarget.DeviceScaleY
+                );
             }
             lock (_gate)
             {
@@ -473,20 +643,28 @@ public sealed partial class SkiaSceneRenderer :
                 }
             }
             var completion = new SkiaPaintCompletion(
-                frame.InputSequence, frame.SceneSequence, surfaceGeneration, isNewFrame,
-                frame.Descriptor, causalFrameId);
+                frame.InputSequence,
+                frame.SceneSequence,
+                surfaceGeneration,
+                isNewFrame,
+                frame.Descriptor,
+                causalFrameId
+            );
             return new(
                 isNewFrame ? SkiaPaintDisposition.exact : SkiaPaintDisposition.replay,
                 completion,
                 frame.Descriptor,
-                match);
+                match
+            );
         }
         catch
         {
             lock (_gate)
             {
                 if (isNewFrame)
+                {
                     MarkTerminal(frame, DorotiFrameTerminal.failed, "raster failure");
+                }
             }
             throw;
         }
@@ -494,47 +672,88 @@ public sealed partial class SkiaSceneRenderer :
 
     public void CompletePaint(
         SkiaPaintCompletion completion,
-        DorotiFrameTerminal terminal = DorotiFrameTerminal.presented)
+        DorotiFrameTerminal terminal = DorotiFrameTerminal.presented
+    )
     {
         if (terminal is not DorotiFrameTerminal.presented and not DorotiFrameTerminal.submitted)
+        {
             throw new ArgumentOutOfRangeException(nameof(terminal));
-        if (_disposed) return;
+        }
+
+        if (_disposed)
+        {
+            return;
+        }
+
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (completion.IsNewFrame)
             {
-                if (!_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
+                if (!_rasterizedFrames.Remove(completion.SceneSequence, out var frame))
+                {
+                    return;
+                }
+
                 try
                 {
                     frame.FrameTransaction?.VisibleSurfaceCommitted(
-                        frame.FrameTransaction.VisibleTargetIdentity);
+                        frame.FrameTransaction.VisibleTargetIdentity
+                    );
                 }
                 catch
                 {
-                    MarkTerminal(frame, DorotiFrameTerminal.failed,
-                        "visible surface transaction commit failed", completion.SurfaceGeneration);
+                    MarkTerminal(
+                        frame,
+                        DorotiFrameTerminal.failed,
+                        "visible surface transaction commit failed",
+                        completion.SurfaceGeneration
+                    );
                     throw;
                 }
-                if (!MarkTerminal(frame, terminal, "native frame submitted",
-                    completion.SurfaceGeneration)) return;
+                if (
+                    !MarkTerminal(
+                        frame,
+                        terminal,
+                        "native frame submitted",
+                        completion.SurfaceGeneration
+                    )
+                )
+                {
+                    return;
+                }
+
                 _presentedFrame = frame;
-                receipt = CreateFrameReceipt(completion, terminal,
-                    SkiaPaintDisposition.exact, "new scene crossed the host submission boundary");
+                receipt = CreateFrameReceipt(
+                    completion,
+                    terminal,
+                    SkiaPaintDisposition.exact,
+                    "new scene crossed the host submission boundary"
+                );
             }
             else
             {
                 _replayed++;
-                _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
-                    completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
+                _frameTrace.Record(
+                    DorotiFramePhase.replay,
+                    _viewId,
+                    DorotiFrameClock.Now,
+                    completion.InputSequence,
+                    completion.SceneSequence,
+                    completion.SurfaceGeneration,
                     "fresh native back buffer submitted",
                     resizeTargetGeneration: completion.Descriptor.ResizeTargetGeneration,
                     metricsGeneration: completion.Descriptor.MetricsGeneration,
                     frameworkFrameNumber: completion.Descriptor.FrameworkFrameNumber,
                     causalFrameId: completion.CausalFrameId,
-                    contextGeneration: _contextGeneration);
-                receipt = CreateFrameReceipt(completion, terminal,
-                    SkiaPaintDisposition.replay, "retained scene replay crossed the host submission boundary");
+                    contextGeneration: _contextGeneration
+                );
+                receipt = CreateFrameReceipt(
+                    completion,
+                    terminal,
+                    SkiaPaintDisposition.replay,
+                    "retained scene replay crossed the host submission boundary"
+                );
             }
         }
         PublishFrameReceipt(receipt);
@@ -542,51 +761,120 @@ public sealed partial class SkiaSceneRenderer :
 
     public void FailPaint(SkiaPaintCompletion completion, string reason)
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (!completion.IsNewFrame)
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed,
-                    SkiaPaintDisposition.replay, reason);
-            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
-                MarkTerminal(frame, DorotiFrameTerminal.failed, reason, completion.SurfaceGeneration))
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed,
-                    SkiaPaintDisposition.exact, reason);
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.failed,
+                    SkiaPaintDisposition.replay,
+                    reason
+                );
+            }
+            else if (
+                _rasterizedFrames.Remove(completion.SceneSequence, out var frame)
+                && MarkTerminal(
+                    frame,
+                    DorotiFrameTerminal.failed,
+                    reason,
+                    completion.SurfaceGeneration
+                )
+            )
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.failed,
+                    SkiaPaintDisposition.exact,
+                    reason
+                );
+            }
         }
         PublishFrameReceipt(receipt);
     }
 
     public void SupersedePaint(SkiaPaintCompletion completion, string reason)
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (!completion.IsNewFrame)
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded,
-                    SkiaPaintDisposition.replay, reason);
-            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
-                MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration))
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded,
-                    SkiaPaintDisposition.superseded, reason);
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.superseded,
+                    SkiaPaintDisposition.replay,
+                    reason
+                );
+            }
+            else if (
+                _rasterizedFrames.Remove(completion.SceneSequence, out var frame)
+                && MarkTerminal(
+                    frame,
+                    DorotiFrameTerminal.superseded,
+                    reason,
+                    completion.SurfaceGeneration
+                )
+            )
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.superseded,
+                    SkiaPaintDisposition.superseded,
+                    reason
+                );
+            }
         }
         PublishFrameReceipt(receipt);
     }
 
     public void DropPaint(SkiaPaintCompletion completion, string reason)
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (!completion.IsNewFrame)
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.dropped,
-                    SkiaPaintDisposition.replay, reason);
-            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
-                MarkTerminal(frame, DorotiFrameTerminal.dropped, reason, completion.SurfaceGeneration))
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.dropped,
-                    SkiaPaintDisposition.exact, reason);
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.dropped,
+                    SkiaPaintDisposition.replay,
+                    reason
+                );
+            }
+            else if (
+                _rasterizedFrames.Remove(completion.SceneSequence, out var frame)
+                && MarkTerminal(
+                    frame,
+                    DorotiFrameTerminal.dropped,
+                    reason,
+                    completion.SurfaceGeneration
+                )
+            )
+            {
+                receipt = CreateFrameReceipt(
+                    completion,
+                    DorotiFrameTerminal.dropped,
+                    SkiaPaintDisposition.exact,
+                    reason
+                );
+            }
         }
         PublishFrameReceipt(receipt);
     }
@@ -600,24 +888,43 @@ public sealed partial class SkiaSceneRenderer :
             var textRuns = NormalizeTextRuns(request);
             var advances = MeasureTextRuns(request, textRuns);
             var naturalWidth = advances.Sum();
-            var width = double.IsFinite(request.Width) ? Math.Min(request.Width, naturalWidth) : naturalWidth;
+            var width = double.IsFinite(request.Width)
+                ? Math.Min(request.Width, naturalWidth)
+                : naturalWidth;
             var ascent = 0.0;
             var descent = 0.0;
-            var metricRuns = textRuns.Count == 0
-                ? new[] { new ParagraphTextRun(request.Text, new TextStyle(fontFamily: request.FontFamily, fontSize: request.FontSize)) }
-                : textRuns;
+            var metricRuns =
+                textRuns.Count == 0
+                    ? new[]
+                    {
+                        new ParagraphTextRun(
+                            request.Text,
+                            new TextStyle(
+                                fontFamily: request.FontFamily,
+                                fontSize: request.FontSize
+                            )
+                        ),
+                    }
+                    : textRuns;
             foreach (var run in metricRuns)
             {
                 var style = run.Style;
-                var resources = GetTextRenderResources(style.fontFamily ?? request.FontFamily,
-                    (float)(style.fontSize ?? request.FontSize), SKColors.Black, style);
+                var resources = GetTextRenderResources(
+                    style.fontFamily ?? request.FontFamily,
+                    (float)(style.fontSize ?? request.FontSize),
+                    SKColors.Black,
+                    style
+                );
                 var metrics = resources.Metrics(run.Text);
                 var naturalHeight = metrics.Ascent + metrics.Descent;
-                var lineHeight = style.height is { } multiplier ? (style.fontSize ?? request.FontSize) * multiplier
+                var lineHeight = style.height is { } multiplier
+                    ? (style.fontSize ?? request.FontSize) * multiplier
                     : request.Height ?? naturalHeight;
                 var extra = lineHeight - naturalHeight;
-                var above = style.leadingDistribution == TextLeadingDistribution.even
-                    ? extra / 2 : extra * metrics.Ascent / Math.Max(1, naturalHeight);
+                var above =
+                    style.leadingDistribution == TextLeadingDistribution.even
+                        ? extra / 2
+                        : extra * metrics.Ascent / Math.Max(1, naturalHeight);
                 ascent = Math.Max(ascent, metrics.Ascent + above);
                 descent = Math.Max(descent, metrics.Descent + extra - above);
             }
@@ -630,7 +937,8 @@ public sealed partial class SkiaSceneRenderer :
                 request.FontFamily,
                 request.Color,
                 advances,
-                textRuns)
+                textRuns
+            )
             {
                 NativeAlphabeticBaseline = ascent,
                 LayoutTextAlign = request.TextAlign ?? TextAlign.start,
@@ -643,46 +951,94 @@ public sealed partial class SkiaSceneRenderer :
         }
     }
 
-    public ValueTask<UiImage> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation,
-        CancellationToken cancellationToken = default) =>
-        DecodeSizedAsync(bytes, static (_, _) => null, false, invocation, cancellationToken);
+    public ValueTask<UiImage> DecodeAsync(
+        ReadOnlyMemory<byte> bytes,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    ) => DecodeSizedAsync(bytes, static (_, _) => null, false, invocation, cancellationToken);
 
-    public async ValueTask<UiImage> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
-        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    public async ValueTask<UiImage> DecodeSizedAsync(
+        ReadOnlyMemory<byte> bytes,
+        Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
         using var data = SKData.CreateCopy(bytes.Span);
-        using var codec = SKCodec.Create(data) ?? throw new InvalidDataException("SkiaSharp could not open the image resource.");
+        using var codec =
+            SKCodec.Create(data)
+            ?? throw new InvalidDataException("SkiaSharp could not open the image resource.");
         var original = codec.Info;
-        var target = ImageDecodeSizing.Resolve(original.Width, original.Height, targetSize(original.Width, original.Height), allowUpscaling);
+        var target = ImageDecodeSizing.Resolve(
+            original.Width,
+            original.Height,
+            targetSize(original.Width, original.Height),
+            allowUpscaling
+        );
         // Run the target-size callback on the calling context. Only pixel work
         // moves off-thread on hosts with threads; Web still benefits from scaled decode.
-        return await Task.Run(() =>
-        {
-            var scale = Math.Min(1, Math.Max((double)target.Width / original.Width, (double)target.Height / original.Height));
-            // GetScaledDimensions' float P/Invoke aborts the trimmed .NET 10
-            // WASM runtime. Ask GetPixels to validate the requested scale there;
-            // unsupported codec scales use intrinsic pixels and then resample.
-            var scaled = OperatingSystem.IsBrowser()
-                ? new SKSizeI(Math.Max(1, (int)Math.Round(original.Width * scale)), Math.Max(1, (int)Math.Round(original.Height * scale)))
-                : codec.GetScaledDimensions((float)scale);
-            var info = new SKImageInfo(scaled.Width, scaled.Height, SKColorType.Rgba8888, SKAlphaType.Premul, original.ColorSpace);
-            using var bitmap = DecodePixels(codec, info, original);
-            cancellationToken.ThrowIfCancellationRequested();
-            SKBitmap? resized = null;
-            try
-            {
-                var pixels = bitmap;
-                if (bitmap.Width != target.Width || bitmap.Height != target.Height)
-                    pixels = resized = bitmap.Resize(new SKSizeI(target.Width, target.Height), new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None))
-                        ?? throw new InvalidDataException("SkiaSharp could not resize the decoded image.");
-                pixels.SetImmutable();
-                var handle = new SkiaImageHandle(SKImage.FromBitmap(pixels));
-                return new UiImage(_viewId, target.Width, target.Height, handle.Release) { HostHandle = handle };
-            }
-            finally { resized?.Dispose(); }
-        }, cancellationToken).ConfigureAwait(false);
+        return await Task.Run(
+                () =>
+                {
+                    var scale = Math.Min(
+                        1,
+                        Math.Max(
+                            (double)target.Width / original.Width,
+                            (double)target.Height / original.Height
+                        )
+                    );
+                    // GetScaledDimensions' float P/Invoke aborts the trimmed .NET 10
+                    // WASM runtime. Ask GetPixels to validate the requested scale there;
+                    // unsupported codec scales use intrinsic pixels and then resample.
+                    var scaled = OperatingSystem.IsBrowser()
+                        ? new SKSizeI(
+                            Math.Max(1, (int)Math.Round(original.Width * scale)),
+                            Math.Max(1, (int)Math.Round(original.Height * scale))
+                        )
+                        : codec.GetScaledDimensions((float)scale);
+                    var info = new SKImageInfo(
+                        scaled.Width,
+                        scaled.Height,
+                        SKColorType.Rgba8888,
+                        SKAlphaType.Premul,
+                        original.ColorSpace
+                    );
+                    using var bitmap = DecodePixels(codec, info, original);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    SKBitmap? resized = null;
+                    try
+                    {
+                        var pixels = bitmap;
+                        if (bitmap.Width != target.Width || bitmap.Height != target.Height)
+                        {
+                            pixels = resized =
+                                bitmap.Resize(
+                                    new SKSizeI(target.Width, target.Height),
+                                    new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None)
+                                )
+                                ?? throw new InvalidDataException(
+                                    "SkiaSharp could not resize the decoded image."
+                                );
+                        }
+
+                        pixels.SetImmutable();
+                        var handle = new SkiaImageHandle(SKImage.FromBitmap(pixels));
+                        return new UiImage(_viewId, target.Width, target.Height, handle.Release)
+                        {
+                            HostHandle = handle,
+                        };
+                    }
+                    finally
+                    {
+                        resized?.Dispose();
+                    }
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
     }
 
     private static SKBitmap DecodePixels(SKCodec codec, SKImageInfo requested, SKImageInfo original)
@@ -691,43 +1047,86 @@ public sealed partial class SkiaSceneRenderer :
         try
         {
             var result = codec.GetPixels(requested, bitmap.GetPixels());
-            if (result == SKCodecResult.InvalidScale && (requested.Width != original.Width || requested.Height != original.Height))
+            if (
+                result == SKCodecResult.InvalidScale
+                && (requested.Width != original.Width || requested.Height != original.Height)
+            )
             {
                 bitmap.Dispose();
-                var full = new SKImageInfo(original.Width, original.Height, requested.ColorType, requested.AlphaType, requested.ColorSpace);
+                var full = new SKImageInfo(
+                    original.Width,
+                    original.Height,
+                    requested.ColorType,
+                    requested.AlphaType,
+                    requested.ColorSpace
+                );
                 bitmap = new SKBitmap(full);
                 result = codec.GetPixels(full, bitmap.GetPixels());
             }
             if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
-                throw new InvalidDataException($"SkiaSharp could not decode the image resource: {result}.");
+            {
+                throw new InvalidDataException(
+                    $"SkiaSharp could not decode the image resource: {result}."
+                );
+            }
+
             return bitmap;
         }
-        catch { bitmap.Dispose(); throw; }
+        catch
+        {
+            bitmap.Dispose();
+            throw;
+        }
     }
 
-    public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
-        DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    public ValueTask<UiImage> RasterizeAsync(
+        Picture picture,
+        int width,
+        int height,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
         cancellationToken.ThrowIfCancellationRequested();
         if (width <= 0 || height <= 0 || (long)width * height > int.MaxValue / 4)
+        {
             throw new ArgumentOutOfRangeException(nameof(width));
+        }
+
         lock (_paintGate)
         {
             // Offscreen pictures have their own storage and never borrow the visible swapchain.
             ObjectDisposedException.ThrowIf(_disposed, this);
             using var colorSpace = SKColorSpace.CreateSrgb();
-            using var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul, colorSpace))
+            using var surface =
+                SKSurface.Create(
+                    new SKImageInfo(
+                        width,
+                        height,
+                        SKColorType.Rgba8888,
+                        SKAlphaType.Premul,
+                        colorSpace
+                    )
+                )
                 ?? throw new InvalidOperationException("Skia could not allocate picture storage.");
             surface.Canvas.Clear(SKColors.Transparent);
             var previousScale = _shadowDeviceScale;
             _shadowDeviceScale = 1;
-            try { DrawPicture(surface.Canvas, picture.Commands); }
-            finally { _shadowDeviceScale = previousScale; }
+            try
+            {
+                DrawPicture(surface.Canvas, picture.Commands);
+            }
+            finally
+            {
+                _shadowDeviceScale = previousScale;
+            }
             surface.Canvas.Flush();
             var handle = new SkiaImageHandle(surface.Snapshot());
-            return ValueTask.FromResult(new UiImage(_viewId, width, height, handle.Release) { HostHandle = handle });
+            return ValueTask.FromResult(
+                new UiImage(_viewId, width, height, handle.Release) { HostHandle = handle }
+            );
         }
     }
 
@@ -744,10 +1143,19 @@ public sealed partial class SkiaSceneRenderer :
     public void Update(SemanticsUpdate update, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (!_semanticsEnabled) return;
-        foreach (var node in update.nodes) _semantics[node.id] = node;
+        if (!_semanticsEnabled)
+        {
+            return;
+        }
+
+        foreach (var node in update.nodes)
+        {
+            _semantics[node.id] = node;
+        }
+
         PruneUnreachableSemantics(_semantics);
-        var nodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values, update.viewDevicePixelRatio)
+        var nodes = SemanticsGeometryProjection
+            .ToViewCoordinates(_semantics.Values, update.viewDevicePixelRatio)
             .OrderBy(node => node.indexInParent ?? int.MaxValue)
             .ThenBy(node => node.id)
             .ToArray();
@@ -757,27 +1165,48 @@ public sealed partial class SkiaSceneRenderer :
     private static void PruneUnreachableSemantics(Dictionary<int, SemanticsNodeUpdate> nodes)
     {
         const int rootNodeId = 0;
-        if (!nodes.ContainsKey(rootNodeId)) return;
+        if (!nodes.ContainsKey(rootNodeId))
+        {
+            return;
+        }
+
         var reachable = new HashSet<int>();
         var pending = new Stack<int>();
         pending.Push(rootNodeId);
         while (pending.TryPop(out var nodeId))
         {
-            if (!reachable.Add(nodeId) || !nodes.TryGetValue(nodeId, out var node)) continue;
-            foreach (var childId in node.children) pending.Push(childId);
+            if (!reachable.Add(nodeId) || !nodes.TryGetValue(nodeId, out var node))
+            {
+                continue;
+            }
+
+            foreach (var childId in node.children)
+            {
+                pending.Push(childId);
+            }
         }
         foreach (var staleId in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
+        {
             nodes.Remove(staleId);
+        }
     }
 
-    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default)
+    public ValueTask RegisterFontAsync(
+        ReadOnlyMemory<byte> bytes,
+        string? family,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         lock (_paintGate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             _fallbackFonts.Register(bytes, family);
-            foreach (var resources in _textRenderResources.Values) resources.Dispose();
+            foreach (var resources in _textRenderResources.Values)
+            {
+                resources.Dispose();
+            }
+
             _textRenderResources.Clear();
             ClearPictureRasterCache();
         }
@@ -786,59 +1215,108 @@ public sealed partial class SkiaSceneRenderer :
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         _host.SemanticsAction -= HandleSemanticsAction;
         _host.InputReceived -= HandleInput;
         _host.ConfigurationChanged -= HandleConfigurationChanged;
         lock (_paintGate)
         {
-            DorotiSkiaImageFilterRenderer.ReleaseContext(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
-            DorotiSkiaRuntimeEffects.ReleaseContext(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
+            DorotiSkiaImageFilterRenderer.ReleaseContext(
+                RuntimeEffectBackend,
+                _contextGeneration,
+                _runtimeEffectContextOwner
+            );
+            DorotiSkiaRuntimeEffects.ReleaseContext(
+                RuntimeEffectBackend,
+                _contextGeneration,
+                _runtimeEffectContextOwner
+            );
             lock (_gate)
             {
                 if (_pendingFrame is { } pending)
+                {
                     MarkTerminal(pending, DorotiFrameTerminal.dropped, "renderer disposed");
+                }
+
                 foreach (var frame in _rasterizedFrames.Values.ToArray())
-                    MarkTerminal(frame, DorotiFrameTerminal.dropped, "renderer disposed before present");
+                {
+                    MarkTerminal(
+                        frame,
+                        DorotiFrameTerminal.dropped,
+                        "renderer disposed before present"
+                    );
+                }
+
                 _rasterizedFrames.Clear();
                 _pendingFrame = null;
                 _presentedFrame = null;
                 _invalidate = null;
             }
-            foreach (var resources in _textRenderResources.Values) resources.Dispose();
+            foreach (var resources in _textRenderResources.Values)
+            {
+                resources.Dispose();
+            }
+
             _textRenderResources.Clear();
-            foreach (var filter in _imageFilterResources.Values) filter.Dispose();
+            foreach (var filter in _imageFilterResources.Values)
+            {
+                filter.Dispose();
+            }
+
             _imageFilterResources.Clear();
             ClearPictureRasterCache();
         }
         _semantics.Clear();
-        if (_ownsFallbackFonts) _fallbackFonts.Dispose();
+        if (_ownsFallbackFonts)
+        {
+            _fallbackFonts.Dispose();
+        }
     }
 
     private void HandleSemanticsAction(int nodeId, SemanticsAction action, object? arguments)
     {
-        if (!_disposed) _action?.Invoke(new(_viewId, nodeId, action, arguments));
+        if (!_disposed)
+        {
+            _action?.Invoke(new(_viewId, nodeId, action, arguments));
+        }
     }
 
     private void HandleInput(long sequence, TimeSpan timestamp) =>
-        _frameTrace.Record(DorotiFramePhase.input, _viewId, timestamp, sequence,
-            surfaceGeneration: _host.SurfaceGeneration);
+        _frameTrace.Record(
+            DorotiFramePhase.input,
+            _viewId,
+            timestamp,
+            sequence,
+            surfaceGeneration: _host.SurfaceGeneration
+        );
 
     private void HandleConfigurationChanged(PlatformConfiguration configuration)
     {
-        lock (_paintGate) _backgroundColor = ResolveBackgroundColor(configuration.platformBrightness);
+        lock (_paintGate)
+        {
+            _backgroundColor = ResolveBackgroundColor(configuration.platformBrightness);
+        }
+
         _host.RequestInvalidate();
     }
 
     private SKColor ResolveBackgroundColor(Brightness brightness)
     {
-        var color = brightness == Brightness.dark
-            ? _darkBackgroundColor ?? _lightBackgroundColor ?? new UiColor(0xff141218L)
-            : _lightBackgroundColor ?? new UiColor(0xfffffbfeL);
+        var color =
+            brightness == Brightness.dark
+                ? _darkBackgroundColor ?? _lightBackgroundColor ?? new UiColor(0xff141218L)
+                : _lightBackgroundColor ?? new UiColor(0xfffffbfeL);
         return new SKColor(
-            checked((byte)color.red), checked((byte)color.green),
-            checked((byte)color.blue), checked((byte)color.alpha));
+            checked((byte)color.red),
+            checked((byte)color.green),
+            checked((byte)color.blue),
+            checked((byte)color.alpha)
+        );
     }
 
     private sealed record SceneFrame(
@@ -847,27 +1325,35 @@ public sealed partial class SkiaSceneRenderer :
         TimeSpan SubmittedAt,
         DorotiFrameDescriptor Descriptor,
         IReadOnlyList<SceneCommand> Commands,
-        DorotiFrameTransaction? FrameTransaction);
+        DorotiFrameTransaction? FrameTransaction
+    );
 
     private static SkiaFrameReceipt CreateFrameReceipt(
         SkiaPaintCompletion completion,
         DorotiFrameTerminal terminal,
         SkiaPaintDisposition disposition,
-        string reason) => new(
-        completion.CausalFrameId,
-        completion.InputSequence,
-        completion.SceneSequence,
-        completion.SurfaceGeneration,
-        completion.Descriptor,
-        terminal,
-        DorotiFrameClock.Now,
-        completion.IsNewFrame,
-        disposition,
-        reason);
+        string reason
+    ) =>
+        new(
+            completion.CausalFrameId,
+            completion.InputSequence,
+            completion.SceneSequence,
+            completion.SurfaceGeneration,
+            completion.Descriptor,
+            terminal,
+            DorotiFrameClock.Now,
+            completion.IsNewFrame,
+            disposition,
+            reason
+        );
 
     private void PublishFrameReceipt(SkiaFrameReceipt? receipt)
     {
-        if (receipt is not { } value) return;
+        if (receipt is not { } value)
+        {
+            return;
+        }
+
         Interlocked.Increment(ref _causalPaintAttempts);
         FrameReceipt?.Invoke(value);
     }
@@ -876,13 +1362,19 @@ public sealed partial class SkiaSceneRenderer :
         SceneFrame frame,
         DorotiFrameTerminal terminal,
         string reason,
-        long? surfaceGeneration = null)
+        long? surfaceGeneration = null
+    )
     {
-        if (!_terminalLedger.TryComplete(frame.SceneSequence, terminal)) return false;
+        if (!_terminalLedger.TryComplete(frame.SceneSequence, terminal))
+        {
+            return false;
+        }
+
         frame.FrameTransaction?.TryComplete(terminal, reason);
         var phase = terminal switch
         {
-            DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted => DorotiFramePhase.present,
+            DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted =>
+                DorotiFramePhase.present,
             DorotiFrameTerminal.superseded => DorotiFramePhase.superseded,
             DorotiFrameTerminal.dropped => DorotiFramePhase.dropped,
             _ => DorotiFramePhase.failed,
@@ -907,19 +1399,29 @@ public sealed partial class SkiaSceneRenderer :
                 _failed++;
                 break;
         }
-        _frameTrace.Record(phase, _viewId, DorotiFrameClock.Now,
-            frame.InputSequence, frame.SceneSequence,
+        _frameTrace.Record(
+            phase,
+            _viewId,
+            DorotiFrameClock.Now,
+            frame.InputSequence,
+            frame.SceneSequence,
             surfaceGeneration ?? _host.SurfaceGeneration,
             reason,
             resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
             metricsGeneration: frame.Descriptor.MetricsGeneration,
             frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
-            contextGeneration: _contextGeneration);
+            contextGeneration: _contextGeneration
+        );
         return true;
     }
 
     /// <summary>Replay a planner-produced, balanced raster segment on its render-owner canvas.</summary>
-    public void DrawPlatformRasterSegment(SKCanvas canvas, IReadOnlyList<SceneCommand> commands, int pixelWidth, int pixelHeight)
+    public void DrawPlatformRasterSegment(
+        SKCanvas canvas,
+        IReadOnlyList<SceneCommand> commands,
+        int pixelWidth,
+        int pixelHeight
+    )
     {
         ArgumentNullException.ThrowIfNull(canvas);
         ArgumentNullException.ThrowIfNull(commands);
@@ -930,8 +1432,8 @@ public sealed partial class SkiaSceneRenderer :
         SKCanvas canvas,
         IReadOnlyList<SceneCommand> commands,
         int pixelWidth,
-        int pixelHeight) =>
-        DrawScene(canvas, commands, 0, commands.Count, pixelWidth, pixelHeight);
+        int pixelHeight
+    ) => DrawScene(canvas, commands, 0, commands.Count, pixelWidth, pixelHeight);
 
     private void DrawScene(
         SKCanvas canvas,
@@ -939,16 +1441,29 @@ public sealed partial class SkiaSceneRenderer :
         int start,
         int end,
         int pixelWidth,
-        int pixelHeight)
+        int pixelHeight
+    )
     {
         var restoreCounts = new Stack<int>();
         DrawCommands(commands, start, end);
         if (restoreCounts.Count != 0)
-            throw new InvalidDataException($"Doroti Skia scene has {restoreCounts.Count} unclosed scopes.");
-
-        void DrawCommands(IReadOnlyList<SceneCommand> source, int sourceStart = 0, int sourceEnd = -1)
         {
-            if (sourceEnd < 0) sourceEnd = source.Count;
+            throw new InvalidDataException(
+                $"Doroti Skia scene has {restoreCounts.Count} unclosed scopes."
+            );
+        }
+
+        void DrawCommands(
+            IReadOnlyList<SceneCommand> source,
+            int sourceStart = 0,
+            int sourceEnd = -1
+        )
+        {
+            if (sourceEnd < 0)
+            {
+                sourceEnd = source.Count;
+            }
+
             for (var commandIndex = sourceStart; commandIndex < sourceEnd; commandIndex++)
             {
                 var command = source[commandIndex];
@@ -969,19 +1484,42 @@ public sealed partial class SkiaSceneRenderer :
                         canvas.Save();
                         restoreCounts.Push(1);
                         if (clip.Behavior != Clip.none)
-                            canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, clip.Behavior != Clip.hardEdge);
+                        {
+                            canvas.ClipRect(
+                                ToRect(clip.Rect),
+                                SKClipOperation.Intersect,
+                                clip.Behavior != Clip.hardEdge
+                            );
+                        }
+
                         break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
-                        canvas.Save(); restoreCounts.Push(1);
-                        using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        canvas.Save();
+                        restoreCounts.Push(1);
+                        using (var path = ToPath(clip.RRect))
+                        {
+                            canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        }
+
                         break;
-                    case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
-                        canvas.Save(); restoreCounts.Push(1);
-                        using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                    case "clipRSuperellipse"
+                        when command.HostPayload is SceneClipRSuperellipsePayload clip:
+                        canvas.Save();
+                        restoreCounts.Push(1);
+                        using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse))
+                        {
+                            canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        }
+
                         break;
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
-                        canvas.Save(); restoreCounts.Push(1);
-                        using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        canvas.Save();
+                        restoreCounts.Push(1);
+                        using (var path = ToPath(clip.Path))
+                        {
+                            canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        }
+
                         break;
                     case "transform" when command.HostPayload is SceneTransformPayload transform:
                         canvas.Save();
@@ -989,70 +1527,108 @@ public sealed partial class SkiaSceneRenderer :
                         Concat(canvas, transform.Matrix4);
                         break;
                     case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
-                        using (var paint = new SKPaint { Color = SKColors.White.WithAlpha((byte)Math.Clamp(Math.Round(opacity.Opacity * 255), 0, 255)) })
-                            canvas.SaveLayer(paint);
-                        restoreCounts.Push(1); canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy); break;
-                    case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
-                        canvas.SaveLayer(); restoreCounts.Push(1); break;
-                    case "shaderMask" when command.HostPayload is SceneShaderMaskPayload mask:
+                        using (
+                            var paint = new SKPaint
+                            {
+                                Color = SKColors.White.WithAlpha(
+                                    (byte)Math.Clamp(Math.Round(opacity.Opacity * 255), 0, 255)
+                                ),
+                            }
+                        )
                         {
-                            // A shader mask is a source drawn into the alpha of its already-rendered
-                            // child. Supplying the shader paint to SaveLayer instead applies srcIn
-                            // against the scene behind the child and can fill the entire mask bounds.
-                            var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
-                            var bounds = ToRect(mask.MaskRect);
-                            canvas.SaveLayer(bounds, null);
-                            DrawCommands(source, commandIndex + 1, matchingPop);
-                            using (var shader = ToShader(mask.Shader))
-                            using (var paint = new SKPaint
+                            canvas.SaveLayer(paint);
+                        }
+
+                        restoreCounts.Push(1);
+                        canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy);
+                        break;
+                    case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
+                        canvas.SaveLayer();
+                        restoreCounts.Push(1);
+                        break;
+                    case "shaderMask" when command.HostPayload is SceneShaderMaskPayload mask:
+                    {
+                        // A shader mask is a source drawn into the alpha of its already-rendered
+                        // child. Supplying the shader paint to SaveLayer instead applies srcIn
+                        // against the scene behind the child and can fill the entire mask bounds.
+                        var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                        var bounds = ToRect(mask.MaskRect);
+                        canvas.SaveLayer(bounds, null);
+                        DrawCommands(source, commandIndex + 1, matchingPop);
+                        using (var shader = ToShader(mask.Shader))
+                        using (
+                            var paint = new SKPaint
                             {
                                 Shader = shader,
                                 BlendMode = ToBlend(mask.BlendMode),
                                 IsAntialias = true,
-                            })
-                                canvas.DrawRect(bounds, paint);
-                            canvas.Restore();
-                            commandIndex = matchingPop;
-                            break;
-                        }
-                    case "imageFilter" when command.HostPayload is SceneImageFilterPayload image &&
-                                                  image.Filter.Shader is FragmentShaderSnapshot fragment:
+                            }
+                        )
                         {
-                            var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
-                            var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
-                            var bounds = image.Bounds is { } explicitBounds
-                                ? ToRect(explicitBounds)
-                                : new SKRect(
-                                    canvas.LocalClipBounds.Left - offset.X,
-                                    canvas.LocalClipBounds.Top - offset.Y,
-                                    canvas.LocalClipBounds.Right - offset.X,
-                                    canvas.LocalClipBounds.Bottom - offset.Y);
-                            var rendered = DorotiSkiaImageFilterRenderer.Draw(
-                                canvas,
-                                pixelWidth,
-                                pixelHeight,
-                                fragment,
-                                bounds,
-                                offset,
-                                ToSamplingOptions(image.Filter.FilterQuality),
-                                CreateImageShader,
-                                (inputCanvas, inputWidth, inputHeight) =>
-                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight),
-                                RuntimeEffectBackend,
-                                _contextGeneration,
-                                image.CacheKey,
-                                image.CacheGeneration,
-                                out var cacheHit, _runtimeEffectContextOwner);
-                            if (rendered && !cacheHit)
-                                Interlocked.Increment(ref _shaderImageFiltersRendered);
-                            commandIndex = matchingPop;
-                            break;
+                            canvas.DrawRect(bounds, paint);
                         }
+
+                        canvas.Restore();
+                        commandIndex = matchingPop;
+                        break;
+                    }
+                    case "imageFilter"
+                        when command.HostPayload is SceneImageFilterPayload image
+                            && image.Filter.Shader is FragmentShaderSnapshot fragment:
+                    {
+                        var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                        var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
+                        var bounds = image.Bounds is { } explicitBounds
+                            ? ToRect(explicitBounds)
+                            : new SKRect(
+                                canvas.LocalClipBounds.Left - offset.X,
+                                canvas.LocalClipBounds.Top - offset.Y,
+                                canvas.LocalClipBounds.Right - offset.X,
+                                canvas.LocalClipBounds.Bottom - offset.Y
+                            );
+                        var rendered = DorotiSkiaImageFilterRenderer.Draw(
+                            canvas,
+                            pixelWidth,
+                            pixelHeight,
+                            fragment,
+                            bounds,
+                            offset,
+                            ToSamplingOptions(image.Filter.FilterQuality),
+                            CreateImageShader,
+                            (inputCanvas, inputWidth, inputHeight) =>
+                                DrawScene(
+                                    inputCanvas,
+                                    source,
+                                    commandIndex + 1,
+                                    matchingPop,
+                                    inputWidth,
+                                    inputHeight
+                                ),
+                            RuntimeEffectBackend,
+                            _contextGeneration,
+                            image.CacheKey,
+                            image.CacheGeneration,
+                            out var cacheHit,
+                            _runtimeEffectContextOwner
+                        );
+                        if (rendered && !cacheHit)
+                        {
+                            Interlocked.Increment(ref _shaderImageFiltersRendered);
+                        }
+
+                        commandIndex = matchingPop;
+                        break;
+                    }
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
                         canvas.Save();
                         var imageRestoreCount = 1;
-                        if (image.Filter.Matrix4 is not null && image.Filter.Outer is null &&
-                            image.Filter.Inner is null && image.Filter.ColorFilter is null && image.Filter.Shader is null)
+                        if (
+                            image.Filter.Matrix4 is not null
+                            && image.Filter.Outer is null
+                            && image.Filter.Inner is null
+                            && image.Filter.ColorFilter is null
+                            && image.Filter.Shader is null
+                        )
                         {
                             // Doroti retains vector scene commands, so replay a pure matrix image filter as
                             // an equivalent scene transform. An unbounded GPU SaveLayer + matrix filter can
@@ -1068,20 +1644,27 @@ public sealed partial class SkiaSceneRenderer :
                         canvas.Translate((float)image.Offset.dx, (float)image.Offset.dy);
                         restoreCounts.Push(imageRestoreCount);
                         break;
-                    case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
+                    case "backdropFilter"
+                        when command.HostPayload is SceneBackdropFilterPayload backdrop:
                         using (var paint = new SKPaint { BlendMode = ToBlend(backdrop.BlendMode) })
                         {
                             var restoreCount = 1;
                             if (backdrop.Filter.Bounds is { } clipBounds)
                             {
                                 canvas.Save();
-                                canvas.ClipRect(ToRect(clipBounds), SKClipOperation.Intersect, true);
+                                canvas.ClipRect(
+                                    ToRect(clipBounds),
+                                    SKClipOperation.Intersect,
+                                    true
+                                );
                                 restoreCount++;
                             }
                             var layer = new SKCanvasSaveLayerRec
                             {
                                 Backdrop = GetImageFilter(backdrop.Filter),
-                                Bounds = backdrop.Filter.Bounds is { } bounds ? ToRect(bounds) : null,
+                                Bounds = backdrop.Filter.Bounds is { } bounds
+                                    ? ToRect(bounds)
+                                    : null,
                                 Paint = paint,
                             };
                             canvas.SaveLayer(layer);
@@ -1089,17 +1672,27 @@ public sealed partial class SkiaSceneRenderer :
                         }
                         break;
                     case "retained" when command.HostPayload is SceneRetainedPayload retained:
-                        DrawCommands(retained.Commands); break;
+                        DrawCommands(retained.Commands);
+                        break;
                     case "platformView":
                     case "inputShield":
-                        throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformViews, null,
+                        throw new DorotiCapabilityException(
+                            DorotiCapabilityIds.PlatformViews,
+                            null,
                             DartUiInvocation.Managed("SkiaSceneRenderer.DrawScene"),
-                            "Native and shield commands require a host composition plan before raster replay.");
+                            "Native and shield commands require a host composition plan before raster replay."
+                        );
                     case "pop" when restoreCounts.Count > 0:
-                        for (var count = restoreCounts.Pop(); count > 0; count--) canvas.Restore();
+                        for (var count = restoreCounts.Pop(); count > 0; count--)
+                        {
+                            canvas.Restore();
+                        }
+
                         break;
                     default:
-                        throw new NotSupportedException($"Doroti scene operation '{command.Operation}' has no Skia GPU mapping.");
+                        throw new NotSupportedException(
+                            $"Doroti scene operation '{command.Operation}' has no Skia GPU mapping."
+                        );
                 }
             }
         }
@@ -1120,13 +1713,23 @@ public sealed partial class SkiaSceneRenderer :
             }
         }
         throw new InvalidDataException(
-            $"Doroti scene image-filter scope at command {scopeStart} has no matching pop.");
+            $"Doroti scene image-filter scope at command {scopeStart} has no matching pop."
+        );
     }
 
-    private static bool IsSceneScopeStart(string operation) => operation is
-        "offset" or "clipRect" or "clipRRect" or "clipRSuperellipse" or "clipPath" or
-        "transform" or "opacity" or "colorFilter" or "shaderMask" or "imageFilter" or
-        "backdropFilter";
+    private static bool IsSceneScopeStart(string operation) =>
+        operation
+            is "offset"
+                or "clipRect"
+                or "clipRRect"
+                or "clipRSuperellipse"
+                or "clipPath"
+                or "transform"
+                or "opacity"
+                or "colorFilter"
+                or "shaderMask"
+                or "imageFilter"
+                or "backdropFilter";
 
     private void DrawPicture(SKCanvas canvas, IReadOnlyList<PathCommand> commands)
     {
@@ -1134,50 +1737,183 @@ public sealed partial class SkiaSceneRenderer :
         {
             switch (command.Operation)
             {
-                case "save": canvas.Save(); break;
+                case "save":
+                    canvas.Save();
+                    break;
                 case "saveLayer" when command.HostPayload is CanvasSaveLayerPayload layer:
                     using (var paint = ToPaint(layer.Paint))
                     {
-                        if (layer.Bounds is { } bounds) canvas.SaveLayer(ToRect(bounds), paint);
-                        else canvas.SaveLayer(paint);
+                        if (layer.Bounds is { } bounds)
+                        {
+                            canvas.SaveLayer(ToRect(bounds), paint);
+                        }
+                        else
+                        {
+                            canvas.SaveLayer(paint);
+                        }
                     }
                     break;
-                case "restore": canvas.Restore(); break;
-                case "translate": canvas.Translate((float)command.Arguments[0], (float)command.Arguments[1]); break;
-                case "scale": canvas.Scale((float)command.Arguments[0], (float)command.Arguments[1]); break;
-                case "rotate": canvas.RotateRadians((float)command.Arguments[0]); break;
-                case "transform": Concat(canvas, command.Arguments); break;
-                case "clipRect": canvas.ClipRect(new((float)command.Arguments[0], (float)command.Arguments[1], (float)command.Arguments[2], (float)command.Arguments[3]), SKClipOperation.Intersect, true); break;
-                case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip: using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
-                case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
-                case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
-                case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
-                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: DrawRRect(canvas, draw); break;
-                case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
-                case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var path = SkiaRSuperellipsePath.Create(draw.RSuperellipse)) using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(path, paint); break;
-                case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var path = ToPath(draw.Path)) using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(path, paint); break;
-                case "drawPaint" when command.HostPayload is PaintSnapshot draw: using (var paint = ToPaint(draw)) canvas.DrawPaint(paint); break;
-                case "drawCircle" when command.HostPayload is CanvasCirclePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawCircle((float)draw.Center.dx, (float)draw.Center.dy, (float)draw.Radius, paint); break;
-                case "drawOval" when command.HostPayload is CanvasOvalPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawOval(ToRect(draw.Rect), paint); break;
-                case "drawLine" when command.HostPayload is CanvasLinePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawLine((float)draw.Start.dx, (float)draw.Start.dy, (float)draw.End.dx, (float)draw.End.dy, paint); break;
-                case "drawPoints" or "drawRawPoints" when command.HostPayload is CanvasPointsPayload draw:
-                    using (var paint = ToPaint(draw.Paint))
-                        canvas.DrawPoints(ToPointMode(draw.PointMode), draw.Points.Select(ToPoint).ToArray(), paint);
+                case "restore":
+                    canvas.Restore();
                     break;
-                case "drawArc" when command.HostPayload is CanvasArcPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawArc(ToRect(draw.Rect), (float)(draw.StartAngle * 180 / Math.PI), (float)(draw.SweepAngle * 180 / Math.PI), draw.UseCenter, paint); break;
-                case "drawColor" when command.HostPayload is CanvasColorPayload draw: canvas.DrawColor(ToColor(draw.Color), ToBlend(draw.BlendMode)); break;
+                case "translate":
+                    canvas.Translate((float)command.Arguments[0], (float)command.Arguments[1]);
+                    break;
+                case "scale":
+                    canvas.Scale((float)command.Arguments[0], (float)command.Arguments[1]);
+                    break;
+                case "rotate":
+                    canvas.RotateRadians((float)command.Arguments[0]);
+                    break;
+                case "transform":
+                    Concat(canvas, command.Arguments);
+                    break;
+                case "clipRect":
+                    canvas.ClipRect(
+                        new(
+                            (float)command.Arguments[0],
+                            (float)command.Arguments[1],
+                            (float)command.Arguments[2],
+                            (float)command.Arguments[3]
+                        ),
+                        SKClipOperation.Intersect,
+                        true
+                    );
+                    break;
+                case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip:
+                    using (var path = ToPath(clip.RRect))
+                    {
+                        canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias);
+                    }
+                    break;
+                case "clipRSuperellipse"
+                    when command.HostPayload is CanvasClipRSuperellipsePayload clip:
+                    using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse))
+                    {
+                        canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias);
+                    }
+                    break;
+                case "clipPath" when command.HostPayload is CanvasClipPathPayload clip:
+                    using (var path = ToPath(clip.Path))
+                    {
+                        canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias);
+                    }
+                    break;
+                case "drawRect" when command.HostPayload is CanvasRectPayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawRect(ToRect(draw.Rect), paint);
+                    }
+                    break;
+                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw:
+                    DrawRRect(canvas, draw);
+                    break;
+                case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw:
+                    DrawDRRect(canvas, draw);
+                    break;
+                case "drawRSuperellipse"
+                    when command.HostPayload is CanvasRSuperellipsePayload draw:
+                    using (var path = SkiaRSuperellipsePath.Create(draw.RSuperellipse))
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawPath(path, paint);
+                    }
+                    break;
+                case "drawPath" when command.HostPayload is CanvasPathPayload draw:
+                    using (var path = ToPath(draw.Path))
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawPath(path, paint);
+                    }
+                    break;
+                case "drawPaint" when command.HostPayload is PaintSnapshot draw:
+                    using (var paint = ToPaint(draw))
+                    {
+                        canvas.DrawPaint(paint);
+                    }
+                    break;
+                case "drawCircle" when command.HostPayload is CanvasCirclePayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawCircle(
+                            (float)draw.Center.dx,
+                            (float)draw.Center.dy,
+                            (float)draw.Radius,
+                            paint
+                        );
+                    }
+                    break;
+                case "drawOval" when command.HostPayload is CanvasOvalPayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawOval(ToRect(draw.Rect), paint);
+                    }
+                    break;
+                case "drawLine" when command.HostPayload is CanvasLinePayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawLine(
+                            (float)draw.Start.dx,
+                            (float)draw.Start.dy,
+                            (float)draw.End.dx,
+                            (float)draw.End.dy,
+                            paint
+                        );
+                    }
+                    break;
+                case "drawPoints"
+                or "drawRawPoints" when command.HostPayload is CanvasPointsPayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawPoints(
+                            ToPointMode(draw.PointMode),
+                            draw.Points.Select(ToPoint).ToArray(),
+                            paint
+                        );
+                    }
+
+                    break;
+                case "drawArc" when command.HostPayload is CanvasArcPayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                    {
+                        canvas.DrawArc(
+                            ToRect(draw.Rect),
+                            (float)(draw.StartAngle * 180 / Math.PI),
+                            (float)(draw.SweepAngle * 180 / Math.PI),
+                            draw.UseCenter,
+                            paint
+                        );
+                    }
+                    break;
+                case "drawColor" when command.HostPayload is CanvasColorPayload draw:
+                    canvas.DrawColor(ToColor(draw.Color), ToBlend(draw.BlendMode));
+                    break;
                 case "drawParagraph" when command.HostPayload is CanvasParagraphPayload draw:
                     DrawParagraphText(canvas, draw.Paragraph, draw.Offset);
                     break;
-                case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is SkiaImageHandle handle:
+                case "drawImageRect"
+                or "drawImage"
+                    when command.HostPayload is CanvasImagePayload draw
+                        && draw.Image.HostHandle is SkiaImageHandle handle:
                     using (var paint = ToPaint(draw.Paint))
-                        canvas.DrawImage(handle.Image, ToRect(draw.Source), ToRect(draw.Destination),
-                            ToSamplingOptions(draw.Paint.FilterQuality), paint);
+                    {
+                        canvas.DrawImage(
+                            handle.Image,
+                            ToRect(draw.Source),
+                            ToRect(draw.Destination),
+                            ToSamplingOptions(draw.Paint.FilterQuality),
+                            paint
+                        );
+                    }
+
                     break;
                 case "drawShadow" when command.HostPayload is CanvasShadowPayload draw:
                     DrawShadow(canvas, draw);
                     break;
-                default: throw new NotSupportedException($"Doroti canvas operation '{command.Operation}' has no Skia GPU mapping.");
+                default:
+                    throw new NotSupportedException(
+                        $"Doroti canvas operation '{command.Operation}' has no Skia GPU mapping."
+                    );
             }
         }
     }
@@ -1192,11 +1928,20 @@ public sealed partial class SkiaSceneRenderer :
         }
 
         var cacheKey = (object)commands;
-        if (payload.WillChangeHint || payload.CanvasBounds is not { } canvasBounds ||
-            !canvasBounds.IsFinite || canvasBounds.isEmpty ||
-            (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold &&
-                !HasDownscaledImage(commands)) ||
-            !SkiaGpuSurfaces.IsGpu(canvas) || !PictureCanCompositeOverBackground(commands) || HasBlurredPaint(commands))
+        if (
+            payload.WillChangeHint
+            || payload.CanvasBounds is not { } canvasBounds
+            || !canvasBounds.IsFinite
+            || canvasBounds.isEmpty
+            || (
+                !payload.IsComplexHint
+                && commands.Count < PictureRasterComplexityThreshold
+                && !HasDownscaledImage(commands)
+            )
+            || !SkiaGpuSurfaces.IsGpu(canvas)
+            || !PictureCanCompositeOverBackground(commands)
+            || HasBlurredPaint(commands)
+        )
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -1218,8 +1963,10 @@ public sealed partial class SkiaSceneRenderer :
             return;
         }
 
-        if (mappedBounds.Width > MaxCacheablePicturePixels ||
-            mappedBounds.Height > MaxCacheablePicturePixels)
+        if (
+            mappedBounds.Width > MaxCacheablePicturePixels
+            || mappedBounds.Height > MaxCacheablePicturePixels
+        )
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -1246,12 +1993,21 @@ public sealed partial class SkiaSceneRenderer :
         // In particular, device-independent fonts must not switch to hinted
         // glyphs merely because a picture was promoted to an offscreen image.
         using var surfaceProperties = canvas.Surface?.SurfaceProperties;
-        var signature = PictureRasterTransform.From(transform, phaseX, phaseY,
+        var signature = PictureRasterTransform.From(
+            transform,
+            phaseX,
+            phaseY,
             surfaceProperties?.Flags ?? SKSurfacePropsFlags.None,
-            surfaceProperties?.PixelGeometry ?? SKPixelGeometry.Unknown);
+            surfaceProperties?.PixelGeometry ?? SKPixelGeometry.Unknown
+        );
         if (_pictureRasterCache.TryGetValue(cacheKey, out var cached))
         {
-            if (cached.Recording?.IsDiscarded != true && cached.Width == width && cached.Height == height && cached.Transform == signature)
+            if (
+                cached.Recording?.IsDiscarded != true
+                && cached.Width == width
+                && cached.Height == height
+                && cached.Transform == signature
+            )
             {
                 cached.LastUsedSequence = ++_pictureRasterUseSequence;
                 DrawRasterImage(canvas, cached.Image, rasterLeft, rasterTop);
@@ -1264,7 +2020,10 @@ public sealed partial class SkiaSceneRenderer :
         if (!_pictureRasterWarmups.TryGetValue(cacheKey, out var warmup))
         {
             if (_pictureRasterWarmups.Count >= MaxPictureRasterWarmups)
+            {
                 RemovePictureWarmup(_pictureRasterWarmupOrder.First!.Value);
+            }
+
             warmup = new PictureRasterWarmup(_pictureRasterWarmupOrder.AddLast(cacheKey));
             _pictureRasterWarmups.Add(cacheKey, warmup);
         }
@@ -1275,16 +2034,21 @@ public sealed partial class SkiaSceneRenderer :
         }
         // A moving subpixel phase cannot reuse this raster. Wait until it is
         // stable instead of promoting a new image on every animation tick.
-        warmup.Uses = warmup.Transform == signature
-            ? Math.Min(PictureRasterWarmupFrames, warmup.Uses + 1) : 1;
+        warmup.Uses =
+            warmup.Transform == signature
+                ? Math.Min(PictureRasterWarmupFrames, warmup.Uses + 1)
+                : 1;
         warmup.Transform = signature;
         warmup.LastFrame = _rasterFrame;
         // Never spend several synchronous surface/replay/flush/snapshot costs
         // in one frame. A single promotion is non-preemptible; record its real
         // duration and render every deferred picture through normal replay.
-        if (warmup.Uses < PictureRasterWarmupFrames || _framePromotions >= 2 ||
-            _framePromotionPixels + pixels > MaxCacheablePicturePixels ||
-            _framePromotionMicroseconds >= PromotionBudgetMicroseconds)
+        if (
+            warmup.Uses < PictureRasterWarmupFrames
+            || _framePromotions >= 2
+            || _framePromotionPixels + pixels > MaxCacheablePicturePixels
+            || _framePromotionMicroseconds >= PromotionBudgetMicroseconds
+        )
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -1292,9 +2056,11 @@ public sealed partial class SkiaSceneRenderer :
 
         var promotionStarted = DorotiFrameClock.Now;
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        using var surface = SkiaGpuSurfaces.CreateCompatible(canvas, info, surfaceProperties)
+        using var surface =
+            SkiaGpuSurfaces.CreateCompatible(canvas, info, surfaceProperties)
             ?? throw new InvalidOperationException(
-                $"Doroti picture raster cache could not allocate a {width}x{height} GPU surface.");
+                $"Doroti picture raster cache could not allocate a {width}x{height} GPU surface."
+            );
         var rasterCanvas = surface.Canvas;
         rasterCanvas.Clear(SKColors.Transparent);
         rasterCanvas.Save();
@@ -1304,9 +2070,19 @@ public sealed partial class SkiaSceneRenderer :
         DrawRetainedPicture(rasterCanvas, payload);
         rasterCanvas.Restore();
         rasterCanvas.Flush();
-        var image = surface.Snapshot()
-            ?? throw new InvalidOperationException("Doroti picture raster cache could not snapshot its GPU surface.");
-        cached = new(image, width, height, signature, ++_pictureRasterUseSequence, SkiaGpuSurfaces.RecordingFor(canvas));
+        var image =
+            surface.Snapshot()
+            ?? throw new InvalidOperationException(
+                "Doroti picture raster cache could not snapshot its GPU surface."
+            );
+        cached = new(
+            image,
+            width,
+            height,
+            signature,
+            ++_pictureRasterUseSequence,
+            SkiaGpuSurfaces.RecordingFor(canvas)
+        );
         _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
@@ -1316,7 +2092,10 @@ public sealed partial class SkiaSceneRenderer :
         Interlocked.Increment(ref _pictureRasterCacheMisses);
         var promotionMicroseconds = (DorotiFrameClock.Now - promotionStarted).Ticks / 10;
         _promotionMicroseconds += promotionMicroseconds;
-        _promotionMaximumMicroseconds = Math.Max(_promotionMaximumMicroseconds, promotionMicroseconds);
+        _promotionMaximumMicroseconds = Math.Max(
+            _promotionMaximumMicroseconds,
+            promotionMicroseconds
+        );
         _framePromotions++;
         _framePromotionPixels += pixels;
         _framePromotionMicroseconds += promotionMicroseconds;
@@ -1328,14 +2107,22 @@ public sealed partial class SkiaSceneRenderer :
         _framePromotions = 0;
         _framePromotionPixels = 0;
         _framePromotionMicroseconds = 0;
-        while (_pictureRasterWarmupOrder.First is { } first &&
-            _rasterFrame - _pictureRasterWarmups[first.Value].LastFrame >= PictureWarmupLifetimeFrames)
+        while (
+            _pictureRasterWarmupOrder.First is { } first
+            && _rasterFrame - _pictureRasterWarmups[first.Value].LastFrame
+                >= PictureWarmupLifetimeFrames
+        )
+        {
             RemovePictureWarmup(first.Value);
+        }
     }
 
     private void RemovePictureWarmup(object key)
     {
-        if (_pictureRasterWarmups.Remove(key, out var warmup)) _pictureRasterWarmupOrder.Remove(warmup.Node);
+        if (_pictureRasterWarmups.Remove(key, out var warmup))
+        {
+            _pictureRasterWarmupOrder.Remove(warmup.Node);
+        }
     }
 
     private sealed class PictureRasterWarmup(LinkedListNode<object> node)
@@ -1355,32 +2142,57 @@ public sealed partial class SkiaSceneRenderer :
     }
 
     private static bool HasDownscaledImage(IReadOnlyList<PathCommand> commands) =>
-        commands.Any(command => command.HostPayload is CanvasImagePayload image &&
-            (image.Source.width > image.Destination.width * 2 || image.Source.height > image.Destination.height * 2));
+        commands.Any(command =>
+            command.HostPayload is CanvasImagePayload image
+            && (
+                image.Source.width > image.Destination.width * 2
+                || image.Source.height > image.Destination.height * 2
+            )
+        );
 
-    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, PictureCompositePolicy> PictureCompositePolicies = new();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<
+        object,
+        PictureCompositePolicy
+    > PictureCompositePolicies = new();
 
     private static bool PictureCanCompositeOverBackground(IReadOnlyList<PathCommand> commands) =>
-        PictureCompositePolicies.GetValue(commands, static key => new(((IReadOnlyList<PathCommand>)key).All(static command =>
-            command.HostPayload switch
-            {
-                CanvasColorPayload color => color.BlendMode == BlendMode.srcOver,
-                PaintSnapshot paint => paint.BlendMode == BlendMode.srcOver,
-                CanvasSaveLayerPayload layer => layer.Paint.BlendMode == BlendMode.srcOver,
-                CanvasPathPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasRRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasRSuperellipsePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasDRRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasImagePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasImageNinePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasCirclePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasLinePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasPointsPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasOvalPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                CanvasArcPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
-                _ => true,
-            }))).CanComposite;
+        PictureCompositePolicies
+            .GetValue(
+                commands,
+                static key =>
+                    new(
+                        ((IReadOnlyList<PathCommand>)key).All(static command =>
+                            command.HostPayload switch
+                            {
+                                CanvasColorPayload color => color.BlendMode == BlendMode.srcOver,
+                                PaintSnapshot paint => paint.BlendMode == BlendMode.srcOver,
+                                CanvasSaveLayerPayload layer => layer.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasPathPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                                CanvasRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                                CanvasRRectPayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasRSuperellipsePayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasDRRectPayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasImagePayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasImageNinePayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasCirclePayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasLinePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                                CanvasPointsPayload draw => draw.Paint.BlendMode
+                                    == BlendMode.srcOver,
+                                CanvasOvalPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                                CanvasArcPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                                _ => true,
+                            }
+                        )
+                    )
+            )
+            .CanComposite;
 
     // A picture cache is drawn with srcOver onto the existing destination. A
     // clear/src/destination-dependent operation cannot be flattened against
@@ -1397,15 +2209,21 @@ public sealed partial class SkiaSceneRenderer :
 
     private void TrimPictureRasterCache()
     {
-        while (_pictureRasterCache.Count > MaxPictureRasterCacheEntries ||
-               _pictureRasterPixels > MaxPictureRasterPixels)
+        while (
+            _pictureRasterCache.Count > MaxPictureRasterCacheEntries
+            || _pictureRasterPixels > MaxPictureRasterPixels
+        )
         {
             // A frame can draw more pictures than the cache holds. Frame numbers
             // tie in that case, and Dictionary reuses removed slots: MinBy could
             // select the newly inserted image and dispose it before its draw.
             // Order every access, including accesses within the same frame.
             var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedSequence);
-            if (oldest.Key is null) break;
+            if (oldest.Key is null)
+            {
+                break;
+            }
+
             RemovePictureRaster(oldest.Key, oldest.Value);
         }
     }
@@ -1421,7 +2239,11 @@ public sealed partial class SkiaSceneRenderer :
     private void ClearPictureRasterCache()
     {
         ClearPictureCommandCache();
-        foreach (var cached in _pictureRasterCache.Values) cached.Image.Dispose();
+        foreach (var cached in _pictureRasterCache.Values)
+        {
+            cached.Image.Dispose();
+        }
+
         _pictureRasterCache.Clear();
         _pictureRasterWarmups.Clear();
         _pictureRasterWarmupOrder.Clear();
@@ -1440,12 +2262,29 @@ public sealed partial class SkiaSceneRenderer :
         float PhaseX,
         float PhaseY,
         SKSurfacePropsFlags SurfaceFlags,
-        SKPixelGeometry PixelGeometry)
+        SKPixelGeometry PixelGeometry
+    )
     {
-        internal static PictureRasterTransform From(SKMatrix matrix, float phaseX, float phaseY,
-            SKSurfacePropsFlags surfaceFlags, SKPixelGeometry pixelGeometry) => new(
-            matrix.ScaleX, matrix.SkewX, matrix.SkewY, matrix.ScaleY,
-            matrix.Persp0, matrix.Persp1, matrix.Persp2, phaseX, phaseY, surfaceFlags, pixelGeometry);
+        internal static PictureRasterTransform From(
+            SKMatrix matrix,
+            float phaseX,
+            float phaseY,
+            SKSurfacePropsFlags surfaceFlags,
+            SKPixelGeometry pixelGeometry
+        ) =>
+            new(
+                matrix.ScaleX,
+                matrix.SkewX,
+                matrix.SkewY,
+                matrix.ScaleY,
+                matrix.Persp0,
+                matrix.Persp1,
+                matrix.Persp2,
+                phaseX,
+                phaseY,
+                surfaceFlags,
+                pixelGeometry
+            );
     }
 
     private sealed class PictureRasterCacheEntry(
@@ -1453,7 +2292,9 @@ public sealed partial class SkiaSceneRenderer :
         int width,
         int height,
         PictureRasterTransform transform,
-        long lastUsedSequence, SkiaGpuSurfaces.Recording? recording)
+        long lastUsedSequence,
+        SkiaGpuSurfaces.Recording? recording
+    )
     {
         internal SkiaGpuSurfaces.Recording? Recording { get; } = recording;
         internal SKImage Image { get; } = image;
@@ -1464,15 +2305,39 @@ public sealed partial class SkiaSceneRenderer :
         internal long Pixels => (long)Width * Height;
     }
 
-    private TextRenderResources GetTextRenderResources(string? fontFamily, float fontSize, SKColor color, TextStyle? style = null)
+    private TextRenderResources GetTextRenderResources(
+        string? fontFamily,
+        float fontSize,
+        SKColor color,
+        TextStyle? style = null
+    )
     {
-        var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color,
-            style?.fontWeight?.value ?? 400, style?.fontStyle == FontStyle.italic,
-            (float)(style?.letterSpacing ?? 0), (float)(style?.wordSpacing ?? 0),
-            System.Text.Json.JsonSerializer.Serialize(style?.fontFamilyFallback ?? [],
-                SkiaRenderingJsonContext.Default.IReadOnlyListString));
-        if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
-        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts, key, style?.fontFamilyFallback);
+        var key = new TextRenderKey(
+            fontFamily ?? string.Empty,
+            fontSize,
+            color,
+            style?.fontWeight?.value ?? 400,
+            style?.fontStyle == FontStyle.italic,
+            (float)(style?.letterSpacing ?? 0),
+            (float)(style?.wordSpacing ?? 0),
+            System.Text.Json.JsonSerializer.Serialize(
+                style?.fontFamilyFallback ?? [],
+                SkiaRenderingJsonContext.Default.IReadOnlyListString
+            )
+        );
+        if (_textRenderResources.TryGetValue(key, out var resources))
+        {
+            return resources;
+        }
+
+        resources = new TextRenderResources(
+            fontFamily,
+            fontSize,
+            color,
+            _fallbackFonts,
+            key,
+            style?.fontFamilyFallback
+        );
         _textRenderResources.Add(key, resources);
         return resources;
     }
@@ -1480,9 +2345,20 @@ public sealed partial class SkiaSceneRenderer :
     private static IReadOnlyList<ParagraphTextRun> NormalizeTextRuns(ParagraphRequest request)
     {
         var runs = request.TextRuns ?? [];
-        if (runs.Count != 0 &&
-            !string.Equals(string.Concat(runs.Select(run => run.Text)), request.Text, StringComparison.Ordinal))
-            throw new InvalidDataException("Paragraph text runs must concatenate to the paragraph text.");
+        if (
+            runs.Count != 0
+            && !string.Equals(
+                string.Concat(runs.Select(run => run.Text)),
+                request.Text,
+                StringComparison.Ordinal
+            )
+        )
+        {
+            throw new InvalidDataException(
+                "Paragraph text runs must concatenate to the paragraph text."
+            );
+        }
+
         return runs;
     }
 
@@ -1493,7 +2369,8 @@ public sealed partial class SkiaSceneRenderer :
             return GetTextRenderResources(
                     request.FontFamily,
                     (float)request.FontSize,
-                    ToColor(request.Color ?? new UiColor(0xFF000000)))
+                    ToColor(request.Color ?? new UiColor(0xFF000000))
+                )
                 .MeasureCodeUnitAdvances(request.Text);
         }
 
@@ -1505,7 +2382,14 @@ public sealed partial class SkiaSceneRenderer :
             var resources = GetTextRenderResources(
                 style.fontFamily ?? request.FontFamily,
                 (float)(style.fontSize ?? request.FontSize),
-                ToColor(style.foreground?.color ?? style.color ?? request.Color ?? new UiColor(0xFF000000)), style);
+                ToColor(
+                    style.foreground?.color
+                        ?? style.color
+                        ?? request.Color
+                        ?? new UiColor(0xFF000000)
+                ),
+                style
+            );
             var runAdvances = resources.MeasureCodeUnitAdvances(run.Text);
             Array.Copy(runAdvances, 0, advances, offset, runAdvances.Length);
             offset += runAdvances.Length;
@@ -1521,7 +2405,11 @@ public sealed partial class SkiaSceneRenderer :
             var baseline = (float)(offset.dy + line.Baseline);
             if (paragraph.TextRuns.Count == 0)
             {
-                GetTextRenderResources(paragraph.fontFamily, (float)paragraph.fontSize, ToColor(paragraph.color))
+                GetTextRenderResources(
+                        paragraph.fontFamily,
+                        (float)paragraph.fontSize,
+                        ToColor(paragraph.color)
+                    )
                     .DrawText(canvas, paragraph.text[line.Start..line.End], x, baseline);
                 continue;
             }
@@ -1533,53 +2421,95 @@ public sealed partial class SkiaSceneRenderer :
                 if (end > start)
                 {
                     var style = run.Style;
-                    GetTextRenderResources(style.fontFamily ?? paragraph.fontFamily,
-                        (float)(style.fontSize ?? paragraph.fontSize),
-                        ToColor(style.foreground?.color ?? style.color ?? paragraph.color), style)
-                        .DrawText(canvas, run.Text[(start - runStart)..(end - runStart)], x, baseline);
+                    GetTextRenderResources(
+                            style.fontFamily ?? paragraph.fontFamily,
+                            (float)(style.fontSize ?? paragraph.fontSize),
+                            ToColor(style.foreground?.color ?? style.color ?? paragraph.color),
+                            style
+                        )
+                        .DrawText(
+                            canvas,
+                            run.Text[(start - runStart)..(end - runStart)],
+                            x,
+                            baseline
+                        );
                     x += (float)paragraph.TextAdvance(start, end);
                 }
                 runStart += run.Text.Length;
-                if (runStart >= line.End) break;
+                if (runStart >= line.End)
+                {
+                    break;
+                }
             }
         }
     }
 
-    private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color,
-        int Weight, bool Italic, float LetterSpacing, float WordSpacing, string FallbackFamilies);
+    private readonly record struct TextRenderKey(
+        string FontFamily,
+        float FontSize,
+        SKColor Color,
+        int Weight,
+        bool Italic,
+        float LetterSpacing,
+        float WordSpacing,
+        string FallbackFamilies
+    );
 
     private sealed class TextRenderResources : IDisposable
     {
         private readonly TextFontResource _primary;
         private readonly SkiaFallbackFontCollection? _registeredFallbacks;
-        private readonly float _letterSpacing, _wordSpacing;
+        private readonly float _letterSpacing,
+            _wordSpacing;
         private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
-        private readonly Dictionary<string, TextFontResource> _fallbackByFamily =
-            new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, TextFontResource> _fallbackByFamily = new(
+            StringComparer.OrdinalIgnoreCase
+        );
 
         internal TextRenderResources(
             string? fontFamily,
             float fontSize,
             SKColor color,
-            SkiaFallbackFontCollection? registeredFallbacks, TextRenderKey key, IReadOnlyList<string>? fallbackFamilies)
+            SkiaFallbackFontCollection? registeredFallbacks,
+            TextRenderKey key,
+            IReadOnlyList<string>? fallbackFamilies
+        )
         {
             _registeredFallbacks = registeredFallbacks;
             _letterSpacing = key.LetterSpacing;
             _wordSpacing = key.WordSpacing;
-            using var fontStyle = new SKFontStyle(key.Weight, 5, key.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
+            using var fontStyle = new SKFontStyle(
+                key.Weight,
+                5,
+                key.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright
+            );
             // FromFamilyName silently returns the platform default for an unknown
             // name. Resolve the explicit fallback list before accepting that face.
-            var families = new[] { fontFamily }.Concat(fallbackFamilies ?? []).Where(family => !string.IsNullOrWhiteSpace(family));
+            var families = new[] { fontFamily }
+                .Concat(fallbackFamilies ?? [])
+                .Where(family => !string.IsNullOrWhiteSpace(family));
             SKTypeface? primary = null;
             var ownsPrimary = false;
             foreach (var family in families)
             {
                 primary = registeredFallbacks?.MatchFamily(family, fontStyle);
-                if (primary is not null) break;
+                if (primary is not null)
+                {
+                    break;
+                }
+
                 primary = SKFontManager.Default.MatchFamily(family, fontStyle);
-                if (primary is not null) { ownsPrimary = true; break; }
+                if (primary is not null)
+                {
+                    ownsPrimary = true;
+                    break;
+                }
             }
-            if (primary is null) { primary = SKTypeface.FromFamilyName(null, fontStyle); ownsPrimary = true; }
+            if (primary is null)
+            {
+                primary = SKTypeface.FromFamilyName(null, fontStyle);
+                ownsPrimary = true;
+            }
             _primary = new TextFontResource(primary, fontSize, ownsTypeface: ownsPrimary);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
@@ -1590,7 +2520,7 @@ public sealed partial class SkiaSceneRenderer :
         {
             var ascent = -(double)_primary.Font.Metrics.Ascent;
             var descent = (double)_primary.Font.Metrics.Descent;
-            for (var index = 0; index < text.Length;)
+            for (var index = 0; index < text.Length; )
             {
                 var font = ResolveFont(CodePointAt(text, index, out var length)).Font;
                 ascent = Math.Max(ascent, -font.Metrics.Ascent);
@@ -1602,15 +2532,29 @@ public sealed partial class SkiaSceneRenderer :
 
         internal void DrawText(SKCanvas canvas, string text, float x, float baseline)
         {
-            if (text.Length == 0) return;
+            if (text.Length == 0)
+            {
+                return;
+            }
+
             if (_letterSpacing != 0 || _wordSpacing != 0)
             {
-                for (var index = 0; index < text.Length;)
+                for (var index = 0; index < text.Length; )
                 {
                     var font = ResolveFont(CodePointAt(text, index, out var length)).Font;
                     var glyph = text.Substring(index, length);
-                    canvas.DrawText(glyph, x + _letterSpacing / 2, baseline, SKTextAlign.Left, font, Paint);
-                    x += font.MeasureText(glyph, Paint) + _letterSpacing + (glyph == " " ? _wordSpacing : 0);
+                    canvas.DrawText(
+                        glyph,
+                        x + (_letterSpacing / 2),
+                        baseline,
+                        SKTextAlign.Left,
+                        font,
+                        Paint
+                    );
+                    x +=
+                        font.MeasureText(glyph, Paint)
+                        + _letterSpacing
+                        + (glyph == " " ? _wordSpacing : 0);
                     index += length;
                 }
                 return;
@@ -1618,7 +2562,7 @@ public sealed partial class SkiaSceneRenderer :
 
             var runStart = 0;
             var runFont = ResolveFont(CodePointAt(text, 0, out var firstLength));
-            for (var index = firstLength; index < text.Length;)
+            for (var index = firstLength; index < text.Length; )
             {
                 var codePoint = CodePointAt(text, index, out var codePointLength);
                 var font = ResolveFont(codePoint);
@@ -1639,11 +2583,14 @@ public sealed partial class SkiaSceneRenderer :
         internal double[] MeasureCodeUnitAdvances(string text)
         {
             var advances = new double[text.Length];
-            if (text.Length == 0) return advances;
+            if (text.Length == 0)
+            {
+                return advances;
+            }
 
             var runStart = 0;
             var runFont = ResolveFont(CodePointAt(text, 0, out var firstLength));
-            for (var index = firstLength; index <= text.Length;)
+            for (var index = firstLength; index <= text.Length; )
             {
                 TextFontResource? nextFont = null;
                 var nextLength = 0;
@@ -1657,20 +2604,35 @@ public sealed partial class SkiaSceneRenderer :
                     var run = text.AsSpan(runStart, index - runStart);
                     var widths = runFont.Font.GetGlyphWidths(run, Paint);
                     var glyphIndex = 0;
-                    for (var cursor = runStart; cursor < index;)
+                    for (var cursor = runStart; cursor < index; )
                     {
                         CodePointAt(text, cursor, out var codePointLength);
-                        advances[cursor] = glyphIndex < widths.Length
-                            ? Math.Max(0, widths[glyphIndex++])
-                            : Math.Max(0, runFont.Font.MeasureText(text.AsSpan(cursor, codePointLength), Paint));
-                        advances[cursor] += _letterSpacing + (text[cursor] == ' ' ? _wordSpacing : 0);
+                        advances[cursor] =
+                            glyphIndex < widths.Length
+                                ? Math.Max(0, widths[glyphIndex++])
+                                : Math.Max(
+                                    0,
+                                    runFont.Font.MeasureText(
+                                        text.AsSpan(cursor, codePointLength),
+                                        Paint
+                                    )
+                                );
+                        advances[cursor] +=
+                            _letterSpacing + (text[cursor] == ' ' ? _wordSpacing : 0);
                         cursor += codePointLength;
                     }
                     runStart = index;
-                    if (nextFont is not null) runFont = nextFont;
+                    if (nextFont is not null)
+                    {
+                        runFont = nextFont;
+                    }
                 }
 
-                if (index == text.Length) break;
+                if (index == text.Length)
+                {
+                    break;
+                }
+
                 index += nextLength;
             }
             return advances;
@@ -1679,7 +2641,11 @@ public sealed partial class SkiaSceneRenderer :
         private static int CodePointAt(string text, int index, out int length)
         {
             var first = text[index];
-            if (char.IsHighSurrogate(first) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
+            if (
+                char.IsHighSurrogate(first)
+                && index + 1 < text.Length
+                && char.IsLowSurrogate(text[index + 1])
+            )
             {
                 length = 2;
                 return char.ConvertToUtf32(first, text[index + 1]);
@@ -1690,23 +2656,41 @@ public sealed partial class SkiaSceneRenderer :
 
         private TextFontResource ResolveFont(int codePoint)
         {
-            if (_primary.Font.ContainsGlyph(codePoint)) return _primary;
-            if (_fallbackByCodePoint.TryGetValue(codePoint, out var cached)) return cached;
+            if (_primary.Font.ContainsGlyph(codePoint))
+            {
+                return _primary;
+            }
+
+            if (_fallbackByCodePoint.TryGetValue(codePoint, out var cached))
+            {
+                return cached;
+            }
 
             var registeredTypeface = _registeredFallbacks?.MatchCharacter(codePoint);
             if (registeredTypeface is not null)
             {
-                if (!_fallbackByFamily.TryGetValue(registeredTypeface.FamilyName, out var registered))
+                if (
+                    !_fallbackByFamily.TryGetValue(
+                        registeredTypeface.FamilyName,
+                        out var registered
+                    )
+                )
                 {
                     registered = new TextFontResource(
-                        registeredTypeface, _primary.Font.Size, ownsTypeface: false);
+                        registeredTypeface,
+                        _primary.Font.Size,
+                        ownsTypeface: false
+                    );
                     _fallbackByFamily.Add(registered.FamilyName, registered);
                 }
                 _fallbackByCodePoint.Add(codePoint, registered);
                 return registered;
             }
 
-            var matchedTypeface = SKFontManager.Default.MatchCharacter(_primary.FamilyName, codePoint);
+            var matchedTypeface = SKFontManager.Default.MatchCharacter(
+                _primary.FamilyName,
+                codePoint
+            );
             if (matchedTypeface is null)
             {
                 _fallbackByCodePoint.Add(codePoint, _primary);
@@ -1729,14 +2713,19 @@ public sealed partial class SkiaSceneRenderer :
         public void Dispose()
         {
             Paint.Dispose();
-            foreach (var fallback in _fallbackByFamily.Values) fallback.Dispose();
+            foreach (var fallback in _fallbackByFamily.Values)
+            {
+                fallback.Dispose();
+            }
+
             _primary.Dispose();
         }
 
         private sealed class TextFontResource(
             SKTypeface typeface,
             float fontSize,
-            bool ownsTypeface = true) : IDisposable
+            bool ownsTypeface = true
+        ) : IDisposable
         {
             internal SKTypeface Typeface { get; } = typeface;
             internal SKFont Font { get; } = new(typeface, fontSize);
@@ -1745,7 +2734,10 @@ public sealed partial class SkiaSceneRenderer :
             public void Dispose()
             {
                 Font.Dispose();
-                if (ownsTypeface) Typeface.Dispose();
+                if (ownsTypeface)
+                {
+                    Typeface.Dispose();
+                }
             }
         }
     }
@@ -1759,29 +2751,51 @@ public sealed partial class SkiaSceneRenderer :
             StrokeWidth = (float)value.StrokeWidth,
             IsAntialias = value.IsAntiAlias,
             BlendMode = ToBlend(value.BlendMode),
-            StrokeCap = value.StrokeCap switch { StrokeCap.round => SKStrokeCap.Round, StrokeCap.square => SKStrokeCap.Square, _ => SKStrokeCap.Butt },
-            StrokeJoin = value.StrokeJoin switch { StrokeJoin.round => SKStrokeJoin.Round, StrokeJoin.bevel => SKStrokeJoin.Bevel, _ => SKStrokeJoin.Miter },
+            StrokeCap = value.StrokeCap switch
+            {
+                StrokeCap.round => SKStrokeCap.Round,
+                StrokeCap.square => SKStrokeCap.Square,
+                _ => SKStrokeCap.Butt,
+            },
+            StrokeJoin = value.StrokeJoin switch
+            {
+                StrokeJoin.round => SKStrokeJoin.Round,
+                StrokeJoin.bevel => SKStrokeJoin.Bevel,
+                _ => SKStrokeJoin.Miter,
+            },
         };
-        if (value.Shader is not null) paint.Shader = ToShader(value.Shader);
+        if (value.Shader is not null)
+        {
+            paint.Shader = ToShader(value.Shader);
+        }
+
         if (value.MaskFilter is { sigma: > 0 } blur)
         {
-            using var filter = SKMaskFilter.CreateBlur(blur.style switch
-            {
-                BlurStyle.solid => SKBlurStyle.Solid,
-                BlurStyle.outer => SKBlurStyle.Outer,
-                BlurStyle.inner => SKBlurStyle.Inner,
-                _ => SKBlurStyle.Normal,
-            }, (float)blur.sigma);
+            using var filter = SKMaskFilter.CreateBlur(
+                blur.style switch
+                {
+                    BlurStyle.solid => SKBlurStyle.Solid,
+                    BlurStyle.outer => SKBlurStyle.Outer,
+                    BlurStyle.inner => SKBlurStyle.Inner,
+                    _ => SKBlurStyle.Normal,
+                },
+                (float)blur.sigma
+            );
             paint.MaskFilter = filter;
         }
         return paint;
     }
 
-    private SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = GetImageFilter(filter) };
+    private SKPaint FilterPaint(ImageFilterSnapshot filter) =>
+        new() { ImageFilter = GetImageFilter(filter) };
 
     private SKImageFilter GetImageFilter(ImageFilterSnapshot filter)
     {
-        if (_imageFilterResources.TryGetValue(filter, out var resource)) return resource;
+        if (_imageFilterResources.TryGetValue(filter, out var resource))
+        {
+            return resource;
+        }
+
         if (_imageFilterResources.Count >= MaxImageFilterResources)
         {
             var oldest = _imageFilterResources.First();
@@ -1796,8 +2810,12 @@ public sealed partial class SkiaSceneRenderer :
     private SKImageFilter CreateImageFilter(ImageFilterSnapshot filter)
     {
         if (filter.Shader is not null)
+        {
             throw new InvalidOperationException(
-                "Shader image filters must be rendered through Doroti's GPU offscreen input path.");
+                "Shader image filters must be rendered through Doroti's GPU offscreen input path."
+            );
+        }
+
         if (filter.Outer is not null && filter.Inner is not null)
         {
             using var outer = CreateImageFilter(filter.Outer);
@@ -1807,12 +2825,23 @@ public sealed partial class SkiaSceneRenderer :
         if (filter.ColorFilter is not null)
         {
             using var color = ToColorFilter(filter.ColorFilter);
-            if (filter.Inner is null) return SKImageFilter.CreateColorFilter(color);
+            if (filter.Inner is null)
+            {
+                return SKImageFilter.CreateColorFilter(color);
+            }
+
             using var inner = CreateImageFilter(filter.Inner);
             return SKImageFilter.CreateColorFilter(color, inner);
         }
         if (filter.Matrix4 is not null)
-            return SKImageFilter.CreateMatrix(ToMatrix(filter.Matrix4), ToSamplingOptions(filter.FilterQuality), null);
+        {
+            return SKImageFilter.CreateMatrix(
+                ToMatrix(filter.Matrix4),
+                ToSamplingOptions(filter.FilterQuality),
+                null
+            );
+        }
+
         var blur = SKImageFilter.CreateBlur(
             (float)filter.SigmaX,
             (float)filter.SigmaY,
@@ -1822,8 +2851,12 @@ public sealed partial class SkiaSceneRenderer :
                 TileMode.mirror => SKShaderTileMode.Mirror,
                 TileMode.decal => SKShaderTileMode.Decal,
                 _ => SKShaderTileMode.Clamp,
-            });
-        if (filter.PlatformEffectIntent is not { Saturation: not 1 } intent) return blur;
+            }
+        );
+        if (filter.PlatformEffectIntent is not { Saturation: not 1 } intent)
+        {
+            return blur;
+        }
         // Raster-only PlatformEffect uses the same intent. Native adapters negotiate
         // saturation separately in the planner; no backend silently drops it.
         var saturation = (float)intent.Saturation;
@@ -1831,24 +2864,54 @@ public sealed partial class SkiaSceneRenderer :
         var green = .7152f * (1 - saturation);
         var blue = .0722f * (1 - saturation);
         using (blur)
-        using (var color = SKColorFilter.CreateColorMatrix([
-            red + saturation, green, blue, 0, 0,
-            red, green + saturation, blue, 0, 0,
-            red, green, blue + saturation, 0, 0,
-            0, 0, 0, 1, 0]))
+        using (
+            var color = SKColorFilter.CreateColorMatrix([
+                red + saturation,
+                green,
+                blue,
+                0,
+                0,
+                red,
+                green + saturation,
+                blue,
+                0,
+                0,
+                red,
+                green,
+                blue + saturation,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+            ])
+        )
+        {
             return SKImageFilter.CreateColorFilter(color, blur);
+        }
     }
 
-    private SKShader ToShader(ShaderSnapshot value) => value switch
-    {
-        GradientShaderSnapshot gradient => ToGradientShader(gradient),
-        ImageShaderSnapshot image => ToImageShader(image),
-        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(
-            fragment, CreateImageShader, RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner),
-        UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
-            $"The Doroti Skia backend rejects shader family '{unsupported.Family}'."),
-        _ => throw new NotSupportedException($"The Doroti Skia backend rejects shader snapshot '{value.GetType().Name}'."),
-    };
+    private SKShader ToShader(ShaderSnapshot value) =>
+        value switch
+        {
+            GradientShaderSnapshot gradient => ToGradientShader(gradient),
+            ImageShaderSnapshot image => ToImageShader(image),
+            FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(
+                fragment,
+                CreateImageShader,
+                RuntimeEffectBackend,
+                _contextGeneration,
+                _runtimeEffectContextOwner
+            ),
+            UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
+                $"The Doroti Skia backend rejects shader family '{unsupported.Family}'."
+            ),
+            _ => throw new NotSupportedException(
+                $"The Doroti Skia backend rejects shader snapshot '{value.GetType().Name}'."
+            ),
+        };
 
     private static SKShader ToGradientShader(GradientShaderSnapshot value)
     {
@@ -1857,98 +2920,181 @@ public sealed partial class SkiaSceneRenderer :
         var tile = ToTileMode(value.TileMode);
         var matrix = value.Matrix4 is null ? SKMatrix.Identity : ToMatrix(value.Matrix4);
         if (value.Begin is { } begin && value.End is { } end)
-            return SKShader.CreateLinearGradient(new((float)begin.dx, (float)begin.dy),
-                new((float)end.dx, (float)end.dy), colors, stops, tile, matrix);
+        {
+            return SKShader.CreateLinearGradient(
+                new((float)begin.dx, (float)begin.dy),
+                new((float)end.dx, (float)end.dy),
+                colors,
+                stops,
+                tile,
+                matrix
+            );
+        }
+
         if (value.Center is { } center && value.Radius > 0)
-            return SKShader.CreateRadialGradient(new((float)center.dx, (float)center.dy),
-                (float)value.Radius, colors, stops, tile, matrix);
+        {
+            return SKShader.CreateRadialGradient(
+                new((float)center.dx, (float)center.dy),
+                (float)value.Radius,
+                colors,
+                stops,
+                tile,
+                matrix
+            );
+        }
+
         if (value.Center is { } sweepCenter)
-            return SKShader.CreateSweepGradient(new((float)sweepCenter.dx, (float)sweepCenter.dy),
-                colors, stops, tile, (float)(value.StartAngle * 180 / Math.PI),
-                (float)(value.EndAngle * 180 / Math.PI), matrix);
+        {
+            return SKShader.CreateSweepGradient(
+                new((float)sweepCenter.dx, (float)sweepCenter.dy),
+                colors,
+                stops,
+                tile,
+                (float)(value.StartAngle * 180 / Math.PI),
+                (float)(value.EndAngle * 180 / Math.PI),
+                matrix
+            );
+        }
+
         throw new InvalidDataException("Doroti gradient shader has no supported geometry.");
     }
 
     private static SKShader ToImageShader(ImageShaderSnapshot value)
     {
         if (value.Image.HostHandle is not SkiaImageHandle handle)
+        {
             throw new InvalidDataException("Doroti image shader has no native image handle.");
-        return handle.Image.ToShader(ToTileMode(value.TileModeX), ToTileMode(value.TileModeY),
-            ToSamplingOptions(value.FilterQuality ?? FilterQuality.none), ToMatrix(value.Matrix4));
+        }
+
+        return handle.Image.ToShader(
+            ToTileMode(value.TileModeX),
+            ToTileMode(value.TileModeY),
+            ToSamplingOptions(value.FilterQuality ?? FilterQuality.none),
+            ToMatrix(value.Matrix4)
+        );
     }
 
     private static SKShader CreateImageShader(UiImage image)
     {
         if (image.HostHandle is not SkiaImageHandle handle)
-            throw new InvalidDataException("Doroti fragment shader sampler has no native image handle.");
-        return handle.Image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, SKSamplingOptions.Default);
+        {
+            throw new InvalidDataException(
+                "Doroti fragment shader sampler has no native image handle."
+            );
+        }
+
+        return handle.Image.ToShader(
+            SKShaderTileMode.Clamp,
+            SKShaderTileMode.Clamp,
+            SKSamplingOptions.Default
+        );
     }
 
-    private static SKColorFilter ToColorFilter(ColorFilterSnapshot value) => value.Kind switch
-    {
-        ColorFilterKind.mode => SKColorFilter.CreateBlendMode(
-            value.Color is null ? throw new InvalidDataException("Mode color filter has no color.") : ToColor(value.Color),
-            ToBlend(value.BlendMode)),
-        ColorFilterKind.matrix => SKColorFilter.CreateColorMatrix(
-            value.Matrix?.Select(item => (float)item).ToArray()
-            ?? throw new InvalidDataException("Matrix color filter has no matrix.")),
-        ColorFilterKind.linearToSrgbGamma => SKColorFilter.CreateLinearToSrgbGamma(),
-        ColorFilterKind.srgbToLinearGamma => SKColorFilter.CreateSrgbToLinearGamma(),
-        _ => throw new NotSupportedException($"Unsupported Doroti color filter '{value.Kind}'."),
-    };
+    private static SKColorFilter ToColorFilter(ColorFilterSnapshot value) =>
+        value.Kind switch
+        {
+            ColorFilterKind.mode => SKColorFilter.CreateBlendMode(
+                value.Color is null
+                    ? throw new InvalidDataException("Mode color filter has no color.")
+                    : ToColor(value.Color),
+                ToBlend(value.BlendMode)
+            ),
+            ColorFilterKind.matrix => SKColorFilter.CreateColorMatrix(
+                value.Matrix?.Select(item => (float)item).ToArray()
+                    ?? throw new InvalidDataException("Matrix color filter has no matrix.")
+            ),
+            ColorFilterKind.linearToSrgbGamma => SKColorFilter.CreateLinearToSrgbGamma(),
+            ColorFilterKind.srgbToLinearGamma => SKColorFilter.CreateSrgbToLinearGamma(),
+            _ => throw new NotSupportedException(
+                $"Unsupported Doroti color filter '{value.Kind}'."
+            ),
+        };
 
-    private static SKShaderTileMode ToTileMode(TileMode value) => value switch
-    {
-        TileMode.repeated => SKShaderTileMode.Repeat,
-        TileMode.mirror => SKShaderTileMode.Mirror,
-        TileMode.decal => SKShaderTileMode.Decal,
-        _ => SKShaderTileMode.Clamp,
-    };
+    private static SKShaderTileMode ToTileMode(TileMode value) =>
+        value switch
+        {
+            TileMode.repeated => SKShaderTileMode.Repeat,
+            TileMode.mirror => SKShaderTileMode.Mirror,
+            TileMode.decal => SKShaderTileMode.Decal,
+            _ => SKShaderTileMode.Clamp,
+        };
 
-    private static SKPointMode ToPointMode(PointMode value) => value switch
-    {
-        PointMode.lines => SKPointMode.Lines,
-        PointMode.polygon => SKPointMode.Polygon,
-        _ => SKPointMode.Points,
-    };
+    private static SKPointMode ToPointMode(PointMode value) =>
+        value switch
+        {
+            PointMode.lines => SKPointMode.Lines,
+            PointMode.polygon => SKPointMode.Polygon,
+            _ => SKPointMode.Points,
+        };
 
     private static SKPoint ToPoint(Offset value) => new((float)value.dx, (float)value.dy);
 
-    private static SKSamplingOptions ToSamplingOptions(FilterQuality value) => value switch
-    {
-        FilterQuality.low => new SKSamplingOptions(SKFilterMode.Linear),
-        FilterQuality.medium => new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
-        FilterQuality.high => new SKSamplingOptions(SKCubicResampler.Mitchell),
-        _ => new SKSamplingOptions(SKFilterMode.Nearest),
-    };
+    private static SKSamplingOptions ToSamplingOptions(FilterQuality value) =>
+        value switch
+        {
+            FilterQuality.low => new SKSamplingOptions(SKFilterMode.Linear),
+            FilterQuality.medium => new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
+            FilterQuality.high => new SKSamplingOptions(SKCubicResampler.Mitchell),
+            _ => new SKSamplingOptions(SKFilterMode.Nearest),
+        };
 
     private void DrawShadow(SKCanvas canvas, CanvasShadowPayload shadow)
     {
         var elevation = Math.Max(0, shadow.Elevation) * _shadowDeviceScale;
-        if (elevation <= 0 || shadow.Color.alpha == 0) return;
+        if (elevation <= 0 || shadow.Color.alpha == 0)
+        {
+            return;
+        }
+
         using var path = ToPath(shadow.Path);
         path.Transform(canvas.TotalMatrix);
         var ambientRadius = Math.Min(elevation * 0.5, 150);
-        var ambientBlur = 0.5 * ambientRadius * (1 + elevation / 128);
+        var ambientBlur = 0.5 * ambientRadius * (1 + (elevation / 128));
         var ambientStroke = 0.5 * (ambientRadius - ambientBlur);
-        var ambient = new SKColor(0, 0, 0, (byte)Math.Round(shadow.Color.alpha * 0.039, MidpointRounding.AwayFromZero));
+        var ambient = new SKColor(
+            0,
+            0,
+            0,
+            (byte)Math.Round(shadow.Color.alpha * 0.039, MidpointRounding.AwayFromZero)
+        );
         var spot = TonalSpotColor(ToColor(shadow.Color));
         var saved = canvas.Save();
         try
         {
             canvas.ResetMatrix();
-            if (!shadow.TransparentOccluder) canvas.ClipPath(path, SKClipOperation.Difference, true);
+            if (!shadow.TransparentOccluder)
+            {
+                canvas.ClipPath(path, SKClipOperation.Difference, true);
+            }
+
             DrawPass(0, ambient, ambientBlur, ambientStroke);
             DrawPass(elevation, spot, elevation * (800.0 / 600), 0);
         }
-        finally { canvas.RestoreToCount(saved); }
+        finally
+        {
+            canvas.RestoreToCount(saved);
+        }
 
         void DrawPass(double offsetY, SKColor color, double radius, double stroke)
         {
-            if (color.Alpha == 0) return;
-            using var mask = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, (float)(radius * 0.57735 + 0.5), false);
-            using var paint = new SKPaint { Color = color, MaskFilter = mask, IsAntialias = true,
-                Style = stroke > 0 ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill, StrokeWidth = (float)Math.Max(0, stroke) };
+            if (color.Alpha == 0)
+            {
+                return;
+            }
+
+            using var mask = SKMaskFilter.CreateBlur(
+                SKBlurStyle.Normal,
+                (float)((radius * 0.57735) + 0.5),
+                false
+            );
+            using var paint = new SKPaint
+            {
+                Color = color,
+                MaskFilter = mask,
+                IsAntialias = true,
+                Style = stroke > 0 ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill,
+                StrokeWidth = (float)Math.Max(0, stroke),
+            };
             var save = canvas.Save();
             canvas.Translate(0, (float)offsetY);
             canvas.DrawPath(path, paint);
@@ -1962,61 +3108,136 @@ public sealed partial class SkiaSceneRenderer :
     private static SKColor TonalSpotColor(SKColor color)
     {
         var alpha = Math.Round(color.Alpha * 0.25, MidpointRounding.AwayFromZero) / 255;
-        if (alpha == 0) return SKColors.Transparent;
-        var luminance = (Math.Max(color.Red, Math.Max(color.Green, color.Blue)) + Math.Min(color.Red, Math.Min(color.Green, color.Blue))) / 510.0;
-        var adjusted = (2.6 + (-2.66667 + 1.06667 * alpha) * alpha) * alpha;
-        var colorAlpha = Math.Clamp(adjusted * (3.544762 + (-4.891428 + 2.3466 * luminance) * luminance) * luminance, 0, 1);
-        var greyAlpha = Math.Clamp(alpha * (1 - 0.4 * luminance), 0, 1);
+        if (alpha == 0)
+        {
+            return SKColors.Transparent;
+        }
+
+        var luminance =
+            (
+                Math.Max(color.Red, Math.Max(color.Green, color.Blue))
+                + Math.Min(color.Red, Math.Min(color.Green, color.Blue))
+            ) / 510.0;
+        var adjusted = (2.6 + ((-2.66667 + (1.06667 * alpha)) * alpha)) * alpha;
+        var colorAlpha = Math.Clamp(
+            adjusted * (3.544762 + ((-4.891428 + (2.3466 * luminance)) * luminance)) * luminance,
+            0,
+            1
+        );
+        var greyAlpha = Math.Clamp(alpha * (1 - (0.4 * luminance)), 0, 1);
         var colorScale = colorAlpha * (1 - greyAlpha);
         var tonalAlpha = colorScale + greyAlpha;
         var scale = colorScale / tonalAlpha;
-        return new SKColor((byte)(scale * color.Red), (byte)(scale * color.Green), (byte)(scale * color.Blue), (byte)(tonalAlpha * 255.999));
+        return new SKColor(
+            (byte)(scale * color.Red),
+            (byte)(scale * color.Green),
+            (byte)(scale * color.Blue),
+            (byte)(tonalAlpha * 255.999)
+        );
     }
 
     private static SKPath ToPath(UiPath path)
     {
         using var builder = new SKPathBuilder
         {
-            FillType = path.fillType == PathFillType.evenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding,
+            FillType =
+                path.fillType == PathFillType.evenOdd
+                    ? SKPathFillType.EvenOdd
+                    : SKPathFillType.Winding,
         };
         foreach (var command in path.Commands)
         {
             var a = command.Arguments;
             switch (command.Operation)
             {
-                case "moveTo": builder.MoveTo((float)a[0], (float)a[1]); break;
-                case "lineTo": builder.LineTo((float)a[0], (float)a[1]); break;
-                case "quadraticBezierTo": builder.QuadTo((float)a[0], (float)a[1], (float)a[2], (float)a[3]); break;
-                case "cubicTo": builder.CubicTo((float)a[0], (float)a[1], (float)a[2], (float)a[3], (float)a[4], (float)a[5]); break;
-                case "addRect": builder.AddRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
-                case "addOval": builder.AddOval(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
-                case "addArc": builder.AddArc(
-                    new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
-                    (float)(a[4] * 180 / Math.PI),
-                    (float)(a[5] * 180 / Math.PI)); break;
-                case "arcTo": builder.ArcTo(
-                    new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
-                    (float)(a[4] * 180 / Math.PI),
-                    (float)(a[5] * 180 / Math.PI), a[6] != 0); break;
+                case "moveTo":
+                    builder.MoveTo((float)a[0], (float)a[1]);
+                    break;
+                case "lineTo":
+                    builder.LineTo((float)a[0], (float)a[1]);
+                    break;
+                case "quadraticBezierTo":
+                    builder.QuadTo((float)a[0], (float)a[1], (float)a[2], (float)a[3]);
+                    break;
+                case "cubicTo":
+                    builder.CubicTo(
+                        (float)a[0],
+                        (float)a[1],
+                        (float)a[2],
+                        (float)a[3],
+                        (float)a[4],
+                        (float)a[5]
+                    );
+                    break;
+                case "addRect":
+                    builder.AddRect(
+                        new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                        SKPathDirection.Clockwise
+                    );
+                    break;
+                case "addOval":
+                    builder.AddOval(
+                        new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                        SKPathDirection.Clockwise
+                    );
+                    break;
+                case "addArc":
+                    builder.AddArc(
+                        new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                        (float)(a[4] * 180 / Math.PI),
+                        (float)(a[5] * 180 / Math.PI)
+                    );
+                    break;
+                case "arcTo":
+                    builder.ArcTo(
+                        new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                        (float)(a[4] * 180 / Math.PI),
+                        (float)(a[5] * 180 / Math.PI),
+                        a[6] != 0
+                    );
+                    break;
                 case "addRSuperellipse":
-                    using (var superellipse = SkiaRSuperellipsePath.Create(new RSuperellipse(
-                        Rect.fromLTRB(a[0], a[1], a[2], a[3]),
-                        Radius.elliptical(a[4], a[5]),
-                        Radius.elliptical(a[6], a[7]),
-                        Radius.elliptical(a[8], a[9]),
-                        Radius.elliptical(a[10], a[11])))) builder.AddPath(superellipse);
+                    using (
+                        var superellipse = SkiaRSuperellipsePath.Create(
+                            new RSuperellipse(
+                                Rect.fromLTRB(a[0], a[1], a[2], a[3]),
+                                Radius.elliptical(a[4], a[5]),
+                                Radius.elliptical(a[6], a[7]),
+                                Radius.elliptical(a[8], a[9]),
+                                Radius.elliptical(a[10], a[11])
+                            )
+                        )
+                    )
+                    {
+                        builder.AddPath(superellipse);
+                    }
+
                     break;
                 case "addRRect":
                     using (var rounded = new SKRoundRect())
                     {
-                        var radii = a.Count >= 12
-                            ? new[] { new SKPoint((float)a[4], (float)a[5]), new SKPoint((float)a[6], (float)a[7]), new SKPoint((float)a[8], (float)a[9]), new SKPoint((float)a[10], (float)a[11]) }
-                            : Enumerable.Repeat(new SKPoint((float)a[4], (float)a[5]), 4).ToArray();
-                        rounded.SetRectRadii(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), radii);
+                        var radii =
+                            a.Count >= 12
+                                ? new[]
+                                {
+                                    new SKPoint((float)a[4], (float)a[5]),
+                                    new SKPoint((float)a[6], (float)a[7]),
+                                    new SKPoint((float)a[8], (float)a[9]),
+                                    new SKPoint((float)a[10], (float)a[11]),
+                                }
+                                : Enumerable
+                                    .Repeat(new SKPoint((float)a[4], (float)a[5]), 4)
+                                    .ToArray();
+                        rounded.SetRectRadii(
+                            new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                            radii
+                        );
                         builder.AddRoundRect(rounded, SKPathDirection.Clockwise);
                     }
                     break;
-                case "close": builder.Close(); break;
+                case "close":
+                    builder.Close();
+                    break;
             }
         }
         return builder.Detach();
@@ -2026,13 +3247,15 @@ public sealed partial class SkiaSceneRenderer :
     {
         using var builder = new SKPathBuilder();
         using var roundRect = new SKRoundRect();
-        roundRect.SetRectRadii(ToRect(value.outerRect),
-        [
-            new((float)value.tlRadius.x, (float)value.tlRadius.y),
-            new((float)value.trRadius.x, (float)value.trRadius.y),
-            new((float)value.brRadius.x, (float)value.brRadius.y),
-            new((float)value.blRadius.x, (float)value.blRadius.y),
-        ]);
+        roundRect.SetRectRadii(
+            ToRect(value.outerRect),
+            [
+                new((float)value.tlRadius.x, (float)value.tlRadius.y),
+                new((float)value.trRadius.x, (float)value.trRadius.y),
+                new((float)value.brRadius.x, (float)value.brRadius.y),
+                new((float)value.blRadius.x, (float)value.blRadius.y),
+            ]
+        );
         builder.AddRoundRect(roundRect, SKPathDirection.Clockwise);
         return builder.Detach();
     }
@@ -2041,8 +3264,12 @@ public sealed partial class SkiaSceneRenderer :
     {
         using var paint = ToPaint(draw.Paint);
         var rrect = draw.RRect;
-        if (rrect.tlRadius == Radius.zero && rrect.trRadius == Radius.zero &&
-            rrect.brRadius == Radius.zero && rrect.blRadius == Radius.zero)
+        if (
+            rrect.tlRadius == Radius.zero
+            && rrect.trRadius == Radius.zero
+            && rrect.brRadius == Radius.zero
+            && rrect.blRadius == Radius.zero
+        )
         {
             canvas.DrawRect(ToRect(rrect.outerRect), paint);
             return;
@@ -2055,20 +3282,38 @@ public sealed partial class SkiaSceneRenderer :
     {
         using var paint = ToPaint(draw.Paint);
         using var builder = new SKPathBuilder { FillType = SKPathFillType.EvenOdd };
-        builder.AddRoundRect(ToRect(draw.Outer.outerRect), (float)draw.Outer.tlRadiusX, (float)draw.Outer.tlRadiusY,
-            SKPathDirection.Clockwise);
-        builder.AddRoundRect(ToRect(draw.Inner.outerRect), (float)draw.Inner.tlRadiusX, (float)draw.Inner.tlRadiusY,
-            SKPathDirection.Clockwise);
+        builder.AddRoundRect(
+            ToRect(draw.Outer.outerRect),
+            (float)draw.Outer.tlRadiusX,
+            (float)draw.Outer.tlRadiusY,
+            SKPathDirection.Clockwise
+        );
+        builder.AddRoundRect(
+            ToRect(draw.Inner.outerRect),
+            (float)draw.Inner.tlRadiusX,
+            (float)draw.Inner.tlRadiusY,
+            SKPathDirection.Clockwise
+        );
         using var path = builder.Detach();
         canvas.DrawPath(path, paint);
     }
 
-    private static SKRect ToRect(Rect value) => new((float)value.left, (float)value.top, (float)value.right, (float)value.bottom);
+    private static SKRect ToRect(Rect value) =>
+        new((float)value.left, (float)value.top, (float)value.right, (float)value.bottom);
+
     private static bool IsFinite(SKRect value) =>
-        float.IsFinite(value.Left) && float.IsFinite(value.Top) &&
-        float.IsFinite(value.Right) && float.IsFinite(value.Bottom);
-    private static SKColor ToColor(UiColor value) => new((byte)value.red, (byte)value.green, (byte)value.blue, (byte)value.alpha);
-    private static SKBlendMode ToBlend(BlendMode value) => Enum.TryParse<SKBlendMode>(value.ToString(), true, out var result) ? result : SKBlendMode.SrcOver;
+        float.IsFinite(value.Left)
+        && float.IsFinite(value.Top)
+        && float.IsFinite(value.Right)
+        && float.IsFinite(value.Bottom);
+
+    private static SKColor ToColor(UiColor value) =>
+        new((byte)value.red, (byte)value.green, (byte)value.blue, (byte)value.alpha);
+
+    private static SKBlendMode ToBlend(BlendMode value) =>
+        Enum.TryParse<SKBlendMode>(value.ToString(), true, out var result)
+            ? result
+            : SKBlendMode.SrcOver;
 
     private static void Concat(SKCanvas canvas, IReadOnlyList<double> matrix)
     {
@@ -2077,7 +3322,11 @@ public sealed partial class SkiaSceneRenderer :
 
     private static SKMatrix ToMatrix(IReadOnlyList<double> matrix)
     {
-        if (matrix.Count < 16) throw new InvalidDataException("A Doroti transform must contain 16 values.");
+        if (matrix.Count < 16)
+        {
+            throw new InvalidDataException("A Doroti transform must contain 16 values.");
+        }
+
         return new SKMatrix
         {
             ScaleX = (float)matrix[0],
@@ -2095,31 +3344,70 @@ public sealed partial class SkiaSceneRenderer :
     private sealed class SkiaImageHandle : IDorotiImageHandle
     {
         private readonly SharedImage _shared;
+
         internal SkiaImageHandle(SKImage image) => _shared = new(image);
-        private SkiaImageHandle(SharedImage shared) { _shared = shared; Interlocked.Increment(ref shared.References); }
+
+        private SkiaImageHandle(SharedImage shared)
+        {
+            _shared = shared;
+            Interlocked.Increment(ref shared.References);
+        }
+
         internal SKImage Image => _shared.Image;
+
         public IDorotiImageHandle Clone() => new SkiaImageHandle(_shared);
+
         public ValueTask<Runtime.ByteData> ReadBytesAsync(ImageByteFormat format)
         {
             if (format == ImageByteFormat.png)
             {
-                using var encoded = Image.Encode(SKEncodedImageFormat.Png, 100)
+                using var encoded =
+                    Image.Encode(SKEncodedImageFormat.Png, 100)
                     ?? throw new InvalidOperationException("Skia PNG encoding failed.");
-                return ValueTask.FromResult(new Runtime.ByteData(new Runtime.Uint8List(encoded.ToArray())));
+                return ValueTask.FromResult(
+                    new Runtime.ByteData(new Runtime.Uint8List(encoded.ToArray()))
+                );
             }
-            var alpha = format == ImageByteFormat.rawStraightRgba ? SKAlphaType.Unpremul : SKAlphaType.Premul;
+            var alpha =
+                format == ImageByteFormat.rawStraightRgba
+                    ? SKAlphaType.Unpremul
+                    : SKAlphaType.Premul;
             // rawUnmodified is canonicalized to this host's tightly packed RGBA8/premultiplied storage.
             using var colorSpace = SKColorSpace.CreateSrgb();
-            using var bitmap = new SKBitmap(new SKImageInfo(Image.Width, Image.Height, SKColorType.Rgba8888, alpha, colorSpace));
+            using var bitmap = new SKBitmap(
+                new SKImageInfo(Image.Width, Image.Height, SKColorType.Rgba8888, alpha, colorSpace)
+            );
             if (!Image.ReadPixels(bitmap.Info, bitmap.GetPixels(), bitmap.RowBytes, 0, 0))
+            {
                 throw new InvalidOperationException("Skia image pixel readback failed.");
+            }
+
             var bytes = new byte[checked(Image.Width * Image.Height * 4)];
             for (var row = 0; row < Image.Height; row++)
-                System.Runtime.InteropServices.Marshal.Copy(bitmap.GetPixels() + row * bitmap.RowBytes,
-                    bytes, row * Image.Width * 4, Image.Width * 4);
+            {
+                System.Runtime.InteropServices.Marshal.Copy(
+                    bitmap.GetPixels() + (row * bitmap.RowBytes),
+                    bytes,
+                    row * Image.Width * 4,
+                    Image.Width * 4
+                );
+            }
+
             return ValueTask.FromResult(new Runtime.ByteData(new Runtime.Uint8List(bytes)));
         }
-        public void Release() { if (Interlocked.Decrement(ref _shared.References) == 0) _shared.Image.Dispose(); }
-        private sealed class SharedImage(SKImage image) { internal readonly SKImage Image = image; internal int References = 1; }
+
+        public void Release()
+        {
+            if (Interlocked.Decrement(ref _shared.References) == 0)
+            {
+                _shared.Image.Dispose();
+            }
+        }
+
+        private sealed class SharedImage(SKImage image)
+        {
+            internal readonly SKImage Image = image;
+            internal int References = 1;
+        }
     }
 }

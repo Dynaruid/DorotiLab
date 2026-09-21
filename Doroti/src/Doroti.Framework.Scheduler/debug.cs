@@ -29,15 +29,14 @@ public static partial class DebugLibrary
     public static bool debugAssertAllSchedulerVarsUnset(string reason)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (debugPrintBeginFrameBanner || debugPrintEndFrameBanner)
             {
-                if (debugPrintBeginFrameBanner || debugPrintEndFrameBanner)
-                {
-                    throw new FlutterError(reason);
-                }
-                return true;
-            });
+                throw new FlutterError(reason);
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

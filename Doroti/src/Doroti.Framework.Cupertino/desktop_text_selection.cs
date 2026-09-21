@@ -6,34 +6,46 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Cupertino;
 
-internal class _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection : CupertinoDesktopTextSelectionControls, TextSelectionHandleControls
+internal class _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection
+    : CupertinoDesktopTextSelectionControls,
+        TextSelectionHandleControls
 {
+    public override Widget buildToolbar(
+        BuildContext context,
+        Rect globalEditableRegion,
+        double textLineHeight,
+        Offset selectionMidpoint,
+        List<TextSelectionPoint> endpoints,
+        TextSelectionDelegate @delegate,
+        ValueListenable<ClipboardStatus>? clipboardStatus,
+        Offset? lastSecondaryTapDownPosition
+    ) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
 
-    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
     public override bool canCut(TextSelectionDelegate @delegate) => false;
+
     public override bool canCopy(TextSelectionDelegate @delegate) => false;
+
     public override bool canPaste(TextSelectionDelegate @delegate) => false;
+
     public override bool canSelectAll(TextSelectionDelegate @delegate) => false;
+
     public override void handleCut(TextSelectionDelegate @delegate) { }
 
-    public virtual void handleCut(TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
-    {
-    }
+    public virtual void handleCut(
+        TextSelectionDelegate @delegate,
+        ClipboardStatusNotifier? clipboardStatus = null
+    ) { }
 
     public override void handleCopy(TextSelectionDelegate @delegate) { }
 
-    public virtual void handleCopy(TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
-    {
-    }
+    public virtual void handleCopy(
+        TextSelectionDelegate @delegate,
+        ClipboardStatusNotifier? clipboardStatus = null
+    ) { }
 
-    public async override Future handlePaste(TextSelectionDelegate @delegate)
-    {
-    }
+    public override async Future handlePaste(TextSelectionDelegate @delegate) { }
 
-    public override void handleSelectAll(TextSelectionDelegate @delegate)
-    {
-    }
-
+    public override void handleSelectAll(TextSelectionDelegate @delegate) { }
 }
 
 public class CupertinoDesktopTextSelectionControls : TextSelectionControls
@@ -44,13 +56,66 @@ public class CupertinoDesktopTextSelectionControls : TextSelectionControls
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition)
+    public override Widget buildToolbar(
+        BuildContext context,
+        Rect globalEditableRegion,
+        double textLineHeight,
+        Offset selectionMidpoint,
+        List<TextSelectionPoint> endpoints,
+        TextSelectionDelegate @delegate,
+        ValueListenable<ClipboardStatus>? clipboardStatus,
+        Offset? lastSecondaryTapDownPosition
+    )
     {
-        return new _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(clipboardStatus: clipboardStatus, endpoints: endpoints, globalEditableRegion: globalEditableRegion, handleCut: canCut(@delegate) ? (() => { handleCut(@delegate); }) : null, handleCopy: canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null, handlePaste: canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null, handleSelectAll: canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null, selectionMidpoint: selectionMidpoint, lastSecondaryTapDownPosition: lastSecondaryTapDownPosition, textLineHeight: textLineHeight);
+        return new _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(
+            clipboardStatus: clipboardStatus,
+            endpoints: endpoints,
+            globalEditableRegion: globalEditableRegion,
+            handleCut: canCut(@delegate)
+                ? (
+                    () =>
+                    {
+                        handleCut(@delegate);
+                    }
+                )
+                : null,
+            handleCopy: canCopy(@delegate)
+                ? (
+                    () =>
+                    {
+                        handleCopy(@delegate);
+                    }
+                )
+                : null,
+            handlePaste: canPaste(@delegate)
+                ? (
+                    () =>
+                    {
+                        _ = handlePaste(@delegate);
+                    }
+                )
+                : null,
+            handleSelectAll: canSelectAll(@delegate)
+                ? (
+                    () =>
+                    {
+                        handleSelectAll(@delegate);
+                    }
+                )
+                : null,
+            selectionMidpoint: selectionMidpoint,
+            lastSecondaryTapDownPosition: lastSecondaryTapDownPosition,
+            textLineHeight: textLineHeight
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Widget buildHandle(BuildContext context, TextSelectionHandleType type, double textLineHeight, Action? onTap = null)
+    public override Widget buildHandle(
+        BuildContext context,
+        TextSelectionHandleType type,
+        double textLineHeight,
+        Action? onTap = null
+    )
     {
         return SizedBox.CreateShrink();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -67,17 +132,18 @@ public class CupertinoDesktopTextSelectionControls : TextSelectionControls
         base.handleSelectAll(@delegate);
         @delegate.hideToolbar();
     }
-
 }
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static TextSelectionControls cupertinoDesktopTextSelectionHandleControls = new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection();
+    public static TextSelectionControls cupertinoDesktopTextSelectionHandleControls =
+        new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection();
 }
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static TextSelectionControls cupertinoDesktopTextSelectionControls = new CupertinoDesktopTextSelectionControls();
+    public static TextSelectionControls cupertinoDesktopTextSelectionControls =
+        new CupertinoDesktopTextSelectionControls();
 }
 
 public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection : StatefulWidget
@@ -93,7 +159,18 @@ public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selecti
     public virtual Offset selectionMidpoint { get; private set; } = default!;
     public virtual double textLineHeight { get; private set; } = default!;
 
-    internal _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(ValueListenable<ClipboardStatus>? clipboardStatus, List<TextSelectionPoint> endpoints, Rect globalEditableRegion, Action? handleCopy, Action? handleCut, Action? handlePaste, Action? handleSelectAll, Offset selectionMidpoint, double textLineHeight, Offset? lastSecondaryTapDownPosition)
+    internal _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(
+        ValueListenable<ClipboardStatus>? clipboardStatus,
+        List<TextSelectionPoint> endpoints,
+        Rect globalEditableRegion,
+        Action? handleCopy,
+        Action? handleCut,
+        Action? handlePaste,
+        Action? handleSelectAll,
+        Offset selectionMidpoint,
+        double textLineHeight,
+        Offset? lastSecondaryTapDownPosition
+    )
     {
         this.clipboardStatus = clipboardStatus;
         this.endpoints = endpoints;
@@ -107,16 +184,18 @@ public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selecti
         this.lastSecondaryTapDownPosition = lastSecondaryTapDownPosition;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection()
+        );
 }
 
-public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection : State<_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection>
+public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection
+    : State<_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection>
 {
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
     public override void initState()
@@ -125,7 +204,9 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         widget.clipboardStatus?.addListener(_onChangedClipboardStatus);
     }
 
-    public override void didUpdateWidget(_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection oldWidget)
+    public override void didUpdateWidget(
+        _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection oldWidget
+    )
     {
         base.didUpdateWidget(oldWidget);
         if (!Equals(oldWidget.clipboardStatus, widget.clipboardStatus))
@@ -143,23 +224,40 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
 
     public override Widget build(BuildContext context)
     {
-        if ((widget.handlePaste is not null) && Equals(widget.clipboardStatus?.value, ClipboardStatus.unknown))
+        if (
+            (widget.handlePaste is not null)
+            && Equals(widget.clipboardStatus?.value, ClipboardStatus.unknown)
+        )
         {
             return SizedBox.CreateShrink();
         }
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-        var midpointAnchor = new Offset(Dart_uiLibrary.clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left, mediaQueryPadding.left, MediaQuery.widthOf(context) - mediaQueryPadding.right), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
+        var midpointAnchor = new Offset(
+            Dart_uiLibrary.clampDouble(
+                widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
+                mediaQueryPadding.left,
+                MediaQuery.widthOf(context) - mediaQueryPadding.right
+            ),
+            widget.selectionMidpoint.dy - widget.globalEditableRegion.top
+        );
         var items = new List<Widget>();
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-        Widget onePhysicalPixelVerticalDivider = new SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
+        Widget onePhysicalPixelVerticalDivider = new SizedBox(
+            width: 1.0 / MediaQuery.devicePixelRatioOf(context)
+        );
         void addToolbarButton(string text, Action onPressed)
         {
             if (Enumerable.Any(items))
             {
                 items.Add(onePhysicalPixelVerticalDivider);
             }
-            items.Add(CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: () => onPressed(), text: text));
+            items.Add(
+                CupertinoDesktopTextSelectionToolbarButton.CreateText(
+                    onPressed: () => onPressed(),
+                    text: text
+                )
+            );
         }
         if (widget.handleCut is not null)
         {
@@ -169,7 +267,10 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         {
             addToolbarButton(localizations.copyButtonLabel, widget.handleCopy!);
         }
-        if ((widget.handlePaste is not null) && Equals(widget.clipboardStatus?.value, ClipboardStatus.pasteable))
+        if (
+            (widget.handlePaste is not null)
+            && Equals(widget.clipboardStatus?.value, ClipboardStatus.pasteable)
+        )
         {
             addToolbarButton(localizations.pasteButtonLabel, widget.handlePaste!);
         }
@@ -181,8 +282,10 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         {
             return SizedBox.CreateShrink();
         }
-        return new CupertinoDesktopTextSelectionToolbar(anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor, children: items);
+        return new CupertinoDesktopTextSelectionToolbar(
+            anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor,
+            children: items
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

@@ -15,9 +15,8 @@ public static partial class ToggleableLibrary
     public static Duration _kReactionFadeDuration = Duration.Create(milliseconds: 50L);
 }
 
-public interface ToggleableStateMixin<S> : IToggleableState where S : StatefulWidget
-{
-}
+public interface ToggleableStateMixin<S> : IToggleableState
+    where S : StatefulWidget { }
 
 /// <summary>State and animation contract shared by toggle controls of any value type.</summary>
 public interface IToggleableState : IState
@@ -57,7 +56,13 @@ public interface IToggleableState : IState
     public void _handleFocusHighlightChanged(bool focused);
     public void _handleHoverChanged(bool hovering);
     public HashSet<WidgetState> states { get; }
-    public Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!);
+    public Widget buildToggleableWithChild(
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        Widget child = default!
+    );
 }
 
 public abstract class ToggleablePainter : ChangeNotifier
@@ -296,18 +301,49 @@ public abstract class ToggleablePainter : ChangeNotifier
             notifyListeners();
         }
     }
-    public virtual void paintRadialReaction(Canvas canvas, Offset offset = default, Offset origin = default!)
+
+    public virtual void paintRadialReaction(
+        Canvas canvas,
+        Offset offset = default,
+        Offset origin = default!
+    )
     {
-        if (!reaction.isDismissed || !reactionFocusFade.isDismissed || !reactionHoverFade.isDismissed)
+        if (
+            !reaction.isDismissed
+            || !reactionFocusFade.isDismissed
+            || !reactionHoverFade.isDismissed
+        )
         {
-            var reactionPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(inactiveReactionColor, reactionColor, position.value), hoverColor, reactionHoverFade.value), focusColor, reactionFocusFade.value)!;
-    return __cascade;
-}))();
-            Animatable<double> radialReactionRadiusTween = new Tween<double>(begin: 0.0, end: splashRadius);
-            double reactionRadius = (isFocused || isHovered) ? splashRadius : radialReactionRadiusTween.evaluate(reaction);
+            var reactionPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = Dart_uiLibrary.Color.lerp(
+                            Dart_uiLibrary.Color.lerp(
+                                Dart_uiLibrary.Color.lerp(
+                                    inactiveReactionColor,
+                                    reactionColor,
+                                    position.value
+                                ),
+                                hoverColor,
+                                reactionHoverFade.value
+                            ),
+                            focusColor,
+                            reactionFocusFade.value
+                        )!;
+                        return __cascade;
+                    }
+                )
+            )();
+            Animatable<double> radialReactionRadiusTween = new Tween<double>(
+                begin: 0.0,
+                end: splashRadius
+            );
+            double reactionRadius =
+                (isFocused || isHovered)
+                    ? splashRadius
+                    : radialReactionRadiusTween.evaluate(reaction);
             if (reactionRadius > 0.0)
             {
                 canvas.drawCircle(origin + offset, reactionRadius, reactionPaint);
@@ -327,9 +363,14 @@ public abstract class ToggleablePainter : ChangeNotifier
     }
 
     public virtual bool shouldRepaint(CustomPainter oldDelegate) => true;
+
     public virtual bool? hitTest(Offset position) => null;
-    public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
+
+    public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder =>
+        DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
+
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
+
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
@@ -337,13 +378,14 @@ internal sealed class ToggleableCustomPainterAdapter : CustomPainter
 {
     private readonly ToggleablePainter _owner;
 
-    internal ToggleableCustomPainterAdapter(ToggleablePainter owner) : base(owner) =>
-        _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    internal ToggleableCustomPainterAdapter(ToggleablePainter owner)
+        : base(owner) => _owner = owner ?? throw new ArgumentNullException(nameof(owner));
 
     public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);
 
     public override bool shouldRepaint(CustomPainter oldDelegate) =>
-        oldDelegate is not ToggleableCustomPainterAdapter other || !ReferenceEquals(_owner, other._owner);
+        oldDelegate is not ToggleableCustomPainterAdapter other
+        || !ReferenceEquals(_owner, other._owner);
 
     public override bool? hitTest(Offset position) => _owner.hitTest(position);
 
@@ -351,7 +393,7 @@ internal sealed class ToggleableCustomPainterAdapter : CustomPainter
         _owner.semanticsBuilder;
 
     public override bool shouldRebuildSemantics(CustomPainter oldDelegate) =>
-        oldDelegate is not ToggleableCustomPainterAdapter other ||
-        !ReferenceEquals(_owner, other._owner) ||
-        _owner.shouldRebuildSemantics(oldDelegate);
+        oldDelegate is not ToggleableCustomPainterAdapter other
+        || !ReferenceEquals(_owner, other._owner)
+        || _owner.shouldRebuildSemantics(oldDelegate);
 }

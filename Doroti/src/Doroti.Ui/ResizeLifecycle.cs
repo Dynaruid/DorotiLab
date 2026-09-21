@@ -15,7 +15,8 @@ public sealed record DorotiResizeEpoch(
     int PhysicalHeight,
     double DeviceScaleX,
     double DeviceScaleY,
-    long TimestampMicroseconds)
+    long TimestampMicroseconds
+)
 {
     [JsonConstructor]
     public DorotiResizeEpoch(
@@ -25,13 +26,21 @@ public sealed record DorotiResizeEpoch(
         int physicalWidth,
         int physicalHeight,
         double devicePixelRatio,
-        long timestampMicroseconds)
-        : this(generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
-            devicePixelRatio, devicePixelRatio, timestampMicroseconds) { }
+        long timestampMicroseconds
+    )
+        : this(
+            generation,
+            logicalWidth,
+            logicalHeight,
+            physicalWidth,
+            physicalHeight,
+            devicePixelRatio,
+            devicePixelRatio,
+            timestampMicroseconds
+        ) { }
 
     public double DevicePixelRatio => DeviceScaleX;
-    public bool HasUniformDeviceScale =>
-        Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
+    public bool HasUniformDeviceScale => Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
 
     public bool HasDrawableSize =>
         LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
@@ -52,11 +61,11 @@ public sealed record DorotiViewEpoch(
     int PhysicalHeight,
     double DeviceScaleX,
     double DeviceScaleY,
-    long TimestampMicroseconds)
+    long TimestampMicroseconds
+)
 {
     public double DevicePixelRatio => DeviceScaleX;
-    public bool HasUniformDeviceScale =>
-        Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
+    public bool HasUniformDeviceScale => Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
     public bool HasDrawableSize =>
         LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
 }
@@ -66,12 +75,17 @@ public sealed record DorotiSceneBuildToken(
     DorotiViewEpoch ViewEpoch,
     long FrameworkFrameNumber,
     int RootPhysicalWidth,
-    int RootPhysicalHeight)
+    int RootPhysicalHeight
+)
 {
     public bool HasRootPhysicalSize => RootPhysicalWidth > 0 && RootPhysicalHeight > 0;
 
     public DorotiSceneBuildToken WithRootPhysicalSize(int width, int height) =>
-        this with { RootPhysicalWidth = width, RootPhysicalHeight = height };
+        this with
+        {
+            RootPhysicalWidth = width,
+            RootPhysicalHeight = height,
+        };
 }
 
 /// <summary>
@@ -93,7 +107,8 @@ public sealed record DorotiFrameDescriptor(
     int RootPhysicalWidth,
     int RootPhysicalHeight,
     long FrameworkFrameNumber,
-    long SceneSequence)
+    long SceneSequence
+)
 {
     public double DevicePixelRatio => DeviceScaleX;
     public bool HasDrawableSize =>
@@ -101,7 +116,8 @@ public sealed record DorotiFrameDescriptor(
 
     public static DorotiFrameDescriptor FromBuildToken(
         DorotiSceneBuildToken token,
-        long sceneSequence)
+        long sceneSequence
+    )
     {
         ArgumentNullException.ThrowIfNull(token);
         var epoch = token.ViewEpoch;
@@ -118,16 +134,25 @@ public sealed record DorotiFrameDescriptor(
             token.RootPhysicalWidth,
             token.RootPhysicalHeight,
             token.FrameworkFrameNumber,
-            sceneSequence);
+            sceneSequence
+        );
     }
 
     public int CompareAdmissionTo(DorotiFrameDescriptor other)
     {
         ArgumentNullException.ThrowIfNull(other);
         var target = ResizeTargetGeneration.CompareTo(other.ResizeTargetGeneration);
-        if (target != 0) return target;
+        if (target != 0)
+        {
+            return target;
+        }
+
         var metrics = MetricsGeneration.CompareTo(other.MetricsGeneration);
-        if (metrics != 0) return metrics;
+        if (metrics != 0)
+        {
+            return metrics;
+        }
+
         return SceneSequence.CompareTo(other.SceneSequence);
     }
 
@@ -137,47 +162,117 @@ public sealed record DorotiFrameDescriptor(
         int surfaceWidth,
         int surfaceHeight,
         double surfaceScaleX,
-        double surfaceScaleY)
+        double surfaceScaleY
+    )
     {
         ArgumentNullException.ThrowIfNull(current);
         ArgumentNullException.ThrowIfNull(target);
 
-        if (!current.HasUniformDeviceScale || !target.HasUniformDeviceScale ||
-            Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon)
+        if (
+            !current.HasUniformDeviceScale
+            || !target.HasUniformDeviceScale
+            || Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon
+        )
+        {
             return DorotiFrameMatchResult.Mismatch(
                 DorotiFrameMismatch.nonUniformDeviceScale,
-                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}");
+                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}"
+            );
+        }
+
         if (ViewId != current.ViewId)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.viewId,
-                $"scene={ViewId}; current={current.ViewId}");
-        if (ResizeTargetGeneration != current.ResizeTargetGeneration ||
-            ResizeTargetGeneration != target.Generation)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.resizeTargetGeneration,
-                $"scene={ResizeTargetGeneration}; current={current.ResizeTargetGeneration}; target={target.Generation}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.viewId,
+                $"scene={ViewId}; current={current.ViewId}"
+            );
+        }
+
+        if (
+            ResizeTargetGeneration != current.ResizeTargetGeneration
+            || ResizeTargetGeneration != target.Generation
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.resizeTargetGeneration,
+                $"scene={ResizeTargetGeneration}; current={current.ResizeTargetGeneration}; target={target.Generation}"
+            );
+        }
+
         if (MetricsGeneration != current.MetricsGeneration)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.metricsGeneration,
-                $"scene={MetricsGeneration}; current={current.MetricsGeneration}");
-        if (LogicalWidth != current.LogicalWidth || LogicalHeight != current.LogicalHeight ||
-            LogicalWidth != target.LogicalWidth || LogicalHeight != target.LogicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.logicalSize,
-                $"scene={LogicalWidth}x{LogicalHeight}; current={current.LogicalWidth}x{current.LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}");
-        if (PhysicalWidth != current.PhysicalWidth || PhysicalHeight != current.PhysicalHeight ||
-            PhysicalWidth != target.PhysicalWidth || PhysicalHeight != target.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.physicalSize,
-                $"scene={PhysicalWidth}x{PhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
-        if (DeviceScaleX != current.DeviceScaleX || DeviceScaleY != current.DeviceScaleY ||
-            DeviceScaleX != target.DeviceScaleX || DeviceScaleY != target.DeviceScaleY)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.deviceScale,
-                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
-        if (RootPhysicalWidth != current.PhysicalWidth || RootPhysicalHeight != current.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.rootPhysicalSize,
-                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.metricsGeneration,
+                $"scene={MetricsGeneration}; current={current.MetricsGeneration}"
+            );
+        }
+
+        if (
+            LogicalWidth != current.LogicalWidth
+            || LogicalHeight != current.LogicalHeight
+            || LogicalWidth != target.LogicalWidth
+            || LogicalHeight != target.LogicalHeight
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.logicalSize,
+                $"scene={LogicalWidth}x{LogicalHeight}; current={current.LogicalWidth}x{current.LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}"
+            );
+        }
+
+        if (
+            PhysicalWidth != current.PhysicalWidth
+            || PhysicalHeight != current.PhysicalHeight
+            || PhysicalWidth != target.PhysicalWidth
+            || PhysicalHeight != target.PhysicalHeight
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.physicalSize,
+                $"scene={PhysicalWidth}x{PhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}"
+            );
+        }
+
+        if (
+            DeviceScaleX != current.DeviceScaleX
+            || DeviceScaleY != current.DeviceScaleY
+            || DeviceScaleX != target.DeviceScaleX
+            || DeviceScaleY != target.DeviceScaleY
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.deviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}"
+            );
+        }
+
+        if (
+            RootPhysicalWidth != current.PhysicalWidth
+            || RootPhysicalHeight != current.PhysicalHeight
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.rootPhysicalSize,
+                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}"
+            );
+        }
+
         if (surfaceWidth != target.PhysicalWidth || surfaceHeight != target.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfacePhysicalSize,
-                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.surfacePhysicalSize,
+                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}"
+            );
+        }
+
         if (surfaceScaleX != target.DeviceScaleX || surfaceScaleY != target.DeviceScaleY)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfaceDeviceScale,
-                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.surfaceDeviceScale,
+                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}"
+            );
+        }
+
         return DorotiFrameMatchResult.Exact;
     }
 
@@ -191,35 +286,80 @@ public sealed record DorotiFrameDescriptor(
         int surfaceWidth,
         int surfaceHeight,
         double surfaceScaleX,
-        double surfaceScaleY)
+        double surfaceScaleY
+    )
     {
         ArgumentNullException.ThrowIfNull(target);
-        if (!target.HasUniformDeviceScale ||
-            Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon)
+        if (
+            !target.HasUniformDeviceScale
+            || Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon
+        )
+        {
             return DorotiFrameMatchResult.Mismatch(
                 DorotiFrameMismatch.nonUniformDeviceScale,
-                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}");
+                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}"
+            );
+        }
+
         if (ResizeTargetGeneration != target.Generation)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.resizeTargetGeneration,
-                $"scene={ResizeTargetGeneration}; target={target.Generation}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.resizeTargetGeneration,
+                $"scene={ResizeTargetGeneration}; target={target.Generation}"
+            );
+        }
+
         if (LogicalWidth != target.LogicalWidth || LogicalHeight != target.LogicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.logicalSize,
-                $"scene={LogicalWidth}x{LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.logicalSize,
+                $"scene={LogicalWidth}x{LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}"
+            );
+        }
+
         if (PhysicalWidth != target.PhysicalWidth || PhysicalHeight != target.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.physicalSize,
-                $"scene={PhysicalWidth}x{PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.physicalSize,
+                $"scene={PhysicalWidth}x{PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}"
+            );
+        }
+
         if (DeviceScaleX != target.DeviceScaleX || DeviceScaleY != target.DeviceScaleY)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.deviceScale,
-                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
-        if (RootPhysicalWidth != target.PhysicalWidth || RootPhysicalHeight != target.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.rootPhysicalSize,
-                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.deviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}"
+            );
+        }
+
+        if (
+            RootPhysicalWidth != target.PhysicalWidth
+            || RootPhysicalHeight != target.PhysicalHeight
+        )
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.rootPhysicalSize,
+                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}"
+            );
+        }
+
         if (surfaceWidth != target.PhysicalWidth || surfaceHeight != target.PhysicalHeight)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfacePhysicalSize,
-                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.surfacePhysicalSize,
+                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}"
+            );
+        }
+
         if (surfaceScaleX != target.DeviceScaleX || surfaceScaleY != target.DeviceScaleY)
-            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfaceDeviceScale,
-                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        {
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.surfaceDeviceScale,
+                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}"
+            );
+        }
+
         return DorotiFrameMatchResult.Exact;
     }
 }
@@ -240,16 +380,18 @@ public enum DorotiFrameMismatch
     nonUniformDeviceScale,
 }
 
-public sealed record DorotiFrameMatchResult(
-    DorotiFrameMismatch MismatchCode,
-    string? Detail = null)
+public sealed record DorotiFrameMatchResult(DorotiFrameMismatch MismatchCode, string? Detail = null)
 {
     public static DorotiFrameMatchResult Exact { get; } = new(DorotiFrameMismatch.none);
     public bool IsExact => MismatchCode == DorotiFrameMismatch.none;
 
     public static DorotiFrameMatchResult Mismatch(DorotiFrameMismatch code, string detail)
     {
-        if (code == DorotiFrameMismatch.none) throw new ArgumentOutOfRangeException(nameof(code));
+        if (code == DorotiFrameMismatch.none)
+        {
+            throw new ArgumentOutOfRangeException(nameof(code));
+        }
+
         return new(code, detail);
     }
 }
@@ -294,7 +436,8 @@ public sealed record DorotiBackingStoreIdentity(
     int PhysicalWidth,
     int PhysicalHeight,
     double DeviceScaleX,
-    double DeviceScaleY);
+    double DeviceScaleY
+);
 
 public sealed record DorotiFrameTransactionSnapshot(
     long TransactionId,
@@ -306,7 +449,8 @@ public sealed record DorotiFrameTransactionSnapshot(
     DorotiBackingStoreIdentity? BackingStore,
     string VisibleTargetIdentity,
     DorotiFrameTerminal? Terminal,
-    string? TerminalReason);
+    string? TerminalReason
+);
 
 /// <summary>
 /// Owns the identity and legal state transitions for one exact frame. The
@@ -316,8 +460,9 @@ public sealed record DorotiFrameTransactionSnapshot(
 public sealed class DorotiFrameTransaction
 {
     private readonly object _gate = new();
-    private readonly TaskCompletionSource<DorotiFrameTransactionSnapshot> _completion =
-        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource<DorotiFrameTransactionSnapshot> _completion = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
     private DorotiFrameTransactionState _state = DorotiFrameTransactionState.observedTarget;
     private DorotiViewEpoch? _metricsEpoch;
     private DorotiSceneBuildToken? _buildToken;
@@ -329,9 +474,14 @@ public sealed class DorotiFrameTransaction
     public DorotiFrameTransaction(
         long transactionId,
         DorotiResizeEpoch target,
-        string visibleTargetIdentity)
+        string visibleTargetIdentity
+    )
     {
-        if (transactionId <= 0) throw new ArgumentOutOfRangeException(nameof(transactionId));
+        if (transactionId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(transactionId));
+        }
+
         ArgumentNullException.ThrowIfNull(target);
         ArgumentException.ThrowIfNullOrWhiteSpace(visibleTargetIdentity);
         TransactionId = transactionId;
@@ -346,7 +496,13 @@ public sealed class DorotiFrameTransaction
 
     public DorotiFrameTransactionSnapshot Snapshot
     {
-        get { lock (_gate) return SnapshotCore(); }
+        get
+        {
+            lock (_gate)
+            {
+                return SnapshotCore();
+            }
+        }
     }
 
     public void DeliverMetrics(DorotiViewEpoch epoch)
@@ -361,9 +517,7 @@ public sealed class DorotiFrameTransaction
         }
     }
 
-    public void SceneBuilt(
-        DorotiSceneBuildToken buildToken,
-        DorotiFrameDescriptor descriptor)
+    public void SceneBuilt(DorotiSceneBuildToken buildToken, DorotiFrameDescriptor descriptor)
     {
         ArgumentNullException.ThrowIfNull(buildToken);
         ArgumentNullException.ThrowIfNull(descriptor);
@@ -371,12 +525,23 @@ public sealed class DorotiFrameTransaction
         {
             RequireState(DorotiFrameTransactionState.metricsDelivered);
             if (_metricsEpoch is null || buildToken.ViewEpoch != _metricsEpoch)
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} scene build token does not match its delivered metrics epoch.");
-            var expected = DorotiFrameDescriptor.FromBuildToken(buildToken, descriptor.SceneSequence);
+                    $"Transaction {TransactionId} scene build token does not match its delivered metrics epoch."
+                );
+            }
+
+            var expected = DorotiFrameDescriptor.FromBuildToken(
+                buildToken,
+                descriptor.SceneSequence
+            );
             if (expected != descriptor)
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} scene descriptor was relabeled after build.");
+                    $"Transaction {TransactionId} scene descriptor was relabeled after build."
+                );
+            }
+
             _buildToken = buildToken;
             _sceneDescriptor = descriptor;
             _state = DorotiFrameTransactionState.sceneBuiltForSameEpoch;
@@ -388,27 +553,43 @@ public sealed class DorotiFrameTransaction
         int physicalWidth,
         int physicalHeight,
         double deviceScaleX,
-        double deviceScaleY)
+        double deviceScaleY
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(identity);
         lock (_gate)
         {
             RequireState(DorotiFrameTransactionState.sceneBuiltForSameEpoch);
             if (_metricsEpoch is null || _sceneDescriptor is null)
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} has no scene identity to match to a backing store.");
+                    $"Transaction {TransactionId} has no scene identity to match to a backing store."
+                );
+            }
+
             var match = _sceneDescriptor.MatchExact(
                 _metricsEpoch,
                 Target,
                 physicalWidth,
                 physicalHeight,
                 deviceScaleX,
-                deviceScaleY);
+                deviceScaleY
+            );
             if (!match.IsExact)
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} rejected backing store {identity}: " +
-                    $"{match.MismatchCode}: {match.Detail}");
-            _backingStore = new(identity, physicalWidth, physicalHeight, deviceScaleX, deviceScaleY);
+                    $"Transaction {TransactionId} rejected backing store {identity}: "
+                        + $"{match.MismatchCode}: {match.Detail}"
+                );
+            }
+
+            _backingStore = new(
+                identity,
+                physicalWidth,
+                physicalHeight,
+                deviceScaleX,
+                deviceScaleY
+            );
             _state = DorotiFrameTransactionState.exactBackingStoreReady;
         }
     }
@@ -419,9 +600,19 @@ public sealed class DorotiFrameTransaction
         lock (_gate)
         {
             RequireState(DorotiFrameTransactionState.exactBackingStoreReady);
-            if (!string.Equals(VisibleTargetIdentity, visibleTargetIdentity, StringComparison.Ordinal))
+            if (
+                !string.Equals(
+                    VisibleTargetIdentity,
+                    visibleTargetIdentity,
+                    StringComparison.Ordinal
+                )
+            )
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} targets '{VisibleTargetIdentity}', not '{visibleTargetIdentity}'.");
+                    $"Transaction {TransactionId} targets '{VisibleTargetIdentity}', not '{visibleTargetIdentity}'."
+                );
+            }
+
             _state = DorotiFrameTransactionState.visibleSurfaceCommitted;
         }
     }
@@ -431,11 +622,21 @@ public sealed class DorotiFrameTransaction
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
         lock (_gate)
         {
-            if (_state == DorotiFrameTransactionState.terminal) return false;
-            if ((terminal is DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted) &&
-                _state != DorotiFrameTransactionState.visibleSurfaceCommitted)
+            if (_state == DorotiFrameTransactionState.terminal)
+            {
+                return false;
+            }
+
+            if (
+                (terminal is DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted)
+                && _state != DorotiFrameTransactionState.visibleSurfaceCommitted
+            )
+            {
                 throw new InvalidOperationException(
-                    $"Transaction {TransactionId} cannot complete as {terminal} before visible commit.");
+                    $"Transaction {TransactionId} cannot complete as {terminal} before visible commit."
+                );
+            }
+
             _terminal = terminal;
             _terminalReason = reason;
             _state = DorotiFrameTransactionState.terminal;
@@ -446,32 +647,45 @@ public sealed class DorotiFrameTransaction
 
     private void RequireEpochMatch(DorotiViewEpoch epoch)
     {
-        if (epoch.ResizeTargetGeneration != Target.Generation ||
-            epoch.LogicalWidth != Target.LogicalWidth || epoch.LogicalHeight != Target.LogicalHeight ||
-            epoch.PhysicalWidth != Target.PhysicalWidth || epoch.PhysicalHeight != Target.PhysicalHeight ||
-            epoch.DeviceScaleX != Target.DeviceScaleX || epoch.DeviceScaleY != Target.DeviceScaleY)
+        if (
+            epoch.ResizeTargetGeneration != Target.Generation
+            || epoch.LogicalWidth != Target.LogicalWidth
+            || epoch.LogicalHeight != Target.LogicalHeight
+            || epoch.PhysicalWidth != Target.PhysicalWidth
+            || epoch.PhysicalHeight != Target.PhysicalHeight
+            || epoch.DeviceScaleX != Target.DeviceScaleX
+            || epoch.DeviceScaleY != Target.DeviceScaleY
+        )
+        {
             throw new InvalidOperationException(
-                $"Transaction {TransactionId} metrics do not match observed target {Target.Generation}.");
+                $"Transaction {TransactionId} metrics do not match observed target {Target.Generation}."
+            );
+        }
     }
 
     private void RequireState(DorotiFrameTransactionState expected)
     {
         if (_state != expected)
+        {
             throw new InvalidOperationException(
-                $"Transaction {TransactionId} cannot advance from {_state}; expected {expected}.");
+                $"Transaction {TransactionId} cannot advance from {_state}; expected {expected}."
+            );
+        }
     }
 
-    private DorotiFrameTransactionSnapshot SnapshotCore() => new(
-        TransactionId,
-        _state,
-        Target,
-        _metricsEpoch,
-        _buildToken,
-        _sceneDescriptor,
-        _backingStore,
-        VisibleTargetIdentity,
-        _terminal,
-        _terminalReason);
+    private DorotiFrameTransactionSnapshot SnapshotCore() =>
+        new(
+            TransactionId,
+            _state,
+            Target,
+            _metricsEpoch,
+            _buildToken,
+            _sceneDescriptor,
+            _backingStore,
+            VisibleTargetIdentity,
+            _terminal,
+            _terminalReason
+        );
 }
 
 /// <summary>
@@ -486,45 +700,75 @@ public sealed class DorotiResizeTargetCoordinator
 
     public DorotiResizeEpoch? Latest
     {
-        get { lock (_gate) return _latest; }
+        get
+        {
+            lock (_gate)
+            {
+                return _latest;
+            }
+        }
     }
 
     public DorotiResizeEpoch Publish(
         double logicalWidth,
         double logicalHeight,
         double devicePixelRatio,
-        long? timestampMicroseconds = null)
-        => Publish(logicalWidth, logicalHeight, devicePixelRatio, devicePixelRatio,
-            timestampMicroseconds);
+        long? timestampMicroseconds = null
+    ) =>
+        Publish(
+            logicalWidth,
+            logicalHeight,
+            devicePixelRatio,
+            devicePixelRatio,
+            timestampMicroseconds
+        );
 
     public DorotiResizeEpoch Publish(
         double logicalWidth,
         double logicalHeight,
         double deviceScaleX,
         double deviceScaleY,
-        long? timestampMicroseconds = null)
+        long? timestampMicroseconds = null
+    )
     {
         if (!double.IsFinite(logicalWidth) || logicalWidth < 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(logicalWidth));
-        if (!double.IsFinite(logicalHeight) || logicalHeight < 0)
-            throw new ArgumentOutOfRangeException(nameof(logicalHeight));
-        if (!double.IsFinite(deviceScaleX) || deviceScaleX <= 0)
-            throw new ArgumentOutOfRangeException(nameof(deviceScaleX));
-        if (!double.IsFinite(deviceScaleY) || deviceScaleY <= 0)
-            throw new ArgumentOutOfRangeException(nameof(deviceScaleY));
+        }
 
-        var physicalWidth = logicalWidth <= 0 ? 0 : checked((int)Math.Round(logicalWidth * deviceScaleX));
-        var physicalHeight = logicalHeight <= 0 ? 0 : checked((int)Math.Round(logicalHeight * deviceScaleY));
+        if (!double.IsFinite(logicalHeight) || logicalHeight < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(logicalHeight));
+        }
+
+        if (!double.IsFinite(deviceScaleX) || deviceScaleX <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(deviceScaleX));
+        }
+
+        if (!double.IsFinite(deviceScaleY) || deviceScaleY <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(deviceScaleY));
+        }
+
+        var physicalWidth =
+            logicalWidth <= 0 ? 0 : checked((int)Math.Round(logicalWidth * deviceScaleX));
+        var physicalHeight =
+            logicalHeight <= 0 ? 0 : checked((int)Math.Round(logicalHeight * deviceScaleY));
         lock (_gate)
         {
-            if (_latest is { } current &&
-                current.LogicalWidth == logicalWidth &&
-                current.LogicalHeight == logicalHeight &&
-                current.PhysicalWidth == physicalWidth &&
-                current.PhysicalHeight == physicalHeight &&
-                current.DeviceScaleX == deviceScaleX &&
-                current.DeviceScaleY == deviceScaleY)
+            if (
+                _latest is { } current
+                && current.LogicalWidth == logicalWidth
+                && current.LogicalHeight == logicalHeight
+                && current.PhysicalWidth == physicalWidth
+                && current.PhysicalHeight == physicalHeight
+                && current.DeviceScaleX == deviceScaleX
+                && current.DeviceScaleY == deviceScaleY
+            )
+            {
                 return current;
+            }
 
             _latest = new(
                 checked(++_generation),
@@ -534,7 +778,8 @@ public sealed class DorotiResizeTargetCoordinator
                 physicalHeight,
                 deviceScaleX,
                 deviceScaleY,
-                timestampMicroseconds ?? DorotiFrameClock.Now.Ticks / 10);
+                timestampMicroseconds ?? (DorotiFrameClock.Now.Ticks / 10)
+            );
             return _latest;
         }
     }
@@ -544,7 +789,8 @@ public sealed class DorotiResizeTargetCoordinator
 /// One-in-flight plus one-latest mailbox. Replaced pending work is completed
 /// immediately as superseded so producers can never wait indefinitely.
 /// </summary>
-public sealed class DorotiLatestFrameMailbox<T> where T : class
+public sealed class DorotiLatestFrameMailbox<T>
+    where T : class
 {
     private readonly object _gate = new();
     private T? _current;
@@ -552,7 +798,13 @@ public sealed class DorotiLatestFrameMailbox<T> where T : class
 
     public int Depth
     {
-        get { lock (_gate) return (_current is null ? 0 : 1) + (_latest is null ? 0 : 1); }
+        get
+        {
+            lock (_gate)
+            {
+                return (_current is null ? 0 : 1) + (_latest is null ? 0 : 1);
+            }
+        }
     }
 
     public T? Offer(T value)
@@ -573,7 +825,13 @@ public sealed class DorotiLatestFrameMailbox<T> where T : class
 
     public T? Current
     {
-        get { lock (_gate) return _current; }
+        get
+        {
+            lock (_gate)
+            {
+                return _current;
+            }
+        }
     }
 
     public T? CompleteCurrent()
@@ -592,8 +850,16 @@ public sealed class DorotiLatestFrameMailbox<T> where T : class
         lock (_gate)
         {
             var values = new List<T>(2);
-            if (_current is not null) values.Add(_current);
-            if (_latest is not null) values.Add(_latest);
+            if (_current is not null)
+            {
+                values.Add(_current);
+            }
+
+            if (_latest is not null)
+            {
+                values.Add(_latest);
+            }
+
             _current = null;
             _latest = null;
             return values;
@@ -613,7 +879,8 @@ public sealed record DorotiFrameTerminalLedgerSnapshot(
     long DuplicateTerminalAttempts,
     int RecentCount,
     int RecentCapacity,
-    int RecentHighWater);
+    int RecentHighWater
+);
 
 /// <summary>
 /// Tracks the exactly-once terminal contract for generated frames without
@@ -642,18 +909,30 @@ public sealed class DorotiFrameTerminalLedger
 
     public DorotiFrameTerminalLedger(int recentCapacity = DefaultRecentCapacity)
     {
-        if (recentCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(recentCapacity));
+        if (recentCapacity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(recentCapacity));
+        }
+
         _recentCapacity = recentCapacity;
     }
 
     public void Register(long sceneSequence)
     {
-        if (sceneSequence <= 0) throw new ArgumentOutOfRangeException(nameof(sceneSequence));
+        if (sceneSequence <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(sceneSequence));
+        }
+
         lock (_gate)
         {
             if (sceneSequence <= _lastRegistered)
+            {
                 throw new InvalidOperationException(
-                    $"Scene {sceneSequence} is not newer than registered high-water {_lastRegistered}.");
+                    $"Scene {sceneSequence} is not newer than registered high-water {_lastRegistered}."
+                );
+            }
+
             _lastRegistered = sceneSequence;
             _registered++;
             _active.Add(sceneSequence);
@@ -676,15 +955,30 @@ public sealed class DorotiFrameTerminalLedger
             _completed++;
             switch (terminal)
             {
-                case DorotiFrameTerminal.presented: _presented++; break;
-                case DorotiFrameTerminal.submitted: _submitted++; break;
-                case DorotiFrameTerminal.superseded: _superseded++; break;
-                case DorotiFrameTerminal.dropped: _dropped++; break;
-                case DorotiFrameTerminal.failed: _failed++; break;
-                default: throw new ArgumentOutOfRangeException(nameof(terminal));
+                case DorotiFrameTerminal.presented:
+                    _presented++;
+                    break;
+                case DorotiFrameTerminal.submitted:
+                    _submitted++;
+                    break;
+                case DorotiFrameTerminal.superseded:
+                    _superseded++;
+                    break;
+                case DorotiFrameTerminal.dropped:
+                    _dropped++;
+                    break;
+                case DorotiFrameTerminal.failed:
+                    _failed++;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(terminal));
             }
             _recent.Enqueue(new(sceneSequence, terminal));
-            while (_recent.Count > _recentCapacity) _recent.Dequeue();
+            while (_recent.Count > _recentCapacity)
+            {
+                _recent.Dequeue();
+            }
+
             _recentHighWater = Math.Max(_recentHighWater, _recent.Count);
             return true;
         }
@@ -692,12 +986,18 @@ public sealed class DorotiFrameTerminalLedger
 
     public IReadOnlyDictionary<long, DorotiFrameTerminal> Snapshot()
     {
-        lock (_gate) return _recent.ToDictionary(entry => entry.Key, entry => entry.Value);
+        lock (_gate)
+        {
+            return _recent.ToDictionary(entry => entry.Key, entry => entry.Value);
+        }
     }
 
     public IReadOnlyList<long> Unterminated()
     {
-        lock (_gate) return _active.Order().ToArray();
+        lock (_gate)
+        {
+            return _active.Order().ToArray();
+        }
     }
 
     public DorotiFrameTerminalLedgerSnapshot Diagnostics
@@ -705,10 +1005,22 @@ public sealed class DorotiFrameTerminalLedger
         get
         {
             lock (_gate)
+            {
                 return new(
-                    _registered, _completed, _active.Count,
-                    _presented, _submitted, _superseded, _dropped, _failed,
-                    _duplicateTerminalAttempts, _recent.Count, _recentCapacity, _recentHighWater);
+                    _registered,
+                    _completed,
+                    _active.Count,
+                    _presented,
+                    _submitted,
+                    _superseded,
+                    _dropped,
+                    _failed,
+                    _duplicateTerminalAttempts,
+                    _recent.Count,
+                    _recentCapacity,
+                    _recentHighWater
+                );
+            }
         }
     }
 }
@@ -729,7 +1041,8 @@ public sealed record DorotiResizeTraceEntry(
     int SurfaceWidth = 0,
     int SurfaceHeight = 0,
     string? Terminal = null,
-    string? Detail = null);
+    string? Detail = null
+);
 
 /// <summary>
 /// Bounded metadata-only trace. It deliberately owns no scene, GPU resource,
@@ -757,7 +1070,8 @@ public sealed class DorotiResizeTrace
         int surfaceWidth = 0,
         int surfaceHeight = 0,
         string? terminal = null,
-        string? detail = null)
+        string? detail = null
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phase);
         ArgumentNullException.ThrowIfNull(epoch);
@@ -766,28 +1080,37 @@ public sealed class DorotiResizeTrace
         {
             var timestamp = Math.Max(_lastTimestampMicroseconds, DorotiFrameClock.Now.Ticks / 10);
             _lastTimestampMicroseconds = timestamp;
-            _entries.Enqueue(new(
-                ++_nextSequence,
-                timestamp,
-                phase,
-                epoch,
-                Environment.CurrentManagedThreadId,
-                source,
-                System.Diagnostics.Stopwatch.GetTimestamp(),
-                Math.Max(0, duration?.Ticks / 10 ?? 0),
-                rafId,
-                backingWidth,
-                backingHeight,
-                surfaceWidth,
-                surfaceHeight,
-                terminal,
-                detail));
-            while (_entries.Count > Capacity) _entries.Dequeue();
+            _entries.Enqueue(
+                new(
+                    ++_nextSequence,
+                    timestamp,
+                    phase,
+                    epoch,
+                    Environment.CurrentManagedThreadId,
+                    source,
+                    System.Diagnostics.Stopwatch.GetTimestamp(),
+                    Math.Max(0, (duration?.Ticks / 10) ?? 0),
+                    rafId,
+                    backingWidth,
+                    backingHeight,
+                    surfaceWidth,
+                    surfaceHeight,
+                    terminal,
+                    detail
+                )
+            );
+            while (_entries.Count > Capacity)
+            {
+                _entries.Dequeue();
+            }
         }
     }
 
     public IReadOnlyList<DorotiResizeTraceEntry> Snapshot()
     {
-        lock (_gate) return _entries.ToArray();
+        lock (_gate)
+        {
+            return _entries.ToArray();
+        }
     }
 }

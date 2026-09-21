@@ -23,9 +23,28 @@ public class InputDatePickerFormField : StatefulWidget
     public virtual FocusNode? focusNode { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public InputDatePickerFormField(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Action<DateTime>? onDateSubmitted = null, Action<DateTime>? onDateSaved = null, Func<DateTime, bool>? selectableDayPredicate = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, bool autofocus = false, bool acceptEmptyDate = false, FocusNode? focusNode = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public InputDatePickerFormField(
+        Key? key = null,
+        DateTime? initialDate = null,
+        DateTime firstDate = default!,
+        DateTime lastDate = default!,
+        Action<DateTime>? onDateSubmitted = null,
+        Action<DateTime>? onDateSaved = null,
+        Func<DateTime, bool>? selectableDayPredicate = null,
+        string? errorFormatText = null,
+        string? errorInvalidText = null,
+        string? fieldHintText = null,
+        string? fieldLabelText = null,
+        TextInputType? keyboardType = null,
+        bool autofocus = false,
+        bool acceptEmptyDate = false,
+        FocusNode? focusNode = null,
+        CalendarDelegate<DateTime> calendarDelegate = default!
+    )
+        : base(key: key)
     {
-        CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
+        CalendarDelegate<DateTime> __calendarDelegate =
+            calendarDelegate ?? new GregorianCalendarDelegate();
         this.onDateSubmitted = onDateSubmitted;
         this.onDateSaved = onDateSaved;
         this.selectableDayPredicate = selectableDayPredicate;
@@ -38,21 +57,61 @@ public class InputDatePickerFormField : StatefulWidget
         this.acceptEmptyDate = acceptEmptyDate;
         this.focusNode = focusNode;
         this.calendarDelegate = __calendarDelegate;
-        this.initialDate = (initialDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))) : null;
+        this.initialDate =
+            (initialDate is not null)
+                ? this.calendarDelegate.dateOnly(
+                    DartRuntimePrimitives.RequireValue(
+                        DartRuntimePrimitives.RequireValue(initialDate)
+                    )
+                )
+                : null;
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
         this.lastDate = this.calendarDelegate.dateOnly(lastDate);
-        DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate), () => (object?)$"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate), () => (object?)$"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}.");
-        DartRuntimePrimitives.Assert(() => (this.selectableDayPredicate is null) || (initialDate is null) || this.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(this.initialDate)), () => (object?)$"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate.");
+        DartRuntimePrimitives.Assert(
+            () => !this.lastDate.isBefore(this.firstDate),
+            () =>
+                (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate),
+            () =>
+                (object?)
+                    $"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (initialDate is null)
+                || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate),
+            () =>
+                (object?)
+                    $"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                (this.selectableDayPredicate is null)
+                || (initialDate is null)
+                || this.selectableDayPredicate!(
+                    DartRuntimePrimitives.RequireValue(this.initialDate)
+                ),
+            () =>
+                (object?)
+                    $"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate."
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InputDatePickerFormFieldState__input_date_picker_form_field());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _InputDatePickerFormFieldState__input_date_picker_form_field()
+        );
 }
 
-internal class _InputDatePickerFormFieldState__input_date_picker_form_field : State<InputDatePickerFormField>
+internal class _InputDatePickerFormFieldState__input_date_picker_form_field
+    : State<InputDatePickerFormField>
 {
-    internal virtual TextEditingController _controller { get; private set; } = new TextEditingController();
+    internal virtual TextEditingController _controller { get; private set; } =
+        new TextEditingController();
     internal virtual DateTime? _selectedDate { get; set; } = default;
     internal virtual string? _inputText { get; set; } = default;
     internal virtual bool _autoSelected { get; set; } = false;
@@ -80,14 +139,17 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
         base.didUpdateWidget(oldWidget);
         if (!Equals(widget.initialDate, oldWidget.initialDate))
         {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
-            {
-                setState(() =>
+            WidgetsBinding.instance.addPostFrameCallback(
+                (timeStamp) =>
                 {
-                    _selectedDate = widget.initialDate;
-                    _updateValueForSelectedDate();
-                });
-            }, debugLabel: "InputDatePickerFormField.update");
+                    setState(() =>
+                    {
+                        _selectedDate = widget.initialDate;
+                        _updateValueForSelectedDate();
+                    });
+                },
+                debugLabel: "InputDatePickerFormField.update"
+            );
         }
     }
 
@@ -96,11 +158,16 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
         if (_selectedDate is not null)
         {
             MaterialLocalizations localizations = MaterialLocalizations.of(context);
-            _inputText = widget.calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(_selectedDate), localizations);
+            _inputText = widget.calendarDelegate.formatCompactDate(
+                DartRuntimePrimitives.RequireValue(_selectedDate),
+                localizations
+            );
             var textEditingValue = new TextEditingValue(text: _inputText!);
             if (widget.autofocus && !_autoSelected)
             {
-                textEditingValue = textEditingValue.copyWith(selection: new TextSelection(baseOffset: 0L, extentOffset: _inputText!.Length));
+                textEditingValue = textEditingValue.copyWith(
+                    selection: new TextSelection(baseOffset: 0L, extentOffset: _inputText!.Length)
+                );
                 _autoSelected = true;
             }
             _controller.value = textEditingValue;
@@ -121,7 +188,13 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
 
     internal virtual bool _isValidAcceptableDate(DateTime? date)
     {
-        return (date is not null) && !DartRuntimePrimitives.RequireValue(date).isBefore(widget.firstDate) && !DartRuntimePrimitives.RequireValue(date).isAfter(widget.lastDate) && ((widget.selectableDayPredicate is null) || widget.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(date)));
+        return (date is not null)
+            && !DartRuntimePrimitives.RequireValue(date).isBefore(widget.firstDate)
+            && !DartRuntimePrimitives.RequireValue(date).isAfter(widget.lastDate)
+            && (
+                (widget.selectableDayPredicate is null)
+                || widget.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(date))
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,13 +207,15 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
         DateTime? date = _parseDate(text);
         if (date is null)
         {
-            return widget.errorFormatText ?? MaterialLocalizations.of(context).invalidDateFormatLabel;
+            return widget.errorFormatText
+                ?? MaterialLocalizations.of(context).invalidDateFormatLabel;
         }
         else
         {
             if (!_isValidAcceptableDate(DartRuntimePrimitives.RequireValue(date)))
             {
-                return widget.errorInvalidText ?? MaterialLocalizations.of(context).dateOutOfRangeLabel;
+                return widget.errorInvalidText
+                    ?? MaterialLocalizations.of(context).dateOutOfRangeLabel;
             }
         }
         return null;
@@ -174,8 +249,29 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         DatePickerThemeData datePickerThemeLocal = theme.datePickerTheme;
         InputDecorationThemeData inputTheme = InputDecorationTheme.of(context);
-        InputBorder effectiveInputBorder = (datePickerThemeLocal.inputDecorationTheme?.border ?? inputTheme.border) ?? new OutlineInputBorder();
-        return new Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: widget.fieldHintText ?? widget.calendarDelegate.dateHelpText(localizations), labelText: widget.fieldLabelText ?? localizations.dateInputLabel).applyDefaults(inputTheme.merge(datePickerThemeLocal.inputDecorationTheme).copyWith(border: effectiveInputBorder)), validator: _validateDate, keyboardType: widget.keyboardType ?? TextInputType.datetime, onSaved: _handleSaved, onFieldSubmitted: _handleSubmitted, autofocus: widget.autofocus, controller: _controller, focusNode: widget.focusNode));
+        InputBorder effectiveInputBorder =
+            (datePickerThemeLocal.inputDecorationTheme?.border ?? inputTheme.border)
+            ?? new OutlineInputBorder();
+        return new Widgets.Semantics(
+            container: true,
+            child: new TextFormField(
+                decoration: new InputDecoration(
+                    hintText: widget.fieldHintText
+                        ?? widget.calendarDelegate.dateHelpText(localizations),
+                    labelText: widget.fieldLabelText ?? localizations.dateInputLabel
+                ).applyDefaults(
+                    inputTheme
+                        .merge(datePickerThemeLocal.inputDecorationTheme)
+                        .copyWith(border: effectiveInputBorder)
+                ),
+                validator: _validateDate,
+                keyboardType: widget.keyboardType ?? TextInputType.datetime,
+                onSaved: _handleSaved,
+                onFieldSubmitted: _handleSubmitted,
+                autofocus: widget.autofocus,
+                controller: _controller,
+                focusNode: widget.focusNode
+            )
+        );
     }
-
 }

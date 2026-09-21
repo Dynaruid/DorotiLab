@@ -4,25 +4,52 @@ using SkiaSharp;
 
 namespace Doroti.Host.Qt;
 
-internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedureAddress) : IDisposable
+internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedureAddress)
+    : IDisposable
 {
-    internal static bool GraphiteEnabled => Environment.GetEnvironmentVariable("DOROTI_LINUX_GRAPHITE") != "0";
+    internal static bool GraphiteEnabled =>
+        Environment.GetEnvironmentVariable("DOROTI_LINUX_GRAPHITE") != "0";
     private GraphiteVulkanWindow? _vulkan;
     internal GraphiteVulkanQuick? QuickGpu { get; private set; }
     internal QtQuickNative.Part[] QuickParts { get; set; } = [];
     internal bool QuickEnabled { get; private set; }
     internal ulong QuickPeakReservedBytes { get; private set; }
     private nint _quickWindow;
-    internal void ConfigureQuick(nint window, bool enabled) { _quickWindow=window; QuickEnabled=enabled; }
+
+    internal void ConfigureQuick(nint window, bool enabled)
+    {
+        _quickWindow = window;
+        QuickEnabled = enabled;
+    }
+
     internal SKCanvas QuickCaptionCanvas(in QtNativeV2.Surface descriptor)
     {
-        var index=QuickParts.Count(part=>part.Kind==0);
-        var canvas=QuickGpu!.Canvas(index);
-        var bounds=new QtPlatformViewHost.NativeRect(0,0,descriptor.PixelWidth/descriptor.DevicePixelRatio,descriptor.PixelHeight/descriptor.DevicePixelRatio);
-        QuickParts=[..QuickParts,new QtQuickNative.Part { Size=96,Kind=0,Id=QuickGpu.Identity(index),Image=QuickGpu.Image(index),
-            PixelWidth=(uint)descriptor.PixelWidth,PixelHeight=(uint)descriptor.PixelHeight,Bounds=bounds,Clip=bounds }];
+        var index = QuickParts.Count(part => part.Kind == 0);
+        var canvas = QuickGpu!.Canvas(index);
+        var bounds = new QtPlatformViewHost.NativeRect(
+            0,
+            0,
+            descriptor.PixelWidth / descriptor.DevicePixelRatio,
+            descriptor.PixelHeight / descriptor.DevicePixelRatio
+        );
+        QuickParts =
+        [
+            .. QuickParts,
+            new QtQuickNative.Part
+            {
+                Size = 96,
+                Kind = 0,
+                Id = QuickGpu.Identity(index),
+                Image = QuickGpu.Image(index),
+                PixelWidth = (uint)descriptor.PixelWidth,
+                PixelHeight = (uint)descriptor.PixelHeight,
+                Bounds = bounds,
+                Clip = bounds,
+            },
+        ];
         return canvas;
     }
+
     internal bool SoftwareVulkan { get; private set; }
     internal event Action? GpuResourcesReleasing;
     private readonly GRGlGetProcedureAddressDelegate _getProcedureAddress =
@@ -42,8 +69,12 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     private bool _usePlatformGlResolver;
     private bool _disposed;
 
-    internal unsafe bool Render(in QtNativeV2.Surface descriptor, Action<SKSurface, int, int> render,
-        Func<bool>? shouldPresent = null, Action? beforePresent = null)
+    internal unsafe bool Render(
+        in QtNativeV2.Surface descriptor,
+        Action<SKSurface, int, int> render,
+        Func<bool>? shouldPresent = null,
+        Action? beforePresent = null
+    )
     {
         ArgumentNullException.ThrowIfNull(render);
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -52,47 +83,115 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         {
             if (QuickGpu is null)
             {
-                var gpu=QtQuickNative.Get(_quickWindow);
-                QuickGpu=new GraphiteVulkanQuick(gpu.Instance,gpu.Physical,gpu.Device,gpu.Queue,gpu.Family,gpu.ApiVersion);
-                QuickGpu.ResourcesReleasing+=()=>GpuResourcesReleasing?.Invoke();
-                SoftwareVulkan=QuickGpu.IsSoftwareDevice;
-                _contextIdentity=descriptor.ContextIdentity;_surfaceGeneration=descriptor.SurfaceGeneration;
+                var gpu = QtQuickNative.Get(_quickWindow);
+                QuickGpu = new GraphiteVulkanQuick(
+                    gpu.Instance,
+                    gpu.Physical,
+                    gpu.Device,
+                    gpu.Queue,
+                    gpu.Family,
+                    gpu.ApiVersion
+                );
+                QuickGpu.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
+                SoftwareVulkan = QuickGpu.IsSoftwareDevice;
+                _contextIdentity = descriptor.ContextIdentity;
+                _surfaceGeneration = descriptor.SurfaceGeneration;
             }
-            var width=descriptor.PixelWidth;var height=descriptor.PixelHeight;
-            var target=QuickGpu.Begin(width,height);
-            var bounds=new QtPlatformViewHost.NativeRect(0,0,width/descriptor.DevicePixelRatio,height/descriptor.DevicePixelRatio);
-            QuickParts=[new QtQuickNative.Part { Size=96,Kind=0,Id=QuickGpu.Identity(0),Image=QuickGpu.Image(0),PixelWidth=(uint)width,PixelHeight=(uint)height,Bounds=bounds,Clip=bounds }];
+            var width = descriptor.PixelWidth;
+            var height = descriptor.PixelHeight;
+            var target = QuickGpu.Begin(width, height);
+            var bounds = new QtPlatformViewHost.NativeRect(
+                0,
+                0,
+                width / descriptor.DevicePixelRatio,
+                height / descriptor.DevicePixelRatio
+            );
+            QuickParts =
+            [
+                new QtQuickNative.Part
+                {
+                    Size = 96,
+                    Kind = 0,
+                    Id = QuickGpu.Identity(0),
+                    Image = QuickGpu.Image(0),
+                    PixelWidth = (uint)width,
+                    PixelHeight = (uint)height,
+                    Bounds = bounds,
+                    Clip = bounds,
+                },
+            ];
             try
             {
-                render(target,width,height);
-                if(shouldPresent?.Invoke()==false) { QuickGpu.Cancel();return false; }
-                QtQuickNative.Commit(_quickWindow,QuickParts,apply:false);
+                render(target, width, height);
+                if (shouldPresent?.Invoke() == false)
+                {
+                    QuickGpu.Cancel();
+                    return false;
+                }
+                QtQuickNative.Commit(_quickWindow, QuickParts, apply: false);
                 QuickGpu.Complete();
-                QtQuickNative.Commit(_quickWindow,QuickParts,apply:true);
+                QtQuickNative.Commit(_quickWindow, QuickParts, apply: true);
                 QuickGpu.MarkPublished();
                 return true;
             }
-            catch { QuickGpu.Cancel();throw; }
+            catch
+            {
+                QuickGpu.Cancel();
+                throw;
+            }
         }
         if (GraphiteEnabled)
         {
-            if (descriptor.StructSize < 128 || descriptor.VulkanInstance == 0 || descriptor.VulkanSurface == 0)
-                throw new InvalidDataException("Qt Graphite requires the negotiated Vulkan surface descriptor.");
-            if (_vulkan is null || _contextIdentity != descriptor.ContextIdentity || _surfaceGeneration != descriptor.SurfaceGeneration)
+            if (
+                descriptor.StructSize < 128
+                || descriptor.VulkanInstance == 0
+                || descriptor.VulkanSurface == 0
+            )
+            {
+                throw new InvalidDataException(
+                    "Qt Graphite requires the negotiated Vulkan surface descriptor."
+                );
+            }
+
+            if (
+                _vulkan is null
+                || _contextIdentity != descriptor.ContextIdentity
+                || _surfaceGeneration != descriptor.SurfaceGeneration
+            )
             {
                 ReleaseGpuResources();
                 var extensions = descriptor.VulkanInstanceExtensions;
-                if (extensions.Length > 65536) throw new InvalidDataException("Qt Vulkan extension list is too long.");
-                var names = Marshal.PtrToStringUTF8((nint)extensions.Data, (int)extensions.Length)!.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                _vulkan = GraphiteVulkanWindow.FromQt(descriptor.VulkanInstance, descriptor.VulkanSurface, names, descriptor.VulkanInstanceApiVersion);
+                if (extensions.Length > 65536)
+                {
+                    throw new InvalidDataException("Qt Vulkan extension list is too long.");
+                }
+
+                var names = Marshal
+                    .PtrToStringUTF8((nint)extensions.Data, (int)extensions.Length)!
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                _vulkan = GraphiteVulkanWindow.FromQt(
+                    descriptor.VulkanInstance,
+                    descriptor.VulkanSurface,
+                    names,
+                    descriptor.VulkanInstanceApiVersion
+                );
                 SoftwareVulkan = _vulkan.IsSoftwareDevice;
                 _vulkan.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
                 _contextIdentity = descriptor.ContextIdentity;
                 _surfaceGeneration = descriptor.SurfaceGeneration;
             }
-            return _vulkan.Render(descriptor.PixelWidth, descriptor.PixelHeight, render, shouldPresent, beforePresent);
+            return _vulkan.Render(
+                descriptor.PixelWidth,
+                descriptor.PixelHeight,
+                render,
+                shouldPresent,
+                beforePresent
+            );
         }
-        if (RequiresRecreate(descriptor)) CreateSurface(descriptor);
+        if (RequiresRecreate(descriptor))
+        {
+            CreateSurface(descriptor);
+        }
         // The native host clears the Qt-bound FBO before this callback. Forget
         // Skia's cached GL state so it cannot assume state left by the previous
         // frame (notably scissor and color-write masks).
@@ -106,8 +205,16 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     internal void Release(ulong surfaceGeneration, ulong contextIdentity)
     {
-        if (_disposed) return;
-        if (_surfaceGeneration != surfaceGeneration || _contextIdentity != contextIdentity) return;
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (_surfaceGeneration != surfaceGeneration || _contextIdentity != contextIdentity)
+        {
+            return;
+        }
+
         ReleaseGpuResources();
     }
 
@@ -119,18 +226,25 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         ReleaseGpuResources();
     }
 
     private bool RequiresRecreate(in QtNativeV2.Surface descriptor) =>
-        _surface is null || _surfaceGeneration != descriptor.SurfaceGeneration ||
-        _contextIdentity != descriptor.ContextIdentity ||
-        _framebufferObject != descriptor.FramebufferObject ||
-        _pixelWidth != descriptor.PixelWidth || _pixelHeight != descriptor.PixelHeight ||
-        _sampleCount != Math.Max(0, descriptor.SampleCount) ||
-        _stencilBits != Math.Max(0, descriptor.StencilBits) || _colorFormat != descriptor.ColorFormat;
+        _surface is null
+        || _surfaceGeneration != descriptor.SurfaceGeneration
+        || _contextIdentity != descriptor.ContextIdentity
+        || _framebufferObject != descriptor.FramebufferObject
+        || _pixelWidth != descriptor.PixelWidth
+        || _pixelHeight != descriptor.PixelHeight
+        || _sampleCount != Math.Max(0, descriptor.SampleCount)
+        || _stencilBits != Math.Max(0, descriptor.StencilBits)
+        || _colorFormat != descriptor.ColorFormat;
 
     private void CreateSurface(in QtNativeV2.Surface descriptor)
     {
@@ -145,19 +259,38 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                 ? GRGlInterface.Create()
                 : GRGlInterface.Create(_getProcedureAddress);
             if (_interface is null || !_interface.Validate())
-                throw new InvalidOperationException("SkiaSharp could not create a valid interface for the current Qt OpenGL context.");
-            _context = GRContext.CreateGl(_interface)
-                ?? throw new InvalidOperationException("SkiaSharp could not create a GPU context for the current Qt OpenGL context.");
+            {
+                throw new InvalidOperationException(
+                    "SkiaSharp could not create a valid interface for the current Qt OpenGL context."
+                );
+            }
+
+            _context =
+                GRContext.CreateGl(_interface)
+                ?? throw new InvalidOperationException(
+                    "SkiaSharp could not create a GPU context for the current Qt OpenGL context."
+                );
         }
         else
         {
             ReleaseRenderTarget();
         }
-        var framebuffer = new GRGlFramebufferInfo(descriptor.FramebufferObject, descriptor.ColorFormat);
-        _target = new GRBackendRenderTarget(descriptor.PixelWidth, descriptor.PixelHeight,
-            Math.Max(0, descriptor.SampleCount), Math.Max(0, descriptor.StencilBits), framebuffer);
-        _surface = SKSurface.Create(_context, _target, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
-            ?? throw new InvalidOperationException("SkiaSharp could not wrap the Qt default framebuffer object.");
+        var framebuffer = new GRGlFramebufferInfo(
+            descriptor.FramebufferObject,
+            descriptor.ColorFormat
+        );
+        _target = new GRBackendRenderTarget(
+            descriptor.PixelWidth,
+            descriptor.PixelHeight,
+            Math.Max(0, descriptor.SampleCount),
+            Math.Max(0, descriptor.StencilBits),
+            framebuffer
+        );
+        _surface =
+            SKSurface.Create(_context, _target, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
+            ?? throw new InvalidOperationException(
+                "SkiaSharp could not wrap the Qt default framebuffer object."
+            );
         _surfaceGeneration = descriptor.SurfaceGeneration;
         _contextIdentity = descriptor.ContextIdentity;
         _framebufferObject = descriptor.FramebufferObject;
@@ -175,8 +308,10 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
             QuickPeakReservedBytes = Math.Max(QuickPeakReservedBytes, quick.PeakReservedBytes);
             quick.Dispose();
         }
-        QuickGpu=null; QuickParts=[];
-        _vulkan?.Dispose(); _vulkan = null;
+        QuickGpu = null;
+        QuickParts = [];
+        _vulkan?.Dispose();
+        _vulkan = null;
         ReleaseRenderTarget();
         _context?.Dispose();
         _context = null;
@@ -203,8 +338,21 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     private static void Validate(in QtNativeV2.Surface descriptor)
     {
         if (descriptor.AbiVersion != QtNativeV2.AbiVersion || descriptor.StructSize < 144)
-            throw new InvalidDataException("The Qt surface descriptor does not match doroti.qt-host/v2.");
-        if (descriptor.ContextIdentity == 0 || descriptor.PixelWidth <= 0 || descriptor.PixelHeight <= 0)
-            throw new InvalidDataException("The Qt surface descriptor is missing a current context or physical size.");
+        {
+            throw new InvalidDataException(
+                "The Qt surface descriptor does not match doroti.qt-host/v2."
+            );
+        }
+
+        if (
+            descriptor.ContextIdentity == 0
+            || descriptor.PixelWidth <= 0
+            || descriptor.PixelHeight <= 0
+        )
+        {
+            throw new InvalidDataException(
+                "The Qt surface descriptor is missing a current context or physical size."
+            );
+        }
     }
 }

@@ -9,13 +9,19 @@ public class WillPopScope : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Func<Future<bool>>? onWillPop { get; private set; }
 
-    public WillPopScope(Key? key = null, Widget child = default!, Func<Future<bool>>? onWillPop = default!) : base(key: key)
+    public WillPopScope(
+        Key? key = null,
+        Widget child = default!,
+        Func<Future<bool>>? onWillPop = default!
+    )
+        : base(key: key)
     {
         this.child = child;
         this.onWillPop = onWillPop;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _WillPopScopeState__will_pop_scope());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _WillPopScopeState__will_pop_scope());
 }
 
 internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>

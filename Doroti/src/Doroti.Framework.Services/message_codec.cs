@@ -21,7 +21,8 @@ public class MethodCall
         this.arguments = arguments;
     }
 
-    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall")}({method}, {arguments})";
+    public override string ToString() =>
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall")}({method}, {arguments})";
 }
 
 public interface MethodCodec
@@ -30,7 +31,11 @@ public interface MethodCodec
     public MethodCall decodeMethodCall(ByteData? methodCall);
     public object? decodeEnvelope(ByteData envelope);
     public ByteData encodeSuccessEnvelope(object? result);
-    public ByteData encodeErrorEnvelope(string code, string? message = null, object? details = null);
+    public ByteData encodeErrorEnvelope(
+        string code,
+        string? message = null,
+        object? details = null
+    );
 }
 
 public class PlatformException : Exception
@@ -40,7 +45,12 @@ public class PlatformException : Exception
     public virtual object? details { get; private set; } = default!;
     public virtual string? stacktrace { get; private set; }
 
-    public PlatformException(string code, string? message = null, object? details = null, string? stacktrace = null)
+    public PlatformException(
+        string code,
+        string? message = null,
+        object? details = null,
+        string? stacktrace = null
+    )
     {
         this.code = code;
         this.message = message;
@@ -48,7 +58,8 @@ public class PlatformException : Exception
         this.stacktrace = stacktrace;
     }
 
-    public override string ToString() => $"PlatformException({code}, {message}, {details}, {stacktrace})";
+    public override string ToString() =>
+        $"PlatformException({code}, {message}, {details}, {stacktrace})";
 }
 
 public class MissingPluginException : Exception
@@ -62,4 +73,3 @@ public class MissingPluginException : Exception
 
     public override string ToString() => $"MissingPluginException({message})";
 }
-

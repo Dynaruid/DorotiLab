@@ -20,4 +20,3 @@ public static partial class _window_webLibrary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

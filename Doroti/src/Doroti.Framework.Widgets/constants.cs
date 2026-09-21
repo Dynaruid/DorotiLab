@@ -6,4 +6,3 @@ public static partial class ConstantsLibrary
 {
     public static double kMinInteractiveDimension = 48.0;
 }
-

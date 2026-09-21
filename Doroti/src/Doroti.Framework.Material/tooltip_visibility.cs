@@ -7,7 +7,8 @@ internal class _TooltipVisibilityScope__tooltip_visibility : InheritedWidget
 {
     public virtual bool visible { get; private set; } = default!;
 
-    internal _TooltipVisibilityScope__tooltip_visibility(Widget child, bool visible) : base(child: child)
+    internal _TooltipVisibilityScope__tooltip_visibility(Widget child, bool visible)
+        : base(child: child)
     {
         this.visible = visible;
     }
@@ -18,7 +19,6 @@ internal class _TooltipVisibilityScope__tooltip_visibility : InheritedWidget
         return __old.visible != visible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TooltipVisibility : StatelessWidget
@@ -26,7 +26,8 @@ public class TooltipVisibility : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual bool visible { get; private set; } = default!;
 
-    public TooltipVisibility(Key? key = null, bool visible = default!, Widget child = default!) : base(key: key)
+    public TooltipVisibility(Key? key = null, bool visible = default!, Widget child = default!)
+        : base(key: key)
     {
         this.visible = visible;
         this.child = child;
@@ -34,7 +35,8 @@ public class TooltipVisibility : StatelessWidget
 
     public static bool of(BuildContext context)
     {
-        _TooltipVisibilityScope__tooltip_visibility? visibility = context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>();
+        _TooltipVisibilityScope__tooltip_visibility? visibility =
+            context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>();
         return visibility?.visible ?? true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -44,5 +46,4 @@ public class TooltipVisibility : StatelessWidget
         return new _TooltipVisibilityScope__tooltip_visibility(visible: visible, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

@@ -8,7 +8,9 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Segmented_controlLibrary
 {
-    internal static EdgeInsetsGeometry _kHorizontalItemPadding = EdgeInsets.CreateSymmetric(horizontal: 16.0);
+    internal static EdgeInsetsGeometry _kHorizontalItemPadding = EdgeInsets.CreateSymmetric(
+        horizontal: 16.0
+    );
 }
 
 public static partial class Segmented_controlLibrary
@@ -26,7 +28,8 @@ public static partial class Segmented_controlLibrary
     internal static Duration _kFadeDuration = Duration.Create(milliseconds: 165L);
 }
 
-public class CupertinoSegmentedControl<T> : StatefulWidget where T : notnull
+public class CupertinoSegmentedControl<T> : StatefulWidget
+    where T : notnull
 {
     public virtual DartMap<T, Widget> children { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
@@ -40,7 +43,21 @@ public class CupertinoSegmentedControl<T> : StatefulWidget where T : notnull
     public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual HashSet<T> disabledChildren { get; private set; } = default!;
 
-    public CupertinoSegmentedControl(Key? key = null, DartMap<T, Widget> children = default!, Action<T> onValueChanged = default!, T? groupValue = default, Color? unselectedColor = null, Color? selectedColor = null, Color? borderColor = null, Color? pressedColor = null, Color? disabledColor = null, Color? disabledTextColor = null, EdgeInsetsGeometry? padding = null, HashSet<T> disabledChildren = default!) : base(key: key)
+    public CupertinoSegmentedControl(
+        Key? key = null,
+        DartMap<T, Widget> children = default!,
+        Action<T> onValueChanged = default!,
+        T? groupValue = default,
+        Color? unselectedColor = null,
+        Color? selectedColor = null,
+        Color? borderColor = null,
+        Color? pressedColor = null,
+        Color? disabledColor = null,
+        Color? disabledTextColor = null,
+        EdgeInsetsGeometry? padding = null,
+        HashSet<T> disabledChildren = default!
+    )
+        : base(key: key)
     {
         HashSet<T> __disabledChildren = disabledChildren ?? new HashSet<T>();
         this.children = children;
@@ -55,10 +72,18 @@ public class CupertinoSegmentedControl<T> : StatefulWidget where T : notnull
         this.padding = padding;
         this.disabledChildren = __disabledChildren;
         System.Diagnostics.Debug.Assert(checked(children.Count) >= 2L);
-        System.Diagnostics.Debug.Assert((groupValue is null) || children.Keys.any((child) => EqualityComparer<T>.Default.Equals(child, groupValue)));
+        System.Diagnostics.Debug.Assert(
+            (groupValue is null)
+                || children.Keys.any(
+                    (child) => EqualityComparer<T>.Default.Equals(child, groupValue)
+                )
+        );
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SegmentedControlState__segmented_control<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _SegmentedControlState__segmented_control<T>()
+        );
 }
 
 public class _SegmentButton__segmented_control<T> : StatefulWidget
@@ -67,17 +92,26 @@ public class _SegmentButton__segmented_control<T> : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    internal _SegmentButton__segmented_control(Key? key = null, T value = default!, Widget child = default!, bool enabled = default!) : base(key: key)
+    internal _SegmentButton__segmented_control(
+        Key? key = null,
+        T value = default!,
+        Widget child = default!,
+        bool enabled = default!
+    )
+        : base(key: key)
     {
         this.value = value;
         this.child = child;
         this.enabled = enabled;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SegmentButtonState__segmented_control<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SegmentButtonState__segmented_control<T>());
 }
 
-internal class _SegmentButtonState__segmented_control<T> : State<_SegmentButton__segmented_control<T>>, RadioClient<T>
+internal class _SegmentButtonState__segmented_control<T>
+    : State<_SegmentButton__segmented_control<T>>,
+        RadioClient<T>
 {
     internal virtual FocusNode _focusNode { get; private set; } = default!;
     public virtual RadioGroupRegistry<T>? _registry { get; set; } = default;
@@ -85,7 +119,9 @@ internal class _SegmentButtonState__segmented_control<T> : State<_SegmentButton_
     public override void initState()
     {
         base.initState();
-        _focusNode = new FocusNode(debugLabel: $"CupertinoSegmentedControl<{typeof(T)}>[{widget.value}]");
+        _focusNode = new FocusNode(
+            debugLabel: $"CupertinoSegmentedControl<{typeof(T)}>[{widget.value}]"
+        );
     }
 
     public override void didChangeDependencies()
@@ -114,6 +150,7 @@ internal class _SegmentButtonState__segmented_control<T> : State<_SegmentButton_
     public virtual FocusNode focusNode => _focusNode;
     public virtual bool tristate => false;
     public virtual bool enabled => widget.enabled;
+
     public virtual void requestFocus()
     {
         if (widget.enabled)
@@ -124,7 +161,12 @@ internal class _SegmentButtonState__segmented_control<T> : State<_SegmentButton_
 
     public override Widget build(BuildContext context)
     {
-        return new Focus(focusNode: _focusNode, canRequestFocus: widget.enabled, onKeyEvent: (node, @event) => KeyEventResult.ignored, child: widget.child);
+        return new Focus(
+            focusNode: _focusNode,
+            canRequestFocus: widget.enabled,
+            onKeyEvent: (node, @event) => KeyEventResult.ignored,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -144,12 +186,20 @@ internal class _SegmentButtonState__segmented_control<T> : State<_SegmentButton_
     }
 }
 
-public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegmentedControl<T>>, TickerProviderStateMixin<CupertinoSegmentedControl<T>> where T : notnull
+public class _SegmentedControlState__segmented_control<T>
+    : State<CupertinoSegmentedControl<T>>,
+        TickerProviderStateMixin<CupertinoSegmentedControl<T>>
+    where T : notnull
 {
     internal virtual T? _pressedKey { get; set; } = default;
-    internal virtual List<AnimationController> _selectionControllers { get; private set; } = new List<AnimationController>();
+    internal virtual List<AnimationController> _selectionControllers { get; private set; } =
+        new List<AnimationController>();
     internal virtual List<ColorTween> _childTweens { get; private set; } = new List<ColorTween>();
-    internal virtual DartMap<T, GlobalKey<_SegmentButtonState__segmented_control<T>>> _segmentKeys { get; private set; } = new DartMap<T, GlobalKey<_SegmentButtonState__segmented_control<T>>>();
+    internal virtual DartMap<T, GlobalKey<_SegmentButtonState__segmented_control<T>>> _segmentKeys
+    {
+        get;
+        private set;
+    } = new DartMap<T, GlobalKey<_SegmentButtonState__segmented_control<T>>>();
     internal virtual ColorTween _forwardBackgroundColorTween { get; set; } = default!;
     internal virtual ColorTween _reverseBackgroundColorTween { get; set; } = default!;
     internal virtual ColorTween _textColorTween { get; set; } = default!;
@@ -165,25 +215,34 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
 
     public virtual AnimationController createAnimationController()
     {
-        return ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: Segmented_controlLibrary._kFadeDuration, vsync: this);
-    __cascade.addListener(() =>
-    {
-        setState(() =>
-        {
-        });
-    });
-    return __cascade;
-}))();
+        return (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: Segmented_controlLibrary._kFadeDuration,
+                        vsync: this
+                    );
+                    __cascade.addListener(() =>
+                    {
+                        setState(() => { });
+                    });
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _updateColors()
     {
-        DartRuntimePrimitives.Assert(() => mounted, () => (object?)"This should only be called after didUpdateDependencies");
+        DartRuntimePrimitives.Assert(
+            () => mounted,
+            () => (object?)"This should only be called after didUpdateDependencies"
+        );
         var changed = false;
-        Color disabledTextColorLocal = widget.disabledTextColor ?? Segmented_controlLibrary._kDisableTextColor;
+        Color disabledTextColorLocal =
+            widget.disabledTextColor ?? Segmented_controlLibrary._kDisableTextColor;
         if (!Equals(_disabledTextColor, disabledTextColorLocal))
         {
             changed = true;
@@ -195,7 +254,8 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
             changed = true;
             _selectedColor = selectedColorLocal;
         }
-        Color unselectedColorLocal = widget.unselectedColor ?? CupertinoTheme.of(context).primaryContrastingColor;
+        Color unselectedColorLocal =
+            widget.unselectedColor ?? CupertinoTheme.of(context).primaryContrastingColor;
         if (!Equals(_unselectedColor, unselectedColorLocal))
         {
             changed = true;
@@ -203,7 +263,10 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
         }
         Color selectedDisabledColor = widget.disabledColor ?? selectedColorLocal.withOpacity(0.5);
         Color unselectedDisabledColor = widget.disabledColor ?? unselectedColorLocal;
-        if ((!Equals(_selectedDisabledColor, selectedDisabledColor)) || (!Equals(_unselectedDisabledColor, unselectedDisabledColor)))
+        if (
+            (!Equals(_selectedDisabledColor, selectedDisabledColor))
+            || (!Equals(_unselectedDisabledColor, unselectedDisabledColor))
+        )
         {
             changed = true;
             _selectedDisabledColor = selectedDisabledColor;
@@ -215,7 +278,8 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
             changed = true;
             _borderColor = borderColorLocal;
         }
-        Color pressedColorLocal = widget.pressedColor ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
+        Color pressedColorLocal =
+            widget.pressedColor ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
         if (!Equals(_pressedColor, pressedColorLocal))
         {
             changed = true;
@@ -230,7 +294,10 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
 
     internal virtual void _updateAnimationControllers()
     {
-        DartRuntimePrimitives.Assert(() => mounted, () => (object?)"This should only be called after didUpdateDependencies");
+        DartRuntimePrimitives.Assert(
+            () => mounted,
+            () => (object?)"This should only be called after didUpdateDependencies"
+        );
         foreach (AnimationController controller in _selectionControllers)
         {
             controller.dispose();
@@ -265,7 +332,10 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
     public override void didUpdateWidget(CupertinoSegmentedControl<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (_updateColors() || (checked(oldWidget.children.Count) != checked((long)widget.children.Count)))
+        if (
+            _updateColors()
+            || (checked(oldWidget.children.Count) != checked((long)widget.children.Count))
+        )
         {
             _updateAnimationControllers();
         }
@@ -296,19 +366,37 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
             animationController.dispose();
         }
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -316,7 +404,10 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
 
     internal virtual void _onTapDown(T currentKey)
     {
-        if ((_pressedKey is null) && !EqualityComparer<T>.Default.Equals(currentKey, widget.groupValue))
+        if (
+            (_pressedKey is null)
+            && !EqualityComparer<T>.Default.Equals(currentKey, widget.groupValue)
+        )
         {
             setState(() =>
             {
@@ -341,7 +432,12 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
         }
         if (!widget.disabledChildren.Contains(currentKey))
         {
-            DartRuntimePrimitives.NullAware(_segmentKeys.GetValueOrDefault(currentKey), __target => __target.currentState)?.requestFocus();
+            DartRuntimePrimitives
+                .NullAware(
+                    _segmentKeys.GetValueOrDefault(currentKey),
+                    __target => __target.currentState
+                )
+                ?.requestFocus();
             if (!EqualityComparer<T>.Default.Equals(currentKey, widget.groupValue))
             {
                 widget.onValueChanged(currentKey);
@@ -375,7 +471,9 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
     {
         if (widget.disabledChildren.Contains(currentKey))
         {
-            return EqualityComparer<T>.Default.Equals(widget.groupValue, currentKey) ? _selectedDisabledColor : _unselectedDisabledColor;
+            return EqualityComparer<T>.Default.Equals(widget.groupValue, currentKey)
+                ? _selectedDisabledColor
+                : _unselectedDisabledColor;
         }
         if (_selectionControllers[(int)index].isAnimating)
         {
@@ -402,36 +500,106 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
         long? pressedIndexLocal = default!;
         foreach (T currentKey in widget.children.Keys)
         {
-            selectedIndexLocal = EqualityComparer<T>.Default.Equals(widget.groupValue, currentKey) ? index : selectedIndexLocal;
-            pressedIndexLocal = EqualityComparer<T>.Default.Equals(_pressedKey, currentKey) ? index : pressedIndexLocal;
-            TextStyle textStyle = DefaultTextStyle.of(context).style.copyWith(color: getTextColor(index, currentKey));
+            selectedIndexLocal = EqualityComparer<T>.Default.Equals(widget.groupValue, currentKey)
+                ? index
+                : selectedIndexLocal;
+            pressedIndexLocal = EqualityComparer<T>.Default.Equals(_pressedKey, currentKey)
+                ? index
+                : pressedIndexLocal;
+            TextStyle textStyle = DefaultTextStyle
+                .of(context)
+                .style.copyWith(color: getTextColor(index, currentKey));
             var iconTheme = new IconThemeData(color: getTextColor(index, currentKey));
             Widget childLocal = new Center(child: widget.children.GetValueOrDefault(currentKey));
             bool isEnabled = !widget.disabledChildren.Contains(currentKey);
-            GlobalKey<_SegmentButtonState__segmented_control<T>> segmentKey = _segmentKeys.putIfAbsent(currentKey, () => GlobalKey<_SegmentButtonState__segmented_control<T>>.Create());
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new _SegmentButton__segmented_control<T>(key: segmentKey, value: currentKey, enabled: isEnabled, child: new MouseRegion(cursor: Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : MouseCursor.defer, child: new GestureDetector(behavior: HitTestBehavior.opaque, onTapDown: isEnabled ? ((@event) =>
-            {
-                _onTapDown(currentKey);
-            }) : null, onTapCancel: isEnabled ? _onTapCancel : null, onTap: () =>
-            {
-                if (isEnabled)
-                {
-                    DartRuntimePrimitives.NullAware(_segmentKeys.GetValueOrDefault(currentKey), __target => __target.currentState)?.requestFocus();
-                }
-                _onTap(currentKey);
-            }, child: new IconTheme(data: iconTheme, child: new DefaultTextStyle(style: textStyle, child: new Widgets.Semantics(button: true, inMutuallyExclusiveGroup: true, selected: EqualityComparer<T>.Default.Equals(widget.groupValue, currentKey), child: childLocal)))))));
+            GlobalKey<_SegmentButtonState__segmented_control<T>> segmentKey =
+                _segmentKeys.putIfAbsent(
+                    currentKey,
+                    () => GlobalKey<_SegmentButtonState__segmented_control<T>>.Create()
+                );
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new _SegmentButton__segmented_control<T>(
+                    key: segmentKey,
+                    value: currentKey,
+                    enabled: isEnabled,
+                    child: new MouseRegion(
+                        cursor: Foundation.ConstantsLibrary.kIsWeb
+                            ? SystemMouseCursors.click
+                            : MouseCursor.defer,
+                        child: new GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: isEnabled
+                                ? (
+                                    (@event) =>
+                                    {
+                                        _onTapDown(currentKey);
+                                    }
+                                )
+                                : null,
+                            onTapCancel: isEnabled ? _onTapCancel : null,
+                            onTap: () =>
+                            {
+                                if (isEnabled)
+                                {
+                                    DartRuntimePrimitives
+                                        .NullAware(
+                                            _segmentKeys.GetValueOrDefault(currentKey),
+                                            __target => __target.currentState
+                                        )
+                                        ?.requestFocus();
+                                }
+                                _onTap(currentKey);
+                            },
+                            child: new IconTheme(
+                                data: iconTheme,
+                                child: new DefaultTextStyle(
+                                    style: textStyle,
+                                    child: new Widgets.Semantics(
+                                        button: true,
+                                        inMutuallyExclusiveGroup: true,
+                                        selected: EqualityComparer<T>.Default.Equals(
+                                            widget.groupValue,
+                                            currentKey
+                                        ),
+                                        child: childLocal
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
             backgroundColorsLocal.Add(getBackgroundColor(index, currentKey)!);
             gestureChildren.Add(childLocal);
             index += 1L;
         }
-        Widget box = new _SegmentedControlRenderWidget__segmented_control<T>(selectedIndex: selectedIndexLocal, pressedIndex: pressedIndexLocal, backgroundColors: backgroundColorsLocal, borderColor: _borderColor!, children: gestureChildren);
-        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(VoidCallbackIntent)] = new VoidCallbackAction() }, child: new RadioGroup<T>(groupValue: widget.groupValue, onChanged: (value) =>
-        {
-            if ((value is not null) && !widget.disabledChildren.Contains(value))
+        Widget box = new _SegmentedControlRenderWidget__segmented_control<T>(
+            selectedIndex: selectedIndexLocal,
+            pressedIndex: pressedIndexLocal,
+            backgroundColors: backgroundColorsLocal,
+            borderColor: _borderColor!,
+            children: gestureChildren
+        );
+        return new Actions(
+            actions: new DartMap<Type, dynamic>
             {
-                widget.onValueChanged(value);
-            }
-        }, child: new Padding(padding: widget.padding ?? Segmented_controlLibrary._kHorizontalItemPadding, child: new UnconstrainedBox(constrainedAxis: Axis.horizontal, child: box))));
+                [typeof(VoidCallbackIntent)] = new VoidCallbackAction(),
+            },
+            child: new RadioGroup<T>(
+                groupValue: widget.groupValue,
+                onChanged: (value) =>
+                {
+                    if ((value is not null) && !widget.disabledChildren.Contains(value))
+                    {
+                        widget.onValueChanged(value);
+                    }
+                },
+                child: new Padding(
+                    padding: widget.padding ?? Segmented_controlLibrary._kHorizontalItemPadding,
+                    child: new UnconstrainedBox(constrainedAxis: Axis.horizontal, child: box)
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -444,13 +612,23 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -499,9 +677,17 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _SegmentedControlRenderWidget__segmented_control<T> : MultiChildRenderObjectWidget
@@ -511,7 +697,15 @@ internal class _SegmentedControlRenderWidget__segmented_control<T> : MultiChildR
     public virtual List<Color> backgroundColors { get; private set; } = default!;
     public virtual Color borderColor { get; private set; } = default!;
 
-    internal _SegmentedControlRenderWidget__segmented_control(Key? key = null, List<Widget> children = default!, long? selectedIndex = default!, long? pressedIndex = default!, List<Color> backgroundColors = default!, Color borderColor = default!) : base(key: key, children: children ?? new List<Widget>())
+    internal _SegmentedControlRenderWidget__segmented_control(
+        Key? key = null,
+        List<Widget> children = default!,
+        long? selectedIndex = default!,
+        long? pressedIndex = default!,
+        List<Color> backgroundColors = default!,
+        Color borderColor = default!
+    )
+        : base(key: key, children: children ?? new List<Widget>())
     {
         this.selectedIndex = selectedIndex;
         this.pressedIndex = pressedIndex;
@@ -521,36 +715,50 @@ internal class _SegmentedControlRenderWidget__segmented_control<T> : MultiChildR
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _RenderSegmentedControl__segmented_control<T>(textDirection: Directionality.of(context), selectedIndex: selectedIndex, pressedIndex: pressedIndex, backgroundColors: backgroundColors, borderColor: borderColor);
+        return new _RenderSegmentedControl__segmented_control<T>(
+            textDirection: Directionality.of(context),
+            selectedIndex: selectedIndex,
+            pressedIndex: pressedIndex,
+            backgroundColors: backgroundColors,
+            borderColor: borderColor
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSegmentedControl__segmented_control<T>)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<_RenderSegmentedControl__segmented_control<T>>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.textDirection = Directionality.of(context);
-    __cascade.selectedIndex = selectedIndex;
-    __cascade.pressedIndex = pressedIndex;
-    __cascade.backgroundColors = backgroundColors;
-    __cascade.borderColor = borderColor;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<_RenderSegmentedControl__segmented_control<T>>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.textDirection = Directionality.of(context);
+                        __cascade.selectedIndex = selectedIndex;
+                        __cascade.pressedIndex = pressedIndex;
+                        __cascade.backgroundColors = backgroundColors;
+                        __cascade.borderColor = borderColor;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
 
-internal class _SegmentedControlContainerBoxParentData__segmented_control : ContainerBoxParentData<RenderBox>
+internal class _SegmentedControlContainerBoxParentData__segmented_control
+    : ContainerBoxParentData<RenderBox>
 {
     public virtual RSuperellipse? surroundingRect { get; set; } = default;
-
 }
 
 internal delegate RenderBox? _NextChild__segmented_control(RenderBox child);
 
-public class _RenderSegmentedControl__segmented_control<T> : RenderBox, ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>, RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>>
+public class _RenderSegmentedControl__segmented_control<T>
+    : RenderBox,
+        ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>,
+        RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>>
 {
     internal virtual long? _selectedIndex { get; set; } = default;
     internal virtual long? _pressedIndex { get; set; } = default;
@@ -561,7 +769,13 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    internal _RenderSegmentedControl__segmented_control(long? selectedIndex, long? pressedIndex, TextDirection textDirection, List<Color> backgroundColors, Color borderColor)
+    internal _RenderSegmentedControl__segmented_control(
+        long? selectedIndex,
+        long? pressedIndex,
+        TextDirection textDirection,
+        List<Color> backgroundColors,
+        Color borderColor
+    )
     {
         _textDirection = textDirection;
         _selectedIndex = selectedIndex;
@@ -640,13 +854,16 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
             markNeedsPaint();
         }
     }
+
     public override double computeMinIntrinsicWidth(double height)
     {
         RenderBox? child = firstChild;
         var minWidth = 0.0;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             double childWidth = child.getMinIntrinsicWidth(height);
             minWidth = Math.Max(minWidth, childWidth);
             child = childParentData.nextSibling;
@@ -661,7 +878,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         var maxWidth = 0.0;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             double childWidth = child.getMaxIntrinsicWidth(height);
             maxWidth = Math.Max(maxWidth, childWidth);
             child = childParentData.nextSibling;
@@ -676,7 +895,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         var minHeight = 0.0;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             double childHeight = child.getMinIntrinsicHeight(width);
             minHeight = Math.Max(minHeight, childHeight);
             child = childParentData.nextSibling;
@@ -691,7 +912,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         var maxHeight = 0.0;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             double childHeight = child.getMaxIntrinsicHeight(width);
             maxHeight = Math.Max(maxHeight, childHeight);
             child = childParentData.nextSibling;
@@ -715,26 +938,40 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         }
     }
 
-    internal virtual void _layoutRects(Func<RenderBox, RenderBox?> nextChild, RenderBox? leftChild, RenderBox? rightChild)
+    internal virtual void _layoutRects(
+        Func<RenderBox, RenderBox?> nextChild,
+        RenderBox? leftChild,
+        RenderBox? rightChild
+    )
     {
         var child = leftChild;
         var start = 0.0;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             var childOffset = new Offset(start, 0.0);
             childParentData.offset = childOffset;
             var childRect = Rect.fromLTWH(start, 0.0, child.size.width, child.size.height);
             RSuperellipse rChildRect = default!;
             if (Equals(child, leftChild))
             {
-                rChildRect = RSuperellipse.fromRectAndCorners(childRect, topLeft: Radius.circular(3.0), bottomLeft: Radius.circular(3.0));
+                rChildRect = RSuperellipse.fromRectAndCorners(
+                    childRect,
+                    topLeft: Radius.circular(3.0),
+                    bottomLeft: Radius.circular(3.0)
+                );
             }
             else
             {
                 if (Equals(child, rightChild))
                 {
-                    rChildRect = RSuperellipse.fromRectAndCorners(childRect, topRight: Radius.circular(3.0), bottomRight: Radius.circular(3.0));
+                    rChildRect = RSuperellipse.fromRectAndCorners(
+                        childRect,
+                        topRight: Radius.circular(3.0),
+                        bottomRight: Radius.circular(3.0)
+                    );
                 }
                 else
                 {
@@ -782,7 +1019,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         BaselineOffset baselineOffset = BaselineOffset.noBaseline;
         for (RenderBox? child = firstChild; child is not null; child = childAfter(child))
         {
-            baselineOffset = baselineOffset.minOf(new BaselineOffset(child.getDryBaseline(childConstraints, baseline)));
+            baselineOffset = baselineOffset.minOf(
+                new BaselineOffset(child.getDryBaseline(childConstraints, baseline))
+            );
         }
         return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -799,7 +1038,10 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
     {
         BoxConstraints constraintsLocal = constraints;
         Size childSize = _calculateChildSize(constraintsLocal);
-        var childConstraints = BoxConstraints.CreateTightFor(width: childSize.width, height: childSize.height);
+        var childConstraints = BoxConstraints.CreateTightFor(
+            width: childSize.width,
+            height: childSize.height
+        );
         RenderBox? child = firstChild;
         while (child is not null)
         {
@@ -809,15 +1051,15 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         switch (textDirection)
         {
             case TextDirection.rtl:
-                {
-                    _layoutRects(childBefore, lastChild, firstChild);
-                    break;
-                }
+            {
+                _layoutRects(childBefore, lastChild, firstChild);
+                break;
+            }
             case TextDirection.ltr:
-                {
-                    _layoutRects(childAfter, firstChild, lastChild);
-                    break;
-                }
+            {
+                _layoutRects(childAfter, firstChild, lastChild);
+                break;
+            }
         }
         size = _computeOverallSizeFromChildSize(childSize);
     }
@@ -834,24 +1076,45 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         }
     }
 
-    internal virtual void _paintChild(PaintingContext context, Offset offset, RenderBox child, long childIndex)
+    internal virtual void _paintChild(
+        PaintingContext context,
+        Offset offset,
+        RenderBox child,
+        long childIndex
+    )
     {
-        var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
-        context.canvas.drawRSuperellipse(childParentData.surroundingRect!.shift(offset), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = backgroundColors[(int)childIndex];
-    __cascade.style = PaintingStyle.fill;
-    return __cascade;
-}))());
-        context.canvas.drawRSuperellipse(childParentData.surroundingRect!.shift(offset), ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = borderColor;
-    __cascade.strokeWidth = 1.0;
-    __cascade.style = PaintingStyle.stroke;
-    return __cascade;
-}))());
+        var childParentData = (
+            (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+        )!;
+        context.canvas.drawRSuperellipse(
+            childParentData.surroundingRect!.shift(offset),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = backgroundColors[(int)childIndex];
+                        __cascade.style = PaintingStyle.fill;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
+        context.canvas.drawRSuperellipse(
+            childParentData.surroundingRect!.shift(offset),
+            (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = borderColor;
+                        __cascade.strokeWidth = 1.0;
+                        __cascade.style = PaintingStyle.stroke;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
         context.paintChild(child, childParentData.offset + offset);
     }
 
@@ -860,15 +1123,25 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         RenderBox? child = lastChild;
         while (child is not null)
         {
-            var childParentData = ((_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!)!;
+            var childParentData = (
+                (_SegmentedControlContainerBoxParentData__segmented_control?)child.parentData!
+            )!;
             if (childParentData.surroundingRect!.outerRect.contains(position))
             {
-                return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, localOffset) =>
-                {
-                    DartRuntimePrimitives.Assert(() => Equals(localOffset, position - childParentData.offset));
-                    return child!.hitTest(result, position: localOffset);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
-                });
+                return result.addWithPaintOffset(
+                    offset: childParentData.offset,
+                    position: position,
+                    hitTest: (result, localOffset) =>
+                    {
+                        DartRuntimePrimitives.Assert(() =>
+                            Equals(localOffset, position - childParentData.offset)
+                        );
+                        return child!.hitTest(result, position: localOffset);
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                );
             }
             child = childParentData.previousSibling;
         }
@@ -903,16 +1176,46 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
     }
 
     public virtual long childCount => _childCount;
+
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (child is not RenderBox)
             {
-                if (child is not RenderBox)
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        new List<DiagnosticsNode>
+                        {
+                            new ErrorSummary(
+                                $"A {GetType()} expected a child of type {typeof(RenderBox)} but received a "
+                                    + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."
+                            ),
+                            new ErrorDescription(
+                                "RenderObjects expect specific types of children because they "
+                                    + "coordinate with their children during layout and paint. For "
+                                    + "example, a RenderSliver cannot be the child of a RenderBox because "
+                                    + "a RenderSliver does not understand the RenderBox layout protocol."
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {GetType()} that expected a {typeof(RenderBox)} child was created by",
+                                debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                            new ErrorSpacer(),
+                            new DiagnosticsProperty<object?>(
+                                $"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type "
+                                    + "was created by",
+                                child.debugCreator,
+                                style: DiagnosticsTreeStyle.errorProperty
+                            ),
+                        }
+                    )
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -929,7 +1232,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
             childParentData.nextSibling = _firstChild;
             if (_firstChild is not null)
             {
-                var firstChildParentData = ((ContainerBoxParentData<RenderBox>?)_firstChild!.parentData!)!;
+                var firstChildParentData = (
+                    (ContainerBoxParentData<RenderBox>?)_firstChild!.parentData!
+                )!;
                 firstChildParentData.previousSibling = child;
             }
             _firstChild = child;
@@ -939,8 +1244,12 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         {
             DartRuntimePrimitives.Assert(() => _firstChild is not null);
             DartRuntimePrimitives.Assert(() => _lastChild is not null);
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimatePreviousSiblingOf(after, equals: _firstChild)
+            );
+            DartRuntimePrimitives.Assert(() =>
+                _debugUltimateNextSiblingOf(after, equals: _lastChild)
+            );
             var afterParentData = ((ContainerBoxParentData<RenderBox>?)after.parentData!)!;
             if (afterParentData.nextSibling is null)
             {
@@ -953,8 +1262,12 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = (
+                    (ContainerBoxParentData<RenderBox>?)childParentData.previousSibling!.parentData!
+                )!;
+                var childNextSiblingParentData = (
+                    (ContainerBoxParentData<RenderBox>?)childParentData.nextSibling!.parentData!
+                )!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
                 DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
@@ -964,13 +1277,31 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => !Equals(child, this), () => (object?)"A RenderObject cannot be inserted into itself.");
-        DartRuntimePrimitives.Assert(() => !Equals(after, this), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
-        DartRuntimePrimitives.Assert(() => !Equals(child, after), () => (object?)"A RenderObject cannot be inserted after itself.");
+        DartRuntimePrimitives.Assert(
+            () => !Equals(child, this),
+            () => (object?)"A RenderObject cannot be inserted into itself."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !Equals(after, this),
+            () =>
+                (object?)
+                    "A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject."
+        );
+        DartRuntimePrimitives.Assert(
+            () => !Equals(child, after),
+            () => (object?)"A RenderObject cannot be inserted after itself."
+        );
         DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
         DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => child.parentData is ContainerBoxParentData<RenderBox>, () => (object?)$"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {typeof(ContainerBoxParentData<RenderBox>)}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {typeof(ContainerBoxParentData<RenderBox>)}.");
+        DartRuntimePrimitives.Assert(
+            () => child.parentData is ContainerBoxParentData<RenderBox>,
+            () =>
+                (object?)
+                    $"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, "
+                + $"which does not conform to {typeof(ContainerBoxParentData<RenderBox>)}. Class using ContainerRenderObjectMixin "
+                + $"should override setupParentData() to set parentData to type {typeof(ContainerBoxParentData<RenderBox>)}."
+        );
         _insertIntoChildList(child, after: after);
     }
 
@@ -987,7 +1318,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() =>
+            _debugUltimatePreviousSiblingOf(child, equals: _firstChild)
+        );
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
         DartRuntimePrimitives.Assert(() => _childCount >= 0L);
         if (childParentData.previousSibling is null)
@@ -997,7 +1330,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         }
         else
         {
-            var childPreviousSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = (
+                (ContainerBoxParentData<RenderBox>?)childParentData.previousSibling!.parentData!
+            )!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if (childParentData.nextSibling is null)
@@ -1007,7 +1342,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         }
         else
         {
-            var childNextSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = (
+                (ContainerBoxParentData<RenderBox>?)childParentData.nextSibling!.parentData!
+            )!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -1102,6 +1439,7 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
 
     public virtual RenderBox? firstChild => _firstChild;
     public virtual RenderBox? lastChild => _lastChild;
+
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
@@ -1127,7 +1465,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
             var count = 1L;
             while (true)
             {
-                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
+                children.Add(
+                    ((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}")
+                );
                 if (Equals(child, lastChild))
                 {
                     break;
@@ -1152,7 +1492,8 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
             if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
+                    + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -1168,7 +1509,9 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
+            BaselineOffset candidate = new BaselineOffset(
+                child.getDistanceToActualBaseline(baseline)
+            ).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -1182,12 +1525,18 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
-            {
-                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
-                return child!.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            bool isHit = result.addWithPaintOffset(
+                offset: childParentData.offset,
+                position: position,
+                hitTest: (result, transformed) =>
+                {
+                    DartRuntimePrimitives.Assert(() =>
+                        Equals(transformed, position - childParentData.offset)
+                    );
+                    return child!.hitTest(result, position: transformed);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
             if (isHit)
             {
                 return true;
@@ -1222,5 +1571,4 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

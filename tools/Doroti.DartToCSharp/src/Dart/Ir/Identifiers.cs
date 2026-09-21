@@ -12,6 +12,7 @@ internal readonly record struct LibraryId
     }
 
     public string Value { get; }
+
     public override string ToString() => Value;
 }
 
@@ -26,7 +27,9 @@ internal readonly record struct SymbolId
         var separator = value.LastIndexOf('#');
         if (string.IsNullOrWhiteSpace(value) || separator <= 0 || separator == value.Length - 1)
         {
-            throw new FormatException($"Canonical symbol identity must contain a library URI and name: {value}");
+            throw new FormatException(
+                $"Canonical symbol identity must contain a library URI and name: {value}"
+            );
         }
         _ = new LibraryId(value[..separator]);
         return new(value);
@@ -43,6 +46,7 @@ internal readonly record struct SymbolId
 
     public LibraryId Library => new(Value[..Value.LastIndexOf('#')]);
     public string Name => Value[(Value.LastIndexOf('#') + 1)..];
+
     public override string ToString() => Value;
 }
 

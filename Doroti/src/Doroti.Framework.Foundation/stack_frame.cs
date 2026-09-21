@@ -8,13 +8,16 @@ namespace Doroti.Framework.Foundation;
 
 public sealed record StackFrame
 {
-    private const string PackageStackTraceAsyncGap = "===== asynchronous gap ===========================";
+    private const string PackageStackTraceAsyncGap =
+        "===== asynchronous gap ===========================";
     private static readonly Regex VmPattern = new(
         @"^#(?<number>\d+) +(?<member>.+) \((?<uri>.*?)(?::(?<line>\d+))?(?::(?<column>\d+))?\)$",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        RegexOptions.Compiled | RegexOptions.CultureInvariant
+    );
     private static readonly Regex WebPattern = new(
         @"^\s*at (?<member>[^\s]+).*$",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        RegexOptions.Compiled | RegexOptions.CultureInvariant
+    );
 
     public StackFrame(
         int number,
@@ -26,7 +29,8 @@ public sealed record StackFrame
         string className = "",
         string method = "",
         bool isConstructor = false,
-        string source = "")
+        string source = ""
+    )
     {
         this.number = number;
         this.column = column;
@@ -40,8 +44,19 @@ public sealed record StackFrame
         this.source = source;
     }
 
-    public static StackFrame asynchronousSuspension { get; } = new(-1, -1, -1, "", "", "", method: "asynchronous suspension", source: "<asynchronous suspension>");
-    public static StackFrame stackOverFlowElision { get; } = new(-1, -1, -1, "", "", "", method: "...", source: "...");
+    public static StackFrame asynchronousSuspension { get; } =
+        new(
+            -1,
+            -1,
+            -1,
+            "",
+            "",
+            "",
+            method: "asynchronous suspension",
+            source: "<asynchronous suspension>"
+        );
+    public static StackFrame stackOverFlowElision { get; } =
+        new(-1, -1, -1, "", "", "", method: "...", source: "...");
 
     public string source { get; }
     public int number { get; }
@@ -54,11 +69,19 @@ public sealed record StackFrame
     public string method { get; }
     public bool isConstructor { get; }
 
-    public static IReadOnlyList<StackFrame> fromStackTrace(StackTrace stack) => fromStackString(stack.ToString());
+    public static IReadOnlyList<StackFrame> fromStackTrace(StackTrace stack) =>
+        fromStackString(stack.ToString());
 
     public static IReadOnlyList<StackFrame> fromStackString(string stack) =>
-        stack.Trim().Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
-            .Where(value => value.Length != 0).Select(fromStackTraceLine).Where(frame => frame is not null).Cast<StackFrame>().ToArray();
+        stack
+            .Trim()
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Split('\n')
+            .Where(value => value.Length != 0)
+            .Select(fromStackTraceLine)
+            .Where(frame => frame is not null)
+            .Cast<StackFrame>()
+            .ToArray();
 
     public static StackFrame? fromStackTraceLine(string value)
     {
@@ -79,10 +102,17 @@ public sealed record StackFrame
                 return null;
             }
             var parts = web.Groups["member"].Value.Split('.');
-            return new StackFrame(-1, -1, -1, "<unknown>", "<unknown>", "<unknown>",
+            return new StackFrame(
+                -1,
+                -1,
+                -1,
+                "<unknown>",
+                "<unknown>",
+                "<unknown>",
                 parts.Length > 1 ? parts[0] : "<unknown>",
                 parts.Length > 1 ? string.Join('.', parts.Skip(1)) : parts[0],
-                source: value);
+                source: value
+            );
         }
 
         var match = VmPattern.Match(value);
@@ -90,13 +120,17 @@ public sealed record StackFrame
         {
             return null;
         }
-        var member = match.Groups["member"].Value.Replace(".<anonymous closure>", string.Empty, StringComparison.Ordinal);
+        var member = match
+            .Groups["member"]
+            .Value.Replace(".<anonymous closure>", string.Empty, StringComparison.Ordinal);
         var constructor = member.StartsWith("new", StringComparison.Ordinal);
         var className = string.Empty;
         var method = member;
         if (constructor)
         {
-            var constructorName = member.Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault() ?? "<unknown>";
+            var constructorName =
+                member.Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault()
+                ?? "<unknown>";
             var parts = constructorName.Split('.', 2);
             className = parts[0];
             method = parts.Length > 1 ? parts[1] : string.Empty;
@@ -119,10 +153,12 @@ public sealed record StackFrame
             className,
             method,
             constructor,
-            value);
+            value
+        );
     }
 
-    private static int ParseCoordinate(Group group) => group.Success ? int.Parse(group.Value, CultureInfo.InvariantCulture) : -1;
+    private static int ParseCoordinate(Group group) =>
+        group.Success ? int.Parse(group.Value, CultureInfo.InvariantCulture) : -1;
 
     private static void ParseUri(string raw, out string scheme, out string package, out string path)
     {

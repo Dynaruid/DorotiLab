@@ -7,7 +7,11 @@ namespace Doroti.Framework.Rendering;
 
 public delegate Size ChildLayouter(RenderBox child, BoxConstraints constraints);
 
-public delegate double? ChildBaselineGetter(RenderBox child, BoxConstraints constraints, TextBaseline baseline);
+public delegate double? ChildBaselineGetter(
+    RenderBox child,
+    BoxConstraints constraints,
+    TextBaseline baseline
+);
 
 public abstract class ChildLayoutHelper
 {
@@ -24,19 +28,25 @@ public abstract class ChildLayoutHelper
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double? getDryBaseline(RenderBox child, BoxConstraints constraints, TextBaseline baseline)
+    public static double? getDryBaseline(
+        RenderBox child,
+        BoxConstraints constraints,
+        TextBaseline baseline
+    )
     {
         return child.getDryBaseline(constraints, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double? getBaseline(RenderBox child, BoxConstraints constraints, TextBaseline baseline)
+    public static double? getBaseline(
+        RenderBox child,
+        BoxConstraints constraints,
+        TextBaseline baseline
+    )
     {
         DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
         DartRuntimePrimitives.Assert(() => Equals(child.constraints, constraints));
         return child.getDistanceToBaseline(baseline, onlyReal: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

@@ -24,8 +24,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private readonly IMTLDevice _metalDevice;
     private readonly IMTLCommandQueue _commandQueue;
     private readonly GRMtlBackendContext _backendContext;
-    internal static readonly bool UseGraphite = Environment.GetEnvironmentVariable("DOROTI_MACOS_GRAPHITE") != "0";
-    internal static string GraphicsBackendId => UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Metal-Skia";
+    internal static readonly bool UseGraphite =
+        Environment.GetEnvironmentVariable("DOROTI_MACOS_GRAPHITE") != "0";
+    internal static string GraphicsBackendId =>
+        UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Metal-Skia";
     private GRContext? _grContext;
     private SkiaGraphiteSession? _graphite;
     private DorotiMacOSMetalSurface? _resourceOwner;
@@ -63,18 +65,25 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private readonly AppKitWindowBackdrop _backdrop;
     private readonly MauiTrackpadGesture _trackpad;
     private int _trackpadParts;
-    private double _trackpadPanX, _trackpadPanY, _trackpadMagnification, _trackpadRotation;
+    private double _trackpadPanX,
+        _trackpadPanY,
+        _trackpadMagnification,
+        _trackpadRotation;
     private double _lastTrackpadMomentum;
 
-    public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
+    public DorotiMacOSMetalView()
+        : base(CGRect.Empty, RequireMetalDevice())
     {
         _backdrop = new(this);
         _trackpad = new(2, data => _owner?.RaisePointer(data));
         this.SetAllowedTouchTypes(NSTouchTypeMask.Indirect);
         WantsRestingTouches = true;
-        _metalDevice = Device ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
-        _commandQueue = _metalDevice.CreateCommandQueue() ??
-            throw new InvalidOperationException("Metal command queue creation failed.");
+        _metalDevice =
+            Device
+            ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
+        _commandQueue =
+            _metalDevice.CreateCommandQueue()
+            ?? throw new InvalidOperationException("Metal command queue creation failed.");
         _backendContext = new GRMtlBackendContext { Device = _metalDevice, Queue = _commandQueue };
         ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
         DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
@@ -98,6 +107,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     }
 
     public override bool AcceptsFirstResponder() => true;
+
     public override bool IsOpaque => false;
 
     /// <summary>The native material currently selected, including the pre-macOS-26 fallback.</summary>
@@ -115,19 +125,33 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         AppKitPlatformViewDispatcher.VerifyThread();
         if (_releaseRequested || _resourcesReleased)
+        {
             throw new InvalidOperationException("Cannot configure a disconnected Metal view.");
+        }
+
         _backdrop.Configure(appearance);
         RequestFrame();
     }
 
-    internal AppKitPlatformRasterSurface CreatePlatformRasterSurface() => new(_metalDevice, _commandQueue, _grContext);
+    internal AppKitPlatformRasterSurface CreatePlatformRasterSurface() =>
+        new(_metalDevice, _commandQueue, _grContext);
 
     internal void Connect(DorotiMacOSMetalSurface owner)
     {
         if (_resourcesReleased || _releaseRequested)
-            throw new InvalidOperationException("A disconnected Metal view requires a fresh handler/native view.");
+        {
+            throw new InvalidOperationException(
+                "A disconnected Metal view requires a fresh handler/native view."
+            );
+        }
+
         if (RetiringViews.Count != 0)
-            throw new InvalidOperationException("Previous AppKit Metal resources are still retiring.");
+        {
+            throw new InvalidOperationException(
+                "Previous AppKit Metal resources are still retiring."
+            );
+        }
+
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _resourceOwner = owner;
         _releaseRequested = false;
@@ -143,7 +167,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var owner = _owner;
         _owner = null;
         _backdrop.Dispose();
-        if (owner is null && _releaseRequested) return;
+        if (owner is null && _releaseRequested)
+        {
+            return;
+        }
+
         Interlocked.Increment(ref _surfaceGeneration);
         DetachWindowObservers();
         if (_trackingArea is not null)
@@ -158,18 +186,32 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             _releaseRequested = true;
             RetiringViews.Add(this);
             _graphite?.StopAcceptingFrames();
-            if (!_drawingFrame && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
+            if (!_drawingFrame && _inFlight == 0 && _heldGpuWork.Count == 0)
+            {
+                ReleaseGpuResources();
+            }
         }
     }
 
     internal void RequestFrame()
     {
-        if (_releaseRequested) return;
-        if (Interlocked.Exchange(ref _frameRequestPending, 1) != 0) return;
+        if (_releaseRequested)
+        {
+            return;
+        }
+
+        if (Interlocked.Exchange(ref _frameRequestPending, 1) != 0)
+        {
+            return;
+        }
+
         BeginInvokeOnMainThread(() =>
         {
             Interlocked.Exchange(ref _frameRequestPending, 0);
-            if (!_releaseRequested) NeedsDisplay = true;
+            if (!_releaseRequested)
+            {
+                NeedsDisplay = true;
+            }
         });
     }
 
@@ -177,8 +219,14 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         BeginInvokeOnMainThread(() =>
         {
-            if (focused) Window?.MakeFirstResponder(this);
-            else if (ReferenceEquals(Window?.FirstResponder, this)) Window?.MakeFirstResponder(null);
+            if (focused)
+            {
+                Window?.MakeFirstResponder(this);
+            }
+            else if (ReferenceEquals(Window?.FirstResponder, this))
+            {
+                Window?.MakeFirstResponder(null);
+            }
         });
     }
 
@@ -188,7 +236,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             if (cursor == DorotiMouseCursorKind.none)
             {
-                if (!_cursorHidden) NSCursor.Hide();
+                if (!_cursorHidden)
+                {
+                    NSCursor.Hide();
+                }
+
                 _cursorHidden = true;
                 return;
             }
@@ -196,7 +248,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             var native = cursor switch
             {
                 DorotiMouseCursorKind.click => NSCursor.PointingHandCursor,
-                DorotiMouseCursorKind.text or DorotiMouseCursorKind.verticalText => NSCursor.IBeamCursor,
+                DorotiMouseCursorKind.text or DorotiMouseCursorKind.verticalText =>
+                    NSCursor.IBeamCursor,
                 DorotiMouseCursorKind.precise => NSCursor.CrosshairCursor,
                 DorotiMouseCursorKind.resizeLeftRight => NSCursor.ResizeLeftRightCursor,
                 DorotiMouseCursorKind.resizeUpDown => NSCursor.ResizeUpDownCursor,
@@ -210,9 +263,15 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         base.ViewDidMoveToWindow();
         // AppKit may call this virtual method during the native base constructor.
-        if (!_releaseRequested) _backdrop?.Synchronize();
+        if (!_releaseRequested)
+        {
+            _backdrop?.Synchronize();
+        }
+
         AttachWindowObservers();
-        _owner?.RaiseFocus(Window?.IsKeyWindow == true && ReferenceEquals(Window.FirstResponder, this));
+        _owner?.RaiseFocus(
+            Window?.IsKeyWindow == true && ReferenceEquals(Window.FirstResponder, this)
+        );
         PublishDrawableMetrics(DrawableSize, force: true);
         RequestFrame();
     }
@@ -230,17 +289,29 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     public override void Layout()
     {
         base.Layout();
-        if (!_releaseRequested) _backdrop?.Synchronize();
+        if (!_releaseRequested)
+        {
+            _backdrop?.Synchronize();
+        }
+
         var logicalSize = Bounds.Size;
         var scale = BackingScale();
-        if (_drawingLayout || logicalSize.Width <= 0 || logicalSize.Height <= 0) return;
-        if (logicalSize.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale)) return;
+        if (_drawingLayout || logicalSize.Width <= 0 || logicalSize.Height <= 0)
+        {
+            return;
+        }
+
+        if (logicalSize.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale))
+        {
+            return;
+        }
 
         _lastLayoutSize = logicalSize;
         _lastLayoutScale = scale;
         var drawableSize = new CGSize(
             Math.Max(1, Math.Round(logicalSize.Width * scale)),
-            Math.Max(1, Math.Round(logicalSize.Height * scale)));
+            Math.Max(1, Math.Round(logicalSize.Height * scale))
+        );
         try
         {
             _drawingLayout = true;
@@ -286,12 +357,15 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             RemoveTrackingArea(_trackingArea);
             _trackingArea.Dispose();
         }
-        _trackingArea = new NSTrackingArea(Bounds,
-            NSTrackingAreaOptions.ActiveInKeyWindow |
-            NSTrackingAreaOptions.InVisibleRect |
-            NSTrackingAreaOptions.MouseEnteredAndExited |
-            NSTrackingAreaOptions.MouseMoved,
-            this, null!);
+        _trackingArea = new NSTrackingArea(
+            Bounds,
+            NSTrackingAreaOptions.ActiveInKeyWindow
+                | NSTrackingAreaOptions.InVisibleRect
+                | NSTrackingAreaOptions.MouseEnteredAndExited
+                | NSTrackingAreaOptions.MouseMoved,
+            this,
+            null!
+        );
         AddTrackingArea(_trackingArea);
         base.UpdateTrackingAreas();
     }
@@ -300,7 +374,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         _ = view;
         PublishDrawableMetrics(size);
-        if (!_drawingLayout) RequestFrame();
+        if (!_drawingLayout)
+        {
+            RequestFrame();
+        }
     }
 
     void IMTKViewDelegate.Draw(MTKView view)
@@ -308,11 +385,22 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _ = view;
         var owner = _owner;
         var size = DrawableSize;
-        if (owner is null || _releaseRequested || _faulted || _drawingFrame || size.Width <= 0 || size.Height <= 0) return;
+        if (
+            owner is null
+            || _releaseRequested
+            || _faulted
+            || _drawingFrame
+            || size.Width <= 0
+            || size.Height <= 0
+        )
+        {
+            return;
+        }
         // Native composition/removal cannot replay an older completed scene over
         // the next material/color update. Keep one such frame pending, as on UIKit.
         // The GPU completion requests the deferred frame without blocking AppKit.
-        var maximumPending = owner.PlatformViews?.HasComposition == true || _platformInFlight != 0 ? 1 : 3;
+        var maximumPending =
+            owner.PlatformViews?.HasComposition == true || _platformInFlight != 0 ? 1 : 3;
         if (_inFlight >= maximumPending)
         {
             _frameBackpressure = true;
@@ -346,24 +434,46 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             if (UseGraphite && _graphite is null)
             {
-                _graphite = SkiaGraphiteSession.CreateMetal(_metalDevice.Handle, _commandQueue.Handle,
-                    Interlocked.Increment(ref _contextGeneration));
+                _graphite = SkiaGraphiteSession.CreateMetal(
+                    _metalDevice.Handle,
+                    _commandQueue.Handle,
+                    Interlocked.Increment(ref _contextGeneration)
+                );
             }
             if (!UseGraphite && _grContext is null)
             {
-                _grContext = GRContext.CreateMetal(_backendContext) ??
-                    throw new InvalidOperationException("Skia Metal GRContext creation failed.");
+                _grContext =
+                    GRContext.CreateMetal(_backendContext)
+                    ?? throw new InvalidOperationException("Skia Metal GRContext creation failed.");
                 Interlocked.Increment(ref _contextGeneration);
             }
-            using var renderTarget = UseGraphite ? null : new GRBackendRenderTarget(
-                checked((int)size.Width), checked((int)size.Height), new GRMtlTextureInfo(drawable.Texture));
+            using var renderTarget = UseGraphite
+                ? null
+                : new GRBackendRenderTarget(
+                    checked((int)size.Width),
+                    checked((int)size.Height),
+                    new GRMtlTextureInfo(drawable.Texture)
+                );
             if (UseGraphite)
-                graphiteFrame = _graphite!.BeginMetalFrame(checked((int)size.Width), checked((int)size.Height), drawable.Texture.Handle);
-            using var ganeshSurface = UseGraphite ? null : SKSurface.Create(_grContext, renderTarget!,
-                GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888)
-                ?? throw new InvalidOperationException("Skia Metal SKSurface creation failed.");
+            {
+                graphiteFrame = _graphite!.BeginMetalFrame(
+                    checked((int)size.Width),
+                    checked((int)size.Height),
+                    drawable.Texture.Handle
+                );
+            }
+
+            using var ganeshSurface = UseGraphite
+                ? null
+                : SKSurface.Create(
+                    _grContext,
+                    renderTarget!,
+                    GRSurfaceOrigin.TopLeft,
+                    SKColorType.Bgra8888
+                ) ?? throw new InvalidOperationException("Skia Metal SKSurface creation failed.");
             var surface = graphiteFrame?.Surface ?? ganeshSurface!;
-            var scale = Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1;
+            var scale =
+                Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1;
             _logicalWidth = Bounds.Width;
             _logicalHeight = Bounds.Height;
             _pixelWidth = size.Width;
@@ -371,9 +481,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             _density = (double)scale;
             PublishDrawableMetrics(size);
             generation = Interlocked.Read(ref _surfaceGeneration);
-            var paint = new MauiSkiaPaintContext(surface, (object?)_graphite ?? _grContext,
-                checked((int)size.Width), checked((int)size.Height), (double)scale, generation,
-                GetType().FullName ?? nameof(DorotiMacOSMetalView), GraphicsBackendId);
+            var paint = new MauiSkiaPaintContext(
+                surface,
+                (object?)_graphite ?? _grContext,
+                checked((int)size.Width),
+                checked((int)size.Height),
+                (double)scale,
+                generation,
+                GetType().FullName ?? nameof(DorotiMacOSMetalView),
+                GraphicsBackendId
+            );
             completion = owner.RaisePaint(paint);
             platformFrame = owner.PlatformViews?.TakePending();
             if (paint.SkipPresent || generation != Interlocked.Read(ref _surfaceGeneration))
@@ -395,12 +512,25 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 _grContext!.Flush(submit: true, synchronous: false);
             }
 
-            using var commandBuffer = _commandQueue.CommandBuffer() ??
-                throw new InvalidOperationException("Metal command buffer creation failed.");
+            using var commandBuffer =
+                _commandQueue.CommandBuffer()
+                ?? throw new InvalidOperationException("Metal command buffer creation failed.");
             platformFrame?.Commit();
             var transactionPresentation = _drawingLayout || compositionTransaction;
-            if (!transactionPresentation) commandBuffer.PresentDrawable(drawable);
-            TrackCommandBuffer(commandBuffer, owner, completion, generation, graphiteFrame, drawable, platformFrame);
+            if (!transactionPresentation)
+            {
+                commandBuffer.PresentDrawable(drawable);
+            }
+
+            TrackCommandBuffer(
+                commandBuffer,
+                owner,
+                completion,
+                generation,
+                graphiteFrame,
+                drawable,
+                platformFrame
+            );
             commandBufferTracked = true;
             commandBuffer.Commit();
             var presentationFrame = platformFrame;
@@ -419,9 +549,19 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         catch (Exception exception)
         {
             owner.PlatformViews?.CancelPending();
-            try { platformFrame?.Abort(); }
-            catch (Exception rollbackError) { System.Diagnostics.Trace.TraceError(rollbackError.ToString()); }
-            if (commandBufferTracked) CancelCommandBufferTracking(platformFrame is not null);
+            try
+            {
+                platformFrame?.Abort();
+            }
+            catch (Exception rollbackError)
+            {
+                System.Diagnostics.Trace.TraceError(rollbackError.ToString());
+            }
+            if (commandBufferTracked)
+            {
+                CancelCommandBufferTracking(platformFrame is not null);
+            }
+
             if (graphiteFrame is not null && !graphiteSubmissionAttempted)
             {
                 graphiteFrame.CancelRecording();
@@ -433,9 +573,20 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 // submitted textures and native leases, including partial failures.
                 try
                 {
-                    using var marker = _commandQueue.CommandBuffer() ??
-                        throw new InvalidOperationException("Metal terminal marker unavailable; retaining GPU resources.");
-                    TrackCommandBuffer(marker, owner, null, generation, graphiteFrame, drawable, platformFrame);
+                    using var marker =
+                        _commandQueue.CommandBuffer()
+                        ?? throw new InvalidOperationException(
+                            "Metal terminal marker unavailable; retaining GPU resources."
+                        );
+                    TrackCommandBuffer(
+                        marker,
+                        owner,
+                        null,
+                        generation,
+                        graphiteFrame,
+                        drawable,
+                        platformFrame
+                    );
                     marker.Commit();
                     platformFrame = null;
                     Interlocked.Increment(ref _commandBuffersCommitted);
@@ -458,14 +609,22 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 CATransaction.Commit();
                 PresentsWithTransaction = _drawingLayout;
             }
-            if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
+            if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0)
+            {
+                ReleaseGpuResources();
+            }
         }
     }
 
-    private void TrackCommandBuffer(IMTLCommandBuffer buffer, DorotiMacOSMetalSurface owner,
-        MauiPaintCompletion? completion, long generation,
-        SkiaGraphiteSession.Frame? graphiteFrame, ICAMetalDrawable drawable,
-        AppKitPlatformViewHost.PreparedFrame? platformFrame = null)
+    private void TrackCommandBuffer(
+        IMTLCommandBuffer buffer,
+        DorotiMacOSMetalSurface owner,
+        MauiPaintCompletion? completion,
+        long generation,
+        SkiaGraphiteSession.Frame? graphiteFrame,
+        ICAMetalDrawable drawable,
+        AppKitPlatformViewHost.PreparedFrame? platformFrame = null
+    )
     {
         buffer.AddCompletedHandler(completedBuffer =>
         {
@@ -479,7 +638,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 {
                     Interlocked.Increment(ref _commandBuffersErrored);
                     HoldGpuWork(graphiteFrame, drawable, platformFrame);
-                    owner.RaiseFailure(new InvalidOperationException(error ?? status.ToString()), completion);
+                    owner.RaiseFailure(
+                        new InvalidOperationException(error ?? status.ToString()),
+                        completion
+                    );
                     return;
                 }
                 try
@@ -497,21 +659,39 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 lock (_resourceGate)
                 {
                     _inFlight--;
-                    if (platformFrame is not null) _platformInFlight--;
-                    if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
+                    if (platformFrame is not null)
+                    {
+                        _platformInFlight--;
+                    }
+
+                    if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0)
+                    {
+                        ReleaseGpuResources();
+                    }
                 }
-                var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
-                            !ReferenceEquals(owner, _owner);
-                if (stale) Interlocked.Increment(ref _staleCompletions);
+                var stale =
+                    generation != Interlocked.Read(ref _surfaceGeneration)
+                    || !ReferenceEquals(owner, _owner);
+                if (stale)
+                {
+                    Interlocked.Increment(ref _staleCompletions);
+                }
+
                 if (status == MTLCommandBufferStatus.Completed)
                 {
                     Interlocked.Increment(ref _commandBuffersCompleted);
-                    if (completion is { } value) owner.RaisePresent(value, stale);
+                    if (completion is { } value)
+                    {
+                        owner.RaisePresent(value, stale);
+                    }
                 }
                 else
                 {
                     Interlocked.Increment(ref _commandBuffersErrored);
-                    owner.RaiseFailure(new InvalidOperationException(error ?? status.ToString()), completion);
+                    owner.RaiseFailure(
+                        new InvalidOperationException(error ?? status.ToString()),
+                        completion
+                    );
                 }
                 if (_frameBackpressure && !_releaseRequested && !_faulted)
                 {
@@ -520,7 +700,14 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 }
             });
         });
-        lock (_resourceGate) { _inFlight++; if (platformFrame is not null) _platformInFlight++; }
+        lock (_resourceGate)
+        {
+            _inFlight++;
+            if (platformFrame is not null)
+            {
+                _platformInFlight++;
+            }
+        }
     }
 
     private void CancelCommandBufferTracking(bool platformFrame)
@@ -528,12 +715,18 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         lock (_resourceGate)
         {
             _inFlight--;
-            if (platformFrame) _platformInFlight--;
+            if (platformFrame)
+            {
+                _platformInFlight--;
+            }
         }
     }
 
-    private void HoldGpuWork(SkiaGraphiteSession.Frame? frame, ICAMetalDrawable drawable,
-        AppKitPlatformViewHost.PreparedFrame? platformFrame)
+    private void HoldGpuWork(
+        SkiaGraphiteSession.Frame? frame,
+        ICAMetalDrawable drawable,
+        AppKitPlatformViewHost.PreparedFrame? platformFrame
+    )
     {
         _faulted = true;
         _graphite?.StopAcceptingFrames();
@@ -541,31 +734,63 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         RetiringViews.Add(this);
     }
 
-    public override void MouseEntered(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.add, 0);
-    public override void MouseExited(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.remove, 0);
-    public override void MouseMoved(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.hover, Buttons());
+    public override void MouseEntered(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.add, 0);
+
+    public override void MouseExited(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.remove, 0);
+
+    public override void MouseMoved(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.hover, Buttons());
+
     public override void MouseDown(NSEvent theEvent)
     {
         _controlClick = (theEvent.ModifierFlags & NSEventModifierMask.ControlKeyMask) != 0;
-        DispatchPointer(theEvent, PointerChange.down, _controlClick ? (Buttons() & ~1) | 2 : Buttons() | 1);
+        DispatchPointer(
+            theEvent,
+            PointerChange.down,
+            _controlClick ? (Buttons() & ~1) | 2 : Buttons() | 1
+        );
     }
-    public override void MouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move,
-        _controlClick ? (Buttons() & ~1) | 2 : Buttons());
+
+    public override void MouseDragged(NSEvent theEvent) =>
+        DispatchPointer(
+            theEvent,
+            PointerChange.move,
+            _controlClick ? (Buttons() & ~1) | 2 : Buttons()
+        );
+
     public override void MouseUp(NSEvent theEvent)
     {
         DispatchPointer(theEvent, PointerChange.up, Buttons() & ~1);
         _controlClick = false;
     }
-    public override void RightMouseDown(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.down, Buttons() | 2);
-    public override void RightMouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move, Buttons());
-    public override void RightMouseUp(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.up, Buttons() & ~2);
-    public override void OtherMouseDown(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.down, Buttons() | 4);
-    public override void OtherMouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move, Buttons());
-    public override void OtherMouseUp(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.up, Buttons() & ~4);
+
+    public override void RightMouseDown(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.down, Buttons() | 2);
+
+    public override void RightMouseDragged(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.move, Buttons());
+
+    public override void RightMouseUp(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.up, Buttons() & ~2);
+
+    public override void OtherMouseDown(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.down, Buttons() | 4);
+
+    public override void OtherMouseDragged(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.move, Buttons());
+
+    public override void OtherMouseUp(NSEvent theEvent) =>
+        DispatchPointer(theEvent, PointerChange.up, Buttons() & ~4);
 
     public override void ScrollWheel(NSEvent theEvent)
     {
-        if (DispatchTrackpad(theEvent, 1)) return;
+        if (DispatchTrackpad(theEvent, 1))
+        {
+            return;
+        }
+
         var scale = BackingScale();
         // AppKit reports precise trackpad deltas in points, but a discrete
         // mouse wheel reports lines. Match Flutter's macOS normalization so a
@@ -574,12 +799,22 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var deltaX = -theEvent.ScrollingDeltaX * pixelsPerLine * scale;
         var deltaY = -theEvent.ScrollingDeltaY * pixelsPerLine * scale;
         if ((theEvent.ModifierFlags & NSEventModifierMask.ShiftKeyMask) != 0)
+        {
             (deltaX, deltaY) = (deltaY, deltaX);
-        DispatchPointer(theEvent, PointerChange.hover, Buttons(),
-            deltaX, deltaY, PointerSignalKind.scroll);
+        }
+
+        DispatchPointer(
+            theEvent,
+            PointerChange.hover,
+            Buttons(),
+            deltaX,
+            deltaY,
+            PointerSignalKind.scroll
+        );
     }
 
     public override void MagnifyWithEvent(NSEvent theEvent) => DispatchTrackpad(theEvent, 2);
+
     public override void RotateWithEvent(NSEvent theEvent) => DispatchTrackpad(theEvent, 4);
 
     private bool DispatchTrackpad(NSEvent native, int part)
@@ -588,10 +823,18 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var time = TimeSpan.FromSeconds(native.Timestamp);
         if (native.MomentumPhase != NSEventPhase.None)
         {
-            if (native.MomentumPhase == NSEventPhase.Changed) _lastTrackpadMomentum = native.Timestamp;
+            if (native.MomentumPhase == NSEventPhase.Changed)
+            {
+                _lastTrackpadMomentum = native.Timestamp;
+            }
+
             return true; // Flutter's scroll physics owns inertia after panZoomEnd.
         }
-        if (phase == NSEventPhase.None) return part != 1;
+        if (phase == NSEventPhase.None)
+        {
+            return part != 1;
+        }
+
         if ((phase & (NSEventPhase.Began | NSEventPhase.MayBegin | NSEventPhase.Changed)) != 0)
         {
             if (!_trackpad.Active)
@@ -602,19 +845,44 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 _trackpad.Begin(time, point.X * ratio, (Bounds.Height - point.Y) * ratio);
             }
             _trackpadParts |= part;
-            if (part == 1) _lastTrackpadMomentum = 0;
+            if (part == 1)
+            {
+                _lastTrackpadMomentum = 0;
+            }
+
             if ((phase & NSEventPhase.Changed) != 0)
             {
-                if (part == 1) { _trackpadPanX += native.ScrollingDeltaX * BackingScale(); _trackpadPanY += native.ScrollingDeltaY * BackingScale(); }
-                if (part == 2) _trackpadMagnification += native.Magnification;
-                if (part == 4) _trackpadRotation -= native.Rotation * Math.PI / 180;
-                _trackpad.Update(time, _trackpadPanX, _trackpadPanY, Math.Pow(2, _trackpadMagnification), _trackpadRotation);
+                if (part == 1)
+                {
+                    _trackpadPanX += native.ScrollingDeltaX * BackingScale();
+                    _trackpadPanY += native.ScrollingDeltaY * BackingScale();
+                }
+                if (part == 2)
+                {
+                    _trackpadMagnification += native.Magnification;
+                }
+
+                if (part == 4)
+                {
+                    _trackpadRotation -= native.Rotation * Math.PI / 180;
+                }
+
+                _trackpad.Update(
+                    time,
+                    _trackpadPanX,
+                    _trackpadPanY,
+                    Math.Pow(2, _trackpadMagnification),
+                    _trackpadRotation
+                );
             }
         }
         if ((phase & (NSEventPhase.Ended | NSEventPhase.Cancelled)) != 0)
         {
             _trackpadParts &= ~part;
-            if (_trackpadParts == 0) _trackpad.End(time);
+            if (_trackpadParts == 0)
+            {
+                _trackpad.End(time);
+            }
         }
         return true;
     }
@@ -623,7 +891,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         base.TouchesBeganWithEvent(theEvent);
         if (_lastTrackpadMomentum > 0 && theEvent.Timestamp - _lastTrackpadMomentum < .050)
+        {
             _trackpad.CancelInertia(TimeSpan.FromSeconds(theEvent.Timestamp));
+        }
+
         _lastTrackpadMomentum = 0;
     }
 
@@ -634,91 +905,178 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _lastTrackpadMomentum = 0;
     }
 
-    public override void KeyDown(NSEvent theEvent) => DispatchKey(theEvent,
-        theEvent.IsARepeat ? KeyEventType.repeat : KeyEventType.down);
+    public override void KeyDown(NSEvent theEvent) =>
+        DispatchKey(theEvent, theEvent.IsARepeat ? KeyEventType.repeat : KeyEventType.down);
+
     public override void KeyUp(NSEvent theEvent) => DispatchKey(theEvent, KeyEventType.up);
 
     public override void FlagsChanged(NSEvent theEvent)
     {
         var mask = MacOSKeyMap.ModifierMask(theEvent.KeyCode);
-        if (mask == 0) { base.FlagsChanged(theEvent); return; }
+        if (mask == 0)
+        {
+            base.FlagsChanged(theEvent);
+            return;
+        }
         var physical = MacOSKeyMap.Physical(theEvent.KeyCode);
         var down = ((ulong)theEvent.ModifierFlags & mask) != 0;
-        if (down == _pressedKeys.ContainsKey(physical)) return;
-        EmitKey(TimeSpan.FromSeconds(theEvent.Timestamp), down ? KeyEventType.down : KeyEventType.up,
-            physical, MauiKeyMap.Logical("", physical), null);
+        if (down == _pressedKeys.ContainsKey(physical))
+        {
+            return;
+        }
+
+        EmitKey(
+            TimeSpan.FromSeconds(theEvent.Timestamp),
+            down ? KeyEventType.down : KeyEventType.up,
+            physical,
+            MauiKeyMap.Logical("", physical),
+            null
+        );
     }
 
-    private void DispatchPointer(NSEvent native, PointerChange change, int buttons,
-        double scrollX = 0, double scrollY = 0, PointerSignalKind signal = PointerSignalKind.none)
+    private void DispatchPointer(
+        NSEvent native,
+        PointerChange change,
+        int buttons,
+        double scrollX = 0,
+        double scrollY = 0,
+        PointerSignalKind signal = PointerSignalKind.none
+    )
     {
         var point = ConvertPointFromView(native.LocationInWindow, null!);
         var scale = BackingScale();
         // NSEvent.Pressure is not valid for scroll-wheel events. Accessing it
         // aborts delivery before the PointerScrollEvent reaches the framework.
         var pressure = signal == PointerSignalKind.none ? native.Pressure : 0;
-        _owner?.RaisePointer(new(TimeSpan.FromSeconds(native.Timestamp), change, PointerDeviceKind.mouse, 1,
-            point.X * scale, (Bounds.Height - point.Y) * scale, buttons,
-            scrollX, scrollY, signal, pressure));
+        _owner?.RaisePointer(
+            new(
+                TimeSpan.FromSeconds(native.Timestamp),
+                change,
+                PointerDeviceKind.mouse,
+                1,
+                point.X * scale,
+                (Bounds.Height - point.Y) * scale,
+                buttons,
+                scrollX,
+                scrollY,
+                signal,
+                pressure
+            )
+        );
     }
 
     private void DispatchKey(NSEvent native, KeyEventType type)
     {
         var characters = native.CharactersIgnoringModifiers ?? string.Empty;
         var physical = MacOSKeyMap.Physical(native.KeyCode);
-        EmitKey(TimeSpan.FromSeconds(native.Timestamp), type, physical, MauiKeyMap.Logical(characters, physical),
-            characters.Length == 1 && !char.IsControl(characters[0]) ? characters : null);
+        EmitKey(
+            TimeSpan.FromSeconds(native.Timestamp),
+            type,
+            physical,
+            MauiKeyMap.Logical(characters, physical),
+            characters.Length == 1 && !char.IsControl(characters[0]) ? characters : null
+        );
     }
 
-    private void EmitKey(TimeSpan timestamp, KeyEventType type, long physical, long logical, string? character)
+    private void EmitKey(
+        TimeSpan timestamp,
+        KeyEventType type,
+        long physical,
+        long logical,
+        string? character
+    )
     {
         if (type == KeyEventType.up)
         {
-            if (!_pressedKeys.Remove(physical, out logical)) return;
+            if (!_pressedKeys.Remove(physical, out logical))
+            {
+                return;
+            }
         }
         else
         {
-            if (_pressedKeys.TryGetValue(physical, out var pressedLogical)) logical = pressedLogical;
+            if (_pressedKeys.TryGetValue(physical, out var pressedLogical))
+            {
+                logical = pressedLogical;
+            }
+
             _pressedKeys[physical] = logical;
         }
-        _owner?.RaiseKey(new(_owner.ViewId, timestamp, type, physical, logical, false,
-            type == KeyEventType.up ? null : character));
+        _owner?.RaiseKey(
+            new(
+                _owner.ViewId,
+                timestamp,
+                type,
+                physical,
+                logical,
+                false,
+                type == KeyEventType.up ? null : character
+            )
+        );
     }
 
     private void ReleasePressedKeys()
     {
         foreach (var (physical, logical) in _pressedKeys)
-            _owner?.RaiseKey(new(_owner.ViewId, TimeSpan.Zero, KeyEventType.up, physical, logical, true));
+        {
+            _owner?.RaiseKey(
+                new(_owner.ViewId, TimeSpan.Zero, KeyEventType.up, physical, logical, true)
+            );
+        }
+
         _pressedKeys.Clear();
     }
 
     private double BackingScale() =>
-        (double)(Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1);
+        (double)(
+            Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1
+        );
 
     private static int Buttons()
     {
         var pressed = (ulong)NSEvent.CurrentPressedMouseButtons;
-        return ((pressed & 1) != 0 ? 1 : 0) |
-               ((pressed & 2) != 0 ? 2 : 0) |
-               ((pressed & 4) != 0 ? 4 : 0);
+        return ((pressed & 1) != 0 ? 1 : 0)
+            | ((pressed & 2) != 0 ? 2 : 0)
+            | ((pressed & 4) != 0 ? 4 : 0);
     }
 
     private void AttachWindowObservers()
     {
         DetachWindowObservers();
-        if (Window is null) return;
+        if (Window is null)
+        {
+            return;
+        }
+
         _windowBecameKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
-            NSWindow.DidBecomeKeyNotification, _ => _owner?.RaiseFocus(true), Window);
+            NSWindow.DidBecomeKeyNotification,
+            _ => _owner?.RaiseFocus(true),
+            Window
+        );
         _windowResignedKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
-            NSWindow.DidResignKeyNotification, _ => { ResetTrackpad(); ReleasePressedKeys(); _owner?.RaiseFocus(false); }, Window);
+            NSWindow.DidResignKeyNotification,
+            _ =>
+            {
+                ResetTrackpad();
+                ReleasePressedKeys();
+                _owner?.RaiseFocus(false);
+            },
+            Window
+        );
     }
 
     private void DetachWindowObservers()
     {
         if (_windowBecameKeyObserver is not null)
+        {
             NSNotificationCenter.DefaultCenter.RemoveObserver(_windowBecameKeyObserver);
+        }
+
         if (_windowResignedKeyObserver is not null)
+        {
             NSNotificationCenter.DefaultCenter.RemoveObserver(_windowResignedKeyObserver);
+        }
+
         _windowBecameKeyObserver?.Dispose();
         _windowResignedKeyObserver?.Dispose();
         _windowBecameKeyObserver = null;
@@ -727,7 +1085,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     private void RestoreCursorVisibility()
     {
-        if (!_cursorHidden) return;
+        if (!_cursorHidden)
+        {
+            return;
+        }
+
         NSCursor.Unhide();
         _cursorHidden = false;
     }
@@ -735,13 +1097,28 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private void PublishDrawableMetrics(CGSize drawableSize, bool force = false)
     {
         var owner = _owner;
-        if (owner is null || drawableSize.Width <= 0 || drawableSize.Height <= 0) return;
+        if (owner is null || drawableSize.Width <= 0 || drawableSize.Height <= 0)
+        {
+            return;
+        }
+
         var scale = BackingScale();
         var logicalSize = Bounds.Size;
         if (logicalSize.Width <= 0 || logicalSize.Height <= 0)
+        {
             logicalSize = new CGSize(drawableSize.Width / scale, drawableSize.Height / scale);
-        if (!force && drawableSize.Equals(_lastDrawableSize) &&
-            logicalSize.Equals(_lastLogicalSize) && scale.Equals(_lastBackingScale)) return;
+        }
+
+        if (
+            !force
+            && drawableSize.Equals(_lastDrawableSize)
+            && logicalSize.Equals(_lastLogicalSize)
+            && scale.Equals(_lastBackingScale)
+        )
+        {
+            return;
+        }
+
         _lastDrawableSize = drawableSize;
         _lastLogicalSize = logicalSize;
         _lastBackingScale = scale;
@@ -751,36 +1128,45 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             logicalSize.Height,
             checked((int)drawableSize.Width),
             checked((int)drawableSize.Height),
-            scale);
+            scale
+        );
     }
 
-    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) => current with
-    {
-        PixelWidth = checked((int)_pixelWidth),
-        PixelHeight = checked((int)_pixelHeight),
-        DevicePixelRatio = _density,
-        ContextGeneration = Interlocked.Read(ref _contextGeneration),
-        SurfaceGeneration = Interlocked.Read(ref _surfaceGeneration),
-        NativeViewType = GetType().FullName ?? nameof(DorotiMacOSMetalView),
-        GraphicsBackend = GraphicsBackendId,
-        MetalDevice = _metalDevice.Name,
-        PixelFormat = ColorPixelFormat.ToString(),
-        CommandBuffersCommitted = Interlocked.Read(ref _commandBuffersCommitted),
-        CommandBuffersCompleted = Interlocked.Read(ref _commandBuffersCompleted),
-        CommandBuffersErrored = Interlocked.Read(ref _commandBuffersErrored),
-        StaleCompletions = Interlocked.Read(ref _staleCompletions),
-        CpuReadbacks = 0,
-        FullFrameCopies = 0,
-        LogicalWidth = _logicalWidth,
-        LogicalHeight = _logicalHeight,
-    };
+    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) =>
+        current with
+        {
+            PixelWidth = checked((int)_pixelWidth),
+            PixelHeight = checked((int)_pixelHeight),
+            DevicePixelRatio = _density,
+            ContextGeneration = Interlocked.Read(ref _contextGeneration),
+            SurfaceGeneration = Interlocked.Read(ref _surfaceGeneration),
+            NativeViewType = GetType().FullName ?? nameof(DorotiMacOSMetalView),
+            GraphicsBackend = GraphicsBackendId,
+            MetalDevice = _metalDevice.Name,
+            PixelFormat = ColorPixelFormat.ToString(),
+            CommandBuffersCommitted = Interlocked.Read(ref _commandBuffersCommitted),
+            CommandBuffersCompleted = Interlocked.Read(ref _commandBuffersCompleted),
+            CommandBuffersErrored = Interlocked.Read(ref _commandBuffersErrored),
+            StaleCompletions = Interlocked.Read(ref _staleCompletions),
+            CpuReadbacks = 0,
+            FullFrameCopies = 0,
+            LogicalWidth = _logicalWidth,
+            LogicalHeight = _logicalHeight,
+        };
 
-    private static IMTLDevice RequireMetalDevice() => MTLDevice.SystemDefault ??
-        throw new PlatformNotSupportedException("Doroti AppKit requires a Metal-capable device.");
+    private static IMTLDevice RequireMetalDevice() =>
+        MTLDevice.SystemDefault
+        ?? throw new PlatformNotSupportedException(
+            "Doroti AppKit requires a Metal-capable device."
+        );
 
     private void ReleaseGpuResources()
     {
-        if (_resourcesReleased) return;
+        if (_resourcesReleased)
+        {
+            return;
+        }
+
         _resourceOwner?.RaiseGpuResourcesReleasing();
         _resourceOwner = null;
         _graphite?.Dispose();

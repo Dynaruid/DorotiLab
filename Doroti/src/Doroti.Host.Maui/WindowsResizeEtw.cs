@@ -9,17 +9,13 @@ namespace Doroti.Host.Maui;
 /// the DXGI Present events captured by the Windows GPU profile. The provider
 /// is disabled unless an ETW session explicitly enables it.
 /// </summary>
-[EventSource(
-    Name = "Doroti-Windows-Resize",
-    Guid = "5a846f8d-54a1-4a4c-9e56-5b5a84e3b3c1")]
+[EventSource(Name = "Doroti-Windows-Resize", Guid = "5a846f8d-54a1-4a4c-9e56-5b5a84e3b3c1")]
 internal sealed class WindowsResizeEtw : EventSource
 {
     internal static readonly WindowsResizeEtw Log = new();
     internal const string ProviderGuid = "{5a846f8d-54a1-4a4c-9e56-5b5a84e3b3c1}";
 
-    private WindowsResizeEtw()
-    {
-    }
+    private WindowsResizeEtw() { }
 
     [NonEvent]
     internal void Marker(
@@ -27,9 +23,14 @@ internal sealed class WindowsResizeEtw : EventSource
         DorotiResizeEpoch epoch,
         int surfaceWidth,
         int surfaceHeight,
-        string source)
+        string source
+    )
     {
-        if (!IsEnabled()) return;
+        if (!IsEnabled())
+        {
+            return;
+        }
+
         ResizeMarker(
             phase,
             epoch.Generation,
@@ -38,7 +39,8 @@ internal sealed class WindowsResizeEtw : EventSource
             surfaceWidth,
             surfaceHeight,
             Environment.CurrentManagedThreadId,
-            source);
+            source
+        );
     }
 
     [Event(1, Level = EventLevel.Informational, Opcode = EventOpcode.Info)]
@@ -50,17 +52,21 @@ internal sealed class WindowsResizeEtw : EventSource
         int surfaceWidth,
         int surfaceHeight,
         int managedThreadId,
-        string source) =>
-        WriteEvent(1, new object?[]
-        {
-            phase,
-            generation,
-            physicalWidth,
-            physicalHeight,
-            surfaceWidth,
-            surfaceHeight,
-            managedThreadId,
-            source,
-        });
+        string source
+    ) =>
+        WriteEvent(
+            1,
+            new object?[]
+            {
+                phase,
+                generation,
+                physicalWidth,
+                physicalHeight,
+                surfaceWidth,
+                surfaceHeight,
+                managedThreadId,
+                source,
+            }
+        );
 }
 #endif

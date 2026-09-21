@@ -8,7 +8,7 @@ namespace Doroti.Framework.Services;
 public enum SwipeEdge
 {
     left,
-    right
+    right,
 }
 
 public class PredictiveBackEvent
@@ -28,14 +28,31 @@ public class PredictiveBackEvent
     public static PredictiveBackEvent CreateFromMap(DartMap<string, object?> map)
     {
         var touchOffset = ((List<object?>?)map.GetValueOrDefault("touchOffset"))!;
-        return new PredictiveBackEvent(touchOffset: (touchOffset is null) ? null : new global::Doroti.Ui.Offset(((double)touchOffset[(int)0L]!).toDouble(), ((double)touchOffset[(int)1L]!).toDouble()), progress: ((double)map.GetValueOrDefault("progress")!).toDouble(), swipeEdge: Enum.GetValues<SwipeEdge>().ToList()[(int)(long)map.GetValueOrDefault("swipeEdge")!]);
+        return new PredictiveBackEvent(
+            touchOffset: (touchOffset is null)
+                ? null
+                : new global::Doroti.Ui.Offset(
+                    ((double)touchOffset[(int)0L]!).toDouble(),
+                    ((double)touchOffset[(int)1L]!).toDouble()
+                ),
+            progress: ((double)map.GetValueOrDefault("progress")!).toDouble(),
+            swipeEdge: Enum.GetValues<SwipeEdge>().ToList()[
+                (int)(long)map.GetValueOrDefault("swipeEdge")!
+            ]
+        );
     }
 
-    public virtual bool isButtonEvent => (touchOffset is null) || (progress == 0.0) && Equals(touchOffset, Offset.zero);
+    public virtual bool isButtonEvent =>
+        (touchOffset is null) || ((progress == 0.0) && Equals(touchOffset, Offset.zero));
+
     public override bool Equals(object? other)
     {
         var __other = other as PredictiveBackEvent;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (ReferenceEquals(this, __other))
         {
             return true;
@@ -44,15 +61,18 @@ public class PredictiveBackEvent
         {
             return false;
         }
-        return (__other is PredictiveBackEvent) && Equals(touchOffset, __other.touchOffset) && (progress == __other.progress) && Equals(swipeEdge, __other.swipeEdge);
+        return (__other is PredictiveBackEvent)
+            && Equals(touchOffset, __other.touchOffset)
+            && (progress == __other.progress)
+            && Equals(swipeEdge, __other.swipeEdge);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(touchOffset, progress, swipeEdge);
+    public override int GetHashCode() =>
+        FoundationRuntimePorts.ObjectHash(touchOffset, progress, swipeEdge);
+
     public override string ToString()
     {
         return $"PredictiveBackEvent{{touchOffset: {touchOffset}, progress: {progress}, swipeEdge: {swipeEdge}}}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

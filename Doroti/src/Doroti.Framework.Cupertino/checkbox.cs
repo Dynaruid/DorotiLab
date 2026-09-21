@@ -8,27 +8,42 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class CheckboxLibrary
 {
-    internal static Color _kDisabledCheckColor = new CupertinoDynamicColor(color: Color.fromARGB(64L, 0L, 0L, 0L), darkColor: Color.fromARGB(64L, 255L, 255L, 255L));
+    internal static Color _kDisabledCheckColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(64L, 0L, 0L, 0L),
+        darkColor: Color.fromARGB(64L, 255L, 255L, 255L)
+    );
 }
 
 public static partial class CheckboxLibrary
 {
-    internal static Color _kDisabledBorderColor = new CupertinoDynamicColor(color: Color.fromARGB(13L, 0L, 0L, 0L), darkColor: Color.fromARGB(13L, 0L, 0L, 0L));
+    internal static Color _kDisabledBorderColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(13L, 0L, 0L, 0L),
+        darkColor: Color.fromARGB(13L, 0L, 0L, 0L)
+    );
 }
 
 public static partial class CheckboxLibrary
 {
-    internal static CupertinoDynamicColor _kDefaultBorderColor = new CupertinoDynamicColor(color: Color.fromARGB(255L, 209L, 209L, 214L), darkColor: Color.fromARGB(50L, 128L, 128L, 128L));
+    internal static CupertinoDynamicColor _kDefaultBorderColor = new CupertinoDynamicColor(
+        color: Color.fromARGB(255L, 209L, 209L, 214L),
+        darkColor: Color.fromARGB(50L, 128L, 128L, 128L)
+    );
 }
 
 public static partial class CheckboxLibrary
 {
-    internal static CupertinoDynamicColor _kDefaultFillColor = new CupertinoDynamicColor(color: CupertinoColors.activeBlue, darkColor: Color.fromARGB(255L, 50L, 100L, 215L));
+    internal static CupertinoDynamicColor _kDefaultFillColor = new CupertinoDynamicColor(
+        color: CupertinoColors.activeBlue,
+        darkColor: Color.fromARGB(255L, 50L, 100L, 215L)
+    );
 }
 
 public static partial class CheckboxLibrary
 {
-    internal static Color _kDefaultCheckColor = new CupertinoDynamicColor(color: CupertinoColors.white, darkColor: Color.fromARGB(255L, 222L, 232L, 248L));
+    internal static Color _kDefaultCheckColor = new CupertinoDynamicColor(
+        color: CupertinoColors.white,
+        darkColor: Color.fromARGB(255L, 222L, 232L, 248L)
+    );
 }
 
 public static partial class CheckboxLibrary
@@ -65,7 +80,25 @@ public class CupertinoCheckbox : StatefulWidget
     public virtual string? semanticLabel { get; private set; }
     public const double width = 14.0;
 
-    public CupertinoCheckbox(Key? key = null, bool? value = default!, bool tristate = false, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, BorderSide? side = null, OutlinedBorder? shape = null, Size? tapTargetSize = null, string? semanticLabel = null) : base(key: key)
+    public CupertinoCheckbox(
+        Key? key = null,
+        bool? value = default!,
+        bool tristate = false,
+        Action<bool?>? onChanged = default!,
+        MouseCursor? mouseCursor = null,
+        Color? activeColor = null,
+        Color? inactiveColor = null,
+        WidgetStateProperty<Color?>? fillColor = null,
+        Color? checkColor = null,
+        Color? focusColor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        BorderSide? side = null,
+        OutlinedBorder? shape = null,
+        Size? tapTargetSize = null,
+        string? semanticLabel = null
+    )
+        : base(key: key)
     {
         this.value = value;
         this.tristate = tristate;
@@ -85,12 +118,17 @@ public class CupertinoCheckbox : StatefulWidget
         System.Diagnostics.Debug.Assert(tristate || (value is not null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoCheckboxState__checkbox());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoCheckboxState__checkbox());
 }
 
-internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, TickerProviderStateMixin<CupertinoCheckbox>, ToggleableStateMixin<CupertinoCheckbox>
+internal class _CupertinoCheckboxState__checkbox
+    : State<CupertinoCheckbox>,
+        TickerProviderStateMixin<CupertinoCheckbox>,
+        ToggleableStateMixin<CupertinoCheckbox>
 {
-    internal virtual _CheckboxPainter__checkbox _painter { get; private set; } = new _CheckboxPainter__checkbox();
+    internal virtual _CheckboxPainter__checkbox _painter { get; private set; } =
+        new _CheckboxPainter__checkbox();
     internal virtual bool? _previousValue { get; set; } = default;
     public virtual bool focused { get; set; } = false;
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
@@ -103,7 +141,8 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     public virtual AnimationController _reactionHoverFadeController { get; set; } = default!;
     public virtual CurvedAnimation _reactionFocusFade { get; set; } = default!;
     public virtual AnimationController _reactionFocusFadeController { get; set; } = default!;
-    public virtual Duration _reactionAnimationDuration { get; set; } = Duration.Create(milliseconds: 100L);
+    public virtual Duration _reactionAnimationDuration { get; set; } =
+        Duration.Create(milliseconds: 100L);
     private bool __late__actionMap_initialized;
     private DartMap<Type, dynamic> __late__actionMap = default!;
     public virtual DartMap<Type, dynamic> _actionMap
@@ -112,7 +151,16 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic>
+                {
+                    [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(
+                        onInvoke: (__arg0) =>
+                        {
+                            ((Action<Intent?>)_handleTap)(__arg0);
+                            return default!;
+                        }
+                    ),
+                };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -125,14 +173,39 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     public override void initState()
     {
         base.initState();
-        _positionController = new AnimationController(duration: ToggleableLibrary._kToggleDuration, value: (value == false) ? 0.0 : 1.0, vsync: this);
-        _position = new CurvedAnimation(parent: _positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
-        _reactionController = new AnimationController(duration: _reactionAnimationDuration, vsync: this);
+        _positionController = new AnimationController(
+            duration: ToggleableLibrary._kToggleDuration,
+            value: (value == false) ? 0.0 : 1.0,
+            vsync: this
+        );
+        _position = new CurvedAnimation(
+            parent: _positionController,
+            curve: Curves.easeIn,
+            reverseCurve: Curves.easeOut
+        );
+        _reactionController = new AnimationController(
+            duration: _reactionAnimationDuration,
+            vsync: this
+        );
         _reaction = new CurvedAnimation(parent: _reactionController, curve: Curves.fastOutSlowIn);
-        _reactionHoverFadeController = new AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
-        _reactionHoverFade = new CurvedAnimation(parent: _reactionHoverFadeController, curve: Curves.fastOutSlowIn);
-        _reactionFocusFadeController = new AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
-        _reactionFocusFade = new CurvedAnimation(parent: _reactionFocusFadeController, curve: Curves.fastOutSlowIn);
+        _reactionHoverFadeController = new AnimationController(
+            duration: ToggleableLibrary._kReactionFadeDuration,
+            value: (_hovering || _focused) ? 1.0 : 0.0,
+            vsync: this
+        );
+        _reactionHoverFade = new CurvedAnimation(
+            parent: _reactionHoverFadeController,
+            curve: Curves.fastOutSlowIn
+        );
+        _reactionFocusFadeController = new AnimationController(
+            duration: ToggleableLibrary._kReactionFadeDuration,
+            value: (_hovering || _focused) ? 1.0 : 0.0,
+            vsync: this
+        );
+        _reactionFocusFade = new CurvedAnimation(
+            parent: _reactionFocusFadeController,
+            curve: Curves.fastOutSlowIn
+        );
         _previousValue = widget.value;
     }
 
@@ -166,59 +239,96 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return CupertinoColors.white.withOpacity(0.5);
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return CupertinoColors.white.withOpacity(0.5);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.activeColor
+                            ?? CupertinoDynamicColor.resolve(
+                                CheckboxLibrary._kDefaultFillColor,
+                                context
+                            );
+                    }
+                    return CupertinoColors.white;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.activeColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultFillColor, context);
-                }
-                return CupertinoColors.white;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual WidgetStateProperty<Color> _defaultCheckColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.disabled) && states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return widget.checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledCheckColor, context);
+                    if (
+                        states.Contains(WidgetState.disabled)
+                        && states.Contains(WidgetState.selected)
+                    )
+                    {
+                        return widget.checkColor
+                            ?? CupertinoDynamicColor.resolve(
+                                CheckboxLibrary._kDisabledCheckColor,
+                                context
+                            );
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return widget.checkColor
+                            ?? CupertinoDynamicColor.resolve(
+                                CheckboxLibrary._kDefaultCheckColor,
+                                context
+                            );
+                    }
+                    return CupertinoColors.white;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.selected))
-                {
-                    return widget.checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultCheckColor, context);
-                }
-                return CupertinoColors.white;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     internal virtual WidgetStateProperty<BorderSide> _defaultSide
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if ((states.Contains(WidgetState.selected) || states.Contains(WidgetState.focused)) && !states.Contains(WidgetState.disabled))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    return new BorderSide(width: 0.0, color: CupertinoColors.transparent);
+                    if (
+                        (
+                            states.Contains(WidgetState.selected)
+                            || states.Contains(WidgetState.focused)
+                        ) && !states.Contains(WidgetState.disabled)
+                    )
+                    {
+                        return new BorderSide(width: 0.0, color: CupertinoColors.transparent);
+                    }
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return new BorderSide(
+                            color: CupertinoDynamicColor.resolve(
+                                CheckboxLibrary._kDisabledBorderColor,
+                                context
+                            )
+                        );
+                    }
+                    return new BorderSide(
+                        color: CupertinoDynamicColor.resolve(
+                            CheckboxLibrary._kDefaultBorderColor,
+                            context
+                        )
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.disabled))
-                {
-                    return new BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, context));
-                }
-                return new BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, context));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
+
     internal virtual BorderSide? _resolveSide(BorderSide? side, HashSet<WidgetState> states)
     {
         if (side is WidgetStateBorderSide)
@@ -236,49 +346,114 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
 
     public override Widget build(BuildContext context)
     {
-        HashSet<WidgetState> activeStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Add(WidgetState.selected);
-    return __cascade;
-}))();
-        HashSet<WidgetState> inactiveStates = ((Func<HashSet<WidgetState>>)(() =>
-{
-    var __cascade = states;
-    __cascade.Remove(WidgetState.selected);
-    return __cascade;
-}))();
+        HashSet<WidgetState> activeStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Add(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
+        HashSet<WidgetState> inactiveStates = (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __cascade = states;
+                    __cascade.Remove(WidgetState.selected);
+                    return __cascade;
+                }
+            )
+        )();
         HashSet<WidgetState> currentStates = states;
-        Color effectiveActiveColor = widget.fillColor?.resolve(activeStates) ?? _defaultFillColor.resolve(activeStates);
-        Color effectiveInactiveColor = widget.fillColor?.resolve(inactiveStates) ?? _defaultFillColor.resolve(inactiveStates);
-        BorderSide effectiveBorderSide = _resolveSide(widget.side, currentStates) ?? _defaultSide.resolve(currentStates);
-        Color effectiveFocusOverlayColor = widget.focusColor ?? HSLColor.CreateFromColor(effectiveActiveColor.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor();
-        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith((states) =>
-        {
-            return WidgetStateProperty.resolveAs(widget.mouseCursor, states) ?? ((Foundation.ConstantsLibrary.kIsWeb && !states.Contains(WidgetState.disabled)) ? SystemMouseCursors.click : SystemMouseCursors.basic);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-        Size effectiveSize = widget.tapTargetSize ?? (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.iOS or TargetPlatform.android => new Size(ConstantsLibrary.kMinInteractiveDimensionCupertino), TargetPlatform.fuchsia => new Size(ConstantsLibrary.kMinInteractiveDimensionCupertino), TargetPlatform.macOS or TargetPlatform.linux => new Size(CupertinoCheckbox.width), TargetPlatform.windows => new Size(CupertinoCheckbox.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return new Widgets.Semantics(label: widget.semanticLabel, @checked: widget.value ?? false, mixed: widget.tristate ? (widget.value is null) : null, child: buildToggleable(mouseCursor: effectiveMouseCursor, focusNode: widget.focusNode, autofocus: widget.autofocus, size: effectiveSize, painter: ((Func<_CheckboxPainter__checkbox>)(() =>
-{
-    var __cascade = _painter;
-    __cascade.position = position;
-    __cascade.reaction = reaction;
-    __cascade.focusColor = effectiveFocusOverlayColor;
-    __cascade.downPosition = downPosition;
-    __cascade.isFocused = currentStates.Contains(WidgetState.focused);
-    __cascade.isHovered = currentStates.Contains(WidgetState.hovered);
-    __cascade.activeColor = effectiveActiveColor;
-    __cascade.inactiveColor = effectiveInactiveColor;
-    __cascade.checkColor = _defaultCheckColor.resolve(currentStates);
-    __cascade.value = value;
-    __cascade.previousValue = _previousValue;
-    __cascade.isActive = widget.onChanged is not null;
-    __cascade.shape = widget.shape ?? new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)));
-    __cascade.side = effectiveBorderSide;
-    __cascade.brightness = CupertinoTheme.of(context).brightness;
-    return __cascade;
-}))()));
+        Color effectiveActiveColor =
+            widget.fillColor?.resolve(activeStates) ?? _defaultFillColor.resolve(activeStates);
+        Color effectiveInactiveColor =
+            widget.fillColor?.resolve(inactiveStates) ?? _defaultFillColor.resolve(inactiveStates);
+        BorderSide effectiveBorderSide =
+            _resolveSide(widget.side, currentStates) ?? _defaultSide.resolve(currentStates);
+        Color effectiveFocusOverlayColor =
+            widget.focusColor
+            ?? HSLColor
+                .CreateFromColor(
+                    effectiveActiveColor.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)
+                )
+                .withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness)
+                .withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation)
+                .toColor();
+        WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith(
+            (states) =>
+            {
+                return WidgetStateProperty.resolveAs(widget.mouseCursor, states)
+                    ?? (
+                        (
+                            Foundation.ConstantsLibrary.kIsWeb
+                            && !states.Contains(WidgetState.disabled)
+                        )
+                            ? SystemMouseCursors.click
+                            : SystemMouseCursors.basic
+                    );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
+        Size effectiveSize =
+            widget.tapTargetSize
+            ?? (
+                PlatformLibrary.defaultTargetPlatform switch
+                {
+                    TargetPlatform.iOS or TargetPlatform.android => new Size(
+                        ConstantsLibrary.kMinInteractiveDimensionCupertino
+                    ),
+                    TargetPlatform.fuchsia => new Size(
+                        ConstantsLibrary.kMinInteractiveDimensionCupertino
+                    ),
+                    TargetPlatform.macOS or TargetPlatform.linux => new Size(
+                        CupertinoCheckbox.width
+                    ),
+                    TargetPlatform.windows => new Size(CupertinoCheckbox.width),
+                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                }
+            );
+        return new Widgets.Semantics(
+            label: widget.semanticLabel,
+            @checked: widget.value ?? false,
+            mixed: widget.tristate ? (widget.value is null) : null,
+            child: buildToggleable(
+                mouseCursor: effectiveMouseCursor,
+                focusNode: widget.focusNode,
+                autofocus: widget.autofocus,
+                size: effectiveSize,
+                painter: (
+                    (Func<_CheckboxPainter__checkbox>)(
+                        () =>
+                        {
+                            var __cascade = _painter;
+                            __cascade.position = position;
+                            __cascade.reaction = reaction;
+                            __cascade.focusColor = effectiveFocusOverlayColor;
+                            __cascade.downPosition = downPosition;
+                            __cascade.isFocused = currentStates.Contains(WidgetState.focused);
+                            __cascade.isHovered = currentStates.Contains(WidgetState.hovered);
+                            __cascade.activeColor = effectiveActiveColor;
+                            __cascade.inactiveColor = effectiveInactiveColor;
+                            __cascade.checkColor = _defaultCheckColor.resolve(currentStates);
+                            __cascade.value = value;
+                            __cascade.previousValue = _previousValue;
+                            __cascade.isActive = widget.onChanged is not null;
+                            __cascade.shape =
+                                widget.shape
+                                ?? new RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))
+                                );
+                            __cascade.side = effectiveBorderSide;
+                            __cascade.brightness = CupertinoTheme.of(context).brightness;
+                            return __cascade;
+                        }
+                    )
+                )()
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -291,13 +466,23 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -346,7 +531,16 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
 
     public virtual AnimationController positionController => _positionController;
@@ -356,7 +550,9 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     public virtual CurvedAnimation reactionHoverFade => _reactionHoverFade;
     public virtual CurvedAnimation reactionFocusFade => _reactionFocusFade;
     public virtual Duration? reactionAnimationDuration => _reactionAnimationDuration;
-    public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
+    public virtual bool isInteractive =>
+        DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
+
     public virtual void animateToValue()
     {
         if (tristate)
@@ -388,6 +584,7 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     }
 
     public virtual Offset? downPosition => _downPosition;
+
     public virtual void _handleTapDown(Gestures.TapDownDetails details)
     {
         if (isInteractive)
@@ -409,20 +606,20 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         switch (value)
         {
             case false:
-                {
-                    onChanged!(true);
-                    break;
-                }
+            {
+                onChanged!(true);
+                break;
+            }
             case true:
-                {
-                    onChanged!(tristate ? null : false);
-                    break;
-                }
+            {
+                onChanged!(tristate ? null : false);
+                break;
+            }
             case null:
-                {
-                    onChanged!(false);
-                    break;
-                }
+            {
+                onChanged!(false);
+                break;
+            }
         }
         context.findRenderObject()!.sendSemanticsEvent(new Semantics.TapSemanticEvent());
     }
@@ -477,19 +674,80 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         }
     }
 
-    public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
+    public virtual HashSet<WidgetState> states =>
+        (
+            (Func<HashSet<WidgetState>>)(
+                () =>
+                {
+                    var __collection10795 = new HashSet<WidgetState>();
+                    if (!isInteractive)
+                    {
+                        __collection10795.Add(WidgetState.disabled);
+                    }
+                    if (_hovering)
+                    {
+                        __collection10795.Add(WidgetState.hovered);
+                    }
+                    if (_focused)
+                    {
+                        __collection10795.Add(WidgetState.focused);
+                    }
+                    if (value ?? true)
+                    {
+                        __collection10795.Add(WidgetState.selected);
+                    }
+                    return __collection10795;
+                }
+            )
+        )();
+
+    public virtual Widget buildToggleable(
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        Size size = default!,
+        object? painter = default!
+    )
     {
-        return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
+        return buildToggleableWithChild(
+            focusNode: focusNode,
+            onFocusChange: onFocusChange,
+            autofocus: autofocus,
+            mouseCursor: mouseCursor,
+            child: new CustomPaint(size: size, painter: painter)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(
+        FocusNode? focusNode = null,
+        Action<bool>? onFocusChange = null,
+        bool autofocus = false,
+        WidgetStateProperty<MouseCursor>? mouseCursor = null,
+        Widget child = default!
+    )
     {
-        return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
+        return new FocusableActionDetector(
+            actions: _actionMap,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            onFocusChange: onFocusChange,
+            enabled: isInteractive,
+            onShowFocusHighlight: _handleFocusHighlightChanged,
+            onShowHoverHighlight: _handleHoverChanged,
+            mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic,
+            child: new GestureDetector(
+                excludeFromSemantics: !isInteractive,
+                onTapDown: isInteractive ? _handleTapDown : null,
+                onTap: isInteractive ? () => _handleTap(null) : null,
+                onTapUp: isInteractive ? _handleTapEnd : null,
+                onTapCancel: isInteractive ? () => _handleTapEnd(null) : null,
+                child: new Widgets.Semantics(enabled: isInteractive, child: child)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _CheckboxPainter__checkbox : ToggleablePainter
@@ -585,6 +843,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
             notifyListeners();
         }
     }
+
     internal virtual Rect _outerRectAt(Offset origin)
     {
         double size = CupertinoCheckbox.width;
@@ -595,33 +854,52 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
 
     internal virtual Color _colorAt(bool value)
     {
-        return (DartRuntimePrimitives.RequireValue(value) && isActive) ? activeColor : inactiveColor;
+        return (DartRuntimePrimitives.RequireValue(value) && isActive)
+            ? activeColor
+            : inactiveColor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Paint _createStrokePaint()
     {
-        return ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = checkColor;
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 2.0;
-    __cascade.strokeCap = StrokeCap.round;
-    return __cascade;
-}))();
+        return (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = checkColor;
+                    __cascade.style = PaintingStyle.stroke;
+                    __cascade.strokeWidth = 2.0;
+                    __cascade.strokeCap = StrokeCap.round;
+                    return __cascade;
+                }
+            )
+        )();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _drawFillGradient(Canvas canvas, Rect outer, Color topColor, Color bottomColor)
+    internal virtual void _drawFillGradient(
+        Canvas canvas,
+        Rect outer,
+        Color topColor,
+        Color bottomColor
+    )
     {
-        var fillGradient = new LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: new List<Color> { topColor, bottomColor });
-        var gradientPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.shader = fillGradient.createShader(outer);
-    return __cascade;
-}))();
+        var fillGradient = new LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: new List<Color> { topColor, bottomColor }
+        );
+        var gradientPaint = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.shader = fillGradient.createShader(outer);
+                    return __cascade;
+                }
+            )
+        )();
         if (shape.preferPaintInterior)
         {
             shape.paintInterior(canvas, outer, gradientPaint);
@@ -632,11 +910,33 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         }
     }
 
-    internal virtual void _drawBox(Canvas canvas, Rect outer, Paint paint, BorderSide? side, bool value)
+    internal virtual void _drawBox(
+        Canvas canvas,
+        Rect outer,
+        Paint paint,
+        BorderSide? side,
+        bool value
+    )
     {
-        if (Equals(brightness, Brightness.dark) && !(isActive && DartRuntimePrimitives.RequireValue(value)))
+        if (
+            Equals(brightness, Brightness.dark)
+            && !(isActive && DartRuntimePrimitives.RequireValue(value))
+        )
         {
-            _drawFillGradient(canvas, outer, paint.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)0L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]), paint.color.withOpacity(isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)1L] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]));
+            _drawFillGradient(
+                canvas,
+                outer,
+                paint.color.withOpacity(
+                    isActive
+                        ? CheckboxLibrary._kDarkGradientOpacities[(int)0L]
+                        : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)0L]
+                ),
+                paint.color.withOpacity(
+                    isActive
+                        ? CheckboxLibrary._kDarkGradientOpacities[(int)1L]
+                        : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)1L]
+                )
+            );
         }
         else
         {
@@ -680,40 +980,54 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         Paint strokePaint = _createStrokePaint();
         var origin = (size / 2.0) - (new Size(CupertinoCheckbox.width) / 2.0);
         Rect outer = _outerRectAt(origin);
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = _colorAt(value ?? true);
-    return __cascade;
-}))();
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = _colorAt(value ?? true);
+                    return __cascade;
+                }
+            )
+        )();
         switch (value)
         {
             case false:
-                {
-                    _drawBox(canvas, outer, paintLocal, side, value ?? true);
-                    break;
-                }
+            {
+                _drawBox(canvas, outer, paintLocal, side, value ?? true);
+                break;
+            }
             case true:
-                {
-                    _drawBox(canvas, outer, paintLocal, side, value ?? true);
-                    _drawCheck(canvas, origin, strokePaint);
-                    break;
-                }
+            {
+                _drawBox(canvas, outer, paintLocal, side, value ?? true);
+                _drawCheck(canvas, origin, strokePaint);
+                break;
+            }
             case null:
-                {
-                    _drawBox(canvas, outer, paintLocal, side, value ?? true);
-                    _drawDash(canvas, origin, strokePaint);
-                    break;
-                }
+            {
+                _drawBox(canvas, outer, paintLocal, side, value ?? true);
+                _drawDash(canvas, origin, strokePaint);
+                break;
+            }
         }
         if (downPosition is not null)
         {
-            var pressedPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = Equals(brightness, Brightness.light) ? CupertinoColors.black.withOpacity(CheckboxLibrary._kPressedOverlayOpacity) : CupertinoColors.white.withOpacity(CheckboxLibrary._kPressedOverlayOpacity);
-    return __cascade;
-}))();
+            var pressedPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = Equals(brightness, Brightness.light)
+                            ? CupertinoColors.black.withOpacity(
+                                CheckboxLibrary._kPressedOverlayOpacity
+                            )
+                            : CupertinoColors.white.withOpacity(
+                                CheckboxLibrary._kPressedOverlayOpacity
+                            );
+                        return __cascade;
+                    }
+                )
+            )();
             if (shape.preferPaintInterior)
             {
                 shape.paintInterior(canvas, outer, pressedPaint);
@@ -726,16 +1040,19 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         if (isFocused)
         {
             Rect focusOuter = outer.inflate(1);
-            var borderPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = focusColor;
-    __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = 3.5;
-    return __cascade;
-}))();
+            var borderPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = focusColor;
+                        __cascade.style = PaintingStyle.stroke;
+                        __cascade.strokeWidth = 3.5;
+                        return __cascade;
+                    }
+                )
+            )();
             _drawBox(canvas, focusOuter, borderPaint, side, value ?? true);
         }
     }
-
 }

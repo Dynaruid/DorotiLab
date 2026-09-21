@@ -8,12 +8,14 @@ namespace Doroti.Framework.Material;
 
 public static partial class ScaffoldLibrary
 {
-    internal static FloatingActionButtonLocation _kDefaultFloatingActionButtonLocation = FloatingActionButtonLocation.endFloat;
+    internal static FloatingActionButtonLocation _kDefaultFloatingActionButtonLocation =
+        FloatingActionButtonLocation.endFloat;
 }
 
 public static partial class ScaffoldLibrary
 {
-    internal static FloatingActionButtonAnimator _kDefaultFloatingActionButtonAnimator = FloatingActionButtonAnimator.scaling;
+    internal static FloatingActionButtonAnimator _kDefaultFloatingActionButtonAnimator =
+        FloatingActionButtonAnimator.scaling;
 }
 
 public static partial class ScaffoldLibrary
@@ -49,14 +51,15 @@ public enum _ScaffoldSlot__scaffold
     floatingActionButton,
     drawer,
     endDrawer,
-    statusBar
+    statusBar,
 }
 
 public class ScaffoldMessenger : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public ScaffoldMessenger(Key? key = null, Widget child = default!) : base(key: key)
+    public ScaffoldMessenger(Key? key = null, Widget child = default!)
+        : base(key: key)
     {
         this.child = child;
     }
@@ -64,27 +67,40 @@ public class ScaffoldMessenger : StatefulWidget
     public static ScaffoldMessengerState of(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasScaffoldMessenger(context));
-        _ScaffoldMessengerScope__scaffold scope = context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>()!;
+        _ScaffoldMessengerScope__scaffold scope =
+            context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>()!;
         return scope._scaffoldMessengerState;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ScaffoldMessengerState? maybeOf(BuildContext context)
     {
-        _ScaffoldMessengerScope__scaffold? scope = context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>();
+        _ScaffoldMessengerScope__scaffold? scope =
+            context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>();
         return scope?._scaffoldMessengerState;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new ScaffoldMessengerState());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new ScaffoldMessengerState());
 }
 
-public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderStateMixin<ScaffoldMessenger>
+public class ScaffoldMessengerState
+    : State<ScaffoldMessenger>,
+        TickerProviderStateMixin<ScaffoldMessenger>
 {
-    internal virtual HashSet<ScaffoldState> _scaffolds { get; private set; } = new HashSet<ScaffoldState>();
-    internal virtual Queue<ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>> _materialBanners { get; private set; } = new Queue<ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>>();
+    internal virtual HashSet<ScaffoldState> _scaffolds { get; private set; } =
+        new HashSet<ScaffoldState>();
+    internal virtual Queue<
+        ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>
+    > _materialBanners { get; private set; } =
+        new Queue<ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>>();
     internal virtual AnimationController? _materialBannerController { get; set; } = default;
-    internal virtual Queue<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>> _snackBars { get; private set; } = new Queue<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>>();
+    internal virtual Queue<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>> _snackBars
+    {
+        get;
+        private set;
+    } = new Queue<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>>();
     internal virtual AnimationController? _snackBarController { get; set; } = default;
     internal virtual Timer? _snackBarTimer { get; set; } = default;
     internal virtual bool _accessibleNavigation { get; set; } = default!;
@@ -138,27 +154,48 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(SnackBar snackBar, AnimationStyle? snackBarAnimationStyle = null)
+    public virtual ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
+        SnackBar snackBar,
+        AnimationStyle? snackBarAnimationStyle = null
+    )
     {
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(_scaffolds), () => (object?)"ScaffoldMessenger.showSnackBar was called, but there are currently no " + "descendant Scaffolds to present to.");
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(_scaffolds),
+            () =>
+                (object?)"ScaffoldMessenger.showSnackBar was called, but there are currently no "
+                + "descendant Scaffolds to present to."
+        );
         _didUpdateAnimationStyle(snackBarAnimationStyle);
-        _snackBarController ??= ((Func<AnimationController>)(() =>
-{
-    var __cascade = SnackBar.createAnimationController(duration: snackBarAnimationStyle?.duration, reverseDuration: snackBarAnimationStyle?.reverseDuration, vsync: this);
-    __cascade.addStatusListener(_handleSnackBarStatusChanged);
-    return __cascade;
-}))();
+        _snackBarController ??= (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = SnackBar.createAnimationController(
+                        duration: snackBarAnimationStyle?.duration,
+                        reverseDuration: snackBarAnimationStyle?.reverseDuration,
+                        vsync: this
+                    );
+                    __cascade.addStatusListener(_handleSnackBarStatusChanged);
+                    return __cascade;
+                }
+            )
+        )();
         if (!Enumerable.Any(_snackBars))
         {
             DartRuntimePrimitives.Assert(() => _snackBarController!.isDismissed);
             _snackBarController!.forward();
         }
         ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller = default!;
-        controller = new ScaffoldFeatureController<SnackBar, SnackBarClosedReason>(snackBar.withAnimation(_snackBarController!, fallbackKey: new UniqueKey()), new Completer<SnackBarClosedReason>(), () =>
-        {
-            DartRuntimePrimitives.Assert(() => Equals(_snackBars.Peek(), controller));
-            hideCurrentSnackBar();
-        }, null);
+        controller = new ScaffoldFeatureController<SnackBar, SnackBarClosedReason>(
+            snackBar.withAnimation(_snackBarController!, fallbackKey: new UniqueKey()),
+            new Completer<SnackBarClosedReason>(),
+            () =>
+            {
+                DartRuntimePrimitives.Assert(() => Equals(_snackBars.Peek(), controller));
+                hideCurrentSnackBar();
+            },
+            null
+        );
         try
         {
             setState(() =>
@@ -170,19 +207,40 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         catch (Exception exception)
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (exception is FlutterError)
                 {
-                    if (exception is FlutterError)
+                    FlutterError exception__13918__as13961 = (FlutterError)exception;
+                    string summary = exception__13918__as13961.diagnostics.toDescription();
+                    if (summary == "setState() or markNeedsBuild() called during build.")
                     {
-                        FlutterError exception__13918__as13961 = (FlutterError)exception;
-                        string summary = exception__13918__as13961.diagnostics.toDescription();
-                        if (summary == "setState() or markNeedsBuild() called during build.")
+                        var information = new List<DiagnosticsNode>
                         {
-                            var information = new List<DiagnosticsNode> { new ErrorSummary("The showSnackBar() method cannot be called during build."), new ErrorDescription("The showSnackBar() method was called during build, which is " + "prohibited as showing snack bars requires updating state. Updating " + "state is not possible during build."), new ErrorHint("Instead of calling showSnackBar() during build, call it directly " + "in your on tap (and related) callbacks. If you need to immediately " + "show a snack bar, make the call in initState() or " + "didChangeDependencies() instead. Otherwise, you can also schedule a " + "post-frame callback using SchedulerBinding.addPostFrameCallback to " + "show the snack bar after the current frame."), context.describeOwnershipChain("The ownership chain for the particular ScaffoldMessenger is") };
-                            throw DartRuntimePrimitives.AsException(new FlutterError(information));
-                        }
+                            new ErrorSummary(
+                                "The showSnackBar() method cannot be called during build."
+                            ),
+                            new ErrorDescription(
+                                "The showSnackBar() method was called during build, which is "
+                                    + "prohibited as showing snack bars requires updating state. Updating "
+                                    + "state is not possible during build."
+                            ),
+                            new ErrorHint(
+                                "Instead of calling showSnackBar() during build, call it directly "
+                                    + "in your on tap (and related) callbacks. If you need to immediately "
+                                    + "show a snack bar, make the call in initState() or "
+                                    + "didChangeDependencies() instead. Otherwise, you can also schedule a "
+                                    + "post-frame callback using SchedulerBinding.addPostFrameCallback to "
+                                    + "show the snack bar after the current frame."
+                            ),
+                            context.describeOwnershipChain(
+                                "The ownership chain for the particular ScaffoldMessenger is"
+                            ),
+                        };
+                        throw DartRuntimePrimitives.AsException(new FlutterError(information));
                     }
-                    return true;
-                });
+                }
+                return true;
+            });
             throw;
         }
         return controller;
@@ -193,7 +251,15 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
     {
         if (snackBarAnimationStyle is not null)
         {
-            if ((!Equals(_snackBarController?.duration, snackBarAnimationStyle.duration)) || (!Equals(_snackBarController?.reverseDuration, snackBarAnimationStyle.reverseDuration)))
+            if (
+                (!Equals(_snackBarController?.duration, snackBarAnimationStyle.duration))
+                || (
+                    !Equals(
+                        _snackBarController?.reverseDuration,
+                        snackBarAnimationStyle.reverseDuration
+                    )
+                )
+            )
             {
                 _snackBarController?.dispose();
                 _snackBarController = null;
@@ -206,37 +272,39 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         switch (status)
         {
             case AnimationStatus.dismissed:
+            {
+                DartRuntimePrimitives.Assert(() => Enumerable.Any(_snackBars));
+                setState(() =>
                 {
-                    DartRuntimePrimitives.Assert(() => Enumerable.Any(_snackBars));
-                    setState(() =>
-                    {
-                        _snackBars.Dequeue();
-                    });
-                    _updateScaffolds();
-                    if (Enumerable.Any(_snackBars))
-                    {
-                        _snackBarController!.forward();
-                    }
-                    break;
+                    _snackBars.Dequeue();
+                });
+                _updateScaffolds();
+                if (Enumerable.Any(_snackBars))
+                {
+                    _snackBarController!.forward();
                 }
+                break;
+            }
             case AnimationStatus.completed:
+            {
+                setState(() =>
                 {
-                    setState(() =>
-                    {
-                        DartRuntimePrimitives.Assert(() => _snackBarTimer is null);
-                    });
-                    _updateScaffolds();
-                    break;
-                }
+                    DartRuntimePrimitives.Assert(() => _snackBarTimer is null);
+                });
+                _updateScaffolds();
+                break;
+            }
             case AnimationStatus.forward:
             case AnimationStatus.reverse:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
-    public virtual void removeCurrentSnackBar(SnackBarClosedReason reason = SnackBarClosedReason.remove)
+    public virtual void removeCurrentSnackBar(
+        SnackBarClosedReason reason = SnackBarClosedReason.remove
+    )
     {
         if (!Enumerable.Any(_snackBars))
         {
@@ -266,15 +334,23 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         }
         else
         {
-            DartRuntimePrimitives.Ignore(_snackBarController!.reverse().then((value) =>
-            {
-                DartRuntimePrimitives.Assert(() => mounted);
-                if (!completer.isCompleted)
-                {
-                    completer.complete(reason);
-                }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
+            DartRuntimePrimitives.Ignore(
+                _snackBarController!
+                    .reverse()
+                    .then(
+                        (value) =>
+                        {
+                            DartRuntimePrimitives.Assert(() => mounted);
+                            if (!completer.isCompleted)
+                            {
+                                completer.complete(reason);
+                            }
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+            );
         }
         _snackBarTimer?.cancel();
         _snackBarTimer = null;
@@ -286,32 +362,51 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         {
             return;
         }
-        ScaffoldFeatureController<SnackBar, SnackBarClosedReason> currentSnackbar = _snackBars.Peek();
+        ScaffoldFeatureController<SnackBar, SnackBarClosedReason> currentSnackbar =
+            _snackBars.Peek();
         _snackBars.Clear();
         _snackBars.Enqueue(currentSnackbar);
         hideCurrentSnackBar();
     }
 
-    public virtual ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> showMaterialBanner(MaterialBanner materialBanner)
+    public virtual ScaffoldFeatureController<
+        MaterialBanner,
+        MaterialBannerClosedReason
+    > showMaterialBanner(MaterialBanner materialBanner)
     {
-        DartRuntimePrimitives.Assert(() => Enumerable.Any(_scaffolds), () => (object?)"ScaffoldMessenger.showMaterialBanner was called, but there are currently no " + "descendant Scaffolds to present to.");
-        _materialBannerController ??= ((Func<AnimationController>)(() =>
-{
-    var __cascade = MaterialBanner.createAnimationController(vsync: this);
-    __cascade.addStatusListener(_handleMaterialBannerStatusChanged);
-    return __cascade;
-}))();
+        DartRuntimePrimitives.Assert(
+            () => Enumerable.Any(_scaffolds),
+            () =>
+                (object?)
+                    "ScaffoldMessenger.showMaterialBanner was called, but there are currently no "
+                + "descendant Scaffolds to present to."
+        );
+        _materialBannerController ??= (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = MaterialBanner.createAnimationController(vsync: this);
+                    __cascade.addStatusListener(_handleMaterialBannerStatusChanged);
+                    return __cascade;
+                }
+            )
+        )();
         if (!Enumerable.Any(_materialBanners))
         {
             DartRuntimePrimitives.Assert(() => _materialBannerController!.isDismissed);
             _materialBannerController!.forward();
         }
         ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> controller = default!;
-        controller = new ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>(materialBanner.withAnimation(_materialBannerController!, fallbackKey: new UniqueKey()), new Completer<MaterialBannerClosedReason>(), () =>
-        {
-            DartRuntimePrimitives.Assert(() => Equals(_materialBanners.Peek(), controller));
-            hideCurrentMaterialBanner();
-        }, null);
+        controller = new ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>(
+            materialBanner.withAnimation(_materialBannerController!, fallbackKey: new UniqueKey()),
+            new Completer<MaterialBannerClosedReason>(),
+            () =>
+            {
+                DartRuntimePrimitives.Assert(() => Equals(_materialBanners.Peek(), controller));
+                hideCurrentMaterialBanner();
+            },
+            null
+        );
         setState(() =>
         {
             _materialBanners.addLast(controller);
@@ -326,29 +421,29 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         switch (status)
         {
             case AnimationStatus.dismissed:
+            {
+                DartRuntimePrimitives.Assert(() => Enumerable.Any(_materialBanners));
+                setState(() =>
                 {
-                    DartRuntimePrimitives.Assert(() => Enumerable.Any(_materialBanners));
-                    setState(() =>
-                    {
-                        _materialBanners.Dequeue();
-                    });
-                    _updateScaffolds();
-                    if (Enumerable.Any(_materialBanners))
-                    {
-                        _materialBannerController!.forward();
-                    }
-                    break;
+                    _materialBanners.Dequeue();
+                });
+                _updateScaffolds();
+                if (Enumerable.Any(_materialBanners))
+                {
+                    _materialBannerController!.forward();
                 }
+                break;
+            }
             case AnimationStatus.completed:
-                {
-                    _updateScaffolds();
-                    break;
-                }
+            {
+                _updateScaffolds();
+                break;
+            }
             case AnimationStatus.forward:
             case AnimationStatus.reverse:
-                {
-                    break;
-                }
+            {
+                break;
+            }
         }
     }
 
@@ -380,15 +475,23 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         }
         else
         {
-            DartRuntimePrimitives.Ignore(_materialBannerController!.reverse().then((value) =>
-            {
-                DartRuntimePrimitives.Assert(() => mounted);
-                if (!completer.isCompleted)
-                {
-                    completer.complete(reason);
-                }
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
+            DartRuntimePrimitives.Ignore(
+                _materialBannerController!
+                    .reverse()
+                    .then(
+                        (value) =>
+                        {
+                            DartRuntimePrimitives.Assert(() => mounted);
+                            if (!completer.isCompleted)
+                            {
+                                completer.complete(reason);
+                            }
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+            );
         }
     }
 
@@ -398,7 +501,10 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         {
             return;
         }
-        ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> currentMaterialBanner = _materialBanners.Peek();
+        ScaffoldFeatureController<
+            MaterialBanner,
+            MaterialBannerClosedReason
+        > currentMaterialBanner = _materialBanners.Peek();
         _materialBanners.Clear();
         _materialBanners.Enqueue(currentMaterialBanner);
         hideCurrentMaterialBanner();
@@ -416,19 +522,27 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
                 if (_snackBarController!.isCompleted && (_snackBarTimer is null))
                 {
                     SnackBar snackBar = _snackBars.Peek()._widget;
-                    _snackBarTimer = new Timer(snackBar.duration, () =>
-                    {
-                        DartRuntimePrimitives.Assert(() => _snackBarController!.isForwardOrCompleted);
-                        if (snackBar.persist)
+                    _snackBarTimer = new Timer(
+                        snackBar.duration,
+                        () =>
                         {
-                            return;
+                            DartRuntimePrimitives.Assert(() =>
+                                _snackBarController!.isForwardOrCompleted
+                            );
+                            if (snackBar.persist)
+                            {
+                                return;
+                            }
+                            hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
                         }
-                        hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
-                    });
+                    );
                 }
             }
         }
-        return new _ScaffoldMessengerScope__scaffold(scaffoldMessengerState: this, child: widget.child);
+        return new _ScaffoldMessengerScope__scaffold(
+            scaffoldMessengerState: this,
+            child: widget.child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -439,19 +553,37 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         _snackBarTimer?.cancel();
         _snackBarTimer = null;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -466,13 +598,23 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -521,21 +663,38 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 internal class _ScaffoldMessengerScope__scaffold : InheritedWidget
 {
-    internal virtual ScaffoldMessengerState _scaffoldMessengerState { get; private set; } = default!;
+    internal virtual ScaffoldMessengerState _scaffoldMessengerState { get; private set; } =
+        default!;
 
-    internal _ScaffoldMessengerScope__scaffold(Widget child, ScaffoldMessengerState scaffoldMessengerState) : base(child: child)
+    internal _ScaffoldMessengerScope__scaffold(
+        Widget child,
+        ScaffoldMessengerState scaffoldMessengerState
+    )
+        : base(child: child)
     {
         _scaffoldMessengerState = scaffoldMessengerState;
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => !Equals(_scaffoldMessengerState, ((_ScaffoldMessengerScope__scaffold)oldWidget)._scaffoldMessengerState);
+    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
+        !Equals(
+            _scaffoldMessengerState,
+            ((_ScaffoldMessengerScope__scaffold)oldWidget)._scaffoldMessengerState
+        );
 }
 
 public class ScaffoldPrelayoutGeometry
@@ -551,7 +710,18 @@ public class ScaffoldPrelayoutGeometry
     public virtual Size materialBannerSize { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
 
-    public ScaffoldPrelayoutGeometry(Size bottomSheetSize, double contentBottom, double contentTop, Size floatingActionButtonSize, EdgeInsets minInsets, EdgeInsets minViewPadding, Size scaffoldSize, Size snackBarSize, Size materialBannerSize, TextDirection textDirection)
+    public ScaffoldPrelayoutGeometry(
+        Size bottomSheetSize,
+        double contentBottom,
+        double contentTop,
+        Size floatingActionButtonSize,
+        EdgeInsets minInsets,
+        EdgeInsets minViewPadding,
+        Size scaffoldSize,
+        Size snackBarSize,
+        Size materialBannerSize,
+        TextDirection textDirection
+    )
     {
         this.bottomSheetSize = bottomSheetSize;
         this.contentBottom = contentBottom;
@@ -564,7 +734,6 @@ public class ScaffoldPrelayoutGeometry
         this.materialBannerSize = materialBannerSize;
         this.textDirection = textDirection;
     }
-
 }
 
 internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLocation
@@ -574,7 +743,12 @@ internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLo
     public virtual FloatingActionButtonAnimator animator { get; private set; } = default!;
     public virtual double progress { get; private set; } = default!;
 
-    internal _TransitionSnapshotFabLocation__scaffold(FloatingActionButtonLocation begin, FloatingActionButtonLocation end, FloatingActionButtonAnimator animator, double progress)
+    internal _TransitionSnapshotFabLocation__scaffold(
+        FloatingActionButtonLocation begin,
+        FloatingActionButtonLocation end,
+        FloatingActionButtonAnimator animator,
+        double progress
+    )
     {
         this.begin = begin;
         this.end = end;
@@ -584,7 +758,11 @@ internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLo
 
     public override Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry)
     {
-        return animator.getOffset(begin: begin.getOffset(scaffoldGeometry), end: end.getOffset(scaffoldGeometry), progress: progress);
+        return animator.getOffset(
+            begin: begin.getOffset(scaffoldGeometry),
+            end: end.getOffset(scaffoldGeometry),
+            progress: progress
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -593,7 +771,6 @@ internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLo
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_TransitionSnapshotFabLocation")}(begin: {begin}, end: {end}, progress: {progress})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ScaffoldGeometry
@@ -601,7 +778,10 @@ public class ScaffoldGeometry
     public virtual double? bottomNavigationBarTop { get; private set; }
     public virtual Rect? floatingActionButtonArea { get; private set; }
 
-    public ScaffoldGeometry(double? bottomNavigationBarTop = null, Rect? floatingActionButtonArea = null)
+    public ScaffoldGeometry(
+        double? bottomNavigationBarTop = null,
+        Rect? floatingActionButtonArea = null
+    )
     {
         this.bottomNavigationBarTop = bottomNavigationBarTop;
         this.floatingActionButtonArea = floatingActionButtonArea;
@@ -617,17 +797,28 @@ public class ScaffoldGeometry
         {
             return new ScaffoldGeometry(bottomNavigationBarTop: bottomNavigationBarTop);
         }
-        Rect scaledButton = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(DartRuntimePrimitives.RequireValue(floatingActionButtonArea).center & Size.zero, floatingActionButtonArea, scaleFactor));
+        Rect scaledButton = DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.Rect.lerp(
+                DartRuntimePrimitives.RequireValue(floatingActionButtonArea).center & Size.zero,
+                floatingActionButtonArea,
+                scaleFactor
+            )
+        );
         return copyWith(floatingActionButtonArea: scaledButton);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ScaffoldGeometry copyWith(double? bottomNavigationBarTop = null, Rect? floatingActionButtonArea = null)
+    public virtual ScaffoldGeometry copyWith(
+        double? bottomNavigationBarTop = null,
+        Rect? floatingActionButtonArea = null
+    )
     {
-        return new ScaffoldGeometry(bottomNavigationBarTop: bottomNavigationBarTop ?? this.bottomNavigationBarTop, floatingActionButtonArea: floatingActionButtonArea ?? this.floatingActionButtonArea);
+        return new ScaffoldGeometry(
+            bottomNavigationBarTop: bottomNavigationBarTop ?? this.bottomNavigationBarTop,
+            floatingActionButtonArea: floatingActionButtonArea ?? this.floatingActionButtonArea
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _ScaffoldGeometryNotifier__scaffold : ChangeNotifier, ValueListenable<ScaffoldGeometry>
@@ -647,24 +838,40 @@ public class _ScaffoldGeometryNotifier__scaffold : ChangeNotifier, ValueListenab
         get
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                RenderObject? renderObject = context.findRenderObject();
+                if ((renderObject is null) || !renderObject.owner!.debugDoingPaint)
                 {
-                    RenderObject? renderObject = context.findRenderObject();
-                    if ((renderObject is null) || !renderObject.owner!.debugDoingPaint)
-                    {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.geometryOf() must only be accessed during the paint phase.\n" + "The ScaffoldGeometry is only available during the paint phase, because " + "its value is computed during the animation and layout phases prior to painting."));
-                    }
-                    return true;
-                });
-            return geometry._scaleFloatingActionButton(DartRuntimePrimitives.RequireValue(floatingActionButtonScale));
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            "Scaffold.geometryOf() must only be accessed during the paint phase.\n"
+                                + "The ScaffoldGeometry is only available during the paint phase, because "
+                                + "its value is computed during the animation and layout phases prior to painting."
+                        )
+                    );
+                }
+                return true;
+            });
+            return geometry._scaleFloatingActionButton(
+                DartRuntimePrimitives.RequireValue(floatingActionButtonScale)
+            );
         }
     }
-    internal virtual void _updateWith(double? bottomNavigationBarTop = null, Rect? floatingActionButtonArea = null, double? floatingActionButtonScale = null)
+
+    internal virtual void _updateWith(
+        double? bottomNavigationBarTop = null,
+        Rect? floatingActionButtonArea = null,
+        double? floatingActionButtonScale = null
+    )
     {
-        this.floatingActionButtonScale = floatingActionButtonScale ?? this.floatingActionButtonScale;
-        geometry = geometry.copyWith(bottomNavigationBarTop: bottomNavigationBarTop, floatingActionButtonArea: floatingActionButtonArea);
+        this.floatingActionButtonScale =
+            floatingActionButtonScale ?? this.floatingActionButtonScale;
+        geometry = geometry.copyWith(
+            bottomNavigationBarTop: bottomNavigationBarTop,
+            floatingActionButtonArea: floatingActionButtonArea
+        );
         notifyListeners();
     }
-
 }
 
 internal class _BodyBoxConstraints__scaffold : BoxConstraints
@@ -673,7 +880,14 @@ internal class _BodyBoxConstraints__scaffold : BoxConstraints
     public virtual double appBarHeight { get; private set; } = default!;
     public virtual double materialBannerHeight { get; private set; } = default!;
 
-    internal _BodyBoxConstraints__scaffold(double maxWidth = double.PositiveInfinity, double maxHeight = double.PositiveInfinity, double bottomWidgetsHeight = default!, double appBarHeight = default!, double materialBannerHeight = default!) : base(maxWidth: maxWidth, maxHeight: maxHeight)
+    internal _BodyBoxConstraints__scaffold(
+        double maxWidth = double.PositiveInfinity,
+        double maxHeight = double.PositiveInfinity,
+        double bottomWidgetsHeight = default!,
+        double appBarHeight = default!,
+        double materialBannerHeight = default!
+    )
+        : base(maxWidth: maxWidth, maxHeight: maxHeight)
     {
         this.bottomWidgetsHeight = bottomWidgetsHeight;
         this.appBarHeight = appBarHeight;
@@ -686,15 +900,30 @@ internal class _BodyBoxConstraints__scaffold : BoxConstraints
     public override bool Equals(object? other)
     {
         var __other = other as _BodyBoxConstraints__scaffold;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (!base.Equals(__other))
         {
             return false;
         }
-        return (__other is _BodyBoxConstraints__scaffold) && (__other.materialBannerHeight == materialBannerHeight) && (__other.bottomWidgetsHeight == bottomWidgetsHeight) && (__other.appBarHeight == appBarHeight);
+        return (__other is _BodyBoxConstraints__scaffold)
+            && (__other.materialBannerHeight == materialBannerHeight)
+            && (__other.bottomWidgetsHeight == bottomWidgetsHeight)
+            && (__other.appBarHeight == appBarHeight);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(base.GetHashCode(), materialBannerHeight, bottomWidgetsHeight, appBarHeight));
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(
+            FoundationRuntimePorts.ObjectHash(
+                base.GetHashCode(),
+                materialBannerHeight,
+                bottomWidgetsHeight,
+                appBarHeight
+            )
+        );
 }
 
 internal class _BodyBuilder__scaffold : StatelessWidget
@@ -716,18 +945,31 @@ internal class _BodyBuilder__scaffold : StatelessWidget
         {
             return body;
         }
-        return new LayoutBuilder(builder: (context, constraints) =>
-        {
-            var bodyConstraints = ((_BodyBoxConstraints__scaffold?)constraints)!;
-            MediaQueryData metrics = MediaQuery.of(context);
-            double bottomLocal = extendBody ? Math.Max(metrics.padding.bottom, bodyConstraints.bottomWidgetsHeight) : metrics.padding.bottom;
-            double topLocal = extendBodyBehindAppBar ? Math.Max(metrics.padding.top, bodyConstraints.appBarHeight + bodyConstraints.materialBannerHeight) : metrics.padding.top;
-            return new MediaQuery(data: metrics.copyWith(padding: metrics.padding.copyWith(top: topLocal, bottom: bottomLocal)), child: body);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return new LayoutBuilder(
+            builder: (context, constraints) =>
+            {
+                var bodyConstraints = ((_BodyBoxConstraints__scaffold?)constraints)!;
+                MediaQueryData metrics = MediaQuery.of(context);
+                double bottomLocal = extendBody
+                    ? Math.Max(metrics.padding.bottom, bodyConstraints.bottomWidgetsHeight)
+                    : metrics.padding.bottom;
+                double topLocal = extendBodyBehindAppBar
+                    ? Math.Max(
+                        metrics.padding.top,
+                        bodyConstraints.appBarHeight + bodyConstraints.materialBannerHeight
+                    )
+                    : metrics.padding.top;
+                return new MediaQuery(
+                    data: metrics.copyWith(
+                        padding: metrics.padding.copyWith(top: topLocal, bottom: bottomLocal)
+                    ),
+                    child: body
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
@@ -737,16 +979,45 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
     public virtual EdgeInsets minInsets { get; private set; } = default!;
     public virtual EdgeInsets minViewPadding { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
-    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } = default!;
-    public virtual FloatingActionButtonLocation previousFloatingActionButtonLocation { get; private set; } = default!;
-    public virtual FloatingActionButtonLocation currentFloatingActionButtonLocation { get; private set; } = default!;
-    public virtual ValueListenable<double> floatingActionButtonMoveAnimation { get; private set; } = default!;
-    public virtual FloatingActionButtonAnimator floatingActionButtonMotionAnimator { get; private set; } = default!;
+    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } =
+        default!;
+    public virtual FloatingActionButtonLocation previousFloatingActionButtonLocation
+    {
+        get;
+        private set;
+    } = default!;
+    public virtual FloatingActionButtonLocation currentFloatingActionButtonLocation
+    {
+        get;
+        private set;
+    } = default!;
+    public virtual ValueListenable<double> floatingActionButtonMoveAnimation { get; private set; } =
+        default!;
+    public virtual FloatingActionButtonAnimator floatingActionButtonMotionAnimator
+    {
+        get;
+        private set;
+    } = default!;
     public virtual bool isSnackBarFloating { get; private set; } = default!;
     public virtual double? snackBarWidth { get; private set; }
     public virtual bool extendBodyBehindMaterialBanner { get; private set; } = default!;
 
-    internal _ScaffoldLayout__scaffold(EdgeInsets minInsets, EdgeInsets minViewPadding, TextDirection textDirection, _ScaffoldGeometryNotifier__scaffold geometryNotifier, FloatingActionButtonLocation previousFloatingActionButtonLocation, FloatingActionButtonLocation currentFloatingActionButtonLocation, ValueListenable<double> floatingActionButtonMoveAnimation, FloatingActionButtonAnimator floatingActionButtonMotionAnimator, bool isSnackBarFloating, double? snackBarWidth, bool extendBody, bool extendBodyBehindAppBar, bool extendBodyBehindMaterialBanner) : base(relayout: floatingActionButtonMoveAnimation)
+    internal _ScaffoldLayout__scaffold(
+        EdgeInsets minInsets,
+        EdgeInsets minViewPadding,
+        TextDirection textDirection,
+        _ScaffoldGeometryNotifier__scaffold geometryNotifier,
+        FloatingActionButtonLocation previousFloatingActionButtonLocation,
+        FloatingActionButtonLocation currentFloatingActionButtonLocation,
+        ValueListenable<double> floatingActionButtonMoveAnimation,
+        FloatingActionButtonAnimator floatingActionButtonMotionAnimator,
+        bool isSnackBarFloating,
+        double? snackBarWidth,
+        bool extendBody,
+        bool extendBodyBehindAppBar,
+        bool extendBodyBehindMaterialBanner
+    )
+        : base(relayout: floatingActionButtonMoveAnimation)
     {
         this.minInsets = minInsets;
         this.minViewPadding = minViewPadding;
@@ -773,50 +1044,89 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
         var appBarHeightLocal = 0.0;
         if (hasChild(_ScaffoldSlot__scaffold.appBar))
         {
-            appBarHeightLocal = layoutChild(_ScaffoldSlot__scaffold.appBar, fullWidthConstraints).height;
+            appBarHeightLocal = layoutChild(
+                _ScaffoldSlot__scaffold.appBar,
+                fullWidthConstraints
+            ).height;
             contentTopLocal = extendBodyBehindAppBar ? 0.0 : appBarHeightLocal;
             positionChild(_ScaffoldSlot__scaffold.appBar, Offset.zero);
         }
         double? bottomNavigationBarTopLocal = default!;
         if (hasChild(_ScaffoldSlot__scaffold.bottomNavigationBar))
         {
-            double bottomNavigationBarHeight = layoutChild(_ScaffoldSlot__scaffold.bottomNavigationBar, fullWidthConstraints).height;
+            double bottomNavigationBarHeight = layoutChild(
+                _ScaffoldSlot__scaffold.bottomNavigationBar,
+                fullWidthConstraints
+            ).height;
             bottomWidgetsHeightLocal += bottomNavigationBarHeight;
             bottomNavigationBarTopLocal = Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal);
-            positionChild(_ScaffoldSlot__scaffold.bottomNavigationBar, new Offset(0.0, DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal)));
+            positionChild(
+                _ScaffoldSlot__scaffold.bottomNavigationBar,
+                new Offset(0.0, DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal))
+            );
         }
         if (hasChild(_ScaffoldSlot__scaffold.persistentFooter))
         {
-            var footerConstraints = new BoxConstraints(maxWidth: fullWidthConstraints.maxWidth, maxHeight: Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal - contentTopLocal));
-            double persistentFooterHeight = layoutChild(_ScaffoldSlot__scaffold.persistentFooter, footerConstraints).height;
+            var footerConstraints = new BoxConstraints(
+                maxWidth: fullWidthConstraints.maxWidth,
+                maxHeight: Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal - contentTopLocal)
+            );
+            double persistentFooterHeight = layoutChild(
+                _ScaffoldSlot__scaffold.persistentFooter,
+                footerConstraints
+            ).height;
             bottomWidgetsHeightLocal += persistentFooterHeight;
-            positionChild(_ScaffoldSlot__scaffold.persistentFooter, new Offset(0.0, Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal)));
+            positionChild(
+                _ScaffoldSlot__scaffold.persistentFooter,
+                new Offset(0.0, Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal))
+            );
         }
         Size materialBannerSizeLocal = Size.zero;
         if (hasChild(_ScaffoldSlot__scaffold.materialBanner))
         {
-            materialBannerSizeLocal = layoutChild(_ScaffoldSlot__scaffold.materialBanner, fullWidthConstraints);
-            positionChild(_ScaffoldSlot__scaffold.materialBanner, new Offset(0.0, appBarHeightLocal));
+            materialBannerSizeLocal = layoutChild(
+                _ScaffoldSlot__scaffold.materialBanner,
+                fullWidthConstraints
+            );
+            positionChild(
+                _ScaffoldSlot__scaffold.materialBanner,
+                new Offset(0.0, appBarHeightLocal)
+            );
             if (!extendBodyBehindMaterialBanner)
             {
                 contentTopLocal += materialBannerSizeLocal.height;
             }
         }
-        double contentBottomLocal = Math.Max(0.0, bottomLocal - Math.Max(minInsets.bottom, bottomWidgetsHeightLocal));
+        double contentBottomLocal = Math.Max(
+            0.0,
+            bottomLocal - Math.Max(minInsets.bottom, bottomWidgetsHeightLocal)
+        );
         if (hasChild(_ScaffoldSlot__scaffold.body))
         {
             double bodyMaxHeight = Math.Max(0.0, contentBottomLocal - contentTopLocal);
             if (extendBody && (minInsets.bottom <= bottomWidgetsHeightLocal))
             {
                 bodyMaxHeight += bottomWidgetsHeightLocal;
-                bodyMaxHeight = Dart_uiLibrary.clampDouble(bodyMaxHeight, 0.0, looseConstraints.maxHeight - contentTopLocal);
-                DartRuntimePrimitives.Assert(() => bodyMaxHeight <= Math.Max(0.0, looseConstraints.maxHeight - contentTopLocal));
+                bodyMaxHeight = Dart_uiLibrary.clampDouble(
+                    bodyMaxHeight,
+                    0.0,
+                    looseConstraints.maxHeight - contentTopLocal
+                );
+                DartRuntimePrimitives.Assert(() =>
+                    bodyMaxHeight <= Math.Max(0.0, looseConstraints.maxHeight - contentTopLocal)
+                );
             }
             else
             {
                 bottomWidgetsHeightLocal = 0.0;
             }
-            BoxConstraints bodyConstraints = new _BodyBoxConstraints__scaffold(maxWidth: fullWidthConstraints.maxWidth, maxHeight: bodyMaxHeight, materialBannerHeight: materialBannerSizeLocal.height, bottomWidgetsHeight: bottomWidgetsHeightLocal, appBarHeight: appBarHeightLocal);
+            BoxConstraints bodyConstraints = new _BodyBoxConstraints__scaffold(
+                maxWidth: fullWidthConstraints.maxWidth,
+                maxHeight: bodyMaxHeight,
+                materialBannerHeight: materialBannerSizeLocal.height,
+                bottomWidgetsHeight: bottomWidgetsHeightLocal,
+                appBarHeight: appBarHeightLocal
+            );
             layoutChild(_ScaffoldSlot__scaffold.body, bodyConstraints);
             positionChild(_ScaffoldSlot__scaffold.body, new Offset(0.0, contentTopLocal));
         }
@@ -824,7 +1134,10 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
         Size snackBarSizeLocal = Size.zero;
         if (hasChild(_ScaffoldSlot__scaffold.bodyScrim))
         {
-            var bottomSheetScrimConstraints = new BoxConstraints(maxWidth: fullWidthConstraints.maxWidth, maxHeight: contentBottomLocal);
+            var bottomSheetScrimConstraints = new BoxConstraints(
+                maxWidth: fullWidthConstraints.maxWidth,
+                maxHeight: contentBottomLocal
+            );
             layoutChild(_ScaffoldSlot__scaffold.bodyScrim, bottomSheetScrimConstraints);
             positionChild(_ScaffoldSlot__scaffold.bodyScrim, Offset.zero);
         }
@@ -834,36 +1147,85 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
         }
         if (hasChild(_ScaffoldSlot__scaffold.bottomSheet))
         {
-            var bottomSheetConstraints = new BoxConstraints(maxWidth: fullWidthConstraints.maxWidth, maxHeight: Math.Max(0.0, contentBottomLocal - contentTopLocal));
-            bottomSheetSizeLocal = layoutChild(_ScaffoldSlot__scaffold.bottomSheet, bottomSheetConstraints);
-            positionChild(_ScaffoldSlot__scaffold.bottomSheet, new Offset((size.width - bottomSheetSizeLocal.width) / 2.0, contentBottomLocal - bottomSheetSizeLocal.height));
+            var bottomSheetConstraints = new BoxConstraints(
+                maxWidth: fullWidthConstraints.maxWidth,
+                maxHeight: Math.Max(0.0, contentBottomLocal - contentTopLocal)
+            );
+            bottomSheetSizeLocal = layoutChild(
+                _ScaffoldSlot__scaffold.bottomSheet,
+                bottomSheetConstraints
+            );
+            positionChild(
+                _ScaffoldSlot__scaffold.bottomSheet,
+                new Offset(
+                    (size.width - bottomSheetSizeLocal.width) / 2.0,
+                    contentBottomLocal - bottomSheetSizeLocal.height
+                )
+            );
         }
         Rect floatingActionButtonRect = default!;
         if (hasChild(_ScaffoldSlot__scaffold.floatingActionButton))
         {
-            Size fabSize = layoutChild(_ScaffoldSlot__scaffold.floatingActionButton, looseConstraints);
-            var currentGeometry = new ScaffoldPrelayoutGeometry(bottomSheetSize: bottomSheetSizeLocal, contentBottom: contentBottomLocal, contentTop: appBarHeightLocal, floatingActionButtonSize: fabSize, minInsets: minInsets, scaffoldSize: size, snackBarSize: snackBarSizeLocal, materialBannerSize: materialBannerSizeLocal, textDirection: textDirection, minViewPadding: minViewPadding);
-            Offset currentFabOffset = currentFloatingActionButtonLocation.getOffset(currentGeometry);
-            Offset previousFabOffset = previousFloatingActionButtonLocation.getOffset(currentGeometry);
-            Offset fabOffset = floatingActionButtonMotionAnimator.getOffset(begin: previousFabOffset, end: currentFabOffset, progress: floatingActionButtonMoveAnimation.value);
+            Size fabSize = layoutChild(
+                _ScaffoldSlot__scaffold.floatingActionButton,
+                looseConstraints
+            );
+            var currentGeometry = new ScaffoldPrelayoutGeometry(
+                bottomSheetSize: bottomSheetSizeLocal,
+                contentBottom: contentBottomLocal,
+                contentTop: appBarHeightLocal,
+                floatingActionButtonSize: fabSize,
+                minInsets: minInsets,
+                scaffoldSize: size,
+                snackBarSize: snackBarSizeLocal,
+                materialBannerSize: materialBannerSizeLocal,
+                textDirection: textDirection,
+                minViewPadding: minViewPadding
+            );
+            Offset currentFabOffset = currentFloatingActionButtonLocation.getOffset(
+                currentGeometry
+            );
+            Offset previousFabOffset = previousFloatingActionButtonLocation.getOffset(
+                currentGeometry
+            );
+            Offset fabOffset = floatingActionButtonMotionAnimator.getOffset(
+                begin: previousFabOffset,
+                end: currentFabOffset,
+                progress: floatingActionButtonMoveAnimation.value
+            );
             positionChild(_ScaffoldSlot__scaffold.floatingActionButton, fabOffset);
             floatingActionButtonRect = fabOffset & fabSize;
         }
         if (hasChild(_ScaffoldSlot__scaffold.snackBar))
         {
-            bool hasCustomWidth = (snackBarWidth is not null) && (DartRuntimePrimitives.RequireValue(snackBarWidth) < size.width);
+            bool hasCustomWidth =
+                (snackBarWidth is not null)
+                && (DartRuntimePrimitives.RequireValue(snackBarWidth) < size.width);
             if (Equals(snackBarSizeLocal, Size.zero))
             {
-                snackBarSizeLocal = layoutChild(_ScaffoldSlot__scaffold.snackBar, hasCustomWidth ? looseConstraints : fullWidthConstraints);
+                snackBarSizeLocal = layoutChild(
+                    _ScaffoldSlot__scaffold.snackBar,
+                    hasCustomWidth ? looseConstraints : fullWidthConstraints
+                );
             }
             double snackBarYOffsetBase = default!;
             bool showAboveFab = currentFloatingActionButtonLocation is not null;
-            if ((!Equals(floatingActionButtonRect.size, Size.zero)) && isSnackBarFloating && showAboveFab)
+            if (
+                (!Equals(floatingActionButtonRect.size, Size.zero))
+                && isSnackBarFloating
+                && showAboveFab
+            )
             {
                 if (bottomNavigationBarTopLocal is not null)
                 {
-                    double bottomNavigationBarTop__40047__value47887 = DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal);
-                    snackBarYOffsetBase = Math.Min(DartRuntimePrimitives.RequireValue(bottomNavigationBarTop__40047__value47887), floatingActionButtonRect.top);
+                    double bottomNavigationBarTop__40047__value47887 =
+                        DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal);
+                    snackBarYOffsetBase = Math.Min(
+                        DartRuntimePrimitives.RequireValue(
+                            bottomNavigationBarTop__40047__value47887
+                        ),
+                        floatingActionButtonRect.top
+                    );
                 }
                 else
                 {
@@ -873,26 +1235,52 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             else
             {
                 double safeYOffsetBase = size.height - minViewPadding.bottom;
-                snackBarYOffsetBase = isSnackBarFloating ? Math.Min(contentBottomLocal, safeYOffsetBase) : contentBottomLocal;
+                snackBarYOffsetBase = isSnackBarFloating
+                    ? Math.Min(contentBottomLocal, safeYOffsetBase)
+                    : contentBottomLocal;
             }
-            double xOffset = hasCustomWidth ? ((size.width - DartRuntimePrimitives.RequireValue(snackBarWidth)) / 2L) : 0.0;
-            positionChild(_ScaffoldSlot__scaffold.snackBar, new Offset(xOffset, snackBarYOffsetBase - snackBarSizeLocal.height));
+            double xOffset = hasCustomWidth
+                ? ((size.width - DartRuntimePrimitives.RequireValue(snackBarWidth)) / 2L)
+                : 0.0;
+            positionChild(
+                _ScaffoldSlot__scaffold.snackBar,
+                new Offset(xOffset, snackBarYOffsetBase - snackBarSizeLocal.height)
+            );
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (isSnackBarFloating)
                 {
-                    if (isSnackBarFloating)
+                    bool snackBarVisible = snackBarYOffsetBase - snackBarSizeLocal.height >= 0L;
+                    if (!snackBarVisible)
                     {
-                        bool snackBarVisible = snackBarYOffsetBase - snackBarSizeLocal.height >= 0L;
-                        if (!snackBarVisible)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Floating SnackBar presented off screen."), new ErrorDescription("A SnackBar with behavior property set to SnackBarBehavior.floating is fully " + "or partially off screen because some or all the widgets provided to " + "Scaffold.floatingActionButton, Scaffold.persistentFooterButtons and " + "Scaffold.bottomNavigationBar take up too much vertical space.\n"), new ErrorHint("Consider constraining the size of these widgets to allow room for the SnackBar to be visible.") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary("Floating SnackBar presented off screen."),
+                                    new ErrorDescription(
+                                        "A SnackBar with behavior property set to SnackBarBehavior.floating is fully "
+                                            + "or partially off screen because some or all the widgets provided to "
+                                            + "Scaffold.floatingActionButton, Scaffold.persistentFooterButtons and "
+                                            + "Scaffold.bottomNavigationBar take up too much vertical space.\n"
+                                    ),
+                                    new ErrorHint(
+                                        "Consider constraining the size of these widgets to allow room for the SnackBar to be visible."
+                                    ),
+                                }
+                            )
+                        );
                     }
-                    return true;
-                });
+                }
+                return true;
+            });
         }
         if (hasChild(_ScaffoldSlot__scaffold.statusBar))
         {
-            layoutChild(_ScaffoldSlot__scaffold.statusBar, fullWidthConstraints.tighten(height: minInsets.top));
+            layoutChild(
+                _ScaffoldSlot__scaffold.statusBar,
+                fullWidthConstraints.tighten(height: minInsets.top)
+            );
             positionChild(_ScaffoldSlot__scaffold.statusBar, Offset.zero);
         }
         if (hasChild(_ScaffoldSlot__scaffold.drawer))
@@ -905,16 +1293,34 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             layoutChild(_ScaffoldSlot__scaffold.endDrawer, BoxConstraints.CreateTight(size));
             positionChild(_ScaffoldSlot__scaffold.endDrawer, Offset.zero);
         }
-        geometryNotifier._updateWith(bottomNavigationBarTop: bottomNavigationBarTopLocal, floatingActionButtonArea: floatingActionButtonRect);
+        geometryNotifier._updateWith(
+            bottomNavigationBarTop: bottomNavigationBarTopLocal,
+            floatingActionButtonArea: floatingActionButtonRect
+        );
     }
 
     public override bool shouldRelayout(MultiChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_ScaffoldLayout__scaffold)oldDelegate;
-        return (!Equals(__oldDelegate.minInsets, minInsets)) || (!Equals(__oldDelegate.minViewPadding, minViewPadding)) || (!Equals(__oldDelegate.textDirection, textDirection)) || (!Equals(__oldDelegate.previousFloatingActionButtonLocation, previousFloatingActionButtonLocation)) || (!Equals(__oldDelegate.currentFloatingActionButtonLocation, currentFloatingActionButtonLocation)) || (__oldDelegate.extendBody != extendBody) || (__oldDelegate.extendBodyBehindAppBar != extendBodyBehindAppBar);
+        return (!Equals(__oldDelegate.minInsets, minInsets))
+            || (!Equals(__oldDelegate.minViewPadding, minViewPadding))
+            || (!Equals(__oldDelegate.textDirection, textDirection))
+            || (
+                !Equals(
+                    __oldDelegate.previousFloatingActionButtonLocation,
+                    previousFloatingActionButtonLocation
+                )
+            )
+            || (
+                !Equals(
+                    __oldDelegate.currentFloatingActionButtonLocation,
+                    currentFloatingActionButtonLocation
+                )
+            )
+            || (__oldDelegate.extendBody != extendBody)
+            || (__oldDelegate.extendBodyBehindAppBar != extendBodyBehindAppBar);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _FloatingActionButtonTransition__scaffold : StatefulWidget
@@ -922,10 +1328,17 @@ public class _FloatingActionButtonTransition__scaffold : StatefulWidget
     public virtual Widget? child { get; private set; }
     public virtual Animation<double> fabMoveAnimation { get; private set; } = default!;
     public virtual FloatingActionButtonAnimator fabMotionAnimator { get; private set; } = default!;
-    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } = default!;
+    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } =
+        default!;
     public virtual AnimationController currentController { get; private set; } = default!;
 
-    internal _FloatingActionButtonTransition__scaffold(Widget? child, Animation<double> fabMoveAnimation, FloatingActionButtonAnimator fabMotionAnimator, _ScaffoldGeometryNotifier__scaffold geometryNotifier, AnimationController currentController)
+    internal _FloatingActionButtonTransition__scaffold(
+        Widget? child,
+        Animation<double> fabMoveAnimation,
+        FloatingActionButtonAnimator fabMotionAnimator,
+        _ScaffoldGeometryNotifier__scaffold geometryNotifier,
+        AnimationController currentController
+    )
     {
         this.child = child;
         this.fabMoveAnimation = fabMoveAnimation;
@@ -934,10 +1347,15 @@ public class _FloatingActionButtonTransition__scaffold : StatefulWidget
         this.currentController = currentController;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _FloatingActionButtonTransitionState__scaffold());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _FloatingActionButtonTransitionState__scaffold()
+        );
 }
 
-public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingActionButtonTransition__scaffold>, TickerProviderStateMixin<_FloatingActionButtonTransition__scaffold>
+public class _FloatingActionButtonTransitionState__scaffold
+    : State<_FloatingActionButtonTransition__scaffold>,
+        TickerProviderStateMixin<_FloatingActionButtonTransition__scaffold>
 {
     internal virtual AnimationController _previousController { get; set; } = default!;
     internal virtual CurvedAnimation? _previousExitScaleAnimation { get; set; } = default;
@@ -949,19 +1367,29 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
     internal virtual Animation<double> _extendedCurrentScaleAnimation { get; set; } = default!;
     internal virtual TrainHoppingAnimation _currentRotationAnimation { get; set; } = default!;
     internal virtual Widget? _previousChild { get; set; } = default;
-    internal static Animatable<double> _entranceTurnTween = new Tween<double>(begin: 1.0 - Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval, end: 1.0).chain(new CurveTween(curve: Curves.easeIn));
+    internal static Animatable<double> _entranceTurnTween = new Tween<double>(
+        begin: 1.0 - Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval,
+        end: 1.0
+    ).chain(new CurveTween(curve: Curves.easeIn));
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _previousController = ((Func<AnimationController>)(() =>
-{
-    var __cascade = new AnimationController(duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue, vsync: this);
-    __cascade.addStatusListener(_handlePreviousAnimationStatusChanged);
-    return __cascade;
-}))();
+        _previousController = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade = new AnimationController(
+                        duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue,
+                        vsync: this
+                    );
+                    __cascade.addStatusListener(_handlePreviousAnimationStatusChanged);
+                    return __cascade;
+                }
+            )
+        )();
         _updateAnimations();
         if (widget.child is not null)
         {
@@ -982,19 +1410,37 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
         _currentEntranceScaleAnimation?.dispose();
         _disposeAnimations();
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (_tickers is not null)
             {
-                if (_tickers is not null)
+                foreach (Scheduler.Ticker ticker in _tickers!)
                 {
-                    foreach (Scheduler.Ticker ticker in _tickers!)
+                    if (ticker.isActive)
                     {
-                        if (ticker.isActive)
-                        {
-                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
-                        }
+                        throw DartRuntimePrimitives.AsException(
+                            new FlutterError(
+                                new List<DiagnosticsNode>
+                                {
+                                    new ErrorSummary($"{this} was disposed with an active Ticker."),
+                                    new ErrorDescription(
+                                        $"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time "
+                                            + "dispose() was called on the mixin, that Ticker was still active. All Tickers must "
+                                            + "be disposed before calling super.dispose()."
+                                    ),
+                                    new ErrorHint(
+                                        "Tickers used by AnimationControllers "
+                                            + "should be disposed by calling dispose() on the AnimationController itself. "
+                                            + "Otherwise, the ticker will leak."
+                                    ),
+                                    ticker.describeForError("The offending ticker was"),
+                                }
+                            )
+                        );
                     }
                 }
-                return true;
-            });
+            }
+            return true;
+        });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
@@ -1003,7 +1449,10 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
     public override void didUpdateWidget(_FloatingActionButtonTransition__scaffold oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(oldWidget.fabMotionAnimator, widget.fabMotionAnimator)) || (!Equals(oldWidget.fabMoveAnimation, widget.fabMoveAnimation)))
+        if (
+            (!Equals(oldWidget.fabMotionAnimator, widget.fabMotionAnimator))
+            || (!Equals(oldWidget.fabMoveAnimation, widget.fabMoveAnimation))
+        )
         {
             _disposeAnimations();
             _updateAnimations();
@@ -1028,13 +1477,19 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
             else
             {
                 _previousChild = oldWidget.child;
-                DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
-{
-    var __cascade = _previousController;
-    __cascade.value = currentValue;
-    __cascade.reverse();
-    return __cascade;
-}))());
+                DartRuntimePrimitives.Ignore(
+                    (
+                        (Func<AnimationController>)(
+                            () =>
+                            {
+                                var __cascade = _previousController;
+                                __cascade.value = currentValue;
+                                __cascade.reverse();
+                                return __cascade;
+                            }
+                        )
+                    )()
+                );
                 widget.currentController.value = 0.0;
             }
         }
@@ -1049,15 +1504,33 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
     internal virtual void _updateAnimations()
     {
         _previousExitScaleAnimation?.dispose();
-        _previousExitScaleAnimation = new CurvedAnimation(parent: _previousController, curve: Curves.easeIn);
+        _previousExitScaleAnimation = new CurvedAnimation(
+            parent: _previousController,
+            curve: Curves.easeIn
+        );
         _previousExitRotationCurvedAnimation?.dispose();
-        _previousExitRotationCurvedAnimation = new CurvedAnimation(parent: _previousController, curve: Curves.easeIn);
-        Animation<double> previousExitRotationAnimation = new Tween<double>(begin: 1.0, end: 1.0).animate(_previousExitRotationCurvedAnimation!);
+        _previousExitRotationCurvedAnimation = new CurvedAnimation(
+            parent: _previousController,
+            curve: Curves.easeIn
+        );
+        Animation<double> previousExitRotationAnimation = new Tween<double>(
+            begin: 1.0,
+            end: 1.0
+        ).animate(_previousExitRotationCurvedAnimation!);
         _currentEntranceScaleAnimation?.dispose();
-        _currentEntranceScaleAnimation = new CurvedAnimation(parent: widget.currentController, curve: Curves.easeIn);
-        Animation<double> currentEntranceRotationAnimation = widget.currentController.drive(_entranceTurnTween);
-        Animation<double> moveScaleAnimation = widget.fabMotionAnimator.getScaleAnimation(parent: widget.fabMoveAnimation);
-        Animation<double> moveRotationAnimation = widget.fabMotionAnimator.getRotationAnimation(parent: widget.fabMoveAnimation);
+        _currentEntranceScaleAnimation = new CurvedAnimation(
+            parent: widget.currentController,
+            curve: Curves.easeIn
+        );
+        Animation<double> currentEntranceRotationAnimation = widget.currentController.drive(
+            _entranceTurnTween
+        );
+        Animation<double> moveScaleAnimation = widget.fabMotionAnimator.getScaleAnimation(
+            parent: widget.fabMoveAnimation
+        );
+        Animation<double> moveRotationAnimation = widget.fabMotionAnimator.getRotationAnimation(
+            parent: widget.fabMoveAnimation
+        );
         if (Equals(widget.fabMotionAnimator, FloatingActionButtonAnimator.noAnimation))
         {
             _previousScaleAnimation = moveScaleAnimation;
@@ -1067,12 +1540,24 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
         }
         else
         {
-            _previousScaleAnimation = DartRuntimePrimitives.ConvertValue<Animation<double>>(new AnimationMin<double>(moveScaleAnimation, _previousExitScaleAnimation!));
-            _currentScaleAnimation = DartRuntimePrimitives.ConvertValue<Animation<double>>(new AnimationMin<double>(moveScaleAnimation, _currentEntranceScaleAnimation!));
-            _previousRotationAnimation = new TrainHoppingAnimation(previousExitRotationAnimation, moveRotationAnimation);
-            _currentRotationAnimation = new TrainHoppingAnimation(currentEntranceRotationAnimation, moveRotationAnimation);
+            _previousScaleAnimation = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                new AnimationMin<double>(moveScaleAnimation, _previousExitScaleAnimation!)
+            );
+            _currentScaleAnimation = DartRuntimePrimitives.ConvertValue<Animation<double>>(
+                new AnimationMin<double>(moveScaleAnimation, _currentEntranceScaleAnimation!)
+            );
+            _previousRotationAnimation = new TrainHoppingAnimation(
+                previousExitRotationAnimation,
+                moveRotationAnimation
+            );
+            _currentRotationAnimation = new TrainHoppingAnimation(
+                currentEntranceRotationAnimation,
+                moveRotationAnimation
+            );
         }
-        _extendedCurrentScaleAnimation = _currentScaleAnimation.drive(new CurveTween(curve: new Interval(0.0, 0.1)));
+        _extendedCurrentScaleAnimation = _currentScaleAnimation.drive(
+            new CurveTween(curve: new Interval(0.0, 0.1))
+        );
         _currentScaleAnimation.addListener(_onProgressChanged);
         _previousScaleAnimation.addListener(_onProgressChanged);
     }
@@ -1091,13 +1576,81 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
 
     internal virtual bool _isExtendedFloatingActionButton(Widget? widget)
     {
-        return widget is FloatingActionButton floatingActionButton && floatingActionButton.isExtended;
+        return widget is FloatingActionButton floatingActionButton
+            && floatingActionButton.isExtended;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return new Stack(alignment: Alignment.centerRight, children: ((Func<List<Widget>>)(() => { var __collection59262 = new List<Widget>(); if (!_previousController.isDismissed) { if (_isExtendedFloatingActionButton(_previousChild)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: _previousScaleAnimation, child: _previousChild))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<Widget>(new ScaleTransition(scale: _previousScaleAnimation, child: new RotationTransition(turns: _previousRotationAnimation, child: _previousChild)))); } } if (_isExtendedFloatingActionButton(widget.child)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<Widget>(new ScaleTransition(scale: _extendedCurrentScaleAnimation, child: new FadeTransition(opacity: _currentScaleAnimation, child: widget.child)))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<Widget>(new ScaleTransition(scale: _currentScaleAnimation, child: new RotationTransition(turns: _currentRotationAnimation, child: widget.child)))); } return __collection59262; }))());
+        return new Stack(
+            alignment: Alignment.centerRight,
+            children: (
+                (Func<List<Widget>>)(
+                    () =>
+                    {
+                        var __collection59262 = new List<Widget>();
+                        if (!_previousController.isDismissed)
+                        {
+                            if (_isExtendedFloatingActionButton(_previousChild))
+                            {
+                                __collection59262.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new FadeTransition(
+                                            opacity: _previousScaleAnimation,
+                                            child: _previousChild
+                                        )
+                                    )
+                                );
+                            }
+                            else
+                            {
+                                __collection59262.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new ScaleTransition(
+                                            scale: _previousScaleAnimation,
+                                            child: new RotationTransition(
+                                                turns: _previousRotationAnimation,
+                                                child: _previousChild
+                                            )
+                                        )
+                                    )
+                                );
+                            }
+                        }
+                        if (_isExtendedFloatingActionButton(widget.child))
+                        {
+                            __collection59262.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new ScaleTransition(
+                                        scale: _extendedCurrentScaleAnimation,
+                                        child: new FadeTransition(
+                                            opacity: _currentScaleAnimation,
+                                            child: widget.child
+                                        )
+                                    )
+                                )
+                            );
+                        }
+                        else
+                        {
+                            __collection59262.Add(
+                                DartRuntimePrimitives.ConvertValue<Widget>(
+                                    new ScaleTransition(
+                                        scale: _currentScaleAnimation,
+                                        child: new RotationTransition(
+                                            turns: _currentRotationAnimation,
+                                            child: widget.child
+                                        )
+                                    )
+                                )
+                            );
+                        }
+                        return __collection59262;
+                    }
+                )
+            )()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1120,13 +1673,23 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1175,9 +1738,17 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
-
 }
 
 public class Scaffold : StatefulWidget
@@ -1198,22 +1769,59 @@ public class Scaffold : StatefulWidget
     public virtual Widget? endDrawer { get; private set; }
     public virtual Action<bool>? onEndDrawerChanged { get; private set; }
     public virtual Color? drawerScrimColor { get; private set; }
-    public virtual Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder
+    {
+        get;
+        private set;
+    } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual Widget? bottomNavigationBar { get; private set; }
     public virtual Widget? bottomSheet { get; private set; }
     public virtual bool? resizeToAvoidBottomInset { get; private set; }
     public virtual bool primary { get; private set; } = default!;
-    public virtual Gestures.DragStartBehavior drawerDragStartBehavior { get; private set; } = default!;
+    public virtual Gestures.DragStartBehavior drawerDragStartBehavior { get; private set; } =
+        default!;
     public virtual double? drawerEdgeDragWidth { get; private set; }
     public virtual bool drawerEnableOpenDragGesture { get; private set; } = default!;
     public virtual bool endDrawerEnableOpenDragGesture { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public Scaffold(Key? key = null, PreferredSizeWidget? appBar = null, Widget? body = null, Widget? floatingActionButton = null, FloatingActionButtonLocation? floatingActionButtonLocation = null, FloatingActionButtonAnimator? floatingActionButtonAnimator = null, List<Widget>? persistentFooterButtons = null, AlignmentDirectional persistentFooterAlignment = default!, BoxDecoration? persistentFooterDecoration = null, Widget? drawer = null, Action<bool>? onDrawerChanged = null, Widget? endDrawer = null, Action<bool>? onEndDrawerChanged = null, Widget? bottomNavigationBar = null, Widget? bottomSheet = null, Color? backgroundColor = null, bool? resizeToAvoidBottomInset = null, bool primary = true, Gestures.DragStartBehavior drawerDragStartBehavior = Gestures.DragStartBehavior.start, bool extendBody = false, bool drawerBarrierDismissible = true, bool extendBodyBehindAppBar = false, Color? drawerScrimColor = null, Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder = default!, double? drawerEdgeDragWidth = null, bool drawerEnableOpenDragGesture = true, bool endDrawerEnableOpenDragGesture = true, string? restorationId = null) : base(key: key)
+    public Scaffold(
+        Key? key = null,
+        PreferredSizeWidget? appBar = null,
+        Widget? body = null,
+        Widget? floatingActionButton = null,
+        FloatingActionButtonLocation? floatingActionButtonLocation = null,
+        FloatingActionButtonAnimator? floatingActionButtonAnimator = null,
+        List<Widget>? persistentFooterButtons = null,
+        AlignmentDirectional persistentFooterAlignment = default!,
+        BoxDecoration? persistentFooterDecoration = null,
+        Widget? drawer = null,
+        Action<bool>? onDrawerChanged = null,
+        Widget? endDrawer = null,
+        Action<bool>? onEndDrawerChanged = null,
+        Widget? bottomNavigationBar = null,
+        Widget? bottomSheet = null,
+        Color? backgroundColor = null,
+        bool? resizeToAvoidBottomInset = null,
+        bool primary = true,
+        Gestures.DragStartBehavior drawerDragStartBehavior = Gestures.DragStartBehavior.start,
+        bool extendBody = false,
+        bool drawerBarrierDismissible = true,
+        bool extendBodyBehindAppBar = false,
+        Color? drawerScrimColor = null,
+        Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder = default!,
+        double? drawerEdgeDragWidth = null,
+        bool drawerEnableOpenDragGesture = true,
+        bool endDrawerEnableOpenDragGesture = true,
+        string? restorationId = null
+    )
+        : base(key: key)
     {
-        AlignmentDirectional __persistentFooterAlignment = persistentFooterAlignment ?? AlignmentDirectional.centerEnd;
-        Func<BuildContext, Animation<double>, Widget?> __bottomSheetScrimBuilder = bottomSheetScrimBuilder ?? _defaultBottomSheetScrimBuilder;
+        AlignmentDirectional __persistentFooterAlignment =
+            persistentFooterAlignment ?? AlignmentDirectional.centerEnd;
+        Func<BuildContext, Animation<double>, Widget?> __bottomSheetScrimBuilder =
+            bottomSheetScrimBuilder ?? _defaultBottomSheetScrimBuilder;
         this.appBar = appBar;
         this.body = body;
         this.floatingActionButton = floatingActionButton;
@@ -1250,7 +1858,37 @@ public class Scaffold : StatefulWidget
         {
             return result;
         }
-        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Scaffold.of() called with a context that does not contain a Scaffold."), new ErrorDescription("No Scaffold ancestor could be found starting from the context that was passed to Scaffold.of(). " + "This usually happens when the context provided is from the same StatefulWidget as that " + "whose build function actually creates the Scaffold widget being sought."), new ErrorHint("There are several ways to avoid this problem. The simplest is to use a Builder to get a " + "context that is \"under\" the Scaffold. For an example of this, please see the " + "documentation for Scaffold.of():\n" + "  https://api.flutter.dev/flutter/material/Scaffold/of.html"), new ErrorHint("A more efficient solution is to split your build function into several widgets. This " + "introduces a new context from which you can obtain the Scaffold. In this solution, " + "you would have an outer widget that creates the Scaffold populated by instances of " + "your new inner widgets, and then in these inner widgets you would use Scaffold.of().\n" + "A less elegant but more expedient solution is assign a GlobalKey to the Scaffold, " + "then use the key.currentState property to obtain the ScaffoldState rather than " + "using the Scaffold.of() function."), context.describeElement("The context used was") }));
+        throw DartRuntimePrimitives.AsException(
+            new FlutterError(
+                new List<DiagnosticsNode>
+                {
+                    new ErrorSummary(
+                        "Scaffold.of() called with a context that does not contain a Scaffold."
+                    ),
+                    new ErrorDescription(
+                        "No Scaffold ancestor could be found starting from the context that was passed to Scaffold.of(). "
+                            + "This usually happens when the context provided is from the same StatefulWidget as that "
+                            + "whose build function actually creates the Scaffold widget being sought."
+                    ),
+                    new ErrorHint(
+                        "There are several ways to avoid this problem. The simplest is to use a Builder to get a "
+                            + "context that is \"under\" the Scaffold. For an example of this, please see the "
+                            + "documentation for Scaffold.of():\n"
+                            + "  https://api.flutter.dev/flutter/material/Scaffold/of.html"
+                    ),
+                    new ErrorHint(
+                        "A more efficient solution is to split your build function into several widgets. This "
+                            + "introduces a new context from which you can obtain the Scaffold. In this solution, "
+                            + "you would have an outer widget that creates the Scaffold populated by instances of "
+                            + "your new inner widgets, and then in these inner widgets you would use Scaffold.of().\n"
+                            + "A less elegant but more expedient solution is assign a GlobalKey to the Scaffold, "
+                            + "then use the key.currentState property to obtain the ScaffoldState rather than "
+                            + "using the Scaffold.of() function."
+                    ),
+                    context.describeElement("The context used was"),
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1262,10 +1900,37 @@ public class Scaffold : StatefulWidget
 
     public static ValueListenable<ScaffoldGeometry> geometryOf(BuildContext context)
     {
-        _ScaffoldScope__scaffold? scaffoldScope = context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>();
+        _ScaffoldScope__scaffold? scaffoldScope =
+            context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>();
         if (scaffoldScope is null)
         {
-            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Scaffold.geometryOf() called with a context that does not contain a Scaffold."), new ErrorDescription("This usually happens when the context provided is from the same StatefulWidget as that " + "whose build function actually creates the Scaffold widget being sought."), new ErrorHint("There are several ways to avoid this problem. The simplest is to use a Builder to get a " + "context that is \"under\" the Scaffold. For an example of this, please see the " + "documentation for Scaffold.of():\n" + "  https://api.flutter.dev/flutter/material/Scaffold/of.html"), new ErrorHint("A more efficient solution is to split your build function into several widgets. This " + "introduces a new context from which you can obtain the Scaffold. In this solution, " + "you would have an outer widget that creates the Scaffold populated by instances of " + "your new inner widgets, and then in these inner widgets you would use Scaffold.geometryOf()."), context.describeElement("The context used was") }));
+            throw DartRuntimePrimitives.AsException(
+                new FlutterError(
+                    new List<DiagnosticsNode>
+                    {
+                        new ErrorSummary(
+                            "Scaffold.geometryOf() called with a context that does not contain a Scaffold."
+                        ),
+                        new ErrorDescription(
+                            "This usually happens when the context provided is from the same StatefulWidget as that "
+                                + "whose build function actually creates the Scaffold widget being sought."
+                        ),
+                        new ErrorHint(
+                            "There are several ways to avoid this problem. The simplest is to use a Builder to get a "
+                                + "context that is \"under\" the Scaffold. For an example of this, please see the "
+                                + "documentation for Scaffold.of():\n"
+                                + "  https://api.flutter.dev/flutter/material/Scaffold/of.html"
+                        ),
+                        new ErrorHint(
+                            "A more efficient solution is to split your build function into several widgets. This "
+                                + "introduces a new context from which you can obtain the Scaffold. In this solution, "
+                                + "you would have an outer widget that creates the Scaffold populated by instances of "
+                                + "your new inner widgets, and then in these inner widgets you would use Scaffold.geometryOf()."
+                        ),
+                        context.describeElement("The context used was"),
+                    }
+                )
+            );
         }
         return scaffoldScope.geometryNotifier;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1275,7 +1940,8 @@ public class Scaffold : StatefulWidget
     {
         if (registerForUpdates)
         {
-            _ScaffoldScope__scaffold? scaffold = context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>();
+            _ScaffoldScope__scaffold? scaffold =
+                context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>();
             return scaffold?.hasDrawer ?? false;
         }
         else
@@ -1286,26 +1952,47 @@ public class Scaffold : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static Widget _defaultBottomSheetScrimBuilder(BuildContext context, Animation<double> animation)
+    internal static Widget _defaultBottomSheetScrimBuilder(
+        BuildContext context,
+        Animation<double> animation
+    )
     {
-        return new AnimatedBuilder(animation: animation, builder: (context, child) =>
-        {
-            double extentRemaining = ScaffoldLibrary._kBottomSheetDominatesPercentage * (1.0 - animation.value);
-            double floatingButtonVisibilityValue = extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage * 10L;
-            double opacity = Math.Max(ScaffoldLibrary._kMinBottomSheetScrimOpacity, ScaffoldLibrary._kMaxBottomSheetScrimOpacity - floatingButtonVisibilityValue);
-            return new ModalBarrier(dismissible: false, color: Colors.black.withOpacity(opacity));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return new AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) =>
+            {
+                double extentRemaining =
+                    ScaffoldLibrary._kBottomSheetDominatesPercentage * (1.0 - animation.value);
+                double floatingButtonVisibilityValue =
+                    extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage * 10L;
+                double opacity = Math.Max(
+                    ScaffoldLibrary._kMinBottomSheetScrimOpacity,
+                    ScaffoldLibrary._kMaxBottomSheetScrimOpacity - floatingButtonVisibilityValue
+                );
+                return new ModalBarrier(
+                    dismissible: false,
+                    color: Colors.black.withOpacity(opacity)
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new ScaffoldState());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new ScaffoldState());
 }
 
-public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>, RestorationMixin<Scaffold>, WidgetsBindingObserver
+public class ScaffoldState
+    : State<Scaffold>,
+        TickerProviderStateMixin<Scaffold>,
+        RestorationMixin<Scaffold>,
+        WidgetsBindingObserver
 {
-    internal virtual GlobalKey<DrawerControllerState> _drawerKey { get; private set; } = GlobalKey<DrawerControllerState>.Create();
-    internal virtual GlobalKey<DrawerControllerState> _endDrawerKey { get; private set; } = GlobalKey<DrawerControllerState>.Create();
+    internal virtual GlobalKey<DrawerControllerState> _drawerKey { get; private set; } =
+        GlobalKey<DrawerControllerState>.Create();
+    internal virtual GlobalKey<DrawerControllerState> _endDrawerKey { get; private set; } =
+        GlobalKey<DrawerControllerState>.Create();
     internal virtual GlobalKey<IState> _bodyKey { get; private set; } = GlobalKey<IState>.Create();
     private bool __late__statusBarKey_initialized;
     private GlobalKey<IState> __late__statusBarKey = default!;
@@ -1323,45 +2010,71 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     }
     internal virtual double? _appBarMaxHeight { get; set; } = default;
     internal virtual RestorableBool _drawerOpened { get; private set; } = new RestorableBool(false);
-    internal virtual RestorableBool _endDrawerOpened { get; private set; } = new RestorableBool(false);
+    internal virtual RestorableBool _endDrawerOpened { get; private set; } =
+        new RestorableBool(false);
     internal virtual ScaffoldMessengerState? _scaffoldMessenger { get; set; } = default;
-    internal virtual ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _messengerSnackBar { get; set; } = default;
-    internal virtual ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? _messengerMaterialBanner { get; set; } = default;
-    internal virtual List<_StandardBottomSheet__scaffold> _dismissedBottomSheets { get; private set; } = new List<_StandardBottomSheet__scaffold>();
+    internal virtual ScaffoldFeatureController<
+        SnackBar,
+        SnackBarClosedReason
+    >? _messengerSnackBar { get; set; } = default;
+    internal virtual ScaffoldFeatureController<
+        MaterialBanner,
+        MaterialBannerClosedReason
+    >? _messengerMaterialBanner { get; set; } = default;
+    internal virtual List<_StandardBottomSheet__scaffold> _dismissedBottomSheets
+    {
+        get;
+        private set;
+    } = new List<_StandardBottomSheet__scaffold>();
     internal virtual PersistentBottomSheetController? _currentBottomSheet { get; set; } = default;
-    internal virtual GlobalKey<IState> _currentBottomSheetKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _currentBottomSheetKey { get; private set; } =
+        GlobalKey<IState>.Create();
     internal virtual LocalHistoryEntry? _persistentSheetHistoryEntry { get; set; } = default;
-    internal virtual AnimationController _floatingActionButtonMoveController { get; set; } = default!;
-    internal virtual FloatingActionButtonAnimator _floatingActionButtonAnimator { get; set; } = default!;
-    internal virtual FloatingActionButtonLocation? _previousFloatingActionButtonLocation { get; set; } = default;
-    internal virtual FloatingActionButtonLocation? _floatingActionButtonLocation { get; set; } = default;
-    internal virtual AnimationController _floatingActionButtonVisibilityController { get; set; } = default!;
+    internal virtual AnimationController _floatingActionButtonMoveController { get; set; } =
+        default!;
+    internal virtual FloatingActionButtonAnimator _floatingActionButtonAnimator { get; set; } =
+        default!;
+    internal virtual FloatingActionButtonLocation? _previousFloatingActionButtonLocation { get; set; } =
+        default;
+    internal virtual FloatingActionButtonLocation? _floatingActionButtonLocation { get; set; } =
+        default;
+    internal virtual AnimationController _floatingActionButtonVisibilityController { get; set; } =
+        default!;
     internal virtual _ScaffoldGeometryNotifier__scaffold _geometryNotifier { get; set; } = default!;
-    internal virtual AnimationController _bottomSheetScrimAnimationController { get; set; } = default!;
+    internal virtual AnimationController _bottomSheetScrimAnimationController { get; set; } =
+        default!;
     internal virtual bool _showBodyScrim { get; set; } = false;
     public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
     public virtual RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
-    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } =
+        new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } =
+        default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual string? restorationId => widget.restorationId;
+
     public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(_drawerOpened, "drawer_open");
         registerForRestoration(_endDrawerOpened, "end_drawer_open");
     }
 
-    public virtual bool hasAppBar => DartRuntimePrimitives.ConvertValue<bool>(widget.appBar is not null);
-    public virtual bool hasDrawer => DartRuntimePrimitives.ConvertValue<bool>(widget.drawer is not null);
-    public virtual bool hasEndDrawer => DartRuntimePrimitives.ConvertValue<bool>(widget.endDrawer is not null);
-    public virtual bool hasFloatingActionButton => DartRuntimePrimitives.ConvertValue<bool>(widget.floatingActionButton is not null);
+    public virtual bool hasAppBar =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.appBar is not null);
+    public virtual bool hasDrawer =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.drawer is not null);
+    public virtual bool hasEndDrawer =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.endDrawer is not null);
+    public virtual bool hasFloatingActionButton =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.floatingActionButton is not null);
     public virtual double? appBarMaxHeight => _appBarMaxHeight;
     public virtual bool isDrawerOpen => _drawerOpened.value;
     public virtual bool isDrawerBarrierDismissible => widget.drawerBarrierDismissible;
     public virtual bool isEndDrawerOpen => _endDrawerOpened.value;
+
     internal virtual void _drawerOpenedCallback(bool isOpened)
     {
         if ((_drawerOpened.value != isOpened) && (_drawerKey.currentState is not null))
@@ -1406,7 +2119,10 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
 
     internal virtual void _updateSnackBar()
     {
-        ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? messengerSnackBar = Enumerable.Any(_scaffoldMessenger!._snackBars) ? _scaffoldMessenger!._snackBars.Peek() : null;
+        ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? messengerSnackBar =
+            Enumerable.Any(_scaffoldMessenger!._snackBars)
+                ? _scaffoldMessenger!._snackBars.Peek()
+                : null;
         if (!Equals(_messengerSnackBar, messengerSnackBar))
         {
             setState(() =>
@@ -1418,7 +2134,12 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
 
     internal virtual void _updateMaterialBanner()
     {
-        ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? messengerMaterialBanner = Enumerable.Any(_scaffoldMessenger!._materialBanners) ? _scaffoldMessenger!._materialBanners.Peek() : null;
+        ScaffoldFeatureController<
+            MaterialBanner,
+            MaterialBannerClosedReason
+        >? messengerMaterialBanner = Enumerable.Any(_scaffoldMessenger!._materialBanners)
+            ? _scaffoldMessenger!._materialBanners.Peek()
+            : null;
         if (!Equals(_messengerMaterialBanner, messengerMaterialBanner))
         {
             setState(() =>
@@ -1432,15 +2153,22 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     {
         if ((widget.bottomSheet is not null) && (_currentBottomSheet is null))
         {
-            AnimationController animationControllerLocal = ((Func<AnimationController>)(() =>
-{
-    var __cascade = BottomSheet.createAnimationController(this);
-    __cascade.value = 1.0;
-    return __cascade;
-}))();
+            AnimationController animationControllerLocal = (
+                (Func<AnimationController>)(
+                    () =>
+                    {
+                        var __cascade = BottomSheet.createAnimationController(this);
+                        __cascade.value = 1.0;
+                        return __cascade;
+                    }
+                )
+            )();
             bool persistentBottomSheetExtentChanged(DraggableScrollableNotification notification)
             {
-                if ((notification.extent - notification.initialExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance)
+                if (
+                    (notification.extent - notification.initialExtent)
+                    > Foundation.ConstantsLibrary.precisionErrorTolerance
+                )
                 {
                     if (_persistentSheetHistoryEntry is null)
                     {
@@ -1451,7 +2179,9 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
                             _floatingActionButtonVisibilityController.value = 1.0;
                             _persistentSheetHistoryEntry = null;
                         });
-                        ModalRoute<object>.untypedOf(context)!.addLocalHistoryEntry(_persistentSheetHistoryEntry!);
+                        ModalRoute<object>
+                            .untypedOf(context)!
+                            .addLocalHistoryEntry(_persistentSheetHistoryEntry!);
                     }
                 }
                 else
@@ -1473,15 +2203,29 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
                 }
                 DartRuntimePrimitives.Assert(() => !Enumerable.Any(_dismissedBottomSheets));
             }
-            _currentBottomSheet = _buildBottomSheet((context) =>
-            {
-                return new NotificationListener<DraggableScrollableNotification>(onNotification: persistentBottomSheetExtentChanged, child: new DraggableScrollableActuator(child: new StatefulBuilder(key: _currentBottomSheetKey, builder: (context, setState) =>
+            _currentBottomSheet = _buildBottomSheet(
+                (context) =>
                 {
-                    return widget.bottomSheet ?? SizedBox.CreateShrink();
+                    return new NotificationListener<DraggableScrollableNotification>(
+                        onNotification: persistentBottomSheetExtentChanged,
+                        child: new DraggableScrollableActuator(
+                            child: new StatefulBuilder(
+                                key: _currentBottomSheetKey,
+                                builder: (context, setState) =>
+                                {
+                                    return widget.bottomSheet ?? SizedBox.CreateShrink();
+                                    throw new InvalidOperationException(
+                                        "Dart closure completed without a value."
+                                    );
+                                }
+                            )
+                        )
+                    );
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }, isPersistent: true, animationController: animationControllerLocal);
+                },
+                isPersistent: true,
+                animationController: animationControllerLocal
+            );
         }
     }
 
@@ -1494,13 +2238,15 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
                 _currentBottomSheet!.close();
             }
             DartRuntimePrimitives.Assert(() =>
-                {
-                    DartRuntimePrimitives.Ignore(_currentBottomSheet?._completer.future.whenComplete(() =>
+            {
+                DartRuntimePrimitives.Ignore(
+                    _currentBottomSheet?._completer.future.whenComplete(() =>
                     {
                         DartRuntimePrimitives.Assert(() => _currentBottomSheet is null);
-                    }));
-                    return true;
-                });
+                    })
+                );
+                return true;
+            });
         }
     }
 
@@ -1522,21 +2268,41 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
 
     internal virtual void _updatePersistentBottomSheet()
     {
-        _currentBottomSheetKey.currentState!.setState(() =>
-        {
-        });
+        _currentBottomSheetKey.currentState!.setState(() => { });
     }
 
-    internal virtual PersistentBottomSheetController _buildBottomSheet(Func<BuildContext, Widget> builder, bool isPersistent, AnimationController animationController, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? clipBehavior = null, BoxConstraints? constraints = null, bool? enableDrag = null, bool? showDragHandle = null, bool shouldDisposeAnimationController = true)
+    internal virtual PersistentBottomSheetController _buildBottomSheet(
+        Func<BuildContext, Widget> builder,
+        bool isPersistent,
+        AnimationController animationController,
+        Color? backgroundColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        Clip? clipBehavior = null,
+        BoxConstraints? constraints = null,
+        bool? enableDrag = null,
+        bool? showDragHandle = null,
+        bool shouldDisposeAnimationController = true
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (
+                (widget.bottomSheet is not null)
+                && isPersistent
+                && (_currentBottomSheet is not null)
+            )
             {
-                if ((widget.bottomSheet is not null) && isPersistent && (_currentBottomSheet is not null))
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "Scaffold.bottomSheet cannot be specified while a bottom sheet "
+                            + "displayed with showBottomSheet() is still visible.\n"
+                            + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."
+                    )
+                );
+            }
+            return true;
+        });
         var completer = new Completer<object?>();
         var bottomSheetKey = GlobalKey<_StandardBottomSheetState__scaffold>.Create();
         _StandardBottomSheet__scaffold bottomSheetLocal = default!;
@@ -1558,7 +2324,9 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
             {
                 return;
             }
-            DartRuntimePrimitives.Assert(() => Equals(_currentBottomSheet!._widget, bottomSheetLocal));
+            DartRuntimePrimitives.Assert(() =>
+                Equals(_currentBottomSheet!._widget, bottomSheetLocal)
+            );
             DartRuntimePrimitives.Assert(() => bottomSheetKey.currentState is not null);
             _showFloatingActionButton();
             if (isPersistent)
@@ -1578,13 +2346,19 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
             }
             completer.complete();
         }
-        LocalHistoryEntry? entry = isPersistent ? null : new LocalHistoryEntry(onRemove: () =>
-        {
-            if (!removedEntry && Equals(_currentBottomSheet?._widget, bottomSheetLocal) && !doingDispose)
+        LocalHistoryEntry? entry = isPersistent
+            ? null
+            : new LocalHistoryEntry(onRemove: () =>
             {
-                removeCurrentBottomSheet();
-            }
-        });
+                if (
+                    !removedEntry
+                    && Equals(_currentBottomSheet?._widget, bottomSheetLocal)
+                    && !doingDispose
+                )
+                {
+                    removeCurrentBottomSheet();
+                }
+            });
         void removeEntryIfNeeded()
         {
             if (!isPersistent && !removedEntry)
@@ -1594,64 +2368,125 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
                 removedEntry = true;
             }
         }
-        bottomSheetLocal = new _StandardBottomSheet__scaffold(key: bottomSheetKey, animationController: animationController, enableDrag: enableDrag ?? !isPersistent, showDragHandle: showDragHandle, onClosing: () =>
-        {
-            if (_currentBottomSheet is null)
+        bottomSheetLocal = new _StandardBottomSheet__scaffold(
+            key: bottomSheetKey,
+            animationController: animationController,
+            enableDrag: enableDrag ?? !isPersistent,
+            showDragHandle: showDragHandle,
+            onClosing: () =>
             {
-                return;
-            }
-            DartRuntimePrimitives.Assert(() => Equals(_currentBottomSheet!._widget, bottomSheetLocal));
-            removeEntryIfNeeded();
-        }, onDismissed: () =>
-        {
-            if (_dismissedBottomSheets.Contains(bottomSheetLocal))
-            {
-                setState(() =>
+                if (_currentBottomSheet is null)
                 {
-                    _dismissedBottomSheets.Remove(bottomSheetLocal);
-                });
-            }
-        }, onDispose: () =>
-        {
-            doingDispose = true;
-            removeEntryIfNeeded();
-            if (shouldDisposeAnimationController)
+                    return;
+                }
+                DartRuntimePrimitives.Assert(() =>
+                    Equals(_currentBottomSheet!._widget, bottomSheetLocal)
+                );
+                removeEntryIfNeeded();
+            },
+            onDismissed: () =>
             {
-                animationController.dispose();
-            }
-        }, builder: builder, isPersistent: isPersistent, backgroundColor: backgroundColor, elevation: elevation, shape: shape, clipBehavior: clipBehavior, constraints: constraints);
+                if (_dismissedBottomSheets.Contains(bottomSheetLocal))
+                {
+                    setState(() =>
+                    {
+                        _dismissedBottomSheets.Remove(bottomSheetLocal);
+                    });
+                }
+            },
+            onDispose: () =>
+            {
+                doingDispose = true;
+                removeEntryIfNeeded();
+                if (shouldDisposeAnimationController)
+                {
+                    animationController.dispose();
+                }
+            },
+            builder: builder,
+            isPersistent: isPersistent,
+            backgroundColor: backgroundColor,
+            elevation: elevation,
+            shape: shape,
+            clipBehavior: clipBehavior,
+            constraints: constraints
+        );
         if (!isPersistent)
         {
             ModalRoute<object>.untypedOf(context)!.addLocalHistoryEntry(entry!);
         }
-        return new PersistentBottomSheetController(bottomSheetLocal, completer, (entry is not null) ? entry.remove : removeCurrentBottomSheet, (fn) =>
-        {
-            bottomSheetKey.currentState?.setState(() => fn());
-        }, !isPersistent);
+        return new PersistentBottomSheetController(
+            bottomSheetLocal,
+            completer,
+            (entry is not null) ? entry.remove : removeCurrentBottomSheet,
+            (fn) =>
+            {
+                bottomSheetKey.currentState?.setState(() => fn());
+            },
+            !isPersistent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual PersistentBottomSheetController showBottomSheet(Func<BuildContext, Widget> builder, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? clipBehavior = null, BoxConstraints? constraints = null, bool? enableDrag = null, bool? showDragHandle = null, AnimationController? transitionAnimationController = null, AnimationStyle? sheetAnimationStyle = null)
+    public virtual PersistentBottomSheetController showBottomSheet(
+        Func<BuildContext, Widget> builder,
+        Color? backgroundColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        Clip? clipBehavior = null,
+        BoxConstraints? constraints = null,
+        bool? enableDrag = null,
+        bool? showDragHandle = null,
+        AnimationController? transitionAnimationController = null,
+        AnimationStyle? sheetAnimationStyle = null
+    )
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (widget.bottomSheet is not null)
             {
-                if (widget.bottomSheet is not null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        "Scaffold.bottomSheet cannot be specified while a bottom sheet "
+                            + "displayed with showBottomSheet() is still visible.\n"
+                            + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."
+                    )
+                );
+            }
+            return true;
+        });
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         _closeCurrentBottomSheet();
-        AnimationController controller = ((Func<AnimationController>)(() =>
-{
-    var __cascade = transitionAnimationController ?? BottomSheet.createAnimationController(this, sheetAnimationStyle: sheetAnimationStyle);
-    __cascade.forward();
-    return __cascade;
-}))();
+        AnimationController controller = (
+            (Func<AnimationController>)(
+                () =>
+                {
+                    var __cascade =
+                        transitionAnimationController
+                        ?? BottomSheet.createAnimationController(
+                            this,
+                            sheetAnimationStyle: sheetAnimationStyle
+                        );
+                    __cascade.forward();
+                    return __cascade;
+                }
+            )
+        )();
         setState(() =>
         {
-            _currentBottomSheet = _buildBottomSheet(builder, isPersistent: false, animationController: controller, backgroundColor: backgroundColor, elevation: elevation, shape: shape, clipBehavior: clipBehavior, constraints: constraints, enableDrag: enableDrag, showDragHandle: showDragHandle, shouldDisposeAnimationController: transitionAnimationController is null);
+            _currentBottomSheet = _buildBottomSheet(
+                builder,
+                isPersistent: false,
+                animationController: controller,
+                backgroundColor: backgroundColor,
+                elevation: elevation,
+                shape: shape,
+                clipBehavior: clipBehavior,
+                constraints: constraints,
+                enableDrag: enableDrag,
+                showDragHandle: showDragHandle,
+                shouldDisposeAnimationController: transitionAnimationController is null
+            );
         });
         return _currentBottomSheet!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1669,8 +2504,17 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         var restartAnimationFrom = 0.0;
         if (_floatingActionButtonMoveController.isAnimating)
         {
-            previousLocation = DartRuntimePrimitives.ConvertValue<FloatingActionButtonLocation>(new _TransitionSnapshotFabLocation__scaffold(_previousFloatingActionButtonLocation!, _floatingActionButtonLocation!, _floatingActionButtonAnimator, _floatingActionButtonMoveController.value));
-            restartAnimationFrom = _floatingActionButtonAnimator.getAnimationRestart(_floatingActionButtonMoveController.value);
+            previousLocation = DartRuntimePrimitives.ConvertValue<FloatingActionButtonLocation>(
+                new _TransitionSnapshotFabLocation__scaffold(
+                    _previousFloatingActionButtonLocation!,
+                    _floatingActionButtonLocation!,
+                    _floatingActionButtonAnimator,
+                    _floatingActionButtonMoveController.value
+                )
+            );
+            restartAnimationFrom = _floatingActionButtonAnimator.getAnimationRestart(
+                _floatingActionButtonMoveController.value
+            );
         }
         setState(() =>
         {
@@ -1684,28 +2528,50 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     {
         DartRuntimePrimitives.Assert(() => widget.primary);
         ScrollController? primaryScrollController = PrimaryScrollController.maybeOf(context);
-        if ((primaryScrollController is not null) && primaryScrollController.hasClients && _HitTestableAtOrigin__scaffold.hitTestableAtOrigin(_statusBarKey))
+        if (
+            (primaryScrollController is not null)
+            && primaryScrollController.hasClients
+            && _HitTestableAtOrigin__scaffold.hitTestableAtOrigin(_statusBarKey)
+        )
         {
-            DartRuntimePrimitives.Ignore(primaryScrollController.animateTo(0.0, duration: Duration.Create(milliseconds: 1000L), curve: Curves.easeOutCirc));
+            DartRuntimePrimitives.Ignore(
+                primaryScrollController.animateTo(
+                    0.0,
+                    duration: Duration.Create(milliseconds: 1000L),
+                    curve: Curves.easeOutCirc
+                )
+            );
         }
     }
 
     internal virtual bool _resizeToAvoidBottomInset
     {
-        get
-        {
-            return widget.resizeToAvoidBottomInset ?? true;
-        }
+        get { return widget.resizeToAvoidBottomInset ?? true; }
     }
+
     public override void initState()
     {
         base.initState();
-        _geometryNotifier = new _ScaffoldGeometryNotifier__scaffold(new ScaffoldGeometry(), context);
-        _floatingActionButtonLocation = widget.floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation;
-        _floatingActionButtonAnimator = widget.floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator;
+        _geometryNotifier = new _ScaffoldGeometryNotifier__scaffold(
+            new ScaffoldGeometry(),
+            context
+        );
+        _floatingActionButtonLocation =
+            widget.floatingActionButtonLocation
+            ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation;
+        _floatingActionButtonAnimator =
+            widget.floatingActionButtonAnimator
+            ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator;
         _previousFloatingActionButtonLocation = _floatingActionButtonLocation;
-        _floatingActionButtonMoveController = new AnimationController(vsync: this, value: 1.0, duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue * 2L);
-        _floatingActionButtonVisibilityController = new AnimationController(duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue, vsync: this);
+        _floatingActionButtonMoveController = new AnimationController(
+            vsync: this,
+            value: 1.0,
+            duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue * 2L
+        );
+        _floatingActionButtonVisibilityController = new AnimationController(
+            duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue,
+            vsync: this
+        );
         _bottomSheetScrimAnimationController = new AnimationController(vsync: this);
         if (widget.primary)
         {
@@ -1719,22 +2585,45 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         didUpdateRestorationId();
         if (!Equals(widget.floatingActionButtonAnimator, oldWidget.floatingActionButtonAnimator))
         {
-            _floatingActionButtonAnimator = widget.floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator;
+            _floatingActionButtonAnimator =
+                widget.floatingActionButtonAnimator
+                ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator;
         }
         if (!Equals(widget.floatingActionButtonLocation, oldWidget.floatingActionButtonLocation))
         {
-            _moveFloatingActionButton(widget.floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation);
+            _moveFloatingActionButton(
+                widget.floatingActionButtonLocation
+                    ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation
+            );
         }
         if (!Equals(widget.bottomSheet, oldWidget.bottomSheet))
         {
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (
+                    (widget.bottomSheet is not null)
+                    && (_currentBottomSheet?._isLocalHistoryEntry ?? false)
+                )
                 {
-                    if ((widget.bottomSheet is not null) && (_currentBottomSheet?._isLocalHistoryEntry ?? false))
-                    {
-                        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Scaffold.bottomSheet cannot be specified while a bottom sheet displayed " + "with showBottomSheet() is still visible."), new ErrorHint("Use the PersistentBottomSheetController " + "returned by showBottomSheet() to close the old bottom sheet before creating " + "a Scaffold with a (non null) bottomSheet.") }));
-                    }
-                    return true;
-                });
+                    throw DartRuntimePrimitives.AsException(
+                        new FlutterError(
+                            new List<DiagnosticsNode>
+                            {
+                                new ErrorSummary(
+                                    "Scaffold.bottomSheet cannot be specified while a bottom sheet displayed "
+                                        + "with showBottomSheet() is still visible."
+                                ),
+                                new ErrorHint(
+                                    "Use the PersistentBottomSheetController "
+                                        + "returned by showBottomSheet() to close the old bottom sheet before creating "
+                                        + "a Scaffold with a (non null) bottomSheet."
+                                ),
+                            }
+                        )
+                    );
+                }
+                return true;
+            });
             if (widget.bottomSheet is null)
             {
                 _closeCurrentBottomSheet();
@@ -1754,15 +2643,15 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         switch ((oldWidget.primary, widget.primary))
         {
             case (true, false):
-                {
-                    WidgetsBinding.instance.removeObserver(this);
-                    break;
-                }
+            {
+                WidgetsBinding.instance.removeObserver(this);
+                break;
+            }
             case (false, true):
-                {
-                    WidgetsBinding.instance.addObserver(this);
-                    break;
-                }
+            {
+                WidgetsBinding.instance.addObserver(this);
+                break;
+            }
             case (true, true) or (false, false):
                 break;
         }
@@ -1771,7 +2660,13 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     public override void didChangeDependencies()
     {
         ScaffoldMessengerState? currentScaffoldMessenger = ScaffoldMessenger.maybeOf(context);
-        if ((_scaffoldMessenger is not null) && ((currentScaffoldMessenger is null) || (!Equals(_scaffoldMessenger, currentScaffoldMessenger))))
+        if (
+            (_scaffoldMessenger is not null)
+            && (
+                (currentScaffoldMessenger is null)
+                || (!Equals(_scaffoldMessenger, currentScaffoldMessenger))
+            )
+        )
         {
             _scaffoldMessenger?._unregister(this);
         }
@@ -1782,7 +2677,10 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: needsRestore
+        );
         if (needsRestore)
         {
             _doRestore(oldBucket);
@@ -1820,27 +2718,53 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         _drawerOpened.dispose();
         _endDrawerOpened.dispose();
         _bottomSheetScrimAnimationController.dispose();
-        _properties.forEach((property, listener) =>
-        {
-            if (!property._disposed)
+        _properties.forEach(
+            (property, listener) =>
             {
-                property.removeListener(listener);
+                if (!property._disposed)
+                {
+                    property.removeListener(listener);
+                }
             }
-        });
+        );
         _bucket?.dispose();
         _bucket = null;
         base.dispose();
     }
 
-    internal virtual void _addIfNonNull(List<LayoutId> children, Widget? child, object childId, bool removeLeftPadding, bool removeTopPadding, bool removeRightPadding, bool removeBottomPadding, bool removeBottomInset = false, bool maintainBottomViewPadding = false)
+    internal virtual void _addIfNonNull(
+        List<LayoutId> children,
+        Widget? child,
+        object childId,
+        bool removeLeftPadding,
+        bool removeTopPadding,
+        bool removeRightPadding,
+        bool removeBottomPadding,
+        bool removeBottomInset = false,
+        bool maintainBottomViewPadding = false
+    )
     {
-        if (child is null) return;
+        if (child is null)
+        {
+            return;
+        }
         // A size change must reach each slot's MediaQuery without rebuilding
         // Scaffold's Material, gesture and layout configuration. Subscribe in
         // the local wrapper; Scaffold itself observes its padding/inset aspects.
-        children.Add(new LayoutId(id: childId, child: new ScaffoldSlotMediaQuery(child,
-            removeLeftPadding, removeTopPadding, removeRightPadding, removeBottomPadding,
-            removeBottomInset, maintainBottomViewPadding)));
+        children.Add(
+            new LayoutId(
+                id: childId,
+                child: new ScaffoldSlotMediaQuery(
+                    child,
+                    removeLeftPadding,
+                    removeTopPadding,
+                    removeRightPadding,
+                    removeBottomPadding,
+                    removeBottomInset,
+                    maintainBottomViewPadding
+                )
+            )
+        );
     }
 
     internal virtual void _buildEndDrawer(List<LayoutId> children, TextDirection textDirection)
@@ -1848,7 +2772,26 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         if (widget.endDrawer is not null)
         {
             DartRuntimePrimitives.Assert(() => hasEndDrawer);
-            _addIfNonNull(children, new DrawerController(key: _endDrawerKey, alignment: DrawerAlignment.end, drawerCallback: _endDrawerOpenedCallback, dragStartBehavior: widget.drawerDragStartBehavior, scrimColor: widget.drawerScrimColor, edgeDragWidth: widget.drawerEdgeDragWidth, enableOpenDragGesture: widget.endDrawerEnableOpenDragGesture, isDrawerOpen: _endDrawerOpened.value, drawerBarrierDismissible: widget.drawerBarrierDismissible, child: widget.endDrawer!), _ScaffoldSlot__scaffold.endDrawer, removeLeftPadding: Equals(textDirection, TextDirection.ltr), removeTopPadding: false, removeRightPadding: Equals(textDirection, TextDirection.rtl), removeBottomPadding: false);
+            _addIfNonNull(
+                children,
+                new DrawerController(
+                    key: _endDrawerKey,
+                    alignment: DrawerAlignment.end,
+                    drawerCallback: _endDrawerOpenedCallback,
+                    dragStartBehavior: widget.drawerDragStartBehavior,
+                    scrimColor: widget.drawerScrimColor,
+                    edgeDragWidth: widget.drawerEdgeDragWidth,
+                    enableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+                    isDrawerOpen: _endDrawerOpened.value,
+                    drawerBarrierDismissible: widget.drawerBarrierDismissible,
+                    child: widget.endDrawer!
+                ),
+                _ScaffoldSlot__scaffold.endDrawer,
+                removeLeftPadding: Equals(textDirection, TextDirection.ltr),
+                removeTopPadding: false,
+                removeRightPadding: Equals(textDirection, TextDirection.rtl),
+                removeBottomPadding: false
+            );
         }
     }
 
@@ -1857,7 +2800,26 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         if (widget.drawer is not null)
         {
             DartRuntimePrimitives.Assert(() => hasDrawer);
-            _addIfNonNull(children, new DrawerController(key: _drawerKey, alignment: DrawerAlignment.start, drawerCallback: _drawerOpenedCallback, dragStartBehavior: widget.drawerDragStartBehavior, scrimColor: widget.drawerScrimColor, edgeDragWidth: widget.drawerEdgeDragWidth, enableOpenDragGesture: widget.drawerEnableOpenDragGesture, isDrawerOpen: _drawerOpened.value, drawerBarrierDismissible: widget.drawerBarrierDismissible, child: widget.drawer!), _ScaffoldSlot__scaffold.drawer, removeLeftPadding: Equals(textDirection, TextDirection.rtl), removeTopPadding: false, removeRightPadding: Equals(textDirection, TextDirection.ltr), removeBottomPadding: false);
+            _addIfNonNull(
+                children,
+                new DrawerController(
+                    key: _drawerKey,
+                    alignment: DrawerAlignment.start,
+                    drawerCallback: _drawerOpenedCallback,
+                    dragStartBehavior: widget.drawerDragStartBehavior,
+                    scrimColor: widget.drawerScrimColor,
+                    edgeDragWidth: widget.drawerEdgeDragWidth,
+                    enableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+                    isDrawerOpen: _drawerOpened.value,
+                    drawerBarrierDismissible: widget.drawerBarrierDismissible,
+                    child: widget.drawer!
+                ),
+                _ScaffoldSlot__scaffold.drawer,
+                removeLeftPadding: Equals(textDirection, TextDirection.rtl),
+                removeTopPadding: false,
+                removeRightPadding: Equals(textDirection, TextDirection.ltr),
+                removeBottomPadding: false
+            );
         }
     }
 
@@ -1879,56 +2841,229 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() =>
+            Widgets.DebugLibrary.debugCheckHasDirectionality(context)
+        );
         ThemeData themeData = Theme.of(context);
         TextDirection textDirectionLocal = Directionality.of(context);
         var childrenLocal = new List<LayoutId>();
-        _addIfNonNull(childrenLocal, (widget.body is null) ? null : new _BodyBuilder__scaffold(extendBody: widget.extendBody, extendBodyBehindAppBar: widget.extendBodyBehindAppBar, body: new KeyedSubtree(key: _bodyKey, child: widget.body!)), _ScaffoldSlot__scaffold.body, removeLeftPadding: false, removeTopPadding: widget.appBar is not null, removeRightPadding: false, removeBottomPadding: (widget.bottomNavigationBar is not null) || (widget.persistentFooterButtons is not null), removeBottomInset: _resizeToAvoidBottomInset);
+        _addIfNonNull(
+            childrenLocal,
+            (widget.body is null)
+                ? null
+                : new _BodyBuilder__scaffold(
+                    extendBody: widget.extendBody,
+                    extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+                    body: new KeyedSubtree(key: _bodyKey, child: widget.body!)
+                ),
+            _ScaffoldSlot__scaffold.body,
+            removeLeftPadding: false,
+            removeTopPadding: widget.appBar is not null,
+            removeRightPadding: false,
+            removeBottomPadding: (widget.bottomNavigationBar is not null)
+                || (widget.persistentFooterButtons is not null),
+            removeBottomInset: _resizeToAvoidBottomInset
+        );
         if (_showBodyScrim)
         {
-            _addIfNonNull(childrenLocal, widget.bottomSheetScrimBuilder(context, _bottomSheetScrimAnimationController.view), _ScaffoldSlot__scaffold.bodyScrim, removeLeftPadding: true, removeTopPadding: true, removeRightPadding: true, removeBottomPadding: true);
+            _addIfNonNull(
+                childrenLocal,
+                widget.bottomSheetScrimBuilder(context, _bottomSheetScrimAnimationController.view),
+                _ScaffoldSlot__scaffold.bodyScrim,
+                removeLeftPadding: true,
+                removeTopPadding: true,
+                removeRightPadding: true,
+                removeBottomPadding: true
+            );
         }
         if (widget.appBar is not null)
         {
             double topPadding = widget.primary ? MediaQuery.paddingOf(context).top : 0.0;
-            _appBarMaxHeight = AppBar.preferredHeightFor(context, widget.appBar!.preferredSize) + topPadding;
-            DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(_appBarMaxHeight) >= 0.0) && double.IsFinite(DartRuntimePrimitives.RequireValue(_appBarMaxHeight)));
-            _addIfNonNull(childrenLocal, new ConstrainedBox(constraints: new BoxConstraints(maxHeight: DartRuntimePrimitives.RequireValue(_appBarMaxHeight)), child: FlexibleSpaceBar.createSettings(currentExtent: DartRuntimePrimitives.RequireValue(_appBarMaxHeight), child: (Widget)widget.appBar!)), _ScaffoldSlot__scaffold.appBar, removeLeftPadding: false, removeTopPadding: false, removeRightPadding: false, removeBottomPadding: true);
+            _appBarMaxHeight =
+                AppBar.preferredHeightFor(context, widget.appBar!.preferredSize) + topPadding;
+            DartRuntimePrimitives.Assert(() =>
+                (DartRuntimePrimitives.RequireValue(_appBarMaxHeight) >= 0.0)
+                && double.IsFinite(DartRuntimePrimitives.RequireValue(_appBarMaxHeight))
+            );
+            _addIfNonNull(
+                childrenLocal,
+                new ConstrainedBox(
+                    constraints: new BoxConstraints(
+                        maxHeight: DartRuntimePrimitives.RequireValue(_appBarMaxHeight)
+                    ),
+                    child: FlexibleSpaceBar.createSettings(
+                        currentExtent: DartRuntimePrimitives.RequireValue(_appBarMaxHeight),
+                        child: (Widget)widget.appBar!
+                    )
+                ),
+                _ScaffoldSlot__scaffold.appBar,
+                removeLeftPadding: false,
+                removeTopPadding: false,
+                removeRightPadding: false,
+                removeBottomPadding: true
+            );
         }
         var isSnackBarFloatingLocal = false;
         double? snackBarWidthLocal = default!;
         if ((_currentBottomSheet is not null) || Enumerable.Any(_dismissedBottomSheets))
         {
-            Widget stack = new Stack(alignment: Alignment.bottomCenter, children: ((Func<List<Widget>>)(() => { var __collection121351 = new List<Widget>(); __collection121351.AddRange(_dismissedBottomSheets); var __collectionElement121387 = _currentBottomSheet?._widget; if (__collectionElement121387 is { } __nonNullCollectionElement121387) { __collection121351.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement121387)); } return __collection121351; }))());
-            _addIfNonNull(childrenLocal, stack, _ScaffoldSlot__scaffold.bottomSheet, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: _resizeToAvoidBottomInset);
+            Widget stack = new Stack(
+                alignment: Alignment.bottomCenter,
+                children: (
+                    (Func<List<Widget>>)(
+                        () =>
+                        {
+                            var __collection121351 = new List<Widget>();
+                            __collection121351.AddRange(_dismissedBottomSheets);
+                            var __collectionElement121387 = _currentBottomSheet?._widget;
+                            if (__collectionElement121387 is { } __nonNullCollectionElement121387)
+                            {
+                                __collection121351.Add(
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        __nonNullCollectionElement121387
+                                    )
+                                );
+                            }
+                            return __collection121351;
+                        }
+                    )
+                )()
+            );
+            _addIfNonNull(
+                childrenLocal,
+                stack,
+                _ScaffoldSlot__scaffold.bottomSheet,
+                removeLeftPadding: false,
+                removeTopPadding: true,
+                removeRightPadding: false,
+                removeBottomPadding: _resizeToAvoidBottomInset
+            );
         }
         if (_messengerSnackBar is not null)
         {
             SnackBarThemeData snackBarTheme = SnackBarTheme.of(context);
-            SnackBarBehavior snackBarBehavior = (_messengerSnackBar?._widget.behavior ?? snackBarTheme.behavior) ?? SnackBarBehavior.@fixed;
+            SnackBarBehavior snackBarBehavior =
+                (_messengerSnackBar?._widget.behavior ?? snackBarTheme.behavior)
+                ?? SnackBarBehavior.@fixed;
             isSnackBarFloatingLocal = Equals(snackBarBehavior, SnackBarBehavior.floating);
             snackBarWidthLocal = _messengerSnackBar?._widget.width ?? snackBarTheme.width;
-            _addIfNonNull(childrenLocal, _messengerSnackBar?._widget, _ScaffoldSlot__scaffold.snackBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: (widget.bottomNavigationBar is not null) || (widget.persistentFooterButtons is not null), maintainBottomViewPadding: !_resizeToAvoidBottomInset);
+            _addIfNonNull(
+                childrenLocal,
+                _messengerSnackBar?._widget,
+                _ScaffoldSlot__scaffold.snackBar,
+                removeLeftPadding: false,
+                removeTopPadding: true,
+                removeRightPadding: false,
+                removeBottomPadding: (widget.bottomNavigationBar is not null)
+                    || (widget.persistentFooterButtons is not null),
+                maintainBottomViewPadding: !_resizeToAvoidBottomInset
+            );
         }
         var extendBodyBehindMaterialBannerLocal = false;
         if (_messengerMaterialBanner is not null)
         {
             MaterialBannerThemeData bannerTheme = MaterialBannerTheme.of(context);
-            double elevationLocal = (_messengerMaterialBanner?._widget.elevation ?? bannerTheme.elevation) ?? 0.0;
-            extendBodyBehindMaterialBannerLocal = DartRuntimePrimitives.RequireValue(elevationLocal) != 0.0;
-            _addIfNonNull(childrenLocal, _messengerMaterialBanner?._widget, _ScaffoldSlot__scaffold.materialBanner, removeLeftPadding: false, removeTopPadding: widget.appBar is not null, removeRightPadding: false, removeBottomPadding: true, maintainBottomViewPadding: !_resizeToAvoidBottomInset);
+            double elevationLocal =
+                (_messengerMaterialBanner?._widget.elevation ?? bannerTheme.elevation) ?? 0.0;
+            extendBodyBehindMaterialBannerLocal =
+                DartRuntimePrimitives.RequireValue(elevationLocal) != 0.0;
+            _addIfNonNull(
+                childrenLocal,
+                _messengerMaterialBanner?._widget,
+                _ScaffoldSlot__scaffold.materialBanner,
+                removeLeftPadding: false,
+                removeTopPadding: widget.appBar is not null,
+                removeRightPadding: false,
+                removeBottomPadding: true,
+                maintainBottomViewPadding: !_resizeToAvoidBottomInset
+            );
         }
         if (widget.persistentFooterButtons is not null)
         {
-            _addIfNonNull(childrenLocal, new Container(decoration: widget.persistentFooterDecoration ?? new BoxDecoration(border: new Border(top: Divider.createBorderSide(context, width: 1.0))), child: new SafeArea(top: false, child: new IntrinsicHeight(child: new Padding(padding: EdgeInsets.CreateAll(8), child: new Align(alignment: widget.persistentFooterAlignment, child: new OverflowBar(spacing: 8, overflowAlignment: OverflowBarAlignment.end, children: widget.persistentFooterButtons!)))))), _ScaffoldSlot__scaffold.persistentFooter, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: widget.bottomNavigationBar is not null, maintainBottomViewPadding: !_resizeToAvoidBottomInset);
+            _addIfNonNull(
+                childrenLocal,
+                new Container(
+                    decoration: widget.persistentFooterDecoration
+                        ?? new BoxDecoration(
+                            border: new Border(top: Divider.createBorderSide(context, width: 1.0))
+                        ),
+                    child: new SafeArea(
+                        top: false,
+                        child: new IntrinsicHeight(
+                            child: new Padding(
+                                padding: EdgeInsets.CreateAll(8),
+                                child: new Align(
+                                    alignment: widget.persistentFooterAlignment,
+                                    child: new OverflowBar(
+                                        spacing: 8,
+                                        overflowAlignment: OverflowBarAlignment.end,
+                                        children: widget.persistentFooterButtons!
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                _ScaffoldSlot__scaffold.persistentFooter,
+                removeLeftPadding: false,
+                removeTopPadding: true,
+                removeRightPadding: false,
+                removeBottomPadding: widget.bottomNavigationBar is not null,
+                maintainBottomViewPadding: !_resizeToAvoidBottomInset
+            );
         }
         if (widget.bottomNavigationBar is not null)
         {
-            _addIfNonNull(childrenLocal, widget.bottomNavigationBar, _ScaffoldSlot__scaffold.bottomNavigationBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: false, maintainBottomViewPadding: !_resizeToAvoidBottomInset);
+            _addIfNonNull(
+                childrenLocal,
+                widget.bottomNavigationBar,
+                _ScaffoldSlot__scaffold.bottomNavigationBar,
+                removeLeftPadding: false,
+                removeTopPadding: true,
+                removeRightPadding: false,
+                removeBottomPadding: false,
+                maintainBottomViewPadding: !_resizeToAvoidBottomInset
+            );
         }
-        _addIfNonNull(childrenLocal, new _FloatingActionButtonTransition__scaffold(fabMoveAnimation: _floatingActionButtonMoveController, fabMotionAnimator: _floatingActionButtonAnimator, geometryNotifier: _geometryNotifier, currentController: _floatingActionButtonVisibilityController, child: widget.floatingActionButton), _ScaffoldSlot__scaffold.floatingActionButton, removeLeftPadding: true, removeTopPadding: true, removeRightPadding: true, removeBottomPadding: true);
-        Widget? statusBarLocal = themeData.platform switch { TargetPlatform.iOS => widget.primary ? new _HitTestableAtOrigin__scaffold(_statusBarKey) : null, TargetPlatform.macOS => widget.primary ? new _HitTestableAtOrigin__scaffold(_statusBarKey) : null, TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), TargetPlatform.windows => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        _addIfNonNull(childrenLocal, statusBarLocal, _ScaffoldSlot__scaffold.statusBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: true);
+        _addIfNonNull(
+            childrenLocal,
+            new _FloatingActionButtonTransition__scaffold(
+                fabMoveAnimation: _floatingActionButtonMoveController,
+                fabMotionAnimator: _floatingActionButtonAnimator,
+                geometryNotifier: _geometryNotifier,
+                currentController: _floatingActionButtonVisibilityController,
+                child: widget.floatingActionButton
+            ),
+            _ScaffoldSlot__scaffold.floatingActionButton,
+            removeLeftPadding: true,
+            removeTopPadding: true,
+            removeRightPadding: true,
+            removeBottomPadding: true
+        );
+        Widget? statusBarLocal = themeData.platform switch
+        {
+            TargetPlatform.iOS => widget.primary
+                ? new _HitTestableAtOrigin__scaffold(_statusBarKey)
+                : null,
+            TargetPlatform.macOS => widget.primary
+                ? new _HitTestableAtOrigin__scaffold(_statusBarKey)
+                : null,
+            TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux =>
+                DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null),
+            TargetPlatform.windows =>
+                DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        _addIfNonNull(
+            childrenLocal,
+            statusBarLocal,
+            _ScaffoldSlot__scaffold.statusBar,
+            removeLeftPadding: false,
+            removeTopPadding: true,
+            removeRightPadding: false,
+            removeBottomPadding: true
+        );
         if (_endDrawerOpened.value)
         {
             _buildDrawer(childrenLocal, textDirectionLocal);
@@ -1939,13 +3074,63 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
             _buildEndDrawer(childrenLocal, textDirectionLocal);
             _buildDrawer(childrenLocal, textDirectionLocal);
         }
-        EdgeInsets minInsetsLocal = MediaQuery.paddingOf(context).copyWith(bottom: _resizeToAvoidBottomInset ? MediaQuery.viewInsetsOf(context).bottom : 0.0);
-        EdgeInsets minViewPaddingLocal = MediaQuery.viewPaddingOf(context).copyWith(bottom: (_resizeToAvoidBottomInset && (MediaQuery.viewInsetsOf(context).bottom != 0.0)) ? 0.0 : null);
-        return new _ScaffoldScope__scaffold(hasDrawer: hasDrawer, geometryNotifier: _geometryNotifier, child: new ScrollNotificationObserver(child: new Material(color: widget.backgroundColor ?? themeData.scaffoldBackgroundColor, child: new Builder(builder: (context) =>
-        {
-            return new Actions(actions: new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new _DismissDrawerAction__scaffold(context) }, child: new CustomMultiChildLayout(@delegate: new _ScaffoldLayout__scaffold(extendBody: widget.extendBody, extendBodyBehindAppBar: widget.extendBodyBehindAppBar, minInsets: minInsetsLocal, minViewPadding: minViewPaddingLocal, currentFloatingActionButtonLocation: _floatingActionButtonLocation!, floatingActionButtonMoveAnimation: _floatingActionButtonMoveController, floatingActionButtonMotionAnimator: _floatingActionButtonAnimator, geometryNotifier: _geometryNotifier, previousFloatingActionButtonLocation: _previousFloatingActionButtonLocation!, textDirection: textDirectionLocal, isSnackBarFloating: isSnackBarFloatingLocal, extendBodyBehindMaterialBanner: extendBodyBehindMaterialBannerLocal, snackBarWidth: snackBarWidthLocal), children: childrenLocal.Cast<Widget>().ToList()));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        EdgeInsets minInsetsLocal = MediaQuery
+            .paddingOf(context)
+            .copyWith(
+                bottom: _resizeToAvoidBottomInset ? MediaQuery.viewInsetsOf(context).bottom : 0.0
+            );
+        EdgeInsets minViewPaddingLocal = MediaQuery
+            .viewPaddingOf(context)
+            .copyWith(
+                bottom: (
+                    _resizeToAvoidBottomInset && (MediaQuery.viewInsetsOf(context).bottom != 0.0)
+                )
+                    ? 0.0
+                    : null
+            );
+        return new _ScaffoldScope__scaffold(
+            hasDrawer: hasDrawer,
+            geometryNotifier: _geometryNotifier,
+            child: new ScrollNotificationObserver(
+                child: new Material(
+                    color: widget.backgroundColor ?? themeData.scaffoldBackgroundColor,
+                    child: new Builder(
+                        builder: (context) =>
+                        {
+                            return new Actions(
+                                actions: new DartMap<Type, dynamic>
+                                {
+                                    [typeof(DismissIntent)] = new _DismissDrawerAction__scaffold(
+                                        context
+                                    ),
+                                },
+                                child: new CustomMultiChildLayout(
+                                    @delegate: new _ScaffoldLayout__scaffold(
+                                        extendBody: widget.extendBody,
+                                        extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+                                        minInsets: minInsetsLocal,
+                                        minViewPadding: minViewPaddingLocal,
+                                        currentFloatingActionButtonLocation: _floatingActionButtonLocation!,
+                                        floatingActionButtonMoveAnimation: _floatingActionButtonMoveController,
+                                        floatingActionButtonMotionAnimator: _floatingActionButtonAnimator,
+                                        geometryNotifier: _geometryNotifier,
+                                        previousFloatingActionButtonLocation: _previousFloatingActionButtonLocation!,
+                                        textDirection: textDirectionLocal,
+                                        isSnackBarFloating: isSnackBarFloatingLocal,
+                                        extendBodyBehindMaterialBanner: extendBodyBehindMaterialBannerLocal,
+                                        snackBarWidth: snackBarWidthLocal
+                                    ),
+                                    children: childrenLocal.Cast<Widget>().ToList()
+                                )
+                            );
+                            throw new InvalidOperationException(
+                                "Dart closure completed without a value."
+                            );
+                        }
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1958,13 +3143,23 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
         _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{
-    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
-    __cascade.muted = !values.enabled;
-    __cascade.forceFrames = values.forceFrames;
-    return __cascade;
-}))();
+        var result = (
+            (Func<_WidgetTicker__ticker_provider>)(
+                () =>
+                {
+                    var __cascade = new _WidgetTicker__ticker_provider(
+                        onTick,
+                        this,
+                        debugLabel: Foundation.ConstantsLibrary.kDebugMode
+                            ? $"created by {DiagnosticsLibrary.describeIdentity(this)}"
+                            : null
+                    );
+                    __cascade.muted = !values.enabled;
+                    __cascade.forceFrames = values.forceFrames;
+                    return __cascade;
+                }
+            )
+        )();
         _tickers!.Add(result);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2006,10 +3201,20 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(
+            new DiagnosticsProperty<HashSet<Scheduler.Ticker>>(
+                "tickers",
+                _tickers,
+                description: (_tickers is not null)
+                    ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}"
+                    : null,
+                defaultValue: default
+            )
+        );
     }
 
     public virtual RestorationBucket? bucket => _bucket;
+
     public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
@@ -2017,10 +3222,22 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
 
     public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(
+            () =>
+                (property._restorationId is null)
+                || (_debugDoingRestore && (property._restorationId == restorationId)),
+            () => (object?)$"Property is already registered under {property._restorationId}."
+        );
+        DartRuntimePrimitives.Assert(
+            () =>
+                _debugDoingRestore
+                || !_properties.Keys.map((r) => r._restorationId).contains(restorationId),
+            () => (object?)$"\"{restorationId}\" is already registered to another property."
+        );
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
-        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
+        object? initialValue = hasSerializedValue
+            ? property.fromPrimitivesObject(bucket!.read<object>(restorationId))
+            : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
@@ -2035,17 +3252,21 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
             property.addListener(listener);
             _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
+        DartRuntimePrimitives.Assert(() =>
+            (property._restorationId == restorationId)
+            && Equals(property._owner, this)
+            && _properties.ContainsKey(property)
+        );
         property.initWithValueObject(initialValue);
         if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
     }
 
     public virtual void unregisterFromRestoration(IRestorableProperty property)
@@ -2063,7 +3284,10 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         }
         RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
+        bool didReplaceBucket = _updateBucketIfNecessary(
+            parent: _currentParent,
+            restorePending: false
+        );
         if (didReplaceBucket)
         {
             DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
@@ -2085,35 +3309,77 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
                 return false;
             }
             RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
-            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
+            return (!Equals(potentialNewParent, _currentParent))
+                && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
+    public virtual bool _debugDoingRestore =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            _debugPropertiesWaitingForReregistration is not null
+        );
+
     public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
+            return true;
+        });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
             {
-                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
-                {
-                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
-                }
-                _debugPropertiesWaitingForReregistration = null;
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    new FlutterError(
+                        (
+                            (Func<List<DiagnosticsNode>>)(
+                                () =>
+                                {
+                                    var __collection41817 = new List<DiagnosticsNode>();
+                                    __collection41817.Add(
+                                        new ErrorSummary(
+                                            "Previously registered RestorableProperties must be re-registered in \"restoreState\"."
+                                        )
+                                    );
+                                    __collection41817.Add(
+                                        new ErrorDescription(
+                                            $"The RestorableProperties with the following IDs were not re-registered to {this} when "
+                                                + "\"restoreState\" was called:"
+                                        )
+                                    );
+                                    __collection41817.AddRange(
+                                        _debugPropertiesWaitingForReregistration!.map<
+                                            IRestorableProperty,
+                                            DiagnosticsNode
+                                        >(
+                                            (property) =>
+                                                new ErrorDescription(
+                                                    $" * {property._restorationId}"
+                                                )
+                                        )
+                                    );
+                                    return __collection41817;
+                                }
+                            )
+                        )()
+                    )
+                );
+            }
+            _debugPropertiesWaitingForReregistration = null;
+            return true;
+        });
     }
 
     public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(
+                newBucket: null,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
@@ -2121,7 +3387,10 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         if (restorePending || (_bucket is null))
         {
             RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
-            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            bool didReplaceLocal = _setNewBucketIfNecessary(
+                newBucket: newBucketLocal,
+                restorePending: restorePending
+            );
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
@@ -2145,7 +3414,9 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach(
+                    (__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0)
+                );
             }
             didToggleBucket(oldBucket);
         }
@@ -2169,14 +3440,13 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
     {
         Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                _debugPropertiesWaitingForReregistration?.Remove(property);
-                return true;
-            });
+        {
+            _debugPropertiesWaitingForReregistration?.Remove(property);
+            return true;
+        });
         property.removeListener(listener);
         property._unregister();
     }
-
 }
 
 internal class _DismissDrawerAction__scaffold : DismissAction
@@ -2191,7 +3461,8 @@ internal class _DismissDrawerAction__scaffold : DismissAction
     public override bool isEnabled(DismissIntent intent, BuildContext? context = null)
     {
         ScaffoldState scaffold = Scaffold.of(this.context);
-        return (scaffold.isDrawerOpen || scaffold.isEndDrawerOpen) && scaffold.isDrawerBarrierDismissible;
+        return (scaffold.isDrawerOpen || scaffold.isEndDrawerOpen)
+            && scaffold.isDrawerBarrierDismissible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2205,17 +3476,22 @@ internal class _DismissDrawerAction__scaffold : DismissAction
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class ScaffoldFeatureController<T, U> where T : Widget
+public class ScaffoldFeatureController<T, U>
+    where T : Widget
 {
     internal virtual T _widget { get; private set; } = default!;
     internal virtual Completer<U> _completer { get; private set; } = default!;
     public virtual Action close { get; private set; } = default!;
     public virtual Action<Action>? setState { get; private set; }
 
-    public ScaffoldFeatureController(T _widget, Completer<U> _completer, Action close, Action<Action>? setState)
+    public ScaffoldFeatureController(
+        T _widget,
+        Completer<U> _completer,
+        Action close,
+        Action<Action>? setState
+    )
     {
         this._widget = _widget;
         this._completer = _completer;
@@ -2242,7 +3518,23 @@ public class _StandardBottomSheet__scaffold : StatefulWidget
     public virtual Clip? clipBehavior { get; private set; }
     public virtual BoxConstraints? constraints { get; private set; }
 
-    internal _StandardBottomSheet__scaffold(Key? key = null, AnimationController animationController = default!, bool enableDrag = true, bool? showDragHandle = null, Action? onClosing = default!, Action? onDismissed = default!, Func<BuildContext, Widget> builder = default!, bool isPersistent = false, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? clipBehavior = null, BoxConstraints? constraints = null, Action? onDispose = null) : base(key: key)
+    internal _StandardBottomSheet__scaffold(
+        Key? key = null,
+        AnimationController animationController = default!,
+        bool enableDrag = true,
+        bool? showDragHandle = null,
+        Action? onClosing = default!,
+        Action? onDismissed = default!,
+        Func<BuildContext, Widget> builder = default!,
+        bool isPersistent = false,
+        Color? backgroundColor = null,
+        double? elevation = null,
+        ShapeBorder? shape = null,
+        Clip? clipBehavior = null,
+        BoxConstraints? constraints = null,
+        Action? onDispose = null
+    )
+        : base(key: key)
     {
         this.animationController = animationController;
         this.enableDrag = enableDrag;
@@ -2259,12 +3551,14 @@ public class _StandardBottomSheet__scaffold : StatefulWidget
         this.onDispose = onDispose;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StandardBottomSheetState__scaffold());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _StandardBottomSheetState__scaffold());
 }
 
 public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__scaffold>
 {
-    public virtual ParametricCurve<double> animationCurve { get; set; } = ScaffoldLibrary._standardBottomSheetCurve;
+    public virtual ParametricCurve<double> animationCurve { get; set; } =
+        ScaffoldLibrary._standardBottomSheetCurve;
 
     public override void initState()
     {
@@ -2283,7 +3577,9 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
     public override void didUpdateWidget(_StandardBottomSheet__scaffold oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        DartRuntimePrimitives.Assert(() => Equals(widget.animationController, oldWidget.animationController));
+        DartRuntimePrimitives.Assert(() =>
+            Equals(widget.animationController, oldWidget.animationController)
+        );
     }
 
     public virtual void close()
@@ -2299,7 +3595,12 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
 
     internal virtual void _handleDragEnd(Gestures.DragEndDetails details, bool? isClosing = null)
     {
-        animationCurve = DartRuntimePrimitives.ConvertValue<ParametricCurve<double>>(new Split(widget.animationController.value, endCurve: ScaffoldLibrary._standardBottomSheetCurve));
+        animationCurve = DartRuntimePrimitives.ConvertValue<ParametricCurve<double>>(
+            new Split(
+                widget.animationController.value,
+                endCurve: ScaffoldLibrary._standardBottomSheetCurve
+            )
+        );
     }
 
     internal virtual void _handleStatusChange(AnimationStatus status)
@@ -2316,8 +3617,10 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
         ScaffoldState scaffold = Scaffold.of(context);
         if (extentRemaining < ScaffoldLibrary._kBottomSheetDominatesPercentage)
         {
-            scaffold._floatingActionButtonVisibilityController.value = extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage * 10L;
-            double scrimAnimationValue = 1L - (extentRemaining / ScaffoldLibrary._kBottomSheetDominatesPercentage);
+            scaffold._floatingActionButtonVisibilityController.value =
+                extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage * 10L;
+            double scrimAnimationValue =
+                1L - (extentRemaining / ScaffoldLibrary._kBottomSheetDominatesPercentage);
             scaffold.showBodyScrim(true, scrimAnimationValue);
         }
         else
@@ -2325,7 +3628,11 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
             scaffold._floatingActionButtonVisibilityController.value = 1.0;
             scaffold.showBodyScrim(false, 0.0);
         }
-        if ((notification.extent == notification.minExtent) && (scaffold.widget.bottomSheet is null) && notification.shouldCloseOnMinExtent)
+        if (
+            (notification.extent == notification.minExtent)
+            && (scaffold.widget.bottomSheet is null)
+            && notification.shouldCloseOnMinExtent
+        )
         {
             close();
         }
@@ -2335,33 +3642,73 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
 
     public override Widget build(BuildContext context)
     {
-        return new AnimatedBuilder(animation: widget.animationController, builder: (context, child) =>
-        {
-            return new Align(alignment: AlignmentDirectional.topStart, heightFactor: animationCurve.transform(widget.animationController.value), child: child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }, child: new Widgets.Semantics(container: true, onDismiss: !widget.isPersistent ? close : null, child: new NotificationListener<DraggableScrollableNotification>(onNotification: extentChanged, child: new BottomSheet(animationController: widget.animationController, enableDrag: widget.enableDrag, showDragHandle: widget.showDragHandle, onDragStart: _handleDragStart, onDragEnd: (details, isClosing) => _handleDragEnd(details, isClosing), onClosing: widget.onClosing!, builder: widget.builder, backgroundColor: widget.backgroundColor, elevation: widget.elevation, shape: widget.shape, clipBehavior: widget.clipBehavior, constraints: widget.constraints))));
+        return new AnimatedBuilder(
+            animation: widget.animationController,
+            builder: (context, child) =>
+            {
+                return new Align(
+                    alignment: AlignmentDirectional.topStart,
+                    heightFactor: animationCurve.transform(widget.animationController.value),
+                    child: child
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            },
+            child: new Widgets.Semantics(
+                container: true,
+                onDismiss: !widget.isPersistent ? close : null,
+                child: new NotificationListener<DraggableScrollableNotification>(
+                    onNotification: extentChanged,
+                    child: new BottomSheet(
+                        animationController: widget.animationController,
+                        enableDrag: widget.enableDrag,
+                        showDragHandle: widget.showDragHandle,
+                        onDragStart: _handleDragStart,
+                        onDragEnd: (details, isClosing) => _handleDragEnd(details, isClosing),
+                        onClosing: widget.onClosing!,
+                        builder: widget.builder,
+                        backgroundColor: widget.backgroundColor,
+                        elevation: widget.elevation,
+                        shape: widget.shape,
+                        clipBehavior: widget.clipBehavior,
+                        constraints: widget.constraints
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class PersistentBottomSheetController : ScaffoldFeatureController<_StandardBottomSheet__scaffold, object?>
+public class PersistentBottomSheetController
+    : ScaffoldFeatureController<_StandardBottomSheet__scaffold, object?>
 {
     internal virtual bool _isLocalHistoryEntry { get; private set; } = default!;
 
-    internal PersistentBottomSheetController(_StandardBottomSheet__scaffold widget, Completer<object?> completer, Action close, Action<Action> setState, bool _isLocalHistoryEntry) : base(widget, completer, close, setState)
+    internal PersistentBottomSheetController(
+        _StandardBottomSheet__scaffold widget,
+        Completer<object?> completer,
+        Action close,
+        Action<Action> setState,
+        bool _isLocalHistoryEntry
+    )
+        : base(widget, completer, close, setState)
     {
         this._isLocalHistoryEntry = _isLocalHistoryEntry;
     }
-
 }
 
 internal class _ScaffoldScope__scaffold : InheritedWidget
 {
     public virtual bool hasDrawer { get; private set; } = default!;
-    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } = default!;
+    public virtual _ScaffoldGeometryNotifier__scaffold geometryNotifier { get; private set; } =
+        default!;
 
-    internal _ScaffoldScope__scaffold(bool hasDrawer, _ScaffoldGeometryNotifier__scaffold geometryNotifier, Widget child) : base(child: child)
+    internal _ScaffoldScope__scaffold(
+        bool hasDrawer,
+        _ScaffoldGeometryNotifier__scaffold geometryNotifier,
+        Widget child
+    )
+        : base(child: child)
     {
         this.hasDrawer = hasDrawer;
         this.geometryNotifier = geometryNotifier;
@@ -2373,7 +3720,6 @@ internal class _ScaffoldScope__scaffold : InheritedWidget
         return hasDrawer != __oldWidget.hasDrawer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _HitTestableAtOrigin__scaffold : StatelessWidget
@@ -2390,7 +3736,13 @@ internal class _HitTestableAtOrigin__scaffold : StatelessWidget
         var context = ((Element?)key.currentContext)!;
         if (context is null)
         {
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"BuildContext associated with {key} is not mounted. " + "If you see this in a test, this is likely because the test was trying " + "to simulate status bar tap on a non-iOS platform");
+            DartRuntimePrimitives.Assert(
+                () => false,
+                () =>
+                    (object?)$"BuildContext associated with {key} is not mounted. "
+                    + "If you see this in a test, this is likely because the test was trying "
+                    + "to simulate status bar tap on a non-iOS platform"
+            );
             return false;
         }
         var renderObjectLocal = ((RenderMetaData?)context.renderObject!)!;
@@ -2403,8 +3755,11 @@ internal class _HitTestableAtOrigin__scaffold : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new MetaData(key: globalKey, behavior: HitTestBehavior.translucent, child: SizedBox.CreateExpand());
+        return new MetaData(
+            key: globalKey,
+            behavior: HitTestBehavior.translucent,
+            child: SizedBox.CreateExpand()
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }

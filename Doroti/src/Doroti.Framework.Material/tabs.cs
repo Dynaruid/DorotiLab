@@ -24,7 +24,7 @@ public static partial class TabsLibrary
 public enum TabBarIndicatorSize
 {
     tab,
-    label
+    label,
 }
 
 public enum TabAlignment
@@ -32,13 +32,13 @@ public enum TabAlignment
     start,
     startOffset,
     fill,
-    center
+    center,
 }
 
 public enum TabIndicatorAnimation
 {
     linear,
-    elastic
+    elastic,
 }
 
 public class Tab : StatelessWidget, PreferredSizeWidget
@@ -49,14 +49,24 @@ public class Tab : StatelessWidget, PreferredSizeWidget
     public virtual EdgeInsetsGeometry? iconMargin { get; private set; }
     public virtual double? height { get; private set; }
 
-    public Tab(Key? key = null, string? text = null, Widget? icon = null, EdgeInsetsGeometry? iconMargin = null, double? height = null, Widget? child = null) : base(key: key)
+    public Tab(
+        Key? key = null,
+        string? text = null,
+        Widget? icon = null,
+        EdgeInsetsGeometry? iconMargin = null,
+        double? height = null,
+        Widget? child = null
+    )
+        : base(key: key)
     {
         this.text = text;
         this.icon = icon;
         this.iconMargin = iconMargin;
         this.height = height;
         this.child = child;
-        System.Diagnostics.Debug.Assert((text is not null) || (child is not null) || (icon is not null));
+        System.Diagnostics.Debug.Assert(
+            (text is not null) || (child is not null) || (icon is not null)
+        );
         System.Diagnostics.Debug.Assert((text is null) || (child is null));
     }
 
@@ -86,11 +96,26 @@ public class Tab : StatelessWidget, PreferredSizeWidget
             else
             {
                 calculatedHeight = TabsLibrary._kTextAndIconTabHeight;
-                EdgeInsetsGeometry effectiveIconMargin = iconMargin ?? _TabsPrimaryDefaultsM3__tabs.iconMargin;
-                label = DartRuntimePrimitives.ConvertValue<Widget>(new Column(mainAxisAlignment: MainAxisAlignment.center, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: effectiveIconMargin, child: icon)), DartRuntimePrimitives.ConvertValue<Widget>(_buildLabelText()) }));
+                EdgeInsetsGeometry effectiveIconMargin =
+                    iconMargin ?? _TabsPrimaryDefaultsM3__tabs.iconMargin;
+                label = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: new List<Widget>
+                        {
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new Padding(padding: effectiveIconMargin, child: icon)
+                            ),
+                            DartRuntimePrimitives.ConvertValue<Widget>(_buildLabelText()),
+                        }
+                    )
+                );
             }
         }
-        return new SizedBox(height: height ?? calculatedHeight, child: new Center(widthFactor: 1.0, child: label));
+        return new SizedBox(
+            height: height ?? calculatedHeight,
+            child: new Center(widthFactor: 1.0, child: label)
+        );
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -134,7 +159,18 @@ internal class _TabStyle__tabs : AnimatedWidget
     public virtual TabBarThemeData defaults { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _TabStyle__tabs(Animation<double> animation, bool isSelected, bool isPrimary, Color? labelColor, Color? unselectedLabelColor, TextStyle? labelStyle, TextStyle? unselectedLabelStyle, TabBarThemeData defaults, Widget child) : base(listenable: animation)
+    internal _TabStyle__tabs(
+        Animation<double> animation,
+        bool isSelected,
+        bool isPrimary,
+        Color? labelColor,
+        Color? unselectedLabelColor,
+        TextStyle? labelStyle,
+        TextStyle? unselectedLabelStyle,
+        TabBarThemeData defaults,
+        Widget child
+    )
+        : base(listenable: animation)
     {
         this.isSelected = isSelected;
         this.isPrimary = isPrimary;
@@ -146,32 +182,55 @@ internal class _TabStyle__tabs : AnimatedWidget
         this.child = child;
     }
 
-    internal virtual WidgetStateColor _resolveWithLabelColor(BuildContext context, IconThemeData? iconTheme = null)
+    internal virtual WidgetStateColor _resolveWithLabelColor(
+        BuildContext context,
+        IconThemeData? iconTheme = null
+    )
     {
         ThemeData themeData = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
         var animation = ((Animation<double>?)listenable)!;
-        Color selectedColor = (((labelColor ?? tabBarTheme.labelColor) ?? labelStyle?.color) ?? tabBarTheme.labelStyle?.color) ?? defaults.labelColor!;
+        Color selectedColor =
+            (
+                ((labelColor ?? tabBarTheme.labelColor) ?? labelStyle?.color)
+                ?? tabBarTheme.labelStyle?.color
+            ) ?? defaults.labelColor!;
         Color unselectedColor = default!;
         if (selectedColor is WidgetStateColor)
         {
             WidgetStateColor selectedColor__8913__as9128 = (WidgetStateColor)selectedColor;
             unselectedColor = selectedColor__8913__as9128.resolve(new HashSet<WidgetState>());
-            selectedColor = selectedColor__8913__as9128.resolve(new HashSet<WidgetState> { WidgetState.selected });
+            selectedColor = selectedColor__8913__as9128.resolve(
+                new HashSet<WidgetState> { WidgetState.selected }
+            );
         }
         else
         {
-            unselectedColor = ((((unselectedLabelColor ?? tabBarTheme.unselectedLabelColor) ?? unselectedLabelStyle?.color) ?? tabBarTheme.unselectedLabelStyle?.color) ?? iconTheme?.color) ?? defaults.unselectedLabelColor!;
+            unselectedColor =
+                (
+                    (
+                        (
+                            (unselectedLabelColor ?? tabBarTheme.unselectedLabelColor)
+                            ?? unselectedLabelStyle?.color
+                        ) ?? tabBarTheme.unselectedLabelStyle?.color
+                    ) ?? iconTheme?.color
+                ) ?? defaults.unselectedLabelColor!;
         }
-        return WidgetStateColor.CreateResolveWith((states) =>
-        {
-            if (states.Contains(WidgetState.selected))
+        return WidgetStateColor.CreateResolveWith(
+            (states) =>
             {
-                return Dart_uiLibrary.Color.lerp(selectedColor, unselectedColor, animation.value)!;
+                if (states.Contains(WidgetState.selected))
+                {
+                    return Dart_uiLibrary.Color.lerp(
+                        selectedColor,
+                        unselectedColor,
+                        animation.value
+                    )!;
+                }
+                return Dart_uiLibrary.Color.lerp(unselectedColor, selectedColor, animation.value)!;
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            return Dart_uiLibrary.Color.lerp(unselectedColor, selectedColor, animation.value)!;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        );
     }
 
     public override Widget build(BuildContext context)
@@ -179,27 +238,75 @@ internal class _TabStyle__tabs : AnimatedWidget
         ThemeData theme = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
         var animation = ((Animation<double>?)listenable)!;
-        var states = isSelected ? new HashSet<WidgetState> { WidgetState.selected } : new HashSet<WidgetState>();
-        TextStyle selectedStyle = defaults.labelStyle!.merge(labelStyle ?? tabBarTheme.labelStyle).copyWith(inherit: true);
-        TextStyle unselectedStyle = defaults.unselectedLabelStyle!.merge((unselectedLabelStyle ?? tabBarTheme.unselectedLabelStyle) ?? labelStyle).copyWith(inherit: true);
-        TextStyle textStyle = isSelected ? TextStyle.lerp(selectedStyle, unselectedStyle, animation.value)! : TextStyle.lerp(unselectedStyle, selectedStyle, animation.value)!;
-        Color defaultIconColor = theme.colorScheme.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        IconThemeData? customIconTheme = IconTheme.of(context) switch { IconThemeData iconThemeLocal when !Equals(iconThemeLocal.color, defaultIconColor) => iconThemeLocal, _ => DartRuntimePrimitives.ConvertValue<IconThemeData>(null) };
-        Color iconColor = _resolveWithLabelColor(context, iconTheme: customIconTheme).resolve(states);
+        var states = isSelected
+            ? new HashSet<WidgetState> { WidgetState.selected }
+            : new HashSet<WidgetState>();
+        TextStyle selectedStyle = defaults
+            .labelStyle!.merge(labelStyle ?? tabBarTheme.labelStyle)
+            .copyWith(inherit: true);
+        TextStyle unselectedStyle = defaults
+            .unselectedLabelStyle!.merge(
+                (unselectedLabelStyle ?? tabBarTheme.unselectedLabelStyle) ?? labelStyle
+            )
+            .copyWith(inherit: true);
+        TextStyle textStyle = isSelected
+            ? TextStyle.lerp(selectedStyle, unselectedStyle, animation.value)!
+            : TextStyle.lerp(unselectedStyle, selectedStyle, animation.value)!;
+        Color defaultIconColor = theme.colorScheme.brightness switch
+        {
+            Brightness.light => ConstantsLibrary.kDefaultIconDarkColor,
+            Brightness.dark => ConstantsLibrary.kDefaultIconLightColor,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        IconThemeData? customIconTheme = IconTheme.of(context) switch
+        {
+            IconThemeData iconThemeLocal when !Equals(iconThemeLocal.color, defaultIconColor) =>
+                iconThemeLocal,
+            _ => DartRuntimePrimitives.ConvertValue<IconThemeData>(null),
+        };
+        Color iconColor = _resolveWithLabelColor(context, iconTheme: customIconTheme)
+            .resolve(states);
         Color labelColor = _resolveWithLabelColor(context).resolve(states);
-        return new DefaultTextStyle(style: textStyle.copyWith(color: labelColor), child: IconTheme.merge(data: new IconThemeData(size: customIconTheme?.size ?? 24.0, color: iconColor), child: child));
+        return new DefaultTextStyle(
+            style: textStyle.copyWith(color: labelColor),
+            child: IconTheme.merge(
+                data: new IconThemeData(size: customIconTheme?.size ?? 24.0, color: iconColor),
+                child: child
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal delegate void _LayoutCallback__tabs(List<double> xOffsets, TextDirection textDirection, double width);
+internal delegate void _LayoutCallback__tabs(
+    List<double> xOffsets,
+    TextDirection textDirection,
+    double width
+);
 
 public class _TabLabelBarRenderer__tabs : RenderFlex
 {
-    public virtual Action<List<double>, TextDirection, double> onPerformLayout { get; set; } = default!;
+    public virtual Action<List<double>, TextDirection, double> onPerformLayout { get; set; } =
+        default!;
 
-    internal _TabLabelBarRenderer__tabs(Axis direction, MainAxisSize mainAxisSize, MainAxisAlignment mainAxisAlignment, CrossAxisAlignment crossAxisAlignment, TextDirection textDirection, VerticalDirection verticalDirection, Action<List<double>, TextDirection, double> onPerformLayout) : base(direction: direction, mainAxisSize: mainAxisSize, mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: crossAxisAlignment, textDirection: textDirection, verticalDirection: verticalDirection)
+    internal _TabLabelBarRenderer__tabs(
+        Axis direction,
+        MainAxisSize mainAxisSize,
+        MainAxisAlignment mainAxisAlignment,
+        CrossAxisAlignment crossAxisAlignment,
+        TextDirection textDirection,
+        VerticalDirection verticalDirection,
+        Action<List<double>, TextDirection, double> onPerformLayout
+    )
+        : base(
+            direction: direction,
+            mainAxisSize: mainAxisSize,
+            mainAxisAlignment: mainAxisAlignment,
+            crossAxisAlignment: crossAxisAlignment,
+            textDirection: textDirection,
+            verticalDirection: verticalDirection
+        )
     {
         this.onPerformLayout = onPerformLayout;
     }
@@ -220,33 +327,56 @@ public class _TabLabelBarRenderer__tabs : RenderFlex
         switch (DartRuntimePrimitives.RequireValue(textDirection))
         {
             case TextDirection.rtl:
-                {
-                    xOffsets.Insert(checked((int)0L), size.width);
-                    break;
-                }
+            {
+                xOffsets.Insert(checked((int)0L), size.width);
+                break;
+            }
             case TextDirection.ltr:
-                {
-                    xOffsets.Add(size.width);
-                    break;
-                }
+            {
+                xOffsets.Add(size.width);
+                break;
+            }
         }
         onPerformLayout(xOffsets, DartRuntimePrimitives.RequireValue(textDirection), size.width);
     }
-
 }
 
 internal class _TabLabelBar__tabs : Flex
 {
-    public virtual Action<List<double>, TextDirection, double> onPerformLayout { get; private set; } = default!;
+    public virtual Action<List<double>, TextDirection, double> onPerformLayout
+    {
+        get;
+        private set;
+    } = default!;
 
-    internal _TabLabelBar__tabs(List<Widget> children = default!, Action<List<double>, TextDirection, double> onPerformLayout = default!, MainAxisSize mainAxisSize = default!) : base(children: children ?? new List<Widget>(), mainAxisSize: mainAxisSize, direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, verticalDirection: VerticalDirection.down)
+    internal _TabLabelBar__tabs(
+        List<Widget> children = default!,
+        Action<List<double>, TextDirection, double> onPerformLayout = default!,
+        MainAxisSize mainAxisSize = default!
+    )
+        : base(
+            children: children ?? new List<Widget>(),
+            mainAxisSize: mainAxisSize,
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            verticalDirection: VerticalDirection.down
+        )
     {
         this.onPerformLayout = onPerformLayout;
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
-        return new _TabLabelBarRenderer__tabs(direction: direction, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize, crossAxisAlignment: crossAxisAlignment, textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)), verticalDirection: verticalDirection, onPerformLayout: onPerformLayout);
+        return new _TabLabelBarRenderer__tabs(
+            direction: direction,
+            mainAxisAlignment: mainAxisAlignment,
+            mainAxisSize: mainAxisSize,
+            crossAxisAlignment: crossAxisAlignment,
+            textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)),
+            verticalDirection: verticalDirection,
+            onPerformLayout: onPerformLayout
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -256,7 +386,6 @@ internal class _TabLabelBar__tabs : Flex
         base.updateRenderObject(context, __renderObject);
         __renderObject.onPerformLayout = onPerformLayout;
     }
-
 }
 
 public static partial class TabsLibrary
@@ -292,23 +421,31 @@ internal class _DividerPainter__tabs : CustomPainter
         {
             return;
         }
-        var paintLocal = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = dividerColor;
-    __cascade.strokeWidth = dividerHeight;
-    return __cascade;
-}))();
-        canvas.drawLine(new Offset(0, size.height - paintLocal.strokeWidth / 2L), new Offset(size.width, size.height - paintLocal.strokeWidth / 2L), paintLocal);
+        var paintLocal = (
+            (Func<Paint>)(
+                () =>
+                {
+                    var __cascade = new Paint();
+                    __cascade.color = dividerColor;
+                    __cascade.strokeWidth = dividerHeight;
+                    return __cascade;
+                }
+            )
+        )();
+        canvas.drawLine(
+            new Offset(0, size.height - (paintLocal.strokeWidth / 2L)),
+            new Offset(size.width, size.height - (paintLocal.strokeWidth / 2L)),
+            paintLocal
+        );
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_DividerPainter__tabs)oldDelegate;
-        return (!Equals(__oldDelegate.dividerColor, dividerColor)) || (__oldDelegate.dividerHeight != dividerHeight);
+        return (!Equals(__oldDelegate.dividerColor, dividerColor))
+            || (__oldDelegate.dividerHeight != dividerHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _IndicatorPainterNotifier__tabs : ChangeNotifier
@@ -335,6 +472,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
     public virtual double? devicePixelRatio { get; private set; }
     public virtual TabIndicatorAnimation indicatorAnimation { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
+
     // Dart library-private member: distinct from the same name in the base library.
     internal virtual _IndicatorPainterNotifier__tabs _repaint { get; private set; } = default!;
     internal virtual List<double>? _currentTabOffsets { get; set; } = default;
@@ -343,12 +481,63 @@ internal class _IndicatorPainter__tabs : CustomPainter
     internal virtual BoxPainter? _painter { get; set; } = default;
     internal virtual bool _needsPaint { get; set; } = false;
 
-    internal static _IndicatorPainter__tabs Create(TabController controller, Decoration indicator, TabBarIndicatorSize indicatorSize, List<GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, EdgeInsetsGeometry indicatorPadding, List<EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!)
+    internal static _IndicatorPainter__tabs Create(
+        TabController controller,
+        Decoration indicator,
+        TabBarIndicatorSize indicatorSize,
+        List<GlobalKey<IState>> tabKeys,
+        _IndicatorPainter__tabs? old,
+        EdgeInsetsGeometry indicatorPadding,
+        List<EdgeInsetsGeometry> labelPaddings,
+        Color? dividerColor = null,
+        double? dividerHeight = null,
+        bool showDivider = default!,
+        double? devicePixelRatio = null,
+        TabIndicatorAnimation indicatorAnimation = default!,
+        TextDirection textDirection = default!
+    )
     {
-        return new _IndicatorPainter__tabs(controller: controller, indicator: indicator, indicatorSize: indicatorSize, tabKeys: tabKeys, old: old, indicatorPadding: indicatorPadding, labelPaddings: labelPaddings, dividerColor: dividerColor, dividerHeight: dividerHeight, showDivider: showDivider, devicePixelRatio: devicePixelRatio, indicatorAnimation: indicatorAnimation, textDirection: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirection)), repaint: new _IndicatorPainterNotifier__tabs());
+        return new _IndicatorPainter__tabs(
+            controller: controller,
+            indicator: indicator,
+            indicatorSize: indicatorSize,
+            tabKeys: tabKeys,
+            old: old,
+            indicatorPadding: indicatorPadding,
+            labelPaddings: labelPaddings,
+            dividerColor: dividerColor,
+            dividerHeight: dividerHeight,
+            showDivider: showDivider,
+            devicePixelRatio: devicePixelRatio,
+            indicatorAnimation: indicatorAnimation,
+            textDirection: DartRuntimePrimitives.RequireValue(
+                DartRuntimePrimitives.RequireValue(textDirection)
+            ),
+            repaint: new _IndicatorPainterNotifier__tabs()
+        );
     }
 
-    internal _IndicatorPainter__tabs(TabController controller, Decoration indicator, TabBarIndicatorSize indicatorSize, List<GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, EdgeInsetsGeometry indicatorPadding, List<EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!, _IndicatorPainterNotifier__tabs repaint = default!) : base(repaint: Listenable.CreateMerge(new List<Listenable?> { controller.animation, repaint }.Cast<Listenable?>()))
+    internal _IndicatorPainter__tabs(
+        TabController controller,
+        Decoration indicator,
+        TabBarIndicatorSize indicatorSize,
+        List<GlobalKey<IState>> tabKeys,
+        _IndicatorPainter__tabs? old,
+        EdgeInsetsGeometry indicatorPadding,
+        List<EdgeInsetsGeometry> labelPaddings,
+        Color? dividerColor = null,
+        double? dividerHeight = null,
+        bool showDivider = default!,
+        double? devicePixelRatio = null,
+        TabIndicatorAnimation indicatorAnimation = default!,
+        TextDirection textDirection = default!,
+        _IndicatorPainterNotifier__tabs repaint = default!
+    )
+        : base(
+            repaint: Listenable.CreateMerge(
+                new List<Listenable?> { controller.animation, repaint }.Cast<Listenable?>()
+            )
+        )
     {
         this.controller = controller;
         this.indicator = indicator;
@@ -363,7 +552,9 @@ internal class _IndicatorPainter__tabs : CustomPainter
         this.indicatorAnimation = indicatorAnimation;
         this.textDirection = textDirection;
         _repaint = repaint;
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_IndicatorPainter", this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_IndicatorPainter", this)
+        );
         if (old is not null)
         {
             saveTabOffsets(old._currentTabOffsets, old._currentTextDirection);
@@ -378,7 +569,9 @@ internal class _IndicatorPainter__tabs : CustomPainter
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _painter?.dispose();
         _repaint.dispose();
     }
@@ -389,14 +582,17 @@ internal class _IndicatorPainter__tabs : CustomPainter
         _currentTextDirection = textDirection;
     }
 
-    public virtual long maxTabIndex => DartRuntimePrimitives.ConvertValue<long>(checked(_currentTabOffsets!.Count) - 2L);
+    public virtual long maxTabIndex =>
+        DartRuntimePrimitives.ConvertValue<long>(checked(_currentTabOffsets!.Count) - 2L);
+
     public virtual double centerOf(long tabIndex)
     {
         DartRuntimePrimitives.Assert(() => _currentTabOffsets is not null);
         DartRuntimePrimitives.Assert(() => Enumerable.Any(_currentTabOffsets!));
         DartRuntimePrimitives.Assert(() => tabIndex >= 0L);
         DartRuntimePrimitives.Assert(() => tabIndex <= maxTabIndex);
-        return (_currentTabOffsets![(int)tabIndex] + _currentTabOffsets![(int)(tabIndex + 1L)]) / 2.0;
+        return (_currentTabOffsets![(int)tabIndex] + _currentTabOffsets![(int)(tabIndex + 1L)])
+            / 2.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -409,10 +605,26 @@ internal class _IndicatorPainter__tabs : CustomPainter
         DartRuntimePrimitives.Assert(() => tabIndex <= maxTabIndex);
         double tabLeft = default!;
         double tabRight = default!;
-        DartRuntimePrimitives.Ignore((tabLeft, tabRight) = DartRuntimePrimitives.RequireValue(_currentTextDirection) switch { TextDirection.rtl => (_currentTabOffsets![(int)(tabIndex + 1L)], _currentTabOffsets![(int)tabIndex]), TextDirection.ltr => (_currentTabOffsets![(int)tabIndex], _currentTabOffsets![(int)(tabIndex + 1L)]), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Ignore(
+            (tabLeft, tabRight) = DartRuntimePrimitives.RequireValue(_currentTextDirection) switch
+            {
+                TextDirection.rtl => (
+                    _currentTabOffsets![(int)(tabIndex + 1L)],
+                    _currentTabOffsets![(int)tabIndex]
+                ),
+                TextDirection.ltr => (
+                    _currentTabOffsets![(int)tabIndex],
+                    _currentTabOffsets![(int)(tabIndex + 1L)]
+                ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
         if (Equals(indicatorSize, TabBarIndicatorSize.label))
         {
-            double tabWidth = DartRuntimePrimitives.RequireValue(tabKeys[(int)tabIndex].currentContext!.size).width;
+            double tabWidth = DartRuntimePrimitives
+                .RequireValue(tabKeys[(int)tabIndex].currentContext!.size)
+                .width;
             EdgeInsetsGeometry labelPadding = labelPaddings[(int)tabIndex];
             EdgeInsets insets = labelPadding.resolve(_currentTextDirection);
             double delta = (tabRight - tabLeft - (tabWidth + insets.horizontal)) / 2.0;
@@ -423,7 +635,12 @@ internal class _IndicatorPainter__tabs : CustomPainter
         var rect = Rect.fromLTWH(tabLeft, 0.0, tabRight - tabLeft, tabBarSize.height);
         if (!(rect.size >= insetsLocal.collapsedSize))
         {
-            throw DartRuntimePrimitives.AsException(FlutterError.Create("indicatorPadding insets should be less than Tab Size\n" + $"Rect Size : {rect.size}, Insets: {insetsLocal}"));
+            throw DartRuntimePrimitives.AsException(
+                FlutterError.Create(
+                    "indicatorPadding insets should be less than Tab Size\n"
+                        + $"Rect Size : {rect.size}, Insets: {insetsLocal}"
+                )
+            );
         }
         return insetsLocal.deflateRect(rect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -434,23 +651,41 @@ internal class _IndicatorPainter__tabs : CustomPainter
         _needsPaint = false;
         _painter ??= indicator.createBoxPainter(() => markNeedsPaint());
         double valueLocal = controller.animation!.value;
-        _currentRect = indicatorAnimation switch { TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: valueLocal), TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: valueLocal), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        _currentRect = indicatorAnimation switch
+        {
+            TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: valueLocal),
+            TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: valueLocal),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         DartRuntimePrimitives.Assert(() => _currentRect is not null);
-        var configuration = new ImageConfiguration(size: DartRuntimePrimitives.RequireValue(_currentRect).size, textDirection: _currentTextDirection, devicePixelRatio: devicePixelRatio);
+        var configuration = new ImageConfiguration(
+            size: DartRuntimePrimitives.RequireValue(_currentRect).size,
+            textDirection: _currentTextDirection,
+            devicePixelRatio: devicePixelRatio
+        );
         if (showDivider && (DartRuntimePrimitives.RequireValue(dividerHeight) > 0L))
         {
-            var dividerPaint = ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = dividerColor!;
-    __cascade.strokeWidth = DartRuntimePrimitives.RequireValue(dividerHeight);
-    return __cascade;
-}))();
-            var dividerP1 = new Offset(0, size.height - dividerPaint.strokeWidth / 2L);
-            var dividerP2 = new Offset(size.width, size.height - dividerPaint.strokeWidth / 2L);
+            var dividerPaint = (
+                (Func<Paint>)(
+                    () =>
+                    {
+                        var __cascade = new Paint();
+                        __cascade.color = dividerColor!;
+                        __cascade.strokeWidth = DartRuntimePrimitives.RequireValue(dividerHeight);
+                        return __cascade;
+                    }
+                )
+            )();
+            var dividerP1 = new Offset(0, size.height - (dividerPaint.strokeWidth / 2L));
+            var dividerP2 = new Offset(size.width, size.height - (dividerPaint.strokeWidth / 2L));
             canvas.drawLine(dividerP1, dividerP2, dividerPaint);
         }
-        _painter!.paint(canvas, DartRuntimePrimitives.RequireValue(_currentRect).topLeft, configuration);
+        _painter!.paint(
+            canvas,
+            DartRuntimePrimitives.RequireValue(_currentRect).topLeft,
+            configuration
+        );
     }
 
     internal virtual Rect? _applyLinearEffect(Size size, double value)
@@ -481,11 +716,39 @@ internal class _IndicatorPainter__tabs : CustomPainter
     {
         double indexLocal = controller.index.toDouble();
         double progressLeft = (indexLocal - value).abs();
-        long to = ((progressLeft == 0.0) || !controller.indexIsChanging) ? (textDirection switch { TextDirection.ltr => value.ceil(), TextDirection.rtl => value.floor(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, maxTabIndex) : controller.index;
-        long @from = ((progressLeft == 0.0) || !controller.indexIsChanging) ? (textDirection switch { TextDirection.ltr => to - 1L, TextDirection.rtl => to + 1L, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, maxTabIndex) : controller.previousIndex;
+        long to =
+            ((progressLeft == 0.0) || !controller.indexIsChanging)
+                ? (
+                    textDirection switch
+                    {
+                        TextDirection.ltr => value.ceil(),
+                        TextDirection.rtl => value.floor(),
+                        _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            ),
+                    }
+                ).clamp(0L, maxTabIndex)
+                : controller.index;
+        long @from =
+            ((progressLeft == 0.0) || !controller.indexIsChanging)
+                ? (
+                    textDirection switch
+                    {
+                        TextDirection.ltr => to - 1L,
+                        TextDirection.rtl => to + 1L,
+                        _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                            throw new InvalidOperationException(
+                                "Non-exhaustive Dart switch value."
+                            ),
+                    }
+                ).clamp(0L, maxTabIndex)
+                : controller.previousIndex;
         Rect toRect = indicatorRect(size, to);
         Rect fromRect = indicatorRect(size, @from);
-        Rect rect = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs()));
+        Rect rect = DartRuntimePrimitives.RequireValue(
+            Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs())
+        );
         if (controller.animation!.isCompleted)
         {
             return rect;
@@ -510,7 +773,17 @@ internal class _IndicatorPainter__tabs : CustomPainter
         }
         double leftFraction = default!;
         double rightFraction = default!;
-        bool isMovingRight = textDirection switch { TextDirection.ltr => controller.indexIsChanging ? (indexLocal > value) : (value > indexLocal), TextDirection.rtl => controller.indexIsChanging ? (value > indexLocal) : (indexLocal > value), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        bool isMovingRight = textDirection switch
+        {
+            TextDirection.ltr => controller.indexIsChanging
+                ? (indexLocal > value)
+                : (value > indexLocal),
+            TextDirection.rtl => controller.indexIsChanging
+                ? (value > indexLocal)
+                : (indexLocal > value),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         if (isMovingRight)
         {
             leftFraction = accelerateInterpolation(tabChangeProgress);
@@ -525,13 +798,37 @@ internal class _IndicatorPainter__tabs : CustomPainter
         double lerpRectRight = default!;
         if (controller.indexIsChanging)
         {
-            lerpRectLeft = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction));
-            lerpRectRight = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction));
+            lerpRectLeft = DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+            );
+            lerpRectRight = DartRuntimePrimitives.RequireValue(
+                Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+            );
         }
         else
         {
-            lerpRectLeft = (object)isMovingRight switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-            lerpRectRight = (object)isMovingRight switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            lerpRectLeft = (object)isMovingRight switch
+            {
+                true => DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+                ),
+                false => DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)
+                ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
+            lerpRectRight = (object)isMovingRight switch
+            {
+                true => DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+                ),
+                false => DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)
+                ),
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            };
         }
         return Rect.fromLTRB(lerpRectLeft, rect.top, lerpRectRight, rect.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -540,10 +837,14 @@ internal class _IndicatorPainter__tabs : CustomPainter
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __old = (_IndicatorPainter__tabs)oldDelegate;
-        return _needsPaint || (!Equals(controller, __old.controller)) || (!Equals(indicator, __old.indicator)) || (checked(tabKeys.Count) != checked((long)__old.tabKeys.Count)) || (!CollectionsLibrary.listEquals(_currentTabOffsets, __old._currentTabOffsets)) || (!Equals(_currentTextDirection, __old._currentTextDirection));
+        return _needsPaint
+            || (!Equals(controller, __old.controller))
+            || (!Equals(indicator, __old.indicator))
+            || (checked(tabKeys.Count) != checked((long)__old.tabKeys.Count))
+            || (!CollectionsLibrary.listEquals(_currentTabOffsets, __old._currentTabOffsets))
+            || (!Equals(_currentTextDirection, __old._currentTextDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _ChangeAnimation__tabs : Animation<double>, AnimationWithParentMixin<double>
@@ -555,7 +856,9 @@ internal class _ChangeAnimation__tabs : Animation<double>, AnimationWithParentMi
         this.controller = controller;
     }
 
-    public virtual Animation<double> parent => DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
+    public virtual Animation<double> parent =>
+        DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
+
     public override void removeStatusListener(AnimationStatusListener listener)
     {
         if (controller.animation is not null)
@@ -573,8 +876,12 @@ internal class _ChangeAnimation__tabs : Animation<double>, AnimationWithParentMi
     }
 
     public override double value => TabsLibrary._indexChangeProgress(controller);
+
     public override void addListener(Action listener) => parent.addListener(listener);
-    public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
+
+    public override void addStatusListener(AnimationStatusListener listener) =>
+        parent.addStatusListener(listener);
+
     public override AnimationStatus status => parent.status;
 }
 
@@ -589,7 +896,9 @@ internal class _DragAnimation__tabs : Animation<double>, AnimationWithParentMixi
         this.index = index;
     }
 
-    public virtual Animation<double> parent => DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
+    public virtual Animation<double> parent =>
+        DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
+
     public override void removeStatusListener(AnimationStatusListener listener)
     {
         if (controller.animation is not null)
@@ -612,12 +921,20 @@ internal class _DragAnimation__tabs : Animation<double>, AnimationWithParentMixi
         {
             DartRuntimePrimitives.Assert(() => !controller.indexIsChanging);
             double controllerMaxValue = (controller.length - 1L).toDouble();
-            double controllerValue = Dart_uiLibrary.clampDouble(controller.animation!.value, 0.0, controllerMaxValue);
+            double controllerValue = Dart_uiLibrary.clampDouble(
+                controller.animation!.value,
+                0.0,
+                controllerMaxValue
+            );
             return Dart_uiLibrary.clampDouble((controllerValue - index.toDouble()).abs(), 0.0, 1.0);
         }
     }
+
     public override void addListener(Action listener) => parent.addListener(listener);
-    public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
+
+    public override void addStatusListener(AnimationStatusListener listener) =>
+        parent.addStatusListener(listener);
+
     public override AnimationStatus status => parent.status;
 }
 
@@ -627,7 +944,13 @@ internal class _TabBarScrollPosition__tabs : ScrollPositionWithSingleContext
     internal virtual bool _viewportDimensionWasNonZero { get; set; } = false;
     internal virtual bool _needsPixelsCorrection { get; set; } = true;
 
-    internal _TabBarScrollPosition__tabs(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition, _TabBarState__tabs tabBar) : base(physics: physics, context: context, oldPosition: oldPosition, initialPixels: null)
+    internal _TabBarScrollPosition__tabs(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition,
+        _TabBarState__tabs tabBar
+    )
+        : base(physics: physics, context: context, oldPosition: oldPosition, initialPixels: null)
     {
         this.tabBar = tabBar;
     }
@@ -642,7 +965,9 @@ internal class _TabBarScrollPosition__tabs : ScrollPositionWithSingleContext
         if (!_viewportDimensionWasNonZero || _needsPixelsCorrection)
         {
             _needsPixelsCorrection = false;
-            correctPixels(tabBar._initialScrollOffset(viewportDimension, minScrollExtent, maxScrollExtent));
+            correctPixels(
+                tabBar._initialScrollOffset(viewportDimension, minScrollExtent, maxScrollExtent)
+            );
             result = false;
         }
         return base.applyContentDimensions(minScrollExtent, maxScrollExtent) && result;
@@ -653,7 +978,6 @@ internal class _TabBarScrollPosition__tabs : ScrollPositionWithSingleContext
     {
         _needsPixelsCorrection = true;
     }
-
 }
 
 public class TabBarScrollController : ScrollController
@@ -662,15 +986,27 @@ public class TabBarScrollController : ScrollController
 
     public virtual bool debugCheckHasTabBarState()
     {
-        DartRuntimePrimitives.Assert(() => _tabBarState is not null, () => (object?)"This TabBarScrollController is not attached to any TabBar.");
+        DartRuntimePrimitives.Assert(
+            () => _tabBarState is not null,
+            () => (object?)"This TabBarScrollController is not attached to any TabBar."
+        );
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
+    public override ScrollPosition createScrollPosition(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition
+    )
     {
         DartRuntimePrimitives.Assert(() => debugCheckHasTabBarState());
-        return new _TabBarScrollPosition__tabs(physics: physics, context: context, oldPosition: oldPosition, tabBar: _tabBarState!);
+        return new _TabBarScrollPosition__tabs(
+            physics: physics,
+            context: context,
+            oldPosition: oldPosition,
+            tabBar: _tabBarState!
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -679,7 +1015,6 @@ public class TabBarScrollController : ScrollController
         _tabBarState = null;
         base.dispose();
     }
-
 }
 
 public delegate void TabValueChanged<T>(T value, long index);
@@ -719,7 +1054,41 @@ public class TabBar : StatefulWidget, PreferredSizeWidget
     public virtual TabIndicatorAnimation? indicatorAnimation { get; private set; }
     internal virtual bool _isPrimary { get; private set; } = default!;
 
-    public TabBar(Key? key = null, List<Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, EdgeInsetsGeometry indicatorPadding = default!, Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, TextStyle? unselectedLabelStyle = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, Action<long>? onTap = null, Action<bool, long>? onHover = null, Action<bool, long>? onFocusChange = null, ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null) : base(key: key)
+    public TabBar(
+        Key? key = null,
+        List<Widget> tabs = default!,
+        TabController? controller = null,
+        TabBarScrollController? scrollController = null,
+        bool isScrollable = false,
+        EdgeInsetsGeometry? padding = null,
+        Color? indicatorColor = null,
+        bool automaticIndicatorColorAdjustment = true,
+        double indicatorWeight = 2.0,
+        EdgeInsetsGeometry indicatorPadding = default!,
+        Decoration? indicator = null,
+        TabBarIndicatorSize? indicatorSize = null,
+        Color? dividerColor = null,
+        double? dividerHeight = null,
+        Color? labelColor = null,
+        TextStyle? labelStyle = null,
+        EdgeInsetsGeometry? labelPadding = null,
+        Color? unselectedLabelColor = null,
+        TextStyle? unselectedLabelStyle = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        MouseCursor? mouseCursor = null,
+        bool? enableFeedback = null,
+        Action<long>? onTap = null,
+        Action<bool, long>? onHover = null,
+        Action<bool, long>? onFocusChange = null,
+        ScrollPhysics? physics = null,
+        InteractiveInkFeatureFactory? splashFactory = null,
+        BorderRadius? splashBorderRadius = null,
+        TabAlignment? tabAlignment = null,
+        TextScaler? textScaler = null,
+        TabIndicatorAnimation? indicatorAnimation = null
+    )
+        : base(key: key)
     {
         EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
         this.tabs = tabs;
@@ -757,9 +1126,75 @@ public class TabBar : StatefulWidget, PreferredSizeWidget
         System.Diagnostics.Debug.Assert((indicator is not null) || indicatorWeight > 0.0);
     }
 
-    public static TabBar CreateSecondary(Key? key = null, List<Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, EdgeInsetsGeometry indicatorPadding = default!, Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, TextStyle? unselectedLabelStyle = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, Action<long>? onTap = null, Action<bool, long>? onHover = null, Action<bool, long>? onFocusChange = null, ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null)
+    public static TabBar CreateSecondary(
+        Key? key = null,
+        List<Widget> tabs = default!,
+        TabController? controller = null,
+        TabBarScrollController? scrollController = null,
+        bool isScrollable = false,
+        EdgeInsetsGeometry? padding = null,
+        Color? indicatorColor = null,
+        bool automaticIndicatorColorAdjustment = true,
+        double indicatorWeight = 2.0,
+        EdgeInsetsGeometry indicatorPadding = default!,
+        Decoration? indicator = null,
+        TabBarIndicatorSize? indicatorSize = null,
+        Color? dividerColor = null,
+        double? dividerHeight = null,
+        Color? labelColor = null,
+        TextStyle? labelStyle = null,
+        EdgeInsetsGeometry? labelPadding = null,
+        Color? unselectedLabelColor = null,
+        TextStyle? unselectedLabelStyle = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        WidgetStateProperty<Color?>? overlayColor = null,
+        MouseCursor? mouseCursor = null,
+        bool? enableFeedback = null,
+        Action<long>? onTap = null,
+        Action<bool, long>? onHover = null,
+        Action<bool, long>? onFocusChange = null,
+        ScrollPhysics? physics = null,
+        InteractiveInkFeatureFactory? splashFactory = null,
+        BorderRadius? splashBorderRadius = null,
+        TabAlignment? tabAlignment = null,
+        TextScaler? textScaler = null,
+        TabIndicatorAnimation? indicatorAnimation = null
+    )
     {
-        var __instance = new TabBar(key: key, tabs: tabs, controller: controller, scrollController: scrollController, isScrollable: isScrollable, padding: padding, indicatorColor: indicatorColor, automaticIndicatorColorAdjustment: automaticIndicatorColorAdjustment, indicatorWeight: indicatorWeight, indicatorPadding: indicatorPadding, indicator: indicator, indicatorSize: indicatorSize, dividerColor: dividerColor, dividerHeight: dividerHeight, labelColor: labelColor, labelStyle: labelStyle, labelPadding: labelPadding, unselectedLabelColor: unselectedLabelColor, unselectedLabelStyle: unselectedLabelStyle, dragStartBehavior: dragStartBehavior, overlayColor: overlayColor, mouseCursor: mouseCursor, enableFeedback: enableFeedback, onTap: onTap, onHover: onHover, onFocusChange: onFocusChange, physics: physics, splashFactory: splashFactory, splashBorderRadius: splashBorderRadius, tabAlignment: tabAlignment, textScaler: textScaler, indicatorAnimation: indicatorAnimation);
+        var __instance = new TabBar(
+            key: key,
+            tabs: tabs,
+            controller: controller,
+            scrollController: scrollController,
+            isScrollable: isScrollable,
+            padding: padding,
+            indicatorColor: indicatorColor,
+            automaticIndicatorColorAdjustment: automaticIndicatorColorAdjustment,
+            indicatorWeight: indicatorWeight,
+            indicatorPadding: indicatorPadding,
+            indicator: indicator,
+            indicatorSize: indicatorSize,
+            dividerColor: dividerColor,
+            dividerHeight: dividerHeight,
+            labelColor: labelColor,
+            labelStyle: labelStyle,
+            labelPadding: labelPadding,
+            unselectedLabelColor: unselectedLabelColor,
+            unselectedLabelStyle: unselectedLabelStyle,
+            dragStartBehavior: dragStartBehavior,
+            overlayColor: overlayColor,
+            mouseCursor: mouseCursor,
+            enableFeedback: enableFeedback,
+            onTap: onTap,
+            onHover: onHover,
+            onFocusChange: onFocusChange,
+            physics: physics,
+            splashFactory: splashFactory,
+            splashBorderRadius: splashBorderRadius,
+            tabAlignment: tabAlignment,
+            textScaler: textScaler,
+            indicatorAnimation: indicatorAnimation
+        );
         EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
         __instance.tabs = tabs;
         __instance.controller = controller;
@@ -822,7 +1257,10 @@ public class TabBar : StatefulWidget, PreferredSizeWidget
                 if (item is PreferredSizeWidget)
                 {
                     PreferredSizeWidget item__56008__as56034 = (PreferredSizeWidget)item;
-                    if (item__56008__as56034.preferredSize.height == TabsLibrary._kTextAndIconTabHeight)
+                    if (
+                        item__56008__as56034.preferredSize.height
+                        == TabsLibrary._kTextAndIconTabHeight
+                    )
                     {
                         return true;
                     }
@@ -831,7 +1269,9 @@ public class TabBar : StatefulWidget, PreferredSizeWidget
             return false;
         }
     }
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabBarState__tabs());
+
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _TabBarState__tabs());
 }
 
 internal class _TabBarState__tabs : State<TabBar>
@@ -849,7 +1289,12 @@ internal class _TabBarState__tabs : State<TabBar>
     {
         base.initState();
         _tabKeys = widget.tabs.map((tab) => GlobalKey<IState>.Create()).ToList();
-        _labelPaddings = new List<EdgeInsetsGeometry>(Enumerable.Repeat<EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)checked((long)widget.tabs.Count))));
+        _labelPaddings = new List<EdgeInsetsGeometry>(
+            Enumerable.Repeat<EdgeInsetsGeometry>(
+                EdgeInsets.zero,
+                checked((int)checked((long)widget.tabs.Count))
+            )
+        );
     }
 
     internal virtual TabBarThemeData _defaults
@@ -857,7 +1302,9 @@ internal class _TabBarState__tabs : State<TabBar>
         get
         {
             {
-                return widget._isPrimary ? new _TabsPrimaryDefaultsM3__tabs(context, widget.isScrollable) : new _TabsSecondaryDefaultsM3__tabs(context, widget.isScrollable);
+                return widget._isPrimary
+                    ? new _TabsPrimaryDefaultsM3__tabs(context, widget.isScrollable)
+                    : new _TabsSecondaryDefaultsM3__tabs(context, widget.isScrollable);
             }
         }
     }
@@ -874,6 +1321,7 @@ internal class _TabBarState__tabs : State<TabBar>
             return _internalScrollController ??= new TabBarScrollController();
         }
     }
+
     internal virtual Decoration _getIndicator(TabBarIndicatorSize indicatorSize)
     {
         ThemeData theme = Theme.of(context);
@@ -886,29 +1334,66 @@ internal class _TabBarState__tabs : State<TabBar>
         {
             return tabBarTheme.indicator!;
         }
-        Color colorLocal = (widget.indicatorColor ?? tabBarTheme.indicatorColor) ?? _defaults.indicatorColor!;
-        if (widget.automaticIndicatorColorAdjustment && (colorLocal.value == Material.maybeOf(context)?.color?.value))
+        Color colorLocal =
+            (widget.indicatorColor ?? tabBarTheme.indicatorColor) ?? _defaults.indicatorColor!;
+        if (
+            widget.automaticIndicatorColorAdjustment
+            && (colorLocal.value == Material.maybeOf(context)?.color?.value)
+        )
         {
             colorLocal = Colors.white;
         }
-        double effectiveIndicatorWeight = Math.Max(widget.indicatorWeight, (object)widget._isPrimary switch { true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize), false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        bool primaryWithLabelIndicator = indicatorSize switch { TabBarIndicatorSize.label => widget._isPrimary, TabBarIndicatorSize.tab => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        BorderRadius? effectiveBorderRadius = primaryWithLabelIndicator ? new BorderRadius(topLeft: Radius.circular(effectiveIndicatorWeight), topRight: Radius.circular(effectiveIndicatorWeight)) : null;
-        return new UnderlineTabIndicator(borderRadius: effectiveBorderRadius, borderSide: new BorderSide(width: effectiveIndicatorWeight, color: colorLocal));
+        double effectiveIndicatorWeight = Math.Max(
+            widget.indicatorWeight,
+            (object)widget._isPrimary switch
+            {
+                true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize),
+                false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
+        bool primaryWithLabelIndicator = indicatorSize switch
+        {
+            TabBarIndicatorSize.label => widget._isPrimary,
+            TabBarIndicatorSize.tab => false,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        BorderRadius? effectiveBorderRadius = primaryWithLabelIndicator
+            ? new BorderRadius(
+                topLeft: Radius.circular(effectiveIndicatorWeight),
+                topRight: Radius.circular(effectiveIndicatorWeight)
+            )
+            : null;
+        return new UnderlineTabIndicator(
+            borderRadius: effectiveBorderRadius,
+            borderSide: new BorderSide(width: effectiveIndicatorWeight, color: colorLocal)
+        );
     }
 
-    internal virtual bool _controllerIsValid => DartRuntimePrimitives.ConvertValue<bool>(_controller?.animation is not null);
+    internal virtual bool _controllerIsValid =>
+        DartRuntimePrimitives.ConvertValue<bool>(_controller?.animation is not null);
+
     internal virtual void _updateTabController()
     {
         TabController? newController = widget.controller ?? DefaultTabController.maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (newController is null)
             {
-                if (newController is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"No TabController for {DartRuntimePrimitives.RuntimeType(widget)}.\n" + $"When creating a {DartRuntimePrimitives.RuntimeType(widget)}, you must either provide an explicit " + "TabController using the \"controller\" property, or you must ensure that there " + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(widget)}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"No TabController for {DartRuntimePrimitives.RuntimeType(widget)}.\n"
+                            + $"When creating a {DartRuntimePrimitives.RuntimeType(widget)}, you must either provide an explicit "
+                            + "TabController using the \"controller\" property, or you must ensure that there "
+                            + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(widget)}.\n"
+                            + "In this case, there was neither an explicit controller nor a default controller."
+                    )
+                );
+            }
+            return true;
+        });
         if (Equals(newController, _controller))
         {
             return;
@@ -927,7 +1412,9 @@ internal class _TabBarState__tabs : State<TabBar>
         }
     }
 
-    internal virtual void _updateScrollController(TabBarScrollController? oldScrollController = null)
+    internal virtual void _updateScrollController(
+        TabBarScrollController? oldScrollController = null
+    )
     {
         if (!Equals(oldScrollController, widget.scrollController))
         {
@@ -949,10 +1436,37 @@ internal class _TabBarState__tabs : State<TabBar>
     {
         ThemeData theme = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
-        TabBarIndicatorSize indicatorSizeLocal = (widget.indicatorSize ?? tabBarTheme.indicatorSize) ?? DartRuntimePrimitives.RequireValue(_defaults.indicatorSize);
+        TabBarIndicatorSize indicatorSizeLocal =
+            (widget.indicatorSize ?? tabBarTheme.indicatorSize)
+            ?? DartRuntimePrimitives.RequireValue(_defaults.indicatorSize);
         _IndicatorPainter__tabs? oldPainter = _indicatorPainter;
-        TabIndicatorAnimation defaultTabIndicatorAnimation = indicatorSizeLocal switch { TabBarIndicatorSize.label => TabIndicatorAnimation.elastic, TabBarIndicatorSize.tab => TabIndicatorAnimation.linear, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        _indicatorPainter = !_controllerIsValid ? null : _IndicatorPainter__tabs.Create(controller: _controller!, indicator: _getIndicator(indicatorSizeLocal), indicatorSize: indicatorSizeLocal, indicatorPadding: widget.indicatorPadding, tabKeys: _tabKeys, old: oldPainter, labelPaddings: _labelPaddings, dividerColor: (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor, dividerHeight: (widget.dividerHeight ?? tabBarTheme.dividerHeight) ?? _defaults.dividerHeight, showDivider: !widget.isScrollable, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), indicatorAnimation: (widget.indicatorAnimation ?? tabBarTheme.indicatorAnimation) ?? defaultTabIndicatorAnimation, textDirection: Directionality.of(context));
+        TabIndicatorAnimation defaultTabIndicatorAnimation = indicatorSizeLocal switch
+        {
+            TabBarIndicatorSize.label => TabIndicatorAnimation.elastic,
+            TabBarIndicatorSize.tab => TabIndicatorAnimation.linear,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+        _indicatorPainter = !_controllerIsValid
+            ? null
+            : _IndicatorPainter__tabs.Create(
+                controller: _controller!,
+                indicator: _getIndicator(indicatorSizeLocal),
+                indicatorSize: indicatorSizeLocal,
+                indicatorPadding: widget.indicatorPadding,
+                tabKeys: _tabKeys,
+                old: oldPainter,
+                labelPaddings: _labelPaddings,
+                dividerColor: (widget.dividerColor ?? tabBarTheme.dividerColor)
+                    ?? _defaults.dividerColor,
+                dividerHeight: (widget.dividerHeight ?? tabBarTheme.dividerHeight)
+                    ?? _defaults.dividerHeight,
+                showDivider: !widget.isScrollable,
+                devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
+                indicatorAnimation: (widget.indicatorAnimation ?? tabBarTheme.indicatorAnimation)
+                    ?? defaultTabIndicatorAnimation,
+                textDirection: Directionality.of(context)
+            );
         oldPainter?.dispose();
     }
 
@@ -967,7 +1481,10 @@ internal class _TabBarState__tabs : State<TabBar>
     public override void didUpdateWidget(TabBar oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(widget.controller, oldWidget.controller)) || (!Equals(widget.scrollController, oldWidget.scrollController)))
+        if (
+            (!Equals(widget.controller, oldWidget.controller))
+            || (!Equals(widget.scrollController, oldWidget.scrollController))
+        )
         {
             _updateScrollController(oldScrollController: oldWidget.scrollController);
             _updateTabController();
@@ -977,14 +1494,24 @@ internal class _TabBarState__tabs : State<TabBar>
                 ScrollPosition positionLocal = _effectiveScrollController.position;
                 if (positionLocal is _TabBarScrollPosition__tabs)
                 {
-                    _TabBarScrollPosition__tabs position__64819__as64879 = (_TabBarScrollPosition__tabs)positionLocal;
+                    _TabBarScrollPosition__tabs position__64819__as64879 =
+                        (_TabBarScrollPosition__tabs)positionLocal;
                     position__64819__as64879.markNeedsPixelsCorrection();
                 }
             }
         }
         else
         {
-            if ((!Equals(widget.indicatorColor, oldWidget.indicatorColor)) || (widget.indicatorWeight != oldWidget.indicatorWeight) || (!Equals(widget.indicatorSize, oldWidget.indicatorSize)) || (!Equals(widget.indicatorPadding, oldWidget.indicatorPadding)) || (!Equals(widget.indicator, oldWidget.indicator)) || (!Equals(widget.dividerColor, oldWidget.dividerColor)) || (widget.dividerHeight != oldWidget.dividerHeight) || (!Equals(widget.indicatorAnimation, oldWidget.indicatorAnimation)))
+            if (
+                (!Equals(widget.indicatorColor, oldWidget.indicatorColor))
+                || (widget.indicatorWeight != oldWidget.indicatorWeight)
+                || (!Equals(widget.indicatorSize, oldWidget.indicatorSize))
+                || (!Equals(widget.indicatorPadding, oldWidget.indicatorPadding))
+                || (!Equals(widget.indicator, oldWidget.indicator))
+                || (!Equals(widget.dividerColor, oldWidget.dividerColor))
+                || (widget.dividerHeight != oldWidget.dividerHeight)
+                || (!Equals(widget.indicatorAnimation, oldWidget.indicatorAnimation))
+            )
             {
                 _initIndicatorPainter();
             }
@@ -992,15 +1519,29 @@ internal class _TabBarState__tabs : State<TabBar>
         if (checked(widget.tabs.Count) > checked((long)_tabKeys.Count))
         {
             long delta = checked(widget.tabs.Count) - checked((long)_tabKeys.Count);
-            _tabKeys.AddRange(DartRuntimePrimitives.CreateList(delta, (n) => GlobalKey<IState>.Create()).Cast<GlobalKey<IState>>());
-            _labelPaddings.AddRange(new List<EdgeInsetsGeometry>(Enumerable.Repeat<EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)delta))).Cast<EdgeInsetsGeometry>());
+            _tabKeys.AddRange(
+                DartRuntimePrimitives
+                    .CreateList(delta, (n) => GlobalKey<IState>.Create())
+                    .Cast<GlobalKey<IState>>()
+            );
+            _labelPaddings.AddRange(
+                new List<EdgeInsetsGeometry>(
+                    Enumerable.Repeat<EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)delta))
+                ).Cast<EdgeInsetsGeometry>()
+            );
         }
         else
         {
             if (checked(widget.tabs.Count) < checked((long)_tabKeys.Count))
             {
-                _tabKeys.RemoveRange(checked((int)checked((long)widget.tabs.Count)), checked((int)checked((long)_tabKeys.Count)));
-                _labelPaddings.RemoveRange(checked((int)checked((long)widget.tabs.Count)), checked((int)checked((long)_tabKeys.Count)));
+                _tabKeys.RemoveRange(
+                    checked((int)checked((long)widget.tabs.Count)),
+                    checked((int)checked((long)_tabKeys.Count))
+                );
+                _labelPaddings.RemoveRange(
+                    checked((int)checked((long)widget.tabs.Count)),
+                    checked((int)checked((long)_tabKeys.Count))
+                );
             }
         }
     }
@@ -1020,7 +1561,13 @@ internal class _TabBarState__tabs : State<TabBar>
     }
 
     public virtual long maxTabIndex => _indicatorPainter!.maxTabIndex;
-    internal virtual double _tabScrollOffset(long index, double viewportWidth, double minExtent, double maxExtent)
+
+    internal virtual double _tabScrollOffset(
+        long index,
+        double viewportWidth,
+        double minExtent,
+        double maxExtent
+    )
     {
         if (!widget.isScrollable)
         {
@@ -1031,48 +1578,103 @@ internal class _TabBarState__tabs : State<TabBar>
         switch (Directionality.of(context))
         {
             case TextDirection.rtl:
-                {
-                    paddingStart = widget.padding?.resolve(TextDirection.rtl).right ?? 0;
-                    tabCenter = _tabStripWidth - tabCenter;
-                    break;
-                }
+            {
+                paddingStart = widget.padding?.resolve(TextDirection.rtl).right ?? 0;
+                tabCenter = _tabStripWidth - tabCenter;
+                break;
+            }
             case TextDirection.ltr:
-                {
-                    paddingStart = widget.padding?.resolve(TextDirection.ltr).left ?? 0;
-                    break;
-                }
+            {
+                paddingStart = widget.padding?.resolve(TextDirection.ltr).left ?? 0;
+                break;
+            }
         }
-        return Dart_uiLibrary.clampDouble(tabCenter + paddingStart - (viewportWidth / 2.0), minExtent, maxExtent);
+        return Dart_uiLibrary.clampDouble(
+            tabCenter + paddingStart - (viewportWidth / 2.0),
+            minExtent,
+            maxExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _tabCenteredScrollOffset(long index)
     {
         ScrollPosition positionLocal = _effectiveScrollController.position;
-        return _tabScrollOffset(index, positionLocal.viewportDimension, positionLocal.minScrollExtent, positionLocal.maxScrollExtent);
+        return _tabScrollOffset(
+            index,
+            positionLocal.viewportDimension,
+            positionLocal.minScrollExtent,
+            positionLocal.maxScrollExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _initialScrollOffset(double viewportWidth, double minExtent, double maxExtent)
+    internal virtual double _initialScrollOffset(
+        double viewportWidth,
+        double minExtent,
+        double maxExtent
+    )
     {
-        return _tabScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex), viewportWidth, minExtent, maxExtent);
+        return _tabScrollOffset(
+            DartRuntimePrimitives.RequireValue(_currentIndex),
+            viewportWidth,
+            minExtent,
+            maxExtent
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _scrollToCurrentIndex()
     {
         double offset = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex));
-        DartRuntimePrimitives.Ignore(_effectiveScrollController.animateTo(offset, duration: ConstantsLibrary.kTabScrollDuration, curve: Curves.ease));
+        DartRuntimePrimitives.Ignore(
+            _effectiveScrollController.animateTo(
+                offset,
+                duration: ConstantsLibrary.kTabScrollDuration,
+                curve: Curves.ease
+            )
+        );
     }
 
     internal virtual void _scrollToControllerValue()
     {
-        double? leadingPosition = (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L) ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) - 1L) : null;
-        double middlePosition = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex));
-        double? trailingPosition = (DartRuntimePrimitives.RequireValue(_currentIndex) < maxTabIndex) ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) + 1L) : null;
+        double? leadingPosition =
+            (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L)
+                ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) - 1L)
+                : null;
+        double middlePosition = _tabCenteredScrollOffset(
+            DartRuntimePrimitives.RequireValue(_currentIndex)
+        );
+        double? trailingPosition =
+            (DartRuntimePrimitives.RequireValue(_currentIndex) < maxTabIndex)
+                ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) + 1L)
+                : null;
         double indexLocal = _controller!.index.toDouble();
         double valueLocal = _controller!.animation!.value;
-        double offset = (valueLocal - indexLocal) switch { -1.0 => leadingPosition ?? middlePosition, 1.0 => trailingPosition ?? middlePosition, 0 => middlePosition, < 0L => (leadingPosition is null) ? middlePosition : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition, DartRuntimePrimitives.RequireValue(leadingPosition), indexLocal - valueLocal)), _ => (trailingPosition is null) ? middlePosition : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition, DartRuntimePrimitives.RequireValue(trailingPosition), valueLocal - indexLocal)) };
+        double offset = (valueLocal - indexLocal) switch
+        {
+            -1.0 => leadingPosition ?? middlePosition,
+            1.0 => trailingPosition ?? middlePosition,
+            0 => middlePosition,
+            < 0L => (leadingPosition is null)
+                ? middlePosition
+                : DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(
+                        middlePosition,
+                        DartRuntimePrimitives.RequireValue(leadingPosition),
+                        indexLocal - valueLocal
+                    )
+                ),
+            _ => (trailingPosition is null)
+                ? middlePosition
+                : DartRuntimePrimitives.RequireValue(
+                    Dart_uiLibrary.lerpDouble(
+                        middlePosition,
+                        DartRuntimePrimitives.RequireValue(trailingPosition),
+                        valueLocal - indexLocal
+                    )
+                ),
+        };
         _effectiveScrollController.jumpTo(offset);
     }
 
@@ -1096,12 +1698,14 @@ internal class _TabBarState__tabs : State<TabBar>
                 _scrollToCurrentIndex();
             }
         }
-        setState(() =>
-        {
-        });
+        setState(() => { });
     }
 
-    internal virtual void _saveTabOffsets(List<double> tabOffsets, TextDirection textDirection, double width)
+    internal virtual void _saveTabOffsets(
+        List<double> tabOffsets,
+        TextDirection textDirection,
+        double width
+    )
     {
         _tabStripWidth = width;
         _indicatorPainter?.saveTabOffsets(tabOffsets, textDirection);
@@ -1114,9 +1718,24 @@ internal class _TabBarState__tabs : State<TabBar>
         widget.onTap?.Invoke(index);
     }
 
-    internal virtual Widget _buildStyledTab(Widget child, bool isSelected, Animation<double> animation, TabBarThemeData defaults)
+    internal virtual Widget _buildStyledTab(
+        Widget child,
+        bool isSelected,
+        Animation<double> animation,
+        TabBarThemeData defaults
+    )
     {
-        return new _TabStyle__tabs(animation: animation, isSelected: isSelected, isPrimary: widget._isPrimary, labelColor: widget.labelColor, unselectedLabelColor: widget.unselectedLabelColor, labelStyle: widget.labelStyle, unselectedLabelStyle: widget.unselectedLabelStyle, defaults: defaults, child: child);
+        return new _TabStyle__tabs(
+            animation: animation,
+            isSelected: isSelected,
+            isPrimary: widget._isPrimary,
+            labelColor: widget.labelColor,
+            unselectedLabelColor: widget.unselectedLabelColor,
+            labelStyle: widget.labelStyle,
+            unselectedLabelStyle: widget.unselectedLabelStyle,
+            defaults: defaults,
+            child: child
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1126,22 +1745,30 @@ internal class _TabBarState__tabs : State<TabBar>
         {
             return true;
         }
-        WidgetsBinding.instance.addPostFrameCallback((duration) =>
-        {
-            _debugHasScheduledValidTabsCountCheck = false;
-            if (!mounted)
+        WidgetsBinding.instance.addPostFrameCallback(
+            (duration) =>
             {
-                return;
-            }
-            DartRuntimePrimitives.Assert(() =>
+                _debugHasScheduledValidTabsCountCheck = false;
+                if (!mounted)
+                {
+                    return;
+                }
+                DartRuntimePrimitives.Assert(() =>
                 {
                     if (_controller!.length != checked(widget.tabs.Count))
                     {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create($"Controller's length property ({_controller!.length}) does not match the " + $"number of tabs ({checked((long)widget.tabs.Count)}) present in TabBar's tabs property."));
+                        throw DartRuntimePrimitives.AsException(
+                            FlutterError.Create(
+                                $"Controller's length property ({_controller!.length}) does not match the "
+                                    + $"number of tabs ({checked((long)widget.tabs.Count)}) present in TabBar's tabs property."
+                            )
+                        );
                     }
                     return true;
                 });
-        }, debugLabel: "TabBar.tabsCountCheck");
+            },
+            debugLabel: "TabBar.tabsCountCheck"
+        );
         _debugHasScheduledValidTabsCountCheck = true;
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1150,48 +1777,93 @@ internal class _TabBarState__tabs : State<TabBar>
     internal virtual bool _debugTabAlignmentIsValid(TabAlignment tabAlignment)
     {
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (widget.isScrollable && Equals(tabAlignment, TabAlignment.fill))
             {
-                if (widget.isScrollable && Equals(tabAlignment, TabAlignment.fill))
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{tabAlignment} is only valid for non-scrollable tab bars."));
-                }
-                if (!widget.isScrollable && (Equals(tabAlignment, TabAlignment.start) || Equals(tabAlignment, TabAlignment.startOffset)))
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{tabAlignment} is only valid for scrollable tab bars."));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"{tabAlignment} is only valid for non-scrollable tab bars."
+                    )
+                );
+            }
+            if (
+                !widget.isScrollable
+                && (
+                    Equals(tabAlignment, TabAlignment.start)
+                    || Equals(tabAlignment, TabAlignment.startOffset)
+                )
+            )
+            {
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create($"{tabAlignment} is only valid for scrollable tab bars.")
+                );
+            }
+            return true;
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         DartRuntimePrimitives.Assert(() => _debugScheduleCheckHasValidTabsCount());
         ThemeData theme = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
-        TabAlignment effectiveTabAlignment = (widget.tabAlignment ?? tabBarTheme.tabAlignment) ?? DartRuntimePrimitives.RequireValue(_defaults.tabAlignment);
+        TabAlignment effectiveTabAlignment =
+            (widget.tabAlignment ?? tabBarTheme.tabAlignment)
+            ?? DartRuntimePrimitives.RequireValue(_defaults.tabAlignment);
         DartRuntimePrimitives.Assert(() => _debugTabAlignmentIsValid(effectiveTabAlignment));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         if (_controller!.length == 0L)
         {
-            return new LimitedBox(maxWidth: 0.0, child: new SizedBox(width: double.PositiveInfinity, height: TabsLibrary._kTabHeight + widget.indicatorWeight));
+            return new LimitedBox(
+                maxWidth: 0.0,
+                child: new SizedBox(
+                    width: double.PositiveInfinity,
+                    height: TabsLibrary._kTabHeight + widget.indicatorWeight
+                )
+            );
         }
-        var wrappedTabs = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)widget.tabs.Count))), (index) =>
-        {
-            EdgeInsetsGeometry paddingLocal = (widget.labelPadding ?? tabBarTheme.labelPadding) ?? ConstantsLibrary.kTabLabelPadding;
-            double verticalAdjustment = (TabsLibrary._kTextAndIconTabHeight - TabsLibrary._kTabHeight) / 2.0;
-            Widget tabLocal = widget.tabs[index];
-            if ((tabLocal is PreferredSizeWidget) && (((PreferredSizeWidget)tabLocal).preferredSize.height == TabsLibrary._kTabHeight) && widget.tabHasTextAndIcon)
-            {
-                PreferredSizeWidget tab__72645__as72681 = (PreferredSizeWidget)tabLocal;
-                paddingLocal = paddingLocal.add(EdgeInsets.CreateSymmetric(vertical: verticalAdjustment));
-            }
-            _labelPaddings[index] = paddingLocal;
-            return new Center(heightFactor: 1.0, child: new Padding(padding: _labelPaddings[index], child: new KeyedSubtree(key: _tabKeys[index], child: widget.tabs[index])));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        var wrappedTabs = new List<Widget>(
+            Enumerable.Select(
+                Enumerable.Range(0, checked((int)checked((long)widget.tabs.Count))),
+                (index) =>
+                {
+                    EdgeInsetsGeometry paddingLocal =
+                        (widget.labelPadding ?? tabBarTheme.labelPadding)
+                        ?? ConstantsLibrary.kTabLabelPadding;
+                    double verticalAdjustment =
+                        (TabsLibrary._kTextAndIconTabHeight - TabsLibrary._kTabHeight) / 2.0;
+                    Widget tabLocal = widget.tabs[index];
+                    if (
+                        (tabLocal is PreferredSizeWidget)
+                        && (
+                            ((PreferredSizeWidget)tabLocal).preferredSize.height
+                            == TabsLibrary._kTabHeight
+                        )
+                        && widget.tabHasTextAndIcon
+                    )
+                    {
+                        PreferredSizeWidget tab__72645__as72681 = (PreferredSizeWidget)tabLocal;
+                        paddingLocal = paddingLocal.add(
+                            EdgeInsets.CreateSymmetric(vertical: verticalAdjustment)
+                        );
+                    }
+                    _labelPaddings[index] = paddingLocal;
+                    return new Center(
+                        heightFactor: 1.0,
+                        child: new Padding(
+                            padding: _labelPaddings[index],
+                            child: new KeyedSubtree(key: _tabKeys[index], child: widget.tabs[index])
+                        )
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         if (_controller is not null)
         {
             long previousIndexLocal = _controller!.previousIndex;
@@ -1199,25 +1871,61 @@ internal class _TabBarState__tabs : State<TabBar>
             {
                 DartRuntimePrimitives.Assert(() => _currentIndex != previousIndexLocal);
                 Animation<double> animationLocal = new _ChangeAnimation__tabs(_controller!);
-                wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)] = _buildStyledTab(wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)], true, animationLocal, _defaults);
-                wrappedTabs[(int)previousIndexLocal] = _buildStyledTab(wrappedTabs[(int)previousIndexLocal], false, animationLocal, _defaults);
+                wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)] =
+                    _buildStyledTab(
+                        wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)],
+                        true,
+                        animationLocal,
+                        _defaults
+                    );
+                wrappedTabs[(int)previousIndexLocal] = _buildStyledTab(
+                    wrappedTabs[(int)previousIndexLocal],
+                    false,
+                    animationLocal,
+                    _defaults
+                );
             }
             else
             {
                 long tabIndexLocal = DartRuntimePrimitives.RequireValue(_currentIndex);
-                Animation<double> centerAnimation = new _DragAnimation__tabs(_controller!, tabIndexLocal);
-                wrappedTabs[(int)tabIndexLocal] = _buildStyledTab(wrappedTabs[(int)tabIndexLocal], true, centerAnimation, _defaults);
+                Animation<double> centerAnimation = new _DragAnimation__tabs(
+                    _controller!,
+                    tabIndexLocal
+                );
+                wrappedTabs[(int)tabIndexLocal] = _buildStyledTab(
+                    wrappedTabs[(int)tabIndexLocal],
+                    true,
+                    centerAnimation,
+                    _defaults
+                );
                 if (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L)
                 {
                     long tabIndexAlternate = DartRuntimePrimitives.RequireValue(_currentIndex) - 1L;
-                    Animation<double> previousAnimation = new ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexAlternate));
-                    wrappedTabs[(int)tabIndexAlternate] = _buildStyledTab(wrappedTabs[(int)tabIndexAlternate], false, previousAnimation, _defaults);
+                    Animation<double> previousAnimation = new ReverseAnimation(
+                        new _DragAnimation__tabs(_controller!, tabIndexAlternate)
+                    );
+                    wrappedTabs[(int)tabIndexAlternate] = _buildStyledTab(
+                        wrappedTabs[(int)tabIndexAlternate],
+                        false,
+                        previousAnimation,
+                        _defaults
+                    );
                 }
-                if (DartRuntimePrimitives.RequireValue(_currentIndex) < (checked(widget.tabs.Count) - 1L))
+                if (
+                    DartRuntimePrimitives.RequireValue(_currentIndex)
+                    < (checked(widget.tabs.Count) - 1L)
+                )
                 {
                     long tabIndexNested = DartRuntimePrimitives.RequireValue(_currentIndex) + 1L;
-                    Animation<double> nextAnimation = new ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexNested));
-                    wrappedTabs[(int)tabIndexNested] = _buildStyledTab(wrappedTabs[(int)tabIndexNested], false, nextAnimation, _defaults);
+                    Animation<double> nextAnimation = new ReverseAnimation(
+                        new _DragAnimation__tabs(_controller!, tabIndexNested)
+                    );
+                    wrappedTabs[(int)tabIndexNested] = _buildStyledTab(
+                        wrappedTabs[(int)tabIndexNested],
+                        false,
+                        nextAnimation,
+                        _defaults
+                    );
                 }
             }
         }
@@ -1226,48 +1934,188 @@ internal class _TabBarState__tabs : State<TabBar>
         {
             // Dart captures a separate loop variable per iteration; C# for loops do not.
             var tabIndex = indexLocal;
-            var selectedState = ((Func<HashSet<WidgetState>>)(() => { var __collection75624 = new HashSet<WidgetState>(); if (indexLocal == _currentIndex) { __collection75624.Add(WidgetState.selected); } return __collection75624; }))();
-            MouseCursor effectiveMouseCursor = (WidgetStateProperty.resolveAs(widget.mouseCursor, selectedState) ?? (tabBarTheme.mouseCursor?.resolve(selectedState))) ?? WidgetStateMouseCursor.clickable.resolve(selectedState);
-            WidgetStateProperty<Color?> defaultOverlay = WidgetStateProperty.resolveWith((states) =>
-            {
-                HashSet<WidgetState> effectiveStates = ((Func<HashSet<WidgetState>>)(() =>
+            var selectedState = (
+                (Func<HashSet<WidgetState>>)(
+                    () =>
+                    {
+                        var __collection75624 = new HashSet<WidgetState>();
+                        if (indexLocal == _currentIndex)
+                        {
+                            __collection75624.Add(WidgetState.selected);
+                        }
+                        return __collection75624;
+                    }
+                )
+            )();
+            MouseCursor effectiveMouseCursor =
+                (
+                    WidgetStateProperty.resolveAs(widget.mouseCursor, selectedState)
+                    ?? (tabBarTheme.mouseCursor?.resolve(selectedState))
+                ) ?? WidgetStateMouseCursor.clickable.resolve(selectedState);
+            WidgetStateProperty<Color?> defaultOverlay = WidgetStateProperty.resolveWith(
+                (states) =>
                 {
-                    var __cascade = selectedState.toSet();
-                    __cascade.UnionWith(states);
-                    return __cascade;
-                }))();
-                return _defaults.overlayColor?.resolve(effectiveStates);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
-            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: () =>
-            {
-                _handleTap(tabIndex);
-            }, onHover: (value) =>
-            {
-                widget.onHover?.Invoke(value, tabIndex);
-            }, onFocusChange: (value) =>
-            {
-                widget.onFocusChange?.Invoke(value, tabIndex);
-            }, enableFeedback: widget.enableFeedback ?? true, overlayColor: (widget.overlayColor ?? tabBarTheme.overlayColor) ?? defaultOverlay, splashFactory: (widget.splashFactory ?? tabBarTheme.splashFactory) ?? _defaults.splashFactory, borderRadius: (widget.splashBorderRadius ?? tabBarTheme.splashBorderRadius) ?? _defaults.splashBorderRadius, child: new Padding(padding: EdgeInsets.CreateOnly(bottom: widget.indicatorWeight), child: new Widgets.Semantics(role: SemanticsRole.tab, child: new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(wrappedTabs[(int)indexLocal]), DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(selected: indexLocal == _currentIndex, label: Foundation.ConstantsLibrary.kIsWeb ? null : localizations.tabLabel(tabIndex: indexLocal + 1L, tabCount: tabCountLocal))) })))));
-            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new MergeSemantics(child: wrappedTabs[(int)indexLocal]));
+                    HashSet<WidgetState> effectiveStates = (
+                        (Func<HashSet<WidgetState>>)(
+                            () =>
+                            {
+                                var __cascade = selectedState.toSet();
+                                __cascade.UnionWith(states);
+                                return __cascade;
+                            }
+                        )
+                    )();
+                    return _defaults.overlayColor?.resolve(effectiveStates);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            );
+            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(
+                new InkWell(
+                    mouseCursor: effectiveMouseCursor,
+                    onTap: () =>
+                    {
+                        _handleTap(tabIndex);
+                    },
+                    onHover: (value) =>
+                    {
+                        widget.onHover?.Invoke(value, tabIndex);
+                    },
+                    onFocusChange: (value) =>
+                    {
+                        widget.onFocusChange?.Invoke(value, tabIndex);
+                    },
+                    enableFeedback: widget.enableFeedback ?? true,
+                    overlayColor: (widget.overlayColor ?? tabBarTheme.overlayColor)
+                        ?? defaultOverlay,
+                    splashFactory: (widget.splashFactory ?? tabBarTheme.splashFactory)
+                        ?? _defaults.splashFactory,
+                    borderRadius: (widget.splashBorderRadius ?? tabBarTheme.splashBorderRadius)
+                        ?? _defaults.splashBorderRadius,
+                    child: new Padding(
+                        padding: EdgeInsets.CreateOnly(bottom: widget.indicatorWeight),
+                        child: new Widgets.Semantics(
+                            role: SemanticsRole.tab,
+                            child: new Stack(
+                                children: new List<Widget>
+                                {
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        wrappedTabs[(int)indexLocal]
+                                    ),
+                                    DartRuntimePrimitives.ConvertValue<Widget>(
+                                        new Widgets.Semantics(
+                                            selected: indexLocal == _currentIndex,
+                                            label: Foundation.ConstantsLibrary.kIsWeb
+                                                ? null
+                                                : localizations.tabLabel(
+                                                    tabIndex: indexLocal + 1L,
+                                                    tabCount: tabCountLocal
+                                                )
+                                        )
+                                    ),
+                                }
+                            )
+                        )
+                    )
+                )
+            );
+            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(
+                new MergeSemantics(child: wrappedTabs[(int)indexLocal])
+            );
             if (!widget.isScrollable && Equals(effectiveTabAlignment, TabAlignment.fill))
             {
-                wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: wrappedTabs[(int)indexLocal]));
+                wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Expanded(child: wrappedTabs[(int)indexLocal])
+                );
             }
         }
-        Widget tabBarLocal = new Widgets.Semantics(role: SemanticsRole.tabBar, container: true, explicitChildNodes: true, child: new CustomPaint(painter: _indicatorPainter, child: new _TabStyle__tabs(animation: AnimationsLibrary.kAlwaysDismissedAnimation, isSelected: false, isPrimary: widget._isPrimary, labelColor: widget.labelColor, unselectedLabelColor: widget.unselectedLabelColor, labelStyle: widget.labelStyle, unselectedLabelStyle: widget.unselectedLabelStyle, defaults: _defaults, child: new _TabLabelBar__tabs(onPerformLayout: _saveTabOffsets, mainAxisSize: Equals(effectiveTabAlignment, TabAlignment.fill) ? MainAxisSize.max : MainAxisSize.min, children: wrappedTabs))));
+        Widget tabBarLocal = new Widgets.Semantics(
+            role: SemanticsRole.tabBar,
+            container: true,
+            explicitChildNodes: true,
+            child: new CustomPaint(
+                painter: _indicatorPainter,
+                child: new _TabStyle__tabs(
+                    animation: AnimationsLibrary.kAlwaysDismissedAnimation,
+                    isSelected: false,
+                    isPrimary: widget._isPrimary,
+                    labelColor: widget.labelColor,
+                    unselectedLabelColor: widget.unselectedLabelColor,
+                    labelStyle: widget.labelStyle,
+                    unselectedLabelStyle: widget.unselectedLabelStyle,
+                    defaults: _defaults,
+                    child: new _TabLabelBar__tabs(
+                        onPerformLayout: _saveTabOffsets,
+                        mainAxisSize: Equals(effectiveTabAlignment, TabAlignment.fill)
+                            ? MainAxisSize.max
+                            : MainAxisSize.min,
+                        children: wrappedTabs
+                    )
+                )
+            )
+        );
         if (widget.isScrollable)
         {
-            EdgeInsetsGeometry? effectivePadding = Equals(effectiveTabAlignment, TabAlignment.startOffset) ? EdgeInsetsDirectional.CreateOnly(start: TabsLibrary._kStartOffset).add(widget.padding ?? EdgeInsets.zero) : widget.padding;
-            tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(overscroll: false), child: new SingleChildScrollView(dragStartBehavior: widget.dragStartBehavior, scrollDirection: Axis.horizontal, controller: _effectiveScrollController, padding: effectivePadding, physics: widget.physics, child: tabBarLocal)));
+            EdgeInsetsGeometry? effectivePadding = Equals(
+                effectiveTabAlignment,
+                TabAlignment.startOffset
+            )
+                ? EdgeInsetsDirectional
+                    .CreateOnly(start: TabsLibrary._kStartOffset)
+                    .add(widget.padding ?? EdgeInsets.zero)
+                : widget.padding;
+            tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+                    child: new SingleChildScrollView(
+                        dragStartBehavior: widget.dragStartBehavior,
+                        scrollDirection: Axis.horizontal,
+                        controller: _effectiveScrollController,
+                        padding: effectivePadding,
+                        physics: widget.physics,
+                        child: tabBarLocal
+                    )
+                )
+            );
             {
-                AlignmentGeometry effectiveAlignment = effectiveTabAlignment switch { TabAlignment.center => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(Alignment.center), TabAlignment.start or TabAlignment.startOffset => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(AlignmentDirectional.centerStart), TabAlignment.fill => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(AlignmentDirectional.centerStart), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                Color dividerColorLocal = (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
-                double dividerHeightLocal = (widget.dividerHeight ?? tabBarTheme.dividerHeight) ?? DartRuntimePrimitives.RequireValue(_defaults.dividerHeight);
-                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Align(heightFactor: 1.0, widthFactor: (dividerHeightLocal > 0L) ? null : 1.0, alignment: effectiveAlignment, child: tabBarLocal));
+                AlignmentGeometry effectiveAlignment = effectiveTabAlignment switch
+                {
+                    TabAlignment.center => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(
+                        Alignment.center
+                    ),
+                    TabAlignment.start or TabAlignment.startOffset =>
+                        DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(
+                            AlignmentDirectional.centerStart
+                        ),
+                    TabAlignment.fill => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(
+                        AlignmentDirectional.centerStart
+                    ),
+                    _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                };
+                Color dividerColorLocal =
+                    (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
+                double dividerHeightLocal =
+                    (widget.dividerHeight ?? tabBarTheme.dividerHeight)
+                    ?? DartRuntimePrimitives.RequireValue(_defaults.dividerHeight);
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Align(
+                        heightFactor: 1.0,
+                        widthFactor: (dividerHeightLocal > 0L) ? null : 1.0,
+                        alignment: effectiveAlignment,
+                        child: tabBarLocal
+                    )
+                );
                 if ((!Equals(dividerColorLocal, Colors.transparent)) && (dividerHeightLocal > 0L))
                 {
-                    tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new CustomPaint(painter: new _DividerPainter__tabs(dividerColor: dividerColorLocal, dividerHeight: dividerHeightLocal), child: tabBarLocal));
+                    tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                        new CustomPaint(
+                            painter: new _DividerPainter__tabs(
+                                dividerColor: dividerColorLocal,
+                                dividerHeight: dividerHeightLocal
+                            ),
+                            child: tabBarLocal
+                        )
+                    );
                 }
             }
         }
@@ -1275,12 +2123,21 @@ internal class _TabBarState__tabs : State<TabBar>
         {
             if (widget.padding is not null)
             {
-                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: widget.padding!, child: tabBarLocal));
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                    new Padding(padding: widget.padding!, child: tabBarLocal)
+                );
             }
         }
-        return new Material(type: MaterialType.transparency, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: widget.textScaler ?? tabBarTheme.textScaler), child: tabBarLocal));
+        return new Material(
+            type: MaterialType.transparency,
+            child: new MediaQuery(
+                data: MediaQuery
+                    .of(context)
+                    .copyWith(textScaler: widget.textScaler ?? tabBarTheme.textScaler),
+                child: tabBarLocal
+            )
+        );
     }
-
 }
 
 public class TabBarView : StatefulWidget
@@ -1292,7 +2149,16 @@ public class TabBarView : StatefulWidget
     public virtual double viewportFraction { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public TabBarView(Key? key = null, List<Widget> children = default!, TabController? controller = null, ScrollPhysics? physics = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, double viewportFraction = 1.0, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public TabBarView(
+        Key? key = null,
+        List<Widget> children = default!,
+        TabController? controller = null,
+        ScrollPhysics? physics = null,
+        Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start,
+        double viewportFraction = 1.0,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(key: key)
     {
         this.children = children;
         this.controller = controller;
@@ -1302,7 +2168,8 @@ public class TabBarView : StatefulWidget
         this.clipBehavior = clipBehavior;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabBarViewState__tabs());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _TabBarViewState__tabs());
 }
 
 internal class _TabBarViewState__tabs : State<TabBarView>
@@ -1315,18 +2182,28 @@ internal class _TabBarViewState__tabs : State<TabBarView>
     internal virtual long _scrollUnderwayCount { get; set; } = 0L;
     internal virtual bool _debugHasScheduledValidChildrenCountCheck { get; set; } = false;
 
-    internal virtual bool _controllerIsValid => DartRuntimePrimitives.ConvertValue<bool>(_controller?.animation is not null);
+    internal virtual bool _controllerIsValid =>
+        DartRuntimePrimitives.ConvertValue<bool>(_controller?.animation is not null);
+
     internal virtual void _updateTabController()
     {
         TabController? newController = widget.controller ?? DefaultTabController.maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
+        {
+            if (newController is null)
             {
-                if (newController is null)
-                {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"No TabController for {DartRuntimePrimitives.RuntimeType(widget)}.\n" + $"When creating a {DartRuntimePrimitives.RuntimeType(widget)}, you must either provide an explicit " + "TabController using the \"controller\" property, or you must ensure that there " + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(widget)}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
-                }
-                return true;
-            });
+                throw DartRuntimePrimitives.AsException(
+                    FlutterError.Create(
+                        $"No TabController for {DartRuntimePrimitives.RuntimeType(widget)}.\n"
+                            + $"When creating a {DartRuntimePrimitives.RuntimeType(widget)}, you must either provide an explicit "
+                            + "TabController using the \"controller\" property, or you must ensure that there "
+                            + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(widget)}.\n"
+                            + "In this case, there was neither an explicit controller nor a default controller."
+                    )
+                );
+            }
+            return true;
+        });
         if (Equals(newController, _controller))
         {
             return;
@@ -1349,7 +2226,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         _warpUnderwayCount -= 1L;
     }
 
-    internal async virtual Future _animateToPage(long page, Duration duration, Curve curve)
+    internal virtual async Future _animateToPage(long page, Duration duration, Curve curve)
     {
         _warpUnderwayCount += 1L;
         await _pageController!.animateToPage(page, duration: duration, curve: curve);
@@ -1369,7 +2246,10 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         _currentIndex = _controller!.index;
         if (_pageController is null)
         {
-            _pageController = new PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
+            _pageController = new PageController(
+                initialPage: DartRuntimePrimitives.RequireValue(_currentIndex),
+                viewportFraction: widget.viewportFraction
+            );
         }
         else
         {
@@ -1389,7 +2269,10 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         if (widget.viewportFraction != oldWidget.viewportFraction)
         {
             _pageController?.dispose();
-            _pageController = new PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
+            _pageController = new PageController(
+                initialPage: DartRuntimePrimitives.RequireValue(_currentIndex),
+                viewportFraction: widget.viewportFraction
+            );
         }
         if ((!Equals(widget.children, oldWidget.children)) && (_warpUnderwayCount == 0L))
         {
@@ -1410,11 +2293,19 @@ internal class _TabBarViewState__tabs : State<TabBarView>
 
     internal virtual void _updateChildren()
     {
-        _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(widget.children.map<Widget, Widget>((child) =>
-        {
-            return new Widgets.Semantics(role: SemanticsRole.tabPanel, child: child);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList());
+        _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(
+            widget
+                .children.map<Widget, Widget>(
+                    (child) =>
+                    {
+                        return new Widgets.Semantics(role: SemanticsRole.tabPanel, child: child);
+                        throw new InvalidOperationException(
+                            "Dart closure completed without a value."
+                        );
+                    }
+                )
+                .ToList()
+        );
     }
 
     internal virtual void _handleTabControllerAnimationTick()
@@ -1432,11 +2323,19 @@ internal class _TabBarViewState__tabs : State<TabBarView>
 
     internal virtual void _warpToCurrentIndex()
     {
-        if (!mounted || (_pageController!.page == DartRuntimePrimitives.RequireValue(_currentIndex).toDouble()))
+        if (
+            !mounted
+            || (
+                _pageController!.page
+                == DartRuntimePrimitives.RequireValue(_currentIndex).toDouble()
+            )
+        )
         {
             return;
         }
-        var adjacentDestination = (DartRuntimePrimitives.RequireValue(_currentIndex) - _controller!.previousIndex).abs() == 1L;
+        var adjacentDestination =
+            (DartRuntimePrimitives.RequireValue(_currentIndex) - _controller!.previousIndex).abs()
+            == 1L;
         if (adjacentDestination)
         {
             DartRuntimePrimitives.Ignore(_warpToAdjacentTab(_controller!.animationDuration));
@@ -1447,7 +2346,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         }
     }
 
-    internal async virtual Future _warpToAdjacentTab(Duration duration)
+    internal virtual async Future _warpToAdjacentTab(Duration duration)
     {
         if (Equals(duration, Duration.zero))
         {
@@ -1455,7 +2354,11 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         }
         else
         {
-            await _animateToPage(DartRuntimePrimitives.RequireValue(_currentIndex), duration: duration, curve: Curves.ease);
+            await _animateToPage(
+                DartRuntimePrimitives.RequireValue(_currentIndex),
+                duration: duration,
+                curve: Curves.ease
+            );
         }
         if (mounted)
         {
@@ -1468,11 +2371,16 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         return;
     }
 
-    internal async virtual Future _warpToNonAdjacentTab(Duration duration)
+    internal virtual async Future _warpToNonAdjacentTab(Duration duration)
     {
         long previousIndexLocal = _controller!.previousIndex;
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(_currentIndex) - previousIndexLocal).abs() > 1L);
-        long initialPage = (DartRuntimePrimitives.RequireValue(_currentIndex) > previousIndexLocal) ? (DartRuntimePrimitives.RequireValue(_currentIndex) - 1L) : (DartRuntimePrimitives.RequireValue(_currentIndex) + 1L);
+        DartRuntimePrimitives.Assert(() =>
+            (DartRuntimePrimitives.RequireValue(_currentIndex) - previousIndexLocal).abs() > 1L
+        );
+        long initialPage =
+            (DartRuntimePrimitives.RequireValue(_currentIndex) > previousIndexLocal)
+                ? (DartRuntimePrimitives.RequireValue(_currentIndex) - 1L)
+                : (DartRuntimePrimitives.RequireValue(_currentIndex) + 1L);
         setState(() =>
         {
             _childrenWithKey = new List<Widget>(_childrenWithKey);
@@ -1487,7 +2395,11 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         }
         else
         {
-            await _animateToPage(DartRuntimePrimitives.RequireValue(_currentIndex), duration: duration, curve: Curves.ease);
+            await _animateToPage(
+                DartRuntimePrimitives.RequireValue(_currentIndex),
+                duration: duration,
+                curve: Curves.ease
+            );
         }
         if (mounted)
         {
@@ -1500,7 +2412,11 @@ internal class _TabBarViewState__tabs : State<TabBarView>
 
     internal virtual void _syncControllerOffset()
     {
-        _controller!.offset = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(_pageController!.page) - _controller!.index, -1.0, 1.0);
+        _controller!.offset = Dart_uiLibrary.clampDouble(
+            DartRuntimePrimitives.RequireValue(_pageController!.page) - _controller!.index,
+            -1.0,
+            1.0
+        );
     }
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
@@ -1554,22 +2470,30 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         {
             return true;
         }
-        WidgetsBinding.instance.addPostFrameCallback((duration) =>
-        {
-            _debugHasScheduledValidChildrenCountCheck = false;
-            if (!mounted)
+        WidgetsBinding.instance.addPostFrameCallback(
+            (duration) =>
             {
-                return;
-            }
-            DartRuntimePrimitives.Assert(() =>
+                _debugHasScheduledValidChildrenCountCheck = false;
+                if (!mounted)
+                {
+                    return;
+                }
+                DartRuntimePrimitives.Assert(() =>
                 {
                     if (_controller!.length != checked(widget.children.Count))
                     {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create($"Controller's length property ({_controller!.length}) does not match the " + $"number of children ({checked((long)widget.children.Count)}) present in TabBarView's children property."));
+                        throw DartRuntimePrimitives.AsException(
+                            FlutterError.Create(
+                                $"Controller's length property ({_controller!.length}) does not match the "
+                                    + $"number of children ({checked((long)widget.children.Count)}) present in TabBarView's children property."
+                            )
+                        );
                     }
                     return true;
                 });
-        }, debugLabel: "TabBarView.validChildrenCountCheck");
+            },
+            debugLabel: "TabBarView.validChildrenCountCheck"
+        );
         _debugHasScheduledValidChildrenCountCheck = true;
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1578,10 +2502,20 @@ internal class _TabBarViewState__tabs : State<TabBarView>
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugScheduleCheckHasValidChildrenCount());
-        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new PageView(dragStartBehavior: widget.dragStartBehavior, clipBehavior: widget.clipBehavior, controller: _pageController, physics: (widget.physics is null) ? new PageScrollPhysics().applyTo(new ClampingScrollPhysics()) : new PageScrollPhysics().applyTo(widget.physics), children: _childrenWithKey));
+        return new NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: new PageView(
+                dragStartBehavior: widget.dragStartBehavior,
+                clipBehavior: widget.clipBehavior,
+                controller: _pageController,
+                physics: (widget.physics is null)
+                    ? new PageScrollPhysics().applyTo(new ClampingScrollPhysics())
+                    : new PageScrollPhysics().applyTo(widget.physics),
+                children: _childrenWithKey
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TabPageSelectorIndicator : StatelessWidget
@@ -1591,7 +2525,14 @@ public class TabPageSelectorIndicator : StatelessWidget
     public virtual double size { get; private set; } = default!;
     public virtual BorderStyle borderStyle { get; private set; } = default!;
 
-    public TabPageSelectorIndicator(Key? key = null, Color backgroundColor = default!, Color borderColor = default!, double size = default!, BorderStyle borderStyle = BorderStyle.solid) : base(key: key)
+    public TabPageSelectorIndicator(
+        Key? key = null,
+        Color backgroundColor = default!,
+        Color borderColor = default!,
+        double size = default!,
+        BorderStyle borderStyle = BorderStyle.solid
+    )
+        : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
@@ -1601,10 +2542,18 @@ public class TabPageSelectorIndicator : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new Container(width: size, height: size, margin: EdgeInsets.CreateAll(4.0), decoration: new BoxDecoration(color: backgroundColor, border: Border.CreateAll(color: borderColor, style: borderStyle), shape: BoxShape.circle));
+        return new Container(
+            width: size,
+            height: size,
+            margin: EdgeInsets.CreateAll(4.0),
+            decoration: new BoxDecoration(
+                color: backgroundColor,
+                border: Border.CreateAll(color: borderColor, style: borderStyle),
+                shape: BoxShape.circle
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class TabPageSelector : StatefulWidget
@@ -1615,7 +2564,15 @@ public class TabPageSelector : StatefulWidget
     public virtual Color? selectedColor { get; private set; }
     public virtual BorderStyle? borderStyle { get; private set; }
 
-    public TabPageSelector(Key? key = null, TabController? controller = null, double indicatorSize = 12.0, Color? color = null, Color? selectedColor = null, BorderStyle? borderStyle = null) : base(key: key)
+    public TabPageSelector(
+        Key? key = null,
+        TabController? controller = null,
+        double indicatorSize = 12.0,
+        Color? color = null,
+        Color? selectedColor = null,
+        BorderStyle? borderStyle = null
+    )
+        : base(key: key)
     {
         this.controller = controller;
         this.indicatorSize = indicatorSize;
@@ -1625,7 +2582,8 @@ public class TabPageSelector : StatefulWidget
         System.Diagnostics.Debug.Assert(indicatorSize > 0.0);
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabPageSelectorState__tabs());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _TabPageSelectorState__tabs());
 }
 
 internal class _TabPageSelectorState__tabs : State<TabPageSelector>
@@ -1637,18 +2595,28 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
     {
         get
         {
-            TabController? tabController = widget.controller ?? DefaultTabController.maybeOf(context);
+            TabController? tabController =
+                widget.controller ?? DefaultTabController.maybeOf(context);
             DartRuntimePrimitives.Assert(() =>
+            {
+                if (tabController is null)
                 {
-                    if (tabController is null)
-                    {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create($"No TabController for {GetType()}.\n" + $"When creating a {GetType()}, you must either provide an explicit TabController " + "using the \"controller\" property, or you must ensure that there is a " + $"DefaultTabController above the {GetType()}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
-                    }
-                    return true;
-                });
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            $"No TabController for {GetType()}.\n"
+                                + $"When creating a {GetType()}, you must either provide an explicit TabController "
+                                + "using the \"controller\" property, or you must ensure that there is a "
+                                + $"DefaultTabController above the {GetType()}.\n"
+                                + "In this case, there was neither an explicit controller nor a default controller."
+                        )
+                    );
+                }
+                return true;
+            });
             return tabController!;
         }
     }
+
     public override void didUpdateWidget(TabPageSelector oldWidget)
     {
         base.didUpdateWidget(oldWidget);
@@ -1665,7 +2633,10 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        if ((_animation is null) || (!Equals(_previousTabController?.animation, _tabController.animation)))
+        if (
+            (_animation is null)
+            || (!Equals(_previousTabController?.animation, _tabController.animation))
+        )
         {
             _setAnimation();
         }
@@ -1678,7 +2649,10 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
     internal virtual void _setAnimation()
     {
         _animation?.dispose();
-        _animation = new CurvedAnimation(parent: _tabController.animation!, curve: Curves.fastOutSlowIn);
+        _animation = new CurvedAnimation(
+            parent: _tabController.animation!,
+            curve: Curves.fastOutSlowIn
+        );
     }
 
     public override void dispose()
@@ -1687,7 +2661,12 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
         base.dispose();
     }
 
-    internal virtual Widget _buildTabIndicator(long tabIndex, TabController tabController, ColorTween selectedColorTween, ColorTween previousColorTween)
+    internal virtual Widget _buildTabIndicator(
+        long tabIndex,
+        TabController tabController,
+        ColorTween selectedColorTween,
+        ColorTween previousColorTween
+    )
     {
         Color background = default!;
         if (tabController.indexIsChanging)
@@ -1735,7 +2714,12 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
                 }
             }
         }
-        return new TabPageSelectorIndicator(backgroundColor: background, borderColor: selectedColorTween.end!, size: widget.indicatorSize, borderStyle: widget.borderStyle ?? BorderStyle.solid);
+        return new TabPageSelectorIndicator(
+            backgroundColor: background,
+            borderColor: selectedColorTween.end!,
+            size: widget.indicatorSize,
+            borderStyle: widget.borderStyle ?? BorderStyle.solid
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1746,18 +2730,41 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
         var selectedColorTween = new ColorTween(begin: fixColor, end: fixSelectedColor);
         var previousColorTween = new ColorTween(begin: fixSelectedColor, end: fixColor);
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        return new AnimatedBuilder(animation: _animation!, builder: (context, child) =>
-        {
-            return new Widgets.Semantics(label: localizations.tabLabel(tabIndex: _tabController.index + 1L, tabCount: _tabController.length), child: new Row(mainAxisSize: MainAxisSize.min, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)_tabController.length)), (tabIndex) =>
+        return new AnimatedBuilder(
+            animation: _animation!,
+            builder: (context, child) =>
             {
-                return _buildTabIndicator(tabIndex, _tabController, selectedColorTween, previousColorTween);
+                return new Widgets.Semantics(
+                    label: localizations.tabLabel(
+                        tabIndex: _tabController.index + 1L,
+                        tabCount: _tabController.length
+                    ),
+                    child: new Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: new List<Widget>(
+                            Enumerable.Select(
+                                Enumerable.Range(0, checked((int)_tabController.length)),
+                                (tabIndex) =>
+                                {
+                                    return _buildTabIndicator(
+                                        tabIndex,
+                                        _tabController,
+                                        selectedColorTween,
+                                        previousColorTween
+                                    );
+                                    throw new InvalidOperationException(
+                                        "Dart closure completed without a value."
+                                    );
+                                }
+                            )
+                        ).ToList()
+                    )
+                );
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).ToList()));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
@@ -1794,66 +2801,79 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
     public virtual bool isScrollable { get; private set; } = default!;
     public static EdgeInsetsGeometry iconMargin = EdgeInsets.CreateOnly(bottom: 2);
 
-    internal _TabsPrimaryDefaultsM3__tabs(BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.label)
+    internal _TabsPrimaryDefaultsM3__tabs(BuildContext context, bool isScrollable)
+        : base(indicatorSize: TabBarIndicatorSize.label)
     {
         this.context = context;
         this.isScrollable = isScrollable;
     }
 
-    public override Color? dividerColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
+    public override Color? dividerColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
     public override double? dividerHeight => 1.0;
-    public override Color? indicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? indicatorColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
     public override Color? labelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
     public override TextStyle? labelStyle => _textTheme.titleSmall;
-    public override Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
+    public override Color? unselectedLabelColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
     public override TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
     public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        return null;
+                    }
                     if (states.Contains(WidgetState.pressed))
                     {
                         return _colors.primary.withOpacity(0.1);
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return _colors.primary.withOpacity(0.08);
+                        return _colors.onSurface.withOpacity(0.08);
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return _colors.primary.withOpacity(0.1);
+                        return _colors.onSurface.withOpacity(0.1);
                     }
                     return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.primary.withOpacity(0.1);
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurface.withOpacity(0.08);
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
-    public override TabAlignment? tabAlignment => isScrollable ? TabAlignment.startOffset : TabAlignment.fill;
+    public override TabAlignment? tabAlignment =>
+        isScrollable ? TabAlignment.startOffset : TabAlignment.fill;
+
     public static double indicatorWeight(TabBarIndicatorSize indicatorSize)
     {
-        return indicatorSize switch { TabBarIndicatorSize.label => 3.0, TabBarIndicatorSize.tab => 2.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return indicatorSize switch
+        {
+            TabBarIndicatorSize.label => 3.0,
+            TabBarIndicatorSize.tab => 2.0,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
@@ -1890,27 +2910,47 @@ internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
     public virtual bool isScrollable { get; private set; } = default!;
     public static double indicatorWeight = 2.0;
 
-    internal _TabsSecondaryDefaultsM3__tabs(BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.tab)
+    internal _TabsSecondaryDefaultsM3__tabs(BuildContext context, bool isScrollable)
+        : base(indicatorSize: TabBarIndicatorSize.tab)
     {
         this.context = context;
         this.isScrollable = isScrollable;
     }
 
-    public override Color? dividerColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
+    public override Color? dividerColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
     public override double? dividerHeight => 1.0;
-    public override Color? indicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
-    public override Color? labelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
+    public override Color? indicatorColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? labelColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
     public override TextStyle? labelStyle => _textTheme.titleSmall;
-    public override Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
+    public override Color? unselectedLabelColor =>
+        DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
     public override TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
     public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {
-            return WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(WidgetState.selected))
+            return WidgetStateProperty.resolveWith(
+                (states) =>
                 {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onSurface.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onSurface.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onSurface.withOpacity(0.1);
+                        }
+                        return null;
+                    }
                     if (states.Contains(WidgetState.pressed))
                     {
                         return _colors.onSurface.withOpacity(0.1);
@@ -1924,24 +2964,12 @@ internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
                         return _colors.onSurface.withOpacity(0.1);
                     }
                     return null;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
                 }
-                if (states.Contains(WidgetState.pressed))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                if (states.Contains(WidgetState.hovered))
-                {
-                    return _colors.onSurface.withOpacity(0.08);
-                }
-                if (states.Contains(WidgetState.focused))
-                {
-                    return _colors.onSurface.withOpacity(0.1);
-                }
-                return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            });
+            );
         }
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
-    public override TabAlignment? tabAlignment => isScrollable ? TabAlignment.startOffset : TabAlignment.fill;
+    public override TabAlignment? tabAlignment =>
+        isScrollable ? TabAlignment.startOffset : TabAlignment.fill;
 }

@@ -28,7 +28,10 @@ public static partial class DropdownLibrary
 
 public static partial class DropdownLibrary
 {
-    internal static EdgeInsetsGeometry _kAlignedButtonPadding = EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 4.0);
+    internal static EdgeInsetsGeometry _kAlignedButtonPadding = EdgeInsetsDirectional.CreateOnly(
+        start: 16.0,
+        end: 4.0
+    );
 }
 
 public static partial class DropdownLibrary
@@ -43,7 +46,10 @@ public static partial class DropdownLibrary
 
 public static partial class DropdownLibrary
 {
-    internal static EdgeInsetsGeometry _kUnalignedMenuMargin = EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 24.0);
+    internal static EdgeInsetsGeometry _kUnalignedMenuMargin = EdgeInsetsDirectional.CreateOnly(
+        start: 16.0,
+        end: 24.0
+    );
 }
 
 public delegate List<Widget> DropdownButtonBuilder(BuildContext context);
@@ -58,7 +64,15 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
     public virtual Func<double> getSelectedItemOffset { get; private set; } = default!;
     internal virtual BoxPainter _painter { get; private set; } = default!;
 
-    internal _DropdownMenuPainter__dropdown(Color? color = null, long? elevation = null, long? selectedIndex = null, BorderRadius? borderRadius = null, Animation<double> resize = default!, Func<double> getSelectedItemOffset = default!) : base(repaint: resize)
+    internal _DropdownMenuPainter__dropdown(
+        Color? color = null,
+        long? elevation = null,
+        long? selectedIndex = null,
+        BorderRadius? borderRadius = null,
+        Animation<double> resize = default!,
+        Func<double> getSelectedItemOffset = default!
+    )
+        : base(repaint: resize)
     {
         this.color = color;
         this.elevation = elevation;
@@ -66,14 +80,32 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
         this.borderRadius = borderRadius;
         this.resize = resize;
         this.getSelectedItemOffset = getSelectedItemOffset;
-        _painter = new BoxDecoration(color: color, borderRadius: borderRadius ?? BorderRadius.CreateAll(Radius.circular(2.0)), boxShadow: ShadowsLibrary.kElevationToShadow.GetValueOrDefault(elevation)).createBoxPainter();
+        _painter = new BoxDecoration(
+            color: color,
+            borderRadius: borderRadius ?? BorderRadius.CreateAll(Radius.circular(2.0)),
+            boxShadow: ShadowsLibrary.kElevationToShadow.GetValueOrDefault(elevation)
+        ).createBoxPainter();
     }
 
     public override void paint(Canvas canvas, Size size)
     {
         double selectedItemOffset = getSelectedItemOffset();
-        var top = new Tween<double>(begin: Dart_uiLibrary.clampDouble(selectedItemOffset, 0.0, Math.Max(size.height - DropdownLibrary._kMenuItemHeight, 0.0)), end: 0.0);
-        var bottom = new Tween<double>(begin: Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(top.begin) + DropdownLibrary._kMenuItemHeight, Math.Min(DropdownLibrary._kMenuItemHeight, size.height), size.height), end: size.height);
+        var top = new Tween<double>(
+            begin: Dart_uiLibrary.clampDouble(
+                selectedItemOffset,
+                0.0,
+                Math.Max(size.height - DropdownLibrary._kMenuItemHeight, 0.0)
+            ),
+            end: 0.0
+        );
+        var bottom = new Tween<double>(
+            begin: Dart_uiLibrary.clampDouble(
+                DartRuntimePrimitives.RequireValue(top.begin) + DropdownLibrary._kMenuItemHeight,
+                Math.Min(DropdownLibrary._kMenuItemHeight, size.height),
+                size.height
+            ),
+            end: size.height
+        );
         var rect = Rect.fromLTRB(0.0, top.evaluate(resize), size.width, bottom.evaluate(resize));
         _painter.paint(canvas, rect.topLeft, new ImageConfiguration(size: rect.size));
     }
@@ -81,10 +113,13 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
     public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldPainter = (_DropdownMenuPainter__dropdown)oldDelegate;
-        return (!Equals(__oldPainter.color, color)) || (__oldPainter.elevation != elevation) || (__oldPainter.selectedIndex != selectedIndex) || (!Equals(__oldPainter.borderRadius, borderRadius)) || (!Equals(__oldPainter.resize, resize));
+        return (!Equals(__oldPainter.color, color))
+            || (__oldPainter.elevation != elevation)
+            || (__oldPainter.selectedIndex != selectedIndex)
+            || (!Equals(__oldPainter.borderRadius, borderRadius))
+            || (!Equals(__oldPainter.resize, resize));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _DropdownMenuItemButton__dropdown<T> : StatefulWidget
@@ -98,7 +133,18 @@ public class _DropdownMenuItemButton__dropdown<T> : StatefulWidget
     public virtual bool enableFeedback { get; private set; } = default!;
     public virtual MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownMenuItemButton__dropdown(Key? key = null, EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, BoxConstraints constraints = default!, long itemIndex = default!, bool enableFeedback = default!, ScrollController scrollController = default!, MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownMenuItemButton__dropdown(
+        Key? key = null,
+        EdgeInsets? padding = null,
+        _DropdownRoute__dropdown<T> route = default!,
+        Rect buttonRect = default!,
+        BoxConstraints constraints = default!,
+        long itemIndex = default!,
+        bool enableFeedback = default!,
+        ScrollController scrollController = default!,
+        MouseCursor? mouseCursor = null
+    )
+        : base(key: key)
     {
         this.padding = padding;
         this.route = route;
@@ -110,13 +156,25 @@ public class _DropdownMenuItemButton__dropdown<T> : StatefulWidget
         this.mouseCursor = mouseCursor;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuItemButtonState__dropdown<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuItemButtonState__dropdown<T>());
 }
 
 public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItemButton__dropdown<T>>
 {
     internal virtual CurvedAnimation _opacityAnimation { get; set; } = default!;
-    internal static DartMap<ShortcutActivator, Intent> _webShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(TraversalDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(TraversalDirection.up) };
+    internal static DartMap<ShortcutActivator, Intent> _webShortcuts = new DartMap<
+        ShortcutActivator,
+        Intent
+    >
+    {
+        [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(
+            TraversalDirection.down
+        ),
+        [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(
+            TraversalDirection.up
+        ),
+    };
 
     public override void initState()
     {
@@ -127,7 +185,12 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
     public override void didUpdateWidget(_DropdownMenuItemButton__dropdown<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((oldWidget.itemIndex != widget.itemIndex) || (!Equals(oldWidget.route.animation, widget.route.animation)) || (oldWidget.route.selectedIndex != widget.route.selectedIndex) || (checked(widget.route.items.Count) != checked((long)oldWidget.route.items.Count)))
+        if (
+            (oldWidget.itemIndex != widget.itemIndex)
+            || (!Equals(oldWidget.route.animation, widget.route.animation))
+            || (oldWidget.route.selectedIndex != widget.route.selectedIndex)
+            || (checked(widget.route.items.Count) != checked((long)oldWidget.route.items.Count))
+        )
         {
             _opacityAnimation.dispose();
             _setOpacityAnimation();
@@ -139,23 +202,49 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
         double unit = 0.5 / (checked(widget.route.items.Count) + 1.5);
         if (widget.itemIndex == widget.route.selectedIndex)
         {
-            _opacityAnimation = new CurvedAnimation(parent: widget.route.animation!, curve: new Threshold(0.0));
+            _opacityAnimation = new CurvedAnimation(
+                parent: widget.route.animation!,
+                curve: new Threshold(0.0)
+            );
         }
         else
         {
-            double start = Dart_uiLibrary.clampDouble(0.5 + ((widget.itemIndex + 1L) * unit), 0.0, 1.0);
+            double start = Dart_uiLibrary.clampDouble(
+                0.5 + ((widget.itemIndex + 1L) * unit),
+                0.0,
+                1.0
+            );
             double end = Dart_uiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
-            _opacityAnimation = new CurvedAnimation(parent: widget.route.animation!, curve: new Interval(start, end));
+            _opacityAnimation = new CurvedAnimation(
+                parent: widget.route.animation!,
+                curve: new Interval(start, end)
+            );
         }
     }
 
     internal virtual void _handleFocusChange(bool focused)
     {
-        bool inTraditionalMode = FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        bool inTraditionalMode = FocusManager.instance.highlightMode switch
+        {
+            FocusHighlightMode.touch => false,
+            FocusHighlightMode.traditional => true,
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         if (focused && inTraditionalMode)
         {
-            _MenuLimits__dropdown menuLimits = widget.route.getMenuLimits(widget.buttonRect, widget.constraints.maxHeight, widget.itemIndex);
-            DartRuntimePrimitives.Ignore(widget.scrollController.animateTo(menuLimits.scrollOffset, curve: Curves.easeInOut, duration: Duration.Create(milliseconds: 100L)));
+            _MenuLimits__dropdown menuLimits = widget.route.getMenuLimits(
+                widget.buttonRect,
+                widget.constraints.maxHeight,
+                widget.itemIndex
+            );
+            DartRuntimePrimitives.Ignore(
+                widget.scrollController.animateTo(
+                    menuLimits.scrollOffset,
+                    curve: Curves.easeInOut,
+                    duration: Duration.Create(milliseconds: 100L)
+                )
+            );
         }
     }
 
@@ -163,7 +252,10 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
     {
         DropdownMenuItem<T> dropdownMenuItem = widget.route.items[(int)widget.itemIndex].item!;
         dropdownMenuItem.onTap?.Invoke();
-        Navigator.pop<object>(context, new _DropdownRouteResult__dropdown<T>(dropdownMenuItem.value));
+        Navigator.pop<object>(
+            context,
+            new _DropdownRouteResult__dropdown<T>(dropdownMenuItem.value)
+        );
     }
 
     public override void dispose()
@@ -178,24 +270,45 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
         Widget childLocal = widget.route.items[(int)widget.itemIndex];
         if (widget.padding is EdgeInsetsGeometry paddingLocal)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: paddingLocal, child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Padding(padding: paddingLocal, child: childLocal)
+            );
         }
-        childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: widget.route.itemHeight, child: childLocal));
+        childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+            new SizedBox(height: widget.route.itemHeight, child: childLocal)
+        );
         var isSelected = widget.itemIndex == widget.route.selectedIndex;
         FocusHighlightMode highlightModeLocal = FocusManager.instance.highlightMode;
         if (dropdownMenuItem.enabled)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new InkWell(autofocus: isSelected, enableFeedback: widget.enableFeedback, onTap: _handleOnTap, onFocusChange: _handleFocusChange, mouseCursor: widget.mouseCursor, child: Equals(highlightModeLocal, FocusHighlightMode.touch) ? new Ink(color: isSelected ? Theme.of(context).focusColor : null, child: childLocal) : childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new InkWell(
+                    autofocus: isSelected,
+                    enableFeedback: widget.enableFeedback,
+                    onTap: _handleOnTap,
+                    onFocusChange: _handleFocusChange,
+                    mouseCursor: widget.mouseCursor,
+                    child: Equals(highlightModeLocal, FocusHighlightMode.touch)
+                        ? new Ink(
+                            color: isSelected ? Theme.of(context).focusColor : null,
+                            child: childLocal
+                        )
+                        : childLocal
+                )
+            );
         }
-        childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: _opacityAnimation, child: childLocal));
+        childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+            new FadeTransition(opacity: _opacityAnimation, child: childLocal)
+        );
         if (Foundation.ConstantsLibrary.kIsWeb && dropdownMenuItem.enabled)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(shortcuts: _webShortcuts, child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Shortcuts(shortcuts: _webShortcuts, child: childLocal)
+            );
         }
         return new Widgets.Semantics(role: SemanticsRole.menuItem, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DropdownMenu__dropdown<T> : StatefulWidget
@@ -211,7 +324,20 @@ internal class _DropdownMenu__dropdown<T> : StatefulWidget
     public virtual double? menuWidth { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownMenu__dropdown(Key? key = null, EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, BoxConstraints constraints = default!, Color? dropdownColor = null, bool enableFeedback = default!, BorderRadius? borderRadius = null, ScrollController scrollController = default!, double? menuWidth = null, MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownMenu__dropdown(
+        Key? key = null,
+        EdgeInsets? padding = null,
+        _DropdownRoute__dropdown<T> route = default!,
+        Rect buttonRect = default!,
+        BoxConstraints constraints = default!,
+        Color? dropdownColor = null,
+        bool enableFeedback = default!,
+        BorderRadius? borderRadius = null,
+        ScrollController scrollController = default!,
+        double? menuWidth = null,
+        MouseCursor? mouseCursor = null
+    )
+        : base(key: key)
     {
         this.padding = padding;
         this.route = route;
@@ -225,7 +351,8 @@ internal class _DropdownMenu__dropdown<T> : StatefulWidget
         this.mouseCursor = mouseCursor;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuState__dropdown<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuState__dropdown<T>());
 }
 
 internal class _DropdownMenuState__dropdown<T> : State<_DropdownMenu__dropdown<T>>
@@ -236,8 +363,16 @@ internal class _DropdownMenuState__dropdown<T> : State<_DropdownMenu__dropdown<T
     public override void initState()
     {
         base.initState();
-        _fadeOpacity = new CurvedAnimation(parent: widget.route.animation!, curve: new Interval(0.0, 0.25), reverseCurve: new Interval(0.75, 1.0));
-        _resize = new CurvedAnimation(parent: widget.route.animation!, curve: new Interval(0.25, 0.5), reverseCurve: new Threshold(0.0));
+        _fadeOpacity = new CurvedAnimation(
+            parent: widget.route.animation!,
+            curve: new Interval(0.0, 0.25),
+            reverseCurve: new Interval(0.75, 1.0)
+        );
+        _resize = new CurvedAnimation(
+            parent: widget.route.animation!,
+            curve: new Interval(0.25, 0.5),
+            reverseCurve: new Threshold(0.0)
+        );
     }
 
     public override void dispose()
@@ -249,14 +384,95 @@ internal class _DropdownMenuState__dropdown<T> : State<_DropdownMenu__dropdown<T
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         _DropdownRoute__dropdown<T> routeLocal = widget.route;
-        var childrenLocal = ((Func<List<Widget>>)(() => { var __collection10886 = new List<Widget>(); for (long itemIndexLocal = 0L; itemIndexLocal < checked(routeLocal.items.Count); ++itemIndexLocal) { __collection10886.Add(DartRuntimePrimitives.ConvertValue<Widget>(new _DropdownMenuItemButton__dropdown<T>(route: widget.route, padding: widget.padding, buttonRect: widget.buttonRect, constraints: widget.constraints, itemIndex: itemIndexLocal, enableFeedback: widget.enableFeedback, scrollController: widget.scrollController, mouseCursor: widget.mouseCursor))); } return __collection10886; }))();
-        return new FadeTransition(opacity: _fadeOpacity, child: new CustomPaint(painter: new _DropdownMenuPainter__dropdown(color: widget.dropdownColor ?? Theme.of(context).canvasColor, elevation: routeLocal.elevation, selectedIndex: routeLocal.selectedIndex, resize: _resize, borderRadius: widget.borderRadius, getSelectedItemOffset: () => routeLocal.getItemOffset(routeLocal.selectedIndex)), child: new Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: localizations.popupMenuLabel, child: new ClipRRect(borderRadius: widget.borderRadius ?? BorderRadius.zero, clipBehavior: (widget.borderRadius is not null) ? Clip.antiAlias : Clip.none, child: new Material(type: MaterialType.transparency, textStyle: routeLocal.style, child: new ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false, overscroll: false, physics: new ClampingScrollPhysics(), platform: Theme.of(context).platform), child: new PrimaryScrollController(controller: widget.scrollController, child: new Scrollbar(thumbVisibility: true, child: new ListView(primary: true, padding: ConstantsLibrary.kMaterialListPadding, shrinkWrap: true, children: childrenLocal)))))))));
+        var childrenLocal = (
+            (Func<List<Widget>>)(
+                () =>
+                {
+                    var __collection10886 = new List<Widget>();
+                    for (
+                        long itemIndexLocal = 0L;
+                        itemIndexLocal < checked(routeLocal.items.Count);
+                        ++itemIndexLocal
+                    )
+                    {
+                        __collection10886.Add(
+                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                new _DropdownMenuItemButton__dropdown<T>(
+                                    route: widget.route,
+                                    padding: widget.padding,
+                                    buttonRect: widget.buttonRect,
+                                    constraints: widget.constraints,
+                                    itemIndex: itemIndexLocal,
+                                    enableFeedback: widget.enableFeedback,
+                                    scrollController: widget.scrollController,
+                                    mouseCursor: widget.mouseCursor
+                                )
+                            )
+                        );
+                    }
+                    return __collection10886;
+                }
+            )
+        )();
+        return new FadeTransition(
+            opacity: _fadeOpacity,
+            child: new CustomPaint(
+                painter: new _DropdownMenuPainter__dropdown(
+                    color: widget.dropdownColor ?? Theme.of(context).canvasColor,
+                    elevation: routeLocal.elevation,
+                    selectedIndex: routeLocal.selectedIndex,
+                    resize: _resize,
+                    borderRadius: widget.borderRadius,
+                    getSelectedItemOffset: () => routeLocal.getItemOffset(routeLocal.selectedIndex)
+                ),
+                child: new Widgets.Semantics(
+                    role: SemanticsRole.menu,
+                    scopesRoute: true,
+                    namesRoute: true,
+                    explicitChildNodes: true,
+                    label: localizations.popupMenuLabel,
+                    child: new ClipRRect(
+                        borderRadius: widget.borderRadius ?? BorderRadius.zero,
+                        clipBehavior: (widget.borderRadius is not null)
+                            ? Clip.antiAlias
+                            : Clip.none,
+                        child: new Material(
+                            type: MaterialType.transparency,
+                            textStyle: routeLocal.style,
+                            child: new ScrollConfiguration(
+                                behavior: ScrollConfiguration
+                                    .of(context)
+                                    .copyWith(
+                                        scrollbars: false,
+                                        overscroll: false,
+                                        physics: new ClampingScrollPhysics(),
+                                        platform: Theme.of(context).platform
+                                    ),
+                                child: new PrimaryScrollController(
+                                    controller: widget.scrollController,
+                                    child: new Scrollbar(
+                                        thumbVisibility: true,
+                                        child: new ListView(
+                                            primary: true,
+                                            padding: ConstantsLibrary.kMaterialListPadding,
+                                            shrinkWrap: true,
+                                            children: childrenLocal
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
@@ -266,7 +482,12 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
     public virtual TextDirection? textDirection { get; private set; }
     public virtual double? menuWidth { get; private set; }
 
-    internal _DropdownMenuRouteLayout__dropdown(Rect buttonRect, _DropdownRoute__dropdown<T> route, TextDirection? textDirection, double? menuWidth = null)
+    internal _DropdownMenuRouteLayout__dropdown(
+        Rect buttonRect,
+        _DropdownRoute__dropdown<T> route,
+        TextDirection? textDirection,
+        double? menuWidth = null
+    )
     {
         this.buttonRect = buttonRect;
         this.route = route;
@@ -276,31 +497,58 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
 
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
-        double maxHeightLocal = Math.Max(0.0, constraints.maxHeight - (2L * DropdownLibrary._kMenuItemHeight));
-        if ((route.menuMaxHeight is not null) && (DartRuntimePrimitives.RequireValue(route.menuMaxHeight) <= maxHeightLocal))
+        double maxHeightLocal = Math.Max(
+            0.0,
+            constraints.maxHeight - (2L * DropdownLibrary._kMenuItemHeight)
+        );
+        if (
+            (route.menuMaxHeight is not null)
+            && (DartRuntimePrimitives.RequireValue(route.menuMaxHeight) <= maxHeightLocal)
+        )
         {
             maxHeightLocal = DartRuntimePrimitives.RequireValue(route.menuMaxHeight);
         }
         double widthLocal = Math.Min(constraints.maxWidth, menuWidth ?? buttonRect.width);
-        return new BoxConstraints(minWidth: widthLocal, maxWidth: widthLocal, maxHeight: maxHeightLocal);
+        return new BoxConstraints(
+            minWidth: widthLocal,
+            maxWidth: widthLocal,
+            maxHeight: maxHeightLocal
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        _MenuLimits__dropdown menuLimits = route.getMenuLimits(buttonRect, size.height, route.selectedIndex);
+        _MenuLimits__dropdown menuLimits = route.getMenuLimits(
+            buttonRect,
+            size.height,
+            route.selectedIndex
+        );
         DartRuntimePrimitives.Assert(() =>
+        {
+            Rect container = Offset.zero & size;
+            if (Equals(container.intersect(buttonRect), buttonRect))
             {
-                Rect container = Offset.zero & size;
-                if (Equals(container.intersect(buttonRect), buttonRect))
-                {
-                    DartRuntimePrimitives.Assert(() => menuLimits.top >= 0.0);
-                    DartRuntimePrimitives.Assert(() => (menuLimits.top + menuLimits.height) <= size.height);
-                }
-                return true;
-            });
+                DartRuntimePrimitives.Assert(() => menuLimits.top >= 0.0);
+                DartRuntimePrimitives.Assert(() =>
+                    (menuLimits.top + menuLimits.height) <= size.height
+                );
+            }
+            return true;
+        });
         DartRuntimePrimitives.Assert(() => textDirection is not null);
-        double leftLocal = DartRuntimePrimitives.RequireValue(textDirection) switch { TextDirection.rtl => Dart_uiLibrary.clampDouble(buttonRect.right, 0.0, size.width) - childSize.width, TextDirection.ltr => Dart_uiLibrary.clampDouble(buttonRect.left, 0.0, size.width - childSize.width), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        double leftLocal = DartRuntimePrimitives.RequireValue(textDirection) switch
+        {
+            TextDirection.rtl => Dart_uiLibrary.clampDouble(buttonRect.right, 0.0, size.width)
+                - childSize.width,
+            TextDirection.ltr => Dart_uiLibrary.clampDouble(
+                buttonRect.left,
+                0.0,
+                size.width - childSize.width
+            ),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         return new Offset(leftLocal, menuLimits.top);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -308,10 +556,10 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_DropdownMenuRouteLayout__dropdown<T>)oldDelegate;
-        return (!Equals(buttonRect, __oldDelegate.buttonRect)) || (!Equals(textDirection, __oldDelegate.textDirection));
+        return (!Equals(buttonRect, __oldDelegate.buttonRect))
+            || (!Equals(textDirection, __oldDelegate.textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class _DropdownRouteResult__dropdown<T>
@@ -326,11 +574,17 @@ public class _DropdownRouteResult__dropdown<T>
     public override bool Equals(object? other)
     {
         var __other = other as _DropdownRouteResult__dropdown<T>;
-        if (__other is null) return false;
-        return (__other is _DropdownRouteResult__dropdown<T>) && EqualityComparer<T>.Default.Equals(__other.result, result);
+        if (__other is null)
+        {
+            return false;
+        }
+
+        return (__other is _DropdownRouteResult__dropdown<T>)
+            && EqualityComparer<T>.Default.Equals(__other.result, result);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(result?.GetHashCode() ?? 0);
+    public override int GetHashCode() =>
+        DartRuntimePrimitives.ConvertValue<int>(result?.GetHashCode() ?? 0);
 }
 
 public class _MenuLimits__dropdown
@@ -347,7 +601,6 @@ public class _MenuLimits__dropdown
         this.height = height;
         this.scrollOffset = scrollOffset;
     }
-
 }
 
 public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__dropdown<T>>
@@ -368,11 +621,34 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
     public virtual MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
     public virtual List<double> itemHeights { get; private set; } = default!;
     private bool __field_barrierDismissible = default!;
-    public override bool barrierDismissible { get => __field_barrierDismissible; }
+    public override bool barrierDismissible
+    {
+        get => __field_barrierDismissible;
+    }
     private string? __field_barrierLabel = default!;
-    public override string? barrierLabel { get => __field_barrierLabel; }
+    public override string? barrierLabel
+    {
+        get => __field_barrierLabel;
+    }
 
-    internal _DropdownRoute__dropdown(List<_MenuItem__dropdown<T>> items, EdgeInsetsGeometry padding, Rect buttonRect, long selectedIndex, long elevation = 8, CapturedThemes capturedThemes = default!, TextStyle style = default!, string? barrierLabel = null, double? itemHeight = null, double? menuWidth = null, Color? dropdownColor = null, double? menuMaxHeight = null, bool enableFeedback = default!, BorderRadius? borderRadius = null, bool barrierDismissible = true, MouseCursor? dropdownMenuItemMouseCursor = null)
+    internal _DropdownRoute__dropdown(
+        List<_MenuItem__dropdown<T>> items,
+        EdgeInsetsGeometry padding,
+        Rect buttonRect,
+        long selectedIndex,
+        long elevation = 8,
+        CapturedThemes capturedThemes = default!,
+        TextStyle style = default!,
+        string? barrierLabel = null,
+        double? itemHeight = null,
+        double? menuWidth = null,
+        Color? dropdownColor = null,
+        double? menuMaxHeight = null,
+        bool enableFeedback = default!,
+        BorderRadius? borderRadius = null,
+        bool barrierDismissible = true,
+        MouseCursor? dropdownMenuItemMouseCursor = null
+    )
     {
         this.items = items;
         this.padding = padding;
@@ -390,18 +666,45 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
         this.borderRadius = borderRadius;
         __field_barrierDismissible = barrierDismissible;
         this.dropdownMenuItemMouseCursor = dropdownMenuItemMouseCursor;
-        itemHeights = new List<double>(Enumerable.Repeat(itemHeight ?? ConstantsLibrary.kMinInteractiveDimension, checked((int)checked((long)items.Count))));
+        itemHeights = new List<double>(
+            Enumerable.Repeat(
+                itemHeight ?? ConstantsLibrary.kMinInteractiveDimension,
+                checked((int)checked((long)items.Count))
+            )
+        );
     }
 
     public override Duration transitionDuration => DropdownLibrary._kDropdownMenuDuration;
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
-    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
+
+    public override Widget buildPage(
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation
+    )
     {
-        return new LayoutBuilder(builder: (context, constraints) =>
-        {
-            return new _DropdownRoutePage__dropdown<T>(route: this, constraints: constraints, items: items, padding: padding, buttonRect: buttonRect, selectedIndex: selectedIndex, elevation: elevation, capturedThemes: capturedThemes, style: style, dropdownColor: dropdownColor, enableFeedback: enableFeedback, borderRadius: borderRadius, menuWidth: menuWidth, mouseCursor: dropdownMenuItemMouseCursor);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
+        return new LayoutBuilder(
+            builder: (context, constraints) =>
+            {
+                return new _DropdownRoutePage__dropdown<T>(
+                    route: this,
+                    constraints: constraints,
+                    items: items,
+                    padding: padding,
+                    buttonRect: buttonRect,
+                    selectedIndex: selectedIndex,
+                    elevation: elevation,
+                    capturedThemes: capturedThemes,
+                    style: style,
+                    dropdownColor: dropdownColor,
+                    enableFeedback: enableFeedback,
+                    borderRadius: borderRadius,
+                    menuWidth: menuWidth,
+                    mouseCursor: dropdownMenuItemMouseCursor
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -418,27 +721,42 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
         double offset = ConstantsLibrary.kMaterialListPadding.top;
         if (Enumerable.Any(items) && (index > 0L))
         {
-            DartRuntimePrimitives.Assert(() => checked(items.Count) == checked((long)itemHeights.Count));
+            DartRuntimePrimitives.Assert(() =>
+                checked(items.Count) == checked((long)itemHeights.Count)
+            );
             offset += itemHeights.GetRange(0L, index).reduce((total, height) => total + height);
         }
         return offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual _MenuLimits__dropdown getMenuLimits(Rect buttonRect, double availableHeight, long index)
+    public virtual _MenuLimits__dropdown getMenuLimits(
+        Rect buttonRect,
+        double availableHeight,
+        long index
+    )
     {
         double computedMaxHeight = availableHeight - (2.0 * DropdownLibrary._kMenuItemHeight);
         if (menuMaxHeight is not null)
         {
             double menuMaxHeight__value19574 = DartRuntimePrimitives.RequireValue(menuMaxHeight);
-            computedMaxHeight = Math.Min(computedMaxHeight, DartRuntimePrimitives.RequireValue(menuMaxHeight));
+            computedMaxHeight = Math.Min(
+                computedMaxHeight,
+                DartRuntimePrimitives.RequireValue(menuMaxHeight)
+            );
         }
         double buttonTop = buttonRect.top;
         double buttonBottom = Math.Min(buttonRect.bottom, availableHeight);
         double selectedItemOffset = getItemOffset(index);
         double topLimit = Math.Min(DropdownLibrary._kMenuItemHeight, buttonTop);
-        double bottomLimit = Math.Max(availableHeight - DropdownLibrary._kMenuItemHeight, buttonBottom);
-        double menuTop = buttonTop - selectedItemOffset - ((itemHeights[(int)selectedIndex] - buttonRect.height) / 2.0);
+        double bottomLimit = Math.Max(
+            availableHeight - DropdownLibrary._kMenuItemHeight,
+            buttonBottom
+        );
+        double menuTop =
+            buttonTop
+            - selectedItemOffset
+            - ((itemHeights[(int)selectedIndex] - buttonRect.height) / 2.0);
         double preferredMenuHeight = ConstantsLibrary.kMaterialListPadding.vertical;
         if (Enumerable.Any(items))
         {
@@ -456,9 +774,13 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
             menuBottom = Math.Max(buttonBottom, bottomLimit);
             menuTop = menuBottom - menuHeight;
         }
-        if ((menuBottom - (itemHeights[(int)selectedIndex] / 2.0)) < (buttonBottom - (buttonRect.height / 2.0)))
+        if (
+            (menuBottom - (itemHeights[(int)selectedIndex] / 2.0))
+            < (buttonBottom - (buttonRect.height / 2.0))
+        )
         {
-            menuBottom = buttonBottom - (buttonRect.height / 2.0) + (itemHeights[(int)selectedIndex] / 2.0);
+            menuBottom =
+                buttonBottom - (buttonRect.height / 2.0) + (itemHeights[(int)selectedIndex] / 2.0);
             menuTop = menuBottom - menuHeight;
         }
         double scrollOffset = 0;
@@ -467,11 +789,13 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
             scrollOffset = Math.Max(0.0, selectedItemOffset - (buttonTop - menuTop));
             scrollOffset = Math.Min(scrollOffset, preferredMenuHeight - menuHeight);
         }
-        DartRuntimePrimitives.Assert(() => (menuBottom - menuTop - menuHeight).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance);
+        DartRuntimePrimitives.Assert(() =>
+            (menuBottom - menuTop - menuHeight).abs()
+            < Foundation.ConstantsLibrary.precisionErrorTolerance
+        );
         return new _MenuLimits__dropdown(menuTop, menuBottom, menuHeight, scrollOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _DropdownRoutePage__dropdown<T> : StatefulWidget
@@ -491,7 +815,24 @@ internal class _DropdownRoutePage__dropdown<T> : StatefulWidget
     public virtual double? menuWidth { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownRoutePage__dropdown(Key? key = null, _DropdownRoute__dropdown<T> route = default!, BoxConstraints constraints = default!, List<_MenuItem__dropdown<T>>? items = null, EdgeInsetsGeometry padding = default!, Rect buttonRect = default!, long selectedIndex = default!, long elevation = 8, CapturedThemes capturedThemes = default!, TextStyle? style = null, Color? dropdownColor = default!, bool enableFeedback = default!, BorderRadius? borderRadius = null, double? menuWidth = null, MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownRoutePage__dropdown(
+        Key? key = null,
+        _DropdownRoute__dropdown<T> route = default!,
+        BoxConstraints constraints = default!,
+        List<_MenuItem__dropdown<T>>? items = null,
+        EdgeInsetsGeometry padding = default!,
+        Rect buttonRect = default!,
+        long selectedIndex = default!,
+        long elevation = 8,
+        CapturedThemes capturedThemes = default!,
+        TextStyle? style = null,
+        Color? dropdownColor = default!,
+        bool enableFeedback = default!,
+        BorderRadius? borderRadius = null,
+        double? menuWidth = null,
+        MouseCursor? mouseCursor = null
+    )
+        : base(key: key)
     {
         this.route = route;
         this.constraints = constraints;
@@ -509,7 +850,8 @@ internal class _DropdownRoutePage__dropdown<T> : StatefulWidget
         this.mouseCursor = mouseCursor;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownRoutePageState__dropdown<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DropdownRoutePageState__dropdown<T>());
 }
 
 internal class _DropdownRoutePageState__dropdown<T> : State<_DropdownRoutePage__dropdown<T>>
@@ -519,20 +861,53 @@ internal class _DropdownRoutePageState__dropdown<T> : State<_DropdownRoutePage__
     public override void initState()
     {
         base.initState();
-        _MenuLimits__dropdown menuLimits = widget.route.getMenuLimits(widget.buttonRect, widget.constraints.maxHeight, widget.selectedIndex);
+        _MenuLimits__dropdown menuLimits = widget.route.getMenuLimits(
+            widget.buttonRect,
+            widget.constraints.maxHeight,
+            widget.selectedIndex
+        );
         _scrollController = new ScrollController(initialScrollOffset: menuLimits.scrollOffset);
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() =>
+            Widgets.DebugLibrary.debugCheckHasDirectionality(context)
+        );
         TextDirection? textDirectionLocal = Directionality.maybeOf(context);
-        Widget menu = new _DropdownMenu__dropdown<T>(route: widget.route, padding: widget.padding.resolve(textDirectionLocal), buttonRect: widget.buttonRect, constraints: widget.constraints, dropdownColor: widget.dropdownColor, enableFeedback: widget.enableFeedback, borderRadius: widget.borderRadius, scrollController: _scrollController, mouseCursor: widget.mouseCursor);
-        return MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new Builder(builder: (context) =>
-        {
-            return new CustomSingleChildLayout(@delegate: new _DropdownMenuRouteLayout__dropdown<T>(buttonRect: widget.buttonRect, route: widget.route, textDirection: textDirectionLocal, menuWidth: widget.menuWidth), child: widget.capturedThemes.wrap(menu));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        Widget menu = new _DropdownMenu__dropdown<T>(
+            route: widget.route,
+            padding: widget.padding.resolve(textDirectionLocal),
+            buttonRect: widget.buttonRect,
+            constraints: widget.constraints,
+            dropdownColor: widget.dropdownColor,
+            enableFeedback: widget.enableFeedback,
+            borderRadius: widget.borderRadius,
+            scrollController: _scrollController,
+            mouseCursor: widget.mouseCursor
+        );
+        return MediaQuery.CreateRemovePadding(
+            context: context,
+            removeTop: true,
+            removeBottom: true,
+            removeLeft: true,
+            removeRight: true,
+            child: new Builder(
+                builder: (context) =>
+                {
+                    return new CustomSingleChildLayout(
+                        @delegate: new _DropdownMenuRouteLayout__dropdown<T>(
+                            buttonRect: widget.buttonRect,
+                            route: widget.route,
+                            textDirection: textDirectionLocal,
+                            menuWidth: widget.menuWidth
+                        ),
+                        child: widget.capturedThemes.wrap(menu)
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -541,7 +916,6 @@ internal class _DropdownRoutePageState__dropdown<T> : State<_DropdownRoutePage__
         _scrollController.dispose();
         base.dispose();
     }
-
 }
 
 public class _MenuItem__dropdown<T> : SingleChildRenderObjectWidget
@@ -549,7 +923,12 @@ public class _MenuItem__dropdown<T> : SingleChildRenderObjectWidget
     public virtual Action<Size> onLayout { get; private set; } = default!;
     public virtual DropdownMenuItem<T>? item { get; private set; }
 
-    internal _MenuItem__dropdown(Key? key = null, Action<Size> onLayout = default!, DropdownMenuItem<T>? item = default!) : base(key: key, child: item)
+    internal _MenuItem__dropdown(
+        Key? key = null,
+        Action<Size> onLayout = default!,
+        DropdownMenuItem<T>? item = default!
+    )
+        : base(key: key, child: item)
     {
         this.onLayout = onLayout;
         this.item = item;
@@ -566,14 +945,14 @@ public class _MenuItem__dropdown<T> : SingleChildRenderObjectWidget
         var __renderObject = (_RenderMenuItem__dropdown)renderObject;
         __renderObject.onLayout = onLayout;
     }
-
 }
 
 public class _RenderMenuItem__dropdown : RenderProxyBox
 {
     public virtual Action<Size> onLayout { get; set; } = default!;
 
-    internal _RenderMenuItem__dropdown(Action<Size> onLayout, RenderBox? child = null) : base(child)
+    internal _RenderMenuItem__dropdown(Action<Size> onLayout, RenderBox? child = null)
+        : base(child)
     {
         this.onLayout = onLayout;
     }
@@ -583,7 +962,6 @@ public class _RenderMenuItem__dropdown : RenderProxyBox
         base.performLayout();
         onLayout(size);
     }
-
 }
 
 public class _DropdownMenuItemContainer__dropdown : StatelessWidget
@@ -591,7 +969,12 @@ public class _DropdownMenuItemContainer__dropdown : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
 
-    internal _DropdownMenuItemContainer__dropdown(Key? key = null, AlignmentGeometry alignment = default!, Widget child = default!) : base(key: key)
+    internal _DropdownMenuItemContainer__dropdown(
+        Key? key = null,
+        AlignmentGeometry alignment = default!,
+        Widget child = default!
+    )
+        : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.centerStart;
         this.alignment = __alignment;
@@ -600,10 +983,15 @@ public class _DropdownMenuItemContainer__dropdown : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return new Widgets.Semantics(button: true, child: new ConstrainedBox(constraints: new BoxConstraints(minHeight: DropdownLibrary._kMenuItemHeight), child: new Align(alignment: alignment, child: child)));
+        return new Widgets.Semantics(
+            button: true,
+            child: new ConstrainedBox(
+                constraints: new BoxConstraints(minHeight: DropdownLibrary._kMenuItemHeight),
+                child: new Align(alignment: alignment, child: child)
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class DropdownMenuItem<T> : _DropdownMenuItemContainer__dropdown
@@ -612,24 +1000,31 @@ public class DropdownMenuItem<T> : _DropdownMenuItemContainer__dropdown
     public virtual T? value { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
 
-    public DropdownMenuItem(Key? key = null, Action? onTap = null, T? value = default, bool enabled = true, AlignmentGeometry alignment = default!, Widget child = default!) : base(key: key, alignment: alignment ?? AlignmentDirectional.centerStart, child: child)
+    public DropdownMenuItem(
+        Key? key = null,
+        Action? onTap = null,
+        T? value = default,
+        bool enabled = true,
+        AlignmentGeometry alignment = default!,
+        Widget child = default!
+    )
+        : base(key: key, alignment: alignment ?? AlignmentDirectional.centerStart, child: child)
     {
         this.onTap = onTap;
         this.value = value;
         this.enabled = enabled;
     }
-
 }
 
 public class DropdownButtonHideUnderline : InheritedWidget
 {
-    public DropdownButtonHideUnderline(Key? key = null, Widget child = default!) : base(key: key, child: child)
-    {
-    }
+    public DropdownButtonHideUnderline(Key? key = null, Widget child = default!)
+        : base(key: key, child: child) { }
 
     public static bool at(BuildContext context)
     {
-        return context.dependOnInheritedWidgetOfExactType<DropdownButtonHideUnderline>() is not null;
+        return context.dependOnInheritedWidgetOfExactType<DropdownButtonHideUnderline>()
+            is not null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -671,7 +1066,40 @@ public class DropdownButton<T> : StatefulWidget
     internal virtual InputDecoration? _inputDecoration { get; private set; }
     internal virtual bool _isEmpty { get; private set; } = default!;
 
-    public DropdownButton(Key? key = null, List<DropdownMenuItem<T>>? items = default!, Func<BuildContext, List<Widget>>? selectedItemBuilder = null, T? value = default, Widget? hint = null, Widget? disabledHint = null, Action<T?>? onChanged = default!, Action? onTap = null, long elevation = 8, TextStyle? style = null, Widget? underline = null, Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, AlignmentGeometry alignment = default!, BorderRadius? borderRadius = null, EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, MouseCursor? mouseCursor = null, MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key)
+    public DropdownButton(
+        Key? key = null,
+        List<DropdownMenuItem<T>>? items = default!,
+        Func<BuildContext, List<Widget>>? selectedItemBuilder = null,
+        T? value = default,
+        Widget? hint = null,
+        Widget? disabledHint = null,
+        Action<T?>? onChanged = default!,
+        Action? onTap = null,
+        long elevation = 8,
+        TextStyle? style = null,
+        Widget? underline = null,
+        Widget? icon = null,
+        Color? iconDisabledColor = null,
+        Color? iconEnabledColor = null,
+        double iconSize = 24.0,
+        bool isDense = false,
+        bool isExpanded = false,
+        double? itemHeight = null,
+        double? menuWidth = null,
+        Color? focusColor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        Color? dropdownColor = null,
+        double? menuMaxHeight = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry alignment = default!,
+        BorderRadius? borderRadius = null,
+        EdgeInsetsGeometry? padding = null,
+        bool barrierDismissible = true,
+        MouseCursor? mouseCursor = null,
+        MouseCursor? dropdownMenuItemMouseCursor = null
+    )
+        : base(key: key)
     {
         double? __itemHeight = itemHeight ?? ConstantsLibrary.kMinInteractiveDimension;
         AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.centerStart;
@@ -707,17 +1135,98 @@ public class DropdownButton<T> : StatefulWidget
         this.dropdownMenuItemMouseCursor = dropdownMenuItemMouseCursor;
         _inputDecoration = null;
         _isEmpty = false;
-        System.Diagnostics.Debug.Assert((items is null) || !Enumerable.Any(items) || (value is null) || (items.where((item) =>
-        {
-            return Equals(item.value, value);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }).Count() == 1L));
-        System.Diagnostics.Debug.Assert((__itemHeight is null) || (__itemHeight >= ConstantsLibrary.kMinInteractiveDimension));
+        System.Diagnostics.Debug.Assert(
+            (items is null)
+                || !Enumerable.Any(items)
+                || (value is null)
+                || (
+                    items
+                        .where(
+                            (item) =>
+                            {
+                                return Equals(item.value, value);
+                                throw new InvalidOperationException(
+                                    "Dart closure completed without a value."
+                                );
+                            }
+                        )
+                        .Count() == 1L
+                )
+        );
+        System.Diagnostics.Debug.Assert(
+            (__itemHeight is null) || (__itemHeight >= ConstantsLibrary.kMinInteractiveDimension)
+        );
     }
 
-    public static DropdownButton<T> Create_formField(Key? key = null, List<DropdownMenuItem<T>>? items = default!, Func<BuildContext, List<Widget>>? selectedItemBuilder = null, T? value = default, Widget? hint = null, Widget? disabledHint = null, Action<T?>? onChanged = default!, Action? onTap = null, long elevation = 8, TextStyle? style = null, Widget? underline = null, Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, AlignmentGeometry alignment = default!, BorderRadius? borderRadius = null, EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, MouseCursor? mouseCursor = null, MouseCursor? dropdownMenuItemMouseCursor = null, InputDecoration inputDecoration = default!, bool isEmpty = default!)
+    public static DropdownButton<T> Create_formField(
+        Key? key = null,
+        List<DropdownMenuItem<T>>? items = default!,
+        Func<BuildContext, List<Widget>>? selectedItemBuilder = null,
+        T? value = default,
+        Widget? hint = null,
+        Widget? disabledHint = null,
+        Action<T?>? onChanged = default!,
+        Action? onTap = null,
+        long elevation = 8,
+        TextStyle? style = null,
+        Widget? underline = null,
+        Widget? icon = null,
+        Color? iconDisabledColor = null,
+        Color? iconEnabledColor = null,
+        double iconSize = 24.0,
+        bool isDense = false,
+        bool isExpanded = false,
+        double? itemHeight = null,
+        double? menuWidth = null,
+        Color? focusColor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        Color? dropdownColor = null,
+        double? menuMaxHeight = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry alignment = default!,
+        BorderRadius? borderRadius = null,
+        EdgeInsetsGeometry? padding = null,
+        bool barrierDismissible = true,
+        MouseCursor? mouseCursor = null,
+        MouseCursor? dropdownMenuItemMouseCursor = null,
+        InputDecoration inputDecoration = default!,
+        bool isEmpty = default!
+    )
     {
-        var __instance = new DropdownButton<T>(key: key, items: items, selectedItemBuilder: selectedItemBuilder, value: value, hint: hint, disabledHint: disabledHint, onChanged: onChanged, onTap: onTap, elevation: elevation, style: style, underline: underline, icon: icon, iconDisabledColor: iconDisabledColor, iconEnabledColor: iconEnabledColor, iconSize: iconSize, isDense: isDense, isExpanded: isExpanded, itemHeight: itemHeight, menuWidth: menuWidth, focusColor: focusColor, focusNode: focusNode, autofocus: autofocus, dropdownColor: dropdownColor, menuMaxHeight: menuMaxHeight, enableFeedback: enableFeedback, alignment: alignment, borderRadius: borderRadius, padding: padding, barrierDismissible: barrierDismissible, mouseCursor: mouseCursor, dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor);
+        var __instance = new DropdownButton<T>(
+            key: key,
+            items: items,
+            selectedItemBuilder: selectedItemBuilder,
+            value: value,
+            hint: hint,
+            disabledHint: disabledHint,
+            onChanged: onChanged,
+            onTap: onTap,
+            elevation: elevation,
+            style: style,
+            underline: underline,
+            icon: icon,
+            iconDisabledColor: iconDisabledColor,
+            iconEnabledColor: iconEnabledColor,
+            iconSize: iconSize,
+            isDense: isDense,
+            isExpanded: isExpanded,
+            itemHeight: itemHeight,
+            menuWidth: menuWidth,
+            focusColor: focusColor,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            dropdownColor: dropdownColor,
+            menuMaxHeight: menuMaxHeight,
+            enableFeedback: enableFeedback,
+            alignment: alignment,
+            borderRadius: borderRadius,
+            padding: padding,
+            barrierDismissible: barrierDismissible,
+            mouseCursor: mouseCursor,
+            dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor
+        );
         double? __itemHeight = itemHeight ?? ConstantsLibrary.kMinInteractiveDimension;
         AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.centerStart;
         __instance.items = items;
@@ -755,7 +1264,8 @@ public class DropdownButton<T> : StatefulWidget
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownButtonState__dropdown<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _DropdownButtonState__dropdown<T>());
 }
 
 internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, WidgetsBindingObserver
@@ -769,7 +1279,9 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
     internal virtual bool _hasPrimaryFocus { get; set; } = false;
     internal virtual bool _isMenuExpanded { get; set; } = false;
 
-    public virtual FocusNode focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _internalNode!);
+    public virtual FocusNode focusNode =>
+        DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _internalNode!);
+
     internal virtual FocusNode _createFocusNode()
     {
         return new FocusNode(debugLabel: $"{DartRuntimePrimitives.RuntimeType(widget)}");
@@ -784,7 +1296,25 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         {
             _internalNode ??= _createFocusNode();
         }
-        _actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (Action<ActivateIntent>)((intent) => { _handleTap(); })), [typeof(ButtonActivateIntent)] = new CallbackAction<ButtonActivateIntent>(onInvoke: (Action<ButtonActivateIntent>)((intent) => { _handleTap(); })) };
+        _actionMap = new DartMap<Type, dynamic>
+        {
+            [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(
+                onInvoke: (Action<ActivateIntent>)(
+                    (intent) =>
+                    {
+                        _handleTap();
+                    }
+                )
+            ),
+            [typeof(ButtonActivateIntent)] = new CallbackAction<ButtonActivateIntent>(
+                onInvoke: (Action<ButtonActivateIntent>)(
+                    (intent) =>
+                    {
+                        _handleTap();
+                    }
+                )
+            ),
+        };
         focusNode.addListener(_handleFocusChanged);
     }
 
@@ -838,15 +1368,39 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
 
     internal virtual void _updateSelectedIndex()
     {
-        if ((widget.items is null) || !Enumerable.Any(widget.items!) || (widget.value is null) && !Enumerable.Any(widget.items!.where((item) => item.enabled && EqualityComparer<T>.Default.Equals(item.value, widget.value))))
+        if (
+            (widget.items is null)
+            || !Enumerable.Any(widget.items!)
+            || (
+                (widget.value is null)
+                && !Enumerable.Any(
+                    widget.items!.where(
+                        (item) =>
+                            item.enabled
+                            && EqualityComparer<T>.Default.Equals(item.value, widget.value)
+                    )
+                )
+            )
+        )
         {
             _selectedIndex = null;
             return;
         }
-        DartRuntimePrimitives.Assert(() => widget.items!.where((item) => EqualityComparer<T>.Default.Equals(item.value, widget.value)).Count() == 1L);
+        DartRuntimePrimitives.Assert(() =>
+            widget
+                .items!.where(
+                    (item) => EqualityComparer<T>.Default.Equals(item.value, widget.value)
+                )
+                .Count() == 1L
+        );
         for (var itemIndex = 0L; itemIndex < checked(widget.items!.Count); itemIndex++)
         {
-            if (EqualityComparer<T>.Default.Equals(widget.items![(int)itemIndex].value, widget.value))
+            if (
+                EqualityComparer<T>.Default.Equals(
+                    widget.items![(int)itemIndex].value,
+                    widget.value
+                )
+            )
             {
                 _selectedIndex = itemIndex;
                 return;
@@ -854,48 +1408,89 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         }
     }
 
-    internal virtual TextStyle? _textStyle => DartRuntimePrimitives.ConvertValue<TextStyle>(widget.style ?? Theme.of(context).textTheme.titleMedium);
+    internal virtual TextStyle? _textStyle =>
+        DartRuntimePrimitives.ConvertValue<TextStyle>(
+            widget.style ?? Theme.of(context).textTheme.titleMedium
+        );
+
     internal virtual void _handleTap()
     {
         TextDirection? textDirection = Directionality.maybeOf(context);
-        EdgeInsetsGeometry menuMargin = ButtonTheme.of(context).alignedDropdown ? DropdownLibrary._kAlignedMenuMargin : DropdownLibrary._kUnalignedMenuMargin;
-        var menuItems = ((Func<List<_MenuItem__dropdown<T>>>)(() =>
-        {
-            var __collection51034 = new List<_MenuItem__dropdown<T>>(); for (long index = 0L; index < checked(widget.items!.Count); index += 1L)
-            {
-                __collection51034.Add(new _MenuItem__dropdown<T>(item: widget.items![(int)index], onLayout: (size) =>
+        EdgeInsetsGeometry menuMargin = ButtonTheme.of(context).alignedDropdown
+            ? DropdownLibrary._kAlignedMenuMargin
+            : DropdownLibrary._kUnalignedMenuMargin;
+        var menuItems = (
+            (Func<List<_MenuItem__dropdown<T>>>)(
+                () =>
                 {
-                    if (_dropdownRoute is null)
+                    var __collection51034 = new List<_MenuItem__dropdown<T>>();
+                    for (long index = 0L; index < checked(widget.items!.Count); index += 1L)
                     {
-                        return;
+                        __collection51034.Add(
+                            new _MenuItem__dropdown<T>(
+                                item: widget.items![(int)index],
+                                onLayout: (size) =>
+                                {
+                                    if (_dropdownRoute is null)
+                                    {
+                                        return;
+                                    }
+                                    _dropdownRoute!.itemHeights[(int)index] = size.height;
+                                }
+                            )
+                        );
                     }
-                    _dropdownRoute!.itemHeights[(int)index] = size.height;
-                }));
-            }
-            return __collection51034;
-        }))();
+                    return __collection51034;
+                }
+            )
+        )();
         NavigatorState navigator = Navigator.of(context);
         DartRuntimePrimitives.Assert(() => _dropdownRoute is null);
         var itemBox = ((RenderBox?)context.findRenderObject()!)!;
-        Rect itemRect = itemBox.localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject()) & itemBox.size;
-        _dropdownRoute = new _DropdownRoute__dropdown<T>(items: menuItems, buttonRect: menuMargin.resolve(textDirection).inflateRect(itemRect), padding: DropdownLibrary._kMenuItemPadding.resolve(textDirection), selectedIndex: _selectedIndex ?? 0L, elevation: widget.elevation, capturedThemes: InheritedTheme.capture(from: context, to: navigator.context), style: _textStyle!, barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel, itemHeight: widget.itemHeight, menuWidth: widget.menuWidth, dropdownColor: widget.dropdownColor, menuMaxHeight: widget.menuMaxHeight, enableFeedback: widget.enableFeedback ?? true, borderRadius: widget.borderRadius, barrierDismissible: widget.barrierDismissible, dropdownMenuItemMouseCursor: widget.dropdownMenuItemMouseCursor);
+        Rect itemRect =
+            itemBox.localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject())
+            & itemBox.size;
+        _dropdownRoute = new _DropdownRoute__dropdown<T>(
+            items: menuItems,
+            buttonRect: menuMargin.resolve(textDirection).inflateRect(itemRect),
+            padding: DropdownLibrary._kMenuItemPadding.resolve(textDirection),
+            selectedIndex: _selectedIndex ?? 0L,
+            elevation: widget.elevation,
+            capturedThemes: InheritedTheme.capture(from: context, to: navigator.context),
+            style: _textStyle!,
+            barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            itemHeight: widget.itemHeight,
+            menuWidth: widget.menuWidth,
+            dropdownColor: widget.dropdownColor,
+            menuMaxHeight: widget.menuMaxHeight,
+            enableFeedback: widget.enableFeedback ?? true,
+            borderRadius: widget.borderRadius,
+            barrierDismissible: widget.barrierDismissible,
+            dropdownMenuItemMouseCursor: widget.dropdownMenuItemMouseCursor
+        );
         focusNode.requestFocus();
-        DartRuntimePrimitives.Ignore(navigator.push(_dropdownRoute!).then((newValue) =>
-        {
-            _removeDropdownRoute();
-            if (mounted)
-            {
-                setState(() =>
-                {
-                    _isMenuExpanded = false;
-                });
-            }
-            if (!mounted || (newValue is null))
-            {
-                return;
-            }
-            widget.onChanged?.Invoke(newValue.result);
-        }));
+        DartRuntimePrimitives.Ignore(
+            navigator
+                .push(_dropdownRoute!)
+                .then(
+                    (newValue) =>
+                    {
+                        _removeDropdownRoute();
+                        if (mounted)
+                        {
+                            setState(() =>
+                            {
+                                _isMenuExpanded = false;
+                            });
+                        }
+                        if (!mounted || (newValue is null))
+                        {
+                            return;
+                        }
+                        widget.onChanged?.Invoke(newValue.result);
+                    }
+                )
+        );
         widget.onTap?.Invoke();
         setState(() =>
         {
@@ -907,10 +1502,20 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
     {
         get
         {
-            double fontSizeLocal = _textStyle!.fontSize ?? DartRuntimePrimitives.RequireValue(Theme.of(context).textTheme.titleMedium!.fontSize);
-            double lineHeight = (_textStyle!.height ?? Theme.of(context).textTheme.titleMedium!.height) ?? 1.0;
-            double scaledFontSize = MediaQuery.textScalerOf(context).scale(fontSizeLocal * lineHeight);
-            return Math.Max(scaledFontSize, Math.Max(widget.iconSize, DropdownLibrary._kDenseButtonHeight));
+            double fontSizeLocal =
+                _textStyle!.fontSize
+                ?? DartRuntimePrimitives.RequireValue(
+                    Theme.of(context).textTheme.titleMedium!.fontSize
+                );
+            double lineHeight =
+                (_textStyle!.height ?? Theme.of(context).textTheme.titleMedium!.height) ?? 1.0;
+            double scaledFontSize = MediaQuery
+                .textScalerOf(context)
+                .scale(fontSizeLocal * lineHeight);
+            return Math.Max(
+                scaledFontSize,
+                Math.Max(widget.iconSize, DropdownLibrary._kDenseButtonHeight)
+            );
         }
     }
     internal virtual Color _iconColor
@@ -920,15 +1525,43 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
             Brightness brightness = Theme.brightnessOf(context);
             if (_enabled)
             {
-                return widget.iconEnabledColor ?? (brightness switch { Brightness.light => Colors.grey.shade700, Brightness.dark => Colors.white70, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                return widget.iconEnabledColor
+                    ?? (
+                        brightness switch
+                        {
+                            Brightness.light => Colors.grey.shade700,
+                            Brightness.dark => Colors.white70,
+                            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                                throw new InvalidOperationException(
+                                    "Non-exhaustive Dart switch value."
+                                ),
+                        }
+                    );
             }
             else
             {
-                return widget.iconDisabledColor ?? (brightness switch { Brightness.light => Colors.grey.shade400, Brightness.dark => Colors.white10, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                return widget.iconDisabledColor
+                    ?? (
+                        brightness switch
+                        {
+                            Brightness.light => Colors.grey.shade400,
+                            Brightness.dark => Colors.white10,
+                            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                                throw new InvalidOperationException(
+                                    "Non-exhaustive Dart switch value."
+                                ),
+                        }
+                    );
             }
         }
     }
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>((widget.items is not null) && Enumerable.Any(widget.items!) && (widget.onChanged is not null));
+    internal virtual bool _enabled =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            (widget.items is not null)
+                && Enumerable.Any(widget.items!)
+                && (widget.onChanged is not null)
+        );
+
     internal virtual Orientation _getOrientation(BuildContext context)
     {
         Orientation? result = MediaQuery.maybeOrientationOf(context);
@@ -944,7 +1577,9 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
+        DartRuntimePrimitives.Assert(() =>
+            DebugLibrary.debugCheckHasMaterialLocalizations(context)
+        );
         Orientation newOrientation = _getOrientation(context);
         _lastOrientation ??= newOrientation;
         if (!Equals(newOrientation, _lastOrientation))
@@ -956,21 +1591,50 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         if (widget.selectedItemBuilder is not null)
         {
             List<Widget> selectedItems = widget.selectedItemBuilder!(context).ToList();
-            DartRuntimePrimitives.Assert(() => (widget.items is null) || (checked(selectedItems.Count) == checked((long)widget.items!.Count)), () => (object?)"The selectedItemBuilder must return a list of widgets with the same length as the items list.\n" + $"Currently, selectedItemBuilder returns a list of length {checked((long)selectedItems.Count)}, " + $"but items has length {checked((long)widget.items!.Count)}.");
-            itemsLocal = new List<Widget>(DartRuntimePrimitives.ConvertEnumerable<Widget>(selectedItems));
+            DartRuntimePrimitives.Assert(
+                () =>
+                    (widget.items is null)
+                    || (checked(selectedItems.Count) == checked((long)widget.items!.Count)),
+                () =>
+                    (object?)
+                        "The selectedItemBuilder must return a list of widgets with the same length as the items list.\n"
+                    + $"Currently, selectedItemBuilder returns a list of length {checked((long)selectedItems.Count)}, "
+                    + $"but items has length {checked((long)widget.items!.Count)}."
+            );
+            itemsLocal = new List<Widget>(
+                DartRuntimePrimitives.ConvertEnumerable<Widget>(selectedItems)
+            );
         }
         else
         {
-            itemsLocal = (widget.items is not null) ? new List<Widget>(DartRuntimePrimitives.ConvertEnumerable<Widget>(widget.items!)) : new List<Widget>();
+            itemsLocal =
+                (widget.items is not null)
+                    ? new List<Widget>(
+                        DartRuntimePrimitives.ConvertEnumerable<Widget>(widget.items!)
+                    )
+                    : new List<Widget>();
         }
         long? hintIndex = default!;
-        if ((widget.hint is not null) || !_enabled && (widget.disabledHint is not null))
+        if ((widget.hint is not null) || (!_enabled && (widget.disabledHint is not null)))
         {
             Widget displayedHint = _enabled ? widget.hint! : (widget.disabledHint ?? widget.hint!);
             hintIndex = checked(itemsLocal.Count);
-            itemsLocal.Add(new DefaultTextStyle(style: _textStyle!.copyWith(color: Theme.of(context).hintColor), child: new IgnorePointer(child: new _DropdownMenuItemContainer__dropdown(alignment: widget.alignment, child: displayedHint))));
+            itemsLocal.Add(
+                new DefaultTextStyle(
+                    style: _textStyle!.copyWith(color: Theme.of(context).hintColor),
+                    child: new IgnorePointer(
+                        child: new _DropdownMenuItemContainer__dropdown(
+                            alignment: widget.alignment,
+                            child: displayedHint
+                        )
+                    )
+                )
+            );
         }
-        EdgeInsetsGeometry paddingLocal = (ButtonTheme.of(context).alignedDropdown && (widget._inputDecoration is null)) ? DropdownLibrary._kAlignedButtonPadding : DropdownLibrary._kUnalignedButtonPadding;
+        EdgeInsetsGeometry paddingLocal =
+            (ButtonTheme.of(context).alignedDropdown && (widget._inputDecoration is null))
+                ? DropdownLibrary._kAlignedButtonPadding
+                : DropdownLibrary._kUnalignedButtonPadding;
         Widget innerItemsWidget = default!;
         if (!Enumerable.Any(itemsLocal))
         {
@@ -978,27 +1642,164 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         }
         else
         {
-            innerItemsWidget = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedStack(index: _selectedIndex ?? hintIndex, alignment: widget.alignment, children: widget.isDense ? itemsLocal : itemsLocal.map<Widget, RenderObjectWidget>((item) =>
-            {
-                return (widget.itemHeight is not null) ? new global::Doroti.Framework.Widgets.SizedBox(height: widget.itemHeight, child: item) : new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(item) });
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }).Cast<Widget>().ToList()));
+            innerItemsWidget = DartRuntimePrimitives.ConvertValue<Widget>(
+                new IndexedStack(
+                    index: _selectedIndex ?? hintIndex,
+                    alignment: widget.alignment,
+                    children: widget.isDense
+                        ? itemsLocal
+                        : itemsLocal
+                            .map<Widget, RenderObjectWidget>(
+                                (item) =>
+                                {
+                                    return (widget.itemHeight is not null)
+                                        ? new global::Doroti.Framework.Widgets.SizedBox(
+                                            height: widget.itemHeight,
+                                            child: item
+                                        )
+                                        : new global::Doroti.Framework.Widgets.Column(
+                                            mainAxisSize: global::Doroti
+                                                .Framework
+                                                .Rendering
+                                                .MainAxisSize
+                                                .min,
+                                            children: new List<global::Doroti.Framework.Widgets.Widget>
+                                            {
+                                                DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(
+                                                    item
+                                                ),
+                                            }
+                                        );
+                                    throw new InvalidOperationException(
+                                        "Dart closure completed without a value."
+                                    );
+                                }
+                            )
+                            .Cast<Widget>()
+                            .ToList()
+                )
+            );
         }
         var defaultIcon = new Icon(Icons.arrow_drop_down);
-        Widget effectiveSuffixIcon = new IconTheme(data: new IconThemeData(color: _iconColor, size: widget.iconSize), child: (widget.icon ?? widget._inputDecoration?.suffixIcon) ?? defaultIcon);
-        Widget result = new DefaultTextStyle(style: _enabled ? _textStyle! : _textStyle!.copyWith(color: Theme.of(context).disabledColor), child: new SizedBox(height: widget.isDense ? _denseButtonHeight : null, child: new Padding(padding: paddingLocal.resolve(Directionality.of(context)), child: new Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, mainAxisSize: MainAxisSize.min, children: ((Func<List<Widget>>)(() => { var __collection58789 = new List<Widget>(); if (widget.isExpanded) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: innerItemsWidget))); } else { __collection58789.Add(DartRuntimePrimitives.ConvertValue<Widget>(innerItemsWidget)); } if (widget._inputDecoration is null) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<Widget>(effectiveSuffixIcon)); } return __collection58789; }))()))));
+        Widget effectiveSuffixIcon = new IconTheme(
+            data: new IconThemeData(color: _iconColor, size: widget.iconSize),
+            child: (widget.icon ?? widget._inputDecoration?.suffixIcon) ?? defaultIcon
+        );
+        Widget result = new DefaultTextStyle(
+            style: _enabled
+                ? _textStyle!
+                : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
+            child: new SizedBox(
+                height: widget.isDense ? _denseButtonHeight : null,
+                child: new Padding(
+                    padding: paddingLocal.resolve(Directionality.of(context)),
+                    child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: (
+                            (Func<List<Widget>>)(
+                                () =>
+                                {
+                                    var __collection58789 = new List<Widget>();
+                                    if (widget.isExpanded)
+                                    {
+                                        __collection58789.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                new Expanded(child: innerItemsWidget)
+                                            )
+                                        );
+                                    }
+                                    else
+                                    {
+                                        __collection58789.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                innerItemsWidget
+                                            )
+                                        );
+                                    }
+                                    if (widget._inputDecoration is null)
+                                    {
+                                        __collection58789.Add(
+                                            DartRuntimePrimitives.ConvertValue<Widget>(
+                                                effectiveSuffixIcon
+                                            )
+                                        );
+                                    }
+                                    return __collection58789;
+                                }
+                            )
+                        )()
+                    )
+                )
+            )
+        );
         if (!DropdownButtonHideUnderline.at(context))
         {
             var bottomLocal = (widget.isDense || (widget.itemHeight is null)) ? 0.0 : 8.0;
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(result), DartRuntimePrimitives.ConvertValue<Widget>(new Positioned(left: 0.0, right: 0.0, bottom: bottomLocal, child: widget.underline ?? new Container(height: 1.0, decoration: new BoxDecoration(border: new Border(bottom: new BorderSide(color: new Color(4290624957L), width: 0.0)))))) }));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Stack(
+                    children: new List<Widget>
+                    {
+                        DartRuntimePrimitives.ConvertValue<Widget>(result),
+                        DartRuntimePrimitives.ConvertValue<Widget>(
+                            new Positioned(
+                                left: 0.0,
+                                right: 0.0,
+                                bottom: bottomLocal,
+                                child: widget.underline
+                                    ?? new Container(
+                                        height: 1.0,
+                                        decoration: new BoxDecoration(
+                                            border: new Border(
+                                                bottom: new BorderSide(
+                                                    color: new Color(4290624957L),
+                                                    width: 0.0
+                                                )
+                                            )
+                                        )
+                                    )
+                            )
+                        ),
+                    }
+                )
+            );
         }
-        MouseCursor effectiveMouseCursor = WidgetStateProperty.resolveAs(widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable, ((Func<HashSet<WidgetState>>)(() => { var __collection59821 = new HashSet<WidgetState>(); if (!_enabled) { __collection59821.Add(WidgetState.disabled); } return __collection59821; }))());
+        MouseCursor effectiveMouseCursor = WidgetStateProperty.resolveAs(
+            widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable,
+            (
+                (Func<HashSet<WidgetState>>)(
+                    () =>
+                    {
+                        var __collection59821 = new HashSet<WidgetState>();
+                        if (!_enabled)
+                        {
+                            __collection59821.Add(WidgetState.disabled);
+                        }
+                        return __collection59821;
+                    }
+                )
+            )()
+        );
         if (widget._inputDecoration is not null)
         {
-            bool filledLocal = widget._inputDecoration?.filled ?? InputDecorationTheme.of(context).filled;
-            bool oulined = (widget._inputDecoration?.border?.isOutline ?? InputDecorationTheme.of(context).border?.isOutline) ?? false;
+            bool filledLocal =
+                widget._inputDecoration?.filled ?? InputDecorationTheme.of(context).filled;
+            bool oulined =
+                (
+                    widget._inputDecoration?.border?.isOutline
+                    ?? InputDecorationTheme.of(context).border?.isOutline
+                ) ?? false;
             var suffixIconEndMargin = (filledLocal || oulined) ? 12.0 : 0.0;
-            InputDecoration effectiveDecoration = widget._inputDecoration!.copyWith(suffixIconConstraints: new BoxConstraints(minWidth: widget.iconSize + suffixIconEndMargin, minHeight: widget.iconSize), suffixIcon: new Padding(padding: EdgeInsetsGeometry.CreateDirectional(end: suffixIconEndMargin), child: effectiveSuffixIcon));
+            InputDecoration effectiveDecoration = widget._inputDecoration!.copyWith(
+                suffixIconConstraints: new BoxConstraints(
+                    minWidth: widget.iconSize + suffixIconEndMargin,
+                    minHeight: widget.iconSize
+                ),
+                suffixIcon: new Padding(
+                    padding: EdgeInsetsGeometry.CreateDirectional(end: suffixIconEndMargin),
+                    child: effectiveSuffixIcon
+                )
+            );
             if (_hasPrimaryFocus)
             {
                 Color? focusColorLocal = widget.focusColor ?? effectiveDecoration.focusColor;
@@ -1007,35 +1808,78 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
                     effectiveDecoration = effectiveDecoration.copyWith(fillColor: focusColorLocal);
                 }
             }
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: _enabled, focusNode: focusNode, autofocus: widget.autofocus, child: new MouseRegion(onEnter: (@event) =>
-            {
-                if (!_isHovering)
-                {
-                    setState(() =>
-                    {
-                        _isHovering = true;
-                    });
-                }
-            }, onExit: (@event) =>
-            {
-                if (_isHovering)
-                {
-                    setState(() =>
-                    {
-                        _isHovering = false;
-                    });
-                }
-            }, cursor: effectiveMouseCursor, child: new GestureDetector(onTap: _enabled ? _handleTap : null, behavior: HitTestBehavior.opaque, child: new InputDecorator(decoration: effectiveDecoration, isEmpty: widget._isEmpty, isFocused: _hasPrimaryFocus, isHovering: _isHovering, child: (widget.padding is null) ? result : new Padding(padding: widget.padding!, child: result))))));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new Focus(
+                    canRequestFocus: _enabled,
+                    focusNode: focusNode,
+                    autofocus: widget.autofocus,
+                    child: new MouseRegion(
+                        onEnter: (@event) =>
+                        {
+                            if (!_isHovering)
+                            {
+                                setState(() =>
+                                {
+                                    _isHovering = true;
+                                });
+                            }
+                        },
+                        onExit: (@event) =>
+                        {
+                            if (_isHovering)
+                            {
+                                setState(() =>
+                                {
+                                    _isHovering = false;
+                                });
+                            }
+                        },
+                        cursor: effectiveMouseCursor,
+                        child: new GestureDetector(
+                            onTap: _enabled ? _handleTap : null,
+                            behavior: HitTestBehavior.opaque,
+                            child: new InputDecorator(
+                                decoration: effectiveDecoration,
+                                isEmpty: widget._isEmpty,
+                                isFocused: _hasPrimaryFocus,
+                                isHovering: _isHovering,
+                                child: (widget.padding is null)
+                                    ? result
+                                    : new Padding(padding: widget.padding!, child: result)
+                            )
+                        )
+                    )
+                )
+            );
         }
         else
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: _enabled ? _handleTap : null, canRequestFocus: _enabled, borderRadius: widget.borderRadius, focusNode: focusNode, autofocus: widget.autofocus, focusColor: widget.focusColor ?? Theme.of(context).focusColor, enableFeedback: false, child: (widget.padding is null) ? result : new Padding(padding: widget.padding!, child: result)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(
+                new InkWell(
+                    mouseCursor: effectiveMouseCursor,
+                    onTap: _enabled ? _handleTap : null,
+                    canRequestFocus: _enabled,
+                    borderRadius: widget.borderRadius,
+                    focusNode: focusNode,
+                    autofocus: widget.autofocus,
+                    focusColor: widget.focusColor ?? Theme.of(context).focusColor,
+                    enableFeedback: false,
+                    child: (widget.padding is null)
+                        ? result
+                        : new Padding(padding: widget.padding!, child: result)
+                )
+            );
         }
-        bool childHasButtonSemantic = (hintIndex is not null) || (_selectedIndex is not null) && (widget.selectedItemBuilder is null);
-        return new Widgets.Semantics(button: !childHasButtonSemantic, expanded: _isMenuExpanded, child: new Actions(actions: _actionMap, child: result));
+        bool childHasButtonSemantic =
+            (hintIndex is not null)
+            || ((_selectedIndex is not null) && (widget.selectedItemBuilder is null));
+        return new Widgets.Semantics(
+            button: !childHasButtonSemantic,
+            expanded: _isMenuExpanded,
+            child: new Actions(actions: _actionMap, child: result)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class DropdownButtonFormField<T> : FormField<T>
@@ -1046,27 +1890,150 @@ public class DropdownButtonFormField<T> : FormField<T>
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
 
-    public DropdownButtonFormField(Key? key = null, List<DropdownMenuItem<T>>? items = default!, Func<BuildContext, List<Widget>>? selectedItemBuilder = null, T? value = default, T? initialValue = default, Widget? hint = null, Widget? disabledHint = null, Action<T?>? onChanged = default!, Action? onTap = null, long elevation = 8, TextStyle? style = null, Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = true, bool isExpanded = false, double? itemHeight = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, InputDecoration? decoration = null, Action<T?>? onSaved = null, Func<T?, string?>? validator = null, Func<BuildContext, string, Widget>? errorBuilder = null, string? forceErrorText = null, AutovalidateMode? autovalidateMode = null, double? menuMaxHeight = null, bool? enableFeedback = null, AlignmentGeometry alignment = default!, BorderRadius? borderRadius = null, EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, MouseCursor? mouseCursor = null, MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key, onSaved: onSaved, validator: validator, errorBuilder: errorBuilder, forceErrorText: forceErrorText, initialValue: initialValue ?? value, autovalidateMode: autovalidateMode ?? AutovalidateMode.disabled, builder: (field) =>
-    {
-        var state = ((_DropdownButtonFormFieldState__dropdown<T>?)field)!;
-        InputDecoration effectiveDecoration = (decoration ?? new InputDecoration()).applyDefaults(InputDecorationTheme.of(((_DropdownButtonFormFieldState__dropdown<T>)field).context));
-        bool showSelectedItem = (items is not null) && Enumerable.Any(items.where((item) => EqualityComparer<T>.Default.Equals(item.value, state.value)));
-        bool isDropdownEnabled = (onChanged is not null) && (items is not null) && Enumerable.Any(items);
-        Widget? decorationHint = (effectiveDecoration.hintText is not null) ? new Text(effectiveDecoration.hintText!) : null;
-        Widget? effectiveHint = hint ?? decorationHint;
-        Widget? effectiveDisabledHint = disabledHint ?? effectiveHint;
-        bool isHintOrDisabledHintAvailable = isDropdownEnabled ? (effectiveHint is not null) : ((effectiveHint is not null) || (effectiveDisabledHint is not null));
-        bool isEmptyLocal = !showSelectedItem && !isHintOrDisabledHintAvailable;
-        if ((((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null) || (effectiveDecoration.hintText is not null))
-        {
-            Widget? errorLocal = ((((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null) && (errorBuilder is not null)) ? errorBuilder(state.context, ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText!) : null;
-            string? errorTextLocal = (errorLocal is null) ? ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText : null;
-            string? hintTextLocal = (effectiveDecoration.hintText is not null) ? "" : null;
-            effectiveDecoration = effectiveDecoration.copyWith(error: errorLocal, errorText: errorTextLocal, hintText: hintTextLocal);
-        }
-        return new Focus(canRequestFocus: false, skipTraversal: true, child: new DropdownButtonHideUnderline(child: DropdownButton<T>.Create_formField(items: items, selectedItemBuilder: selectedItemBuilder, value: state.value, hint: effectiveHint, disabledHint: effectiveDisabledHint, onChanged: (onChanged is null) ? null : state.didChange, onTap: onTap, elevation: elevation, style: style, icon: icon, iconDisabledColor: iconDisabledColor, iconEnabledColor: iconEnabledColor, iconSize: iconSize, isDense: isDense, isExpanded: isExpanded, itemHeight: itemHeight, focusColor: focusColor, focusNode: focusNode, autofocus: autofocus, dropdownColor: dropdownColor, menuMaxHeight: menuMaxHeight, enableFeedback: enableFeedback, alignment: alignment ?? AlignmentDirectional.centerStart, borderRadius: borderRadius, inputDecoration: effectiveDecoration, isEmpty: isEmptyLocal, padding: padding, barrierDismissible: barrierDismissible, mouseCursor: mouseCursor, dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor)));
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })
+    public DropdownButtonFormField(
+        Key? key = null,
+        List<DropdownMenuItem<T>>? items = default!,
+        Func<BuildContext, List<Widget>>? selectedItemBuilder = null,
+        T? value = default,
+        T? initialValue = default,
+        Widget? hint = null,
+        Widget? disabledHint = null,
+        Action<T?>? onChanged = default!,
+        Action? onTap = null,
+        long elevation = 8,
+        TextStyle? style = null,
+        Widget? icon = null,
+        Color? iconDisabledColor = null,
+        Color? iconEnabledColor = null,
+        double iconSize = 24.0,
+        bool isDense = true,
+        bool isExpanded = false,
+        double? itemHeight = null,
+        Color? focusColor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        Color? dropdownColor = null,
+        InputDecoration? decoration = null,
+        Action<T?>? onSaved = null,
+        Func<T?, string?>? validator = null,
+        Func<BuildContext, string, Widget>? errorBuilder = null,
+        string? forceErrorText = null,
+        AutovalidateMode? autovalidateMode = null,
+        double? menuMaxHeight = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry alignment = default!,
+        BorderRadius? borderRadius = null,
+        EdgeInsetsGeometry? padding = null,
+        bool barrierDismissible = true,
+        MouseCursor? mouseCursor = null,
+        MouseCursor? dropdownMenuItemMouseCursor = null
+    )
+        : base(
+            key: key,
+            onSaved: onSaved,
+            validator: validator,
+            errorBuilder: errorBuilder,
+            forceErrorText: forceErrorText,
+            initialValue: initialValue ?? value,
+            autovalidateMode: autovalidateMode ?? AutovalidateMode.disabled,
+            builder: (field) =>
+            {
+                var state = ((_DropdownButtonFormFieldState__dropdown<T>?)field)!;
+                InputDecoration effectiveDecoration = (
+                    decoration ?? new InputDecoration()
+                ).applyDefaults(
+                    InputDecorationTheme.of(
+                        ((_DropdownButtonFormFieldState__dropdown<T>)field).context
+                    )
+                );
+                bool showSelectedItem =
+                    (items is not null)
+                    && Enumerable.Any(
+                        items.where(
+                            (item) => EqualityComparer<T>.Default.Equals(item.value, state.value)
+                        )
+                    );
+                bool isDropdownEnabled =
+                    (onChanged is not null) && (items is not null) && Enumerable.Any(items);
+                Widget? decorationHint =
+                    (effectiveDecoration.hintText is not null)
+                        ? new Text(effectiveDecoration.hintText!)
+                        : null;
+                Widget? effectiveHint = hint ?? decorationHint;
+                Widget? effectiveDisabledHint = disabledHint ?? effectiveHint;
+                bool isHintOrDisabledHintAvailable = isDropdownEnabled
+                    ? (effectiveHint is not null)
+                    : ((effectiveHint is not null) || (effectiveDisabledHint is not null));
+                bool isEmptyLocal = !showSelectedItem && !isHintOrDisabledHintAvailable;
+                if (
+                    (((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null)
+                    || (effectiveDecoration.hintText is not null)
+                )
+                {
+                    Widget? errorLocal =
+                        (
+                            (
+                                ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText
+                                is not null
+                            ) && (errorBuilder is not null)
+                        )
+                            ? errorBuilder(
+                                state.context,
+                                ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText!
+                            )
+                            : null;
+                    string? errorTextLocal =
+                        (errorLocal is null)
+                            ? ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText
+                            : null;
+                    string? hintTextLocal = (effectiveDecoration.hintText is not null) ? "" : null;
+                    effectiveDecoration = effectiveDecoration.copyWith(
+                        error: errorLocal,
+                        errorText: errorTextLocal,
+                        hintText: hintTextLocal
+                    );
+                }
+                return new Focus(
+                    canRequestFocus: false,
+                    skipTraversal: true,
+                    child: new DropdownButtonHideUnderline(
+                        child: DropdownButton<T>.Create_formField(
+                            items: items,
+                            selectedItemBuilder: selectedItemBuilder,
+                            value: state.value,
+                            hint: effectiveHint,
+                            disabledHint: effectiveDisabledHint,
+                            onChanged: (onChanged is null) ? null : state.didChange,
+                            onTap: onTap,
+                            elevation: elevation,
+                            style: style,
+                            icon: icon,
+                            iconDisabledColor: iconDisabledColor,
+                            iconEnabledColor: iconEnabledColor,
+                            iconSize: iconSize,
+                            isDense: isDense,
+                            isExpanded: isExpanded,
+                            itemHeight: itemHeight,
+                            focusColor: focusColor,
+                            focusNode: focusNode,
+                            autofocus: autofocus,
+                            dropdownColor: dropdownColor,
+                            menuMaxHeight: menuMaxHeight,
+                            enableFeedback: enableFeedback,
+                            alignment: alignment ?? AlignmentDirectional.centerStart,
+                            borderRadius: borderRadius,
+                            inputDecoration: effectiveDecoration,
+                            isEmpty: isEmptyLocal,
+                            padding: padding,
+                            barrierDismissible: barrierDismissible,
+                            mouseCursor: mouseCursor,
+                            dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor
+                        )
+                    )
+                );
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }
+        )
     {
         AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.centerStart;
         this.onChanged = onChanged;
@@ -1074,17 +2041,39 @@ public class DropdownButtonFormField<T> : FormField<T>
         this.mouseCursor = mouseCursor;
         this.dropdownMenuItemMouseCursor = dropdownMenuItemMouseCursor;
         this.decoration = decoration ?? new InputDecoration();
-        System.Diagnostics.Debug.Assert((items is null) || !Enumerable.Any(items) || (initialValue is null) && (value is null) || (items.where((item) => EqualityComparer<T>.Default.Equals(item.value, initialValue ?? value)).Count() == 1L));
-        System.Diagnostics.Debug.Assert((itemHeight is null) || (itemHeight >= ConstantsLibrary.kMinInteractiveDimension));
+        System.Diagnostics.Debug.Assert(
+            (items is null)
+                || !Enumerable.Any(items)
+                || ((initialValue is null) && (value is null))
+                || (
+                    items
+                        .where(
+                            (item) =>
+                                EqualityComparer<T>.Default.Equals(
+                                    item.value,
+                                    initialValue ?? value
+                                )
+                        )
+                        .Count() == 1L
+                )
+        );
+        System.Diagnostics.Debug.Assert(
+            (itemHeight is null) || (itemHeight >= ConstantsLibrary.kMinInteractiveDimension)
+        );
         System.Diagnostics.Debug.Assert((errorBuilder is null) || (decoration?.errorText is null));
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownButtonFormFieldState__dropdown<T>());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _DropdownButtonFormFieldState__dropdown<T>()
+        );
 }
 
 internal class _DropdownButtonFormFieldState__dropdown<T> : FormFieldState<T>
 {
-    internal virtual DropdownButtonFormField<T> _dropdownButtonFormField => ((DropdownButtonFormField<T>?)widget)!;
+    internal virtual DropdownButtonFormField<T> _dropdownButtonFormField =>
+        ((DropdownButtonFormField<T>?)widget)!;
+
     public override void didChange(T? value)
     {
         base.didChange(value);
@@ -1106,5 +2095,4 @@ internal class _DropdownButtonFormFieldState__dropdown<T> : FormFieldState<T>
         base.reset();
         _dropdownButtonFormField.onChanged?.Invoke(value);
     }
-
 }

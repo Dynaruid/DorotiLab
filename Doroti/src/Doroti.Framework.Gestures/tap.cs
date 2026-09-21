@@ -8,12 +8,22 @@ namespace Doroti.Framework.Gestures;
 public class TapDownDetails : PositionedGestureDetails, Diagnosticable
 {
     private Offset __field_globalPosition = default!;
-    public override Offset globalPosition { get => __field_globalPosition; }
+    public override Offset globalPosition
+    {
+        get => __field_globalPosition;
+    }
     private Offset __field_localPosition = default!;
-    public override Offset localPosition { get => __field_localPosition; }
+    public override Offset localPosition
+    {
+        get => __field_localPosition;
+    }
     public virtual PointerDeviceKind? kind { get; private set; }
 
-    public TapDownDetails(Offset globalPosition = default, Offset? localPosition = null, PointerDeviceKind? kind = null)
+    public TapDownDetails(
+        Offset globalPosition = default,
+        Offset? localPosition = null,
+        PointerDeviceKind? kind = null
+    )
     {
         __field_globalPosition = globalPosition;
         this.kind = kind;
@@ -27,7 +37,6 @@ public class TapDownDetails : PositionedGestureDetails, Diagnosticable
         properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
     }
-
 }
 
 public delegate void GestureTapDownCallback(TapDownDetails details);
@@ -35,12 +44,22 @@ public delegate void GestureTapDownCallback(TapDownDetails details);
 public class TapUpDetails : PositionedGestureDetails, Diagnosticable
 {
     private Offset __field_globalPosition = default!;
-    public override Offset globalPosition { get => __field_globalPosition; }
+    public override Offset globalPosition
+    {
+        get => __field_globalPosition;
+    }
     private Offset __field_localPosition = default!;
-    public override Offset localPosition { get => __field_localPosition; }
+    public override Offset localPosition
+    {
+        get => __field_localPosition;
+    }
     public virtual PointerDeviceKind kind { get; private set; } = default!;
 
-    public TapUpDetails(Offset globalPosition = default, Offset? localPosition = null, PointerDeviceKind kind = default!)
+    public TapUpDetails(
+        Offset globalPosition = default,
+        Offset? localPosition = null,
+        PointerDeviceKind kind = default!
+    )
     {
         __field_globalPosition = globalPosition;
         this.kind = kind;
@@ -54,7 +73,6 @@ public class TapUpDetails : PositionedGestureDetails, Diagnosticable
         properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
     }
-
 }
 
 public class TapMoveDetails
@@ -64,14 +82,18 @@ public class TapMoveDetails
     public virtual PointerDeviceKind kind { get; private set; } = default!;
     public virtual Offset delta { get; private set; } = default!;
 
-    public TapMoveDetails(PointerDeviceKind kind, Offset globalPosition = default, Offset delta = default, Offset? localPosition = null)
+    public TapMoveDetails(
+        PointerDeviceKind kind,
+        Offset globalPosition = default,
+        Offset delta = default,
+        Offset? localPosition = null
+    )
     {
         this.kind = kind;
         this.globalPosition = globalPosition;
         this.delta = delta;
         this.localPosition = localPosition ?? globalPosition;
     }
-
 }
 
 public delegate void GestureTapUpCallback(TapUpDetails details);
@@ -89,17 +111,33 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
     internal virtual PointerDownEvent? _down { get; set; } = default;
     internal virtual PointerUpEvent? _up { get; set; } = default;
 
-    protected BaseTapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, deadline: ConstantsLibrary.kPressTimeout)
-    {
-    }
+    protected BaseTapGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!,
+        double? preAcceptSlopTolerance = null,
+        double? postAcceptSlopTolerance = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior,
+            preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop,
+            postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop,
+            deadline: ConstantsLibrary.kPressTimeout
+        ) { }
 
     public abstract void handleTapDown(PointerDownEvent down);
     public abstract void handleTapUp(PointerDownEvent down, PointerUpEvent up);
-    public virtual void handleTapMove(PointerMoveEvent move)
-    {
-    }
 
-    public abstract void handleTapCancel(PointerDownEvent down, PointerCancelEvent? cancel = null, string reason = default!);
+    public virtual void handleTapMove(PointerMoveEvent move) { }
+
+    public abstract void handleTapCancel(
+        PointerDownEvent down,
+        PointerCancelEvent? cancel = null,
+        string reason = default!
+    );
+
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         if (Equals(state, GestureRecognizerState.ready))
@@ -245,16 +283,32 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
     }
 
     public override string debugDescription => "base tap";
+
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagProperty("wonArenaForPrimaryPointer", value: _wonArenaForPrimaryPointer, ifTrue: "won arena"));
-        properties.add(new DiagnosticsProperty<Offset>("finalPosition", _up?.position, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Offset>("finalLocalPosition", _up?.localPosition, defaultValue: _up?.position));
+        properties.add(
+            new FlagProperty(
+                "wonArenaForPrimaryPointer",
+                value: _wonArenaForPrimaryPointer,
+                ifTrue: "won arena"
+            )
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>("finalPosition", _up?.position, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<Offset>(
+                "finalLocalPosition",
+                _up?.localPosition,
+                defaultValue: _up?.position
+            )
+        );
         properties.add(new IntProperty("button", _down?.buttons, defaultValue: null));
-        properties.add(new FlagProperty("sentTapDown", value: _sentTapDown, ifTrue: "sent tap down"));
+        properties.add(
+            new FlagProperty("sentTapDown", value: _sentTapDown, ifTrue: "sent tap down")
+        );
     }
-
 }
 
 public class TapGestureRecognizer : BaseTapGestureRecognizer
@@ -272,42 +326,68 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
     public virtual Action<TapUpDetails>? onTertiaryTapUp { get; set; } = default;
     public virtual Action? onTertiaryTapCancel { get; set; } = default;
 
-    public TapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop)
-    {
-    }
+    public TapGestureRecognizer(
+        object? debugOwner = null,
+        HashSet<PointerDeviceKind>? supportedDevices = null,
+        Func<long, bool> allowedButtonsFilter = default!,
+        double? preAcceptSlopTolerance = null,
+        double? postAcceptSlopTolerance = null
+    )
+        : base(
+            debugOwner: debugOwner,
+            supportedDevices: supportedDevices,
+            allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior,
+            preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop,
+            postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop
+        ) { }
 
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
         switch (@event.buttons)
         {
             case var __constant26676 when Equals(__constant26676, EventsLibrary.kPrimaryButton):
-                {
-                    if ((onTapDown is null) && (onTap is null) && (onTapUp is null) && (onTapCancel is null) && (onTapMove is null))
-                    {
-                        return false;
-                    }
-                    break;
-                }
-            case var __constant26898 when Equals(__constant26898, EventsLibrary.kSecondaryButton):
-                {
-                    if ((onSecondaryTap is null) && (onSecondaryTapDown is null) && (onSecondaryTapUp is null) && (onSecondaryTapCancel is null))
-                    {
-                        return false;
-                    }
-                    break;
-                }
-            case var __constant27125 when Equals(__constant27125, EventsLibrary.kTertiaryButton):
-                {
-                    if ((onTertiaryTapDown is null) && (onTertiaryTapUp is null) && (onTertiaryTapCancel is null))
-                    {
-                        return false;
-                    }
-                    break;
-                }
-            default:
+            {
+                if (
+                    (onTapDown is null)
+                    && (onTap is null)
+                    && (onTapUp is null)
+                    && (onTapCancel is null)
+                    && (onTapMove is null)
+                )
                 {
                     return false;
                 }
+                break;
+            }
+            case var __constant26898 when Equals(__constant26898, EventsLibrary.kSecondaryButton):
+            {
+                if (
+                    (onSecondaryTap is null)
+                    && (onSecondaryTapDown is null)
+                    && (onSecondaryTapUp is null)
+                    && (onSecondaryTapCancel is null)
+                )
+                {
+                    return false;
+                }
+                break;
+            }
+            case var __constant27125 when Equals(__constant27125, EventsLibrary.kTertiaryButton):
+            {
+                if (
+                    (onTertiaryTapDown is null)
+                    && (onTertiaryTapUp is null)
+                    && (onTertiaryTapCancel is null)
+                )
+                {
+                    return false;
+                }
+                break;
+            }
+            default:
+            {
+                return false;
+            }
         }
         return base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -315,33 +395,58 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override void handleTapDown(PointerDownEvent down)
     {
-        var details = new TapDownDetails(globalPosition: down.position, localPosition: down.localPosition, kind: getKindForPointer(down.pointer));
+        var details = new TapDownDetails(
+            globalPosition: down.position,
+            localPosition: down.localPosition,
+            kind: getKindForPointer(down.pointer)
+        );
         switch (down.buttons)
         {
             case var __constant27652 when Equals(__constant27652, EventsLibrary.kPrimaryButton):
+            {
+                if (onTapDown is not null)
                 {
-                    if (onTapDown is not null)
-                    {
-                        invokeCallback<object?>("onTapDown", () => { ((Action)(() => onTapDown!(details)))(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onTapDown",
+                        () =>
+                        {
+                            ((Action)(() => onTapDown!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             case var __constant27794 when Equals(__constant27794, EventsLibrary.kSecondaryButton):
+            {
+                if (onSecondaryTapDown is not null)
                 {
-                    if (onSecondaryTapDown is not null)
-                    {
-                        invokeCallback<object?>("onSecondaryTapDown", () => { ((Action)(() => onSecondaryTapDown!(details)))(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onSecondaryTapDown",
+                        () =>
+                        {
+                            ((Action)(() => onSecondaryTapDown!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             case var __constant27965 when Equals(__constant27965, EventsLibrary.kTertiaryButton):
+            {
+                if (onTertiaryTapDown is not null)
                 {
-                    if (onTertiaryTapDown is not null)
-                    {
-                        invokeCallback<object?>("onTertiaryTapDown", () => { ((Action)(() => onTertiaryTapDown!(details)))(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onTertiaryTapDown",
+                        () =>
+                        {
+                            ((Action)(() => onTertiaryTapDown!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             default:
                 break;
         }
@@ -349,41 +454,80 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override void handleTapUp(PointerDownEvent down, PointerUpEvent up)
     {
-        var details = new TapUpDetails(kind: up.kind, globalPosition: up.position, localPosition: up.localPosition);
+        var details = new TapUpDetails(
+            kind: up.kind,
+            globalPosition: up.position,
+            localPosition: up.localPosition
+        );
         switch (down.buttons)
         {
             case var __constant28430 when Equals(__constant28430, EventsLibrary.kPrimaryButton):
+            {
+                if (onTapUp is not null)
                 {
-                    if (onTapUp is not null)
-                    {
-                        invokeCallback<object?>("onTapUp", () => { ((Action)(() => onTapUp!(details)))(); return null; });
-                    }
-                    if (onTap is not null)
-                    {
-                        invokeCallback<object?>("onTap", () => { onTap!(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onTapUp",
+                        () =>
+                        {
+                            ((Action)(() => onTapUp!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                if (onTap is not null)
+                {
+                    invokeCallback<object?>(
+                        "onTap",
+                        () =>
+                        {
+                            onTap!();
+                            return null;
+                        }
+                    );
+                }
+                break;
+            }
             case var __constant28654 when Equals(__constant28654, EventsLibrary.kSecondaryButton):
+            {
+                if (onSecondaryTapUp is not null)
                 {
-                    if (onSecondaryTapUp is not null)
-                    {
-                        invokeCallback<object?>("onSecondaryTapUp", () => { ((Action)(() => onSecondaryTapUp!(details)))(); return null; });
-                    }
-                    if (onSecondaryTap is not null)
-                    {
-                        invokeCallback<object?>("onSecondaryTap", () => { ((Action)(() => onSecondaryTap!()))(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onSecondaryTapUp",
+                        () =>
+                        {
+                            ((Action)(() => onSecondaryTapUp!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                if (onSecondaryTap is not null)
+                {
+                    invokeCallback<object?>(
+                        "onSecondaryTap",
+                        () =>
+                        {
+                            ((Action)(() => onSecondaryTap!()))();
+                            return null;
+                        }
+                    );
+                }
+                break;
+            }
             case var __constant28942 when Equals(__constant28942, EventsLibrary.kTertiaryButton):
+            {
+                if (onTertiaryTapUp is not null)
                 {
-                    if (onTertiaryTapUp is not null)
-                    {
-                        invokeCallback<object?>("onTertiaryTapUp", () => { ((Action)(() => onTertiaryTapUp!(details)))(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        "onTertiaryTapUp",
+                        () =>
+                        {
+                            ((Action)(() => onTertiaryTapUp!(details)))();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             default:
                 break;
         }
@@ -393,40 +537,77 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
     {
         if ((onTapMove is not null) && (move.buttons == EventsLibrary.kPrimaryButton))
         {
-            var details = new TapMoveDetails(globalPosition: move.position, localPosition: move.localPosition, kind: getKindForPointer(move.pointer), delta: move.delta);
-            invokeCallback<object?>("onTapMove", () => { ((Action)(() => onTapMove!(details)))(); return null; });
+            var details = new TapMoveDetails(
+                globalPosition: move.position,
+                localPosition: move.localPosition,
+                kind: getKindForPointer(move.pointer),
+                delta: move.delta
+            );
+            invokeCallback<object?>(
+                "onTapMove",
+                () =>
+                {
+                    ((Action)(() => onTapMove!(details)))();
+                    return null;
+                }
+            );
         }
     }
 
-    public override void handleTapCancel(PointerDownEvent down, PointerCancelEvent? cancel = null, string reason = default!)
+    public override void handleTapCancel(
+        PointerDownEvent down,
+        PointerCancelEvent? cancel = null,
+        string reason = default!
+    )
     {
         var note = (reason == "") ? reason : $"{reason} ";
         switch (down.buttons)
         {
             case var __constant29790 when Equals(__constant29790, EventsLibrary.kPrimaryButton):
+            {
+                if (onTapCancel is not null)
                 {
-                    if (onTapCancel is not null)
-                    {
-                        invokeCallback<object?>($"{note}onTapCancel", () => { onTapCancel!(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        $"{note}onTapCancel",
+                        () =>
+                        {
+                            onTapCancel!();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             case var __constant29930 when Equals(__constant29930, EventsLibrary.kSecondaryButton):
+            {
+                if (onSecondaryTapCancel is not null)
                 {
-                    if (onSecondaryTapCancel is not null)
-                    {
-                        invokeCallback<object?>($"{note}onSecondaryTapCancel", () => { onSecondaryTapCancel!(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        $"{note}onSecondaryTapCancel",
+                        () =>
+                        {
+                            onSecondaryTapCancel!();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             case var __constant30099 when Equals(__constant30099, EventsLibrary.kTertiaryButton):
+            {
+                if (onTertiaryTapCancel is not null)
                 {
-                    if (onTertiaryTapCancel is not null)
-                    {
-                        invokeCallback<object?>($"{note}onTertiaryTapCancel", () => { onTertiaryTapCancel!(); return null; });
-                    }
-                    break;
+                    invokeCallback<object?>(
+                        $"{note}onTertiaryTapCancel",
+                        () =>
+                        {
+                            onTertiaryTapCancel!();
+                            return null;
+                        }
+                    );
                 }
+                break;
+            }
             default:
                 break;
         }
@@ -434,4 +615,3 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override string debugDescription => "tap";
 }
-

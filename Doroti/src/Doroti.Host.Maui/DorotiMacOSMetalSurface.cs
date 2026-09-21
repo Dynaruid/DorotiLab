@@ -61,6 +61,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     private event Action<bool>? FocusChanged;
     private event Action<DorotiResizeEpoch?>? SurfaceSizeChanged;
     internal event Action? GpuResourcesReleasing;
+
     internal void RaiseGpuResourcesReleasing() => GpuResourcesReleasing?.Invoke();
 
     internal ulong ViewId => _viewId;
@@ -77,7 +78,11 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     internal void Disconnect(DorotiMacOSMetalView nativeView)
     {
-        if (!ReferenceEquals(_nativeView, nativeView)) return;
+        if (!ReferenceEquals(_nativeView, nativeView))
+        {
+            return;
+        }
+
         _nativeView = null;
         PlatformViews?.DetachSurface();
         nativeView.Disconnect();
@@ -85,34 +90,53 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     internal MauiPaintCompletion? RaisePaint(MauiSkiaPaintContext context)
     {
-        if (_disposed) return null;
+        if (_disposed)
+        {
+            return null;
+        }
+
         Paint?.Invoke(context);
         return context.Completion;
     }
 
     internal void RaisePresent(MauiPaintCompletion completion, bool stale)
     {
-        if (!_disposed) PresentCompleted?.Invoke(completion, stale);
+        if (!_disposed)
+        {
+            PresentCompleted?.Invoke(completion, stale);
+        }
     }
 
     internal void RaiseFailure(Exception exception, MauiPaintCompletion? completion = null)
     {
-        if (!_disposed) PaintFailed?.Invoke(completion, exception);
+        if (!_disposed)
+        {
+            PaintFailed?.Invoke(completion, exception);
+        }
     }
 
     internal void RaisePointer(MauiSurfacePointerData data)
     {
-        if (!_disposed) Pointer?.Invoke(data);
+        if (!_disposed)
+        {
+            Pointer?.Invoke(data);
+        }
     }
 
     internal void RaiseKey(KeyData data)
     {
-        if (!_disposed) Key?.Invoke(data);
+        if (!_disposed)
+        {
+            Key?.Invoke(data);
+        }
     }
 
     internal void RaiseFocus(bool focused)
     {
-        if (!_disposed) FocusChanged?.Invoke(focused);
+        if (!_disposed)
+        {
+            FocusChanged?.Invoke(focused);
+        }
     }
 
     internal void RaiseSizeChanged(
@@ -120,30 +144,55 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
         double logicalHeight,
         int pixelWidth,
         int pixelHeight,
-        double density)
+        double density
+    )
     {
-        if (_disposed || logicalWidth <= 0 || logicalHeight <= 0 ||
-            pixelWidth <= 0 || pixelHeight <= 0) return;
+        if (
+            _disposed
+            || logicalWidth <= 0
+            || logicalHeight <= 0
+            || pixelWidth <= 0
+            || pixelHeight <= 0
+        )
+        {
+            return;
+        }
+
         density = MauiViewEnvironment.ValidScale(density);
         if (checked((int)Math.Round(logicalWidth * density)) != pixelWidth)
+        {
             logicalWidth = pixelWidth / density;
+        }
+
         if (checked((int)Math.Round(logicalHeight * density)) != pixelHeight)
+        {
             logicalHeight = pixelHeight / density;
+        }
+
         var previousGeneration = _targets.Latest?.Generation;
         var target = _targets.Publish(logicalWidth, logicalHeight, density);
         if (target.Generation != previousGeneration)
+        {
             SurfaceSizeChanged?.Invoke(target);
+        }
     }
 
     void IMauiSkiaSurface.InvalidateSurface() => _nativeView?.RequestFrame();
+
     void IMauiSkiaSurface.RequestFocus(bool focused) => _nativeView?.RequestFocus(focused);
+
     void IMauiSkiaSurface.SetCursor(DorotiMouseCursorKind cursor) => _nativeView?.SetCursor(cursor);
+
     MauiSurfaceSnapshot IMauiSkiaSurface.CaptureSnapshot(MauiSurfaceSnapshot current) =>
         _nativeView?.CaptureSnapshot(current) ?? current;
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         PlatformViews?.Dispose();
         var native = _nativeView;

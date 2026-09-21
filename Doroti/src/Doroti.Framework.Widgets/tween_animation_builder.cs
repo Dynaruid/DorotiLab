@@ -10,7 +10,16 @@ public class TweenAnimationBuilder<T> : ImplicitlyAnimatedWidget
     public virtual Func<BuildContext, T, Widget?, Widget> builder { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public TweenAnimationBuilder(Key? key = null, Tween<T> tween = default!, Duration duration = default!, Curve curve = default!, Func<BuildContext, T, Widget?, Widget> builder = default!, Action? onEnd = null, Widget? child = null) : base(key: key, duration: duration, curve: curve ?? Curves.linear, onEnd: onEnd)
+    public TweenAnimationBuilder(
+        Key? key = null,
+        Tween<T> tween = default!,
+        Duration duration = default!,
+        Curve curve = default!,
+        Func<BuildContext, T, Widget?, Widget> builder = default!,
+        Action? onEnd = null,
+        Widget? child = null
+    )
+        : base(key: key, duration: duration, curve: curve ?? Curves.linear, onEnd: onEnd)
     {
         this.tween = tween;
         this.builder = builder;
@@ -22,10 +31,10 @@ public class TweenAnimationBuilder<T> : ImplicitlyAnimatedWidget
         return new _TweenAnimationBuilderState__tween_animation_builder<T>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-internal class _TweenAnimationBuilderState__tween_animation_builder<T> : AnimatedWidgetBaseState<TweenAnimationBuilder<T>>
+internal class _TweenAnimationBuilderState__tween_animation_builder<T>
+    : AnimatedWidgetBaseState<TweenAnimationBuilder<T>>
 {
     internal virtual Tween<T>? _currentTween { get; set; } = default;
 
@@ -40,15 +49,30 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T> : Animate
         }
     }
 
-    public override void forEachTween(Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor)
+    public override void forEachTween(
+        Func<IDartTween?, object?, Func<object, IDartTween>, IDartTween?> visitor
+    )
     {
-        DartRuntimePrimitives.Assert(() => widget.tween.end is not null, () => (object?)"Tween provided to TweenAnimationBuilder must have non-null Tween.end value.");
-        _currentTween = ((Tween<T>?)visitor(_currentTween, widget.tween.end, (value) =>
-        {
-            DartRuntimePrimitives.Assert(() => false);
-            throw new InvalidOperationException("Constructor will never be called because null is never provided as current tween.");
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }))!;
+        DartRuntimePrimitives.Assert(
+            () => widget.tween.end is not null,
+            () =>
+                (object?)
+                    "Tween provided to TweenAnimationBuilder must have non-null Tween.end value."
+        );
+        _currentTween = (
+            (Tween<T>?)visitor(
+                _currentTween,
+                widget.tween.end,
+                (value) =>
+                {
+                    DartRuntimePrimitives.Assert(() => false);
+                    throw new InvalidOperationException(
+                        "Constructor will never be called because null is never provided as current tween."
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        )!;
     }
 
     public override Widget build(BuildContext context)
@@ -56,6 +80,4 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T> : Animate
         return widget.builder(context, _currentTween!.evaluate(animation), widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
-

@@ -13,7 +13,10 @@ public static partial class PrintLibrary
     internal static readonly TimeSpan _kDebugPrintPauseTime = TimeSpan.FromSeconds(1);
     internal static readonly Queue<string> _debugPrintBuffer = new();
     internal static readonly Stopwatch _debugPrintStopwatch = Stopwatch.StartNew();
-    internal static readonly Regex _indentPattern = new(@"^\s*", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    internal static readonly Regex _indentPattern = new(
+        @"^\s*",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant
+    );
     internal static int _debugPrintedCharacters;
     internal static bool _debugPrintScheduled;
     internal static Task _debugPrintTask = Task.CompletedTask;
@@ -101,7 +104,8 @@ public static partial class PrintLibrary
             _debugPrintedCharacters += line.Length;
             if (_debugPrintedCharacters >= _kDebugPrintCapacity)
             {
-                await Task.Delay(_kDebugPrintPauseTime, Runtime.DartAsyncRuntime.timeProvider).ConfigureAwait(false);
+                await Task.Delay(_kDebugPrintPauseTime, Runtime.DartAsyncRuntime.timeProvider)
+                    .ConfigureAwait(false);
                 _debugPrintedCharacters = 0;
                 _debugPrintStopwatch.Restart();
             }

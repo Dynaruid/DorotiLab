@@ -23,7 +23,10 @@ public class RenderErrorBox : RenderBox
     public static double minimumWidth = 200.0;
     public static Color backgroundColor = _initBackgroundColor();
     public static Ui.TextStyle textStyle = _initTextStyle();
-    public static ParagraphStyle paragraphStyle = new ParagraphStyle(textDirection: TextDirection.ltr, textAlign: TextAlign.left);
+    public static ParagraphStyle paragraphStyle = new ParagraphStyle(
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.left
+    );
 
     public RenderErrorBox(string message = "")
     {
@@ -43,7 +46,9 @@ public class RenderErrorBox : RenderBox
     }
 
     public override bool sizedByParent => true;
+
     public override bool hitTestSelf(Offset position) => true;
+
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.constrain(new Size(ErrorLibrary._kMaxWidth, ErrorLibrary._kMaxHeight));
@@ -54,22 +59,31 @@ public class RenderErrorBox : RenderBox
     {
         var result = new Color(4039164096L);
         DartRuntimePrimitives.Assert(() =>
-            {
-                result = new Color(4035969024L);
-                return true;
-            });
+        {
+            result = new Color(4035969024L);
+            return true;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static Ui.TextStyle _initTextStyle()
     {
-        var result = new Ui.TextStyle(color: new Color(4281348144L), fontFamily: "sans-serif", fontSize: 18.0);
+        var result = new Ui.TextStyle(
+            color: new Color(4281348144L),
+            fontFamily: "sans-serif",
+            fontSize: 18.0
+        );
         DartRuntimePrimitives.Assert(() =>
-            {
-                result = new Ui.TextStyle(color: new Color(4294967142L), fontFamily: "monospace", fontSize: 14.0, fontWeight: FontWeight.bold);
-                return true;
-            });
+        {
+            result = new Ui.TextStyle(
+                color: new Color(4294967142L),
+                fontFamily: "monospace",
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold
+            );
+            return true;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -78,12 +92,19 @@ public class RenderErrorBox : RenderBox
     {
         try
         {
-            context.canvas.drawRect(offset & size, ((Func<Paint>)(() =>
-{
-    var __cascade = new Paint();
-    __cascade.color = backgroundColor;
-    return __cascade;
-}))());
+            context.canvas.drawRect(
+                offset & size,
+                (
+                    (Func<Paint>)(
+                        () =>
+                        {
+                            var __cascade = new Paint();
+                            __cascade.color = backgroundColor;
+                            return __cascade;
+                        }
+                    )
+                )()
+            );
             if (_paragraph is not null)
             {
                 double widthLocal = size.width;
@@ -102,10 +123,6 @@ public class RenderErrorBox : RenderBox
                 context.canvas.drawParagraph(_paragraph, offset + new Offset(leftLocal, topLocal));
             }
         }
-        catch (Exception)
-        {
-        }
+        catch (Exception) { }
     }
-
 }
-

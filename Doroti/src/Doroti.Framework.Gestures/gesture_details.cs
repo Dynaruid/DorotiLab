@@ -8,14 +8,12 @@ public abstract class PositionedGestureDetails
 {
     public virtual Offset globalPosition { get; private set; } = default!;
     public virtual Offset localPosition { get; private set; } = default!;
-    public PositionedGestureDetails() { }
 
+    public PositionedGestureDetails() { }
 
     protected PositionedGestureDetails(Offset globalPosition, Offset localPosition)
     {
         this.globalPosition = globalPosition;
         this.localPosition = localPosition;
     }
-
 }
-

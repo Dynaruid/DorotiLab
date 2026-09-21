@@ -43,4 +43,3 @@ public interface AnimationLocalStatusListenersMixin
     public void clearStatusListeners();
     public void notifyStatusListeners(AnimationStatus status);
 }
-

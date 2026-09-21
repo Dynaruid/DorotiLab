@@ -8,14 +8,16 @@ namespace Doroti.Framework.Widgets;
 public enum ChangeReportingBehavior
 {
     onScrollEnd,
-    onScrollUpdate
+    onScrollUpdate,
 }
 
 public abstract class ListWheelChildDelegate
 {
     public abstract Widget? build(BuildContext context, long index);
     public abstract long? estimatedChildCount { get; }
+
     public virtual long trueIndexOf(long index) => index;
+
     public abstract bool shouldRebuild(ListWheelChildDelegate oldDelegate);
 }
 
@@ -29,6 +31,7 @@ public class ListWheelChildListDelegate : ListWheelChildDelegate
     }
 
     public override long? estimatedChildCount => checked(children.Count);
+
     public override Widget? build(BuildContext context, long index)
     {
         if ((index < 0L) || (index >= checked(children.Count)))
@@ -45,7 +48,6 @@ public class ListWheelChildListDelegate : ListWheelChildDelegate
         return !Equals(children, __oldDelegate.children);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
@@ -58,14 +60,21 @@ public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
     }
 
     public override long? estimatedChildCount => DartRuntimePrimitives.ConvertValue<long>(null);
-    public override long trueIndexOf(long index) => DartRuntimePrimitives.ConvertValue<long>(index % checked(children.Count));
+
+    public override long trueIndexOf(long index) =>
+        DartRuntimePrimitives.ConvertValue<long>(index % checked(children.Count));
+
     public override Widget? build(BuildContext context, long index)
     {
         if (!Enumerable.Any(children))
         {
             return null;
         }
-        return (Widget?)new IndexedSemantics(index: index, child: children[(int)(index % checked(children.Count))]);
+        return (Widget?)
+            new IndexedSemantics(
+                index: index,
+                child: children[(int)(index % checked(children.Count))]
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,7 +84,6 @@ public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
         return !Equals(children, __oldDelegate.children);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
@@ -83,19 +91,25 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
     public virtual Func<BuildContext, long, Widget?> builder { get; private set; } = default!;
     public virtual long? childCount { get; private set; }
 
-    public ListWheelChildBuilderDelegate(Func<BuildContext, long, Widget?> builder, long? childCount = null)
+    public ListWheelChildBuilderDelegate(
+        Func<BuildContext, long, Widget?> builder,
+        long? childCount = null
+    )
     {
         this.builder = builder;
         this.childCount = childCount;
     }
 
     public override long? estimatedChildCount => childCount;
+
     public override Widget? build(BuildContext context, long index)
     {
         if (childCount is null)
         {
             Widget? childLocal = builder(context, index);
-            return (childLocal is null) ? null : new IndexedSemantics(index: index, child: childLocal);
+            return (childLocal is null)
+                ? null
+                : new IndexedSemantics(index: index, child: childLocal);
         }
         if ((index < 0L) || (index >= DartRuntimePrimitives.RequireValue(childCount)))
         {
@@ -108,17 +122,29 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
     public override bool shouldRebuild(ListWheelChildDelegate oldDelegate)
     {
         var __oldDelegate = (ListWheelChildBuilderDelegate)oldDelegate;
-        return (!Equals(builder, __oldDelegate.builder)) || (childCount != __oldDelegate.childCount);
+        return (!Equals(builder, __oldDelegate.builder))
+            || (childCount != __oldDelegate.childCount);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class FixedExtentScrollController : ScrollController
 {
     public virtual long initialItem { get; private set; } = default!;
 
-    public FixedExtentScrollController(long initialItem = 0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null) : base(keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
+    public FixedExtentScrollController(
+        long initialItem = 0,
+        bool keepScrollOffset = true,
+        string? debugLabel = null,
+        Action<ScrollPosition>? onAttach = null,
+        Action<ScrollPosition>? onDetach = null
+    )
+        : base(
+            keepScrollOffset: keepScrollOffset,
+            debugLabel: debugLabel,
+            onAttach: onAttach,
+            onDetach: onDetach
+        )
     {
         this.initialItem = initialItem;
     }
@@ -127,13 +153,25 @@ public class FixedExtentScrollController : ScrollController
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => Enumerable.Any(positions), () => (object?)"FixedExtentScrollController.selectedItem cannot be accessed before a " + "scroll view is built with it.");
-            DartRuntimePrimitives.Assert(() => positions.Count() == 1L, () => (object?)"The selectedItem property cannot be read when multiple scroll views are " + "attached to the same FixedExtentScrollController.");
+            DartRuntimePrimitives.Assert(
+                () => Enumerable.Any(positions),
+                () =>
+                    (object?)"FixedExtentScrollController.selectedItem cannot be accessed before a "
+                    + "scroll view is built with it."
+            );
+            DartRuntimePrimitives.Assert(
+                () => positions.Count() == 1L,
+                () =>
+                    (object?)
+                        "The selectedItem property cannot be read when multiple scroll views are "
+                    + "attached to the same FixedExtentScrollController."
+            );
             var positionLocal = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)position)!;
             return positionLocal.itemIndex;
         }
     }
-    public async virtual Future animateToItem(long itemIndex, Duration duration, Curve curve)
+
+    public virtual async Future animateToItem(long itemIndex, Duration duration, Curve curve)
     {
         if (!hasClients)
         {
@@ -144,51 +182,113 @@ public class FixedExtentScrollController : ScrollController
 
     public virtual void jumpToItem(long itemIndex)
     {
-        foreach (_FixedExtentScrollPosition__list_wheel_scroll_view position in positions.cast<_FixedExtentScrollPosition__list_wheel_scroll_view>())
+        foreach (
+            _FixedExtentScrollPosition__list_wheel_scroll_view position in positions.cast<_FixedExtentScrollPosition__list_wheel_scroll_view>()
+        )
         {
             position.jumpTo(itemIndex * position.itemExtent);
         }
     }
 
-    public override ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
+    public override ScrollPosition createScrollPosition(
+        ScrollPhysics physics,
+        ScrollContext context,
+        ScrollPosition? oldPosition
+    )
     {
-        return new _FixedExtentScrollPosition__list_wheel_scroll_view(physics: physics, context: context, initialItem: initialItem, oldPosition: oldPosition, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel);
+        return new _FixedExtentScrollPosition__list_wheel_scroll_view(
+            physics: physics,
+            context: context,
+            initialItem: initialItem,
+            oldPosition: oldPosition,
+            keepScrollOffset: keepScrollOffset,
+            debugLabel: debugLabel
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class FixedExtentMetrics : FixedScrollMetrics
 {
     public virtual long itemIndex { get; private set; } = default!;
-    public FixedExtentMetrics() : base(default!, default!, default!, default!, default!, default!) { }
 
+    public FixedExtentMetrics()
+        : base(default!, default!, default!, default!, default!, default!) { }
 
-    public FixedExtentMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, AxisDirection axisDirection, long itemIndex, double devicePixelRatio) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
+    public FixedExtentMetrics(
+        double? minScrollExtent,
+        double? maxScrollExtent,
+        double? pixels,
+        double? viewportDimension,
+        AxisDirection axisDirection,
+        long itemIndex,
+        double devicePixelRatio
+    )
+        : base(
+            minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
+            maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent),
+            pixels: DartRuntimePrimitives.RequireValue(pixels),
+            viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension),
+            axisDirection: axisDirection,
+            devicePixelRatio: devicePixelRatio
+        )
     {
         this.itemIndex = itemIndex;
     }
 
-    public override FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override FixedExtentMetrics copyWith(
+        double? minScrollExtent = null,
+        double? maxScrollExtent = null,
+        double? pixels = null,
+        double? viewportDimension = null,
+        AxisDirection? axisDirection = null,
+        double? devicePixelRatio = null,
+        long? itemIndex = null,
+        double? minRange = null,
+        double? maxRange = null,
+        double? correctionOffset = null,
+        double? viewportFraction = null
+    )
     {
-        return new FixedExtentMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, itemIndex: itemIndex ?? this.itemIndex, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
+        return new FixedExtentMetrics(
+            minScrollExtent: minScrollExtent
+                ?? (hasContentDimensions ? this.minScrollExtent : null),
+            maxScrollExtent: maxScrollExtent
+                ?? (hasContentDimensions ? this.maxScrollExtent : null),
+            pixels: pixels ?? (hasPixels ? this.pixels : null),
+            viewportDimension: viewportDimension
+                ?? (hasViewportDimension ? this.viewportDimension : null),
+            axisDirection: axisDirection ?? this.axisDirection,
+            itemIndex: itemIndex ?? this.itemIndex,
+            devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public static partial class List_wheel_scroll_viewLibrary
 {
-    internal static long _getItemFromOffset(double offset, double itemExtent, double minScrollExtent, double maxScrollExtent)
+    internal static long _getItemFromOffset(
+        double offset,
+        double itemExtent,
+        double minScrollExtent,
+        double maxScrollExtent
+    )
     {
-        return (_clipOffsetToScrollableRange(offset, minScrollExtent, maxScrollExtent) / itemExtent).round();
+        return (
+            _clipOffsetToScrollableRange(offset, minScrollExtent, maxScrollExtent) / itemExtent
+        ).round();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class List_wheel_scroll_viewLibrary
 {
-    internal static double _clipOffsetToScrollableRange(double offset, double minScrollExtent, double maxScrollExtent)
+    internal static double _clipOffsetToScrollableRange(
+        double offset,
+        double minScrollExtent,
+        double maxScrollExtent
+    )
     {
         return Math.Min(Math.Max(offset, minScrollExtent), maxScrollExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -197,9 +297,26 @@ public static partial class List_wheel_scroll_viewLibrary
 
 internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositionWithSingleContext
 {
-    internal _FixedExtentScrollPosition__list_wheel_scroll_view(ScrollPhysics physics, ScrollContext context, long initialItem, ScrollPosition? oldPosition = null, bool keepScrollOffset = true, string? debugLabel = null) : base(physics: physics, context: context, oldPosition: oldPosition, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, initialPixels: _getItemExtentFromScrollContext(context) * initialItem)
+    internal _FixedExtentScrollPosition__list_wheel_scroll_view(
+        ScrollPhysics physics,
+        ScrollContext context,
+        long initialItem,
+        ScrollPosition? oldPosition = null,
+        bool keepScrollOffset = true,
+        string? debugLabel = null
+    )
+        : base(
+            physics: physics,
+            context: context,
+            oldPosition: oldPosition,
+            keepScrollOffset: keepScrollOffset,
+            debugLabel: debugLabel,
+            initialPixels: _getItemExtentFromScrollContext(context) * initialItem
+        )
     {
-        System.Diagnostics.Debug.Assert(context is _FixedExtentScrollableState__list_wheel_scroll_view);
+        System.Diagnostics.Debug.Assert(
+            context is _FixedExtentScrollableState__list_wheel_scroll_view
+        );
     }
 
     internal static double _getItemExtentFromScrollContext(ScrollContext context)
@@ -214,27 +331,74 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
     {
         get
         {
-            return List_wheel_scroll_viewLibrary._getItemFromOffset(offset: DartRuntimePrimitives.RequireValue(pixels), itemExtent: itemExtent, minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent));
+            return List_wheel_scroll_viewLibrary._getItemFromOffset(
+                offset: DartRuntimePrimitives.RequireValue(pixels),
+                itemExtent: itemExtent,
+                minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
+                maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent)
+            );
         }
     }
-    public override FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+
+    public override FixedExtentMetrics copyWith(
+        double? minScrollExtent = null,
+        double? maxScrollExtent = null,
+        double? pixels = null,
+        double? viewportDimension = null,
+        AxisDirection? axisDirection = null,
+        double? devicePixelRatio = null,
+        long? itemIndex = null,
+        double? minRange = null,
+        double? maxRange = null,
+        double? correctionOffset = null,
+        double? viewportFraction = null
+    )
     {
-        return new FixedExtentMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, itemIndex: itemIndex ?? this.itemIndex, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
+        return new FixedExtentMetrics(
+            minScrollExtent: minScrollExtent
+                ?? (hasContentDimensions ? this.minScrollExtent : null),
+            maxScrollExtent: maxScrollExtent
+                ?? (hasContentDimensions ? this.maxScrollExtent : null),
+            pixels: pixels ?? (hasPixels ? this.pixels : null),
+            viewportDimension: viewportDimension
+                ?? (hasViewportDimension ? this.viewportDimension : null),
+            axisDirection: axisDirection ?? this.axisDirection,
+            itemIndex: itemIndex ?? this.itemIndex,
+            devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _FixedExtentScrollable__list_wheel_scroll_view : Scrollable
 {
     public virtual double itemExtent { get; private set; } = default!;
 
-    internal _FixedExtentScrollable__list_wheel_scroll_view(ScrollController? controller = null, ScrollPhysics? physics = null, double itemExtent = default!, Func<BuildContext, ViewportOffset, Widget> viewportBuilder = default!, DragStartBehavior dragStartBehavior = default!, string? restorationId = null, ScrollBehavior? scrollBehavior = null, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(controller: controller, physics: physics, viewportBuilder: viewportBuilder, dragStartBehavior: dragStartBehavior, restorationId: restorationId, scrollBehavior: scrollBehavior, hitTestBehavior: hitTestBehavior)
+    internal _FixedExtentScrollable__list_wheel_scroll_view(
+        ScrollController? controller = null,
+        ScrollPhysics? physics = null,
+        double itemExtent = default!,
+        Func<BuildContext, ViewportOffset, Widget> viewportBuilder = default!,
+        DragStartBehavior dragStartBehavior = default!,
+        string? restorationId = null,
+        ScrollBehavior? scrollBehavior = null,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque
+    )
+        : base(
+            controller: controller,
+            physics: physics,
+            viewportBuilder: viewportBuilder,
+            dragStartBehavior: dragStartBehavior,
+            restorationId: restorationId,
+            scrollBehavior: scrollBehavior,
+            hitTestBehavior: hitTestBehavior
+        )
     {
         this.itemExtent = itemExtent;
     }
 
-    public override _FixedExtentScrollableState__list_wheel_scroll_view createState() => new _FixedExtentScrollableState__list_wheel_scroll_view();
+    public override _FixedExtentScrollableState__list_wheel_scroll_view createState() =>
+        new _FixedExtentScrollableState__list_wheel_scroll_view();
 }
 
 internal class _FixedExtentScrollableState__list_wheel_scroll_view : ScrollableState
@@ -251,9 +415,8 @@ internal class _FixedExtentScrollableState__list_wheel_scroll_view : ScrollableS
 
 public class FixedExtentScrollPhysics : ScrollPhysics
 {
-    public FixedExtentScrollPhysics(ScrollPhysics? parent = null) : base(parent: parent)
-    {
-    }
+    public FixedExtentScrollPhysics(ScrollPhysics? parent = null)
+        : base(parent: parent) { }
 
     public override FixedExtentScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
@@ -261,33 +424,86 @@ public class FixedExtentScrollPhysics : ScrollPhysics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
+    public override Physics.Simulation? createBallisticSimulation(
+        ScrollMetrics position,
+        double velocity
+    )
     {
-        DartRuntimePrimitives.Assert(() => position is _FixedExtentScrollPosition__list_wheel_scroll_view, () => (object?)"FixedExtentScrollPhysics can only be used with Scrollables that uses " + "the FixedExtentScrollController");
+        DartRuntimePrimitives.Assert(
+            () => position is _FixedExtentScrollPosition__list_wheel_scroll_view,
+            () =>
+                (object?)"FixedExtentScrollPhysics can only be used with Scrollables that uses "
+                + "the FixedExtentScrollController"
+        );
         var metrics = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)position)!;
-        if ((velocity <= 0.0) && (metrics.pixels <= metrics.minScrollExtent) || (velocity >= 0.0) && (metrics.pixels >= metrics.maxScrollExtent))
+        if (
+            ((velocity <= 0.0) && (metrics.pixels <= metrics.minScrollExtent))
+            || ((velocity >= 0.0) && (metrics.pixels >= metrics.maxScrollExtent))
+        )
         {
             return base.createBallisticSimulation(metrics, velocity);
         }
-        Physics.Simulation? testFrictionSimulation = base.createBallisticSimulation(metrics, velocity);
-        if ((testFrictionSimulation is not null) && ((testFrictionSimulation.x(double.PositiveInfinity) == metrics.minScrollExtent) || (testFrictionSimulation.x(double.PositiveInfinity) == metrics.maxScrollExtent)))
+        Physics.Simulation? testFrictionSimulation = base.createBallisticSimulation(
+            metrics,
+            velocity
+        );
+        if (
+            (testFrictionSimulation is not null)
+            && (
+                (testFrictionSimulation.x(double.PositiveInfinity) == metrics.minScrollExtent)
+                || (testFrictionSimulation.x(double.PositiveInfinity) == metrics.maxScrollExtent)
+            )
+        )
         {
             return base.createBallisticSimulation(metrics, velocity);
         }
-        long settlingItemIndex = List_wheel_scroll_viewLibrary._getItemFromOffset(offset: testFrictionSimulation?.x(double.PositiveInfinity) ?? (double)metrics.pixels, itemExtent: metrics.itemExtent, minScrollExtent: metrics.minScrollExtent, maxScrollExtent: metrics.maxScrollExtent);
+        long settlingItemIndex = List_wheel_scroll_viewLibrary._getItemFromOffset(
+            offset: testFrictionSimulation?.x(double.PositiveInfinity) ?? (double)metrics.pixels,
+            itemExtent: metrics.itemExtent,
+            minScrollExtent: metrics.minScrollExtent,
+            maxScrollExtent: metrics.maxScrollExtent
+        );
         double settlingPixels = settlingItemIndex * metrics.itemExtent;
-        if ((velocity.abs() < toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position).velocity) && ((settlingPixels - metrics.pixels).abs() < toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position).distance))
+        if (
+            (
+                velocity.abs()
+                < toleranceFor(
+                    (_FixedExtentScrollPosition__list_wheel_scroll_view)position
+                ).velocity
+            )
+            && (
+                (settlingPixels - metrics.pixels).abs()
+                < toleranceFor(
+                    (_FixedExtentScrollPosition__list_wheel_scroll_view)position
+                ).distance
+            )
+        )
         {
             return null;
         }
         if (settlingItemIndex == metrics.itemIndex)
         {
-            return (Physics.Simulation?)new Physics.SpringSimulation(spring, metrics.pixels, settlingPixels, velocity, tolerance: toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position));
+            return (Physics.Simulation?)
+                new Physics.SpringSimulation(
+                    spring,
+                    metrics.pixels,
+                    settlingPixels,
+                    velocity,
+                    tolerance: toleranceFor(
+                        (_FixedExtentScrollPosition__list_wheel_scroll_view)position
+                    )
+                );
         }
-        return (Physics.Simulation?)Physics.FrictionSimulation.CreateThrough(metrics.pixels, settlingPixels, velocity, toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position).velocity * Math.Sign(velocity));
+        return (Physics.Simulation?)
+            Physics.FrictionSimulation.CreateThrough(
+                metrics.pixels,
+                settlingPixels,
+                velocity,
+                toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position).velocity
+                    * Math.Sign(velocity)
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ListWheelScrollView : StatefulWidget
@@ -312,7 +528,29 @@ public class ListWheelScrollView : StatefulWidget
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public ListWheelScrollView(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, List<Widget> children = default!) : base(key: key)
+    public ListWheelScrollView(
+        Key? key = null,
+        ScrollController? controller = null,
+        ScrollPhysics? physics = null,
+        double? diameterRatio = null,
+        double? perspective = null,
+        double offAxisFraction = 0.0,
+        bool useMagnifier = false,
+        double magnification = 1.0,
+        double overAndUnderCenterOpacity = 1.0,
+        double itemExtent = default!,
+        double squeeze = 1.0,
+        Action<long>? onSelectedItemChanged = null,
+        bool renderChildrenOutsideViewport = false,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque,
+        string? restorationId = null,
+        ScrollBehavior? scrollBehavior = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate,
+        List<Widget> children = default!
+    )
+        : base(key: key)
     {
         double __diameterRatio = diameterRatio ?? RenderListWheelViewport.defaultDiameterRatio;
         double __perspective = perspective ?? RenderListWheelViewport.defaultPerspective;
@@ -339,15 +577,61 @@ public class ListWheelScrollView : StatefulWidget
         System.Diagnostics.Debug.Assert(__perspective > 0L);
         System.Diagnostics.Debug.Assert(__perspective <= 0.01);
         System.Diagnostics.Debug.Assert(magnification > 0L);
-        System.Diagnostics.Debug.Assert((overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L));
+        System.Diagnostics.Debug.Assert(
+            (overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L)
+        );
         System.Diagnostics.Debug.Assert(itemExtent > 0L);
         System.Diagnostics.Debug.Assert(squeeze > 0L);
-        System.Diagnostics.Debug.Assert(!renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none));
+        System.Diagnostics.Debug.Assert(
+            !renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none)
+        );
     }
 
-    public static ListWheelScrollView CreateUseDelegate(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, ListWheelChildDelegate childDelegate = default!)
+    public static ListWheelScrollView CreateUseDelegate(
+        Key? key = null,
+        ScrollController? controller = null,
+        ScrollPhysics? physics = null,
+        double? diameterRatio = null,
+        double? perspective = null,
+        double offAxisFraction = 0.0,
+        bool useMagnifier = false,
+        double magnification = 1.0,
+        double overAndUnderCenterOpacity = 1.0,
+        double itemExtent = default!,
+        double squeeze = 1.0,
+        Action<long>? onSelectedItemChanged = null,
+        bool renderChildrenOutsideViewport = false,
+        Clip clipBehavior = Clip.hardEdge,
+        HitTestBehavior hitTestBehavior = HitTestBehavior.opaque,
+        string? restorationId = null,
+        ScrollBehavior? scrollBehavior = null,
+        DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+        ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate,
+        ListWheelChildDelegate childDelegate = default!
+    )
     {
-        var __instance = new ListWheelScrollView(key, controller, physics, diameterRatio, perspective, offAxisFraction, useMagnifier, magnification, overAndUnderCenterOpacity, itemExtent, squeeze, onSelectedItemChanged, renderChildrenOutsideViewport, clipBehavior, hitTestBehavior, restorationId, scrollBehavior, dragStartBehavior, changeReportingBehavior, default!);
+        var __instance = new ListWheelScrollView(
+            key,
+            controller,
+            physics,
+            diameterRatio,
+            perspective,
+            offAxisFraction,
+            useMagnifier,
+            magnification,
+            overAndUnderCenterOpacity,
+            itemExtent,
+            squeeze,
+            onSelectedItemChanged,
+            renderChildrenOutsideViewport,
+            clipBehavior,
+            hitTestBehavior,
+            restorationId,
+            scrollBehavior,
+            dragStartBehavior,
+            changeReportingBehavior,
+            default!
+        );
         double __diameterRatio = diameterRatio ?? RenderListWheelViewport.defaultDiameterRatio;
         double __perspective = perspective ?? RenderListWheelViewport.defaultPerspective;
         __instance.controller = controller;
@@ -372,7 +656,10 @@ public class ListWheelScrollView : StatefulWidget
         return __instance;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ListWheelScrollViewState__list_wheel_scroll_view());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(
+            new _ListWheelScrollViewState__list_wheel_scroll_view()
+        );
 }
 
 internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWheelScrollView>
@@ -380,7 +667,11 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
     internal virtual long _lastReportedItemIndex { get; set; } = 0L;
     internal virtual ScrollController? _backupController { get; set; } = default;
 
-    internal virtual ScrollController _effectiveController => DartRuntimePrimitives.ConvertValue<ScrollController>(widget.controller ?? (_backupController ??= new FixedExtentScrollController()));
+    internal virtual ScrollController _effectiveController =>
+        DartRuntimePrimitives.ConvertValue<ScrollController>(
+            widget.controller ?? (_backupController ??= new FixedExtentScrollController())
+        );
+
     public override void initState()
     {
         base.initState();
@@ -411,30 +702,36 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
     {
-        if ((widget.onSelectedItemChanged is null) || (notification.depth != 0L) || (notification.metrics is not FixedExtentMetrics))
+        if (
+            (widget.onSelectedItemChanged is null)
+            || (notification.depth != 0L)
+            || (notification.metrics is not FixedExtentMetrics)
+        )
         {
             return false;
         }
         switch (widget.changeReportingBehavior)
         {
             case ChangeReportingBehavior.onScrollEnd:
+            {
+                if (notification is ScrollEndNotification)
                 {
-                    if (notification is ScrollEndNotification)
-                    {
-                        ScrollEndNotification notification__as29356 = (ScrollEndNotification)notification;
-                        _reportSelectedItemChanged(notification__as29356);
-                    }
-                    break;
+                    ScrollEndNotification notification__as29356 =
+                        (ScrollEndNotification)notification;
+                    _reportSelectedItemChanged(notification__as29356);
                 }
+                break;
+            }
             case ChangeReportingBehavior.onScrollUpdate:
+            {
+                if (notification is ScrollUpdateNotification)
                 {
-                    if (notification is ScrollUpdateNotification)
-                    {
-                        ScrollUpdateNotification notification__as29522 = (ScrollUpdateNotification)notification;
-                        _reportSelectedItemChanged(notification__as29522);
-                    }
-                    break;
+                    ScrollUpdateNotification notification__as29522 =
+                        (ScrollUpdateNotification)notification;
+                    _reportSelectedItemChanged(notification__as29522);
                 }
+                break;
+            }
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -442,26 +739,54 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
 
     public override Widget build(BuildContext context)
     {
-        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new _FixedExtentScrollable__list_wheel_scroll_view(controller: _effectiveController, physics: widget.physics, itemExtent: widget.itemExtent, restorationId: widget.restorationId, hitTestBehavior: widget.hitTestBehavior, scrollBehavior: widget.scrollBehavior ?? ScrollConfiguration.of(context).copyWith(scrollbars: false), dragStartBehavior: widget.dragStartBehavior, viewportBuilder: (context, offset) =>
-        {
-            return new ListWheelViewport(diameterRatio: widget.diameterRatio, perspective: widget.perspective, offAxisFraction: widget.offAxisFraction, useMagnifier: widget.useMagnifier, magnification: widget.magnification, overAndUnderCenterOpacity: widget.overAndUnderCenterOpacity, itemExtent: widget.itemExtent, squeeze: widget.squeeze, renderChildrenOutsideViewport: widget.renderChildrenOutsideViewport, offset: offset, childDelegate: widget.childDelegate, clipBehavior: widget.clipBehavior);
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        return new NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: new _FixedExtentScrollable__list_wheel_scroll_view(
+                controller: _effectiveController,
+                physics: widget.physics,
+                itemExtent: widget.itemExtent,
+                restorationId: widget.restorationId,
+                hitTestBehavior: widget.hitTestBehavior,
+                scrollBehavior: widget.scrollBehavior
+                    ?? ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                dragStartBehavior: widget.dragStartBehavior,
+                viewportBuilder: (context, offset) =>
+                {
+                    return new ListWheelViewport(
+                        diameterRatio: widget.diameterRatio,
+                        perspective: widget.perspective,
+                        offAxisFraction: widget.offAxisFraction,
+                        useMagnifier: widget.useMagnifier,
+                        magnification: widget.magnification,
+                        overAndUnderCenterOpacity: widget.overAndUnderCenterOpacity,
+                        itemExtent: widget.itemExtent,
+                        squeeze: widget.squeeze,
+                        renderChildrenOutsideViewport: widget.renderChildrenOutsideViewport,
+                        offset: offset,
+                        childDelegate: widget.childDelegate,
+                        clipBehavior: widget.clipBehavior
+                    );
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ListWheelElement : RenderObjectElement, ListWheelChildManager
 {
-    internal virtual DartMap<long, Widget?> _childWidgets { get; private set; } = new DartMap<long, Widget?>();
-    internal virtual SortedDictionary<long, Element> _childElements { get; private set; } = new SortedDictionary<long, Element>();
+    internal virtual DartMap<long, Widget?> _childWidgets { get; private set; } =
+        new DartMap<long, Widget?>();
+    internal virtual SortedDictionary<long, Element> _childElements { get; private set; } =
+        new SortedDictionary<long, Element>();
 
-    public ListWheelElement(ListWheelViewport widget) : base(widget)
-    {
-    }
+    public ListWheelElement(ListWheelViewport widget)
+        : base(widget) { }
 
-    public override RenderListWheelViewport renderObject => (RenderListWheelViewport)base.renderObject;
+    public override RenderListWheelViewport renderObject =>
+        (RenderListWheelViewport)base.renderObject;
+
     public override void update(Widget newWidget)
     {
         var __newWidget = (ListWheelViewport)newWidget;
@@ -469,14 +794,26 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         base.update(__newWidget);
         ListWheelChildDelegate newDelegate = __newWidget.childDelegate;
         ListWheelChildDelegate oldDelegate = oldWidget.childDelegate;
-        if ((!Equals(newDelegate, oldDelegate)) && ((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))
+        if (
+            (!Equals(newDelegate, oldDelegate))
+            && (
+                (
+                    !Equals(
+                        DartRuntimePrimitives.RuntimeType(newDelegate),
+                        DartRuntimePrimitives.RuntimeType(oldDelegate)
+                    )
+                ) || newDelegate.shouldRebuild(oldDelegate)
+            )
+        )
         {
             performRebuild();
             renderObject.markNeedsLayout();
         }
     }
 
-    public virtual long? childCount => ((ListWheelViewport?)widget)!.childDelegate.estimatedChildCount;
+    public virtual long? childCount =>
+        ((ListWheelViewport?)widget)!.childDelegate.estimatedChildCount;
+
     public override void performRebuild()
     {
         _childWidgets.Clear();
@@ -485,11 +822,19 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         {
             return;
         }
-        long firstIndex = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.FirstKeyOrNull(_childElements));
-        long lastIndex = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.LastKeyOrNull(_childElements));
+        long firstIndex = DartRuntimePrimitives.RequireValue(
+            DartCollectionRuntime.FirstKeyOrNull(_childElements)
+        );
+        long lastIndex = DartRuntimePrimitives.RequireValue(
+            DartCollectionRuntime.LastKeyOrNull(_childElements)
+        );
         for (var index = firstIndex; index <= lastIndex; ++index)
         {
-            Element? newChild = updateChild(_childElements.GetValueOrDefault(index), retrieveWidget(index), index);
+            Element? newChild = updateChild(
+                _childElements.GetValueOrDefault(index),
+                retrieveWidget(index),
+                index
+            );
             if (newChild is not null)
             {
                 _childElements[index] = newChild;
@@ -503,40 +848,57 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
 
     public virtual Widget? retrieveWidget(long index)
     {
-        return _childWidgets.putIfAbsent(index, () => ((ListWheelViewport?)widget)!.childDelegate.build(this, index));
+        return _childWidgets.putIfAbsent(
+            index,
+            () => ((ListWheelViewport?)widget)!.childDelegate.build(this, index)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool childExistsAt(long index) => DartRuntimePrimitives.ConvertValue<bool>(retrieveWidget(index) is not null);
+    public virtual bool childExistsAt(long index) =>
+        DartRuntimePrimitives.ConvertValue<bool>(retrieveWidget(index) is not null);
+
     public virtual void createChild(long index, RenderBox? after)
     {
-        owner!.buildScope(this, () =>
-        {
-            var insertFirst = after is null;
-            DartRuntimePrimitives.Assert(() => insertFirst || _childElements.ContainsKey(index - 1L));
-            Element? newChild = updateChild(_childElements.GetValueOrDefault(index), retrieveWidget(index), index);
-            if (newChild is not null)
+        owner!.buildScope(
+            this,
+            () =>
             {
-                _childElements[index] = newChild;
+                var insertFirst = after is null;
+                DartRuntimePrimitives.Assert(() =>
+                    insertFirst || _childElements.ContainsKey(index - 1L)
+                );
+                Element? newChild = updateChild(
+                    _childElements.GetValueOrDefault(index),
+                    retrieveWidget(index),
+                    index
+                );
+                if (newChild is not null)
+                {
+                    _childElements[index] = newChild;
+                }
+                else
+                {
+                    _childElements.Remove(index);
+                }
             }
-            else
-            {
-                _childElements.Remove(index);
-            }
-        });
+        );
     }
 
     public virtual void removeChild(RenderBox child)
     {
         long index = DartRuntimePrimitives.ConvertValue<long>(renderObject.indexOf(child));
-        owner!.buildScope(this, () =>
-        {
-            DartRuntimePrimitives.Assert(() => _childElements.ContainsKey(index));
-            Element? result = updateChild(_childElements.GetValueOrDefault(index), null, index);
-            DartRuntimePrimitives.Assert(() => result is null);
-            _childElements.Remove(index);
-            DartRuntimePrimitives.Assert(() => !_childElements.ContainsKey(index));
-        });
+        owner!.buildScope(
+            this,
+            () =>
+            {
+                DartRuntimePrimitives.Assert(() => _childElements.ContainsKey(index));
+                Element? result = updateChild(_childElements.GetValueOrDefault(index), null, index);
+                DartRuntimePrimitives.Assert(() => result is null);
+                _childElements.Remove(index);
+                DartRuntimePrimitives.Assert(() => !_childElements.ContainsKey(index));
+            }
+        );
     }
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
@@ -559,9 +921,13 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
     public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
-        RenderListWheelViewport renderObjectLocal = DartRuntimePrimitives.ConvertValue<RenderListWheelViewport>(renderObject);
+        RenderListWheelViewport renderObjectLocal =
+            DartRuntimePrimitives.ConvertValue<RenderListWheelViewport>(renderObject);
         DartRuntimePrimitives.Assert(() => renderObjectLocal.debugValidateChild(child));
-        renderObjectLocal.insert(((RenderBox?)child)!, after: ((RenderBox?)_childElements.GetValueOrDefault(__slot - 1L)?.renderObject)!);
+        renderObjectLocal.insert(
+            ((RenderBox?)child)!,
+            after: ((RenderBox?)_childElements.GetValueOrDefault(__slot - 1L)?.renderObject)!
+        );
         DartRuntimePrimitives.Assert(() => Equals(renderObjectLocal, renderObject));
     }
 
@@ -569,7 +935,9 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
     {
         long __oldSlot = DartRuntimePrimitives.ConvertValue<long>(oldSlot);
         long __newSlot = DartRuntimePrimitives.ConvertValue<long>(newSlot);
-        var moveChildRenderObjectErrorMessage = "Currently we maintain the list in contiguous increasing order, so " + "moving children around is not allowed.";
+        var moveChildRenderObjectErrorMessage =
+            "Currently we maintain the list in contiguous increasing order, so "
+            + "moving children around is not allowed.";
         DartRuntimePrimitives.Assert(() => false, () => (object?)moveChildRenderObjectErrorMessage);
     }
 
@@ -582,10 +950,12 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
 
     public override void visitChildren(Action<Element> visitor)
     {
-        _childElements.forEach((key, child) =>
-        {
-            visitor(child);
-        });
+        _childElements.forEach(
+            (key, child) =>
+            {
+                visitor(child);
+            }
+        );
     }
 
     public override void forgetChild(Element child)
@@ -593,7 +963,6 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         _childElements.Remove(DartRuntimePrimitives.ConvertValue<long>(child.slot));
         base.forgetChild(child);
     }
-
 }
 
 public class ListWheelViewport : RenderObjectWidget
@@ -611,7 +980,22 @@ public class ListWheelViewport : RenderObjectWidget
     public virtual ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public ListWheelViewport(Key? key = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, bool renderChildrenOutsideViewport = false, ViewportOffset offset = default!, ListWheelChildDelegate childDelegate = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public ListWheelViewport(
+        Key? key = null,
+        double? diameterRatio = null,
+        double? perspective = null,
+        double offAxisFraction = 0.0,
+        bool useMagnifier = false,
+        double magnification = 1.0,
+        double overAndUnderCenterOpacity = 1.0,
+        double itemExtent = default!,
+        double squeeze = 1.0,
+        bool renderChildrenOutsideViewport = false,
+        ViewportOffset offset = default!,
+        ListWheelChildDelegate childDelegate = default!,
+        Clip clipBehavior = Clip.hardEdge
+    )
+        : base(key: key)
     {
         double __diameterRatio = diameterRatio ?? RenderListWheelViewport.defaultDiameterRatio;
         double __perspective = perspective ?? RenderListWheelViewport.defaultPerspective;
@@ -630,40 +1014,62 @@ public class ListWheelViewport : RenderObjectWidget
         System.Diagnostics.Debug.Assert(__diameterRatio > 0L);
         System.Diagnostics.Debug.Assert(__perspective > 0L);
         System.Diagnostics.Debug.Assert(__perspective <= 0.01);
-        System.Diagnostics.Debug.Assert((overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L));
+        System.Diagnostics.Debug.Assert(
+            (overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L)
+        );
         System.Diagnostics.Debug.Assert(itemExtent > 0L);
         System.Diagnostics.Debug.Assert(squeeze > 0L);
-        System.Diagnostics.Debug.Assert(!renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none));
+        System.Diagnostics.Debug.Assert(
+            !renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none)
+        );
     }
 
     public override ListWheelElement createElement() => new ListWheelElement(this);
+
     public override RenderObject createRenderObject(BuildContext context)
     {
         var childManagerLocal = ((ListWheelElement?)context)!;
-        return new RenderListWheelViewport(childManager: childManagerLocal, offset: offset, diameterRatio: DartRuntimePrimitives.RequireValue(diameterRatio), perspective: DartRuntimePrimitives.RequireValue(perspective), offAxisFraction: offAxisFraction, useMagnifier: useMagnifier, magnification: magnification, overAndUnderCenterOpacity: overAndUnderCenterOpacity, itemExtent: itemExtent, squeeze: squeeze, renderChildrenOutsideViewport: renderChildrenOutsideViewport, clipBehavior: clipBehavior);
+        return new RenderListWheelViewport(
+            childManager: childManagerLocal,
+            offset: offset,
+            diameterRatio: DartRuntimePrimitives.RequireValue(diameterRatio),
+            perspective: DartRuntimePrimitives.RequireValue(perspective),
+            offAxisFraction: offAxisFraction,
+            useMagnifier: useMagnifier,
+            magnification: magnification,
+            overAndUnderCenterOpacity: overAndUnderCenterOpacity,
+            itemExtent: itemExtent,
+            squeeze: squeeze,
+            renderChildrenOutsideViewport: renderChildrenOutsideViewport,
+            clipBehavior: clipBehavior
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderListWheelViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<RenderListWheelViewport>)(() =>
-{
-    var __cascade = __renderObject;
-    __cascade.offset = offset;
-    __cascade.diameterRatio = diameterRatio;
-    __cascade.perspective = perspective;
-    __cascade.offAxisFraction = offAxisFraction;
-    __cascade.useMagnifier = useMagnifier;
-    __cascade.magnification = magnification;
-    __cascade.overAndUnderCenterOpacity = overAndUnderCenterOpacity;
-    __cascade.itemExtent = itemExtent;
-    __cascade.squeeze = squeeze;
-    __cascade.renderChildrenOutsideViewport = renderChildrenOutsideViewport;
-    __cascade.clipBehavior = clipBehavior;
-    return __cascade;
-}))());
+        DartRuntimePrimitives.Ignore(
+            (
+                (Func<RenderListWheelViewport>)(
+                    () =>
+                    {
+                        var __cascade = __renderObject;
+                        __cascade.offset = offset;
+                        __cascade.diameterRatio = diameterRatio;
+                        __cascade.perspective = perspective;
+                        __cascade.offAxisFraction = offAxisFraction;
+                        __cascade.useMagnifier = useMagnifier;
+                        __cascade.magnification = magnification;
+                        __cascade.overAndUnderCenterOpacity = overAndUnderCenterOpacity;
+                        __cascade.itemExtent = itemExtent;
+                        __cascade.squeeze = squeeze;
+                        __cascade.renderChildrenOutsideViewport = renderChildrenOutsideViewport;
+                        __cascade.clipBehavior = clipBehavior;
+                        return __cascade;
+                    }
+                )
+            )()
+        );
     }
-
 }
-

@@ -11,10 +11,17 @@ namespace Doroti.Host.Maui;
 /// The effect has no material tint and never changes its opacity to simulate radius.</summary>
 internal sealed class AppKitPlatformBlurView : NSView
 {
-    internal static PlatformEffectSupport Support { get; } = new(true, 1, 64, true,
-        "AppKit Core Image supports one isotropic backdrop, logical sigma 0–64 and saturation 0–2.");
+    internal static PlatformEffectSupport Support { get; } =
+        new(
+            true,
+            1,
+            64,
+            true,
+            "AppKit Core Image supports one isotropic backdrop, logical sigma 0–64 and saturation 0–2."
+        );
     internal PlatformEffectStyle? AppliedStyle { get; private set; }
-    private double _sigma = double.NaN, _saturation = double.NaN;
+    private double _sigma = double.NaN,
+        _saturation = double.NaN;
 
     internal AppKitPlatformBlurView()
     {
@@ -30,9 +37,18 @@ internal sealed class AppKitPlatformBlurView : NSView
     {
         effect.Style?.Validate();
         if (effect.SigmaX != effect.SigmaY || effect.SigmaX is < 0 or > 64)
-            throw new NotSupportedException("AppKit Core Image requires isotropic sigma in [0,64] logical points.");
+        {
+            throw new NotSupportedException(
+                "AppKit Core Image requires isotropic sigma in [0,64] logical points."
+            );
+        }
+
         if (NSWorkspace.SharedWorkspace.AccessibilityDisplayShouldReduceTransparency)
-            throw new NotSupportedException("Reduce Transparency is enabled; select SolidTint explicitly.");
+        {
+            throw new NotSupportedException(
+                "Reduce Transparency is enabled; select SolidTint explicitly."
+            );
+        }
     }
 
     internal void SetEffect(PlatformBackdropSegment effect)
@@ -45,15 +61,27 @@ internal sealed class AppKitPlatformBlurView : NSView
             // Replace the complete filter array. Core Animation copies filters on
             // assignment; mutating an already-attached CIFilter would not update it.
             using var blur = new CIGaussianBlur { Radius = (float)sigma };
-            using var color = new CIColorControls { Saturation = (float)saturation, Brightness = 0, Contrast = 1 };
-            BackgroundFilters = sigma == 0
-                ? saturation == 1 ? [] : [color]
-                : saturation == 1 ? [blur] : [blur, color];
-            _sigma = sigma; _saturation = saturation;
+            using var color = new CIColorControls
+            {
+                Saturation = (float)saturation,
+                Brightness = 0,
+                Contrast = 1,
+            };
+            BackgroundFilters =
+                sigma == 0
+                    ? saturation == 1
+                        ? []
+                        : [color]
+                    : saturation == 1
+                        ? [blur]
+                        : [blur, color];
+            _sigma = sigma;
+            _saturation = saturation;
         }
         AppliedStyle = effect.Style;
         Hidden = (sigma == 0 && saturation == 1) || Frame.IsEmpty;
     }
+
     internal void Deactivate()
     {
         // Background filters can continue affecting composited siblings even when
@@ -64,14 +92,26 @@ internal sealed class AppKitPlatformBlurView : NSView
         AppliedStyle = null;
         Hidden = true;
     }
+
     public override bool IsOpaque => false;
+
     public override NSView? HitTest(CGPoint point) => null;
+
     public override bool AcceptsFirstResponder() => false;
-    public override bool AccessibilityElement { get => false; set { } }
+
+    public override bool AccessibilityElement
+    {
+        get => false;
+        set { }
+    }
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) BackgroundFilters = [];
+        if (disposing)
+        {
+            BackgroundFilters = [];
+        }
+
         base.Dispose(disposing);
     }
 }

@@ -27,6 +27,7 @@ public abstract class RestorableValue<T> : RestorableProperty<T>
             }
         }
     }
+
     public override void initWithValue(T value)
     {
         _value = value;
@@ -42,25 +43,35 @@ public class _RestorablePrimitiveValueN__restoration_properties<T> : RestorableV
     internal _RestorablePrimitiveValueN__restoration_properties(T _defaultValue)
     {
         this._defaultValue = _defaultValue;
-        System.Diagnostics.Debug.Assert(RestorationLibrary.debugIsSerializableForRestoration(_defaultValue));
+        System.Diagnostics.Debug.Assert(
+            RestorationLibrary.debugIsSerializableForRestoration(_defaultValue)
+        );
     }
 
     public override T createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(T? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(value));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(value)
+        );
         notifyListeners();
     }
 
     public override T fromPrimitives(object? data) => ((T?)data)!;
+
     public override object? toPrimitives() => value;
 }
 
-public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorablePrimitiveValueN__restoration_properties<T>
+public class _RestorablePrimitiveValue__restoration_properties<T>
+    : _RestorablePrimitiveValueN__restoration_properties<T>
 {
-    internal _RestorablePrimitiveValue__restoration_properties(T defaultValue) : base(defaultValue)
+    internal _RestorablePrimitiveValue__restoration_properties(T defaultValue)
+        : base(defaultValue)
     {
-        System.Diagnostics.Debug.Assert(RestorationLibrary.debugIsSerializableForRestoration(defaultValue));
+        System.Diagnostics.Debug.Assert(
+            RestorationLibrary.debugIsSerializableForRestoration(defaultValue)
+        );
     }
 
     public override T value
@@ -71,6 +82,7 @@ public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorableP
             base.value = __value;
         }
     }
+
     public override T fromPrimitives(object? data)
     {
         DartRuntimePrimitives.Assert(() => data is not null);
@@ -83,87 +95,67 @@ public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorableP
         return base.toPrimitives()!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class RestorableNum<T> : _RestorablePrimitiveValue__restoration_properties<T> where T : struct
+public class RestorableNum<T> : _RestorablePrimitiveValue__restoration_properties<T>
+    where T : struct
 {
-    public RestorableNum(T defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableNum(T defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableDouble : RestorableNum<double>
 {
-    public RestorableDouble(double defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableDouble(double defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableInt : RestorableNum<long>
 {
-    public RestorableInt(long defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableInt(long defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableString : _RestorablePrimitiveValue__restoration_properties<string>
 {
-    public RestorableString(string defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableString(string defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableBool : _RestorablePrimitiveValue__restoration_properties<bool>
 {
-    public RestorableBool(bool defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableBool(bool defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableBoolN : _RestorablePrimitiveValueN__restoration_properties<bool?>
 {
-    public RestorableBoolN(bool? defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableBoolN(bool? defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableNumN<T> : _RestorablePrimitiveValueN__restoration_properties<T>
 {
-    public RestorableNumN(T defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableNumN(T defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableDoubleN : RestorableNumN<double?>
 {
-    public RestorableDoubleN(double? defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableDoubleN(double? defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableIntN : RestorableNumN<long?>
 {
-    public RestorableIntN(long? defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableIntN(long? defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableStringN : _RestorablePrimitiveValueN__restoration_properties<string?>
 {
-    public RestorableStringN(string? defaultValue) : base(defaultValue)
-    {
-    }
-
+    public RestorableStringN(string? defaultValue)
+        : base(defaultValue) { }
 }
 
 public class RestorableDateTime : RestorableValue<DateTime>
@@ -176,13 +168,19 @@ public class RestorableDateTime : RestorableValue<DateTime>
     }
 
     public override DateTime createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(DateTime oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(value)));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(
+                DartRuntimePrimitives.MillisecondsSinceEpoch(value)
+            )
+        );
         notifyListeners();
     }
 
     public override DateTime fromPrimitives(object? data) => new DateTime((long)data!);
+
     public override object? toPrimitives() => DartRuntimePrimitives.MillisecondsSinceEpoch(value);
 }
 
@@ -196,17 +194,25 @@ public class RestorableDateTimeN : RestorableValue<DateTime?>
     }
 
     public override DateTime? createDefaultValue() => _defaultValue;
+
     public override void didUpdateValue(DateTime? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(value)));
+        DartRuntimePrimitives.Assert(() =>
+            RestorationLibrary.debugIsSerializableForRestoration(
+                DartRuntimePrimitives.MillisecondsSinceEpoch(value)
+            )
+        );
         notifyListeners();
     }
 
-    public override DateTime? fromPrimitives(object? data) => (data is not null) ? new DateTime((long)data) : null;
+    public override DateTime? fromPrimitives(object? data) =>
+        (data is not null) ? new DateTime((long)data) : null;
+
     public override object? toPrimitives() => DartRuntimePrimitives.MillisecondsSinceEpoch(value);
 }
 
-public abstract class RestorableListenable<T> : RestorableProperty<T> where T : Listenable
+public abstract class RestorableListenable<T> : RestorableProperty<T>
+    where T : Listenable
 {
     internal virtual T? _value { get; set; } = default;
 
@@ -218,6 +224,7 @@ public abstract class RestorableListenable<T> : RestorableProperty<T> where T : 
             return _value!;
         }
     }
+
     public override void initWithValue(T value)
     {
         _value?.removeListener(notifyListeners);
@@ -230,10 +237,10 @@ public abstract class RestorableListenable<T> : RestorableProperty<T> where T : 
         base.dispose();
         _value?.removeListener(notifyListeners);
     }
-
 }
 
-public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> where T : ChangeNotifier
+public abstract class RestorableChangeNotifier<T> : RestorableListenable<T>
+    where T : ChangeNotifier
 {
     public override void initWithValue(T value)
     {
@@ -254,14 +261,16 @@ public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> wher
             DartAsyncRuntime.scheduleMicrotask(_value!.dispose);
         }
     }
-
 }
 
 public class RestorableTextEditingController : RestorableChangeNotifier<TextEditingController>
 {
     internal virtual TextEditingValue _initialValue { get; private set; } = default!;
 
-    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController((text is null) ? TextEditingValue.empty : new TextEditingValue(text: text));
+    public static RestorableTextEditingController Create(string? text = null) =>
+        new RestorableTextEditingController(
+            (text is null) ? TextEditingValue.empty : new TextEditingValue(text: text)
+        );
 
     public RestorableTextEditingController(TextEditingValue value)
     {
@@ -285,10 +294,10 @@ public class RestorableTextEditingController : RestorableChangeNotifier<TextEdit
         return value.text;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
-public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
+public class RestorableEnumN<T> : RestorableValue<T?>
+    where T : struct, Enum
 {
     internal virtual T? _defaultValue { get; private set; }
     public virtual HashSet<T> values { get; set; } = default!;
@@ -297,19 +306,30 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
     {
         _defaultValue = defaultValue;
         this.values = values.toSet();
-        System.Diagnostics.Debug.Assert(defaultValue is null || values.Contains(defaultValue.Value));
+        System.Diagnostics.Debug.Assert(
+            defaultValue is null || values.Contains(defaultValue.Value)
+        );
     }
 
     public override T? createDefaultValue() => _defaultValue;
+
     public override T? value
     {
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => newValue is null || values.Contains(newValue.Value), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(
+                () => newValue is null || values.Contains(newValue.Value),
+                () =>
+                    (object?)
+                        $"Attempted to set an unknown enum value \"{newValue}\" that is not null, or "
+                    + $"in the valid set of enum values for the {typeof(T)} type: "
+                    + $"{values.map((value) => value.ToString()).toSet()}"
+            );
             base.value = newValue;
         }
     }
+
     public override void didUpdateValue(T? oldValue)
     {
         notifyListeners();
@@ -331,7 +351,14 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
                     return allowed;
                 }
             }
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to set an unknown enum value \"{data__as18369}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(
+                () => false,
+                () =>
+                    (object?)
+                        $"Attempted to set an unknown enum value \"{data__as18369}\" that is not null, or "
+                    + $"in the valid set of enum values for the {typeof(T)} type: "
+                    + $"{values.map((value) => value.ToString()).toSet()}"
+            );
         }
         return _defaultValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -340,7 +367,8 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
     public override object? toPrimitives() => value.ToString();
 }
 
-public class RestorableEnum<T> : RestorableValue<T> where T : Enum
+public class RestorableEnum<T> : RestorableValue<T>
+    where T : Enum
 {
     internal virtual T _defaultValue { get; private set; } = default!;
     public virtual HashSet<T> values { get; set; } = default!;
@@ -353,15 +381,24 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
     }
 
     public override T createDefaultValue() => _defaultValue;
+
     public override T value
     {
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => values.Contains(newValue), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(
+                () => values.Contains(newValue),
+                () =>
+                    (object?)
+                        $"Attempted to set an unknown enum value \"{newValue}\" that is not in the "
+                    + $"valid set of enum values for the {typeof(T)} type: "
+                    + $"{values.map((value) => value.ToString()).toSet()}"
+            );
             base.value = newValue;
         }
     }
+
     public override void didUpdateValue(T? oldValue)
     {
         notifyListeners();
@@ -379,7 +416,14 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
                     return allowed;
                 }
             }
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to restore an unknown enum value \"{data__as21037}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(
+                () => false,
+                () =>
+                    (object?)
+                        $"Attempted to restore an unknown enum value \"{data__as21037}\" that is not in the "
+                    + $"valid set of enum values for the {typeof(T)} type: "
+                    + $"{values.map((value) => value.ToString()).toSet()}"
+            );
         }
         return _defaultValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");

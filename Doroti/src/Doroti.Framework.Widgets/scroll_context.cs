@@ -16,4 +16,3 @@ public interface ScrollContext
     public void setSemanticsActions(HashSet<SemanticsAction> actions);
     public void saveOffset(double offset);
 }
-

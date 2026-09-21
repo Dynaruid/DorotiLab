@@ -14,7 +14,11 @@ public class ElevatedButtonThemeData : Diagnosticable
         this.style = style;
     }
 
-    public static ElevatedButtonThemeData? lerp(ElevatedButtonThemeData? a, ElevatedButtonThemeData? b, double t)
+    public static ElevatedButtonThemeData? lerp(
+        ElevatedButtonThemeData? a,
+        ElevatedButtonThemeData? b,
+        double t
+    )
     {
         if (DartRuntimePrimitives.Identical(a, b))
         {
@@ -25,10 +29,15 @@ public class ElevatedButtonThemeData : Diagnosticable
     }
 
     public override int GetHashCode() => style?.GetHashCode() ?? 0;
+
     public override bool Equals(object? other)
     {
         var __other = other as ElevatedButtonThemeData;
-        if (__other is null) return false;
+        if (__other is null)
+        {
+            return false;
+        }
+
         if (DartRuntimePrimitives.Identical(this, __other))
         {
             return true;
@@ -46,40 +55,51 @@ public class ElevatedButtonThemeData : Diagnosticable
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
-            {
-                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
-                return true;
-            });
+        {
+            fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)
+                .toDiagnosticsNode()
+                .toStringDeep(minLevel: minLevel);
+            return true;
+        });
         return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public virtual DiagnosticsNode toDiagnosticsNode(
+        string? name = null,
+        DiagnosticsTreeStyle? style = null
+    )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 public class ElevatedButtonTheme : InheritedTheme
 {
     public virtual ElevatedButtonThemeData data { get; private set; } = default!;
 
-    public ElevatedButtonTheme(Key? key = null, ElevatedButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
+    public ElevatedButtonTheme(
+        Key? key = null,
+        ElevatedButtonThemeData data = default!,
+        Widget child = default!
+    )
+        : base(key: key, child: child)
     {
         this.data = data;
     }
 
     public static ElevatedButtonThemeData of(BuildContext context)
     {
-        ElevatedButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<ElevatedButtonTheme>();
+        ElevatedButtonTheme? buttonTheme =
+            context.dependOnInheritedWidgetOfExactType<ElevatedButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).elevatedButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -90,5 +110,8 @@ public class ElevatedButtonTheme : InheritedTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ElevatedButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
+        DartRuntimePrimitives.ConvertValue<bool>(
+            !Equals(data, ((ElevatedButtonTheme)oldWidget).data)
+        );
 }

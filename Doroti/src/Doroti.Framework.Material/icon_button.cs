@@ -16,7 +16,7 @@ public enum _IconButtonVariant__icon_button
     standard,
     filled,
     filledTonal,
-    outlined
+    outlined,
 }
 
 public class IconButton : StatelessWidget
@@ -48,7 +48,35 @@ public class IconButton : StatelessWidget
     public virtual WidgetStatesController? statesController { get; private set; }
     internal virtual _IconButtonVariant__icon_button _variant { get; private set; } = default!;
 
-    public IconButton(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!) : base(key: key)
+    public IconButton(
+        Key? key = null,
+        double? iconSize = null,
+        VisualDensity? visualDensity = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        double? splashRadius = null,
+        Color? color = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? splashColor = null,
+        Color? disabledColor = null,
+        Action? onPressed = default!,
+        Action<bool>? onHover = null,
+        Action? onLongPress = null,
+        MouseCursor? mouseCursor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        string? tooltip = null,
+        bool? enableFeedback = null,
+        BoxConstraints? constraints = null,
+        ButtonStyle? style = null,
+        bool? isSelected = null,
+        Widget? selectedIcon = null,
+        WidgetStatesController? statesController = null,
+        Widget icon = default!
+    )
+        : base(key: key)
     {
         this.iconSize = iconSize;
         this.visualDensity = visualDensity;
@@ -76,12 +104,68 @@ public class IconButton : StatelessWidget
         this.statesController = statesController;
         this.icon = icon;
         _variant = _IconButtonVariant__icon_button.standard;
-        System.Diagnostics.Debug.Assert((splashRadius is null) || (DartRuntimePrimitives.RequireValue(splashRadius) > 0L));
+        System.Diagnostics.Debug.Assert(
+            (splashRadius is null) || (DartRuntimePrimitives.RequireValue(splashRadius) > 0L)
+        );
     }
 
-    public static IconButton CreateFilled(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateFilled(
+        Key? key = null,
+        double? iconSize = null,
+        VisualDensity? visualDensity = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        double? splashRadius = null,
+        Color? color = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? splashColor = null,
+        Color? disabledColor = null,
+        Action? onPressed = default!,
+        Action<bool>? onHover = null,
+        Action? onLongPress = null,
+        MouseCursor? mouseCursor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        string? tooltip = null,
+        bool? enableFeedback = null,
+        BoxConstraints? constraints = null,
+        ButtonStyle? style = null,
+        bool? isSelected = null,
+        Widget? selectedIcon = null,
+        WidgetStatesController? statesController = null,
+        Widget icon = default!
+    )
     {
-        var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
+        var __instance = new IconButton(
+            key: key,
+            iconSize: iconSize,
+            visualDensity: visualDensity,
+            padding: padding,
+            alignment: alignment,
+            splashRadius: splashRadius,
+            color: color,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            highlightColor: highlightColor,
+            splashColor: splashColor,
+            disabledColor: disabledColor,
+            onPressed: onPressed,
+            onHover: onHover,
+            onLongPress: onLongPress,
+            mouseCursor: mouseCursor,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            tooltip: tooltip,
+            enableFeedback: enableFeedback,
+            constraints: constraints,
+            style: style,
+            isSelected: isSelected,
+            selectedIcon: selectedIcon,
+            statesController: statesController,
+            icon: icon
+        );
         __instance.iconSize = iconSize;
         __instance.visualDensity = visualDensity;
         __instance.padding = padding;
@@ -111,9 +195,63 @@ public class IconButton : StatelessWidget
         return __instance;
     }
 
-    public static IconButton CreateFilledTonal(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateFilledTonal(
+        Key? key = null,
+        double? iconSize = null,
+        VisualDensity? visualDensity = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        double? splashRadius = null,
+        Color? color = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? splashColor = null,
+        Color? disabledColor = null,
+        Action? onPressed = default!,
+        Action<bool>? onHover = null,
+        Action? onLongPress = null,
+        MouseCursor? mouseCursor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        string? tooltip = null,
+        bool? enableFeedback = null,
+        BoxConstraints? constraints = null,
+        ButtonStyle? style = null,
+        bool? isSelected = null,
+        Widget? selectedIcon = null,
+        WidgetStatesController? statesController = null,
+        Widget icon = default!
+    )
     {
-        var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
+        var __instance = new IconButton(
+            key: key,
+            iconSize: iconSize,
+            visualDensity: visualDensity,
+            padding: padding,
+            alignment: alignment,
+            splashRadius: splashRadius,
+            color: color,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            highlightColor: highlightColor,
+            splashColor: splashColor,
+            disabledColor: disabledColor,
+            onPressed: onPressed,
+            onHover: onHover,
+            onLongPress: onLongPress,
+            mouseCursor: mouseCursor,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            tooltip: tooltip,
+            enableFeedback: enableFeedback,
+            constraints: constraints,
+            style: style,
+            isSelected: isSelected,
+            selectedIcon: selectedIcon,
+            statesController: statesController,
+            icon: icon
+        );
         __instance.iconSize = iconSize;
         __instance.visualDensity = visualDensity;
         __instance.padding = padding;
@@ -143,9 +281,63 @@ public class IconButton : StatelessWidget
         return __instance;
     }
 
-    public static IconButton CreateOutlined(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateOutlined(
+        Key? key = null,
+        double? iconSize = null,
+        VisualDensity? visualDensity = null,
+        EdgeInsetsGeometry? padding = null,
+        AlignmentGeometry? alignment = null,
+        double? splashRadius = null,
+        Color? color = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? splashColor = null,
+        Color? disabledColor = null,
+        Action? onPressed = default!,
+        Action<bool>? onHover = null,
+        Action? onLongPress = null,
+        MouseCursor? mouseCursor = null,
+        FocusNode? focusNode = null,
+        bool autofocus = false,
+        string? tooltip = null,
+        bool? enableFeedback = null,
+        BoxConstraints? constraints = null,
+        ButtonStyle? style = null,
+        bool? isSelected = null,
+        Widget? selectedIcon = null,
+        WidgetStatesController? statesController = null,
+        Widget icon = default!
+    )
     {
-        var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
+        var __instance = new IconButton(
+            key: key,
+            iconSize: iconSize,
+            visualDensity: visualDensity,
+            padding: padding,
+            alignment: alignment,
+            splashRadius: splashRadius,
+            color: color,
+            focusColor: focusColor,
+            hoverColor: hoverColor,
+            highlightColor: highlightColor,
+            splashColor: splashColor,
+            disabledColor: disabledColor,
+            onPressed: onPressed,
+            onHover: onHover,
+            onLongPress: onLongPress,
+            mouseCursor: mouseCursor,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            tooltip: tooltip,
+            enableFeedback: enableFeedback,
+            constraints: constraints,
+            style: style,
+            isSelected: isSelected,
+            selectedIcon: selectedIcon,
+            statesController: statesController,
+            icon: icon
+        );
         __instance.iconSize = iconSize;
         __instance.visualDensity = visualDensity;
         __instance.padding = padding;
@@ -175,15 +367,93 @@ public class IconButton : StatelessWidget
         return __instance;
     }
 
-    public static ButtonStyle styleFrom(Color? foregroundColor = null, Color? backgroundColor = null, Color? disabledForegroundColor = null, Color? disabledBackgroundColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? overlayColor = null, double? elevation = null, Size? minimumSize = null, Size? fixedSize = null, Size? maximumSize = null, double? iconSize = null, BorderSide? side = null, OutlinedBorder? shape = null, EdgeInsetsGeometry? padding = null, MouseCursor? enabledMouseCursor = null, MouseCursor? disabledMouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null)
+    public static ButtonStyle styleFrom(
+        Color? foregroundColor = null,
+        Color? backgroundColor = null,
+        Color? disabledForegroundColor = null,
+        Color? disabledBackgroundColor = null,
+        Color? focusColor = null,
+        Color? hoverColor = null,
+        Color? highlightColor = null,
+        Color? shadowColor = null,
+        Color? surfaceTintColor = null,
+        Color? overlayColor = null,
+        double? elevation = null,
+        Size? minimumSize = null,
+        Size? fixedSize = null,
+        Size? maximumSize = null,
+        double? iconSize = null,
+        BorderSide? side = null,
+        OutlinedBorder? shape = null,
+        EdgeInsetsGeometry? padding = null,
+        MouseCursor? enabledMouseCursor = null,
+        MouseCursor? disabledMouseCursor = null,
+        VisualDensity? visualDensity = null,
+        MaterialTapTargetSize? tapTargetSize = null,
+        Duration? animationDuration = null,
+        bool? enableFeedback = null,
+        AlignmentGeometry? alignment = null,
+        InteractiveInkFeatureFactory? splashFactory = null
+    )
     {
         Color? overlayFallback = overlayColor ?? foregroundColor;
         WidgetStateProperty<Color?>? overlayColorProp = default!;
         if ((((hoverColor ?? focusColor) ?? highlightColor) ?? overlayFallback) is not null)
         {
-            overlayColorProp = overlayColor switch { Color { a: 0.0 } __object25318 => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(new WidgetStatePropertyAll<Color>(__object25318)), _ => WidgetStateProperty<Color?>.CreateFromMap(new DartMap<WidgetStatesConstraint, Color?> { [WidgetState.pressed.asConstraint()] = highlightColor ?? overlayFallback?.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = hoverColor ?? overlayFallback?.withOpacity(0.08), [WidgetState.focused.asConstraint()] = focusColor ?? overlayFallback?.withOpacity(0.1) }.cast<WidgetStatesConstraint, Color?>()) };
+            overlayColorProp = overlayColor switch
+            {
+                Color { a: 0.0 } __object25318 => DartRuntimePrimitives.ConvertValue<
+                    WidgetStateProperty<Color?>
+                >(new WidgetStatePropertyAll<Color>(__object25318)),
+                _ => WidgetStateProperty<Color?>.CreateFromMap(
+                    new DartMap<WidgetStatesConstraint, Color?>
+                    {
+                        [WidgetState.pressed.asConstraint()] =
+                            highlightColor ?? overlayFallback?.withOpacity(0.1),
+                        [WidgetState.hovered.asConstraint()] =
+                            hoverColor ?? overlayFallback?.withOpacity(0.08),
+                        [WidgetState.focused.asConstraint()] =
+                            focusColor ?? overlayFallback?.withOpacity(0.1),
+                    }.cast<WidgetStatesConstraint, Color?>()
+                ),
+            };
         }
-        return new ButtonStyle(backgroundColor: ButtonStyleButton.defaultColor(backgroundColor, disabledBackgroundColor), foregroundColor: ButtonStyleButton.defaultColor(foregroundColor, disabledForegroundColor), overlayColor: overlayColorProp, shadowColor: ButtonStyleButton.allOrNull(shadowColor), surfaceTintColor: ButtonStyleButton.allOrNull(surfaceTintColor), elevation: ButtonStyleButton.allOrNull(elevation), padding: ButtonStyleButton.allOrNull(padding), minimumSize: ButtonStyleButton.allOrNull(minimumSize), fixedSize: ButtonStyleButton.allOrNull(fixedSize), maximumSize: ButtonStyleButton.allOrNull(maximumSize), iconSize: ButtonStyleButton.allOrNull(iconSize), side: ButtonStyleButton.allOrNull(side), shape: ButtonStyleButton.allOrNull(shape), mouseCursor: ((disabledMouseCursor is null) && (enabledMouseCursor is null)) ? null : WidgetStateProperty<MouseCursor?>.CreateFromMap(new DartMap<WidgetStatesConstraint, MouseCursor?> { [WidgetState.disabled.asConstraint()] = disabledMouseCursor, [WidgetStateMembers.any] = enabledMouseCursor }), visualDensity: visualDensity, tapTargetSize: tapTargetSize, animationDuration: animationDuration, enableFeedback: enableFeedback, alignment: alignment, splashFactory: splashFactory);
+        return new ButtonStyle(
+            backgroundColor: ButtonStyleButton.defaultColor(
+                backgroundColor,
+                disabledBackgroundColor
+            ),
+            foregroundColor: ButtonStyleButton.defaultColor(
+                foregroundColor,
+                disabledForegroundColor
+            ),
+            overlayColor: overlayColorProp,
+            shadowColor: ButtonStyleButton.allOrNull(shadowColor),
+            surfaceTintColor: ButtonStyleButton.allOrNull(surfaceTintColor),
+            elevation: ButtonStyleButton.allOrNull(elevation),
+            padding: ButtonStyleButton.allOrNull(padding),
+            minimumSize: ButtonStyleButton.allOrNull(minimumSize),
+            fixedSize: ButtonStyleButton.allOrNull(fixedSize),
+            maximumSize: ButtonStyleButton.allOrNull(maximumSize),
+            iconSize: ButtonStyleButton.allOrNull(iconSize),
+            side: ButtonStyleButton.allOrNull(side),
+            shape: ButtonStyleButton.allOrNull(shape),
+            mouseCursor: ((disabledMouseCursor is null) && (enabledMouseCursor is null))
+                ? null
+                : WidgetStateProperty<MouseCursor?>.CreateFromMap(
+                    new DartMap<WidgetStatesConstraint, MouseCursor?>
+                    {
+                        [WidgetState.disabled.asConstraint()] = disabledMouseCursor,
+                        [WidgetStateMembers.any] = enabledMouseCursor,
+                    }
+                ),
+            visualDensity: visualDensity,
+            tapTargetSize: tapTargetSize,
+            animationDuration: animationDuration,
+            enableFeedback: enableFeedback,
+            alignment: alignment,
+            splashFactory: splashFactory
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -191,9 +461,30 @@ public class IconButton : StatelessWidget
     {
         ThemeData theme = Theme.of(context);
         {
-            Size? minSize = (constraints is null) ? null : new Size(constraints!.minWidth, constraints!.minHeight);
-            Size? maxSize = (constraints is null) ? null : new Size(constraints!.maxWidth, constraints!.maxHeight);
-            ButtonStyle adjustedStyle = styleFrom(visualDensity: visualDensity, foregroundColor: color, disabledForegroundColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, padding: padding, minimumSize: minSize, maximumSize: maxSize, iconSize: iconSize, alignment: alignment, enabledMouseCursor: mouseCursor, disabledMouseCursor: mouseCursor, enableFeedback: enableFeedback);
+            Size? minSize =
+                (constraints is null)
+                    ? null
+                    : new Size(constraints!.minWidth, constraints!.minHeight);
+            Size? maxSize =
+                (constraints is null)
+                    ? null
+                    : new Size(constraints!.maxWidth, constraints!.maxHeight);
+            ButtonStyle adjustedStyle = styleFrom(
+                visualDensity: visualDensity,
+                foregroundColor: color,
+                disabledForegroundColor: disabledColor,
+                focusColor: focusColor,
+                hoverColor: hoverColor,
+                highlightColor: highlightColor,
+                padding: padding,
+                minimumSize: minSize,
+                maximumSize: maxSize,
+                iconSize: iconSize,
+                alignment: alignment,
+                enabledMouseCursor: mouseCursor,
+                disabledMouseCursor: mouseCursor,
+                enableFeedback: enableFeedback
+            );
             if (style is not null)
             {
                 adjustedStyle = style!.merge(adjustedStyle);
@@ -207,7 +498,19 @@ public class IconButton : StatelessWidget
             {
                 effectiveIcon = selectedIcon!;
             }
-            return new _SelectableIconButton__icon_button(style: adjustedStyle, onPressed: onPressed, onHover: onHover, onLongPress: (onPressed is not null) ? onLongPress : null, autofocus: autofocus, focusNode: focusNode, isSelected: isSelected, variant: _variant, tooltip: tooltip, statesController: statesController, child: effectiveIcon);
+            return new _SelectableIconButton__icon_button(
+                style: adjustedStyle,
+                onPressed: onPressed,
+                onHover: onHover,
+                onLongPress: (onPressed is not null) ? onLongPress : null,
+                autofocus: autofocus,
+                focusNode: focusNode,
+                isSelected: isSelected,
+                variant: _variant,
+                tooltip: tooltip,
+                statesController: statesController,
+                child: effectiveIcon
+            );
         }
     }
 
@@ -216,18 +519,25 @@ public class IconButton : StatelessWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new StringProperty("tooltip", tooltip, defaultValue: null, quoted: false));
         properties.add(new ObjectFlagProperty<Action>("onPressed", onPressed, ifNull: "disabled"));
-        properties.add(new ObjectFlagProperty<Action<bool>>("onHover", onHover, ifNull: "disabled"));
-        properties.add(new ObjectFlagProperty<Action>("onLongPress", onLongPress, ifNull: "disabled"));
+        properties.add(
+            new ObjectFlagProperty<Action<bool>>("onHover", onHover, ifNull: "disabled")
+        );
+        properties.add(
+            new ObjectFlagProperty<Action>("onLongPress", onLongPress, ifNull: "disabled")
+        );
         properties.add(new ColorProperty("color", color, defaultValue: null));
         properties.add(new ColorProperty("disabledColor", disabledColor, defaultValue: null));
         properties.add(new ColorProperty("focusColor", focusColor, defaultValue: null));
         properties.add(new ColorProperty("hoverColor", hoverColor, defaultValue: null));
         properties.add(new ColorProperty("highlightColor", highlightColor, defaultValue: null));
         properties.add(new ColorProperty("splashColor", splashColor, defaultValue: null));
-        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null));
-        properties.add(new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null));
+        properties.add(
+            new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null)
+        );
+        properties.add(
+            new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null)
+        );
     }
-
 }
 
 public class _SelectableIconButton__icon_button : StatefulWidget
@@ -244,7 +554,19 @@ public class _SelectableIconButton__icon_button : StatefulWidget
     public virtual Action<bool>? onHover { get; private set; }
     public virtual WidgetStatesController? statesController { get; private set; }
 
-    internal _SelectableIconButton__icon_button(bool? isSelected = null, ButtonStyle? style = null, FocusNode? focusNode = null, Action? onLongPress = null, Action<bool>? onHover = null, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool autofocus = default!, Action? onPressed = default!, string? tooltip = null, Widget child = default!)
+    internal _SelectableIconButton__icon_button(
+        bool? isSelected = null,
+        ButtonStyle? style = null,
+        FocusNode? focusNode = null,
+        Action? onLongPress = null,
+        Action<bool>? onHover = null,
+        WidgetStatesController? statesController = null,
+        _IconButtonVariant__icon_button variant = default!,
+        bool autofocus = default!,
+        Action? onPressed = default!,
+        string? tooltip = null,
+        Widget child = default!
+    )
     {
         this.isSelected = isSelected;
         this.style = style;
@@ -259,15 +581,21 @@ public class _SelectableIconButton__icon_button : StatefulWidget
         this.child = child;
     }
 
-    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectableIconButtonState__icon_button());
+    public override IState createState() =>
+        DartRuntimePrimitives.ConvertValue<IState>(new _SelectableIconButtonState__icon_button());
 }
 
 internal class _SelectableIconButtonState__icon_button : State<_SelectableIconButton__icon_button>
 {
     internal virtual WidgetStatesController? _internalStatesController { get; set; } = default;
 
-    public virtual WidgetStatesController statesController => DartRuntimePrimitives.ConvertValue<WidgetStatesController>(widget.statesController ?? _internalStatesController!);
-    internal virtual bool _isSelected => DartRuntimePrimitives.ConvertValue<bool>(widget.isSelected ?? false);
+    public virtual WidgetStatesController statesController =>
+        DartRuntimePrimitives.ConvertValue<WidgetStatesController>(
+            widget.statesController ?? _internalStatesController!
+        );
+    internal virtual bool _isSelected =>
+        DartRuntimePrimitives.ConvertValue<bool>(widget.isSelected ?? false);
+
     public override void initState()
     {
         base.initState();
@@ -308,7 +636,19 @@ internal class _SelectableIconButtonState__icon_button : State<_SelectableIconBu
     public override Widget build(BuildContext context)
     {
         var toggleableLocal = widget.isSelected is not null;
-        return new _IconButtonM3__icon_button(statesController: statesController, style: widget.style, autofocus: widget.autofocus, focusNode: widget.focusNode, onPressed: widget.onPressed, onHover: widget.onHover, onLongPress: (widget.onPressed is not null) ? widget.onLongPress : null, variant: widget.variant, toggleable: toggleableLocal, tooltip: widget.tooltip, child: new Widgets.Semantics(selected: widget.isSelected, child: widget.child));
+        return new _IconButtonM3__icon_button(
+            statesController: statesController,
+            style: widget.style,
+            autofocus: widget.autofocus,
+            focusNode: widget.focusNode,
+            onPressed: widget.onPressed,
+            onHover: widget.onHover,
+            onLongPress: (widget.onPressed is not null) ? widget.onLongPress : null,
+            variant: widget.variant,
+            toggleable: toggleableLocal,
+            tooltip: widget.tooltip,
+            child: new Widgets.Semantics(selected: widget.isSelected, child: widget.child)
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -317,7 +657,6 @@ internal class _SelectableIconButtonState__icon_button : State<_SelectableIconBu
         _internalStatesController?.dispose();
         base.dispose();
     }
-
 }
 
 internal class _IconButtonM3__icon_button : ButtonStyleButton
@@ -325,7 +664,32 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
     public virtual _IconButtonVariant__icon_button variant { get; private set; } = default!;
     public virtual bool toggleable { get; private set; } = default!;
 
-    internal _IconButtonM3__icon_button(Action? onPressed, ButtonStyle? style = null, FocusNode? focusNode = null, Action<bool>? onHover = null, Action? onLongPress = null, bool autofocus = false, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool toggleable = default!, string? tooltip = null, Widget child = default!) : base(onPressed: onPressed, style: style, focusNode: focusNode, onHover: onHover, onLongPress: onLongPress, autofocus: autofocus, statesController: statesController, tooltip: tooltip, child: child, onFocusChange: null, clipBehavior: Clip.none)
+    internal _IconButtonM3__icon_button(
+        Action? onPressed,
+        ButtonStyle? style = null,
+        FocusNode? focusNode = null,
+        Action<bool>? onHover = null,
+        Action? onLongPress = null,
+        bool autofocus = false,
+        WidgetStatesController? statesController = null,
+        _IconButtonVariant__icon_button variant = default!,
+        bool toggleable = default!,
+        string? tooltip = null,
+        Widget child = default!
+    )
+        : base(
+            onPressed: onPressed,
+            style: style,
+            focusNode: focusNode,
+            onHover: onHover,
+            onLongPress: onLongPress,
+            autofocus: autofocus,
+            statesController: statesController,
+            tooltip: tooltip,
+            child: child,
+            onFocusChange: null,
+            clipBehavior: Clip.none
+        )
     {
         this.variant = variant;
         this.toggleable = toggleable;
@@ -333,7 +697,27 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
 
     public override ButtonStyle defaultStyleOf(BuildContext context)
     {
-        return variant switch { _IconButtonVariant__icon_button.filled => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledIconButtonDefaultsM3__icon_button(context, toggleable)), _IconButtonVariant__icon_button.filledTonal => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledTonalIconButtonDefaultsM3__icon_button(context, toggleable)), _IconButtonVariant__icon_button.outlined => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _OutlinedIconButtonDefaultsM3__icon_button(context, toggleable)), _IconButtonVariant__icon_button.standard => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _IconButtonDefaultsM3__icon_button(context, toggleable)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return variant switch
+        {
+            _IconButtonVariant__icon_button.filled =>
+                DartRuntimePrimitives.ConvertValue<ButtonStyle>(
+                    new _FilledIconButtonDefaultsM3__icon_button(context, toggleable)
+                ),
+            _IconButtonVariant__icon_button.filledTonal =>
+                DartRuntimePrimitives.ConvertValue<ButtonStyle>(
+                    new _FilledTonalIconButtonDefaultsM3__icon_button(context, toggleable)
+                ),
+            _IconButtonVariant__icon_button.outlined =>
+                DartRuntimePrimitives.ConvertValue<ButtonStyle>(
+                    new _OutlinedIconButtonDefaultsM3__icon_button(context, toggleable)
+                ),
+            _IconButtonVariant__icon_button.standard =>
+                DartRuntimePrimitives.ConvertValue<ButtonStyle>(
+                    new _IconButtonDefaultsM3__icon_button(context, toggleable)
+                ),
+            _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -341,12 +725,23 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
     {
         IconThemeData iconTheme = IconTheme.of(context);
         var isDefaultSize = iconTheme.size == IconThemeData.CreateFallback().size;
-        bool isDefaultColor = DartRuntimePrimitives.Identical(iconTheme.color, Theme.brightnessOf(context) switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        ButtonStyle iconThemeStyle = IconButton.styleFrom(foregroundColor: isDefaultColor ? null : iconTheme.color, iconSize: isDefaultSize ? null : iconTheme.size);
+        bool isDefaultColor = DartRuntimePrimitives.Identical(
+            iconTheme.color,
+            Theme.brightnessOf(context) switch
+            {
+                Brightness.light => ConstantsLibrary.kDefaultIconDarkColor,
+                Brightness.dark => ConstantsLibrary.kDefaultIconLightColor,
+                _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            }
+        );
+        ButtonStyle iconThemeStyle = IconButton.styleFrom(
+            foregroundColor: isDefaultColor ? null : iconTheme.color,
+            iconSize: isDefaultSize ? null : iconTheme.size
+        );
         return IconButtonTheme.of(context).style?.merge(iconThemeStyle) ?? iconThemeStyle;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
-
 }
 
 internal class _IconButtonDefaultsM3__icon_button : ButtonStyle
@@ -368,68 +763,114 @@ internal class _IconButtonDefaultsM3__icon_button : ButtonStyle
         }
     }
 
-    internal _IconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _IconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable)
+        : base(
+            animationDuration: ConstantsLibrary.kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center
+        )
     {
         this.context = context;
         this.toggleable = toggleable;
     }
 
-    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.38);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.primary;
-        }
-        return _colors.onSurfaceVariant;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected))
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.primary.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.primary.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.primary.withOpacity(0.1);
-            }
-        }
-        if (states.Contains(WidgetState.pressed))
-        {
-            return _colors.onSurfaceVariant.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.onSurfaceVariant.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.onSurfaceVariant.withOpacity(0.1);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<double?>? elevation => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(0.0));
-    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0)));
-    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0)));
-    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
-    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(24.0));
-    public override WidgetStateProperty<BorderSide?>? side => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
-    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
-    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+    public override WidgetStateProperty<Color?>? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<Color?>? foregroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.primary;
+                    }
+                    return _colors.onSurfaceVariant;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                    }
+                    if (states.Contains(WidgetState.pressed))
+                    {
+                        return _colors.onSurfaceVariant.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.onSurfaceVariant.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.onSurfaceVariant.withOpacity(0.1);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<double?>? elevation =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(0.0)
+        );
+    public override WidgetStateProperty<Color>? shadowColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<Color>? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(
+            new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0))
+        );
+    public override WidgetStateProperty<Size>? minimumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0))
+        );
+    public override WidgetStateProperty<Size>? maximumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(Size.infinite)
+        );
+    public override WidgetStateProperty<double?>? iconSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(24.0)
+        );
+    public override WidgetStateProperty<BorderSide?>? side =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
+    public override WidgetStateProperty<OutlinedBorder>? shape =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(
+            new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder())
+        );
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(
+            WidgetStateMouseCursor.adaptiveClickable
+        );
     public override VisualDensity? visualDensity => VisualDensity.standard;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
@@ -454,103 +895,151 @@ internal class _FilledIconButtonDefaultsM3__icon_button : ButtonStyle
         }
     }
 
-    internal _FilledIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _FilledIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable)
+        : base(
+            animationDuration: ConstantsLibrary.kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center
+        )
     {
         this.context = context;
         this.toggleable = toggleable;
     }
 
-    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.12);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.primary;
-        }
-        if (toggleable)
-        {
-            return _colors.surfaceContainerHighest;
-        }
-        return _colors.primary;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.38);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.onPrimary;
-        }
-        if (toggleable)
-        {
-            return _colors.primary;
-        }
-        return _colors.onPrimary;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected))
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.onPrimary.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.onPrimary.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.onPrimary.withOpacity(0.1);
-            }
-        }
-        if (toggleable)
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.primary.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.primary.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.primary.withOpacity(0.1);
-            }
-        }
-        if (states.Contains(WidgetState.pressed))
-        {
-            return _colors.onPrimary.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.onPrimary.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.onPrimary.withOpacity(0.1);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<double?>? elevation => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(0.0));
-    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0)));
-    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0)));
-    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
-    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(24.0));
-    public override WidgetStateProperty<BorderSide?>? side => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
-    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
-    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+    public override WidgetStateProperty<Color?>? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.12);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.primary;
+                    }
+                    if (toggleable)
+                    {
+                        return _colors.surfaceContainerHighest;
+                    }
+                    return _colors.primary;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? foregroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.onPrimary;
+                    }
+                    if (toggleable)
+                    {
+                        return _colors.primary;
+                    }
+                    return _colors.onPrimary;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onPrimary.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onPrimary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onPrimary.withOpacity(0.1);
+                        }
+                    }
+                    if (toggleable)
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.primary.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.primary.withOpacity(0.1);
+                        }
+                    }
+                    if (states.Contains(WidgetState.pressed))
+                    {
+                        return _colors.onPrimary.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.onPrimary.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.onPrimary.withOpacity(0.1);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<double?>? elevation =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(0.0)
+        );
+    public override WidgetStateProperty<Color>? shadowColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<Color>? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(
+            new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0))
+        );
+    public override WidgetStateProperty<Size>? minimumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0))
+        );
+    public override WidgetStateProperty<Size>? maximumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(Size.infinite)
+        );
+    public override WidgetStateProperty<double?>? iconSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(24.0)
+        );
+    public override WidgetStateProperty<BorderSide?>? side =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
+    public override WidgetStateProperty<OutlinedBorder>? shape =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(
+            new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder())
+        );
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(
+            WidgetStateMouseCursor.adaptiveClickable
+        );
     public override VisualDensity? visualDensity => VisualDensity.standard;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
@@ -575,103 +1064,151 @@ internal class _FilledTonalIconButtonDefaultsM3__icon_button : ButtonStyle
         }
     }
 
-    internal _FilledTonalIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _FilledTonalIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable)
+        : base(
+            animationDuration: ConstantsLibrary.kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center
+        )
     {
         this.context = context;
         this.toggleable = toggleable;
     }
 
-    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.12);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.secondaryContainer;
-        }
-        if (toggleable)
-        {
-            return _colors.surfaceContainerHighest;
-        }
-        return _colors.secondaryContainer;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.38);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.onSecondaryContainer;
-        }
-        if (toggleable)
-        {
-            return _colors.onSurfaceVariant;
-        }
-        return _colors.onSecondaryContainer;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected))
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.onSecondaryContainer.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.onSecondaryContainer.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.onSecondaryContainer.withOpacity(0.1);
-            }
-        }
-        if (toggleable)
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.onSurfaceVariant.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.onSurfaceVariant.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.onSurfaceVariant.withOpacity(0.1);
-            }
-        }
-        if (states.Contains(WidgetState.pressed))
-        {
-            return _colors.onSecondaryContainer.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.onSecondaryContainer.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.onSecondaryContainer.withOpacity(0.1);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<double?>? elevation => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(0.0));
-    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0)));
-    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0)));
-    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
-    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(24.0));
-    public override WidgetStateProperty<BorderSide?>? side => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
-    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
-    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+    public override WidgetStateProperty<Color?>? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.12);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.secondaryContainer;
+                    }
+                    if (toggleable)
+                    {
+                        return _colors.surfaceContainerHighest;
+                    }
+                    return _colors.secondaryContainer;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? foregroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.onSecondaryContainer;
+                    }
+                    if (toggleable)
+                    {
+                        return _colors.onSurfaceVariant;
+                    }
+                    return _colors.onSecondaryContainer;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onSecondaryContainer.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onSecondaryContainer.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onSecondaryContainer.withOpacity(0.1);
+                        }
+                    }
+                    if (toggleable)
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onSurfaceVariant.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onSurfaceVariant.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onSurfaceVariant.withOpacity(0.1);
+                        }
+                    }
+                    if (states.Contains(WidgetState.pressed))
+                    {
+                        return _colors.onSecondaryContainer.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.onSecondaryContainer.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.onSecondaryContainer.withOpacity(0.1);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<double?>? elevation =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(0.0)
+        );
+    public override WidgetStateProperty<Color>? shadowColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<Color>? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(
+            new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0))
+        );
+    public override WidgetStateProperty<Size>? minimumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0))
+        );
+    public override WidgetStateProperty<Size>? maximumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(Size.infinite)
+        );
+    public override WidgetStateProperty<double?>? iconSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(24.0)
+        );
+    public override WidgetStateProperty<BorderSide?>? side =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<BorderSide?>>(null);
+    public override WidgetStateProperty<OutlinedBorder>? shape =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(
+            new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder())
+        );
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(
+            WidgetStateMouseCursor.adaptiveClickable
+        );
     public override VisualDensity? visualDensity => VisualDensity.standard;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
@@ -696,99 +1233,149 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
         }
     }
 
-    internal _OutlinedIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _OutlinedIconButtonDefaultsM3__icon_button(BuildContext context, bool toggleable)
+        : base(
+            animationDuration: ConstantsLibrary.kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center
+        )
     {
         this.context = context;
         this.toggleable = toggleable;
     }
 
-    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            if (states.Contains(WidgetState.selected))
+    public override WidgetStateProperty<Color?>? backgroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        if (states.Contains(WidgetState.selected))
+                        {
+                            return _colors.onSurface.withOpacity(0.12);
+                        }
+                        return Colors.transparent;
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.inverseSurface;
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? foregroundColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return _colors.onSurface.withOpacity(0.38);
+                    }
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        return _colors.onInverseSurface;
+                    }
+                    return _colors.onSurfaceVariant;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<Color?>? overlayColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(
+            WidgetStateProperty.resolveWith(
+                (states) =>
+                {
+                    if (states.Contains(WidgetState.selected))
+                    {
+                        if (states.Contains(WidgetState.pressed))
+                        {
+                            return _colors.onInverseSurface.withOpacity(0.1);
+                        }
+                        if (states.Contains(WidgetState.hovered))
+                        {
+                            return _colors.onInverseSurface.withOpacity(0.08);
+                        }
+                        if (states.Contains(WidgetState.focused))
+                        {
+                            return _colors.onInverseSurface.withOpacity(0.08);
+                        }
+                    }
+                    if (states.Contains(WidgetState.pressed))
+                    {
+                        return _colors.onSurface.withOpacity(0.1);
+                    }
+                    if (states.Contains(WidgetState.hovered))
+                    {
+                        return _colors.onSurfaceVariant.withOpacity(0.08);
+                    }
+                    if (states.Contains(WidgetState.focused))
+                    {
+                        return _colors.onSurfaceVariant.withOpacity(0.08);
+                    }
+                    return Colors.transparent;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }
+            )
+        );
+    public override WidgetStateProperty<double?>? elevation =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(0.0)
+        );
+    public override WidgetStateProperty<Color>? shadowColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<Color>? surfaceTintColor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(
+            new WidgetStatePropertyAll<Color>(Colors.transparent)
+        );
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(
+            new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0))
+        );
+    public override WidgetStateProperty<Size>? minimumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0))
+        );
+    public override WidgetStateProperty<Size>? maximumSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(
+            new WidgetStatePropertyAll<Size>(Size.infinite)
+        );
+    public override WidgetStateProperty<double?>? iconSize =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(
+            new WidgetStatePropertyAll<double?>(24.0)
+        );
+    public override WidgetStateProperty<BorderSide?>? side =>
+        WidgetStateProperty.resolveWith(
+            (states) =>
             {
-                return _colors.onSurface.withOpacity(0.12);
+                if (states.Contains(WidgetState.selected))
+                {
+                    return null;
+                }
+                else
+                {
+                    if (states.Contains(WidgetState.disabled))
+                    {
+                        return new BorderSide(color: _colors.onSurface.withOpacity(0.12));
+                    }
+                    return new BorderSide(color: _colors.outline);
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
             }
-            return Colors.transparent;
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.inverseSurface;
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.disabled))
-        {
-            return _colors.onSurface.withOpacity(0.38);
-        }
-        if (states.Contains(WidgetState.selected))
-        {
-            return _colors.onInverseSurface;
-        }
-        return _colors.onSurfaceVariant;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected))
-        {
-            if (states.Contains(WidgetState.pressed))
-            {
-                return _colors.onInverseSurface.withOpacity(0.1);
-            }
-            if (states.Contains(WidgetState.hovered))
-            {
-                return _colors.onInverseSurface.withOpacity(0.08);
-            }
-            if (states.Contains(WidgetState.focused))
-            {
-                return _colors.onInverseSurface.withOpacity(0.08);
-            }
-        }
-        if (states.Contains(WidgetState.pressed))
-        {
-            return _colors.onSurface.withOpacity(0.1);
-        }
-        if (states.Contains(WidgetState.hovered))
-        {
-            return _colors.onSurfaceVariant.withOpacity(0.08);
-        }
-        if (states.Contains(WidgetState.focused))
-        {
-            return _colors.onSurfaceVariant.withOpacity(0.08);
-        }
-        return Colors.transparent;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    }));
-    public override WidgetStateProperty<double?>? elevation => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(0.0));
-    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0)));
-    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(40.0, 40.0)));
-    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
-    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(24.0));
-    public override WidgetStateProperty<BorderSide?>? side => WidgetStateProperty.resolveWith((states) =>
-    {
-        if (states.Contains(WidgetState.selected))
-        {
-            return null;
-        }
-        else
-        {
-            if (states.Contains(WidgetState.disabled))
-            {
-                return new BorderSide(color: _colors.onSurface.withOpacity(0.12));
-            }
-            return new BorderSide(color: _colors.outline);
-        }
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
-    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+        );
+    public override WidgetStateProperty<OutlinedBorder>? shape =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(
+            new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder())
+        );
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor =>
+        DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(
+            WidgetStateMouseCursor.adaptiveClickable
+        );
     public override VisualDensity? visualDensity => VisualDensity.standard;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;

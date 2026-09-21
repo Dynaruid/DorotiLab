@@ -16,19 +16,22 @@ internal sealed record WindowsResizeTarget(
     int HeightPx,
     double Scale,
     ulong CausalFrameId,
-    long AcceptedTimestamp);
+    long AcceptedTimestamp
+);
 
 internal sealed record WindowsResizeReceipt(
     WindowsResizeTarget Target,
     WindowsResizeTerminal Terminal,
     bool PlatformWaitTimedOut,
     string Detail,
-    long TerminalTimestamp);
+    long TerminalTimestamp
+);
 
 internal sealed record WindowsResizeWaitResult(
     WindowsResizeReceipt? Receipt,
     bool TimedOut,
-    TimeSpan Elapsed);
+    TimeSpan Elapsed
+);
 
 internal sealed record WindowsResizeCoordinatorSnapshot(
     int QueueDepth,
@@ -42,7 +45,8 @@ internal sealed record WindowsResizeCoordinatorSnapshot(
     long StalePresentPreventedCount,
     long PlatformWaitTimeoutCount,
     int UnterminatedCount,
-    IReadOnlyList<WindowsResizeReceipt> Receipts);
+    IReadOnlyList<WindowsResizeReceipt> Receipts
+);
 
 internal sealed class WindowsManagedResizeCoordinator : IDisposable
 {
@@ -72,7 +76,9 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
     {
         _maximumWait = maximumWait ?? TimeSpan.FromMilliseconds(100);
         if (_maximumWait <= TimeSpan.Zero || _maximumWait > TimeSpan.FromMilliseconds(100))
+        {
             throw new ArgumentOutOfRangeException(nameof(maximumWait));
+        }
     }
 
     internal WindowsResizeTarget Publish(
@@ -81,22 +87,49 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         int heightPx,
         double scale,
         ulong causalFrameId,
-        long? externalGeneration = null)
+        long? externalGeneration = null
+    )
     {
-        if (viewId == 0) throw new ArgumentOutOfRangeException(nameof(viewId));
-        if (widthPx < 0 || heightPx < 0) throw new ArgumentOutOfRangeException(nameof(widthPx));
-        if (!double.IsFinite(scale) || scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale));
+        if (viewId == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(viewId));
+        }
+
+        if (widthPx < 0 || heightPx < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(widthPx));
+        }
+
+        if (!double.IsFinite(scale) || scale <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(scale));
+        }
+
         lock (_gate)
         {
-            if (_closed) throw new InvalidOperationException("The resize coordinator is closed.");
+            if (_closed)
+            {
+                throw new InvalidOperationException("The resize coordinator is closed.");
+            }
+
             var generation = externalGeneration ?? checked(_generation + 1);
             if (generation <= _generation)
+            {
                 throw new InvalidOperationException(
-                    $"Resize generation {generation} is not newer than {_generation}.");
+                    $"Resize generation {generation} is not newer than {_generation}."
+                );
+            }
+
             _generation = generation;
             var target = new WindowsResizeTarget(
-                viewId, generation, widthPx, heightPx, scale,
-                causalFrameId, Stopwatch.GetTimestamp());
+                viewId,
+                generation,
+                widthPx,
+                heightPx,
+                scale,
+                causalFrameId,
+                Stopwatch.GetTimestamp()
+            );
             var entry = new Entry(target);
             _entries.Add(target.Generation, entry);
             if (_current is null)
@@ -106,38 +139,62 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
             else
             {
                 if (_latest is not null)
-                    CompleteCore(_latest, WindowsResizeTerminal.Superseded, "replaced pending target");
+                {
+                    CompleteCore(
+                        _latest,
+                        WindowsResizeTerminal.Superseded,
+                        "replaced pending target"
+                    );
+                }
+
                 _latest = entry;
             }
             _maximumQueueDepth = Math.Max(_maximumQueueDepth, QueueDepthCore());
             if (widthPx == 0 || heightPx == 0)
+            {
                 CompleteCore(entry, WindowsResizeTerminal.Failed, "non-drawable lifecycle target");
+            }
+
             return target;
         }
     }
 
     internal WindowsResizeTarget? Current
     {
-        get { lock (_gate) return _current?.Target; }
+        get
+        {
+            lock (_gate)
+            {
+                return _current?.Target;
+            }
+        }
     }
 
     internal bool IsLatest(long generation)
     {
-        lock (_gate) return LatestGenerationCore() == generation;
+        lock (_gate)
+        {
+            return LatestGenerationCore() == generation;
+        }
     }
 
     internal bool IsComplete(long generation)
     {
         lock (_gate)
+        {
             return _entries.TryGetValue(generation, out var entry) && entry.Receipt is not null;
+        }
     }
 
     internal bool ValidateExact(long generation, int widthPx, int heightPx)
     {
         lock (_gate)
         {
-            if (!_entries.TryGetValue(generation, out var entry) ||
-                entry.Target.WidthPx != widthPx || entry.Target.HeightPx != heightPx)
+            if (
+                !_entries.TryGetValue(generation, out var entry)
+                || entry.Target.WidthPx != widthPx
+                || entry.Target.HeightPx != heightPx
+            )
             {
                 _exactAdmissionMismatchCount++;
                 return false;
@@ -150,19 +207,29 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         long generation,
         WindowsResizeTerminal terminal,
         string detail,
-        bool enforceLatest = true)
+        bool enforceLatest = true
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(detail);
         lock (_gate)
         {
             if (!_entries.TryGetValue(generation, out var entry))
-                throw new InvalidOperationException($"Resize generation {generation} was not accepted.");
+            {
+                throw new InvalidOperationException(
+                    $"Resize generation {generation} was not accepted."
+                );
+            }
+
             if (entry.Receipt is not null)
             {
                 _duplicateTerminalCount++;
                 return false;
             }
-            if (enforceLatest && terminal == WindowsResizeTerminal.Presented && LatestGenerationCore() != generation)
+            if (
+                enforceLatest
+                && terminal == WindowsResizeTerminal.Presented
+                && LatestGenerationCore() != generation
+            )
             {
                 terminal = WindowsResizeTerminal.Superseded;
                 detail = $"stale present prevented: {detail}";
@@ -179,7 +246,11 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         lock (_gate)
         {
             if (!_entries.TryGetValue(generation, out entry!))
-                throw new InvalidOperationException($"Resize generation {generation} was not accepted.");
+            {
+                throw new InvalidOperationException(
+                    $"Resize generation {generation} was not accepted."
+                );
+            }
         }
         var started = Stopwatch.GetTimestamp();
         var signaled = entry.Completion.Wait(_maximumWait);
@@ -200,10 +271,16 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
     {
         lock (_gate)
         {
-            if (_closed) return;
+            if (_closed)
+            {
+                return;
+            }
+
             _closed = true;
             foreach (var entry in _entries.Values.Where(value => value.Receipt is null).ToArray())
+            {
                 CompleteCore(entry, WindowsResizeTerminal.Failed, "shutdown");
+            }
         }
     }
 
@@ -223,16 +300,25 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
                 _stalePresentPreventedCount,
                 _platformWaitTimeoutCount,
                 _entries.Values.Count(value => value.Receipt is null),
-                _receipts.ToArray());
+                _receipts.ToArray()
+            );
         }
     }
 
     private void CompleteCore(Entry entry, WindowsResizeTerminal terminal, string detail)
     {
-        if (entry.Receipt is not null) return;
+        if (entry.Receipt is not null)
+        {
+            return;
+        }
+
         var receipt = new WindowsResizeReceipt(
-            entry.Target, terminal, entry.PlatformWaitTimedOut, detail,
-            Stopwatch.GetTimestamp());
+            entry.Target,
+            terminal,
+            entry.PlatformWaitTimedOut,
+            detail,
+            Stopwatch.GetTimestamp()
+        );
         entry.Receipt = receipt;
         _receipts.Add(receipt);
         entry.Completion.Set();
@@ -249,12 +335,14 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
 
     private long LatestGenerationCore() => _generation;
 
-    private int QueueDepthCore() =>
-        (_current is null ? 0 : 1) + (_latest is null ? 0 : 1);
+    private int QueueDepthCore() => (_current is null ? 0 : 1) + (_latest is null ? 0 : 1);
 
     public void Dispose()
     {
         Close();
-        foreach (var entry in _entries.Values) entry.Completion.Dispose();
+        foreach (var entry in _entries.Values)
+        {
+            entry.Completion.Dispose();
+        }
     }
 }

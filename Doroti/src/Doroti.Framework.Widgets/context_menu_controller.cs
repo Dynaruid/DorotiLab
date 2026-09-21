@@ -17,12 +17,23 @@ public class ContextMenuController
         this.onRemove = onRemove;
     }
 
-    public virtual void show(BuildContext context, Func<BuildContext, Widget> contextMenuBuilder, Widget? debugRequiredFor = null)
+    public virtual void show(
+        BuildContext context,
+        Func<BuildContext, Widget> contextMenuBuilder,
+        Widget? debugRequiredFor = null
+    )
     {
-        OverlayState overlayState = Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor);
+        OverlayState overlayState = Overlay.of(
+            context,
+            rootOverlay: true,
+            debugRequiredFor: debugRequiredFor
+        );
         // Capture from the caller before crossing into the root overlay. A local
         // Theme can override both the platform toolbar and its light/dark palette.
-        CapturedThemes capturedThemes = InheritedTheme.capture(from: context, to: overlayState.context);
+        CapturedThemes capturedThemes = InheritedTheme.capture(
+            from: context,
+            to: overlayState.context
+        );
         if (isShown)
         {
             _contextMenuBuilder = contextMenuBuilder;
@@ -34,7 +45,10 @@ public class ContextMenuController
         _contextMenuBuilder = contextMenuBuilder;
         _capturedThemes = capturedThemes;
         _menuOverlayEntry = new OverlayEntry(builder: overlayContext =>
-            _capturedThemes!.wrap(new Builder(builder: menuContext => _contextMenuBuilder!(menuContext))));
+            _capturedThemes!.wrap(
+                new Builder(builder: menuContext => _contextMenuBuilder!(menuContext))
+            )
+        );
         _shownInstance = this;
         overlayState.insert(_menuOverlayEntry!);
     }
@@ -53,7 +67,9 @@ public class ContextMenuController
         }
     }
 
-    public virtual bool isShown => DartRuntimePrimitives.ConvertValue<bool>(Equals(_shownInstance, this));
+    public virtual bool isShown =>
+        DartRuntimePrimitives.ConvertValue<bool>(Equals(_shownInstance, this));
+
     public virtual void markNeedsBuild()
     {
         DartRuntimePrimitives.Assert(() => isShown);
@@ -68,5 +84,4 @@ public class ContextMenuController
         }
         removeAny();
     }
-
 }

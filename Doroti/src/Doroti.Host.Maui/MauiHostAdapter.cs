@@ -3,35 +3,45 @@ using Doroti.Ui;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
-#if WINDOWS
-using Microsoft.UI.Xaml.Media;
-#endif
 using Locale = Doroti.Ui.Locale;
 using Rect = Doroti.Ui.Rect;
 using Size = Doroti.Ui.Size;
+#if WINDOWS
+using Microsoft.UI.Xaml.Media;
+#endif
 
 namespace Doroti.Host.Maui;
 
-internal sealed class MauiHostAdapter :
-    IViewHostCapability,
-    IFrameHostCapability,
-    ILatestMetricsFrameHostCapability,
-    IPlatformEnvironmentHostCapability,
-    IInputHostCapability,
-    IViewFocusRequestCapability,
-    IPlatformServicesHostCapability,
-    IUrlLauncherHostCapability,
-    ITextInputHostCapability
+internal sealed class MauiHostAdapter
+    : IViewHostCapability,
+        IFrameHostCapability,
+        ILatestMetricsFrameHostCapability,
+        IPlatformEnvironmentHostCapability,
+        IInputHostCapability,
+        IViewFocusRequestCapability,
+        IPlatformServicesHostCapability,
+        IUrlLauncherHostCapability,
+        ITextInputHostCapability
 {
-    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(
+        string absoluteUrl,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
-            var opened = await MainThread.InvokeOnMainThreadAsync(() => Launcher.Default.TryOpenAsync(absoluteUrl));
-            return opened ? new(UrlLaunchStatus.opened) : new(UrlLaunchStatus.failed, "No application accepted this URL.");
+            var opened = await MainThread.InvokeOnMainThreadAsync(() =>
+                Launcher.Default.TryOpenAsync(absoluteUrl)
+            );
+            return opened
+                ? new(UrlLaunchStatus.opened)
+                : new(UrlLaunchStatus.failed, "No application accepted this URL.");
         }
-        catch (Exception error) { return new(UrlLaunchStatus.failed, error.Message); }
+        catch (Exception error)
+        {
+            return new(UrlLaunchStatus.failed, error.Message);
+        }
     }
 
     private readonly ulong _viewId;
@@ -72,22 +82,30 @@ internal sealed class MauiHostAdapter :
 #endif
     private bool _disposed;
 
-    internal MauiHostAdapter(ulong viewId, IMauiSkiaSurface surface, MauiTextInputBridge textInput,
-        Size logicalSize, IMauiSemanticsBridge? semantics = null)
+    internal MauiHostAdapter(
+        ulong viewId,
+        IMauiSkiaSurface surface,
+        MauiTextInputBridge textInput,
+        Size logicalSize,
+        IMauiSemanticsBridge? semantics = null
+    )
     {
         _viewId = viewId;
         _surface = surface ?? throw new ArgumentNullException(nameof(surface));
         _textInput = textInput ?? throw new ArgumentNullException(nameof(textInput));
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
         _density = MauiViewEnvironment.ValidScale(DeviceDisplay.Current.MainDisplayInfo.Density);
-        var initialTarget = _surface.ResizeTarget ?? new DorotiResizeEpoch(
-            _metricsGeneration,
-            _logicalSize.width,
-            _logicalSize.height,
-            Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density))),
-            Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density))),
-            _density,
-            DorotiFrameClock.Now.Ticks / 10);
+        var initialTarget =
+            _surface.ResizeTarget
+            ?? new DorotiResizeEpoch(
+                _metricsGeneration,
+                _logicalSize.width,
+                _logicalSize.height,
+                Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density))),
+                Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density))),
+                _density,
+                DorotiFrameClock.Now.Ticks / 10
+            );
         _viewEpoch = ToViewEpoch(initialTarget, _metricsGeneration);
         _semantics = semantics ?? new NullMauiSemanticsBridge();
 #if ANDROID
@@ -100,24 +118,32 @@ internal sealed class MauiHostAdapter :
         _textInput.EditingStateChanged += HandleEditingStateChanged;
         _textInput.ActionPerformed += HandleActionPerformed;
         if (Application.Current is { } application)
+        {
             application.RequestedThemeChanged += HandleRequestedThemeChanged;
+        }
+
         _nativeInput = _surface;
         _environment = new(_surface.Element);
         _environment.Changed += HandleEnvironmentChanged;
 #if WINDOWS
-        if (_surface is DorotiWindowsDxgiSurface windowsSurface) windowsSurface.CaptureNativeEnvironment += CaptureNativeEnvironment;
+        if (_surface is DorotiWindowsDxgiSurface windowsSurface)
+        {
+            windowsSurface.CaptureNativeEnvironment += CaptureNativeEnvironment;
+        }
 #endif
     }
 
-    private MauiSurfaceSnapshot _snapshot = new(
-        0, 0, 1, 1, 0, 0, "not-attached", "not-attached");
-    internal MauiSurfaceSnapshot Snapshot => _surface.CaptureSnapshot(_snapshot) with
-    {
-        NativeEnvironmentPhysicalSize = _environment.NativePhysicalSize is { } size ? new(size.width, size.height) : null,
-        RawViewPadding = _environment.Padding,
-        RawViewInsets = _environment.Insets,
-        RawSystemGestureInsets = _environment.Gestures,
-    };
+    private MauiSurfaceSnapshot _snapshot = new(0, 0, 1, 1, 0, 0, "not-attached", "not-attached");
+    internal MauiSurfaceSnapshot Snapshot =>
+        _surface.CaptureSnapshot(_snapshot) with
+        {
+            NativeEnvironmentPhysicalSize = _environment.NativePhysicalSize is { } size
+                ? new(size.width, size.height)
+                : null,
+            RawViewPadding = _environment.Padding,
+            RawViewInsets = _environment.Insets,
+            RawSystemGestureInsets = _environment.Gestures,
+        };
 
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
@@ -133,35 +159,54 @@ internal sealed class MauiHostAdapter :
         {
             var epoch = ViewEpoch;
             return new(
-                new Size(epoch.PhysicalWidth, epoch.PhysicalHeight), epoch.DevicePixelRatio,
-                _environment.Padding, _environment.Insets, _environment.Gestures, AppLifecycleState.resumed,
-                epoch.MetricsGeneration, Interlocked.Read(ref _surfaceGeneration))
-            { gestureSettings = _environment.GestureSettings, displayCornerRadii = _environment.Corners, displayFeatures = _environment.Features };
+                new Size(epoch.PhysicalWidth, epoch.PhysicalHeight),
+                epoch.DevicePixelRatio,
+                _environment.Padding,
+                _environment.Insets,
+                _environment.Gestures,
+                AppLifecycleState.resumed,
+                epoch.MetricsGeneration,
+                Interlocked.Read(ref _surfaceGeneration)
+            )
+            {
+                gestureSettings = _environment.GestureSettings,
+                displayCornerRadii = _environment.Corners,
+                displayFeatures = _environment.Features,
+            };
         }
     }
-    public PlatformConfiguration Configuration => new(
-        _environment.Locales ?? new Locale[] { ToLocale(CultureInfo.CurrentUICulture) },
-        Application.Current?.RequestedTheme == AppTheme.Dark ? Brightness.dark : Brightness.light,
-        _environment.Use24Hour ?? false, false,
+#if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
+    public PlatformConfiguration Configuration =>
+        new(
+            _environment.Locales ?? new Locale[] { ToLocale(CultureInfo.CurrentUICulture) },
+            Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Brightness.dark
+                : Brightness.light,
+            _environment.Use24Hour ?? false,
+            false,
 #if WINDOWS
-        HostOperatingSystem.windows
+            HostOperatingSystem.windows
 #elif MACCATALYST
         HostOperatingSystem.macOS
 #elif IOS
         HostOperatingSystem.iOS
 #elif ANDROID
-        HostOperatingSystem.android
+            HostOperatingSystem.android
 #elif MACOS
         HostOperatingSystem.macOS
+#endif
+            ,
+            textScaleFactor: _environment.TextScale,
+            accessibilityFeatures: _environment.Accessibility,
+            fontSizeScaler: _environment.FontScaler
+#if IOS && !MACCATALYST
+            ,
+            supportsShowingSystemContextMenu: _textInput.SupportsSystemContextMenu
+#endif
+        );
 #else
 #error Doroti.Host.Maui requires an explicit operating-system mapping.
 #endif
-        , textScaleFactor: _environment.TextScale, accessibilityFeatures: _environment.Accessibility,
-        fontSizeScaler: _environment.FontScaler
-#if IOS && !MACCATALYST
-        , supportsShowingSystemContextMenu: _textInput.SupportsSystemContextMenu
-#endif
-    );
 
     public event Action<ViewMetrics>? MetricsChanged;
     public event Action<AppLifecycleState>? LifecycleChanged;
@@ -184,12 +229,18 @@ internal sealed class MauiHostAdapter :
 
     internal void NotifyLifecycle(AppLifecycleState state)
     {
-        if (!_disposed) LifecycleChanged?.Invoke(state);
+        if (!_disposed)
+        {
+            LifecycleChanged?.Invoke(state);
+        }
     }
 
     internal void NotifyCloseRequested()
     {
-        if (!_disposed) CloseRequested?.Invoke();
+        if (!_disposed)
+        {
+            CloseRequested?.Invoke();
+        }
     }
 
     public void Resize(Size logicalSize)
@@ -213,7 +264,8 @@ internal sealed class MauiHostAdapter :
             Math.Max(0, checked((int)Math.Round(logicalSize.width * _density))),
             Math.Max(0, checked((int)Math.Round(logicalSize.height * _density))),
             _density,
-            DorotiFrameClock.Now.Ticks / 10);
+            DorotiFrameClock.Now.Ticks / 10
+        );
         Volatile.Write(ref _viewEpoch, ToViewEpoch(target, _metricsGeneration));
         MetricsChanged?.Invoke(Metrics);
         RequestInvalidate();
@@ -237,7 +289,10 @@ internal sealed class MauiHostAdapter :
             _pendingFrameCallback = callback;
             requestFrame = true;
         }
-        if (!requestFrame) return;
+        if (!requestFrame)
+        {
+            return;
+        }
 #if WINDOWS
         SubscribeToCompositionVsync();
 #elif ANDROID
@@ -249,13 +304,17 @@ internal sealed class MauiHostAdapter :
 
     public void ScheduleFrame(
         DorotiViewEpoch expectedEpoch,
-        Action<TimeSpan, DorotiViewEpoch> callback)
+        Action<TimeSpan, DorotiViewEpoch> callback
+    )
     {
         ArgumentNullException.ThrowIfNull(expectedEpoch);
         ArgumentNullException.ThrowIfNull(callback);
         if (expectedEpoch.ViewId != _viewId)
+        {
             throw new InvalidOperationException(
-                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}.");
+                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}."
+            );
+        }
 
         // MAUI layout can advance more than once before the paused native
         // surface consumes its single invalidation. Admit the latest immutable
@@ -266,13 +325,20 @@ internal sealed class MauiHostAdapter :
 
     void IExactFrameHostCapability.ScheduleFrame(
         DorotiViewEpoch expectedEpoch,
-        Action<TimeSpan> callback)
+        Action<TimeSpan> callback
+    )
     {
         ArgumentNullException.ThrowIfNull(callback);
-        ScheduleFrame(expectedEpoch, (timestamp, admittedEpoch) =>
-        {
-            if (admittedEpoch == expectedEpoch) callback(timestamp);
-        });
+        ScheduleFrame(
+            expectedEpoch,
+            (timestamp, admittedEpoch) =>
+            {
+                if (admittedEpoch == expectedEpoch)
+                {
+                    callback(timestamp);
+                }
+            }
+        );
     }
 
     internal void BeginPaint(MauiSkiaPaintContext paint)
@@ -284,29 +350,47 @@ internal sealed class MauiHostAdapter :
             _isPainting = true;
         }
         var previous = Snapshot;
-        if (paint.ContextIdentity is not null && !ReferenceEquals(paint.ContextIdentity, _lastContext))
+        if (
+            paint.ContextIdentity is not null
+            && !ReferenceEquals(paint.ContextIdentity, _lastContext)
+        )
         {
             _lastContext = paint.ContextIdentity;
             _contextGeneration++;
             _surfaceGeneration++;
         }
-        var pixelSizeChanged = previous.PixelWidth != paint.PixelWidth ||
-                               previous.PixelHeight != paint.PixelHeight;
+        var pixelSizeChanged =
+            previous.PixelWidth != paint.PixelWidth || previous.PixelHeight != paint.PixelHeight;
         if (paint.SurfaceGeneration > 0)
+        {
             _surfaceGeneration = paint.SurfaceGeneration;
+        }
         else if (pixelSizeChanged)
+        {
             _surfaceGeneration++;
+        }
+
         var density = MauiViewEnvironment.ValidScale(paint.Density);
         _density = density;
         var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * density)));
         var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * density)));
-        _snapshot = new(paint.PixelWidth, paint.PixelHeight, density,
-            _metricsGeneration, _contextGeneration, _surfaceGeneration,
-            paint.NativeViewType, paint.GraphicsBackend,
+        _snapshot = new(
+            paint.PixelWidth,
+            paint.PixelHeight,
+            density,
+            _metricsGeneration,
+            _contextGeneration,
+            _surfaceGeneration,
+            paint.NativeViewType,
+            paint.GraphicsBackend,
             LogicalWidth: _logicalSize.width,
-            LogicalHeight: _logicalSize.height);
+            LogicalHeight: _logicalSize.height
+        );
         _ = expectedWidth == paint.PixelWidth && expectedHeight == paint.PixelHeight;
-        if (previous.SurfaceGeneration != _surfaceGeneration) MetricsChanged?.Invoke(Metrics);
+        if (previous.SurfaceGeneration != _surfaceGeneration)
+        {
+            MetricsChanged?.Invoke(Metrics);
+        }
 #if !WINDOWS
         TimeSpan? nativeVsyncTimestamp = null;
 #endif
@@ -324,7 +408,11 @@ internal sealed class MauiHostAdapter :
 
     internal void EndPaint()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         var dispatch = false;
 #if WINDOWS
         var unsubscribeVsync = false;
@@ -334,7 +422,9 @@ internal sealed class MauiHostAdapter :
             _isPainting = false;
 #if WINDOWS
             if (_pendingFrameCallback is null && _compositionVsyncRequested)
+            {
                 unsubscribeVsync = true;
+            }
 #endif
             if (_invalidateAfterPaint)
             {
@@ -353,20 +443,29 @@ internal sealed class MauiHostAdapter :
             }
         }
 #if WINDOWS
-        if (unsubscribeVsync) UnsubscribeFromCompositionVsync();
+        if (unsubscribeVsync)
+        {
+            UnsubscribeFromCompositionVsync();
+        }
 #endif
-        if (dispatch) _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
+        if (dispatch)
+        {
+            _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
+        }
     }
 
     private object? _lastContext;
 
     internal event Action<int, SemanticsAction, object?>? SemanticsAction;
 
-    internal void AttachFrameworkTrace(DorotiFrameTrace trace) => _semantics.AttachFrameTrace(trace, _viewId);
+    internal void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+        _semantics.AttachFrameTrace(trace, _viewId);
 
     internal void UpdateSemantics(SemanticsUpdate update) =>
-        _semantics.Update(update, (nodeId, action, arguments) =>
-            SemanticsAction?.Invoke(nodeId, action, arguments));
+        _semantics.Update(
+            update,
+            (nodeId, action, arguments) => SemanticsAction?.Invoke(nodeId, action, arguments)
+        );
 
     internal void ClearSemantics() => _semantics.Clear();
 
@@ -387,7 +486,11 @@ internal sealed class MauiHostAdapter :
             // PaintSurface callback. Post that request after the paint completes.
             if (_isPainting)
             {
-                if (_invalidateAfterPaint) Interlocked.Increment(ref _invalidationsCoalesced);
+                if (_invalidateAfterPaint)
+                {
+                    Interlocked.Increment(ref _invalidationsCoalesced);
+                }
+
                 _invalidateAfterPaint = true;
                 return;
             }
@@ -407,24 +510,34 @@ internal sealed class MauiHostAdapter :
     {
         lock (_gate)
         {
-            if (_disposed || _androidFrameCallbackPosted) return;
+            if (_disposed || _androidFrameCallbackPosted)
+            {
+                return;
+            }
+
             _androidFrameCallbackPosted = true;
         }
         // Graphite input and painting already run on the UI thread. Posting a
         // managed Runnable on every pulse adds Java peers for the GC bridge
         // and can register the waiter too late for the next refresh.
         if (_surface.Dispatcher.IsDispatchRequired)
+        {
             _surface.Dispatcher.Dispatch(PostAndroidFrameCallback);
+        }
         else
+        {
             PostAndroidFrameCallback();
+        }
     }
 
     private void PostAndroidFrameCallback()
     {
         lock (_gate)
         {
-            if (_disposed ||
-                (_pendingFrameCallback is null && _androidActiveTouchPointers.Count == 0))
+            if (
+                _disposed
+                || (_pendingFrameCallback is null && _androidActiveTouchPointers.Count == 0)
+            )
             {
                 _androidFrameCallbackPosted = false;
                 return;
@@ -441,7 +554,11 @@ internal sealed class MauiHostAdapter :
         lock (_gate)
         {
             _androidFrameCallbackPosted = false;
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
+
             var touchActive = _androidActiveTouchPointers.Count > 0;
             if (_pendingFrameCallback is null)
             {
@@ -472,8 +589,16 @@ internal sealed class MauiHostAdapter :
                 repost = touchActive;
             }
         }
-        if (repost) RequestAndroidVsync();
-        if (!invalidate) return;
+        if (repost)
+        {
+            RequestAndroidVsync();
+        }
+
+        if (!invalidate)
+        {
+            return;
+        }
+
         Interlocked.Increment(ref _invalidationsRequested);
         _surface.InvalidateSurfaceFromVsync();
     }
@@ -502,14 +627,18 @@ internal sealed class MauiHostAdapter :
             _androidChoreographer = null;
         }
         if (_surface.Dispatcher.IsDispatchRequired)
+        {
             _surface.Dispatcher.Dispatch(RemoveCallback);
+        }
         else
+        {
             RemoveCallback();
+        }
     }
 
-    private sealed class AndroidFrameCallback(Action<long> callback) :
-        Java.Lang.Object,
-        Android.Views.Choreographer.IFrameCallback
+    private sealed class AndroidFrameCallback(Action<long> callback)
+        : Java.Lang.Object,
+            Android.Views.Choreographer.IFrameCallback
     {
         public void DoFrame(long frameTimeNanos) => callback(frameTimeNanos);
     }
@@ -520,7 +649,11 @@ internal sealed class MauiHostAdapter :
     {
         lock (_gate)
         {
-            if (_compositionVsyncRequested) return;
+            if (_compositionVsyncRequested)
+            {
+                return;
+            }
+
             _compositionVsyncRequested = true;
         }
         DispatchCompositionVsyncUpdate();
@@ -530,7 +663,11 @@ internal sealed class MauiHostAdapter :
     {
         lock (_gate)
         {
-            if (!_compositionVsyncRequested || _pendingFrameCallback is not null) return;
+            if (!_compositionVsyncRequested || _pendingFrameCallback is not null)
+            {
+                return;
+            }
+
             _compositionVsyncRequested = false;
         }
         DispatchCompositionVsyncUpdate();
@@ -555,12 +692,18 @@ internal sealed class MauiHostAdapter :
         if (shouldAttach)
         {
             CompositionTarget.Rendering += HandleCompositionRendering;
-            lock (_gate) _compositionVsyncAttached = true;
+            lock (_gate)
+            {
+                _compositionVsyncAttached = true;
+            }
         }
         else if (shouldDetach)
         {
             CompositionTarget.Rendering -= HandleCompositionRendering;
-            lock (_gate) _compositionVsyncAttached = false;
+            lock (_gate)
+            {
+                _compositionVsyncAttached = false;
+            }
         }
     }
 
@@ -568,11 +711,18 @@ internal sealed class MauiHostAdapter :
     {
         _ = sender;
         _ = args;
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         var timestamp = DorotiFrameClock.Now;
         lock (_gate)
         {
-            if (_pendingFrameCallback is null || _invalidatePending) return;
+            if (_pendingFrameCallback is null || _invalidatePending)
+            {
+                return;
+            }
             // CompositionTarget already paces callbacks to the active display.
             // The Windows surface owns a latest-only DXGI/D3D12 pipeline, so an
             // additional fixed interval would halve 120/144/165 Hz resize
@@ -598,7 +748,11 @@ internal sealed class MauiHostAdapter :
             callback = _pendingFrameCallback;
             _pendingFrameCallback = null;
         }
-        if (callback is null) return;
+        if (callback is null)
+        {
+            return;
+        }
+
         var now = DorotiFrameClock.ClampForward(timestamp, _lastVsyncTimestamp);
         _lastVsyncTimestamp = now;
         callback(now);
@@ -609,7 +763,10 @@ internal sealed class MauiHostAdapter :
     {
         lock (_gate)
         {
-            if (_disposed || _pendingFrameCallback is null) return;
+            if (_disposed || _pendingFrameCallback is null)
+            {
+                return;
+            }
         }
 
         // SizeChanged is already a native, UI-thread-paced resize pulse. Build
@@ -625,7 +782,9 @@ internal sealed class MauiHostAdapter :
         _surface.RequestFocus(state == ViewFocusState.focused);
     }
 
-    public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
+    public async ValueTask<string?> GetClipboardTextAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         return await MainThread.InvokeOnMainThreadAsync(() =>
@@ -635,7 +794,10 @@ internal sealed class MauiHostAdapter :
         });
     }
 
-    public async ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
+    public async ValueTask SetClipboardTextAsync(
+        string text,
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         await MainThread.InvokeOnMainThreadAsync(() =>
@@ -645,7 +807,9 @@ internal sealed class MauiHostAdapter :
         });
     }
 
-    public async ValueTask<bool> HasClipboardTextAsync(CancellationToken cancellationToken = default)
+    public async ValueTask<bool> HasClipboardTextAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         return await MainThread.InvokeOnMainThreadAsync(() =>
@@ -662,24 +826,40 @@ internal sealed class MauiHostAdapter :
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) => _surface.SetCursor(cursor);
-    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState) =>
-        _textInput.SetClient(configuration, initialState);
+
+    public void SetClient(
+        DorotiTextInputConfiguration configuration,
+        DorotiTextEditingState initialState
+    ) => _textInput.SetClient(configuration, initialState);
+
     public void UpdateState(DorotiTextEditingState state) => _textInput.UpdateState(state);
+
     public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
+
     public void ShowTextInput() => _textInput.ShowTextInput();
+
     public void HideTextInput() => _textInput.HideTextInput();
+
     public void ClearClient() => _textInput.ClearClient();
 
     public void Close()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         CloseRequested?.Invoke();
         Dispose();
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
 #if WINDOWS
         lock (_gate)
@@ -694,7 +874,10 @@ internal sealed class MauiHostAdapter :
         _surface.Key -= HandleKey;
         _environment.Changed -= HandleEnvironmentChanged;
 #if WINDOWS
-        if (_surface is DorotiWindowsDxgiSurface windowsSurface) windowsSurface.CaptureNativeEnvironment -= CaptureNativeEnvironment;
+        if (_surface is DorotiWindowsDxgiSurface windowsSurface)
+        {
+            windowsSurface.CaptureNativeEnvironment -= CaptureNativeEnvironment;
+        }
 #endif
         _environment.Dispose();
         _surface.SizeChanged -= HandleSizeChanged;
@@ -702,11 +885,17 @@ internal sealed class MauiHostAdapter :
         _textInput.EditingStateChanged -= HandleEditingStateChanged;
         _textInput.ActionPerformed -= HandleActionPerformed;
         if (Application.Current is { } application)
+        {
             application.RequestedThemeChanged -= HandleRequestedThemeChanged;
+        }
+
         _nativeInput.Dispose();
         _textInput.Dispose();
         if (_semantics is IDisposable semantics)
+        {
             semantics.Dispose();
+        }
+
         lock (_gate)
         {
             _pendingFrameCallback = null;
@@ -722,10 +911,16 @@ internal sealed class MauiHostAdapter :
 
     private void HandleEnvironmentChanged()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         var current = ViewEpoch;
-        if (_environment.NativePhysicalSize is { } size &&
-            (size.width != current.PhysicalWidth || size.height != current.PhysicalHeight))
+        if (
+            _environment.NativePhysicalSize is { } size
+            && (size.width != current.PhysicalWidth || size.height != current.PhysicalHeight)
+        )
         {
             // The surface publishes the matching drawable epoch from SizeChanged.
             ConfigurationChanged?.Invoke(Configuration);
@@ -748,7 +943,11 @@ internal sealed class MauiHostAdapter :
         }
         else
         {
-            if (_surface.Width <= 0 || _surface.Height <= 0) return;
+            if (_surface.Width <= 0 || _surface.Height <= 0)
+            {
+                return;
+            }
+
             var surface = _surface.CaptureSnapshot(_snapshot);
             var density = MauiViewEnvironment.ValidScale(surface.DevicePixelRatio);
             target = new(
@@ -758,17 +957,27 @@ internal sealed class MauiHostAdapter :
                 Math.Max(0, checked((int)Math.Round(_surface.Width * density))),
                 Math.Max(0, checked((int)Math.Round(_surface.Height * density))),
                 density,
-                DorotiFrameClock.Now.Ticks / 10);
+                DorotiFrameClock.Now.Ticks / 10
+            );
         }
-        if (!target.HasDrawableSize) return;
+        if (!target.HasDrawableSize)
+        {
+            return;
+        }
+
         var current = ViewEpoch;
-        if (current.ResizeTargetGeneration == target.Generation &&
-            current.LogicalWidth == target.LogicalWidth &&
-            current.LogicalHeight == target.LogicalHeight &&
-            current.PhysicalWidth == target.PhysicalWidth &&
-            current.PhysicalHeight == target.PhysicalHeight &&
-            current.DeviceScaleX == target.DeviceScaleX &&
-            current.DeviceScaleY == target.DeviceScaleY) return;
+        if (
+            current.ResizeTargetGeneration == target.Generation
+            && current.LogicalWidth == target.LogicalWidth
+            && current.LogicalHeight == target.LogicalHeight
+            && current.PhysicalWidth == target.PhysicalWidth
+            && current.PhysicalHeight == target.PhysicalHeight
+            && current.DeviceScaleX == target.DeviceScaleX
+            && current.DeviceScaleY == target.DeviceScaleY
+        )
+        {
+            return;
+        }
 #if !WINDOWS
         _environment.Refresh();
 #endif
@@ -784,27 +993,31 @@ internal sealed class MauiHostAdapter :
 #endif
     }
 
-    private DorotiViewEpoch ToViewEpoch(DorotiResizeEpoch target, long metricsGeneration) => new(
-        _viewId,
-        target.Generation,
-        metricsGeneration,
-        target.LogicalWidth,
-        target.LogicalHeight,
-        target.PhysicalWidth,
-        target.PhysicalHeight,
-        target.DeviceScaleX,
-        target.DeviceScaleY,
-        target.TimestampMicroseconds);
+    private DorotiViewEpoch ToViewEpoch(DorotiResizeEpoch target, long metricsGeneration) =>
+        new(
+            _viewId,
+            target.Generation,
+            metricsGeneration,
+            target.LogicalWidth,
+            target.LogicalHeight,
+            target.PhysicalWidth,
+            target.PhysicalHeight,
+            target.DeviceScaleX,
+            target.DeviceScaleY,
+            target.TimestampMicroseconds
+        );
 
-    private static DorotiResizeEpoch ToResizeEpoch(DorotiViewEpoch epoch) => new(
-        epoch.ResizeTargetGeneration,
-        epoch.LogicalWidth,
-        epoch.LogicalHeight,
-        epoch.PhysicalWidth,
-        epoch.PhysicalHeight,
-        epoch.DeviceScaleX,
-        epoch.DeviceScaleY,
-        epoch.TimestampMicroseconds);
+    private static DorotiResizeEpoch ToResizeEpoch(DorotiViewEpoch epoch) =>
+        new(
+            epoch.ResizeTargetGeneration,
+            epoch.LogicalWidth,
+            epoch.LogicalHeight,
+            epoch.PhysicalWidth,
+            epoch.PhysicalHeight,
+            epoch.DeviceScaleX,
+            epoch.DeviceScaleY,
+            epoch.TimestampMicroseconds
+        );
 
     private void HandlePointer(MauiSurfacePointerData args)
     {
@@ -819,26 +1032,72 @@ internal sealed class MauiHostAdapter :
         lock (_gate)
         {
             if (change is PointerChange.down or PointerChange.panZoomStart)
+            {
                 _androidActiveTouchPointers.Add(pointer);
-            else if (change is PointerChange.up or PointerChange.cancel or PointerChange.remove or PointerChange.panZoomEnd)
+            }
+            else if (
+                change
+                is PointerChange.up
+                    or PointerChange.cancel
+                    or PointerChange.remove
+                    or PointerChange.panZoomEnd
+            )
+            {
                 _androidActiveTouchPointers.Remove(pointer);
+            }
+
             keepAndroidVsyncArmed = _androidActiveTouchPointers.Count > 0;
         }
-        if (keepAndroidVsyncArmed) RequestAndroidVsync();
+        if (keepAndroidVsyncArmed)
+        {
+            RequestAndroidVsync();
+        }
 #endif
         var hasPrevious = _pointerPositions.TryGetValue(pointer, out var previous);
         var x = args.X;
         var y = args.Y;
-        PointerData?.Invoke(new((PointerData[])[new(_viewId, timestamp, change,
-            args.Kind, args.Device ?? pointer, x, y,
-            hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, args.Buttons,
-            scrollDeltaX: args.ScrollDeltaX, scrollDeltaY: args.ScrollDeltaY,
-            signalKind: args.SignalKind,
-            pointerIdentifier: pointer, pressure: args.Pressure, pressureMin: 0, pressureMax: 1,
-            panX: args.PanX, panY: args.PanY, panDeltaX: args.PanDeltaX, panDeltaY: args.PanDeltaY,
-            scale: args.Scale, rotation: args.Rotation, orientation: args.Orientation, tilt: args.Tilt) ]));
-        if (change is PointerChange.remove or PointerChange.cancel or PointerChange.panZoomEnd) _pointerPositions.Remove(pointer);
-        else _pointerPositions[pointer] = (x, y);
+        PointerData?.Invoke(
+            new(
+                (PointerData[])
+                    [
+                        new(
+                            _viewId,
+                            timestamp,
+                            change,
+                            args.Kind,
+                            args.Device ?? pointer,
+                            x,
+                            y,
+                            hasPrevious ? x - previous.X : 0,
+                            hasPrevious ? y - previous.Y : 0,
+                            args.Buttons,
+                            scrollDeltaX: args.ScrollDeltaX,
+                            scrollDeltaY: args.ScrollDeltaY,
+                            signalKind: args.SignalKind,
+                            pointerIdentifier: pointer,
+                            pressure: args.Pressure,
+                            pressureMin: 0,
+                            pressureMax: 1,
+                            panX: args.PanX,
+                            panY: args.PanY,
+                            panDeltaX: args.PanDeltaX,
+                            panDeltaY: args.PanDeltaY,
+                            scale: args.Scale,
+                            rotation: args.Rotation,
+                            orientation: args.Orientation,
+                            tilt: args.Tilt
+                        ),
+                    ]
+            )
+        );
+        if (change is PointerChange.remove or PointerChange.cancel or PointerChange.panZoomEnd)
+        {
+            _pointerPositions.Remove(pointer);
+        }
+        else
+        {
+            _pointerPositions[pointer] = (x, y);
+        }
     }
 
     private void HandleKey(KeyData data) => KeyData?.Invoke(data);
@@ -849,12 +1108,19 @@ internal sealed class MauiHostAdapter :
         // Moving UIKit/MAUI focus from the Skia surface to that endpoint must not
         // be reported as the whole Flutter view losing focus: View.didChangeViewFocus
         // would move focus to the root scope and immediately close the text client.
-        if (!focused && _textInput.HasClient) return;
+        if (!focused && _textInput.HasClient)
+        {
+            return;
+        }
+
         FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));
     }
 
-    private void HandleEditingStateChanged(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
-    private void HandleActionPerformed(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
+    private void HandleEditingStateChanged(DorotiTextEditingState state) =>
+        EditingStateChanged?.Invoke(state);
+
+    private void HandleActionPerformed(DorotiTextInputAction action) =>
+        ActionPerformed?.Invoke(action);
 
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args) =>
         ConfigurationChanged?.Invoke(Configuration);
@@ -862,6 +1128,8 @@ internal sealed class MauiHostAdapter :
     private static Locale ToLocale(CultureInfo culture)
     {
         var pieces = culture.Name.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        return pieces.Length > 1 ? new(pieces[0], pieces[^1]) : new(culture.TwoLetterISOLanguageName);
+        return pieces.Length > 1
+            ? new(pieces[0], pieces[^1])
+            : new(culture.TwoLetterISOLanguageName);
     }
 }

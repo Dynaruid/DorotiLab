@@ -9,14 +9,20 @@ namespace Doroti.Host.Maui;
 /// <summary>Keeps the native child's normal display list available to the backdrop.
 /// Sampling must not call WebView.Draw again with the moving blur viewport.</summary>
 [SupportedOSPlatform("android31.0")]
-internal sealed class AndroidPlatformBackdropSourceView(Context context) : FrameLayout(context), IAndroidPlatformBackdropSource
+internal sealed class AndroidPlatformBackdropSourceView(Context context)
+    : FrameLayout(context),
+        IAndroidPlatformBackdropSource
 {
     private readonly RenderNode _content = new("Doroti native backdrop source");
     private bool _sampled;
 
     internal void SetBackdropSampling(bool sampled)
     {
-        if (_sampled == sampled) return;
+        if (_sampled == sampled)
+        {
+            return;
+        }
+
         _sampled = sampled;
         // A shared display list alone can still invoke the WebView GPU functor
         // twice with different viewport constraints. Reuse one composited image
@@ -34,19 +40,32 @@ internal sealed class AndroidPlatformBackdropSourceView(Context context) : Frame
         }
         _content.SetPosition(0, 0, Width, Height);
         var recording = _content.BeginRecording(Width, Height);
-        try { base.DispatchDraw(recording); }
-        finally { _content.EndRecording(); }
+        try
+        {
+            base.DispatchDraw(recording);
+        }
+        finally
+        {
+            _content.EndRecording();
+        }
         canvas.DrawRenderNode(_content);
     }
 
     public void DrawBackdropSource(Canvas canvas)
     {
-        if (_content.HasDisplayList) canvas.DrawRenderNode(_content);
+        if (_content.HasDisplayList)
+        {
+            canvas.DrawRenderNode(_content);
+        }
     }
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) { _content.DiscardDisplayList(); _content.Dispose(); }
+        if (disposing)
+        {
+            _content.DiscardDisplayList();
+            _content.Dispose();
+        }
         base.Dispose(disposing);
     }
 }

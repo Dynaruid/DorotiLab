@@ -40,8 +40,8 @@ public interface SemanticsBinding
 public class SemanticsHandle
 {
     internal virtual Action _onDispose { get; private set; } = default!;
-    public SemanticsHandle() { }
 
+    public SemanticsHandle() { }
 
     public SemanticsHandle(Action _onDispose)
     {
@@ -50,9 +50,9 @@ public class SemanticsHandle
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() =>
+            Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
+        );
         _onDispose();
     }
-
 }
-
