@@ -108,7 +108,7 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
             Magnifier.kDefaultMagnifierSize.width / 2L,
             Magnifier.kDefaultMagnifierSize.height + Magnifier.kStandardVerticalFocalPointShift
         );
-        double magnifierX = Dart_uiLibrary.clampDouble(
+        double magnifierX = DorotiUiLibrary.clampDouble(
             selectionInfo.globalGesturePosition.dx,
             selectionInfo.currentLineBoundaries.left,
             selectionInfo.currentLineBoundaries.right
@@ -130,7 +130,7 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
         }
         else
         {
-            newGlobalFocalPointX = Dart_uiLibrary.clampDouble(
+            newGlobalFocalPointX = DorotiUiLibrary.clampDouble(
                 screenBoundsAdjustedMagnifierRect.center.dx,
                 selectionInfo.fieldBounds.left + horizontalMaxFocalPointEdgeInsets,
                 selectionInfo.fieldBounds.right - horizontalMaxFocalPointEdgeInsets

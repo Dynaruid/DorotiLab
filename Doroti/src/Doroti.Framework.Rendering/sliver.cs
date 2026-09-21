@@ -983,8 +983,8 @@ public abstract class RenderSliver : RenderObject
         DartRuntimePrimitives.Assert(() => from <= to);
         double a = constraints.scrollOffset;
         double b = constraints.scrollOffset + constraints.remainingPaintExtent;
-        return Dart_uiLibrary.clampDouble(
-            Dart_uiLibrary.clampDouble(to, a, b) - Dart_uiLibrary.clampDouble(from, a, b),
+        return DorotiUiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(to, a, b) - DorotiUiLibrary.clampDouble(from, a, b),
             0.0,
             constraints.remainingPaintExtent
         );
@@ -1000,8 +1000,8 @@ public abstract class RenderSliver : RenderObject
         DartRuntimePrimitives.Assert(() => from <= to);
         double a = constraints.scrollOffset + constraints.cacheOrigin;
         double b = constraints.scrollOffset + constraints.remainingCacheExtent;
-        return Dart_uiLibrary.clampDouble(
-            Dart_uiLibrary.clampDouble(to, a, b) - Dart_uiLibrary.clampDouble(from, a, b),
+        return DorotiUiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(to, a, b) - DorotiUiLibrary.clampDouble(from, a, b),
             0.0,
             constraints.remainingCacheExtent
         );
@@ -1093,7 +1093,7 @@ public abstract class RenderSliver : RenderObject
                 constraints.scrollOffset + sliverGeometry.cacheExtent + constraints.cacheOrigin;
         }
         double paintExtentLocal = sliverGeometry.paintExtent;
-        double leadingOffset = Dart_uiLibrary.clampDouble(
+        double leadingOffset = DorotiUiLibrary.clampDouble(
             constraints.scrollOffset,
             0.0,
             sliverGeometry.scrollExtent - sliverGeometry.maxScrollObstructionExtent

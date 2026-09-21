@@ -1378,7 +1378,7 @@ public class RenderEditable
                     __cascade.isFocusable = true;
                     __cascade.isTextField = true;
                     __cascade.isReadOnly = readOnly;
-                    __cascade.inputType = Dart_uiLibrary.SemanticsInputType.text;
+                    __cascade.inputType = DorotiUiLibrary.SemanticsInputType.text;
                     return __cascade;
                 }
             )
@@ -1945,12 +1945,12 @@ public class RenderEditable
         {
             Offset startAlternate =
                 new Offset(
-                    Dart_uiLibrary.clampDouble(boxes.First().start, 0, _textPainter.size.width),
+                    DorotiUiLibrary.clampDouble(boxes.First().start, 0, _textPainter.size.width),
                     boxes.First().bottom
                 ) + paintOffset;
             Offset endLocal =
                 new Offset(
-                    Dart_uiLibrary.clampDouble(boxes.Last().end, 0, _textPainter.size.width),
+                    DorotiUiLibrary.clampDouble(boxes.Last().end, 0, _textPainter.size.width),
                     boxes.Last().bottom
                 ) + paintOffset;
             return new List<TextSelectionPoint>
@@ -1998,7 +1998,7 @@ public class RenderEditable
         Offset caretOffset = _textPainter.getOffsetForCaret(caretPosition, caretPrototype);
         Rect caretRect = caretPrototype.shift(caretOffset + cursorOffset);
         double scrollableWidth = Math.Max(_textPainter.width + _caretMargin, size.width);
-        double caretX = Dart_uiLibrary.clampDouble(
+        double caretX = DorotiUiLibrary.clampDouble(
             caretRect.left,
             0,
             Math.Max(scrollableWidth - _caretMargin, 0)
@@ -2188,7 +2188,7 @@ public class RenderEditable
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         var (minWidthNested, maxWidthNested) = _adjustConstraints(maxWidth: width);
-        return Dart_uiLibrary.clampDouble(
+        return DorotiUiLibrary.clampDouble(
             (
                 (Func<TextPainter>)(
                     () =>
@@ -2685,7 +2685,7 @@ public class RenderEditable
         {
             null => Math.Max(_textPainter.height, preferredLineHeight * (minLines ?? 0L)),
             1L => _textPainter.height,
-            long maxLinesLocal => Dart_uiLibrary.clampDouble(
+            long maxLinesLocal => DorotiUiLibrary.clampDouble(
                 _textPainter.height,
                 preferredLineHeight * (minLines ?? (maxLinesLocal)),
                 preferredLineHeight * (maxLinesLocal)
@@ -2703,12 +2703,12 @@ public class RenderEditable
 
     internal static Offset _calculateAdjustedCursorOffset(Offset offset, Rect boundingRects)
     {
-        double adjustedX = Dart_uiLibrary.clampDouble(
+        double adjustedX = DorotiUiLibrary.clampDouble(
             offset.dx,
             boundingRects.left,
             boundingRects.right
         );
-        double adjustedY = Dart_uiLibrary.clampDouble(
+        double adjustedY = DorotiUiLibrary.clampDouble(
             offset.dy,
             boundingRects.top,
             boundingRects.bottom
@@ -2945,8 +2945,8 @@ public class RenderEditable
     {
         Offset startPoint = endpoints[(int)0L].point;
         startPoint = new Offset(
-            Dart_uiLibrary.clampDouble(startPoint.dx, 0.0, size.width),
-            Dart_uiLibrary.clampDouble(startPoint.dy, 0.0, size.height)
+            DorotiUiLibrary.clampDouble(startPoint.dx, 0.0, size.width),
+            DorotiUiLibrary.clampDouble(startPoint.dy, 0.0, size.height)
         );
         _leaderLayerHandler.layer = new LeaderLayer(
             link: startHandleLayerLink,
@@ -2957,8 +2957,8 @@ public class RenderEditable
         {
             Offset endPoint = endpoints[(int)1L].point;
             endPoint = new Offset(
-                Dart_uiLibrary.clampDouble(endPoint.dx, 0.0, size.width),
-                Dart_uiLibrary.clampDouble(endPoint.dy, 0.0, size.height)
+                DorotiUiLibrary.clampDouble(endPoint.dx, 0.0, size.width),
+                DorotiUiLibrary.clampDouble(endPoint.dy, 0.0, size.height)
             );
             context.pushLayer(
                 new LeaderLayer(link: endHandleLayerLink, offset: endPoint + offset),
@@ -3538,9 +3538,9 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
     internal virtual Color? _highlightColor { get; set; } = default;
     internal virtual TextRange? _highlightedRange { get; set; } = default;
     internal virtual BoxHeightStyle _selectionHeightStyle { get; set; } =
-        Dart_uiLibrary.BoxHeightStyle.tight;
+        DorotiUiLibrary.BoxHeightStyle.tight;
     internal virtual BoxWidthStyle _selectionWidthStyle { get; set; } =
-        Dart_uiLibrary.BoxWidthStyle.tight;
+        DorotiUiLibrary.BoxWidthStyle.tight;
 
     internal _TextHighlightPainter__editable(
         TextRange? highlightedRange = null,

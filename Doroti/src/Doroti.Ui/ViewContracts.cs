@@ -496,7 +496,7 @@ public static class PlatformEnvironmentContext
         ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
             null,
-            DartUiInvocation.Managed("dart:ui#PlatformConfiguration.operatingSystem"),
+            DorotiUiInvocation.Managed("Doroti.Ui#PlatformConfiguration.operatingSystem"),
             "no active Flutter view callback supplied platform.environment"
         );
 
@@ -579,7 +579,7 @@ public sealed record FrameTiming(
 
 public delegate void TimingsCallback(IReadOnlyList<FrameTiming> timings);
 
-/// <summary>dart:ui hit-test request delivered to [PlatformDispatcher.onHitTest].</summary>
+/// <summary>Doroti UI hit-test request delivered to [PlatformDispatcher.onHitTest].</summary>
 public sealed class HitTestRequest
 {
     public HitTestRequest(DorotiView view, Offset offset)
@@ -593,7 +593,7 @@ public sealed class HitTestRequest
     public Offset offset { get; }
 }
 
-/// <summary>dart:ui hit-test response from the framework callback.</summary>
+/// <summary>Doroti UI hit-test response from the framework callback.</summary>
 public sealed class HitTestResponse
 {
     public static readonly HitTestResponse empty = new(hasPlatformView: false);

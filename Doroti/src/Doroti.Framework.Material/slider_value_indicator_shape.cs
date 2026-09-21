@@ -790,7 +790,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             rightBottomNeckCenterY - Math.Max(leftTopNeckCenter.dy, neckRightCenter.dy)
         );
         var t = (double)Dart_mathLibrary.pow(inverseTextScale, 3.0);
-        double stretch = Dart_uiLibrary.clampDouble(
+        double stretch = DorotiUiLibrary.clampDouble(
             neckStretchBaseline * t,
             0.0,
             10.0 * neckStretchBaseline

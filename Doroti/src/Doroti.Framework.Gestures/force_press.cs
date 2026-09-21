@@ -321,7 +321,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
         double value = (t - min) / (max - min);
         if (!double.IsNaN(value))
         {
-            value = Dart_uiLibrary.clampDouble(value, 0.0, 1.0);
+            value = DorotiUiLibrary.clampDouble(value, 0.0, 1.0);
         }
         return value;
         throw new InvalidOperationException("Control flow completed without returning a value.");

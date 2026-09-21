@@ -322,71 +322,71 @@ public class SliderThemeData : Diagnosticable
             return a;
         }
         return new SliderThemeData(
-            trackHeight: Dart_uiLibrary.lerpDouble(a.trackHeight, b.trackHeight, t),
-            activeTrackColor: Dart_uiLibrary.Color.lerp(a.activeTrackColor, b.activeTrackColor, t),
-            inactiveTrackColor: Dart_uiLibrary.Color.lerp(
+            trackHeight: DorotiUiLibrary.lerpDouble(a.trackHeight, b.trackHeight, t),
+            activeTrackColor: DorotiUiLibrary.Color.lerp(a.activeTrackColor, b.activeTrackColor, t),
+            inactiveTrackColor: DorotiUiLibrary.Color.lerp(
                 a.inactiveTrackColor,
                 b.inactiveTrackColor,
                 t
             ),
-            secondaryActiveTrackColor: Dart_uiLibrary.Color.lerp(
+            secondaryActiveTrackColor: DorotiUiLibrary.Color.lerp(
                 a.secondaryActiveTrackColor,
                 b.secondaryActiveTrackColor,
                 t
             ),
-            disabledActiveTrackColor: Dart_uiLibrary.Color.lerp(
+            disabledActiveTrackColor: DorotiUiLibrary.Color.lerp(
                 a.disabledActiveTrackColor,
                 b.disabledActiveTrackColor,
                 t
             ),
-            disabledInactiveTrackColor: Dart_uiLibrary.Color.lerp(
+            disabledInactiveTrackColor: DorotiUiLibrary.Color.lerp(
                 a.disabledInactiveTrackColor,
                 b.disabledInactiveTrackColor,
                 t
             ),
-            disabledSecondaryActiveTrackColor: Dart_uiLibrary.Color.lerp(
+            disabledSecondaryActiveTrackColor: DorotiUiLibrary.Color.lerp(
                 a.disabledSecondaryActiveTrackColor,
                 b.disabledSecondaryActiveTrackColor,
                 t
             ),
-            activeTickMarkColor: Dart_uiLibrary.Color.lerp(
+            activeTickMarkColor: DorotiUiLibrary.Color.lerp(
                 a.activeTickMarkColor,
                 b.activeTickMarkColor,
                 t
             ),
-            inactiveTickMarkColor: Dart_uiLibrary.Color.lerp(
+            inactiveTickMarkColor: DorotiUiLibrary.Color.lerp(
                 a.inactiveTickMarkColor,
                 b.inactiveTickMarkColor,
                 t
             ),
-            disabledActiveTickMarkColor: Dart_uiLibrary.Color.lerp(
+            disabledActiveTickMarkColor: DorotiUiLibrary.Color.lerp(
                 a.disabledActiveTickMarkColor,
                 b.disabledActiveTickMarkColor,
                 t
             ),
-            disabledInactiveTickMarkColor: Dart_uiLibrary.Color.lerp(
+            disabledInactiveTickMarkColor: DorotiUiLibrary.Color.lerp(
                 a.disabledInactiveTickMarkColor,
                 b.disabledInactiveTickMarkColor,
                 t
             ),
-            thumbColor: Dart_uiLibrary.Color.lerp(a.thumbColor, b.thumbColor, t),
-            overlappingShapeStrokeColor: Dart_uiLibrary.Color.lerp(
+            thumbColor: DorotiUiLibrary.Color.lerp(a.thumbColor, b.thumbColor, t),
+            overlappingShapeStrokeColor: DorotiUiLibrary.Color.lerp(
                 a.overlappingShapeStrokeColor,
                 b.overlappingShapeStrokeColor,
                 t
             ),
-            disabledThumbColor: Dart_uiLibrary.Color.lerp(
+            disabledThumbColor: DorotiUiLibrary.Color.lerp(
                 a.disabledThumbColor,
                 b.disabledThumbColor,
                 t
             ),
-            overlayColor: Dart_uiLibrary.Color.lerp(a.overlayColor, b.overlayColor, t),
-            valueIndicatorColor: Dart_uiLibrary.Color.lerp(
+            overlayColor: DorotiUiLibrary.Color.lerp(a.overlayColor, b.overlayColor, t),
+            valueIndicatorColor: DorotiUiLibrary.Color.lerp(
                 a.valueIndicatorColor,
                 b.valueIndicatorColor,
                 t
             ),
-            valueIndicatorStrokeColor: Dart_uiLibrary.Color.lerp(
+            valueIndicatorStrokeColor: DorotiUiLibrary.Color.lerp(
                 a.valueIndicatorStrokeColor,
                 b.valueIndicatorStrokeColor,
                 t
@@ -408,7 +408,7 @@ public class SliderThemeData : Diagnosticable
                 b.valueIndicatorTextStyle,
                 t
             ),
-            minThumbSeparation: Dart_uiLibrary.lerpDouble(
+            minThumbSeparation: DorotiUiLibrary.lerpDouble(
                 a.minThumbSeparation,
                 b.minThumbSeparation,
                 t
@@ -418,7 +418,7 @@ public class SliderThemeData : Diagnosticable
             allowedInteraction: (t < 0.5) ? a.allowedInteraction : b.allowedInteraction,
             padding: EdgeInsetsGeometry.lerp(a.padding, b.padding, t),
             thumbSize: WidgetStateProperty.lerp(a.thumbSize, b.thumbSize, t, Size.lerp),
-            trackGap: Dart_uiLibrary.lerpDouble(a.trackGap, b.trackGap, t),
+            trackGap: DorotiUiLibrary.lerpDouble(a.trackGap, b.trackGap, t),
             year2023: (t < 0.5) ? a.year2023 : b.year2023
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

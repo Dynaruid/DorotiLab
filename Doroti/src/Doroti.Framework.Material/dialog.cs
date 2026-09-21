@@ -1451,9 +1451,9 @@ public static partial class DialogLibrary
 {
     internal static double _scalePadding(double textScaleFactor)
     {
-        double clampedTextScaleFactor = Dart_uiLibrary.clampDouble(textScaleFactor, 1.0, 2.0);
+        double clampedTextScaleFactor = DorotiUiLibrary.clampDouble(textScaleFactor, 1.0, 2.0);
         return (
-            Dart_uiLibrary.lerpDouble(1.0, 1.0 / 3.0, clampedTextScaleFactor - 1.0)
+            DorotiUiLibrary.lerpDouble(1.0, 1.0 / 3.0, clampedTextScaleFactor - 1.0)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

@@ -48,9 +48,9 @@ public class TextSelectionThemeData : Diagnosticable
             return a;
         }
         return new TextSelectionThemeData(
-            cursorColor: Dart_uiLibrary.Color.lerp(a?.cursorColor, b?.cursorColor, t),
-            selectionColor: Dart_uiLibrary.Color.lerp(a?.selectionColor, b?.selectionColor, t),
-            selectionHandleColor: Dart_uiLibrary.Color.lerp(
+            cursorColor: DorotiUiLibrary.Color.lerp(a?.cursorColor, b?.cursorColor, t),
+            selectionColor: DorotiUiLibrary.Color.lerp(a?.selectionColor, b?.selectionColor, t),
+            selectionHandleColor: DorotiUiLibrary.Color.lerp(
                 a?.selectionHandleColor,
                 b?.selectionHandleColor,
                 t

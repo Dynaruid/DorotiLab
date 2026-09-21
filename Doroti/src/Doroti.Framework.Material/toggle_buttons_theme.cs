@@ -110,27 +110,27 @@ public class ToggleButtonsThemeData : Diagnosticable
         return new ToggleButtonsThemeData(
             textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            selectedColor: Dart_uiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
-            disabledColor: Dart_uiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t),
-            fillColor: Dart_uiLibrary.Color.lerp(a?.fillColor, b?.fillColor, t),
-            focusColor: Dart_uiLibrary.Color.lerp(a?.focusColor, b?.focusColor, t),
-            highlightColor: Dart_uiLibrary.Color.lerp(a?.highlightColor, b?.highlightColor, t),
-            hoverColor: Dart_uiLibrary.Color.lerp(a?.hoverColor, b?.hoverColor, t),
-            splashColor: Dart_uiLibrary.Color.lerp(a?.splashColor, b?.splashColor, t),
-            borderColor: Dart_uiLibrary.Color.lerp(a?.borderColor, b?.borderColor, t),
-            selectedBorderColor: Dart_uiLibrary.Color.lerp(
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            selectedColor: DorotiUiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
+            disabledColor: DorotiUiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t),
+            fillColor: DorotiUiLibrary.Color.lerp(a?.fillColor, b?.fillColor, t),
+            focusColor: DorotiUiLibrary.Color.lerp(a?.focusColor, b?.focusColor, t),
+            highlightColor: DorotiUiLibrary.Color.lerp(a?.highlightColor, b?.highlightColor, t),
+            hoverColor: DorotiUiLibrary.Color.lerp(a?.hoverColor, b?.hoverColor, t),
+            splashColor: DorotiUiLibrary.Color.lerp(a?.splashColor, b?.splashColor, t),
+            borderColor: DorotiUiLibrary.Color.lerp(a?.borderColor, b?.borderColor, t),
+            selectedBorderColor: DorotiUiLibrary.Color.lerp(
                 a?.selectedBorderColor,
                 b?.selectedBorderColor,
                 t
             ),
-            disabledBorderColor: Dart_uiLibrary.Color.lerp(
+            disabledBorderColor: DorotiUiLibrary.Color.lerp(
                 a?.disabledBorderColor,
                 b?.disabledBorderColor,
                 t
             ),
             borderRadius: BorderRadius.lerp(a?.borderRadius, b?.borderRadius, t),
-            borderWidth: Dart_uiLibrary.lerpDouble(a?.borderWidth, b?.borderWidth, t)
+            borderWidth: DorotiUiLibrary.lerpDouble(a?.borderWidth, b?.borderWidth, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

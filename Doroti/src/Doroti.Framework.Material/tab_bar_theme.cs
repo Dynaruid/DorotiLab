@@ -223,14 +223,14 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
         }
         return new TabBarTheme(
             indicator: Decoration.lerp(a.indicator, b.indicator, t),
-            indicatorColor: Dart_uiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t),
+            indicatorColor: DorotiUiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t),
             indicatorSize: (t < 0.5) ? a.indicatorSize : b.indicatorSize,
-            dividerColor: Dart_uiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t),
+            dividerColor: DorotiUiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t),
             dividerHeight: (t < 0.5) ? a.dividerHeight : b.dividerHeight,
-            labelColor: Dart_uiLibrary.Color.lerp(a.labelColor, b.labelColor, t),
+            labelColor: DorotiUiLibrary.Color.lerp(a.labelColor, b.labelColor, t),
             labelPadding: EdgeInsetsGeometry.lerp(a.labelPadding, b.labelPadding, t),
             labelStyle: TextStyle.lerp(a.labelStyle, b.labelStyle, t),
-            unselectedLabelColor: Dart_uiLibrary.Color.lerp(
+            unselectedLabelColor: DorotiUiLibrary.Color.lerp(
                 a.unselectedLabelColor,
                 b.unselectedLabelColor,
                 t
@@ -392,14 +392,14 @@ public class TabBarThemeData : Diagnosticable
         }
         return new TabBarThemeData(
             indicator: Decoration.lerp(a.indicator, b.indicator, t),
-            indicatorColor: Dart_uiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t),
+            indicatorColor: DorotiUiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t),
             indicatorSize: (t < 0.5) ? a.indicatorSize : b.indicatorSize,
-            dividerColor: Dart_uiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t),
+            dividerColor: DorotiUiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t),
             dividerHeight: (t < 0.5) ? a.dividerHeight : b.dividerHeight,
-            labelColor: Dart_uiLibrary.Color.lerp(a.labelColor, b.labelColor, t),
+            labelColor: DorotiUiLibrary.Color.lerp(a.labelColor, b.labelColor, t),
             labelPadding: EdgeInsetsGeometry.lerp(a.labelPadding, b.labelPadding, t),
             labelStyle: TextStyle.lerp(a.labelStyle, b.labelStyle, t),
-            unselectedLabelColor: Dart_uiLibrary.Color.lerp(
+            unselectedLabelColor: DorotiUiLibrary.Color.lerp(
                 a.unselectedLabelColor,
                 b.unselectedLabelColor,
                 t

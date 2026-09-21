@@ -174,7 +174,7 @@ internal class _TweenCurve__menu_anchor : Curve
     {
         t = curve.transform(t);
         return (
-            Dart_uiLibrary.lerpDouble(begin, end, t)
+            DorotiUiLibrary.lerpDouble(begin, end, t)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -3476,7 +3476,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         }
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
         return (
-            Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
+            DorotiUiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

@@ -897,7 +897,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
             return null;
         }
         double maxVelocity = maxFlingVelocity ?? ConstantsLibrary.kMaxFlingVelocity;
-        double dyLocal = Dart_uiLibrary.clampDouble(
+        double dyLocal = DorotiUiLibrary.clampDouble(
             estimate.pixelsPerSecond.dy,
             -maxVelocity,
             maxVelocity
@@ -961,7 +961,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
             return null;
         }
         double maxVelocity = maxFlingVelocity ?? ConstantsLibrary.kMaxFlingVelocity;
-        double dxLocal = Dart_uiLibrary.clampDouble(
+        double dxLocal = DorotiUiLibrary.clampDouble(
             estimate.pixelsPerSecond.dx,
             -maxVelocity,
             maxVelocity

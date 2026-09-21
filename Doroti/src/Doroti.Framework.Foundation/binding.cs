@@ -362,7 +362,7 @@ public static class BindingLibrary
             new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformServices,
                 null,
-                DartUiInvocation.Managed("dart:io#exit"),
+                DorotiUiInvocation.Managed("dart:io#exit"),
                 $"foundation requested process exit code {exitCode}; only the active host may terminate the application"
             )
         );

@@ -60,8 +60,8 @@ public abstract class ServicesBinding : SchedulerBinding
     }
 
     public virtual BinaryMessenger defaultBinaryMessenger => _defaultBinaryMessenger;
-    public static RootIsolateToken? rootIsolateToken => Dart_uiLibrary.RootIsolateToken.instance;
-    public virtual ChannelBuffers channelBuffers => Dart_uiLibrary.channelBuffers;
+    public static RootIsolateToken? rootIsolateToken => DorotiUiLibrary.RootIsolateToken.instance;
+    public virtual ChannelBuffers channelBuffers => DorotiUiLibrary.channelBuffers;
 
     public virtual BinaryMessenger createBinaryMessenger()
     {
@@ -420,7 +420,7 @@ public abstract class ServicesBinding : SchedulerBinding
 
     public virtual async Future<AppExitResponse> handleRequestAppExit()
     {
-        return Dart_uiLibrary.AppExitResponse.exit;
+        return DorotiUiLibrary.AppExitResponse.exit;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -437,18 +437,18 @@ public abstract class ServicesBinding : SchedulerBinding
         );
         if (result is null)
         {
-            return Dart_uiLibrary.AppExitResponse.cancel;
+            return DorotiUiLibrary.AppExitResponse.cancel;
         }
         switch (result.GetValueOrDefault("response"))
         {
             case var __case21059 when Equals(__case21059, "cancel"):
             {
-                return Dart_uiLibrary.AppExitResponse.cancel;
+                return DorotiUiLibrary.AppExitResponse.cancel;
             }
             case var __case21122 when Equals(__case21122, "exit"):
             default:
             {
-                return Dart_uiLibrary.AppExitResponse.exit;
+                return DorotiUiLibrary.AppExitResponse.exit;
             }
         }
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -495,7 +495,7 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
     )
     {
         DartRuntimePrimitives.Observe(
-            Dart_uiLibrary.channelBuffers.push(channel, data, (data) => callback?.Invoke(data)),
+            DorotiUiLibrary.channelBuffers.push(channel, data, (data) => callback?.Invoke(data)),
             "BinaryMessenger.handlePlatformMessage"
         );
     }
@@ -503,7 +503,7 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
     public virtual Future<ByteData?> send(string channel, ByteData? message)
     {
         var completer = new Completer<ByteData?>();
-        Dart_uiLibrary.PlatformDispatcher.instance.sendPlatformMessage(
+        DorotiUiLibrary.PlatformDispatcher.instance.sendPlatformMessage(
             channel,
             message,
             (reply) =>
@@ -539,11 +539,11 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
     {
         if (handler is null)
         {
-            Dart_uiLibrary.channelBuffers.clearListener(channel);
+            DorotiUiLibrary.channelBuffers.clearListener(channel);
         }
         else
         {
-            Dart_uiLibrary.channelBuffers.setListener(
+            DorotiUiLibrary.channelBuffers.setListener(
                 channel,
                 async (data, callback) =>
                 {

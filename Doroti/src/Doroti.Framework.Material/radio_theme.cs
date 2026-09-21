@@ -98,7 +98,7 @@ public class RadioThemeData : Diagnosticable
             fillColor: WidgetStateProperty.lerp(a?.fillColor, b?.fillColor, t, Color.lerp),
             materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize,
             overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
-            splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
+            splashRadius: DorotiUiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
             visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,
             backgroundColor: WidgetStateProperty.lerp(
                 a?.backgroundColor,
@@ -111,7 +111,7 @@ public class RadioThemeData : Diagnosticable
                 a?.innerRadius,
                 b?.innerRadius,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             )
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

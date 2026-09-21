@@ -291,7 +291,7 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
         new(
             DorotiCapabilityIds.PlatformViews,
             _host.OwnerViewId,
-            DartUiInvocation.Managed("flutter/platform_views"),
+            DorotiUiInvocation.Managed("flutter/platform_views"),
             reason
         );
 }

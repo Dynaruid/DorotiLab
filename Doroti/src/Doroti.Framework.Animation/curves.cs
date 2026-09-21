@@ -94,7 +94,7 @@ public class Interval : Curve
         DartRuntimePrimitives.Assert(() => end >= 0.0);
         DartRuntimePrimitives.Assert(() => end <= 1.0);
         DartRuntimePrimitives.Assert(() => end >= begin);
-        t = Dart_uiLibrary.clampDouble((t - begin) / (end - begin), 0.0, 1.0);
+        t = DorotiUiLibrary.clampDouble((t - begin) / (end - begin), 0.0, 1.0);
         if ((t == 0.0) || (t == 1.0))
         {
             return t;
@@ -146,7 +146,7 @@ public class Split : Curve
             double curveProgress = t / split;
             double transformed = beginCurve.transform(curveProgress);
             return (
-                Dart_uiLibrary.lerpDouble(0L, split, transformed)
+                DorotiUiLibrary.lerpDouble(0L, split, transformed)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
@@ -155,7 +155,7 @@ public class Split : Curve
             double curveProgressLocal = (t - split) / (1L - split);
             double transformedLocal = endCurve.transform(curveProgressLocal);
             return (
-                Dart_uiLibrary.lerpDouble(split, 1L, transformedLocal)
+                DorotiUiLibrary.lerpDouble(split, 1L, transformedLocal)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
@@ -843,7 +843,7 @@ public class CatmullRomCurve : Curve
         }
         double t2 = (t - startValue.dx) / (endValue.dx - startValue.dx);
         return (
-            Dart_uiLibrary.lerpDouble(startValue.dy, endValue.dy, t2)
+            DorotiUiLibrary.lerpDouble(startValue.dy, endValue.dy, t2)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

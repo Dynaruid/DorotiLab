@@ -125,19 +125,19 @@ public class RelativeRect
         }
         return new RelativeRect(
             (
-                Dart_uiLibrary.lerpDouble(a.left, b.left, t)
+                DorotiUiLibrary.lerpDouble(a.left, b.left, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                DorotiUiLibrary.lerpDouble(a.top, b.top, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.right, b.right, t)
+                DorotiUiLibrary.lerpDouble(a.right, b.right, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                DorotiUiLibrary.lerpDouble(a.bottom, b.bottom, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

@@ -68,7 +68,7 @@ internal class _LinearTextScaler__text_scaler : TextScaler
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxScaleFactor));
         DartRuntimePrimitives.Assert(() => double.IsFinite(minScaleFactor));
         DartRuntimePrimitives.Assert(() => minScaleFactor >= 0L);
-        double newScaleFactor = Dart_uiLibrary.clampDouble(
+        double newScaleFactor = DorotiUiLibrary.clampDouble(
             textScaleFactor,
             minScaleFactor,
             maxScaleFactor
@@ -116,13 +116,13 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
     }
 
     public override double textScaleFactor =>
-        Dart_uiLibrary.clampDouble(scaler.textScaleFactor, minScale, maxScale);
+        DorotiUiLibrary.clampDouble(scaler.textScaleFactor, minScale, maxScale);
 
     public override double scale(double fontSize)
     {
         DartRuntimePrimitives.Assert(() => fontSize >= 0L);
         DartRuntimePrimitives.Assert(() => double.IsFinite(fontSize));
-        return Dart_uiLibrary.clampDouble(
+        return DorotiUiLibrary.clampDouble(
             scaler.scale(fontSize),
             minScale * fontSize,
             maxScale * fontSize
@@ -144,7 +144,7 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
         if (newMaxScale <= newMinScale)
         {
             return CreateLinear(
-                Dart_uiLibrary.clampDouble(minScale, minScaleFactor, maxScaleFactor)
+                DorotiUiLibrary.clampDouble(minScale, minScaleFactor, maxScaleFactor)
             );
         }
         return new _ClampedTextScaler__text_scaler(scaler, newMinScale, newMaxScale);

@@ -145,22 +145,22 @@ public class BoxConstraints : Constraints
     public virtual BoxConstraints enforce(BoxConstraints constraints)
     {
         return new BoxConstraints(
-            minWidth: Dart_uiLibrary.clampDouble(
+            minWidth: DorotiUiLibrary.clampDouble(
                 minWidth,
                 constraints.minWidth,
                 constraints.maxWidth
             ),
-            maxWidth: Dart_uiLibrary.clampDouble(
+            maxWidth: DorotiUiLibrary.clampDouble(
                 maxWidth,
                 constraints.minWidth,
                 constraints.maxWidth
             ),
-            minHeight: Dart_uiLibrary.clampDouble(
+            minHeight: DorotiUiLibrary.clampDouble(
                 minHeight,
                 constraints.minHeight,
                 constraints.maxHeight
             ),
-            maxHeight: Dart_uiLibrary.clampDouble(
+            maxHeight: DorotiUiLibrary.clampDouble(
                 maxHeight,
                 constraints.minHeight,
                 constraints.maxHeight
@@ -174,7 +174,7 @@ public class BoxConstraints : Constraints
         return new BoxConstraints(
             minWidth: (width is null)
                 ? minWidth
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     (
                         width
                         ?? throw new global::System.NullReferenceException(
@@ -186,7 +186,7 @@ public class BoxConstraints : Constraints
                 ),
             maxWidth: (width is null)
                 ? maxWidth
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     (
                         width
                         ?? throw new global::System.NullReferenceException(
@@ -198,7 +198,7 @@ public class BoxConstraints : Constraints
                 ),
             minHeight: (height is null)
                 ? minHeight
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     (
                         height
                         ?? throw new global::System.NullReferenceException(
@@ -210,7 +210,7 @@ public class BoxConstraints : Constraints
                 ),
             maxHeight: (height is null)
                 ? maxHeight
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     (
                         height
                         ?? throw new global::System.NullReferenceException(
@@ -246,14 +246,14 @@ public class BoxConstraints : Constraints
     public virtual double constrainWidth(double width = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        return Dart_uiLibrary.clampDouble((width), minWidth, maxWidth);
+        return DorotiUiLibrary.clampDouble((width), minWidth, maxWidth);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double constrainHeight(double height = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        return Dart_uiLibrary.clampDouble((height), minHeight, maxHeight);
+        return DorotiUiLibrary.clampDouble((height), minHeight, maxHeight);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -449,25 +449,25 @@ public class BoxConstraints : Constraints
         return new BoxConstraints(
             minWidth: double.IsFinite(a.minWidth)
                 ? (
-                    Dart_uiLibrary.lerpDouble(a.minWidth, b.minWidth, t)
+                    DorotiUiLibrary.lerpDouble(a.minWidth, b.minWidth, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : double.PositiveInfinity,
             maxWidth: double.IsFinite(a.maxWidth)
                 ? (
-                    Dart_uiLibrary.lerpDouble(a.maxWidth, b.maxWidth, t)
+                    DorotiUiLibrary.lerpDouble(a.maxWidth, b.maxWidth, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : double.PositiveInfinity,
             minHeight: double.IsFinite(a.minHeight)
                 ? (
-                    Dart_uiLibrary.lerpDouble(a.minHeight, b.minHeight, t)
+                    DorotiUiLibrary.lerpDouble(a.minHeight, b.minHeight, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : double.PositiveInfinity,
             maxHeight: double.IsFinite(a.maxHeight)
                 ? (
-                    Dart_uiLibrary.lerpDouble(a.maxHeight, b.maxHeight, t)
+                    DorotiUiLibrary.lerpDouble(a.maxHeight, b.maxHeight, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : double.PositiveInfinity

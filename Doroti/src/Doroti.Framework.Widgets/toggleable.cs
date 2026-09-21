@@ -335,9 +335,9 @@ public abstract class ToggleablePainter : ChangeNotifier
                     () =>
                     {
                         var __cascade = new Paint();
-                        __cascade.color = Dart_uiLibrary.Color.lerp(
-                            Dart_uiLibrary.Color.lerp(
-                                Dart_uiLibrary.Color.lerp(
+                        __cascade.color = DorotiUiLibrary.Color.lerp(
+                            DorotiUiLibrary.Color.lerp(
+                                DorotiUiLibrary.Color.lerp(
                                     inactiveReactionColor,
                                     reactionColor,
                                     position.value

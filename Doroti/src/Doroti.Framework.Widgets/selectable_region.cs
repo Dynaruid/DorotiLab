@@ -3152,14 +3152,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 }
                 double dxLocal =
                     effectiveGlobalPosition.dx
-                    - Dart_uiLibrary.clampDouble(
+                    - DorotiUiLibrary.clampDouble(
                         effectiveGlobalPosition.dx,
                         globalRect.left,
                         globalRect.right
                     );
                 double dyLocal =
                     effectiveGlobalPosition.dy
-                    - Dart_uiLibrary.clampDouble(
+                    - DorotiUiLibrary.clampDouble(
                         effectiveGlobalPosition.dy,
                         globalRect.top,
                         globalRect.bottom

@@ -263,7 +263,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         if (_viewController.isCreated)
         {
             config.platformViewId = _viewController.viewId;
-            config.hitTestBehavior = Dart_uiLibrary.SemanticsHitTestBehavior.transparent;
+            config.hitTestBehavior = DorotiUiLibrary.SemanticsHitTestBehavior.transparent;
         }
     }
 }
@@ -364,7 +364,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
         config.platformViewId = _viewController.id;
-        config.hitTestBehavior = Dart_uiLibrary.SemanticsHitTestBehavior.transparent;
+        config.hitTestBehavior = DorotiUiLibrary.SemanticsHitTestBehavior.transparent;
     }
 
     public override void attach(PipelineOwner owner)
@@ -705,7 +705,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
         config.platformViewId = _controller.viewId;
-        config.hitTestBehavior = Dart_uiLibrary.SemanticsHitTestBehavior.transparent;
+        config.hitTestBehavior = DorotiUiLibrary.SemanticsHitTestBehavior.transparent;
     }
 
     public virtual PlatformViewHitTestBehavior hitTestBehavior

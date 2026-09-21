@@ -138,12 +138,12 @@ public abstract class EdgeInsetsGeometry
     public virtual EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
     {
         return new _MixedEdgeInsets__edge_insets(
-            Dart_uiLibrary.clampDouble(_left, min._left, max._left),
-            Dart_uiLibrary.clampDouble(_right, min._right, max._right),
-            Dart_uiLibrary.clampDouble(_start, min._start, max._start),
-            Dart_uiLibrary.clampDouble(_end, min._end, max._end),
-            Dart_uiLibrary.clampDouble(_top, min._top, max._top),
-            Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
+            DorotiUiLibrary.clampDouble(_left, min._left, max._left),
+            DorotiUiLibrary.clampDouble(_right, min._right, max._right),
+            DorotiUiLibrary.clampDouble(_start, min._start, max._start),
+            DorotiUiLibrary.clampDouble(_end, min._end, max._end),
+            DorotiUiLibrary.clampDouble(_top, min._top, max._top),
+            DorotiUiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -182,27 +182,27 @@ public abstract class EdgeInsetsGeometry
         }
         return new _MixedEdgeInsets__edge_insets(
             (
-                Dart_uiLibrary.lerpDouble(a._left, b._left, t)
+                DorotiUiLibrary.lerpDouble(a._left, b._left, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._right, b._right, t)
+                DorotiUiLibrary.lerpDouble(a._right, b._right, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._start, b._start, t)
+                DorotiUiLibrary.lerpDouble(a._start, b._start, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._end, b._end, t)
+                DorotiUiLibrary.lerpDouble(a._end, b._end, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._top, b._top, t)
+                DorotiUiLibrary.lerpDouble(a._top, b._top, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._bottom, b._bottom, t)
+                DorotiUiLibrary.lerpDouble(a._bottom, b._bottom, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -431,10 +431,10 @@ public class EdgeInsets : EdgeInsetsGeometry
     public override EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
     {
         return new EdgeInsets(
-            Dart_uiLibrary.clampDouble(_left, min._left, max._left),
-            Dart_uiLibrary.clampDouble(_top, min._top, max._top),
-            Dart_uiLibrary.clampDouble(_right, min._right, max._right),
-            Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
+            DorotiUiLibrary.clampDouble(_left, min._left, max._left),
+            DorotiUiLibrary.clampDouble(_top, min._top, max._top),
+            DorotiUiLibrary.clampDouble(_right, min._right, max._right),
+            DorotiUiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -512,19 +512,19 @@ public class EdgeInsets : EdgeInsetsGeometry
         }
         return new EdgeInsets(
             (
-                Dart_uiLibrary.lerpDouble(a.left, b.left, t)
+                DorotiUiLibrary.lerpDouble(a.left, b.left, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                DorotiUiLibrary.lerpDouble(a.top, b.top, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.right, b.right, t)
+                DorotiUiLibrary.lerpDouble(a.right, b.right, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                DorotiUiLibrary.lerpDouble(a.bottom, b.bottom, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -714,19 +714,19 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         }
         return new EdgeInsetsDirectional(
             (
-                Dart_uiLibrary.lerpDouble(a.start, b.start, t)
+                DorotiUiLibrary.lerpDouble(a.start, b.start, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                DorotiUiLibrary.lerpDouble(a.top, b.top, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.end, b.end, t)
+                DorotiUiLibrary.lerpDouble(a.end, b.end, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                DorotiUiLibrary.lerpDouble(a.bottom, b.bottom, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

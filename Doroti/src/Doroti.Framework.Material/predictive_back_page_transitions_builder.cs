@@ -349,11 +349,11 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
         double rawYShift = currentTouchY - startTouchY;
         double easedYShift =
             Curves.easeOut.transform(
-                Dart_uiLibrary.clampDouble(rawYShift.abs() / screenHeight, 0.0, 1.0)
+                DorotiUiLibrary.clampDouble(rawYShift.abs() / screenHeight, 0.0, 1.0)
             )
             * Math.Sign(rawYShift)
             * yShiftMax;
-        return Dart_uiLibrary.clampDouble(easedYShift, -yShiftMax, yShiftMax);
+        return DorotiUiLibrary.clampDouble(easedYShift, -yShiftMax, yShiftMax);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

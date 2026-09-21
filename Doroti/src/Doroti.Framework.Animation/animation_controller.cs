@@ -169,7 +169,7 @@ public class AnimationController
 
     internal virtual void _internalSetValue(double newValue)
     {
-        _value = Dart_uiLibrary.clampDouble(newValue, lowerBound, upperBound);
+        _value = DorotiUiLibrary.clampDouble(newValue, lowerBound, upperBound);
         if (_value == lowerBound)
         {
             _status = AnimationStatus.dismissed;
@@ -415,7 +415,7 @@ public class AnimationController
         {
             if (value != target)
             {
-                _value = Dart_uiLibrary.clampDouble(target, lowerBound, upperBound);
+                _value = DorotiUiLibrary.clampDouble(target, lowerBound, upperBound);
                 notifyListeners();
             }
             _status = Equals(_direction, _AnimationDirection__animation_controller.forward)
@@ -582,7 +582,7 @@ public class AnimationController
         DartRuntimePrimitives.Assert(() => !isAnimating);
         _simulation = simulation;
         _lastElapsedDuration = Duration.zero;
-        _value = Dart_uiLibrary.clampDouble(simulation.x(0.0), lowerBound, upperBound);
+        _value = DorotiUiLibrary.clampDouble(simulation.x(0.0), lowerBound, upperBound);
         TickerFuture result = _ticker!.start();
         _status = Equals(_direction, _AnimationDirection__animation_controller.forward)
             ? AnimationStatus.forward
@@ -648,7 +648,7 @@ public class AnimationController
         double elapsedInSeconds =
             elapsed.inMicroseconds.toDouble() / Duration.microsecondsPerSecond;
         DartRuntimePrimitives.Assert(() => elapsedInSeconds >= 0.0);
-        _value = Dart_uiLibrary.clampDouble(
+        _value = DorotiUiLibrary.clampDouble(
             _simulation!.x(elapsedInSeconds),
             lowerBound,
             upperBound
@@ -837,7 +837,7 @@ internal class _InterpolationSimulation__animation_controller : Physics.Simulati
 
     public override double x(double time)
     {
-        double t = Dart_uiLibrary.clampDouble(time / _durationInSeconds, 0.0, 1.0);
+        double t = DorotiUiLibrary.clampDouble(time / _durationInSeconds, 0.0, 1.0);
         return t switch
         {
             0.0 => _begin,
@@ -917,7 +917,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
             (max == min)
                 ? 0.0
                 : (
-                    (Dart_uiLibrary.clampDouble(initialValue, min, max) - min)
+                    (DorotiUiLibrary.clampDouble(initialValue, min, max) - min)
                     / (max - min)
                     * (period.inMicroseconds / Duration.microsecondsPerSecond)
                 );
@@ -945,7 +945,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
         {
             directionSetter(_AnimationDirection__animation_controller.reverse);
             return (
-                Dart_uiLibrary.lerpDouble(max, min, t)
+                DorotiUiLibrary.lerpDouble(max, min, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
@@ -953,7 +953,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
         {
             directionSetter(_AnimationDirection__animation_controller.forward);
             return (
-                Dart_uiLibrary.lerpDouble(min, max, t)
+                DorotiUiLibrary.lerpDouble(min, max, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }

@@ -921,7 +921,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                             child: new ConstrainedBox(
                                 constraints: new BoxConstraints(
                                     minWidth: (
-                                        Dart_uiLibrary.lerpDouble(
+                                        DorotiUiLibrary.lerpDouble(
                                             widget.minWidth,
                                             widget.minExtendedWidth,
                                             widget.extendedTransitionAnimation.value
@@ -972,7 +972,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
             {
                 double appearingAnimationValue = 1L - _positionAnimation.value;
                 double verticalPadding = (
-                    Dart_uiLibrary.lerpDouble(
+                    DorotiUiLibrary.lerpDouble(
                         Navigation_railLibrary._verticalDestinationPaddingNoLabel,
                         Navigation_railLibrary._verticalDestinationPaddingWithLabel,
                         appearingAnimationValue
@@ -987,7 +987,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                 Widget topSpacing = new SizedBox(height: 0);
                 Widget labelSpacing = new SizedBox(
                     height: (
-                        Dart_uiLibrary.lerpDouble(
+                        DorotiUiLibrary.lerpDouble(
                             0L,
                             Navigation_railLibrary._verticalIconLabelSpacingM3,
                             appearingAnimationValue

@@ -59,7 +59,7 @@ public abstract class KeyEvent : Diagnosticable
         LogicalKeyboardKey logicalKey,
         string? character = null,
         Duration timeStamp = default!,
-        KeyEventDeviceType deviceType = Dart_uiLibrary.KeyEventDeviceType.keyboard,
+        KeyEventDeviceType deviceType = DorotiUiLibrary.KeyEventDeviceType.keyboard,
         bool synthesized = false
     )
     {
@@ -90,7 +90,7 @@ public class KeyDownEvent : KeyEvent
         string? character = null,
         Duration timeStamp = default!,
         bool synthesized = false,
-        KeyEventDeviceType deviceType = Dart_uiLibrary.KeyEventDeviceType.keyboard
+        KeyEventDeviceType deviceType = DorotiUiLibrary.KeyEventDeviceType.keyboard
     )
         : base(
             physicalKey: physicalKey,
@@ -109,7 +109,7 @@ public class KeyUpEvent : KeyEvent
         LogicalKeyboardKey logicalKey,
         Duration timeStamp,
         bool synthesized = false,
-        KeyEventDeviceType deviceType = Dart_uiLibrary.KeyEventDeviceType.keyboard
+        KeyEventDeviceType deviceType = DorotiUiLibrary.KeyEventDeviceType.keyboard
     )
         : base(
             physicalKey: physicalKey,
@@ -127,7 +127,7 @@ public class KeyRepeatEvent : KeyEvent
         LogicalKeyboardKey logicalKey,
         string? character = null,
         Duration timeStamp = default!,
-        KeyEventDeviceType deviceType = Dart_uiLibrary.KeyEventDeviceType.keyboard
+        KeyEventDeviceType deviceType = DorotiUiLibrary.KeyEventDeviceType.keyboard
     )
         : base(
             physicalKey: physicalKey,
@@ -628,32 +628,32 @@ public class KeyEventManager
         RawKeyEventData data = rawEvent.data;
         if (data is not RawKeyEventDataAndroid)
         {
-            return Dart_uiLibrary.KeyEventDeviceType.keyboard;
+            return DorotiUiLibrary.KeyEventDeviceType.keyboard;
         }
         switch (((RawKeyEventDataAndroid)data).eventSource)
         {
             case var __case51679 when Equals(__case51679, 257L):
             {
-                return Dart_uiLibrary.KeyEventDeviceType.keyboard;
+                return DorotiUiLibrary.KeyEventDeviceType.keyboard;
             }
             case var __case51835 when Equals(__case51835, 513L):
             {
-                return Dart_uiLibrary.KeyEventDeviceType.directionalPad;
+                return DorotiUiLibrary.KeyEventDeviceType.directionalPad;
             }
             case var __case52000 when Equals(__case52000, 1025L):
             {
-                return Dart_uiLibrary.KeyEventDeviceType.gamepad;
+                return DorotiUiLibrary.KeyEventDeviceType.gamepad;
             }
             case var __case52159 when Equals(__case52159, 16777232L):
             {
-                return Dart_uiLibrary.KeyEventDeviceType.joystick;
+                return DorotiUiLibrary.KeyEventDeviceType.joystick;
             }
             case var __case52315 when Equals(__case52315, 33554433L):
             {
-                return Dart_uiLibrary.KeyEventDeviceType.hdmi;
+                return DorotiUiLibrary.KeyEventDeviceType.hdmi;
             }
         }
-        return Dart_uiLibrary.KeyEventDeviceType.keyboard;
+        return DorotiUiLibrary.KeyEventDeviceType.keyboard;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -787,7 +787,7 @@ public class KeyEventManager
         Duration timeStamp = keyData.timeStamp;
         switch (keyData.type)
         {
-            case var __case56760 when Equals(__case56760, Dart_uiLibrary.KeyEventType.down):
+            case var __case56760 when Equals(__case56760, DorotiUiLibrary.KeyEventType.down):
             {
                 return new KeyDownEvent(
                     physicalKey: physicalKey,
@@ -798,7 +798,7 @@ public class KeyEventManager
                     deviceType: keyData.deviceType
                 );
             }
-            case var __case57061 when Equals(__case57061, Dart_uiLibrary.KeyEventType.up):
+            case var __case57061 when Equals(__case57061, DorotiUiLibrary.KeyEventType.up):
             {
                 DartRuntimePrimitives.Assert(() => keyData.character is null);
                 return new KeyUpEvent(
@@ -809,7 +809,7 @@ public class KeyEventManager
                     deviceType: keyData.deviceType
                 );
             }
-            case var __case57361 when Equals(__case57361, Dart_uiLibrary.KeyEventType.repeat):
+            case var __case57361 when Equals(__case57361, DorotiUiLibrary.KeyEventType.repeat):
             {
                 return new KeyRepeatEvent(
                     physicalKey: physicalKey,

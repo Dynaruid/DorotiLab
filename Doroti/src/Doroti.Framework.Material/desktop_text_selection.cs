@@ -246,7 +246,7 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection
         }
         EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
         var midpointAnchor = new Offset(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
                 mediaQueryPadding.left,
                 MediaQuery.widthOf(context) - mediaQueryPadding.right

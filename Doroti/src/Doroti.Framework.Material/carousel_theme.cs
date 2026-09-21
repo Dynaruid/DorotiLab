@@ -63,8 +63,8 @@ public class CarouselViewThemeData : Diagnosticable
             return a;
         }
         return new CarouselViewThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             shape: ((OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!,
             overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
             padding: EdgeInsets.lerp(a?.padding, b?.padding, t),

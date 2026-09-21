@@ -1752,7 +1752,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "ui" && elementId?.EndsWith("#ui", StringComparison.Ordinal) == true)
         {
-            builder.Append("Dart_uiLibrary");
+            builder.Append("DorotiUiLibrary");
             return;
         }
         if (

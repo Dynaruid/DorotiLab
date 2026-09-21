@@ -916,7 +916,7 @@ internal class _SliverAppBarDelegate__app_bar : SliverPersistentHeaderDelegate
             pinned && floating && (bottom is not null) && (extraToolbarHeight == 0.0);
         double toolbarOpacityLocal =
             (!accessibleNavigation && (!pinned || isPinnedWithOpacityFade))
-                ? Dart_uiLibrary.clampDouble(
+                ? DorotiUiLibrary.clampDouble(
                     visibleToolbarHeight / (toolbarHeight ?? ConstantsLibrary.kToolbarHeight),
                     0.0,
                     1.0
@@ -982,7 +982,7 @@ internal class _SliverAppBarDelegate__app_bar : SliverPersistentHeaderDelegate
                 toolbarOpacity: toolbarOpacityLocal,
                 bottomOpacity: pinned
                     ? 1.0
-                    : Dart_uiLibrary.clampDouble(visibleMainHeight / _bottomHeight, 0.0, 1.0),
+                    : DorotiUiLibrary.clampDouble(visibleMainHeight / _bottomHeight, 0.0, 1.0),
                 toolbarHeight: toolbarHeight,
                 leadingWidth: leadingWidth,
                 toolbarTextStyle: toolbarTextStyle,
@@ -2104,7 +2104,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
         DartRuntimePrimitives.Assert(() => child is not null);
         DartRuntimePrimitives.Assert(() => padding.isNonNegative);
         DartRuntimePrimitives.Assert(() => titleAlignment.y == 1.0);
-        double yAdjustment = Dart_uiLibrary.clampDouble(
+        double yAdjustment = DorotiUiLibrary.clampDouble(
             childSize.height + padding.bottom - maxExtent,
             0,
             padding.bottom

@@ -25,7 +25,7 @@ public sealed class WebViewController : IAsyncDisposable
             : new Dictionary<string, WebViewResource>();
         var host = owner.RequireCapability<IPlatformViewHostCapability>(
             DorotiCapabilityIds.PlatformViews,
-            DartUiInvocation.Managed("WebViewController.create")
+            DorotiUiInvocation.Managed("WebViewController.create")
         );
         var support = host.QuerySupport(
             new PlatformViewRequest(

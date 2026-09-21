@@ -69,16 +69,16 @@ public class MaterialBannerThemeData : Diagnosticable
     )
     {
         return new MaterialBannerThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            dividerColor: DorotiUiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t),
             contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             leadingPadding: EdgeInsetsGeometry.lerp(a?.leadingPadding, b?.leadingPadding, t)
         );

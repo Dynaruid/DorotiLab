@@ -123,31 +123,31 @@ public class SnackBarThemeData : Diagnosticable
             return a;
         }
         return new SnackBarThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            actionTextColor: Dart_uiLibrary.Color.lerp(a?.actionTextColor, b?.actionTextColor, t),
-            disabledActionTextColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            actionTextColor: DorotiUiLibrary.Color.lerp(a?.actionTextColor, b?.actionTextColor, t),
+            disabledActionTextColor: DorotiUiLibrary.Color.lerp(
                 a?.disabledActionTextColor,
                 b?.disabledActionTextColor,
                 t
             ),
             contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             behavior: (t < 0.5) ? a?.behavior : b?.behavior,
-            width: Dart_uiLibrary.lerpDouble(a?.width, b?.width, t),
+            width: DorotiUiLibrary.lerpDouble(a?.width, b?.width, t),
             insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t),
-            closeIconColor: Dart_uiLibrary.Color.lerp(a?.closeIconColor, b?.closeIconColor, t),
-            actionOverflowThreshold: Dart_uiLibrary.lerpDouble(
+            closeIconColor: DorotiUiLibrary.Color.lerp(a?.closeIconColor, b?.closeIconColor, t),
+            actionOverflowThreshold: DorotiUiLibrary.lerpDouble(
                 a?.actionOverflowThreshold,
                 b?.actionOverflowThreshold,
                 t
             ),
-            actionBackgroundColor: Dart_uiLibrary.Color.lerp(
+            actionBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.actionBackgroundColor,
                 b?.actionBackgroundColor,
                 t
             ),
-            disabledActionBackgroundColor: Dart_uiLibrary.Color.lerp(
+            disabledActionBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.disabledActionBackgroundColor,
                 b?.disabledActionBackgroundColor,
                 t

@@ -161,7 +161,7 @@ internal class _SystemMouseCursorSession : MouseCursorSession
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformServices,
                 null,
-                DartUiInvocation.Managed(elementId),
+                DorotiUiInvocation.Managed(elementId),
                 "mouse cursor activation requires an attached DorotiView"
             );
         var cursorName = ((SystemMouseCursor)cursor).kind;
@@ -178,7 +178,7 @@ internal class _SystemMouseCursorSession : MouseCursorSession
         }
         view.RequireCapability<IPlatformServicesHostCapability>(
                 DorotiCapabilityIds.PlatformServices,
-                DartUiInvocation.Managed(elementId)
+                DorotiUiInvocation.Managed(elementId)
             )
             .SetCursor(cursorKind);
         return Future.value();

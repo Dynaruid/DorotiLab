@@ -139,7 +139,7 @@ public class ShapeDecoration : Decoration
         Gradient? gradientLocal = Gradient.lerp(aGradient, bGradient, t);
         return new ShapeDecoration(
             color: (gradientLocal is null)
-                ? Dart_uiLibrary.Color.lerp(a?.color, b?.color, t)
+                ? DorotiUiLibrary.Color.lerp(a?.color, b?.color, t)
                 : null,
             gradient: gradientLocal,
             image: DecorationImage.lerp(a?.image, b?.image, t),

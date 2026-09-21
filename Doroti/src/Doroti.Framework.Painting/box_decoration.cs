@@ -130,7 +130,7 @@ public class BoxDecoration : Decoration
     public virtual BoxDecoration scale(double factor)
     {
         return new BoxDecoration(
-            color: Dart_uiLibrary.Color.lerp(null, color, factor),
+            color: DorotiUiLibrary.Color.lerp(null, color, factor),
             image: DecorationImage.lerp(null, image, factor),
             border: BoxBorder.lerp(null, border, factor),
             borderRadius: BorderRadiusGeometry.lerp(null, borderRadius, factor),
@@ -182,7 +182,7 @@ public class BoxDecoration : Decoration
             return b;
         }
         return new BoxDecoration(
-            color: Dart_uiLibrary.Color.lerp(a.color, b.color, t),
+            color: DorotiUiLibrary.Color.lerp(a.color, b.color, t),
             image: DecorationImage.lerp(a.image, b.image, t),
             border: BoxBorder.lerp(a.border, b.border, t),
             borderRadius: BorderRadiusGeometry.lerp(a.borderRadius, b.borderRadius, t),

@@ -94,7 +94,7 @@ public class ScrollbarThemeData : Diagnosticable
                 a?.thickness,
                 b?.thickness,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             trackVisibility: WidgetStateProperty.lerp(
                 a?.trackVisibility,
@@ -103,7 +103,7 @@ public class ScrollbarThemeData : Diagnosticable
                 Scrollbar_themeLibrary._lerpBool
             ),
             interactive: Scrollbar_themeLibrary._lerpBool(a?.interactive, b?.interactive, t),
-            radius: Dart_uiLibrary.Radius.lerp(a?.radius, b?.radius, t),
+            radius: DorotiUiLibrary.Radius.lerp(a?.radius, b?.radius, t),
             thumbColor: WidgetStateProperty.lerp(a?.thumbColor, b?.thumbColor, t, Color.lerp),
             trackColor: WidgetStateProperty.lerp(a?.trackColor, b?.trackColor, t, Color.lerp),
             trackBorderColor: WidgetStateProperty.lerp(
@@ -112,9 +112,9 @@ public class ScrollbarThemeData : Diagnosticable
                 t,
                 Color.lerp
             ),
-            crossAxisMargin: Dart_uiLibrary.lerpDouble(a?.crossAxisMargin, b?.crossAxisMargin, t),
-            mainAxisMargin: Dart_uiLibrary.lerpDouble(a?.mainAxisMargin, b?.mainAxisMargin, t),
-            minThumbLength: Dart_uiLibrary.lerpDouble(a?.minThumbLength, b?.minThumbLength, t)
+            crossAxisMargin: DorotiUiLibrary.lerpDouble(a?.crossAxisMargin, b?.crossAxisMargin, t),
+            mainAxisMargin: DorotiUiLibrary.lerpDouble(a?.mainAxisMargin, b?.mainAxisMargin, t),
+            minThumbLength: DorotiUiLibrary.lerpDouble(a?.minThumbLength, b?.minThumbLength, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

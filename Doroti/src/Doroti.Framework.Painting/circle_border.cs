@@ -27,9 +27,9 @@ public class CircleBorder : OutlinedBorder
             CircleBorder a__as2194 = (CircleBorder)a;
             return new CircleBorder(
                 side: BorderSide.lerp(a__as2194.side, side, t),
-                eccentricity: Dart_uiLibrary.clampDouble(
+                eccentricity: DorotiUiLibrary.clampDouble(
                     (
-                        Dart_uiLibrary.lerpDouble(a__as2194.eccentricity, eccentricity, t)
+                        DorotiUiLibrary.lerpDouble(a__as2194.eccentricity, eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -50,9 +50,9 @@ public class CircleBorder : OutlinedBorder
             CircleBorder b__as2507 = (CircleBorder)b;
             return new CircleBorder(
                 side: BorderSide.lerp(side, b__as2507.side, t),
-                eccentricity: Dart_uiLibrary.clampDouble(
+                eccentricity: DorotiUiLibrary.clampDouble(
                     (
-                        Dart_uiLibrary.lerpDouble(eccentricity, b__as2507.eccentricity, t)
+                        DorotiUiLibrary.lerpDouble(eccentricity, b__as2507.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )

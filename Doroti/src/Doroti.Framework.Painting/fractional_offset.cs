@@ -102,11 +102,11 @@ public class FractionalOffset : Alignment
         {
             return new FractionalOffset(
                 (
-                    Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)
+                    DorotiUiLibrary.lerpDouble(0.5, b!.dx, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(0.5, b.dy, t)
+                    DorotiUiLibrary.lerpDouble(0.5, b.dy, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
@@ -115,22 +115,22 @@ public class FractionalOffset : Alignment
         {
             return new FractionalOffset(
                 (
-                    Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)
+                    DorotiUiLibrary.lerpDouble(a.dx, 0.5, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(a.dy, 0.5, t)
+                    DorotiUiLibrary.lerpDouble(a.dy, 0.5, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return new FractionalOffset(
             (
-                Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)
+                DorotiUiLibrary.lerpDouble(a.dx, b.dx, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.dy, b.dy, t)
+                DorotiUiLibrary.lerpDouble(a.dy, b.dy, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

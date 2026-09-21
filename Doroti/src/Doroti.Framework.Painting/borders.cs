@@ -158,7 +158,7 @@ public class BorderSide : Diagnosticable
             return b;
         }
         double widthLocal = (
-            Dart_uiLibrary.lerpDouble(a.width, b.width, t)
+            DorotiUiLibrary.lerpDouble(a.width, b.width, t)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if ((widthLocal) < 0.0)
@@ -168,7 +168,7 @@ public class BorderSide : Diagnosticable
         if (Equals(a.style, b.style) && (a.strokeAlign == b.strokeAlign))
         {
             return new BorderSide(
-                color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!,
+                color: DorotiUiLibrary.Color.lerp(a.color, b.color, t)!,
                 width: (widthLocal),
                 style: a.style,
                 strokeAlign: (a.strokeAlign)
@@ -193,16 +193,16 @@ public class BorderSide : Diagnosticable
         if (a.strokeAlign != b.strokeAlign)
         {
             return new BorderSide(
-                color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!,
+                color: DorotiUiLibrary.Color.lerp(colorA, colorB, t)!,
                 width: (widthLocal),
                 strokeAlign: (
-                    Dart_uiLibrary.lerpDouble((a.strokeAlign), (b.strokeAlign), t)
+                    DorotiUiLibrary.lerpDouble((a.strokeAlign), (b.strokeAlign), t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return new BorderSide(
-            color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!,
+            color: DorotiUiLibrary.Color.lerp(colorA, colorB, t)!,
             width: (widthLocal),
             strokeAlign: (a.strokeAlign)
         );

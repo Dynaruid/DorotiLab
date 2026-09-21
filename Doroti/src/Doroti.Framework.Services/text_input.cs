@@ -1747,7 +1747,7 @@ internal sealed class _HostTextInputControl : TextInputControl
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.TextInput,
                 configuration.viewId is { } id ? checked((ulong)id) : null,
-                DartUiInvocation.Managed("package:flutter/services.dart#TextInput.attach"),
+                DorotiUiInvocation.Managed("package:flutter/services.dart#TextInput.attach"),
                 "no matching Flutter view is registered"
             );
         }
@@ -1756,7 +1756,7 @@ internal sealed class _HostTextInputControl : TextInputControl
         _view = view;
         _capability = view.RequireCapability<ITextInputHostCapability>(
             DorotiCapabilityIds.TextInput,
-            DartUiInvocation.Managed("package:flutter/services.dart#TextInput.attach")
+            DorotiUiInvocation.Managed("package:flutter/services.dart#TextInput.attach")
         );
         _capability.EditingStateChanged += OnEditingStateChanged;
         _capability.ActionPerformed += OnActionPerformed;
@@ -1816,7 +1816,7 @@ internal sealed class _HostTextInputControl : TextInputControl
         ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.TextInput,
             null,
-            DartUiInvocation.Managed($"package:flutter/services.dart#{elementId}"),
+            DorotiUiInvocation.Managed($"package:flutter/services.dart#{elementId}"),
             "no text input client is attached"
         );
 

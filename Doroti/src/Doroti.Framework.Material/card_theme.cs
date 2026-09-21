@@ -132,14 +132,14 @@ public class CardTheme : InheritedWidget, Diagnosticable
         }
         return new CardTheme(
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             margin: EdgeInsetsGeometry.lerp(a?.margin, b?.margin, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t)
         );
@@ -247,14 +247,14 @@ public class CardThemeData : Diagnosticable
         }
         return new CardThemeData(
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             margin: EdgeInsetsGeometry.lerp(a?.margin, b?.margin, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t)
         );

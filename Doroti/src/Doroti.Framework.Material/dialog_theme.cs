@@ -207,21 +207,21 @@ public class DialogTheme : InheritedTheme, Diagnosticable
             return a;
         }
         return new DialogTheme(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
-            iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
+            iconColor: DorotiUiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
             titleTextStyle: TextStyle.lerp(a?.titleTextStyle, b?.titleTextStyle, t),
             contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t),
             actionsPadding: EdgeInsetsGeometry.lerp(a?.actionsPadding, b?.actionsPadding, t),
-            barrierColor: Dart_uiLibrary.Color.lerp(a?.barrierColor, b?.barrierColor, t),
+            barrierColor: DorotiUiLibrary.Color.lerp(a?.barrierColor, b?.barrierColor, t),
             insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior
         );
@@ -384,21 +384,21 @@ public class DialogThemeData : Diagnosticable
             return a;
         }
         return new DialogThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
-            iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
+            iconColor: DorotiUiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
             titleTextStyle: TextStyle.lerp(a?.titleTextStyle, b?.titleTextStyle, t),
             contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t),
             actionsPadding: EdgeInsetsGeometry.lerp(a?.actionsPadding, b?.actionsPadding, t),
-            barrierColor: Dart_uiLibrary.Color.lerp(a?.barrierColor, b?.barrierColor, t),
+            barrierColor: DorotiUiLibrary.Color.lerp(a?.barrierColor, b?.barrierColor, t),
             insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t)

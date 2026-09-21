@@ -1788,12 +1788,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         _maxScrollExtent = 0.0;
         _hasVisualOverflow = false;
         double centerOffset = (mainAxisExtent * anchor) - correctedOffset;
-        double reverseDirectionRemainingPaintExtent = Dart_uiLibrary.clampDouble(
+        double reverseDirectionRemainingPaintExtent = DorotiUiLibrary.clampDouble(
             centerOffset,
             0.0,
             mainAxisExtent
         );
-        double forwardDirectionRemainingPaintExtent = Dart_uiLibrary.clampDouble(
+        double forwardDirectionRemainingPaintExtent = DorotiUiLibrary.clampDouble(
             mainAxisExtent - centerOffset,
             0.0,
             mainAxisExtent
@@ -1814,12 +1814,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 _calculatedCacheExtent
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        double reverseDirectionRemainingCacheExtent = Dart_uiLibrary.clampDouble(
+        double reverseDirectionRemainingCacheExtent = DorotiUiLibrary.clampDouble(
             centerCacheOffset,
             0.0,
             fullCacheExtent
         );
-        double forwardDirectionRemainingCacheExtent = Dart_uiLibrary.clampDouble(
+        double forwardDirectionRemainingCacheExtent = DorotiUiLibrary.clampDouble(
             fullCacheExtent - centerCacheOffset,
             0.0,
             fullCacheExtent
@@ -1838,7 +1838,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 growthDirection: GrowthDirection.reverse,
                 advance: childBefore,
                 remainingCacheExtent: reverseDirectionRemainingCacheExtent,
-                cacheOrigin: Dart_uiLibrary.clampDouble(
+                cacheOrigin: DorotiUiLibrary.clampDouble(
                     mainAxisExtent - centerOffset,
                     -(
                         _calculatedCacheExtent
@@ -1867,7 +1867,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
             growthDirection: GrowthDirection.forward,
             advance: childAfter,
             remainingCacheExtent: forwardDirectionRemainingCacheExtent,
-            cacheOrigin: Dart_uiLibrary.clampDouble(
+            cacheOrigin: DorotiUiLibrary.clampDouble(
                 centerOffset,
                 -(
                     _calculatedCacheExtent

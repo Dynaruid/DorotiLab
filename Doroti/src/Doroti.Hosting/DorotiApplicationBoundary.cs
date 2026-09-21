@@ -134,7 +134,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformPlugins,
                 null,
-                DartUiInvocation.Managed("Doroti.Hosting#LoadApplication"),
+                DorotiUiInvocation.Managed("Doroti.Hosting#LoadApplication"),
                 $"application targets RID '{manifest.TargetRid}', not '{targetRid}'",
                 targetRid
             );
@@ -160,7 +160,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 throw new DorotiCapabilityException(
                     DorotiCapabilityIds.PlatformViews,
                     null,
-                    DartUiInvocation.Managed("application-platform-view:register"),
+                    DorotiUiInvocation.Managed("application-platform-view:register"),
                     $"factory '{registration.ViewType}' is missing or targets a different RID",
                     manifest.TargetRid
                 );
@@ -267,7 +267,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 throw new DorotiCapabilityException(
                     DorotiCapabilityIds.ApplicationResources,
                     null,
-                    DartUiInvocation.Managed($"application-resource:{key}"),
+                    DorotiUiInvocation.Managed($"application-resource:{key}"),
                     "the generated resource manifest does not register this key"
                 );
             }
@@ -311,7 +311,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.ApplicationResources,
                 null,
-                DartUiInvocation.Managed("application-resource:resolve"),
+                DorotiUiInvocation.Managed("application-resource:resolve"),
                 $"the generated resource manifest does not register {description}"
             );
 
@@ -417,7 +417,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
             new(
                 DorotiCapabilityIds.PlatformPlugins,
                 null,
-                DartUiInvocation.Managed($"platform-channel:{channel}"),
+                DorotiUiInvocation.Managed($"platform-channel:{channel}"),
                 reason,
                 _targetRid
             );

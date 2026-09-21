@@ -105,7 +105,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
 
         var host = owner.RequireCapability<IPlatformViewHostCapability>(
             DorotiCapabilityIds.PlatformViews,
-            DartUiInvocation.Managed("WebViewSample.support")
+            DorotiUiInvocation.Managed("WebViewSample.support")
         );
         var interleaved = Query(host, PlatformViewComposition.InterleavedComposition);
         var support = interleaved.Supported
@@ -140,7 +140,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         {
             var host = _owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("WebViewSample.create")
+                DorotiUiInvocation.Managed("WebViewSample.create")
             );
             var interleaved = Query(host, PlatformViewComposition.InterleavedComposition);
             var support = interleaved.Supported

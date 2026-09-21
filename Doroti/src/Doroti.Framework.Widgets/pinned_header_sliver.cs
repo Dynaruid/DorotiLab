@@ -65,7 +65,7 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : RenderSliverSin
     {
         SliverConstraints constraintsLocal = constraints;
         child?.layout(constraintsLocal.asBoxConstraints(), parentUsesSize: true);
-        double layoutExtentLocal = Dart_uiLibrary.clampDouble(
+        double layoutExtentLocal = DorotiUiLibrary.clampDouble(
             childExtent - constraintsLocal.scrollOffset,
             0,
             constraintsLocal.remainingPaintExtent

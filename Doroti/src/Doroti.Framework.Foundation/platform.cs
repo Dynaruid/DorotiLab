@@ -31,7 +31,7 @@ public static class PlatformLibrary
             _ => throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformEnvironment,
                 null,
-                DartUiInvocation.Managed("dart:io#Platform.operatingSystem"),
+                DorotiUiInvocation.Managed("dart:io#Platform.operatingSystem"),
                 "the host platform is not represented by Flutter TargetPlatform"
             ),
         };

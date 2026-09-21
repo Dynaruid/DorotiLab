@@ -240,16 +240,16 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
             return a;
         }
         return new AppBarTheme(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            foregroundColor: Dart_uiLibrary.Color.lerp(a?.foregroundColor, b?.foregroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            scrolledUnderElevation: Dart_uiLibrary.lerpDouble(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            foregroundColor: DorotiUiLibrary.Color.lerp(a?.foregroundColor, b?.foregroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            scrolledUnderElevation: DorotiUiLibrary.lerpDouble(
                 a?.scrolledUnderElevation,
                 b?.scrolledUnderElevation,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
@@ -258,9 +258,9 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
             iconTheme: IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t),
             actionsIconTheme: IconThemeData.lerp(a?.actionsIconTheme, b?.actionsIconTheme, t),
             centerTitle: (t < 0.5) ? a?.centerTitle : b?.centerTitle,
-            titleSpacing: Dart_uiLibrary.lerpDouble(a?.titleSpacing, b?.titleSpacing, t),
-            leadingWidth: Dart_uiLibrary.lerpDouble(a?.leadingWidth, b?.leadingWidth, t),
-            toolbarHeight: Dart_uiLibrary.lerpDouble(a?.toolbarHeight, b?.toolbarHeight, t),
+            titleSpacing: DorotiUiLibrary.lerpDouble(a?.titleSpacing, b?.titleSpacing, t),
+            leadingWidth: DorotiUiLibrary.lerpDouble(a?.leadingWidth, b?.leadingWidth, t),
+            toolbarHeight: DorotiUiLibrary.lerpDouble(a?.toolbarHeight, b?.toolbarHeight, t),
             toolbarTextStyle: TextStyle.lerp(a?.toolbarTextStyle, b?.toolbarTextStyle, t),
             titleTextStyle: TextStyle.lerp(a?.titleTextStyle, b?.titleTextStyle, t),
             systemOverlayStyle: (t < 0.5) ? a?.systemOverlayStyle : b?.systemOverlayStyle,
@@ -417,23 +417,23 @@ public class AppBarThemeData : Diagnosticable
             return a;
         }
         return new AppBarThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a.backgroundColor, b.backgroundColor, t),
-            foregroundColor: Dart_uiLibrary.Color.lerp(a.foregroundColor, b.foregroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a.elevation, b.elevation, t),
-            scrolledUnderElevation: Dart_uiLibrary.lerpDouble(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a.backgroundColor, b.backgroundColor, t),
+            foregroundColor: DorotiUiLibrary.Color.lerp(a.foregroundColor, b.foregroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a.elevation, b.elevation, t),
+            scrolledUnderElevation: DorotiUiLibrary.lerpDouble(
                 a.scrolledUnderElevation,
                 b.scrolledUnderElevation,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a.shadowColor, b.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(a.surfaceTintColor, b.surfaceTintColor, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a.shadowColor, b.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(a.surfaceTintColor, b.surfaceTintColor, t),
             shape: ShapeBorder.lerp(a.shape, b.shape, t),
             iconTheme: IconThemeData.lerp(a.iconTheme, b.iconTheme, t),
             actionsIconTheme: IconThemeData.lerp(a.actionsIconTheme, b.actionsIconTheme, t),
             centerTitle: (t < 0.5) ? a.centerTitle : b.centerTitle,
-            titleSpacing: Dart_uiLibrary.lerpDouble(a.titleSpacing, b.titleSpacing, t),
-            leadingWidth: Dart_uiLibrary.lerpDouble(a.leadingWidth, b.leadingWidth, t),
-            toolbarHeight: Dart_uiLibrary.lerpDouble(a.toolbarHeight, b.toolbarHeight, t),
+            titleSpacing: DorotiUiLibrary.lerpDouble(a.titleSpacing, b.titleSpacing, t),
+            leadingWidth: DorotiUiLibrary.lerpDouble(a.leadingWidth, b.leadingWidth, t),
+            toolbarHeight: DorotiUiLibrary.lerpDouble(a.toolbarHeight, b.toolbarHeight, t),
             toolbarTextStyle: TextStyle.lerp(a.toolbarTextStyle, b.toolbarTextStyle, t),
             titleTextStyle: TextStyle.lerp(a.titleTextStyle, b.titleTextStyle, t),
             systemOverlayStyle: (t < 0.5) ? a.systemOverlayStyle : b.systemOverlayStyle,

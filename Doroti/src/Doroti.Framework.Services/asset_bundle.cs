@@ -12,7 +12,7 @@ public abstract class AssetBundle
     public virtual async Future<ImmutableBuffer> loadBuffer(string key)
     {
         ByteData data = await load(key);
-        return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
+        return await DorotiUiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -200,7 +200,7 @@ public abstract class CachingAssetBundle : AssetBundle
     public override async Future<ImmutableBuffer> loadBuffer(string key)
     {
         ByteData data = await load(key);
-        return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
+        return await DorotiUiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
@@ -249,7 +249,7 @@ public class PlatformAssetBundle : CachingAssetBundle
         if (ConstantsLibrary.kIsWeb)
         {
             ByteData bytes = await load(key);
-            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes));
+            return await DorotiUiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes));
         }
         var debugUsePlatformChannel = false;
         DartRuntimePrimitives.Assert(() =>
@@ -263,11 +263,11 @@ public class PlatformAssetBundle : CachingAssetBundle
         if (debugUsePlatformChannel)
         {
             ByteData bytesLocal = await load(key);
-            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytesLocal));
+            return await DorotiUiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytesLocal));
         }
         try
         {
-            return await Dart_uiLibrary.ImmutableBuffer.fromAsset(key);
+            return await DorotiUiLibrary.ImmutableBuffer.fromAsset(key);
         }
         catch (Exception e)
         {

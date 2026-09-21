@@ -582,7 +582,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     nativeViews.RequestFrameworkFrame = () =>
                         host.DispatchPlatformViewEvent(() =>
                             platformViewOwner.ScheduleFrame(
-                                DartUiInvocation.Managed("Windows.PlatformView.nativeRevision")
+                                DorotiUiInvocation.Managed("Windows.PlatformView.nativeRevision")
                             )
                         );
                 }

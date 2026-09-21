@@ -507,7 +507,7 @@ public class OutlineInputBorder : InputBorder
         if (!Equals(scaledRRect.tlRadius, Radius.zero))
         {
             double tlCornerArcSweep = Dart_mathLibrary.acos(
-                Dart_uiLibrary.clampDouble(1L - (start / scaledRRect.tlRadiusX), 0.0, 1.0)
+                DorotiUiLibrary.clampDouble(1L - (start / scaledRRect.tlRadiusX), 0.0, 1.0)
             );
             path.addArc(tlCorner, Dart_mathLibrary.pi, tlCornerArcSweep);
         }
@@ -536,7 +536,7 @@ public class OutlineInputBorder : InputBorder
             {
                 double dx = outerWidth - (start + extent);
                 double sweep = Dart_mathLibrary.asin(
-                    Dart_uiLibrary.clampDouble(1L - (dx / scaledRRect.trRadiusX), 0.0, 1.0)
+                    DorotiUiLibrary.clampDouble(1L - (dx / scaledRRect.trRadiusX), 0.0, 1.0)
                 );
                 path.addArc(trCorner, trCornerArcStart + sweep, trCornerArcSweep - sweep);
             }
@@ -583,7 +583,7 @@ public class OutlineInputBorder : InputBorder
         else
         {
             double extent = (
-                Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
+                DorotiUiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double start = (
@@ -772,9 +772,9 @@ public class ShapedInputBorder : InputBorder
                     var __cascade = new Path();
                     __cascade.addRect(
                         Rect.fromLTRB(
-                            Dart_uiLibrary.clampDouble(gapLeft, rect.left, rect.right),
+                            DorotiUiLibrary.clampDouble(gapLeft, rect.left, rect.right),
                             rect.top - 1.0,
-                            Dart_uiLibrary.clampDouble(gapRight, rect.left, rect.right),
+                            DorotiUiLibrary.clampDouble(gapRight, rect.left, rect.right),
                             rect.top + 1.0
                         )
                     );
@@ -782,7 +782,7 @@ public class ShapedInputBorder : InputBorder
                 }
             )
         )();
-        return Dart_uiLibrary.Path.combine(PathOperation.difference, outerPath, gapRect);
+        return DorotiUiLibrary.Path.combine(PathOperation.difference, outerPath, gapRect);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -822,7 +822,7 @@ public class ShapedInputBorder : InputBorder
         else
         {
             double extent = (
-                Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
+                DorotiUiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double start = (

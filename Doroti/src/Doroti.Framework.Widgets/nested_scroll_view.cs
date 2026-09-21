@@ -588,7 +588,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
         var extra = 0.0;
         if (innerPosition.pixels == innerPosition.minScrollExtent)
         {
-            pixelsLocal = Dart_uiLibrary.clampDouble(
+            pixelsLocal = DorotiUiLibrary.clampDouble(
                 _outerPosition!.pixels,
                 _outerPosition!.minScrollExtent,
                 _outerPosition!.maxScrollExtent
@@ -690,7 +690,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
     {
         if (Equals(source, _outerPosition))
         {
-            return Dart_uiLibrary.clampDouble(
+            return DorotiUiLibrary.clampDouble(
                 (value),
                 _outerPosition!.minScrollExtent,
                 _outerPosition!.maxScrollExtent
@@ -708,7 +708,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
     {
         if (Equals(target, _outerPosition))
         {
-            return Dart_uiLibrary.clampDouble(
+            return DorotiUiLibrary.clampDouble(
                 (value),
                 _outerPosition!.minScrollExtent,
                 _outerPosition!.maxScrollExtent
@@ -1132,7 +1132,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
                 ? double.PositiveInfinity
                 : ((pixels < 0.0) ? 0.0 : Math.Max(maxScrollExtent, pixels));
         double oldPixels = pixels;
-        double newPixels = Dart_uiLibrary.clampDouble(pixels - delta, min, max);
+        double newPixels = DorotiUiLibrary.clampDouble(pixels - delta, min, max);
         double clampedDelta = newPixels - pixels;
         if (clampedDelta == 0.0)
         {
@@ -1185,7 +1185,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         DartRuntimePrimitives.Assert(() => delta != 0.0);
         double min = (delta > 0.0) ? -double.PositiveInfinity : Math.Min(minScrollExtent, pixels);
         double max = (delta < 0.0) ? double.PositiveInfinity : Math.Max(maxScrollExtent, pixels);
-        double newPixels = Dart_uiLibrary.clampDouble(pixels + delta, min, max);
+        double newPixels = DorotiUiLibrary.clampDouble(pixels + delta, min, max);
         double clampedDelta = newPixels - pixels;
         if (clampedDelta == 0.0)
         {
@@ -1503,7 +1503,7 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
             }
             else
             {
-                value = Dart_uiLibrary.clampDouble(value, metrics.minRange, metrics.maxRange);
+                value = DorotiUiLibrary.clampDouble(value, metrics.minRange, metrics.maxRange);
                 done = true;
             }
         }

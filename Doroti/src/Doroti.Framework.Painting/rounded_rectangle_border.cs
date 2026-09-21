@@ -757,7 +757,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             return copyWith(
                 side: BorderSide.lerp(a__as15048.side, side, t),
                 borderRadius: BorderRadiusGeometry.lerp(a__as15048.borderRadius, borderRadius, t),
-                circularity: Dart_uiLibrary.lerpDouble(a__as15048.circularity, circularity, t),
+                circularity: DorotiUiLibrary.lerpDouble(a__as15048.circularity, circularity, t),
                 eccentricity: eccentricity
             );
         }
@@ -798,7 +798,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             return copyWith(
                 side: BorderSide.lerp(side, b__as15976.side, t),
                 borderRadius: BorderRadiusGeometry.lerp(borderRadius, b__as15976.borderRadius, t),
-                circularity: Dart_uiLibrary.lerpDouble(circularity, b__as15976.circularity, t),
+                circularity: DorotiUiLibrary.lerpDouble(circularity, b__as15976.circularity, t),
                 eccentricity: eccentricity
             );
         }
@@ -882,7 +882,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             _adjustRect(rect),
             _adjustBorderRadius(rect, textDirection),
             -(
-                Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)
+                DorotiUiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

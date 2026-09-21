@@ -35,7 +35,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
     {
         if (_instance is null)
         {
-            Dart_uiLibrary.PlatformDispatcher.instance.registerBackgroundIsolate(token);
+            DorotiUiLibrary.PlatformDispatcher.instance.registerBackgroundIsolate(token);
             var portBinaryMessenger = new BackgroundIsolateBinaryMessenger();
             _instance = portBinaryMessenger;
             portBinaryMessenger._receivePort.listen(
@@ -84,7 +84,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
         _messageCount += 1L;
         long messageIdentifier = _messageCount;
         _completers[messageIdentifier] = completer;
-        Dart_uiLibrary.PlatformDispatcher.instance.sendPortPlatformMessage(
+        DorotiUiLibrary.PlatformDispatcher.instance.sendPortPlatformMessage(
             channel,
             message,
             messageIdentifier,

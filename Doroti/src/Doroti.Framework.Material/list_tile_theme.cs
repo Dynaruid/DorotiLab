@@ -143,9 +143,9 @@ public class ListTileThemeData : Diagnosticable
             dense: (t < 0.5) ? a?.dense : b?.dense,
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             style: (t < 0.5) ? a?.style : b?.style,
-            selectedColor: Dart_uiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
-            iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
-            textColor: Dart_uiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
+            selectedColor: DorotiUiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
+            iconColor: DorotiUiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
+            textColor: DorotiUiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
             titleTextStyle: TextStyle.lerp(a?.titleTextStyle, b?.titleTextStyle, t),
             subtitleTextStyle: TextStyle.lerp(a?.subtitleTextStyle, b?.subtitleTextStyle, t),
             leadingAndTrailingTextStyle: TextStyle.lerp(
@@ -154,24 +154,24 @@ public class ListTileThemeData : Diagnosticable
                 t
             ),
             contentPadding: EdgeInsetsGeometry.lerp(a?.contentPadding, b?.contentPadding, t),
-            tileColor: Dart_uiLibrary.Color.lerp(a?.tileColor, b?.tileColor, t),
-            selectedTileColor: Dart_uiLibrary.Color.lerp(
+            tileColor: DorotiUiLibrary.Color.lerp(a?.tileColor, b?.tileColor, t),
+            selectedTileColor: DorotiUiLibrary.Color.lerp(
                 a?.selectedTileColor,
                 b?.selectedTileColor,
                 t
             ),
-            horizontalTitleGap: Dart_uiLibrary.lerpDouble(
+            horizontalTitleGap: DorotiUiLibrary.lerpDouble(
                 a?.horizontalTitleGap,
                 b?.horizontalTitleGap,
                 t
             ),
-            minVerticalPadding: Dart_uiLibrary.lerpDouble(
+            minVerticalPadding: DorotiUiLibrary.lerpDouble(
                 a?.minVerticalPadding,
                 b?.minVerticalPadding,
                 t
             ),
-            minLeadingWidth: Dart_uiLibrary.lerpDouble(a?.minLeadingWidth, b?.minLeadingWidth, t),
-            minTileHeight: Dart_uiLibrary.lerpDouble(a?.minTileHeight, b?.minTileHeight, t),
+            minLeadingWidth: DorotiUiLibrary.lerpDouble(a?.minLeadingWidth, b?.minLeadingWidth, t),
+            minTileHeight: DorotiUiLibrary.lerpDouble(a?.minTileHeight, b?.minTileHeight, t),
             enableFeedback: (t < 0.5) ? a?.enableFeedback : b?.enableFeedback,
             mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor,
             visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,

@@ -31,7 +31,7 @@ public static partial class GeometryLibrary
         double x =
             (flexibleSpace <= (2L * margin))
                 ? (flexibleSpace / 2.0)
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     target.dx - (childSize.width / 2L),
                     margin,
                     flexibleSpace - margin

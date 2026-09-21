@@ -81,7 +81,7 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
                 )
             );
         }
-        double leftLocal = Dart_uiLibrary.clampDouble(
+        double leftLocal = DorotiUiLibrary.clampDouble(
             draggedObject.left,
             (
                 boundary
@@ -92,7 +92,7 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ).right - draggedObject.width
         );
-        double topLocal = Dart_uiLibrary.clampDouble(
+        double topLocal = DorotiUiLibrary.clampDouble(
             draggedObject.top,
             (
                 boundary

@@ -227,28 +227,28 @@ public class ChipThemeData : Diagnosticable
         }
         return new ChipThemeData(
             color: WidgetStateProperty.lerp(a?.color, b?.color, t, Color.lerp),
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            deleteIconColor: Dart_uiLibrary.Color.lerp(a?.deleteIconColor, b?.deleteIconColor, t),
-            disabledColor: Dart_uiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t),
-            selectedColor: Dart_uiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
-            secondarySelectedColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            deleteIconColor: DorotiUiLibrary.Color.lerp(a?.deleteIconColor, b?.deleteIconColor, t),
+            disabledColor: DorotiUiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t),
+            selectedColor: DorotiUiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t),
+            secondarySelectedColor: DorotiUiLibrary.Color.lerp(
                 a?.secondarySelectedColor,
                 b?.secondarySelectedColor,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            selectedShadowColor: Dart_uiLibrary.Color.lerp(
+            selectedShadowColor: DorotiUiLibrary.Color.lerp(
                 a?.selectedShadowColor,
                 b?.selectedShadowColor,
                 t
             ),
             showCheckmark: (t < 0.5) ? (a?.showCheckmark ?? true) : (b?.showCheckmark ?? true),
-            checkmarkColor: Dart_uiLibrary.Color.lerp(a?.checkmarkColor, b?.checkmarkColor, t),
+            checkmarkColor: DorotiUiLibrary.Color.lerp(a?.checkmarkColor, b?.checkmarkColor, t),
             labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             side: _lerpSides(a?.side, b?.side, t),
@@ -258,8 +258,8 @@ public class ChipThemeData : Diagnosticable
             brightness: (t < 0.5)
                 ? (a?.brightness ?? Brightness.light)
                 : (b?.brightness ?? Brightness.light),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            pressElevation: Dart_uiLibrary.lerpDouble(a?.pressElevation, b?.pressElevation, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            pressElevation: DorotiUiLibrary.lerpDouble(a?.pressElevation, b?.pressElevation, t),
             iconTheme: ((a?.iconTheme is not null) || (b?.iconTheme is not null))
                 ? IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t)
                 : null,

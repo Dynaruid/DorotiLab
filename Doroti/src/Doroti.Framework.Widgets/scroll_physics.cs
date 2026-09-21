@@ -247,7 +247,7 @@ public class RangeMaintainingScrollPhysics : ScrollPhysics
         );
         if (enforceBoundary)
         {
-            result = Dart_uiLibrary.clampDouble(
+            result = DorotiUiLibrary.clampDouble(
                 result,
                 newPosition.minScrollExtent,
                 newPosition.maxScrollExtent

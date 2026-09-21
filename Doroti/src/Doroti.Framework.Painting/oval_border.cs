@@ -45,9 +45,9 @@ public class OvalBorder : CircleBorder
             OvalBorder a__as1519 = (OvalBorder)a;
             return new OvalBorder(
                 side: BorderSide.lerp(a__as1519.side, side, t),
-                eccentricity: Dart_uiLibrary.clampDouble(
+                eccentricity: DorotiUiLibrary.clampDouble(
                     (
-                        Dart_uiLibrary.lerpDouble(a__as1519.eccentricity, (eccentricity), t)
+                        DorotiUiLibrary.lerpDouble(a__as1519.eccentricity, (eccentricity), t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -68,9 +68,9 @@ public class OvalBorder : CircleBorder
             OvalBorder b__as1828 = (OvalBorder)b;
             return new OvalBorder(
                 side: BorderSide.lerp(side, b__as1828.side, t),
-                eccentricity: Dart_uiLibrary.clampDouble(
+                eccentricity: DorotiUiLibrary.clampDouble(
                     (
-                        Dart_uiLibrary.lerpDouble((eccentricity), b__as1828.eccentricity, t)
+                        DorotiUiLibrary.lerpDouble((eccentricity), b__as1828.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )

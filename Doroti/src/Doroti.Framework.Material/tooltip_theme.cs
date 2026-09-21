@@ -104,11 +104,11 @@ public class TooltipThemeData : Diagnosticable
             return a;
         }
         return new TooltipThemeData(
-            height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t),
+            height: DorotiUiLibrary.lerpDouble(a?.height, b?.height, t),
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             margin: EdgeInsetsGeometry.lerp(a?.margin, b?.margin, t),
-            verticalOffset: Dart_uiLibrary.lerpDouble(a?.verticalOffset, b?.verticalOffset, t),
+            verticalOffset: DorotiUiLibrary.lerpDouble(a?.verticalOffset, b?.verticalOffset, t),
             preferBelow: (t < 0.5) ? a?.preferBelow : b?.preferBelow,
             excludeFromSemantics: (t < 0.5) ? a?.excludeFromSemantics : b?.excludeFromSemantics,
             decoration: Decoration.lerp(a?.decoration, b?.decoration, t),

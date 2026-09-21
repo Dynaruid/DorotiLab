@@ -162,29 +162,29 @@ public class HSVColor
             return a._scaleAlpha(1.0 - t);
         }
         return new HSVColor(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
+                    DorotiUiLibrary.lerpDouble(a.alpha, b.alpha, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
+                DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ) % 360.0,
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
+                    DorotiUiLibrary.lerpDouble(a.saturation, b.saturation, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.value, b.value, t)
+                    DorotiUiLibrary.lerpDouble(a.value, b.value, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
@@ -257,7 +257,7 @@ public class HSLColor
         double saturation =
             (min == max)
                 ? 0.0
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     delta / (1.0 - ((2.0 * lightness) - 1.0).abs()),
                     0.0,
                     1.0
@@ -319,29 +319,29 @@ public class HSLColor
             return a._scaleAlpha(1.0 - t);
         }
         return new HSLColor(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
+                    DorotiUiLibrary.lerpDouble(a.alpha, b.alpha, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
+                DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ) % 360.0,
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
+                    DorotiUiLibrary.lerpDouble(a.saturation, b.saturation, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 (
-                    Dart_uiLibrary.lerpDouble(a.lightness, b.lightness, t)
+                    DorotiUiLibrary.lerpDouble(a.lightness, b.lightness, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
@@ -438,7 +438,7 @@ public class ColorSwatch<T> : Color
         {
             swatch = a!._swatch.map(
                 (key, color) =>
-                    new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!)
+                    new MapEntry<TKey, Color>(key, DorotiUiLibrary.Color.lerp(color, null, t)!)
             );
         }
         else
@@ -447,18 +447,18 @@ public class ColorSwatch<T> : Color
             {
                 swatch = b._swatch.map(
                     (key, color) =>
-                        new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!)
+                        new MapEntry<TKey, Color>(key, DorotiUiLibrary.Color.lerp(null, color, t)!)
                 );
             }
             else
             {
                 swatch = a._swatch.map(
                     (key, color) =>
-                        new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!)
+                        new MapEntry<TKey, Color>(key, DorotiUiLibrary.Color.lerp(color, b[key], t)!)
                 );
             }
         }
-        return new ColorSwatch<TKey>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);
+        return new ColorSwatch<TKey>(DorotiUiLibrary.Color.lerp(a, b, t)!.value, swatch);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

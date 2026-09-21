@@ -42,7 +42,7 @@ public abstract class Clipboard
 
     private static IPlatformServicesHostCapability RequireHost(string operation)
     {
-        var invocation = DartUiInvocation.Managed(
+        var invocation = DorotiUiInvocation.Managed(
             $"package:flutter/services.dart#Clipboard.{operation}"
         );
         var dispatcher = PlatformDispatcher.instance;

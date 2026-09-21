@@ -36,7 +36,7 @@ public class TextSelectionToolbarAnchors
         return new TextSelectionToolbarAnchors(
             primaryAnchor: new Offset(
                 selectionRect.left + (selectionRect.width / 2L),
-                Dart_uiLibrary.clampDouble(
+                DorotiUiLibrary.clampDouble(
                     selectionRect.top,
                     editingRegion.top,
                     editingRegion.bottom
@@ -44,7 +44,7 @@ public class TextSelectionToolbarAnchors
             ),
             secondaryAnchor: new Offset(
                 selectionRect.left + (selectionRect.width / 2L),
-                Dart_uiLibrary.clampDouble(
+                DorotiUiLibrary.clampDouble(
                     selectionRect.bottom,
                     editingRegion.top,
                     editingRegion.bottom

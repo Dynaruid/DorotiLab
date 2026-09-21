@@ -342,7 +342,7 @@ internal class _FilledButtonWithIconChild__filled_button : StatelessWidget
         double defaultFontSize =
             buttonStyle?.textStyle?.resolve(new HashSet<WidgetState>())?.fontSize ?? 14.0;
         double scaleLocal =
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0,
                 1.0,
                 2.0
@@ -356,7 +356,7 @@ internal class _FilledButtonWithIconChild__filled_button : StatelessWidget
         return new Row(
             mainAxisSize: MainAxisSize.min,
             spacing: (
-                Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
+                DorotiUiLibrary.lerpDouble(8L, 4L, scaleLocal)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)

@@ -263,21 +263,21 @@ public class DatePickerThemeData : Diagnosticable
             return a;
         }
         return new DatePickerThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
-            headerBackgroundColor: Dart_uiLibrary.Color.lerp(
+            headerBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.headerBackgroundColor,
                 b?.headerBackgroundColor,
                 t
             ),
-            headerForegroundColor: Dart_uiLibrary.Color.lerp(
+            headerForegroundColor: DorotiUiLibrary.Color.lerp(
                 a?.headerForegroundColor,
                 b?.headerForegroundColor,
                 t
@@ -338,33 +338,33 @@ public class DatePickerThemeData : Diagnosticable
                 Color.lerp
             ),
             yearShape: WidgetStateProperty.lerp(a?.yearShape, b?.yearShape, t, OutlinedBorder.lerp),
-            rangePickerBackgroundColor: Dart_uiLibrary.Color.lerp(
+            rangePickerBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.rangePickerBackgroundColor,
                 b?.rangePickerBackgroundColor,
                 t
             ),
-            rangePickerElevation: Dart_uiLibrary.lerpDouble(
+            rangePickerElevation: DorotiUiLibrary.lerpDouble(
                 a?.rangePickerElevation,
                 b?.rangePickerElevation,
                 t
             ),
-            rangePickerShadowColor: Dart_uiLibrary.Color.lerp(
+            rangePickerShadowColor: DorotiUiLibrary.Color.lerp(
                 a?.rangePickerShadowColor,
                 b?.rangePickerShadowColor,
                 t
             ),
-            rangePickerSurfaceTintColor: Dart_uiLibrary.Color.lerp(
+            rangePickerSurfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.rangePickerSurfaceTintColor,
                 b?.rangePickerSurfaceTintColor,
                 t
             ),
             rangePickerShape: ShapeBorder.lerp(a?.rangePickerShape, b?.rangePickerShape, t),
-            rangePickerHeaderBackgroundColor: Dart_uiLibrary.Color.lerp(
+            rangePickerHeaderBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.rangePickerHeaderBackgroundColor,
                 b?.rangePickerHeaderBackgroundColor,
                 t
             ),
-            rangePickerHeaderForegroundColor: Dart_uiLibrary.Color.lerp(
+            rangePickerHeaderForegroundColor: DorotiUiLibrary.Color.lerp(
                 a?.rangePickerHeaderForegroundColor,
                 b?.rangePickerHeaderForegroundColor,
                 t
@@ -379,7 +379,7 @@ public class DatePickerThemeData : Diagnosticable
                 b?.rangePickerHeaderHelpStyle,
                 t
             ),
-            rangeSelectionBackgroundColor: Dart_uiLibrary.Color.lerp(
+            rangeSelectionBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.rangeSelectionBackgroundColor,
                 b?.rangeSelectionBackgroundColor,
                 t
@@ -390,7 +390,7 @@ public class DatePickerThemeData : Diagnosticable
                 t,
                 Color.lerp
             ),
-            dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t),
+            dividerColor: DorotiUiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t),
             inputDecorationTheme: (t < 0.5) ? a?.inputDecorationTheme : b?.inputDecorationTheme,
             cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t),
             confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t),
@@ -400,7 +400,7 @@ public class DatePickerThemeData : Diagnosticable
                 b?.toggleButtonTextStyle,
                 t
             ),
-            subHeaderForegroundColor: Dart_uiLibrary.Color.lerp(
+            subHeaderForegroundColor: DorotiUiLibrary.Color.lerp(
                 a?.subHeaderForegroundColor,
                 b?.subHeaderForegroundColor,
                 t

@@ -83,7 +83,7 @@ public class DraggableScrollableController : ChangeNotifier
             );
         });
         await animationController.animateTo(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 size,
                 _attachedController!.extent.minSize,
                 _attachedController!.extent.maxSize
@@ -353,7 +353,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
 
     public virtual void updateSize(double newSize, BuildContext context)
     {
-        double clampedSize = Dart_uiLibrary.clampDouble(newSize, minSize, maxSize);
+        double clampedSize = DorotiUiLibrary.clampDouble(newSize, minSize, maxSize);
         if (_currentSize.value == clampedSize)
         {
             return;
@@ -408,7 +408,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
             initialSize: initialSize,
             currentSize: new ValueNotifier<double>(
                 hasChanged
-                    ? Dart_uiLibrary.clampDouble(_currentSize.value, minSize, maxSize)
+                    ? DorotiUiLibrary.clampDouble(_currentSize.value, minSize, maxSize)
                     : initialSize
             ),
             hasDragged: hasDragged,

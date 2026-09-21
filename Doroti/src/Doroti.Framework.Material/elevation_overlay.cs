@@ -11,7 +11,7 @@ public abstract class ElevationOverlay
     {
         if ((surfaceTint is not null) && (!Equals(surfaceTint, Colors.transparent)))
         {
-            return Dart_uiLibrary.Color.alphaBlend(
+            return DorotiUiLibrary.Color.alphaBlend(
                 surfaceTint.withOpacity(_surfaceTintOpacityForElevation(elevation)),
                 color
             );
@@ -81,7 +81,7 @@ public abstract class ElevationOverlay
 
     public static Color colorWithOverlay(Color surface, Color overlay, double elevation)
     {
-        return Dart_uiLibrary.Color.alphaBlend(_overlayColor(overlay, elevation), surface);
+        return DorotiUiLibrary.Color.alphaBlend(_overlayColor(overlay, elevation), surface);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

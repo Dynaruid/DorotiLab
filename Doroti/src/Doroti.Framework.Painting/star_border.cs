@@ -134,27 +134,27 @@ public class StarBorder : OutlinedBorder
             return new StarBorder(
                 side: BorderSide.lerp(a__as7561.side, side, t),
                 points: (
-                    Dart_uiLibrary.lerpDouble(a__as7561.points, points, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561.points, points, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 rotation: (
-                    Dart_uiLibrary.lerpDouble(a__as7561._rotationRadians, _rotationRadians, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561._rotationRadians, _rotationRadians, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * Star_borderLibrary._kRadToDeg,
                 innerRadiusRatio: (
-                    Dart_uiLibrary.lerpDouble(a__as7561.innerRadiusRatio, innerRadiusRatio, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561.innerRadiusRatio, innerRadiusRatio, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 pointRounding: (
-                    Dart_uiLibrary.lerpDouble(a__as7561.pointRounding, pointRounding, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561.pointRounding, pointRounding, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 valleyRounding: (
-                    Dart_uiLibrary.lerpDouble(a__as7561.valleyRounding, valleyRounding, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561.valleyRounding, valleyRounding, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 squash: (
-                    Dart_uiLibrary.lerpDouble(a__as7561.squash, squash, t)
+                    DorotiUiLibrary.lerpDouble(a__as7561.squash, squash, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
@@ -165,21 +165,21 @@ public class StarBorder : OutlinedBorder
             if (points >= 2.5)
             {
                 double lerpedPoints = (
-                    Dart_uiLibrary.lerpDouble(points.round(), points, t)
+                    DorotiUiLibrary.lerpDouble(points.round(), points, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
                     points: lerpedPoints,
                     squash: (
-                        Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
+                        DorotiUiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
-                        Dart_uiLibrary.lerpDouble(
+                        DorotiUiLibrary.lerpDouble(
                             Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
                             innerRadiusRatio,
                             t
@@ -189,13 +189,13 @@ public class StarBorder : OutlinedBorder
                         )
                     ),
                     pointRounding: (
-                        Dart_uiLibrary.lerpDouble(1.0, pointRounding, t)
+                        DorotiUiLibrary.lerpDouble(1.0, pointRounding, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     valleyRounding: (
-                        Dart_uiLibrary.lerpDouble(0.0, valleyRounding, t)
+                        DorotiUiLibrary.lerpDouble(0.0, valleyRounding, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -205,33 +205,33 @@ public class StarBorder : OutlinedBorder
             else
             {
                 double lerpedPointsLocal = (
-                    Dart_uiLibrary.lerpDouble(points, 2L, t)
+                    DorotiUiLibrary.lerpDouble(points, 2L, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
                     points: lerpedPointsLocal,
                     squash: (
-                        Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
+                        DorotiUiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
-                        Dart_uiLibrary.lerpDouble(1L, innerRadiusRatio, t)
+                        DorotiUiLibrary.lerpDouble(1L, innerRadiusRatio, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     pointRounding: (
-                        Dart_uiLibrary.lerpDouble(0.5, pointRounding, t)
+                        DorotiUiLibrary.lerpDouble(0.5, pointRounding, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     valleyRounding: (
-                        Dart_uiLibrary.lerpDouble(0.5, valleyRounding, t)
+                        DorotiUiLibrary.lerpDouble(0.5, valleyRounding, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -296,27 +296,27 @@ public class StarBorder : OutlinedBorder
             return new StarBorder(
                 side: BorderSide.lerp(side, b__as10562.side, t),
                 points: (
-                    Dart_uiLibrary.lerpDouble(points, b__as10562.points, t)
+                    DorotiUiLibrary.lerpDouble(points, b__as10562.points, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 rotation: (
-                    Dart_uiLibrary.lerpDouble(_rotationRadians, b__as10562._rotationRadians, t)
+                    DorotiUiLibrary.lerpDouble(_rotationRadians, b__as10562._rotationRadians, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * Star_borderLibrary._kRadToDeg,
                 innerRadiusRatio: (
-                    Dart_uiLibrary.lerpDouble(innerRadiusRatio, b__as10562.innerRadiusRatio, t)
+                    DorotiUiLibrary.lerpDouble(innerRadiusRatio, b__as10562.innerRadiusRatio, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 pointRounding: (
-                    Dart_uiLibrary.lerpDouble(pointRounding, b__as10562.pointRounding, t)
+                    DorotiUiLibrary.lerpDouble(pointRounding, b__as10562.pointRounding, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 valleyRounding: (
-                    Dart_uiLibrary.lerpDouble(valleyRounding, b__as10562.valleyRounding, t)
+                    DorotiUiLibrary.lerpDouble(valleyRounding, b__as10562.valleyRounding, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 squash: (
-                    Dart_uiLibrary.lerpDouble(squash, b__as10562.squash, t)
+                    DorotiUiLibrary.lerpDouble(squash, b__as10562.squash, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
@@ -327,21 +327,21 @@ public class StarBorder : OutlinedBorder
             if (points >= 2.5)
             {
                 double lerpedPoints = (
-                    Dart_uiLibrary.lerpDouble(points, points.round(), t)
+                    DorotiUiLibrary.lerpDouble(points, points.round(), t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
                     points: lerpedPoints,
                     squash: (
-                        Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
+                        DorotiUiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
-                        Dart_uiLibrary.lerpDouble(
+                        DorotiUiLibrary.lerpDouble(
                             innerRadiusRatio,
                             Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
                             t
@@ -351,13 +351,13 @@ public class StarBorder : OutlinedBorder
                         )
                     ),
                     pointRounding: (
-                        Dart_uiLibrary.lerpDouble(pointRounding, 1.0, t)
+                        DorotiUiLibrary.lerpDouble(pointRounding, 1.0, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     valleyRounding: (
-                        Dart_uiLibrary.lerpDouble(valleyRounding, 0.0, t)
+                        DorotiUiLibrary.lerpDouble(valleyRounding, 0.0, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -367,33 +367,33 @@ public class StarBorder : OutlinedBorder
             else
             {
                 double lerpedPointsLocal = (
-                    Dart_uiLibrary.lerpDouble(points, 2L, t)
+                    DorotiUiLibrary.lerpDouble(points, 2L, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
                     points: lerpedPointsLocal,
                     squash: (
-                        Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
+                        DorotiUiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
-                        Dart_uiLibrary.lerpDouble(innerRadiusRatio, 1L, t)
+                        DorotiUiLibrary.lerpDouble(innerRadiusRatio, 1L, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     pointRounding: (
-                        Dart_uiLibrary.lerpDouble(pointRounding, 0.5, t)
+                        DorotiUiLibrary.lerpDouble(pointRounding, 0.5, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
                     ),
                     valleyRounding: (
-                        Dart_uiLibrary.lerpDouble(valleyRounding, 0.5, t)
+                        DorotiUiLibrary.lerpDouble(valleyRounding, 0.5, t)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -752,7 +752,7 @@ internal class _StarGenerator__star_border
                 effectiveInnerRadius + (remainder * (radius - effectiveInnerRadius));
             addPoint(angle, step * remainder, endingRadius, innerRadius);
         }
-        return Dart_uiLibrary.clampDouble(
+        return DorotiUiLibrary.clampDouble(
             Math.Max(valleyRadius, pointRadiusLocal),
             double.Epsilon,
             double.MaxValue

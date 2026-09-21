@@ -231,13 +231,13 @@ internal class _TabStyle__tabs : AnimatedWidget
             {
                 if (states.Contains(WidgetState.selected))
                 {
-                    return Dart_uiLibrary.Color.lerp(
+                    return DorotiUiLibrary.Color.lerp(
                         selectedColor,
                         unselectedColor,
                         animation.value
                     )!;
                 }
-                return Dart_uiLibrary.Color.lerp(unselectedColor, selectedColor, animation.value)!;
+                return DorotiUiLibrary.Color.lerp(unselectedColor, selectedColor, animation.value)!;
                 throw new InvalidOperationException(
                     "Callback completed without returning a value."
                 );
@@ -426,7 +426,7 @@ public static partial class TabsLibrary
         double currentIndex = controller.index.toDouble();
         if (!controller.indexIsChanging)
         {
-            return Dart_uiLibrary.clampDouble((currentIndex - controllerValue).abs(), 0.0, 1.0);
+            return DorotiUiLibrary.clampDouble((currentIndex - controllerValue).abs(), 0.0, 1.0);
         }
         return (controllerValue - currentIndex).abs() / (currentIndex - previousIndexLocal).abs();
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -750,7 +750,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
         long to = (ltr ? (@from + 1L) : (@from - 1L)).clamp(0L, maxTabIndex);
         Rect fromRect = indicatorRect(size, @from);
         Rect toRect = indicatorRect(size, to);
-        return Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs());
+        return DorotiUiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs());
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -801,7 +801,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
         Rect toRect = indicatorRect(size, to);
         Rect fromRect = indicatorRect(size, @from);
         Rect rect = (
-            Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs())
+            DorotiUiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs())
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (controller.animation!.isCompleted)
@@ -816,7 +816,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             {
                 progressLeft /= tabsDelta;
             }
-            tabChangeProgress = 1L - Dart_uiLibrary.clampDouble(progressLeft, 0.0, 1.0);
+            tabChangeProgress = 1L - DorotiUiLibrary.clampDouble(progressLeft, 0.0, 1.0);
         }
         else
         {
@@ -856,11 +856,11 @@ internal class _IndicatorPainter__tabs : CustomPainter
         if (controller.indexIsChanging)
         {
             lerpRectLeft = (
-                Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+                DorotiUiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             lerpRectRight = (
-                Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+                DorotiUiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
@@ -869,11 +869,11 @@ internal class _IndicatorPainter__tabs : CustomPainter
             lerpRectLeft = (object)isMovingRight switch
             {
                 true => (
-                    Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+                    DorotiUiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 false => (
-                    Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)
+                    DorotiUiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
@@ -884,11 +884,11 @@ internal class _IndicatorPainter__tabs : CustomPainter
             lerpRectRight = (object)isMovingRight switch
             {
                 true => (
-                    Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+                    DorotiUiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 false => (
-                    Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)
+                    DorotiUiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
@@ -988,12 +988,12 @@ internal class _DragAnimation__tabs : Animation<double>, AnimationWithParentMixi
         {
             DartRuntimePrimitives.Assert(() => !controller.indexIsChanging);
             double controllerMaxValue = (controller.length - 1L).toDouble();
-            double controllerValue = Dart_uiLibrary.clampDouble(
+            double controllerValue = DorotiUiLibrary.clampDouble(
                 controller.animation!.value,
                 0.0,
                 controllerMaxValue
             );
-            return Dart_uiLibrary.clampDouble((controllerValue - index.toDouble()).abs(), 0.0, 1.0);
+            return DorotiUiLibrary.clampDouble((controllerValue - index.toDouble()).abs(), 0.0, 1.0);
         }
     }
 
@@ -1665,7 +1665,7 @@ internal class _TabBarState__tabs : State<TabBar>
                 break;
             }
         }
-        return Dart_uiLibrary.clampDouble(
+        return DorotiUiLibrary.clampDouble(
             tabCenter + paddingStart - (viewportWidth / 2.0),
             minExtent,
             maxExtent
@@ -1770,7 +1770,7 @@ internal class _TabBarState__tabs : State<TabBar>
             < 0L => (leadingPosition is null)
                 ? middlePosition
                 : (
-                    Dart_uiLibrary.lerpDouble(
+                    DorotiUiLibrary.lerpDouble(
                         middlePosition,
                         (
                             leadingPosition
@@ -1785,7 +1785,7 @@ internal class _TabBarState__tabs : State<TabBar>
             _ => (trailingPosition is null)
                 ? middlePosition
                 : (
-                    Dart_uiLibrary.lerpDouble(
+                    DorotiUiLibrary.lerpDouble(
                         middlePosition,
                         (
                             trailingPosition
@@ -2651,7 +2651,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
 
     internal virtual void _syncControllerOffset()
     {
-        _controller!.offset = Dart_uiLibrary.clampDouble(
+        _controller!.offset = DorotiUiLibrary.clampDouble(
             (
                 _pageController!.page
                 ?? throw new global::System.NullReferenceException("A required value was null.")

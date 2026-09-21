@@ -1024,7 +1024,7 @@ public sealed class PlatformViewCoordinator
         new(
             DorotiCapabilityIds.PlatformViews,
             OwnerViewId,
-            DartUiInvocation.Managed("PlatformView"),
+            DorotiUiInvocation.Managed("PlatformView"),
             $"instance={handle.InstanceId}; generation={handle.InstanceGeneration}; {reason}",
             _backend
         );

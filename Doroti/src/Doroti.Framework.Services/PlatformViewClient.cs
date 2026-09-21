@@ -18,7 +18,7 @@ public sealed class PlatformViewClient : IAsyncDisposable
         : this(
             owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("PlatformViewClient.create")
+                DorotiUiInvocation.Managed("PlatformViewClient.create")
             ),
             request
         ) { }
@@ -35,7 +35,7 @@ public sealed class PlatformViewClient : IAsyncDisposable
         : this(
             owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("PlatformViewClient.create")
+                DorotiUiInvocation.Managed("PlatformViewClient.create")
             ),
             descriptor
         ) { }

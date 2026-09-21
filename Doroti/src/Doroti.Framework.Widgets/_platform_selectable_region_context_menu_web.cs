@@ -86,7 +86,7 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
                 (
                     debugOverrideRegisterViewFactory
                     ?? (RegisterViewFactoryIo)
-                        Dart_ui_webLibrary.platformViewRegistry.registerViewFactory
+                        DorotiUiWebLibrary.platformViewRegistry.registerViewFactory
                 )
             )
         );

@@ -260,7 +260,7 @@ public class InkSplash : InteractiveInkFeature
         Offset? centerLocal = _position;
         if (_repositionToReferenceBox)
         {
-            centerLocal = Dart_uiLibrary.Offset.lerp(
+            centerLocal = DorotiUiLibrary.Offset.lerp(
                 centerLocal,
                 referenceBox.size.center(Offset.zero),
                 _radiusController.value

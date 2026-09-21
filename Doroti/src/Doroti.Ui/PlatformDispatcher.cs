@@ -2,7 +2,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Ui;
 
-/// <summary>Managed dart:ui dispatcher. Every callback carries its originating view.</summary>
+/// <summary>Managed Doroti UI dispatcher. Every callback carries its originating view.</summary>
 public sealed class PlatformDispatcher : IDisposable
 {
     private static readonly AsyncLocal<PlatformDispatcher?> ActiveDispatcher = new();
@@ -44,7 +44,7 @@ public sealed class PlatformDispatcher : IDisposable
         ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.DartPerformanceMode,
             null,
-            DartUiInvocation.Managed("dart:ui#PlatformDispatcher.instance"),
+            DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.instance"),
             "no dispatcher is active in the current execution context"
         );
 
@@ -88,7 +88,7 @@ public sealed class PlatformDispatcher : IDisposable
         }
         foreach (var view in registered)
         {
-            view.ScheduleFrame(DartUiInvocation.Managed("dart:ui#PlatformDispatcher.microtask"));
+            view.ScheduleFrame(DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.microtask"));
         }
     }
 
@@ -103,7 +103,7 @@ public sealed class PlatformDispatcher : IDisposable
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.DartPerformanceMode,
                 null,
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.requestDartPerformanceMode"),
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.requestDartPerformanceMode"),
                 "the active host did not register it"
             );
         }
@@ -123,14 +123,14 @@ public sealed class PlatformDispatcher : IDisposable
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.ViewFrameDispatch,
                 null,
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.scheduleFrame"),
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.scheduleFrame"),
                 "no Flutter view is registered"
             );
         }
         foreach (var view in registered)
         {
             view.ScheduleFrame(
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.scheduleFrame")
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.scheduleFrame")
             );
         }
     }
@@ -314,14 +314,14 @@ public sealed class PlatformDispatcher : IDisposable
 
     public Action<List<FrameTiming>>? onReportTimings { get; set; }
 
-    /// <summary>Framework-side frame listeners. Concrete hosts only raise the dart:ui callbacks.</summary>
+    /// <summary>Framework-side frame listeners. Concrete hosts only raise the Doroti UI callbacks.</summary>
     public event Action<DorotiView, TimeSpan>? beginFrame;
 
     public event Action<DorotiView>? drawFrame;
 
     public Action<DorotiView, PointerDataPacket>? onPointerDataPacket { get; set; }
 
-    /// <summary>dart:ui PlatformDispatcher.onHitTest — framework hit-test callback for platform views.</summary>
+    /// <summary>Doroti UI PlatformDispatcher.onHitTest — framework hit-test callback for platform views.</summary>
     public Func<HitTestRequest, HitTestResponse>? onHitTest { get; set; }
 
     public Func<KeyData, bool>? onKeyData { get; set; }
@@ -370,7 +370,7 @@ public sealed class PlatformDispatcher : IDisposable
             .SendPlatformMessageAsync(
                 channel,
                 data?.asMemory(),
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPlatformMessage")
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.sendPlatformMessage")
             );
         callback?.Invoke(response is null ? null : (ByteData)response.Value);
     }
@@ -387,7 +387,7 @@ public sealed class PlatformDispatcher : IDisposable
             .SendPlatformMessageAsync(
                 channel,
                 data?.asMemory(),
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.sendPortPlatformMessage")
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.sendPortPlatformMessage")
             );
         sendPort.send(
             new List<object?>
@@ -414,7 +414,7 @@ public sealed class PlatformDispatcher : IDisposable
         {
             view.SetSemanticsTreeEnabled(
                 enabled,
-                DartUiInvocation.Managed("dart:ui#PlatformDispatcher.setSemanticsTreeEnabled")
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.setSemanticsTreeEnabled")
             );
         }
     }
@@ -455,7 +455,7 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
-    public DorotiView GetView(ulong viewId, DartUiInvocation invocation)
+    public DorotiView GetView(ulong viewId, DorotiUiInvocation invocation)
     {
         lock (_gate)
         {
@@ -647,14 +647,14 @@ public sealed class PlatformDispatcher : IDisposable
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformMessaging,
             null,
-            DartUiInvocation.Managed("dart:ui#PlatformDispatcher.platformMessaging"),
+            DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.platformMessaging"),
             "platform messaging requires exactly one active view in this host-neutral dispatcher scope"
         );
     }
 
     internal ValueTask<ReadOnlyMemory<byte>> LoadApplicationResourceAsync(
         string key,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     )
     {
@@ -750,7 +750,7 @@ public sealed class DorotiView : IDisposable
         _viewHost = capabilities.Require<IViewHostCapability>(
             viewId,
             DorotiCapabilityIds.ViewLifecycleMetrics,
-            DartUiInvocation.Managed("dart:ui#DorotiView")
+            DorotiUiInvocation.Managed("Doroti.Ui#DorotiView")
         );
         _metrics = _viewHost.Metrics.Validate();
         _viewHost.MetricsChanged += HandleMetricsChanged;
@@ -767,7 +767,7 @@ public sealed class DorotiView : IDisposable
             _inputHost = capabilities.Require<IInputHostCapability>(
                 viewId,
                 DorotiCapabilityIds.InputEvents,
-                DartUiInvocation.Managed("dart:ui#PointerDataPacket")
+                DorotiUiInvocation.Managed("Doroti.Ui#PointerDataPacket")
             );
             _inputHost.PointerData += HandlePointerData;
             _inputHost.KeyData += HandleKeyData;
@@ -783,7 +783,7 @@ public sealed class DorotiView : IDisposable
             _environmentHost = capabilities.Require<IPlatformEnvironmentHostCapability>(
                 viewId,
                 DorotiCapabilityIds.PlatformEnvironment,
-                DartUiInvocation.Managed("dart:ui#PlatformConfiguration")
+                DorotiUiInvocation.Managed("Doroti.Ui#PlatformConfiguration")
             );
             _environmentConfiguration = _environmentHost.Configuration.Snapshot();
             _environmentHost.ConfigurationChanged += HandlePlatformConfigurationChanged;
@@ -798,7 +798,7 @@ public sealed class DorotiView : IDisposable
             _semanticsHost = capabilities.Require<ISemanticsHostCapability>(
                 viewId,
                 DorotiCapabilityIds.AccessibilitySemantics,
-                DartUiInvocation.Managed("dart:ui#SemanticsUpdate")
+                DorotiUiInvocation.Managed("Doroti.Ui#SemanticsUpdate")
             );
             _semanticsHost.Action += HandleSemanticsAction;
         }
@@ -820,7 +820,7 @@ public sealed class DorotiView : IDisposable
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformEnvironment,
                 viewId,
-                DartUiInvocation.Managed("dart:ui#DorotiView.EnterPlatformEnvironmentScope"),
+                DorotiUiInvocation.Managed("Doroti.Ui#DorotiView.EnterPlatformEnvironmentScope"),
                 "the active host did not register it",
                 targetIdentity
             );
@@ -849,7 +849,7 @@ public sealed class DorotiView : IDisposable
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.InputEvents,
             viewId,
-            DartUiInvocation.Managed("dart:ui#PlatformDispatcher.requestViewFocusChange"),
+            DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.requestViewFocusChange"),
             "the active input host does not support outbound view-focus requests"
         );
     }
@@ -930,7 +930,7 @@ public sealed class DorotiView : IDisposable
         ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
             viewId,
-            DartUiInvocation.Managed("dart:ui#PlatformConfiguration"),
+            DorotiUiInvocation.Managed("Doroti.Ui#PlatformConfiguration"),
             "the active host did not register it"
         );
 
@@ -952,7 +952,7 @@ public sealed class DorotiView : IDisposable
         _viewHost.Resize(logicalSize);
     }
 
-    public void ScheduleFrame(DartUiInvocation invocation)
+    public void ScheduleFrame(DorotiUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var frameHost = _capabilities.Require<IFrameHostCapability>(
@@ -1067,7 +1067,7 @@ public sealed class DorotiView : IDisposable
     public async ValueTask<ReadOnlyMemory<byte>?> SendPlatformMessageAsync(
         string channel,
         ReadOnlyMemory<byte>? data,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     )
     {
@@ -1082,17 +1082,17 @@ public sealed class DorotiView : IDisposable
             .ConfigureAwait(false);
     }
 
-    public TCapability RequireCapability<TCapability>(string id, DartUiInvocation invocation)
+    public TCapability RequireCapability<TCapability>(string id, DorotiUiInvocation invocation)
         where TCapability : class
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _capabilities.Require<TCapability>(viewId, id, invocation);
     }
 
-    public void SubmitScene(Scene scene, DartUiInvocation invocation) =>
+    public void SubmitScene(Scene scene, DorotiUiInvocation invocation) =>
         SubmitScene(scene, null, invocation);
 
-    private void SubmitScene(Scene scene, Size? rootPhysicalSize, DartUiInvocation invocation)
+    private void SubmitScene(Scene scene, Size? rootPhysicalSize, DorotiUiInvocation invocation)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -1124,13 +1124,13 @@ public sealed class DorotiView : IDisposable
     }
 
     public void render(Scene scene) =>
-        SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
+        SubmitScene(scene, DorotiUiInvocation.Managed("Doroti.Ui#DorotiView.render"));
 
     public void render(Scene scene, Size size)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentNullException.ThrowIfNull(size);
-        SubmitScene(scene, size, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
+        SubmitScene(scene, size, DorotiUiInvocation.Managed("Doroti.Ui#DorotiView.render"));
     }
 
     private static int ToPhysicalDimension(double value, string parameterName)
@@ -1143,14 +1143,14 @@ public sealed class DorotiView : IDisposable
         return checked((int)Math.Round(value));
     }
 
-    public Paragraph LayoutParagraph(ParagraphRequest request, DartUiInvocation invocation) =>
+    public Paragraph LayoutParagraph(ParagraphRequest request, DorotiUiInvocation invocation) =>
         _capabilities
             .Require<IParagraphHostCapability>(viewId, DorotiCapabilityIds.GraphicsText, invocation)
             .Layout(request, invocation);
 
     public ValueTask<Image> DecodeImageAsync(
         ReadOnlyMemory<byte> bytes,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) =>
         _capabilities
@@ -1161,14 +1161,14 @@ public sealed class DorotiView : IDisposable
         ReadOnlyMemory<byte> bytes,
         Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) =>
         _capabilities
             .Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
             .DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
 
-    public void UpdateSemantics(SemanticsUpdate update, DartUiInvocation invocation) =>
+    public void UpdateSemantics(SemanticsUpdate update, DorotiUiInvocation invocation) =>
         _capabilities
             .Require<ISemanticsHostCapability>(
                 viewId,
@@ -1177,7 +1177,7 @@ public sealed class DorotiView : IDisposable
             )
             .Update(update with { viewDevicePixelRatio = devicePixelRatio }, invocation);
 
-    internal void SetSemanticsTreeEnabled(bool enabled, DartUiInvocation invocation) =>
+    internal void SetSemanticsTreeEnabled(bool enabled, DorotiUiInvocation invocation) =>
         _capabilities
             .Require<ISemanticsHostCapability>(
                 viewId,
@@ -1187,7 +1187,7 @@ public sealed class DorotiView : IDisposable
             .SetEnabled(enabled, invocation);
 
     public void updateSemantics(SemanticsUpdate update) =>
-        UpdateSemantics(update, DartUiInvocation.Managed("dart:ui#DorotiView.updateSemantics"));
+        UpdateSemantics(update, DorotiUiInvocation.Managed("Doroti.Ui#DorotiView.updateSemantics"));
 
     public void Dispose()
     {

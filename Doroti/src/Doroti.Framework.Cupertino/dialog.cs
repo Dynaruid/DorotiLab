@@ -1077,7 +1077,7 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
             else
             {
                 return (
-                    Dart_uiLibrary.lerpDouble(y1, y2, (x - x1) / (x2 - x1))
+                    DorotiUiLibrary.lerpDouble(y1, y2, (x - x1) / (x2 - x1))
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
@@ -1373,11 +1373,11 @@ internal class _ActionSheetActionContent__dialog : StatelessWidget
         {
             <= 17L => 21.0,
             <= 19L => (
-                Dart_uiLibrary.lerpDouble(21.0, 23.0, (contextBodySize - 17.0) / (19.0 - 17.0))
+                DorotiUiLibrary.lerpDouble(21.0, 23.0, (contextBodySize - 17.0) / (19.0 - 17.0))
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             <= 21L => (
-                Dart_uiLibrary.lerpDouble(23.0, 24.0, (contextBodySize - 19.0) / (21.0 - 19.0))
+                DorotiUiLibrary.lerpDouble(23.0, 24.0, (contextBodySize - 19.0) / (21.0 - 19.0))
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             <= 24L => 24.0,

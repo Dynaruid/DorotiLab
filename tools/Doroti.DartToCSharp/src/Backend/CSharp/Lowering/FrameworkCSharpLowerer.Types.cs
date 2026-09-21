@@ -224,7 +224,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (expression.StartsWith("ui.", StringComparison.Ordinal))
         {
-            return "Dart_uiLibrary." + expression[3..];
+            return "DorotiUiLibrary." + expression[3..];
         }
         if (
             Regex.Match(
@@ -383,7 +383,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 return value[3..];
             }
-            return "Dart_uiLibrary." + value[3..];
+            return "DorotiUiLibrary." + value[3..];
         }
         if (
             value.EndsWith(".zero", StringComparison.Ordinal)

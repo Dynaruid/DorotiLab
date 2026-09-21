@@ -9,7 +9,7 @@ internal sealed class OwnerPlatformViewMessenger(DorotiView owner) : BinaryMesse
     private readonly IPlatformMessageHostCapability _messages =
         owner.RequireCapability<IPlatformMessageHostCapability>(
             DorotiCapabilityIds.PlatformMessaging,
-            DartUiInvocation.Managed("PlatformView.messenger")
+            DorotiUiInvocation.Managed("PlatformView.messenger")
         );
 
     public async Future<ByteData?> send(string channel, ByteData? message)
@@ -17,7 +17,7 @@ internal sealed class OwnerPlatformViewMessenger(DorotiView owner) : BinaryMesse
         var reply = await owner.SendPlatformMessageAsync(
             channel,
             message?.asMemory(),
-            DartUiInvocation.Managed("PlatformView.channel")
+            DorotiUiInvocation.Managed("PlatformView.channel")
         );
         return reply is { } data ? (ByteData)data : null;
     }

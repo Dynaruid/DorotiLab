@@ -59,11 +59,11 @@ public class DividerThemeData : Diagnosticable
             return a;
         }
         return new DividerThemeData(
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            space: Dart_uiLibrary.lerpDouble(a?.space, b?.space, t),
-            thickness: Dart_uiLibrary.lerpDouble(a?.thickness, b?.thickness, t),
-            indent: Dart_uiLibrary.lerpDouble(a?.indent, b?.indent, t),
-            endIndent: Dart_uiLibrary.lerpDouble(a?.endIndent, b?.endIndent, t),
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            space: DorotiUiLibrary.lerpDouble(a?.space, b?.space, t),
+            thickness: DorotiUiLibrary.lerpDouble(a?.thickness, b?.thickness, t),
+            indent: DorotiUiLibrary.lerpDouble(a?.indent, b?.indent, t),
+            endIndent: DorotiUiLibrary.lerpDouble(a?.endIndent, b?.endIndent, t),
             radius: BorderRadiusGeometry.lerp(a?.radius, b?.radius, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

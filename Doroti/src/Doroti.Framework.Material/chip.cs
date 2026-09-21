@@ -927,7 +927,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
         EdgeInsetsGeometry defaultLabelPadding = EdgeInsets.lerp(
             EdgeInsets.CreateSymmetric(horizontal: 8.0),
             EdgeInsets.CreateSymmetric(horizontal: 4.0),
-            Dart_uiLibrary.clampDouble(effectiveTextScale - 1.0, 0.0, 1.0)
+            DorotiUiLibrary.clampDouble(effectiveTextScale - 1.0, 0.0, 1.0)
         )!;
         EdgeInsetsGeometry labelPaddingLocal =
             ((widget.labelPadding ?? chipTheme.labelPadding) ?? chipDefaults.labelPadding)
@@ -2035,7 +2035,7 @@ public class _RenderChip__chip
         {
             double strokeT = t * 2.0;
             Offset drawMid = (
-                Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
+                DorotiUiLibrary.Offset.lerp(start, mid, strokeT)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
@@ -2045,7 +2045,7 @@ public class _RenderChip__chip
         {
             double strokeTLocal = (t - 0.5) * 2.0;
             Offset drawEnd = (
-                Dart_uiLibrary.Offset.lerp(mid, endLocal, strokeTLocal)
+                DorotiUiLibrary.Offset.lerp(mid, endLocal, strokeTLocal)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
@@ -2644,7 +2644,7 @@ internal class _ChipDefaultsM3__chip : ChipThemeData
             return EdgeInsets.lerp(
                 EdgeInsets.CreateSymmetric(horizontal: 8.0),
                 EdgeInsets.CreateSymmetric(horizontal: 4.0),
-                Dart_uiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0)
+                DorotiUiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0)
             )!;
         }
     }

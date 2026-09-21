@@ -131,7 +131,7 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         get
         {
             return (
-                Dart_uiLibrary.Radius.lerp(
+                DorotiUiLibrary.Radius.lerp(
                     widget.radius,
                     widget.radiusWhileDragging,
                     _thicknessAnimationController.value

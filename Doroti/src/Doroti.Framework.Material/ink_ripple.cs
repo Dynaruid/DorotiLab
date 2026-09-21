@@ -281,7 +281,7 @@ public class InkRipple : InteractiveInkFeature
         )();
         Rect? rect = _clipCallback?.Invoke();
         Offset centerLocal = (
-            Dart_uiLibrary.Offset.lerp(
+            DorotiUiLibrary.Offset.lerp(
                 _position,
                 (rect is not null)
                     ? (

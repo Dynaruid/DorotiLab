@@ -103,20 +103,20 @@ public class BottomNavigationBarThemeData : Diagnosticable
             return a;
         }
         return new BottomNavigationBarThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             selectedIconTheme: IconThemeData.lerp(a?.selectedIconTheme, b?.selectedIconTheme, t),
             unselectedIconTheme: IconThemeData.lerp(
                 a?.unselectedIconTheme,
                 b?.unselectedIconTheme,
                 t
             ),
-            selectedItemColor: Dart_uiLibrary.Color.lerp(
+            selectedItemColor: DorotiUiLibrary.Color.lerp(
                 a?.selectedItemColor,
                 b?.selectedItemColor,
                 t
             ),
-            unselectedItemColor: Dart_uiLibrary.Color.lerp(
+            unselectedItemColor: DorotiUiLibrary.Color.lerp(
                 a?.unselectedItemColor,
                 b?.unselectedItemColor,
                 t

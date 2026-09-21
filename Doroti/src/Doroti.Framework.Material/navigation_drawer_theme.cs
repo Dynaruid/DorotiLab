@@ -83,18 +83,18 @@ public class NavigationDrawerThemeData : Diagnosticable
             return a;
         }
         return new NavigationDrawerThemeData(
-            tileHeight: Dart_uiLibrary.lerpDouble(a?.tileHeight, b?.tileHeight, t),
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            tileHeight: DorotiUiLibrary.lerpDouble(a?.tileHeight, b?.tileHeight, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            indicatorColor: Dart_uiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
+            indicatorColor: DorotiUiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
             indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t),
-            indicatorSize: Dart_uiLibrary.Size.lerp(a?.indicatorSize, a?.indicatorSize, t),
+            indicatorSize: DorotiUiLibrary.Size.lerp(a?.indicatorSize, a?.indicatorSize, t),
             labelTextStyle: WidgetStateProperty.lerp(
                 a?.labelTextStyle,
                 b?.labelTextStyle,

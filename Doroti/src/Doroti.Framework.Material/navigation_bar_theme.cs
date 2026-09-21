@@ -93,16 +93,16 @@ public class NavigationBarThemeData : Diagnosticable
             return a;
         }
         return new NavigationBarThemeData(
-            height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t),
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            height: DorotiUiLibrary.lerpDouble(a?.height, b?.height, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            indicatorColor: Dart_uiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
+            indicatorColor: DorotiUiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
             indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t),
             labelTextStyle: WidgetStateProperty.lerp(
                 a?.labelTextStyle,

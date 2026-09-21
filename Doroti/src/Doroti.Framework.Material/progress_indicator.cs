@@ -67,7 +67,7 @@ public abstract class ProgressIndicator : StatefulWidget
     internal virtual double? _effectiveValue =>
         (value is null)
             ? null
-            : Dart_uiLibrary.clampDouble(
+            : DorotiUiLibrary.clampDouble(
                 (
                     value
                     ?? throw new global::System.NullReferenceException("A required value was null.")
@@ -241,7 +241,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
         double getEffectiveTrackGapFraction(double currentValue, double trackGapFraction)
         {
             return trackGapFraction
-                * Dart_uiLibrary.clampDouble(
+                * DorotiUiLibrary.clampDouble(
                     currentValue,
                     0,
                     Progress_indicatorLibrary._kTrackGapRampDownThreshold
@@ -255,7 +255,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
         double? effectiveValue =
             (value is null)
                 ? null
-                : Dart_uiLibrary.clampDouble(
+                : DorotiUiLibrary.clampDouble(
                     (
                         value
                         ?? throw new global::System.NullReferenceException(
@@ -799,7 +799,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
         arcSweep =
             (value is not null)
                 ? (
-                    Dart_uiLibrary.clampDouble(
+                    DorotiUiLibrary.clampDouble(
                         (
                             value
                             ?? throw new global::System.NullReferenceException(
@@ -903,7 +903,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     0.0,
                     _twoPi
                         - (
-                            Dart_uiLibrary.clampDouble(
+                            DorotiUiLibrary.clampDouble(
                                 (
                                     value
                                     ?? throw new global::System.NullReferenceException(

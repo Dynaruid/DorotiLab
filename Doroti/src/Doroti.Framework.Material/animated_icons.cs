@@ -116,7 +116,7 @@ internal class _AnimatedIconPainter__animated_icons : CustomPainter
             canvas.translate(-size.width, -size.height);
         }
         canvas.scale(scale, scale);
-        double clampedProgress = Dart_uiLibrary.clampDouble(progress.value, 0.0, 1.0);
+        double clampedProgress = DorotiUiLibrary.clampDouble(progress.value, 0.0, 1.0);
         foreach (_PathFrames__animated_icons path in paths)
         {
             path.paint(canvas, color, uiPathFactory, clampedProgress);
@@ -163,7 +163,7 @@ public class _PathFrames__animated_icons
             Animated_iconsLibrary._interpolate(
                 opacities,
                 progress,
-                (a, b, t) => Dart_uiLibrary.lerpDouble(a, b, t) ?? 0.0
+                (a, b, t) => DorotiUiLibrary.lerpDouble(a, b, t) ?? 0.0
             )
         );
         var paintLocal = (
@@ -311,7 +311,7 @@ public static partial class Animated_iconsLibrary
             return values[(int)0L];
         }
         double targetIdx = (
-            Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress)
+            DorotiUiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         long lowIdx = targetIdx.floor();

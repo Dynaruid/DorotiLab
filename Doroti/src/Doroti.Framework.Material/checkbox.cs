@@ -1008,7 +1008,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
     {
         return (t >= 0.25)
             ? activeColor
-            : Dart_uiLibrary.Color.lerp(inactiveColor, activeColor, t * 4.0)!;
+            : DorotiUiLibrary.Color.lerp(inactiveColor, activeColor, t * 4.0)!;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -1059,7 +1059,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         {
             double strokeT = t * 2.0;
             Offset drawMid = (
-                Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
+                DorotiUiLibrary.Offset.lerp(start, mid, strokeT)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
@@ -1069,7 +1069,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         {
             double strokeTLocal = (t - 0.5) * 2.0;
             Offset drawEnd = (
-                Dart_uiLibrary.Offset.lerp(mid, end, strokeTLocal)
+                DorotiUiLibrary.Offset.lerp(mid, end, strokeTLocal)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
@@ -1086,11 +1086,11 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         var mid = new Offset(CheckboxLibrary._kEdgeSize * 0.5, CheckboxLibrary._kEdgeSize * 0.5);
         var end = new Offset(CheckboxLibrary._kEdgeSize * 0.8, CheckboxLibrary._kEdgeSize * 0.5);
         Offset drawStart = (
-            Dart_uiLibrary.Offset.lerp(start, mid, 1.0 - t)
+            DorotiUiLibrary.Offset.lerp(start, mid, 1.0 - t)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         Offset drawEnd = (
-            Dart_uiLibrary.Offset.lerp(mid, end, t)
+            DorotiUiLibrary.Offset.lerp(mid, end, t)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         canvas.drawLine(origin + drawStart, origin + drawEnd, paint);

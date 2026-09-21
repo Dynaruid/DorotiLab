@@ -458,9 +458,9 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
             }
             else
             {
-                delta = Dart_uiLibrary.clampDouble(delta, -double.PositiveInfinity, 0);
+                delta = DorotiUiLibrary.clampDouble(delta, -double.PositiveInfinity, 0);
             }
-            effectiveScrollOffset = Dart_uiLibrary.clampDouble(
+            effectiveScrollOffset = DorotiUiLibrary.clampDouble(
                 effectiveScrollOffset - delta,
                 0.0,
                 constraints.scrollOffset
@@ -479,12 +479,12 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
         geometry = new SliverGeometry(
             paintOrigin: Math.Min(constraints.overlap, 0.0),
             scrollExtent: childExtent,
-            paintExtent: Dart_uiLibrary.clampDouble(
+            paintExtent: DorotiUiLibrary.clampDouble(
                 paintExtentLocal,
                 0.0,
                 constraints.remainingPaintExtent
             ),
-            layoutExtent: Dart_uiLibrary.clampDouble(
+            layoutExtent: DorotiUiLibrary.clampDouble(
                 layoutExtentLocal,
                 0.0,
                 constraints.remainingPaintExtent

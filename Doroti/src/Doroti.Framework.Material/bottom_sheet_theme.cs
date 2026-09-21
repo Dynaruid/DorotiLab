@@ -98,29 +98,29 @@ public class BottomSheetThemeData : Diagnosticable
             return a;
         }
         return new BottomSheetThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            modalBackgroundColor: Dart_uiLibrary.Color.lerp(
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            modalBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.modalBackgroundColor,
                 b?.modalBackgroundColor,
                 t
             ),
-            modalBarrierColor: Dart_uiLibrary.Color.lerp(
+            modalBarrierColor: DorotiUiLibrary.Color.lerp(
                 a?.modalBarrierColor,
                 b?.modalBarrierColor,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            modalElevation: Dart_uiLibrary.lerpDouble(a?.modalElevation, b?.modalElevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            modalElevation: DorotiUiLibrary.lerpDouble(a?.modalElevation, b?.modalElevation, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             showDragHandle: (t < 0.5) ? a?.showDragHandle : b?.showDragHandle,
-            dragHandleColor: Dart_uiLibrary.Color.lerp(a?.dragHandleColor, b?.dragHandleColor, t),
-            dragHandleSize: Dart_uiLibrary.Size.lerp(a?.dragHandleSize, b?.dragHandleSize, t),
+            dragHandleColor: DorotiUiLibrary.Color.lerp(a?.dragHandleColor, b?.dragHandleColor, t),
+            dragHandleSize: DorotiUiLibrary.Size.lerp(a?.dragHandleSize, b?.dragHandleSize, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t)
         );

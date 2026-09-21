@@ -639,12 +639,12 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
         BoxConstraints effectiveConstraints =
             (viewConstraints ?? viewTheme.constraints) ?? viewDefaults.constraints!;
         _rectTween.begin = anchorRect;
-        double viewWidth = Dart_uiLibrary.clampDouble(
+        double viewWidth = DorotiUiLibrary.clampDouble(
             anchorRect.width,
             effectiveConstraints.minWidth,
             effectiveConstraints.maxWidth
         );
-        double viewHeight = Dart_uiLibrary.clampDouble(
+        double viewHeight = DorotiUiLibrary.clampDouble(
             screenSize.height * 2L / 3L,
             effectiveConstraints.minHeight,
             effectiveConstraints.maxHeight
@@ -729,7 +729,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                     );
                     double topPaddingLocal = showFullScreenView
                         ? (
-                            Dart_uiLibrary.lerpDouble(
+                            DorotiUiLibrary.lerpDouble(
                                 0.0,
                                 MediaQuery.paddingOf(context).top,
                                 curvedAnimation!.value

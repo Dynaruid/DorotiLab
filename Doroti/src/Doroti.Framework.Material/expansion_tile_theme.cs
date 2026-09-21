@@ -98,8 +98,8 @@ public class ExpansionTileThemeData : Diagnosticable
             return a;
         }
         return new ExpansionTileThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            collapsedBackgroundColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            collapsedBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.collapsedBackgroundColor,
                 b?.collapsedBackgroundColor,
                 t
@@ -111,14 +111,14 @@ public class ExpansionTileThemeData : Diagnosticable
                 t
             ),
             childrenPadding: EdgeInsetsGeometry.lerp(a?.childrenPadding, b?.childrenPadding, t),
-            iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
-            collapsedIconColor: Dart_uiLibrary.Color.lerp(
+            iconColor: DorotiUiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
+            collapsedIconColor: DorotiUiLibrary.Color.lerp(
                 a?.collapsedIconColor,
                 b?.collapsedIconColor,
                 t
             ),
-            textColor: Dart_uiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
-            collapsedTextColor: Dart_uiLibrary.Color.lerp(
+            textColor: DorotiUiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
+            collapsedTextColor: DorotiUiLibrary.Color.lerp(
                 a?.collapsedTextColor,
                 b?.collapsedTextColor,
                 t

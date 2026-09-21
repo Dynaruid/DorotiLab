@@ -93,7 +93,7 @@ public class SearchBarThemeData : Diagnosticable
                 a?.elevation,
                 b?.elevation,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             backgroundColor: WidgetStateProperty.lerp(
                 a?.backgroundColor,

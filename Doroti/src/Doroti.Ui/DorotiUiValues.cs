@@ -108,7 +108,7 @@ public sealed class ImmutableBuffer : IDisposable
             new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformMessaging,
                 null,
-                DartUiInvocation.Managed($"dart:ui#ImmutableBuffer.fromAsset({key})"),
+                DorotiUiInvocation.Managed($"Doroti.Ui#ImmutableBuffer.fromAsset({key})"),
                 "asset loading requires a registered platform asset capability"
             )
         );

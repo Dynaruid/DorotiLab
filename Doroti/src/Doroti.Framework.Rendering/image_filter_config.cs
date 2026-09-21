@@ -152,19 +152,19 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
         {
             switch (tileMode)
             {
-                case Dart_uiLibrary.TileMode.clamp:
+                case DorotiUiLibrary.TileMode.clamp:
                 {
                     return "clamp";
                 }
-                case Dart_uiLibrary.TileMode.mirror:
+                case DorotiUiLibrary.TileMode.mirror:
                 {
                     return "mirror";
                 }
-                case Dart_uiLibrary.TileMode.repeated:
+                case DorotiUiLibrary.TileMode.repeated:
                 {
                     return "repeated";
                 }
-                case Dart_uiLibrary.TileMode.decal:
+                case DorotiUiLibrary.TileMode.decal:
                 {
                     return "decal";
                 }

@@ -87,7 +87,7 @@ public class FlutterLogoDecoration : Decoration
                 b.style,
                 b.margin.op_Multiply(t),
                 b._position,
-                b._opacity * Dart_uiLibrary.clampDouble(t, 0.0, 1.0)
+                b._opacity * DorotiUiLibrary.clampDouble(t, 0.0, 1.0)
             );
         }
         if (b is null)
@@ -97,7 +97,7 @@ public class FlutterLogoDecoration : Decoration
                 a.style,
                 a.margin.op_Multiply(t),
                 a._position,
-                a._opacity * Dart_uiLibrary.clampDouble(1.0 - t, 0.0, 1.0)
+                a._opacity * DorotiUiLibrary.clampDouble(1.0 - t, 0.0, 1.0)
             );
         }
         if (t == 0.0)
@@ -109,11 +109,11 @@ public class FlutterLogoDecoration : Decoration
             return b;
         }
         return Create_(
-            Dart_uiLibrary.Color.lerp(a.textColor, b.textColor, t)!,
+            DorotiUiLibrary.Color.lerp(a.textColor, b.textColor, t)!,
             (t < 0.5) ? a.style : b.style,
             EdgeInsets.lerp(a.margin, b.margin, t)!,
             a._position + ((b._position - a._position) * t),
-            Dart_uiLibrary.clampDouble(a._opacity + ((b._opacity - a._opacity) * t), 0.0, 1.0)
+            DorotiUiLibrary.clampDouble(a._opacity + ((b._opacity - a._opacity) * t), 0.0, 1.0)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -448,7 +448,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
             }
         }
         Rect logoSquare = (
-            Dart_uiLibrary.Rect.lerp(centerSquare, logoTargetSquare, _config._position.abs())
+            DorotiUiLibrary.Rect.lerp(centerSquare, logoTargetSquare, _config._position.abs())
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (_config._opacity < 1.0)
@@ -483,7 +483,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                 var textOffset = new Offset(
                     rect.left
                         + (
-                            Dart_uiLibrary.lerpDouble(
+                            DorotiUiLibrary.lerpDouble(
                                 initialLeftTextPosition,
                                 finalLeftTextPosition,
                                 _config._position

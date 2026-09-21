@@ -159,7 +159,7 @@ public class IconThemeData : Diagnosticable
                 && (applyTextScaling is not null)
         );
     public virtual double? opacity =>
-        (_opacity is null) ? null : Dart_uiLibrary.clampDouble(_opacity, 0.0, 1.0);
+        (_opacity is null) ? null : DorotiUiLibrary.clampDouble(_opacity, 0.0, 1.0);
 
     public static IconThemeData lerp(IconThemeData? a, IconThemeData? b, double t)
     {
@@ -168,14 +168,14 @@ public class IconThemeData : Diagnosticable
             return a;
         }
         return new IconThemeData(
-            size: Dart_uiLibrary.lerpDouble(a?.size, b?.size, t),
-            fill: Dart_uiLibrary.lerpDouble(a?.fill, b?.fill, t),
-            weight: Dart_uiLibrary.lerpDouble(a?.weight, b?.weight, t),
-            grade: Dart_uiLibrary.lerpDouble(a?.grade, b?.grade, t),
-            opticalSize: Dart_uiLibrary.lerpDouble(a?.opticalSize, b?.opticalSize, t),
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            opacity: Dart_uiLibrary.lerpDouble(a?.opacity, b?.opacity, t),
-            shadows: Dart_uiLibrary.Shadow.lerpList(a?.shadows, b?.shadows, t),
+            size: DorotiUiLibrary.lerpDouble(a?.size, b?.size, t),
+            fill: DorotiUiLibrary.lerpDouble(a?.fill, b?.fill, t),
+            weight: DorotiUiLibrary.lerpDouble(a?.weight, b?.weight, t),
+            grade: DorotiUiLibrary.lerpDouble(a?.grade, b?.grade, t),
+            opticalSize: DorotiUiLibrary.lerpDouble(a?.opticalSize, b?.opticalSize, t),
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            opacity: DorotiUiLibrary.lerpDouble(a?.opacity, b?.opacity, t),
+            shadows: DorotiUiLibrary.Shadow.lerpList(a?.shadows, b?.shadows, t),
             applyTextScaling: (t < 0.5) ? a?.applyTextScaling : b?.applyTextScaling
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

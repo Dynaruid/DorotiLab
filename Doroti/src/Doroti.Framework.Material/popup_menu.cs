@@ -627,7 +627,7 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
         for (var i = 0L; i < checked(widget.route.items.Count); i += 1L)
         {
             double start = (i + 1L) * unit;
-            double end = Dart_uiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
+            double end = DorotiUiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
             var opacityLocal = new CurvedAnimation(
                 parent: widget.route.animation!,
                 curve: new Interval(start, end)

@@ -98,8 +98,8 @@ public class NavigationRailThemeData : Diagnosticable
             return a;
         }
         return new NavigationRailThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             unselectedLabelTextStyle: TextStyle.lerp(
                 a?.unselectedLabelTextStyle,
                 b?.unselectedLabelTextStyle,
@@ -118,13 +118,13 @@ public class NavigationRailThemeData : Diagnosticable
             selectedIconTheme: ((a?.selectedIconTheme is null) && (b?.selectedIconTheme is null))
                 ? null
                 : IconThemeData.lerp(a?.selectedIconTheme, b?.selectedIconTheme, t),
-            groupAlignment: Dart_uiLibrary.lerpDouble(a?.groupAlignment, b?.groupAlignment, t),
+            groupAlignment: DorotiUiLibrary.lerpDouble(a?.groupAlignment, b?.groupAlignment, t),
             labelType: (t < 0.5) ? a?.labelType : b?.labelType,
             useIndicator: (t < 0.5) ? a?.useIndicator : b?.useIndicator,
-            indicatorColor: Dart_uiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
+            indicatorColor: DorotiUiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t),
             indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t),
-            minWidth: Dart_uiLibrary.lerpDouble(a?.minWidth, b?.minWidth, t),
-            minExtendedWidth: Dart_uiLibrary.lerpDouble(a?.minExtendedWidth, b?.minExtendedWidth, t)
+            minWidth: DorotiUiLibrary.lerpDouble(a?.minWidth, b?.minWidth, t),
+            minExtendedWidth: DorotiUiLibrary.lerpDouble(a?.minExtendedWidth, b?.minExtendedWidth, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

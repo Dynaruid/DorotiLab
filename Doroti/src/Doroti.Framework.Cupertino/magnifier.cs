@@ -373,7 +373,7 @@ public class CupertinoMagnifier : StatelessWidget
         focalPointOffsetLocal += additionalFocalPointOffset;
         return Transform.CreateTranslate(
             offset: (
-                Dart_uiLibrary.Offset.lerp(
+                DorotiUiLibrary.Offset.lerp(
                     new Offset(0, -kMagnifierAboveFocalPoint),
                     Offset.zero,
                     inOutAnimation?.value ?? 1

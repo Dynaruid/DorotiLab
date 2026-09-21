@@ -392,7 +392,7 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                 effectiveSegmentStyle = segmentStyle.copyWith(
                     padding: new WidgetStatePropertyAll<EdgeInsetsGeometry>(scaledPaddingLocal)
                 );
-                double scaleLocal = Dart_uiLibrary.clampDouble(effectiveTextScale, 1.0, 2.0) - 1.0;
+                double scaleLocal = DorotiUiLibrary.clampDouble(effectiveTextScale, 1.0, 2.0) - 1.0;
                 TextButtonThemeData textButtonTheme = TextButtonTheme.of(context);
                 IconAlignment effectiveIconAlignment =
                     (textButtonTheme.style?.iconAlignment ?? segmentStyle.iconAlignment)
@@ -401,7 +401,7 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                     new Row(
                         mainAxisSize: MainAxisSize.min,
                         spacing: (
-                            Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
+                            DorotiUiLibrary.lerpDouble(8L, 4L, scaleLocal)
                             ?? throw new global::System.NullReferenceException(
                                 "A required value was null."
                             )

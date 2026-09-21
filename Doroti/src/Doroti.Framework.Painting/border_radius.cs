@@ -508,19 +508,19 @@ public class BorderRadius : BorderRadiusGeometry
         }
         return new BorderRadius(
             topLeft: (
-                Dart_uiLibrary.Radius.lerp(a.topLeft, b.topLeft, t)
+                DorotiUiLibrary.Radius.lerp(a.topLeft, b.topLeft, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             topRight: (
-                Dart_uiLibrary.Radius.lerp(a.topRight, b.topRight, t)
+                DorotiUiLibrary.Radius.lerp(a.topRight, b.topRight, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomLeft: (
-                Dart_uiLibrary.Radius.lerp(a.bottomLeft, b.bottomLeft, t)
+                DorotiUiLibrary.Radius.lerp(a.bottomLeft, b.bottomLeft, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomRight: (
-                Dart_uiLibrary.Radius.lerp(a.bottomRight, b.bottomRight, t)
+                DorotiUiLibrary.Radius.lerp(a.bottomRight, b.bottomRight, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -720,19 +720,19 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         }
         return new BorderRadiusDirectional(
             topStart: (
-                Dart_uiLibrary.Radius.lerp(a.topStart, b.topStart, t)
+                DorotiUiLibrary.Radius.lerp(a.topStart, b.topStart, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             topEnd: (
-                Dart_uiLibrary.Radius.lerp(a.topEnd, b.topEnd, t)
+                DorotiUiLibrary.Radius.lerp(a.topEnd, b.topEnd, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomStart: (
-                Dart_uiLibrary.Radius.lerp(a.bottomStart, b.bottomStart, t)
+                DorotiUiLibrary.Radius.lerp(a.bottomStart, b.bottomStart, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomEnd: (
-                Dart_uiLibrary.Radius.lerp(a.bottomEnd, b.bottomEnd, t)
+                DorotiUiLibrary.Radius.lerp(a.bottomEnd, b.bottomEnd, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

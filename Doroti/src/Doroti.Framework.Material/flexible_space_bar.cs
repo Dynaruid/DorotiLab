@@ -156,7 +156,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
                     context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!;
                 var childrenLocal = new List<Widget>();
                 double deltaExtent = settings.maxExtent - settings.minExtent;
-                double t = Dart_uiLibrary.clampDouble(
+                double t = DorotiUiLibrary.clampDouble(
                     1.0 - ((settings.currentExtent - settings.minExtent) / deltaExtent),
                     0.0,
                     1.0
@@ -241,7 +241,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
                     {
                         double stretchOpacity =
                             1L
-                            - Dart_uiLibrary.clampDouble(
+                            - DorotiUiLibrary.clampDouble(
                                 (constraints.maxHeight - settings.maxExtent) / 100L,
                                 0.0,
                                 1.0

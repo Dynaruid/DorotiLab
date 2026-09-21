@@ -146,7 +146,7 @@ internal class _InputBorderPainter__input_decorator : CustomPainter
 
     public virtual Color blendedColor =>
         DartRuntimePrimitives.ConvertValue<Color>(
-            Dart_uiLibrary.Color.alphaBlend(hoverColorTween.evaluate(hoverAnimation)!, fillColor)
+            DorotiUiLibrary.Color.alphaBlend(hoverColorTween.evaluate(hoverAnimation)!, fillColor)
         );
 
     public override void paint(Canvas canvas, Size size)
@@ -1543,7 +1543,7 @@ public class _RenderDecoration__input_decorator
         {
             double suffixIconSpace = decoration.border.isOutline
                 ? (
-                    Dart_uiLibrary.lerpDouble(
+                    DorotiUiLibrary.lerpDouble(
                         suffixIconSize.width,
                         contentPadding.end,
                         decoration.floatingLabelProgress
@@ -1562,7 +1562,7 @@ public class _RenderDecoration__input_decorator
                     )
             );
             double invertedLabelScale = (
-                Dart_uiLibrary.lerpDouble(
+                DorotiUiLibrary.lerpDouble(
                     1.0,
                     1L / Input_decoratorLibrary._kFinalLabelScale,
                     decoration.floatingLabelProgress
@@ -2165,7 +2165,7 @@ public class _RenderDecoration__input_decorator
                     {
                         offsetToPrefixIcon = _boxSize(prefixIcon).width - contentPadding.end;
                     }
-                    decoration.borderGap.start = Dart_uiLibrary.lerpDouble(
+                    decoration.borderGap.start = DorotiUiLibrary.lerpDouble(
                         labelX + _boxSize(label).width + offsetToPrefixIcon,
                         (_boxSize(containerLocal).width / 2.0) + (floatWidth / 2.0),
                         floatAlign
@@ -2180,7 +2180,7 @@ public class _RenderDecoration__input_decorator
                         offsetToPrefixIconLocal =
                             -_boxSize(prefixIcon).width + contentPadding.start;
                     }
-                    decoration.borderGap.start = Dart_uiLibrary.lerpDouble(
+                    decoration.borderGap.start = DorotiUiLibrary.lerpDouble(
                         labelX - _boxSize(icon).width + offsetToPrefixIconLocal,
                         (_boxSize(containerLocal).width / 2.0) - (floatWidth / 2.0),
                         floatAlign
@@ -2230,7 +2230,7 @@ public class _RenderDecoration__input_decorator
                 ? outlinedFloatingY
                 : (contentPadding.top + (_densityOffset.dy / 2L));
             double scale = (
-                Dart_uiLibrary.lerpDouble(1.0, Input_decoratorLibrary._kFinalLabelScale, t)
+                DorotiUiLibrary.lerpDouble(1.0, Input_decoratorLibrary._kFinalLabelScale, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double centeredFloatX =
@@ -2271,15 +2271,15 @@ public class _RenderDecoration__input_decorator
                 }
             }
             double floatEndX = (
-                Dart_uiLibrary.lerpDouble(floatStartX, centeredFloatX, floatAlign)
+                DorotiUiLibrary.lerpDouble(floatStartX, centeredFloatX, floatAlign)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double dxLocal = (
-                Dart_uiLibrary.lerpDouble(startX, floatEndX, t)
+                DorotiUiLibrary.lerpDouble(startX, floatEndX, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double dyLocal = (
-                Dart_uiLibrary.lerpDouble(0.0, floatingY - labelOffset.dy, t)
+                DorotiUiLibrary.lerpDouble(0.0, floatingY - labelOffset.dy, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _labelTransform = (

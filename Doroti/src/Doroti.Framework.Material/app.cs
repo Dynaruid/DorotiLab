@@ -662,7 +662,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
         {
             var titlebar = view.RequireCapability<IWindowTitlebarHostCapability>(
                 DorotiCapabilityIds.WindowTitlebar,
-                DartUiInvocation.Managed("MaterialApp.windowTitlebar")
+                DorotiUiInvocation.Managed("MaterialApp.windowTitlebar")
             );
             var themedChild = childWidget;
             // Read below AnimatedTheme so the caption follows the same color transition as the body.

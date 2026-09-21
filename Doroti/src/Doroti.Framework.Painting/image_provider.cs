@@ -1062,9 +1062,9 @@ public class FileImage : ImageProvider<FileImage>
         }
         return await (
             Equals(DartRuntimePrimitives.RuntimeType(file), typeof(DartFile))
-                ? decode(await Dart_uiLibrary.ImmutableBuffer.fromFilePath(file.path))
+                ? decode(await DorotiUiLibrary.ImmutableBuffer.fromFilePath(file.path))
                 : decode(
-                    await Dart_uiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())
+                    await DorotiUiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())
                 )
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -1146,7 +1146,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
     )
     {
         DartRuntimePrimitives.Assert(() => Equals(key, this));
-        return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
+        return await decode(await DorotiUiLibrary.ImmutableBuffer.fromUint8List(bytes));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

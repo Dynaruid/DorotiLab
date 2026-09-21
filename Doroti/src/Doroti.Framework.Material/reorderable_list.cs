@@ -375,7 +375,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
             {
                 double animValue = Curves.easeInOut.transform(animation.value);
                 double elevationLocal = (
-                    Dart_uiLibrary.lerpDouble(0L, 6L, animValue)
+                    DorotiUiLibrary.lerpDouble(0L, 6L, animValue)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new Material(elevation: elevationLocal, child: child);

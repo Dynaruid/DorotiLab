@@ -70,7 +70,7 @@ public class PlatformViewsService
         ?? throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformViews,
             null,
-            DartUiInvocation.Managed("PlatformViewsService"),
+            DorotiUiInvocation.Managed("PlatformViewsService"),
             "multiple views require an explicit EnterOwner scope"
         );
 

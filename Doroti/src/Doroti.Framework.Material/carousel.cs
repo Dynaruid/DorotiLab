@@ -564,7 +564,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                 _itemExtent =
                     (widget.itemExtent is null)
                         ? null
-                        : Dart_uiLibrary.clampDouble(
+                        : DorotiUiLibrary.clampDouble(
                             (
                                 widget.itemExtent
                                 ?? throw new global::System.NullReferenceException(
@@ -722,7 +722,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
             constraints.scrollOffset + constraints.remainingPaintExtent;
         if (index == getMaxChildIndexForScrollOffset(scrollOffsetForLastIndex, maxExtent))
         {
-            return Dart_uiLibrary.clampDouble(
+            return DorotiUiLibrary.clampDouble(
                 scrollOffsetForLastIndex - (maxExtent * index),
                 effectiveMinExtent,
                 maxExtent
@@ -996,7 +996,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
     public virtual double minChildExtent =>
         DartRuntimePrimitives.ConvertValue<double>(weights.min() * extentUnit);
     public virtual double effectiveShrinkExtent =>
-        Dart_uiLibrary.clampDouble(shrinkExtent, 0, minChildExtent);
+        DorotiUiLibrary.clampDouble(shrinkExtent, 0, minChildExtent);
     internal virtual long _firstVisibleItemIndex
     {
         get

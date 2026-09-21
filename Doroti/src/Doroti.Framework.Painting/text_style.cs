@@ -345,7 +345,7 @@ public class TextStyle : Diagnosticable
                     ) + wordSpacingDelta
                 ),
             textBaseline: textBaseline ?? this.textBaseline,
-            height: ((height is null) || (height == Dart_uiLibrary.kTextHeightNone))
+            height: ((height is null) || (height == DorotiUiLibrary.kTextHeightNone))
                 ? height
                 : (
                     (
@@ -453,10 +453,10 @@ public class TextStyle : Diagnosticable
         {
             return new TextStyle(
                 inherit: b!.inherit,
-                color: Dart_uiLibrary.Color.lerp(null, b.color, t),
-                backgroundColor: Dart_uiLibrary.Color.lerp(null, b.backgroundColor, t),
+                color: DorotiUiLibrary.Color.lerp(null, b.color, t),
+                backgroundColor: DorotiUiLibrary.Color.lerp(null, b.backgroundColor, t),
                 fontSize: (t < 0.5) ? null : b.fontSize,
-                fontWeight: Dart_uiLibrary.FontWeight.lerp(null, b.fontWeight, t),
+                fontWeight: DorotiUiLibrary.FontWeight.lerp(null, b.fontWeight, t),
                 fontStyle: (t < 0.5) ? null : b.fontStyle,
                 letterSpacing: (t < 0.5) ? null : b.letterSpacing,
                 wordSpacing: (t < 0.5) ? null : b.wordSpacing,
@@ -470,7 +470,7 @@ public class TextStyle : Diagnosticable
                 fontFeatures: (t < 0.5) ? null : b.fontFeatures,
                 fontVariations: Text_styleLibrary.lerpFontVariations(null, b.fontVariations, t),
                 decoration: (t < 0.5) ? null : b.decoration,
-                decorationColor: Dart_uiLibrary.Color.lerp(null, b.decorationColor, t),
+                decorationColor: DorotiUiLibrary.Color.lerp(null, b.decorationColor, t),
                 decorationStyle: (t < 0.5) ? null : b.decorationStyle,
                 decorationThickness: (t < 0.5) ? null : b.decorationThickness,
                 debugLabel: lerpDebugLabel,
@@ -484,10 +484,10 @@ public class TextStyle : Diagnosticable
         {
             return new TextStyle(
                 inherit: a.inherit,
-                color: Dart_uiLibrary.Color.lerp(a.color, null, t),
-                backgroundColor: Dart_uiLibrary.Color.lerp(null, a.backgroundColor, t),
+                color: DorotiUiLibrary.Color.lerp(a.color, null, t),
+                backgroundColor: DorotiUiLibrary.Color.lerp(null, a.backgroundColor, t),
                 fontSize: (t < 0.5) ? a.fontSize : null,
-                fontWeight: Dart_uiLibrary.FontWeight.lerp(a.fontWeight, null, t),
+                fontWeight: DorotiUiLibrary.FontWeight.lerp(a.fontWeight, null, t),
                 fontStyle: (t < 0.5) ? a.fontStyle : null,
                 letterSpacing: (t < 0.5) ? a.letterSpacing : null,
                 wordSpacing: (t < 0.5) ? a.wordSpacing : null,
@@ -501,7 +501,7 @@ public class TextStyle : Diagnosticable
                 fontFeatures: (t < 0.5) ? a.fontFeatures : null,
                 fontVariations: Text_styleLibrary.lerpFontVariations(a.fontVariations, null, t),
                 decoration: (t < 0.5) ? a.decoration : null,
-                decorationColor: Dart_uiLibrary.Color.lerp(a.decorationColor, null, t),
+                decorationColor: DorotiUiLibrary.Color.lerp(a.decorationColor, null, t),
                 decorationStyle: (t < 0.5) ? a.decorationStyle : null,
                 decorationThickness: (t < 0.5) ? a.decorationThickness : null,
                 debugLabel: lerpDebugLabel,
@@ -578,30 +578,30 @@ public class TextStyle : Diagnosticable
         return new TextStyle(
             inherit: (t < 0.5) ? a.inherit : b.inherit,
             color: ((a.foreground is null) && (b.foreground is null))
-                ? Dart_uiLibrary.Color.lerp(a.color, b.color, t)
+                ? DorotiUiLibrary.Color.lerp(a.color, b.color, t)
                 : null,
             backgroundColor: ((a.background is null) && (b.background is null))
-                ? Dart_uiLibrary.Color.lerp(a.backgroundColor, b.backgroundColor, t)
+                ? DorotiUiLibrary.Color.lerp(a.backgroundColor, b.backgroundColor, t)
                 : null,
-            fontSize: Dart_uiLibrary.lerpDouble(
+            fontSize: DorotiUiLibrary.lerpDouble(
                 a.fontSize ?? b.fontSize,
                 b.fontSize ?? a.fontSize,
                 t
             ),
-            fontWeight: Dart_uiLibrary.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
+            fontWeight: DorotiUiLibrary.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
             fontStyle: (t < 0.5) ? a.fontStyle : b.fontStyle,
-            letterSpacing: Dart_uiLibrary.lerpDouble(
+            letterSpacing: DorotiUiLibrary.lerpDouble(
                 a.letterSpacing ?? b.letterSpacing,
                 b.letterSpacing ?? a.letterSpacing,
                 t
             ),
-            wordSpacing: Dart_uiLibrary.lerpDouble(
+            wordSpacing: DorotiUiLibrary.lerpDouble(
                 a.wordSpacing ?? b.wordSpacing,
                 b.wordSpacing ?? a.wordSpacing,
                 t
             ),
             textBaseline: (t < 0.5) ? a.textBaseline : b.textBaseline,
-            height: Dart_uiLibrary.lerpDouble(a.height ?? b.height, b.height ?? a.height, t),
+            height: DorotiUiLibrary.lerpDouble(a.height ?? b.height, b.height ?? a.height, t),
             leadingDistribution: (t < 0.5) ? a.leadingDistribution : b.leadingDistribution,
             locale: (t < 0.5) ? a.locale : b.locale,
             foreground: ((a.foreground is not null) || (b.foreground is not null))
@@ -666,7 +666,7 @@ public class TextStyle : Diagnosticable
                         )
                 )
                 : null,
-            shadows: Dart_uiLibrary.Shadow.lerpList(a.shadows, b.shadows, t),
+            shadows: DorotiUiLibrary.Shadow.lerpList(a.shadows, b.shadows, t),
             fontFeatures: (t < 0.5) ? a.fontFeatures : b.fontFeatures,
             fontVariations: Text_styleLibrary.lerpFontVariations(
                 a.fontVariations,
@@ -674,9 +674,9 @@ public class TextStyle : Diagnosticable
                 t
             ),
             decoration: (t < 0.5) ? a.decoration : b.decoration,
-            decorationColor: Dart_uiLibrary.Color.lerp(a.decorationColor, b.decorationColor, t),
+            decorationColor: DorotiUiLibrary.Color.lerp(a.decorationColor, b.decorationColor, t),
             decorationStyle: (t < 0.5) ? a.decorationStyle : b.decorationStyle,
-            decorationThickness: Dart_uiLibrary.lerpDouble(
+            decorationThickness: DorotiUiLibrary.lerpDouble(
                 a.decorationThickness ?? b.decorationThickness,
                 b.decorationThickness ?? a.decorationThickness,
                 t
@@ -1146,7 +1146,7 @@ public static partial class Text_styleLibrary
             {
                 break;
             }
-            result.Add(Dart_uiLibrary.FontVariation.lerp(a[(int)index], b[(int)index], t)!);
+            result.Add(DorotiUiLibrary.FontVariation.lerp(a[(int)index], b[(int)index], t)!);
         }
         long maxLength =
             (checked(a.Count) > checked((long)b.Count)) ? checked(a.Count) : checked((long)b.Count);
@@ -1173,7 +1173,7 @@ public static partial class Text_styleLibrary
             }
             foreach (var axisLocal in axes)
             {
-                FontVariation? variation = Dart_uiLibrary.FontVariation.lerp(
+                FontVariation? variation = DorotiUiLibrary.FontVariation.lerp(
                     aVariations.GetValueOrDefault(axisLocal),
                     bVariations.GetValueOrDefault(axisLocal),
                     t

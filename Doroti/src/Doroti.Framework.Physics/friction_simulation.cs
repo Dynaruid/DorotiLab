@@ -171,13 +171,13 @@ public class BoundedFrictionSimulation : FrictionSimulation
         this._minX = _minX;
         this._maxX = _maxX;
         System.Diagnostics.Debug.Assert(
-            Dart_uiLibrary.clampDouble(position, _minX, _maxX) == position
+            DorotiUiLibrary.clampDouble(position, _minX, _maxX) == position
         );
     }
 
     public override double x(double time)
     {
-        return Dart_uiLibrary.clampDouble(base.x(time), _minX, _maxX);
+        return DorotiUiLibrary.clampDouble(base.x(time), _minX, _maxX);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

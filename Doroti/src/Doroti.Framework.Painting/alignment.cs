@@ -74,15 +74,15 @@ public abstract class AlignmentGeometry
         }
         return new _MixedAlignment__alignment(
             (
-                Dart_uiLibrary.lerpDouble(a._x, b._x, t)
+                DorotiUiLibrary.lerpDouble(a._x, b._x, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._start, b._start, t)
+                DorotiUiLibrary.lerpDouble(a._start, b._start, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a._y, b._y, t)
+                DorotiUiLibrary.lerpDouble(a._y, b._y, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -252,11 +252,11 @@ public class Alignment : AlignmentGeometry
         {
             return new Alignment(
                 (
-                    Dart_uiLibrary.lerpDouble(0.0, b!.x, t)
+                    DorotiUiLibrary.lerpDouble(0.0, b!.x, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(0.0, b.y, t)
+                    DorotiUiLibrary.lerpDouble(0.0, b.y, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
@@ -265,22 +265,22 @@ public class Alignment : AlignmentGeometry
         {
             return new Alignment(
                 (
-                    Dart_uiLibrary.lerpDouble(a.x, 0.0, t)
+                    DorotiUiLibrary.lerpDouble(a.x, 0.0, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(a.y, 0.0, t)
+                    DorotiUiLibrary.lerpDouble(a.y, 0.0, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return new Alignment(
             (
-                Dart_uiLibrary.lerpDouble(a.x, b.x, t)
+                DorotiUiLibrary.lerpDouble(a.x, b.x, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.y, b.y, t)
+                DorotiUiLibrary.lerpDouble(a.y, b.y, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -404,11 +404,11 @@ public class AlignmentDirectional : AlignmentGeometry
         {
             return new AlignmentDirectional(
                 (
-                    Dart_uiLibrary.lerpDouble(0.0, b!.start, t)
+                    DorotiUiLibrary.lerpDouble(0.0, b!.start, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(0.0, b.y, t)
+                    DorotiUiLibrary.lerpDouble(0.0, b.y, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
@@ -417,22 +417,22 @@ public class AlignmentDirectional : AlignmentGeometry
         {
             return new AlignmentDirectional(
                 (
-                    Dart_uiLibrary.lerpDouble(a.start, 0.0, t)
+                    DorotiUiLibrary.lerpDouble(a.start, 0.0, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
-                    Dart_uiLibrary.lerpDouble(a.y, 0.0, t)
+                    DorotiUiLibrary.lerpDouble(a.y, 0.0, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return new AlignmentDirectional(
             (
-                Dart_uiLibrary.lerpDouble(a.start, b.start, t)
+                DorotiUiLibrary.lerpDouble(a.start, b.start, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
-                Dart_uiLibrary.lerpDouble(a.y, b.y, t)
+                DorotiUiLibrary.lerpDouble(a.y, b.y, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

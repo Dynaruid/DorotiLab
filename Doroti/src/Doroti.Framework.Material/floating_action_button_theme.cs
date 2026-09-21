@@ -138,27 +138,27 @@ public class FloatingActionButtonThemeData : Diagnosticable
             return a;
         }
         return new FloatingActionButtonThemeData(
-            foregroundColor: Dart_uiLibrary.Color.lerp(a?.foregroundColor, b?.foregroundColor, t),
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            focusColor: Dart_uiLibrary.Color.lerp(a?.focusColor, b?.focusColor, t),
-            hoverColor: Dart_uiLibrary.Color.lerp(a?.hoverColor, b?.hoverColor, t),
-            splashColor: Dart_uiLibrary.Color.lerp(a?.splashColor, b?.splashColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            focusElevation: Dart_uiLibrary.lerpDouble(a?.focusElevation, b?.focusElevation, t),
-            hoverElevation: Dart_uiLibrary.lerpDouble(a?.hoverElevation, b?.hoverElevation, t),
-            disabledElevation: Dart_uiLibrary.lerpDouble(
+            foregroundColor: DorotiUiLibrary.Color.lerp(a?.foregroundColor, b?.foregroundColor, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            focusColor: DorotiUiLibrary.Color.lerp(a?.focusColor, b?.focusColor, t),
+            hoverColor: DorotiUiLibrary.Color.lerp(a?.hoverColor, b?.hoverColor, t),
+            splashColor: DorotiUiLibrary.Color.lerp(a?.splashColor, b?.splashColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            focusElevation: DorotiUiLibrary.lerpDouble(a?.focusElevation, b?.focusElevation, t),
+            hoverElevation: DorotiUiLibrary.lerpDouble(a?.hoverElevation, b?.hoverElevation, t),
+            disabledElevation: DorotiUiLibrary.lerpDouble(
                 a?.disabledElevation,
                 b?.disabledElevation,
                 t
             ),
-            highlightElevation: Dart_uiLibrary.lerpDouble(
+            highlightElevation: DorotiUiLibrary.lerpDouble(
                 a?.highlightElevation,
                 b?.highlightElevation,
                 t
             ),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             enableFeedback: (t < 0.5) ? a?.enableFeedback : b?.enableFeedback,
-            iconSize: Dart_uiLibrary.lerpDouble(a?.iconSize, b?.iconSize, t),
+            iconSize: DorotiUiLibrary.lerpDouble(a?.iconSize, b?.iconSize, t),
             sizeConstraints: BoxConstraints.lerp(a?.sizeConstraints, b?.sizeConstraints, t),
             smallSizeConstraints: BoxConstraints.lerp(
                 a?.smallSizeConstraints,
@@ -175,7 +175,7 @@ public class FloatingActionButtonThemeData : Diagnosticable
                 b?.extendedSizeConstraints,
                 t
             ),
-            extendedIconLabelSpacing: Dart_uiLibrary.lerpDouble(
+            extendedIconLabelSpacing: DorotiUiLibrary.lerpDouble(
                 a?.extendedIconLabelSpacing,
                 b?.extendedIconLabelSpacing,
                 t

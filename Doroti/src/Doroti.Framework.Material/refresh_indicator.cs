@@ -608,7 +608,7 @@ public class RefreshIndicatorState
         {
             newValue = Math.Max(newValue, 1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit);
         }
-        _positionController.value = Dart_uiLibrary.clampDouble(newValue, 0.0, 1.0);
+        _positionController.value = DorotiUiLibrary.clampDouble(newValue, 0.0, 1.0);
         if (
             Equals(_status, RefreshIndicatorStatus.drag)
             && (_valueColor.value!.alpha == _effectiveValueColor.alpha)

@@ -69,14 +69,14 @@ public class BadgeThemeData : Diagnosticable
             return a;
         }
         return new BadgeThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            textColor: Dart_uiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
-            smallSize: Dart_uiLibrary.lerpDouble(a?.smallSize, b?.smallSize, t),
-            largeSize: Dart_uiLibrary.lerpDouble(a?.largeSize, b?.largeSize, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            textColor: DorotiUiLibrary.Color.lerp(a?.textColor, b?.textColor, t),
+            smallSize: DorotiUiLibrary.lerpDouble(a?.smallSize, b?.smallSize, t),
+            largeSize: DorotiUiLibrary.lerpDouble(a?.largeSize, b?.largeSize, t),
             textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
-            offset: Dart_uiLibrary.Offset.lerp(a?.offset, b?.offset, t)
+            offset: DorotiUiLibrary.Offset.lerp(a?.offset, b?.offset, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

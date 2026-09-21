@@ -208,7 +208,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
             scrollExtent: maxExtentLocal,
             paintOrigin: constraintsLocal.overlap,
             paintExtent: Math.Min(childExtent, remainingPaintExtentLocal),
-            layoutExtent: Dart_uiLibrary.clampDouble(
+            layoutExtent: DorotiUiLibrary.clampDouble(
                 layoutExtentLocal,
                 0,
                 remainingPaintExtentLocal

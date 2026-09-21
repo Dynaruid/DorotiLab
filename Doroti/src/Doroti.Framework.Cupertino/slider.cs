@@ -86,7 +86,7 @@ internal class _CupertinoSliderState__slider
     {
         DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
         double lerpValue = (
-            Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+            DorotiUiLibrary.lerpDouble(widget.min, widget.max, value)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         bool isAtEdge = (lerpValue == widget.max) || (lerpValue == widget.min);
@@ -105,7 +105,7 @@ internal class _CupertinoSliderState__slider
         DartRuntimePrimitives.Assert(() => widget.onChangeStart is not null);
         widget.onChangeStart!(
             (
-                Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                DorotiUiLibrary.lerpDouble(widget.min, widget.max, value)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -116,7 +116,7 @@ internal class _CupertinoSliderState__slider
         DartRuntimePrimitives.Assert(() => widget.onChangeEnd is not null);
         widget.onChangeEnd!(
             (
-                Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                DorotiUiLibrary.lerpDouble(widget.min, widget.max, value)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -604,7 +604,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
     {
         get
         {
-            double dragValue = Dart_uiLibrary.clampDouble(_currentDragValue, 0.0, 1.0);
+            double dragValue = DorotiUiLibrary.clampDouble(_currentDragValue, 0.0, 1.0);
             if (divisions is not null)
             {
                 long divisions__value15208 = (
@@ -647,7 +647,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                 ),
             };
             return (
-                Dart_uiLibrary.lerpDouble(
+                DorotiUiLibrary.lerpDouble(
                     _trackLeft + CupertinoThumbPainter.radius,
                     _trackRight - CupertinoThumbPainter.radius,
                     visualPosition
@@ -818,9 +818,9 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             config.onDecrease = _decreaseAction;
             config.value = $"{(value * 100L).round()}%";
             config.increasedValue =
-                $"{(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+                $"{(DorotiUiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
             config.decreasedValue =
-                $"{(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+                $"{(DorotiUiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
         }
     }
 
@@ -839,7 +839,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
     {
         if (isInteractive)
         {
-            onChanged!(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0), false);
+            onChanged!(DorotiUiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0), false);
         }
     }
 
@@ -847,7 +847,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
     {
         if (isInteractive)
         {
-            onChanged!(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0), false);
+            onChanged!(DorotiUiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0), false);
         }
     }
 

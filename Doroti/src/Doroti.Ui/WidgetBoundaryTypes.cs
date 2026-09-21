@@ -2,7 +2,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Ui;
 
-/// <summary>dart:ui and vector-math value types consumed by the Widgets source port.</summary>
+/// <summary>Doroti UI and vector-math value types consumed by the Widgets source port.</summary>
 public enum ClipOp
 {
     difference,
@@ -89,7 +89,7 @@ public sealed class FragmentProgram
     {
         var bytes = await PlatformDispatcher.instance.LoadApplicationResourceAsync(
             assetKey,
-            DartUiInvocation.Managed($"dart:ui#FragmentProgram.fromAsset({assetKey})")
+            DorotiUiInvocation.Managed($"Doroti.Ui#FragmentProgram.fromAsset({assetKey})")
         );
         var source = System.Text.Encoding.UTF8.GetString(bytes.Span);
         if (string.IsNullOrWhiteSpace(source))

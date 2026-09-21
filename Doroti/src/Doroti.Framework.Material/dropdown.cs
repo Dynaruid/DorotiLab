@@ -91,7 +91,7 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
     {
         double selectedItemOffset = getSelectedItemOffset();
         var top = new Tween<double>(
-            begin: Dart_uiLibrary.clampDouble(
+            begin: DorotiUiLibrary.clampDouble(
                 selectedItemOffset,
                 0.0,
                 Math.Max(size.height - DropdownLibrary._kMenuItemHeight, 0.0)
@@ -99,7 +99,7 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
             end: 0.0
         );
         var bottom = new Tween<double>(
-            begin: Dart_uiLibrary.clampDouble(
+            begin: DorotiUiLibrary.clampDouble(
                 (top.begin) + DropdownLibrary._kMenuItemHeight,
                 Math.Min(DropdownLibrary._kMenuItemHeight, size.height),
                 size.height
@@ -209,12 +209,12 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
         }
         else
         {
-            double start = Dart_uiLibrary.clampDouble(
+            double start = DorotiUiLibrary.clampDouble(
                 0.5 + ((widget.itemIndex + 1L) * unit),
                 0.0,
                 1.0
             );
-            double end = Dart_uiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
+            double end = DorotiUiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
             _opacityAnimation = new CurvedAnimation(
                 parent: widget.route.animation!,
                 curve: new Interval(start, end)
@@ -552,9 +552,9 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
             ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
-            TextDirection.rtl => Dart_uiLibrary.clampDouble(buttonRect.right, 0.0, size.width)
+            TextDirection.rtl => DorotiUiLibrary.clampDouble(buttonRect.right, 0.0, size.width)
                 - childSize.width,
-            TextDirection.ltr => Dart_uiLibrary.clampDouble(
+            TextDirection.ltr => DorotiUiLibrary.clampDouble(
                 buttonRect.left,
                 0.0,
                 size.width - childSize.width

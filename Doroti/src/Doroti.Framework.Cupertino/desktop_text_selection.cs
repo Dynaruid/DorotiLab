@@ -234,7 +234,7 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
         var midpointAnchor = new Offset(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 widget.selectionMidpoint.dx - widget.globalEditableRegion.left,
                 mediaQueryPadding.left,
                 MediaQuery.widthOf(context) - mediaQueryPadding.right

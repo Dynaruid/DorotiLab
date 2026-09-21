@@ -84,7 +84,7 @@ public sealed class DorotiHostSession : IDisposable
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.FrameworkViewAttachment,
                 view.viewId,
-                DartUiInvocation.Managed("package:flutter/widgets.dart#runApp"),
+                DorotiUiInvocation.Managed("package:flutter/widgets.dart#runApp"),
                 $"entrypoint {_entrypoint.GetType().FullName} does not implement {nameof(IDorotiViewEntrypoint)}",
                 view.targetIdentity
             );

@@ -621,7 +621,7 @@ internal class _MergeableMaterialState__mergeable_material
         if ((index > 0L) && (_children[(int)(index - 1L)] is MaterialGap))
         {
             startRadius = (
-                Dart_uiLibrary.Radius.lerp(
+                DorotiUiLibrary.Radius.lerp(
                     Radius.zero,
                     cardRadius,
                     _animationTuples
@@ -636,7 +636,7 @@ internal class _MergeableMaterialState__mergeable_material
         )
         {
             endRadius = (
-                Dart_uiLibrary.Radius.lerp(
+                DorotiUiLibrary.Radius.lerp(
                     Radius.zero,
                     cardRadius,
                     _animationTuples
@@ -666,7 +666,7 @@ internal class _MergeableMaterialState__mergeable_material
     {
         var gap = ((MaterialGap?)_children[(int)index])!;
         return (
-            Dart_uiLibrary.lerpDouble(
+            DorotiUiLibrary.lerpDouble(
                 _animationTuples.GetValueOrDefault(gap.key)!.gapStart,
                 gap.size,
                 _animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value

@@ -55,7 +55,7 @@ public sealed class PlatformViewSnapshot
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformViews,
                 OwnerViewId,
-                DartUiInvocation.Managed("PlatformViewSnapshot"),
+                DorotiUiInvocation.Managed("PlatformViewSnapshot"),
                 "Stale identity or unsupported attachment geometry."
             );
         }

@@ -194,7 +194,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                                 controller!.pull(
                                     notification__as9386.overscroll.abs(),
                                     sizeLocal.width,
-                                    Dart_uiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height),
+                                    DorotiUiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height),
                                     sizeLocal.height
                                 );
                                 break;
@@ -204,7 +204,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                                 controller!.pull(
                                     notification__as9386.overscroll.abs(),
                                     sizeLocal.height,
-                                    Dart_uiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width),
+                                    DorotiUiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width),
                                     sizeLocal.width
                                 );
                                 break;
@@ -482,11 +482,11 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         DartRuntimePrimitives.Assert(() => velocity >= 0.0);
         _pullRecedeTimer?.cancel();
         _pullRecedeTimer = null;
-        velocity = Dart_uiLibrary.clampDouble(velocity, _minVelocity, _maxVelocity);
+        velocity = DorotiUiLibrary.clampDouble(velocity, _minVelocity, _maxVelocity);
         _glowOpacityTween.begin = Equals(_state, _GlowState__overscroll_indicator.idle)
             ? 0.3
             : _glowOpacity.value;
-        _glowOpacityTween.end = Dart_uiLibrary.clampDouble(
+        _glowOpacityTween.end = DorotiUiLibrary.clampDouble(
             velocity * _velocityGlowFactor,
             (_glowOpacityTween.begin),
             _maxOpacity
@@ -896,7 +896,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
                                 .metrics
                                 .viewportDimension;
                             double distanceForPull = _totalOverscroll / viewportDimensionLocal;
-                            double clampedOverscroll = Dart_uiLibrary.clampDouble(
+                            double clampedOverscroll = DorotiUiLibrary.clampDouble(
                                 distanceForPull,
                                 -1.0,
                                 1.0
@@ -1178,7 +1178,7 @@ internal class _StretchController__overscroll_indicator : Listenable
         set
         {
             var newValue = value;
-            _overscrollNotifier.value = Dart_uiLibrary.clampDouble(
+            _overscrollNotifier.value = DorotiUiLibrary.clampDouble(
                 newValue,
                 minOverscroll,
                 maxOverscroll
@@ -1213,7 +1213,7 @@ internal class _StretchController__overscroll_indicator : Listenable
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble(
+        double scaledVelocity = DorotiUiLibrary.clampDouble(
             velocity * _absorbImpactVelocityFriction,
             -_maxAbsorbImpactVelocity,
             _maxAbsorbImpactVelocity
@@ -1227,7 +1227,7 @@ internal class _StretchController__overscroll_indicator : Listenable
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble(
+        double scaledVelocity = DorotiUiLibrary.clampDouble(
             -(velocity * _flingVelocityFriction),
             -_maxFlingVelocity,
             _maxFlingVelocity

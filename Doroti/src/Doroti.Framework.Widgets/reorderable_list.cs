@@ -1361,7 +1361,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             {
                 double animValue = Curves.easeInOut.transform(_offsetAnimation!.value);
                 return (
-                    Dart_uiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue)
+                    DorotiUiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
@@ -1437,7 +1437,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                 {
                     double currentAnimValue = Curves.easeInOut.transform(_offsetAnimation!.value);
                     Offset currentPosition = (
-                        Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue)
+                        DorotiUiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue)
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
@@ -1793,7 +1793,7 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
                             )
                         );
                         effectivePosition = (
-                            Dart_uiLibrary.Offset.lerp(
+                            DorotiUiLibrary.Offset.lerp(
                                 (dropPosition__58071__value58130) - overlayOrigin,
                                 effectivePosition,
                                 Curves.easeOut.transform(animation.value)

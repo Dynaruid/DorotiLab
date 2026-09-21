@@ -298,7 +298,7 @@ public class RenderFlow
                     _paintingOffset
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
-                Dart_uiLibrary.Color.getAlphaFromOpacity(opacity),
+                DorotiUiLibrary.Color.getAlphaFromOpacity(opacity),
                 (context, offset) =>
                 {
                     context.pushTransform(needsCompositing, offset, transform!, painter);

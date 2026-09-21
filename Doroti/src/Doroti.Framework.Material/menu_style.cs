@@ -188,7 +188,7 @@ public class MenuStyle : Diagnosticable
                 a?.elevation,
                 b?.elevation,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             padding: WidgetStateProperty.lerp(a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp),
             minimumSize: WidgetStateProperty.lerp(a?.minimumSize, b?.minimumSize, t, Size.lerp),

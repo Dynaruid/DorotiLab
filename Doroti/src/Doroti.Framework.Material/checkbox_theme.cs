@@ -78,7 +78,7 @@ public class CheckboxThemeData : Diagnosticable
             fillColor: WidgetStateProperty.lerp(a?.fillColor, b?.fillColor, t, Color.lerp),
             checkColor: WidgetStateProperty.lerp(a?.checkColor, b?.checkColor, t, Color.lerp),
             overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
-            splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
+            splashRadius: DorotiUiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
             materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize,
             visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,
             shape: ((OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!,

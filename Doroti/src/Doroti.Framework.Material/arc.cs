@@ -224,12 +224,12 @@ public class MaterialPointArcTween : Tween<Offset>
         if ((_beginAngle is null) || (_endAngle is null))
         {
             return (
-                Dart_uiLibrary.Offset.lerp(begin, end, t)
+                DorotiUiLibrary.Offset.lerp(begin, end, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         double angle = (
-            Dart_uiLibrary.lerpDouble(_beginAngle, _endAngle, t)
+            DorotiUiLibrary.lerpDouble(_beginAngle, _endAngle, t)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double x =
@@ -598,7 +598,7 @@ public class MaterialRectCenterArcTween : RectTween
         }
         Offset center = _centerArc.lerp(t);
         double widthLocal = (
-            Dart_uiLibrary.lerpDouble(
+            DorotiUiLibrary.lerpDouble(
                 (
                     begin
                     ?? throw new global::System.NullReferenceException("A required value was null.")
@@ -611,7 +611,7 @@ public class MaterialRectCenterArcTween : RectTween
             ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double heightLocal = (
-            Dart_uiLibrary.lerpDouble(
+            DorotiUiLibrary.lerpDouble(
                 (
                     begin
                     ?? throw new global::System.NullReferenceException("A required value was null.")

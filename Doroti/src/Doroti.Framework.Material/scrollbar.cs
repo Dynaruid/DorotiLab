@@ -231,7 +231,7 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                     {
                         return _scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor;
                     }
-                    return Dart_uiLibrary.Color.lerp(
+                    return DorotiUiLibrary.Color.lerp(
                         _scrollbarTheme.thumbColor?.resolve(states) ?? idleColor,
                         _scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor,
                         _hoverAnimationController.value

@@ -3331,7 +3331,7 @@ public class NavigatorState
         {
             result =
                 Foundation.ConstantsLibrary.kIsWeb
-                || (Dart_uiLibrary.PluginUtilities.getCallbackHandle(callback) is not null);
+                || (DorotiUiLibrary.PluginUtilities.getCallbackHandle(callback) is not null);
             return true;
             throw new InvalidOperationException("Callback completed without returning a value.");
         });
@@ -4684,7 +4684,7 @@ internal class _AnonymousRestorationInformation__navigator : _RestorationInforma
         __instance.__field_restorationScopeId = (long)data[(int)0L]!;
         __instance.routeBuilder = (
             (Func<BuildContext, object?, Route<object>>?)
-                Dart_uiLibrary.PluginUtilities.getCallbackFromHandle(
+                DorotiUiLibrary.PluginUtilities.getCallbackFromHandle(
                     new CallbackHandle((long)data[(int)1L]!)
                 )!
         )!;
@@ -4697,7 +4697,7 @@ internal class _AnonymousRestorationInformation__navigator : _RestorationInforma
     public override List<object> computeSerializableData()
     {
         DartRuntimePrimitives.Assert(() => isRestorable);
-        CallbackHandle? handle = Dart_uiLibrary.PluginUtilities.getCallbackHandle(routeBuilder);
+        CallbackHandle? handle = DorotiUiLibrary.PluginUtilities.getCallbackHandle(routeBuilder);
         DartRuntimePrimitives.Assert(() => handle is not null);
         return (
             (Func<List<object>>)(

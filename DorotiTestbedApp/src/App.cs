@@ -84,7 +84,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             ) ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
         using var bytes = new MemoryStream();
         stream.CopyTo(bytes);
-        await Dart_uiLibrary.loadFontFromList(
+        await DorotiUiLibrary.loadFontFromList(
             new Uint8List(bytes.ToArray()),
             fontFamily: "MaterialIcons"
         );
@@ -101,7 +101,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
                 ) ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");
             using var fontBytes = new MemoryStream();
             fontStream.CopyTo(fontBytes);
-            await Dart_uiLibrary.loadFontFromList(
+            await DorotiUiLibrary.loadFontFromList(
                 new Uint8List(fontBytes.ToArray()),
                 fontFamily: "Roboto"
             );

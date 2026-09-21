@@ -390,7 +390,7 @@ public static partial class DorotiSkiaRuntimeEffects
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.GraphicsScene,
             null,
-            DartUiInvocation.Managed($"runtime-effect:{shaderName}"),
+            DorotiUiInvocation.Managed($"runtime-effect:{shaderName}"),
             message,
             backend
         );

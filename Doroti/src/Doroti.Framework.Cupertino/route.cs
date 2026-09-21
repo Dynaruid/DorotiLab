@@ -1017,7 +1017,7 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
             return (b!._colors is null)
                 ? b
                 : new _CupertinoEdgeShadowDecoration__route(
-                    b._colors!.map((color) => Dart_uiLibrary.Color.lerp(null, color, t)!).ToList()
+                    b._colors!.map((color) => DorotiUiLibrary.Color.lerp(null, color, t)!).ToList()
                 );
         }
         if (b is null)
@@ -1025,7 +1025,7 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
             return (a._colors is null)
                 ? a
                 : new _CupertinoEdgeShadowDecoration__route(
-                    a._colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, 1.0 - t)!)
+                    a._colors.map((color) => DorotiUiLibrary.Color.lerp(null, color, 1.0 - t)!)
                         .ToList()
                 );
         }
@@ -1039,7 +1039,7 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
         int count = b._colors?.Count ?? a._colors?.Count ?? 0;
         for (var i = 0; i < count; i++)
         {
-            colors.Add(Dart_uiLibrary.Color.lerp(a._colors?[i], b._colors?[i], t)!);
+            colors.Add(DorotiUiLibrary.Color.lerp(a._colors?[i], b._colors?[i], t)!);
         }
 
         return new _CupertinoEdgeShadowDecoration__route(colors);
@@ -1171,7 +1171,7 @@ public class _CupertinoEdgeShadowPainter__route : BoxPainter
                     () =>
                     {
                         var __cascade = new Paint();
-                        __cascade.color = Dart_uiLibrary.Color.lerp(
+                        __cascade.color = DorotiUiLibrary.Color.lerp(
                             colors[(int)bandColorIndex],
                             colors[(int)(bandColorIndex + 1L)],
                             dxLocal % bandWidth / bandWidth

@@ -22,7 +22,7 @@ public class PlaceholderDimensions
 {
     public static PlaceholderDimensions empty = new PlaceholderDimensions(
         size: Size.zero,
-        alignment: Dart_uiLibrary.PlaceholderAlignment.bottom
+        alignment: DorotiUiLibrary.PlaceholderAlignment.bottom
     );
     public virtual Size size { get; private set; } = default!;
     public virtual PlaceholderAlignment alignment { get; private set; } = default!;
@@ -68,14 +68,14 @@ public class PlaceholderDimensions
     {
         return alignment switch
         {
-            Dart_uiLibrary.PlaceholderAlignment.top
-            or Dart_uiLibrary.PlaceholderAlignment.bottom
-            or Dart_uiLibrary.PlaceholderAlignment.middle
-            or Dart_uiLibrary.PlaceholderAlignment.aboveBaseline =>
+            DorotiUiLibrary.PlaceholderAlignment.top
+            or DorotiUiLibrary.PlaceholderAlignment.bottom
+            or DorotiUiLibrary.PlaceholderAlignment.middle
+            or DorotiUiLibrary.PlaceholderAlignment.aboveBaseline =>
                 $"PlaceholderDimensions({size}, {alignment})",
-            Dart_uiLibrary.PlaceholderAlignment.belowBaseline =>
+            DorotiUiLibrary.PlaceholderAlignment.belowBaseline =>
                 $"PlaceholderDimensions({size}, {alignment})",
-            Dart_uiLibrary.PlaceholderAlignment.baseline =>
+            DorotiUiLibrary.PlaceholderAlignment.baseline =>
                 $"PlaceholderDimensions({size}, {alignment}({baselineOffset} from top))",
             _ => throw new InvalidOperationException(
                 "Switch expression did not handle the supplied value."
@@ -424,12 +424,12 @@ internal class _TextLayout__text_painter
     {
         return widthBasis switch
         {
-            TextWidthBasis.longestLine => Dart_uiLibrary.clampDouble(
+            TextWidthBasis.longestLine => DorotiUiLibrary.clampDouble(
                 longestLine,
                 minWidth,
                 maxWidth
             ),
-            TextWidthBasis.parent => Dart_uiLibrary.clampDouble(
+            TextWidthBasis.parent => DorotiUiLibrary.clampDouble(
                 maxIntrinsicLineExtent,
                 minWidth,
                 maxWidth
@@ -1431,7 +1431,7 @@ public class TextPainter
                 "Switch expression did not handle the supplied value."
             ),
         };
-        double adjustedDx = Dart_uiLibrary.clampDouble(
+        double adjustedDx = DorotiUiLibrary.clampDouble(
             rawOffset.dx + layoutCache.paintOffset.dx,
             0,
             layoutCache.contentWidth
@@ -1541,7 +1541,7 @@ public class TextPainter
         List<TextBox> boxes = cachedLayout.paragraph.getBoxesForRange(
             graphemeRange.start,
             graphemeRange.end,
-            boxHeightStyle: Dart_uiLibrary.BoxHeightStyle.strut
+            boxHeightStyle: DorotiUiLibrary.BoxHeightStyle.strut
         );
         bool anchorToLeft = glyphInfo.writingDirection switch
         {

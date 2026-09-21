@@ -806,7 +806,7 @@ public class RenderSliverMainAxisGroup
             from: Math.Min(constraints.scrollOffset, 0),
             to: scrollOffsetLocal
         );
-        double paintExtentLocal = Dart_uiLibrary.clampDouble(
+        double paintExtentLocal = DorotiUiLibrary.clampDouble(
             paintOffsetLocal,
             0,
             constraints.remainingPaintExtent

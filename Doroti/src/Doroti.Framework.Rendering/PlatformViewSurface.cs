@@ -52,7 +52,7 @@ public sealed class RenderPlatformView : RenderBox
 
         config.isSemanticBoundary = true;
         config.platformViewId = handle.InstanceId;
-        config.hitTestBehavior = Dart_uiLibrary.SemanticsHitTestBehavior.transparent;
+        config.hitTestBehavior = DorotiUiLibrary.SemanticsHitTestBehavior.transparent;
     }
 }
 

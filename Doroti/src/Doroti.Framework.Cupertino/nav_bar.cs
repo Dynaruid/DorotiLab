@@ -486,7 +486,7 @@ internal class _CupertinoNavigationBarState__nav_bar : State<CupertinoNavigation
             {
                 setState(() =>
                 {
-                    _scrollAnimationValue = Dart_uiLibrary.clampDouble(
+                    _scrollAnimationValue = DorotiUiLibrary.clampDouble(
                         scrollExtent / Nav_barLibrary._kNavBarScrollUnderAnimationExtent,
                         0,
                         1
@@ -545,7 +545,7 @@ internal class _CupertinoNavigationBarState__nav_bar : State<CupertinoNavigation
                 && (parentPageScaffoldBackgroundColor is not null)
             )
                 ? (
-                    Dart_uiLibrary.Color.lerp(
+                    DorotiUiLibrary.Color.lerp(
                         parentPageScaffoldBackgroundColor,
                         backgroundColorLocal,
                         _scrollAnimationValue
@@ -1389,8 +1389,8 @@ internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : SliverPersisten
         double largeTitleThreshold =
             maxExtent - minExtent - Nav_barLibrary._kNavBarShowLargeTitleThreshold;
         bool showLargeTitle = shrinkOffset < largeTitleThreshold;
-        double bottomShrinkFactor = Dart_uiLibrary.clampDouble(shrinkOffset / bottomHeight, 0, 1);
-        double shrinkAnimationValue = Dart_uiLibrary.clampDouble(
+        double bottomShrinkFactor = DorotiUiLibrary.clampDouble(shrinkOffset / bottomHeight, 0, 1);
+        double shrinkAnimationValue = DorotiUiLibrary.clampDouble(
             (shrinkOffset - largeTitleThreshold - Nav_barLibrary._kNavBarScrollUnderAnimationExtent)
                 / Nav_barLibrary._kNavBarScrollUnderAnimationExtent,
             0,
@@ -1413,7 +1413,7 @@ internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : SliverPersisten
         Color effectiveBackgroundColor =
             (automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null))
                 ? (
-                    Dart_uiLibrary.Color.lerp(
+                    DorotiUiLibrary.Color.lerp(
                         parentPageScaffoldBackgroundColor,
                         backgroundColor,
                         shrinkAnimationValue
@@ -1710,9 +1710,9 @@ public class _RenderLargeTitle__nav_bar : RenderShiftedBox
         double scale = 1.0 + (0.03 * (constraints.maxHeight - maxHeightLocal) / maxHeightLocal);
         double maxScale =
             (childSize.width != 0.0)
-                ? Dart_uiLibrary.clampDouble(constraints.maxWidth / childSize.width, 1.0, 1.1)
+                ? DorotiUiLibrary.clampDouble(constraints.maxWidth / childSize.width, 1.0, 1.1)
                 : 1.1;
-        return Dart_uiLibrary.clampDouble(scale, 1.0, maxScale);
+        return DorotiUiLibrary.clampDouble(scale, 1.0, maxScale);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

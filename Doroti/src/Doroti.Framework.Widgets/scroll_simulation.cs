@@ -189,14 +189,14 @@ public class ClampingScrollSimulation : Physics.Simulation
 
     public override double x(double time)
     {
-        double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
+        double t = DorotiUiLibrary.clampDouble(time / _duration, 0.0, 1.0);
         return position + (_distance * (1.0 - Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate)));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
     {
-        double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
+        double t = DorotiUiLibrary.clampDouble(time / _duration, 0.0, 1.0);
         return velocity * Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate - 1.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

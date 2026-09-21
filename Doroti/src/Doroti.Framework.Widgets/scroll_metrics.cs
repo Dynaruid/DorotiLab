@@ -150,8 +150,8 @@ public class FixedScrollMetrics : ScrollMetrics
         {
             DartRuntimePrimitives.Assert(() => minScrollExtent <= maxScrollExtent);
             return viewportDimension
-                - Dart_uiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension)
-                - Dart_uiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
+                - DorotiUiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension)
+                - DorotiUiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
         }
     }
     public virtual double extentAfter => Math.Max(maxScrollExtent - pixels, 0.0);

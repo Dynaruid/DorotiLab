@@ -237,7 +237,7 @@ internal class _CupertinoContextMenuState__context_menu
             2L * (size.height - padding.bottom - childRect.center.dy) / childRect.height;
         double minWidth = Math.Min(leftMaxScale, rightMaxScale);
         double minHeight = Math.Min(topMaxScale, bottomMaxScale);
-        return Dart_uiLibrary.clampDouble(
+        return DorotiUiLibrary.clampDouble(
             Math.Min(minWidth, minHeight),
             Context_menuLibrary._kMinScaleFactor,
             Context_menuLibrary._kOpenScale
@@ -1349,7 +1349,7 @@ internal class _ContextMenuRouteStaticState__context_menu
             _moveAnimation = new Tween<Offset>(
                 begin: Offset.zero,
                 end: new Offset(
-                    Dart_uiLibrary.clampDouble(
+                    DorotiUiLibrary.clampDouble(
                         endX,
                         -SliderLibrary._kPadding,
                         SliderLibrary._kPadding
@@ -1915,12 +1915,12 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : MultiChildLay
                 break;
             }
         }
-        double clampedLeft = Dart_uiLibrary.clampDouble(
+        double clampedLeft = DorotiUiLibrary.clampDouble(
             initialChildLeft,
             screenBounds.left + _ContextMenuRouteStaticState__context_menu._kPadding,
             maxClampedLeft
         );
-        double clampedTop = Dart_uiLibrary.clampDouble(
+        double clampedTop = DorotiUiLibrary.clampDouble(
             initialChildTop,
             screenBounds.top + _ContextMenuRouteStaticState__context_menu._kPadding,
             maxClampedTop

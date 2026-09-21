@@ -93,7 +93,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
     public void Submit(
         ulong viewId,
         DorotiSceneSubmission submission,
-        DartUiInvocation invocation
+        DorotiUiInvocation invocation
     ) => _renderer.Submit(viewId, submission, invocation);
 
     public string Paint(
@@ -184,14 +184,14 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
 
     public void InvalidateWindowSurfaceResources() => _renderer.InvalidateWindowSurfaceResources();
 
-    public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
+    public Paragraph Layout(ParagraphRequest request, DorotiUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
 
     public ValueTask<UiImage> DecodeSizedAsync(
         ReadOnlyMemory<byte> bytes,
         Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) =>
         _renderer.DecodeSizedAsync(
@@ -206,20 +206,20 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
         Picture picture,
         int width,
         int height,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) => _renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken);
 
     public ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) => _renderer.DecodeAsync(bytes, invocation, cancellationToken);
 
-    public void SetEnabled(bool enabled, DartUiInvocation invocation) =>
+    public void SetEnabled(bool enabled, DorotiUiInvocation invocation) =>
         _renderer.SetEnabled(enabled, invocation);
 
-    public void Update(SemanticsUpdate update, DartUiInvocation invocation)
+    public void Update(SemanticsUpdate update, DorotiUiInvocation invocation)
     {
         var started = DorotiFrameClock.Now;
         _host.RecordRaster("managed-semantics-start", 0, 0);

@@ -297,7 +297,7 @@ public class _RangeSliderState__range_slider
     internal virtual double _lerp(double value) =>
         DartRuntimePrimitives.ConvertValue<double>(
             (
-                Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                DorotiUiLibrary.lerpDouble(widget.min, widget.max, value)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -409,7 +409,7 @@ public class _RangeSliderState__range_slider
                 (RectangularRangeSliderValueIndicatorShape)valueIndicatorShape;
             valueIndicatorColorLocal =
                 sliderThemeLocal.valueIndicatorColor
-                ?? Dart_uiLibrary.Color.alphaBlend(
+                ?? DorotiUiLibrary.Color.alphaBlend(
                     theme.colorScheme.onSurface.withOpacity(0.6),
                     theme.colorScheme.surface.withOpacity(0.9)
                 );
@@ -1395,7 +1395,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
 
     internal virtual double _discretize(double value)
     {
-        double result = Dart_uiLibrary.clampDouble((value), 0.0, 1.0);
+        double result = DorotiUiLibrary.clampDouble((value), 0.0, 1.0);
         if (isDiscrete)
         {
             result =
@@ -1429,7 +1429,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         {
             return;
         }
-        double tapValue = Dart_uiLibrary.clampDouble(
+        double tapValue = DorotiUiLibrary.clampDouble(
             _getValueFromGlobalPosition(globalPosition),
             0.0,
             1.0
@@ -1719,7 +1719,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         );
         double thumbPadding = (padding > (thumbPreferredSize.width / 2L)) ? (padding / 2L) : 0;
         _startThumbCenter = new Offset(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 startThumbPosition,
                 trackRect.left + thumbPadding,
                 trackRect.right - thumbPadding
@@ -1727,7 +1727,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
             thumbYOffset
         );
         _endThumbCenter = new Offset(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 endThumbPosition,
                 trackRect.left + thumbPadding,
                 trackRect.right - thumbPadding
@@ -2286,11 +2286,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
     }
     internal virtual double _decreasedStartValue
     {
-        get { return Dart_uiLibrary.clampDouble(values.start - _semanticActionUnit, 0.0, 1.0); }
+        get { return DorotiUiLibrary.clampDouble(values.start - _semanticActionUnit, 0.0, 1.0); }
     }
     internal virtual double _increasedEndValue
     {
-        get { return Dart_uiLibrary.clampDouble(values.end + _semanticActionUnit, 0.0, 1.0); }
+        get { return DorotiUiLibrary.clampDouble(values.end + _semanticActionUnit, 0.0, 1.0); }
     }
     internal virtual double _decreasedEndValue
     {
@@ -2500,7 +2500,7 @@ internal class _RangeSliderDefaultsM3Year2023__range_slider : SliderThemeData
         DartRuntimePrimitives.ConvertValue<Color>(_colors.surface);
     public override Color? disabledThumbColor =>
         DartRuntimePrimitives.ConvertValue<Color>(
-            Dart_uiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface)
+            DorotiUiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface)
         );
     public override Color? overlayColor =>
         DartRuntimePrimitives.ConvertValue<Color>(_colors.primary.withOpacity(0.12));

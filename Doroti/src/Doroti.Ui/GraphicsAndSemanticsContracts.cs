@@ -524,7 +524,7 @@ public sealed record PathCommand(string Operation, IReadOnlyList<double> Argumen
 
 public interface ISceneHostCapability
 {
-    void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation);
+    void Submit(ulong viewId, DorotiSceneSubmission submission, DorotiUiInvocation invocation);
 }
 
 /// <summary>
@@ -1206,7 +1206,7 @@ public sealed class SceneBuilder
         double height = 0
     )
     {
-        var invocation = DartUiInvocation.Managed("dart:ui#SceneBuilder.addPlatformView");
+        var invocation = DorotiUiInvocation.Managed("Doroti.Ui#SceneBuilder.addPlatformView");
         var host = PlatformDispatcher
             .instance.GetView(_viewId, invocation)
             .RequireCapability<IPlatformViewHostCapability>(
@@ -1722,7 +1722,7 @@ public class Canvas
 
 public interface IParagraphHostCapability
 {
-    Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation);
+    Paragraph Layout(ParagraphRequest request, DorotiUiInvocation invocation);
 }
 
 public sealed record ParagraphRequest(
@@ -2493,7 +2493,7 @@ public interface IImageHostCapability
 {
     ValueTask<Image> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     );
 
@@ -2501,7 +2501,7 @@ public interface IImageHostCapability
         ReadOnlyMemory<byte> bytes,
         Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     )
     {
@@ -2550,7 +2550,7 @@ public interface IImageHostCapability
         Picture picture,
         int width,
         int height,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) =>
         ValueTask.FromException<Image>(
@@ -2686,7 +2686,7 @@ public sealed class Image : IDisposable
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.GraphicsImage,
             viewId,
-            DartUiInvocation.Managed("dart:ui#Image.toByteData"),
+            DorotiUiInvocation.Managed("Doroti.Ui#Image.toByteData"),
             $"image encoding for {format} is not registered by the active host"
         );
     }
@@ -3765,7 +3765,7 @@ public interface ISemanticsHostCapability
     /// </summary>
     bool CoalesceGeometryDuringActiveMetrics => false;
 
-    void SetEnabled(bool enabled, DartUiInvocation invocation);
+    void SetEnabled(bool enabled, DorotiUiInvocation invocation);
 
-    void Update(SemanticsUpdate update, DartUiInvocation invocation);
+    void Update(SemanticsUpdate update, DorotiUiInvocation invocation);
 }

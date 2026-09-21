@@ -529,7 +529,7 @@ public static class PlatformCompositionPlanner
             new(
                 DorotiCapabilityIds.PlatformViews,
                 token.OwnerViewId,
-                DartUiInvocation.Managed("PlatformCompositionPlanner"),
+                DorotiUiInvocation.Managed("PlatformCompositionPlanner"),
                 $"frame={token.FrameNumber}; epoch={token.ViewEpoch}; {reason}"
             );
     }

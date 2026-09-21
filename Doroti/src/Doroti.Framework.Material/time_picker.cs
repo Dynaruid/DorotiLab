@@ -1455,22 +1455,22 @@ public class _DialPainter__time_picker : CustomPainter
 
     public override void paint(Canvas canvas, Size size)
     {
-        double dialRadius = Dart_uiLibrary.clampDouble(
+        double dialRadius = DorotiUiLibrary.clampDouble(
             size.shortestSide / 2L,
             Time_pickerLibrary._kTimePickerDialMinRadius + dotRadius,
             double.PositiveInfinity
         );
-        double labelRadius = Dart_uiLibrary.clampDouble(
+        double labelRadius = DorotiUiLibrary.clampDouble(
             dialRadius - Time_pickerLibrary._kTimePickerDialPadding,
             Time_pickerLibrary._kTimePickerDialMinRadius,
             double.PositiveInfinity
         );
-        double innerLabelRadius = Dart_uiLibrary.clampDouble(
+        double innerLabelRadius = DorotiUiLibrary.clampDouble(
             labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset,
             0,
             double.PositiveInfinity
         );
-        double handleRadius = Dart_uiLibrary.clampDouble(
+        double handleRadius = DorotiUiLibrary.clampDouble(
             labelRadius - (((radius < 0.5) ? 1L : 0L) * (labelRadius - innerLabelRadius)),
             Time_pickerLibrary._kTimePickerDialMinRadius,
             double.PositiveInfinity
@@ -2022,7 +2022,7 @@ public class _DialState__time_picker
             double angle =
                 (Dart_mathLibrary.atan2(offset.dx, offset.dy) - (Dart_mathLibrary.pi / 2L))
                 % Time_pickerLibrary._kTwoPi;
-            double radiusLocal = Dart_uiLibrary.clampDouble(
+            double radiusLocal = DorotiUiLibrary.clampDouble(
                 (offset.distance - innerRadius) / Time_pickerLibrary._kTimePickerInnerDialOffset,
                 0,
                 1
@@ -6019,7 +6019,7 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                                 }
                             }
                         }
-                        return Dart_uiLibrary.Color.alphaBlend(
+                        return DorotiUiLibrary.Color.alphaBlend(
                             overlayColor,
                             _colors.primaryContainer
                         );
@@ -6051,7 +6051,7 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                                 }
                             }
                         }
-                        return Dart_uiLibrary.Color.alphaBlend(
+                        return DorotiUiLibrary.Color.alphaBlend(
                             overlayColorLocal,
                             _colors.surfaceContainerHighest
                         );

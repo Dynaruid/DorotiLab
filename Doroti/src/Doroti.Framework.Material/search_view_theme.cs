@@ -98,23 +98,23 @@ public class SearchViewThemeData : Diagnosticable
             return a;
         }
         return new SearchViewThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
             side: _lerpSides(a?.side, b?.side, t),
             shape: OutlinedBorder.lerp(a?.shape, b?.shape, t),
-            headerHeight: Dart_uiLibrary.lerpDouble(a?.headerHeight, b?.headerHeight, t),
+            headerHeight: DorotiUiLibrary.lerpDouble(a?.headerHeight, b?.headerHeight, t),
             headerTextStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t),
             headerHintStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t),
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             barPadding: EdgeInsetsGeometry.lerp(a?.barPadding, b?.barPadding, t),
             shrinkWrap: (t < 0.5) ? a?.shrinkWrap : b?.shrinkWrap,
-            dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t)
+            dividerColor: DorotiUiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

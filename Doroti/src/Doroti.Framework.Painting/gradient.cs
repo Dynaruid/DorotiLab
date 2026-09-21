@@ -33,7 +33,7 @@ public static partial class GradientLibrary
         }
         long index = stops.lastIndexWhere((s) => s <= t);
         DartRuntimePrimitives.Assert(() => index != -1L);
-        return Dart_uiLibrary.Color.lerp(
+        return DorotiUiLibrary.Color.lerp(
             colors[(int)index],
             colors[(int)(index + 1L)],
             (t - stops[(int)index]) / (stops[(int)(index + 1L)] - stops[(int)index])
@@ -71,7 +71,7 @@ public static partial class GradientLibrary
         List<Color> interpolatedColors = interpolatedStops
             .map(
                 (stop) =>
-                    Dart_uiLibrary.Color.lerp(
+                    DorotiUiLibrary.Color.lerp(
                         _sample(aColors, aStops, stop),
                         _sample(bColors, bStops, stop),
                         t
@@ -288,7 +288,7 @@ public class LinearGradient : Gradient
         return new LinearGradient(
             begin: begin,
             end: end,
-            colors: colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, factor)!).ToList(),
+            colors: colors.map((color) => DorotiUiLibrary.Color.lerp(null, color, factor)!).ToList(),
             stops: stops,
             tileMode: tileMode,
             transform: transform
@@ -475,7 +475,7 @@ public class RadialGradient : Gradient
         return new RadialGradient(
             center: center,
             radius: radius,
-            colors: colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, factor)!).ToList(),
+            colors: colors.map((color) => DorotiUiLibrary.Color.lerp(null, color, factor)!).ToList(),
             stops: stops,
             tileMode: tileMode,
             focal: focal,
@@ -550,7 +550,7 @@ public class RadialGradient : Gradient
             radius: Math.Max(
                 0.0,
                 (
-                    Dart_uiLibrary.lerpDouble(a.radius, b.radius, t)
+                    DorotiUiLibrary.lerpDouble(a.radius, b.radius, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
@@ -561,7 +561,7 @@ public class RadialGradient : Gradient
             focalRadius: Math.Max(
                 0.0,
                 (
-                    Dart_uiLibrary.lerpDouble(a.focalRadius, b.focalRadius, t)
+                    DorotiUiLibrary.lerpDouble(a.focalRadius, b.focalRadius, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
@@ -685,7 +685,7 @@ public class SweepGradient : Gradient
             center: center,
             startAngle: startAngle,
             endAngle: (endAngle),
-            colors: colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, factor)!).ToList(),
+            colors: colors.map((color) => DorotiUiLibrary.Color.lerp(null, color, factor)!).ToList(),
             stops: stops,
             tileMode: tileMode,
             transform: transform
@@ -757,14 +757,14 @@ public class SweepGradient : Gradient
             startAngle: Math.Max(
                 0.0,
                 (
-                    Dart_uiLibrary.lerpDouble(a.startAngle, b.startAngle, t)
+                    DorotiUiLibrary.lerpDouble(a.startAngle, b.startAngle, t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             endAngle: Math.Max(
                 0.0,
                 (
-                    Dart_uiLibrary.lerpDouble((a.endAngle), (b.endAngle), t)
+                    DorotiUiLibrary.lerpDouble((a.endAngle), (b.endAngle), t)
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),

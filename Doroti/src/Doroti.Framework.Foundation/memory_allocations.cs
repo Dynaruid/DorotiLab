@@ -70,7 +70,7 @@ internal static class _FieldNames
 
 public static class MemoryAllocationsLibrary
 {
-    internal const string _dartUiLibrary = "dart:ui";
+    internal const string _dorotiUiLibrary = "Doroti.Ui";
     internal static MemoryAllocations _kMemoryAllocations => MemoryAllocations.instance;
     public static bool kFlutterMemoryAllocationsEnabled => MemoryAllocations.instance.hasListeners;
 }

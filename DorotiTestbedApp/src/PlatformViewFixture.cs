@@ -65,7 +65,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
         var selection = SelectComposition(
             owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("PlatformViewExample.support")
+                DorotiUiInvocation.Managed("PlatformViewExample.support")
             ),
             1,
             2
@@ -202,7 +202,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
 
             var host = owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("PlatformViewExample.support")
+                DorotiUiInvocation.Managed("PlatformViewExample.support")
             );
             var (composition, support) = SelectComposition(host, InstanceId(1), InstanceId(2));
             if (!support.Supported)

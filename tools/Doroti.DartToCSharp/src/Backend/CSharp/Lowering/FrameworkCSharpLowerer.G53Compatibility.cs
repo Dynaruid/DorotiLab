@@ -1487,8 +1487,8 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern(
-                    "_interpolate<double?>(opacities, progress, Dart_uiLibrary.lerpDouble)",
-                    "_interpolate<double>(opacities, progress, (a, b, t) => Dart_uiLibrary.lerpDouble(a, b, t) ?? 0.0)",
+                    "_interpolate<double?>(opacities, progress, DorotiUiLibrary.lerpDouble)",
+                    "_interpolate<double>(opacities, progress, (a, b, t) => DorotiUiLibrary.lerpDouble(a, b, t) ?? 0.0)",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(

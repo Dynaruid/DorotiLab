@@ -359,7 +359,7 @@ public class ScrollbarPainter : ChangeNotifier
 
     internal virtual void _setThumbExtent()
     {
-        double fractionVisible = Dart_uiLibrary.clampDouble(
+        double fractionVisible = DorotiUiLibrary.clampDouble(
             (_lastMetrics!.extentInside - _totalTrackMainAxisOffsets)
                 / (_totalContentExtent - _totalTrackMainAxisOffsets),
             0.0,
@@ -377,9 +377,9 @@ public class ScrollbarPainter : ChangeNotifier
                 ? safeMinLength
                 : (
                     safeMinLength
-                    * (1.0 - (Dart_uiLibrary.clampDouble(fractionOverscrolled, 0.0, 0.2) / 0.2))
+                    * (1.0 - (DorotiUiLibrary.clampDouble(fractionOverscrolled, 0.0, 0.2) / 0.2))
                 );
-        _thumbExtent = Dart_uiLibrary.clampDouble(
+        _thumbExtent = DorotiUiLibrary.clampDouble(
             thumbExtent,
             newMinLength,
             _traversableTrackExtent
@@ -767,7 +767,7 @@ public class ScrollbarPainter : ChangeNotifier
         double minFraction = _lastMetrics!.minScrollExtent / scrollableExtent;
         double fractionPast =
             (scrollableExtent > 0L)
-                ? Dart_uiLibrary.clampDouble(
+                ? DorotiUiLibrary.clampDouble(
                     _lastMetrics!.pixels / scrollableExtent,
                     minFraction,
                     maxFraction
@@ -782,7 +782,7 @@ public class ScrollbarPainter : ChangeNotifier
         double scrollableExtent = metrics.maxScrollExtent - metrics.minScrollExtent;
         double fractionPast =
             (scrollableExtent > 0L)
-                ? Dart_uiLibrary.clampDouble(
+                ? DorotiUiLibrary.clampDouble(
                     (metrics.pixels - metrics.minScrollExtent) / scrollableExtent,
                     0.0,
                     1.0
@@ -1490,7 +1490,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 case TargetPlatform.macOS:
                 case TargetPlatform.windows:
                 {
-                    newPosition = Dart_uiLibrary.clampDouble(
+                    newPosition = DorotiUiLibrary.clampDouble(
                         newPosition,
                         positionLocal.minScrollExtent,
                         positionLocal.maxScrollExtent

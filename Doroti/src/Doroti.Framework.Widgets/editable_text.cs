@@ -3180,7 +3180,7 @@ public class EditableTextState
         {
             double lerpValue = _floatingCursorResetController!.value;
             double lerpX = (
-                Dart_uiLibrary.lerpDouble(
+                DorotiUiLibrary.lerpDouble(
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
@@ -3192,7 +3192,7 @@ public class EditableTextState
                 ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double lerpY = (
-                Dart_uiLibrary.lerpDouble(
+                DorotiUiLibrary.lerpDouble(
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
@@ -3354,7 +3354,7 @@ public class EditableTextState
             additionalOffset =
                 (rect.width >= editableSize.width)
                     ? ((editableSize.width / 2L) - rect.center.dx)
-                    : Dart_uiLibrary.clampDouble(0.0, rect.right - editableSize.width, rect.left);
+                    : DorotiUiLibrary.clampDouble(0.0, rect.right - editableSize.width, rect.left);
             unitOffset = new Offset(1, 0);
         }
         else
@@ -3367,14 +3367,14 @@ public class EditableTextState
             additionalOffset =
                 (expandedRect.height >= editableSize.height)
                     ? ((editableSize.height / 2L) - expandedRect.center.dy)
-                    : Dart_uiLibrary.clampDouble(
+                    : DorotiUiLibrary.clampDouble(
                         0.0,
                         expandedRect.bottom - editableSize.height,
                         expandedRect.top
                     );
             unitOffset = new Offset(0, 1);
         }
-        double targetOffset = Dart_uiLibrary.clampDouble(
+        double targetOffset = DorotiUiLibrary.clampDouble(
             additionalOffset + _scrollController.offset,
             _scrollController.position.minScrollExtent,
             _scrollController.position.maxScrollExtent
@@ -5116,7 +5116,7 @@ public class EditableTextState
             ),
             intent
         );
-        double destination = Dart_uiLibrary.clampDouble(
+        double destination = DorotiUiLibrary.clampDouble(
             positionLocal.pixels + increment,
             positionLocal.minScrollExtent,
             positionLocal.maxScrollExtent

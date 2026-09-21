@@ -113,39 +113,39 @@ public class ProgressIndicatorThemeData : Diagnosticable
             return a;
         }
         return new ProgressIndicatorThemeData(
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            linearTrackColor: Dart_uiLibrary.Color.lerp(
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            linearTrackColor: DorotiUiLibrary.Color.lerp(
                 a?.linearTrackColor,
                 b?.linearTrackColor,
                 t
             ),
-            linearMinHeight: Dart_uiLibrary.lerpDouble(a?.linearMinHeight, b?.linearMinHeight, t),
-            circularTrackColor: Dart_uiLibrary.Color.lerp(
+            linearMinHeight: DorotiUiLibrary.lerpDouble(a?.linearMinHeight, b?.linearMinHeight, t),
+            circularTrackColor: DorotiUiLibrary.Color.lerp(
                 a?.circularTrackColor,
                 b?.circularTrackColor,
                 t
             ),
-            refreshBackgroundColor: Dart_uiLibrary.Color.lerp(
+            refreshBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.refreshBackgroundColor,
                 b?.refreshBackgroundColor,
                 t
             ),
             borderRadius: BorderRadiusGeometry.lerp(a?.borderRadius, b?.borderRadius, t),
-            stopIndicatorColor: Dart_uiLibrary.Color.lerp(
+            stopIndicatorColor: DorotiUiLibrary.Color.lerp(
                 a?.stopIndicatorColor,
                 b?.stopIndicatorColor,
                 t
             ),
-            stopIndicatorRadius: Dart_uiLibrary.lerpDouble(
+            stopIndicatorRadius: DorotiUiLibrary.lerpDouble(
                 a?.stopIndicatorRadius,
                 b?.stopIndicatorRadius,
                 t
             ),
-            strokeWidth: Dart_uiLibrary.lerpDouble(a?.strokeWidth, b?.strokeWidth, t),
-            strokeAlign: Dart_uiLibrary.lerpDouble(a?.strokeAlign, b?.strokeAlign, t),
+            strokeWidth: DorotiUiLibrary.lerpDouble(a?.strokeWidth, b?.strokeWidth, t),
+            strokeAlign: DorotiUiLibrary.lerpDouble(a?.strokeAlign, b?.strokeAlign, t),
             strokeCap: (t < 0.5) ? a?.strokeCap : b?.strokeCap,
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
-            trackGap: Dart_uiLibrary.lerpDouble(a?.trackGap, b?.trackGap, t),
+            trackGap: DorotiUiLibrary.lerpDouble(a?.trackGap, b?.trackGap, t),
             circularTrackPadding: EdgeInsetsGeometry.lerp(
                 a?.circularTrackPadding,
                 b?.circularTrackPadding,

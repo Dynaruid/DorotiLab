@@ -113,7 +113,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             PlatformEffectFixtureProbe.Owner = owner;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("PlatformEffectFixture")
+                DorotiUiInvocation.Managed("PlatformEffectFixture")
             );
             if (
                 OperatingSystem.IsBrowser()

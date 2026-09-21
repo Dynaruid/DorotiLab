@@ -74,18 +74,18 @@ public class DrawerThemeData : Diagnosticable
             return a;
         }
         return new DrawerThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
-            scrimColor: Dart_uiLibrary.Color.lerp(a?.scrimColor, b?.scrimColor, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            scrimColor: DorotiUiLibrary.Color.lerp(a?.scrimColor, b?.scrimColor, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t),
             endShape: ShapeBorder.lerp(a?.endShape, b?.endShape, t),
-            width: Dart_uiLibrary.lerpDouble(a?.width, b?.width, t),
+            width: DorotiUiLibrary.lerpDouble(a?.width, b?.width, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

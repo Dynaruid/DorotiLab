@@ -811,7 +811,7 @@ public sealed class Picture : IDisposable
             );
         }
 
-        var invocation = DartUiInvocation.Managed("dart:ui#Picture.toImage");
+        var invocation = DorotiUiInvocation.Managed("Doroti.Ui#Picture.toImage");
         var dispatcher = PlatformDispatcher.instance;
         var view =
             dispatcher.implicitView
@@ -1211,11 +1211,11 @@ public sealed class ParagraphBuilder
                 {
                     DeferLayout = true,
                 },
-                DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build")
+                DorotiUiInvocation.Managed("Doroti.Ui#ParagraphBuilder.build")
             );
         }
 
-        // Unit-level dart:ui use can intentionally run without a host view.
+        // Unit-level Doroti UI use can intentionally run without a host view.
         return new(
             text,
             0,

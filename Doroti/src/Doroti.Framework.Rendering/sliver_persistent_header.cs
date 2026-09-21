@@ -452,7 +452,7 @@ public abstract class RenderSliverScrollingPersistentHeader : RenderSliverPersis
             cacheExtent: cacheExtentLocal,
             scrollExtent: maxExtentLocal,
             paintOrigin: Math.Min(constraints.overlap, 0.0),
-            paintExtent: Dart_uiLibrary.clampDouble(
+            paintExtent: DorotiUiLibrary.clampDouble(
                 paintExtentLocal,
                 0.0,
                 constraints.remainingPaintExtent
@@ -514,7 +514,7 @@ public abstract class RenderSliverPinnedPersistentHeader : RenderSliverPersisten
             0,
             constraintsLocal.remainingPaintExtent - constraintsLocal.overlap
         );
-        double layoutExtentLocal = Dart_uiLibrary.clampDouble(
+        double layoutExtentLocal = DorotiUiLibrary.clampDouble(
             maxExtentLocal - constraintsLocal.scrollOffset,
             0.0,
             effectiveRemainingPaintExtent
@@ -663,12 +663,12 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         geometry = new SliverGeometry(
             scrollExtent: maxExtentLocal,
             paintOrigin: Math.Min(constraints.overlap, 0.0),
-            paintExtent: Dart_uiLibrary.clampDouble(
+            paintExtent: DorotiUiLibrary.clampDouble(
                 paintExtentLocal,
                 0.0,
                 constraints.remainingPaintExtent
             ),
-            layoutExtent: Dart_uiLibrary.clampDouble(
+            layoutExtent: DorotiUiLibrary.clampDouble(
                 layoutExtentLocal,
                 0.0,
                 constraints.remainingPaintExtent
@@ -814,7 +814,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
                     delta = 0.0;
                 }
             }
-            _effectiveScrollOffset = Dart_uiLibrary.clampDouble(
+            _effectiveScrollOffset = DorotiUiLibrary.clampDouble(
                 (
                     _effectiveScrollOffset
                     ?? throw new global::System.NullReferenceException("A required value was null.")
@@ -903,8 +903,8 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             }
         }
         double effectiveMaxExtent = Math.Max(childExtent, maxExtent);
-        targetExtent = Dart_uiLibrary.clampDouble(
-            Dart_uiLibrary.clampDouble(
+        targetExtent = DorotiUiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 targetExtent,
                 showOnScreenLocal.minShowOnScreenExtent,
                 showOnScreenLocal.maxShowOnScreenExtent
@@ -974,7 +974,7 @@ public abstract class RenderSliverFloatingPinnedPersistentHeader
                 _effectiveScrollOffset
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        double clampedPaintExtent = Dart_uiLibrary.clampDouble(
+        double clampedPaintExtent = DorotiUiLibrary.clampDouble(
             paintExtentLocal,
             minAllowedExtent,
             constraints.remainingPaintExtent
@@ -985,7 +985,7 @@ public abstract class RenderSliverFloatingPinnedPersistentHeader
             scrollExtent: maxExtentLocal,
             paintOrigin: Math.Min(constraints.overlap, 0.0),
             paintExtent: clampedPaintExtent,
-            layoutExtent: Dart_uiLibrary.clampDouble(layoutExtentLocal, 0.0, clampedPaintExtent),
+            layoutExtent: DorotiUiLibrary.clampDouble(layoutExtentLocal, 0.0, clampedPaintExtent),
             maxPaintExtent: maxExtentLocal + stretchOffset,
             maxScrollObstructionExtent: minExtentLocal,
             hasVisualOverflow: true

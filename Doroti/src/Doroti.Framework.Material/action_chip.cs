@@ -338,7 +338,7 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
             return EdgeInsets.lerp(
                 EdgeInsets.CreateSymmetric(horizontal: 8.0),
                 EdgeInsets.CreateSymmetric(horizontal: 4.0),
-                Dart_uiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0)
+                DorotiUiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0)
             )!;
         }
     }

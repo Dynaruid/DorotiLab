@@ -42,23 +42,15 @@ public static class DorotiCapabilityIds
     ];
 }
 
-/// <summary>Typed execution boundary for dart:ui PlatformDispatcher performance requests.</summary>
+/// <summary>Typed execution boundary for Doroti UI PlatformDispatcher performance requests.</summary>
 public interface IDartPerformanceModeCapability
 {
     void Request(DartPerformanceMode mode);
 }
 
-public readonly record struct DartSourceSpan(string Source, int Offset, int Length)
+public readonly record struct DorotiUiInvocation(string ElementId)
 {
-    public static DartSourceSpan Unknown { get; } = new("<managed-bootstrap>", 0, 0);
-
-    public override string ToString() => $"{Source}:{Offset}+{Length}";
-}
-
-public readonly record struct DartUiInvocation(string ElementId, DartSourceSpan SourceSpan)
-{
-    public static DartUiInvocation Managed(string elementId) =>
-        new(elementId, DartSourceSpan.Unknown);
+    public static DorotiUiInvocation Managed(string elementId) => new(elementId);
 }
 
 /// <summary>A fail-closed error for a missing or lifetime-invalid host capability.</summary>
@@ -67,20 +59,19 @@ public sealed class DorotiCapabilityException : InvalidOperationException
     public DorotiCapabilityException(
         string capabilityId,
         ulong? viewId,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         string reason,
         string targetIdentity = "<unspecified>"
     )
         : base(
             $"Flutter capability '{capabilityId}' is unavailable for view "
-                + $"{(viewId is null ? "<unregistered>" : viewId.Value)} at {invocation.SourceSpan} "
+                + $"{(viewId is null ? "<unregistered>" : viewId.Value)} "
                 + $"({invocation.ElementId}) on target '{targetIdentity}': {reason}"
         )
     {
         CapabilityId = capabilityId;
         ViewId = viewId;
         ElementId = invocation.ElementId;
-        SourceSpan = invocation.SourceSpan;
         TargetIdentity = targetIdentity;
     }
 
@@ -89,8 +80,6 @@ public sealed class DorotiCapabilityException : InvalidOperationException
     public ulong? ViewId { get; }
 
     public string ElementId { get; }
-
-    public DartSourceSpan SourceSpan { get; }
 
     public string TargetIdentity { get; }
 }
@@ -133,7 +122,7 @@ public sealed class DorotiViewCapabilities : IDisposable
         return this;
     }
 
-    public TCapability Require<TCapability>(ulong viewId, string id, DartUiInvocation invocation)
+    public TCapability Require<TCapability>(ulong viewId, string id, DorotiUiInvocation invocation)
         where TCapability : class
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

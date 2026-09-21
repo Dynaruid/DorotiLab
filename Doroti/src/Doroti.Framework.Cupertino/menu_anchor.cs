@@ -242,8 +242,8 @@ public static partial class Menu_anchorLibrary
 {
     internal static double _computeSquaredDistanceToRect(Offset point, Rect rect)
     {
-        double dxLocal = point.dx - Dart_uiLibrary.clampDouble(point.dx, rect.left, rect.right);
-        double dyLocal = point.dy - Dart_uiLibrary.clampDouble(point.dy, rect.top, rect.bottom);
+        double dxLocal = point.dx - DorotiUiLibrary.clampDouble(point.dx, rect.left, rect.right);
+        double dyLocal = point.dy - DorotiUiLibrary.clampDouble(point.dy, rect.top, rect.bottom);
         return (dxLocal * dxLocal) + (dyLocal * dyLocal);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -1137,7 +1137,7 @@ internal class _MenuOverlayState__menu_anchor
 
     internal virtual void _handleSwipeDistanceChanged()
     {
-        _swipeTargetDistance = Dart_uiLibrary.clampDouble(
+        _swipeTargetDistance = DorotiUiLibrary.clampDouble(
             widget.swipeDistanceListenable.value,
             0,
             150
@@ -1166,7 +1166,7 @@ internal class _MenuOverlayState__menu_anchor
         double absoluteDistance = distance.abs();
         double proximityFactor = Math.Min(absoluteDistance / decelerationDistanceThreshold, 1.0);
         _swipeVelocity += accelerationRate * proximityFactor;
-        _swipeVelocity = Dart_uiLibrary.clampDouble(_swipeVelocity, minVelocity, maxVelocity);
+        _swipeVelocity = DorotiUiLibrary.clampDouble(_swipeVelocity, minVelocity, maxVelocity);
         double finalVelocity = _swipeVelocity * proximityFactor;
         double distanceReduction = Math.Sign(distance) * finalVelocity;
         _swipeCurrentDistance += distanceReduction;
@@ -1429,7 +1429,7 @@ internal class _ShadowPainter__menu_anchor : CustomPainter
         this.repaint = repaint;
     }
 
-    public virtual double shadowAnimation => Dart_uiLibrary.clampDouble(repaint.value, 0, 1);
+    public virtual double shadowAnimation => DorotiUiLibrary.clampDouble(repaint.value, 0, 1);
 
     public override void paint(Canvas canvas, Size size)
     {
@@ -1542,7 +1542,7 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
         }
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
         return (
-            Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
+            DorotiUiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -2658,12 +2658,12 @@ public class _RenderAlignMidpoint__menu_anchor : RenderPositionedBox
         DartRuntimePrimitives.Assert(() => hasSize);
         var childParentData = ((BoxParentData?)child!.parentData!)!;
         Offset offsetLocal = resolvedAlignment.alongSize(size) - child!.size.center(Offset.zero);
-        double dxLocal = Dart_uiLibrary.clampDouble(
+        double dxLocal = DorotiUiLibrary.clampDouble(
             offsetLocal.dx,
             0.0,
             size.width - child!.size.width
         );
-        double dyLocal = Dart_uiLibrary.clampDouble(
+        double dyLocal = DorotiUiLibrary.clampDouble(
             offsetLocal.dy,
             0.0,
             size.height - child!.size.height

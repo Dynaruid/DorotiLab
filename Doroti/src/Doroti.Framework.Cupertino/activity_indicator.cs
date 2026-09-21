@@ -417,7 +417,7 @@ internal class _CupertinoLinearActivityIndicator__activity_indicator : CustomPai
                     .toRRect(
                         Offset.zero
                             & new Size(
-                                Dart_uiLibrary.clampDouble(progress, 0.0, 1.0) * size.width,
+                                DorotiUiLibrary.clampDouble(progress, 0.0, 1.0) * size.width,
                                 size.height
                             )
                     ),

@@ -247,7 +247,7 @@ public sealed class ChannelBuffers
     public ValueTask<ReadOnlyMemory<byte>?> push(
         string channel,
         ReadOnlyMemory<byte>? data,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) => _view.SendPlatformMessageAsync(channel, data, invocation, cancellationToken);
 
@@ -261,7 +261,7 @@ public sealed class ChannelBuffers
                 new DorotiCapabilityException(
                     DorotiCapabilityIds.PlatformMessaging,
                     _view.viewId,
-                    DartUiInvocation.Managed($"dart:ui#ChannelBuffers.push({channel})"),
+                    DorotiUiInvocation.Managed($"Doroti.Ui#ChannelBuffers.push({channel})"),
                     "no framework listener is registered for the channel"
                 )
             );
@@ -283,7 +283,7 @@ public sealed class ChannelBuffers
         _listeners.TryGetValue(channel, out var listener) ? listener(data, _ => { }) : null;
 }
 
-public static class Dart_uiLibrary
+public static class DorotiUiLibrary
 {
     public const double kTextHeightNone = -1;
 
@@ -325,7 +325,7 @@ public static class Dart_uiLibrary
                 buffer,
                 (width, height) => new TargetImageSize(targetWidth, targetHeight),
                 allowUpscaling,
-                "dart:ui#instantiateImageCodecFromBuffer"
+                "Doroti.Ui#instantiateImageCodecFromBuffer"
             )
         );
 
@@ -338,7 +338,7 @@ public static class Dart_uiLibrary
                 buffer,
                 (width, height) => getTargetSize?.Invoke(width, height),
                 allowUpscaling: true,
-                "dart:ui#instantiateImageCodecWithSize"
+                "Doroti.Ui#instantiateImageCodecWithSize"
             )
         );
 
@@ -357,14 +357,14 @@ public static class Dart_uiLibrary
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.GraphicsImage,
                 null,
-                DartUiInvocation.Managed(elementId),
+                DorotiUiInvocation.Managed(elementId),
                 "image decoding requires an attached DorotiView"
             );
         var image = await view.DecodeSizedImageAsync(
             buffer.asMemory(),
             targetSize,
             allowUpscaling,
-            DartUiInvocation.Managed(elementId)
+            DorotiUiInvocation.Managed(elementId)
         );
         return new Codec([new FrameInfo(image, Duration.zero)]);
     }
@@ -606,12 +606,12 @@ public static class Dart_uiLibrary
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.GraphicsFont,
                 null,
-                DartUiInvocation.Managed("loadFontFromList"),
+                DorotiUiInvocation.Managed("loadFontFromList"),
                 "font loading requires an attached view"
             );
         await view.RequireCapability<IFontHostCapability>(
                 DorotiCapabilityIds.GraphicsFont,
-                DartUiInvocation.Managed("loadFontFromList")
+                DorotiUiInvocation.Managed("loadFontFromList")
             )
             .RegisterFontAsync(new ByteData(list).asMemory(), fontFamily);
         var notification = dispatcher.channelBuffers.NotifyFramework(

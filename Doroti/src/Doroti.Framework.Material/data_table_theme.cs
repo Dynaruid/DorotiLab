@@ -137,8 +137,8 @@ public class DataTableThemeData : Diagnosticable
         return new DataTableThemeData(
             decoration: Decoration.lerp(a.decoration, b.decoration, t),
             dataRowColor: WidgetStateProperty.lerp(a.dataRowColor, b.dataRowColor, t, Color.lerp),
-            dataRowMinHeight: Dart_uiLibrary.lerpDouble(a.dataRowMinHeight, b.dataRowMinHeight, t),
-            dataRowMaxHeight: Dart_uiLibrary.lerpDouble(a.dataRowMaxHeight, b.dataRowMaxHeight, t),
+            dataRowMinHeight: DorotiUiLibrary.lerpDouble(a.dataRowMinHeight, b.dataRowMinHeight, t),
+            dataRowMaxHeight: DorotiUiLibrary.lerpDouble(a.dataRowMaxHeight, b.dataRowMaxHeight, t),
             dataTextStyle: TextStyle.lerp(a.dataTextStyle, b.dataTextStyle, t),
             headingRowColor: WidgetStateProperty.lerp(
                 a.headingRowColor,
@@ -146,12 +146,12 @@ public class DataTableThemeData : Diagnosticable
                 t,
                 Color.lerp
             ),
-            headingRowHeight: Dart_uiLibrary.lerpDouble(a.headingRowHeight, b.headingRowHeight, t),
+            headingRowHeight: DorotiUiLibrary.lerpDouble(a.headingRowHeight, b.headingRowHeight, t),
             headingTextStyle: TextStyle.lerp(a.headingTextStyle, b.headingTextStyle, t),
-            horizontalMargin: Dart_uiLibrary.lerpDouble(a.horizontalMargin, b.horizontalMargin, t),
-            columnSpacing: Dart_uiLibrary.lerpDouble(a.columnSpacing, b.columnSpacing, t),
-            dividerThickness: Dart_uiLibrary.lerpDouble(a.dividerThickness, b.dividerThickness, t),
-            checkboxHorizontalMargin: Dart_uiLibrary.lerpDouble(
+            horizontalMargin: DorotiUiLibrary.lerpDouble(a.horizontalMargin, b.horizontalMargin, t),
+            columnSpacing: DorotiUiLibrary.lerpDouble(a.columnSpacing, b.columnSpacing, t),
+            dividerThickness: DorotiUiLibrary.lerpDouble(a.dividerThickness, b.dividerThickness, t),
+            checkboxHorizontalMargin: DorotiUiLibrary.lerpDouble(
                 a.checkboxHorizontalMargin,
                 b.checkboxHorizontalMargin,
                 t

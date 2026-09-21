@@ -393,6 +393,15 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private string LibraryStaticClassName(string libraryUri)
     {
+        // Dart source URIs bind to the Doroti-owned UI library names in C#.
+        if (libraryUri == "dart:ui")
+        {
+            return "DorotiUiLibrary";
+        }
+        if (libraryUri == "dart:ui_web")
+        {
+            return "DorotiUiWebLibrary";
+        }
         var lastSlash = libraryUri.LastIndexOf('/');
         var fileName = lastSlash >= 0 ? libraryUri[(lastSlash + 1)..] : libraryUri;
         if (fileName.EndsWith(".dart", StringComparison.Ordinal))
@@ -478,7 +487,7 @@ internal sealed partial class FrameworkCSharpLowerer
         libraryUri switch
         {
             "dart:math" => "global::Doroti.Runtime.Dart_mathLibrary",
-            "dart:ui" => "Dart_uiLibrary",
+            "dart:ui" => "DorotiUiLibrary",
             "dart:async" => "global::Doroti.Runtime.DartAsyncRuntime",
             "dart:convert" => "global::Doroti.Runtime.Dart_convertLibrary",
             _ => LibraryStaticClassName(libraryUri),

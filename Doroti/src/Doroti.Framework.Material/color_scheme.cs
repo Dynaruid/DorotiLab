@@ -1392,107 +1392,107 @@ public class ColorScheme : Diagnosticable
         }
         return new ColorScheme(
             brightness: (t < 0.5) ? a.brightness : b.brightness,
-            primary: Dart_uiLibrary.Color.lerp(a.primary, b.primary, t)!,
-            onPrimary: Dart_uiLibrary.Color.lerp(a.onPrimary, b.onPrimary, t)!,
-            primaryContainer: Dart_uiLibrary.Color.lerp(a.primaryContainer, b.primaryContainer, t),
-            onPrimaryContainer: Dart_uiLibrary.Color.lerp(
+            primary: DorotiUiLibrary.Color.lerp(a.primary, b.primary, t)!,
+            onPrimary: DorotiUiLibrary.Color.lerp(a.onPrimary, b.onPrimary, t)!,
+            primaryContainer: DorotiUiLibrary.Color.lerp(a.primaryContainer, b.primaryContainer, t),
+            onPrimaryContainer: DorotiUiLibrary.Color.lerp(
                 a.onPrimaryContainer,
                 b.onPrimaryContainer,
                 t
             ),
-            primaryFixed: Dart_uiLibrary.Color.lerp(a.primaryFixed, b.primaryFixed, t),
-            primaryFixedDim: Dart_uiLibrary.Color.lerp(a.primaryFixedDim, b.primaryFixedDim, t),
-            onPrimaryFixed: Dart_uiLibrary.Color.lerp(a.onPrimaryFixed, b.onPrimaryFixed, t),
-            onPrimaryFixedVariant: Dart_uiLibrary.Color.lerp(
+            primaryFixed: DorotiUiLibrary.Color.lerp(a.primaryFixed, b.primaryFixed, t),
+            primaryFixedDim: DorotiUiLibrary.Color.lerp(a.primaryFixedDim, b.primaryFixedDim, t),
+            onPrimaryFixed: DorotiUiLibrary.Color.lerp(a.onPrimaryFixed, b.onPrimaryFixed, t),
+            onPrimaryFixedVariant: DorotiUiLibrary.Color.lerp(
                 a.onPrimaryFixedVariant,
                 b.onPrimaryFixedVariant,
                 t
             ),
-            secondary: Dart_uiLibrary.Color.lerp(a.secondary, b.secondary, t)!,
-            onSecondary: Dart_uiLibrary.Color.lerp(a.onSecondary, b.onSecondary, t)!,
-            secondaryContainer: Dart_uiLibrary.Color.lerp(
+            secondary: DorotiUiLibrary.Color.lerp(a.secondary, b.secondary, t)!,
+            onSecondary: DorotiUiLibrary.Color.lerp(a.onSecondary, b.onSecondary, t)!,
+            secondaryContainer: DorotiUiLibrary.Color.lerp(
                 a.secondaryContainer,
                 b.secondaryContainer,
                 t
             ),
-            onSecondaryContainer: Dart_uiLibrary.Color.lerp(
+            onSecondaryContainer: DorotiUiLibrary.Color.lerp(
                 a.onSecondaryContainer,
                 b.onSecondaryContainer,
                 t
             ),
-            secondaryFixed: Dart_uiLibrary.Color.lerp(a.secondaryFixed, b.secondaryFixed, t),
-            secondaryFixedDim: Dart_uiLibrary.Color.lerp(
+            secondaryFixed: DorotiUiLibrary.Color.lerp(a.secondaryFixed, b.secondaryFixed, t),
+            secondaryFixedDim: DorotiUiLibrary.Color.lerp(
                 a.secondaryFixedDim,
                 b.secondaryFixedDim,
                 t
             ),
-            onSecondaryFixed: Dart_uiLibrary.Color.lerp(a.onSecondaryFixed, b.onSecondaryFixed, t),
-            onSecondaryFixedVariant: Dart_uiLibrary.Color.lerp(
+            onSecondaryFixed: DorotiUiLibrary.Color.lerp(a.onSecondaryFixed, b.onSecondaryFixed, t),
+            onSecondaryFixedVariant: DorotiUiLibrary.Color.lerp(
                 a.onSecondaryFixedVariant,
                 b.onSecondaryFixedVariant,
                 t
             ),
-            tertiary: Dart_uiLibrary.Color.lerp(a.tertiary, b.tertiary, t),
-            onTertiary: Dart_uiLibrary.Color.lerp(a.onTertiary, b.onTertiary, t),
-            tertiaryContainer: Dart_uiLibrary.Color.lerp(
+            tertiary: DorotiUiLibrary.Color.lerp(a.tertiary, b.tertiary, t),
+            onTertiary: DorotiUiLibrary.Color.lerp(a.onTertiary, b.onTertiary, t),
+            tertiaryContainer: DorotiUiLibrary.Color.lerp(
                 a.tertiaryContainer,
                 b.tertiaryContainer,
                 t
             ),
-            onTertiaryContainer: Dart_uiLibrary.Color.lerp(
+            onTertiaryContainer: DorotiUiLibrary.Color.lerp(
                 a.onTertiaryContainer,
                 b.onTertiaryContainer,
                 t
             ),
-            tertiaryFixed: Dart_uiLibrary.Color.lerp(a.tertiaryFixed, b.tertiaryFixed, t),
-            tertiaryFixedDim: Dart_uiLibrary.Color.lerp(a.tertiaryFixedDim, b.tertiaryFixedDim, t),
-            onTertiaryFixed: Dart_uiLibrary.Color.lerp(a.onTertiaryFixed, b.onTertiaryFixed, t),
-            onTertiaryFixedVariant: Dart_uiLibrary.Color.lerp(
+            tertiaryFixed: DorotiUiLibrary.Color.lerp(a.tertiaryFixed, b.tertiaryFixed, t),
+            tertiaryFixedDim: DorotiUiLibrary.Color.lerp(a.tertiaryFixedDim, b.tertiaryFixedDim, t),
+            onTertiaryFixed: DorotiUiLibrary.Color.lerp(a.onTertiaryFixed, b.onTertiaryFixed, t),
+            onTertiaryFixedVariant: DorotiUiLibrary.Color.lerp(
                 a.onTertiaryFixedVariant,
                 b.onTertiaryFixedVariant,
                 t
             ),
-            error: Dart_uiLibrary.Color.lerp(a.error, b.error, t)!,
-            onError: Dart_uiLibrary.Color.lerp(a.onError, b.onError, t)!,
-            errorContainer: Dart_uiLibrary.Color.lerp(a.errorContainer, b.errorContainer, t),
-            onErrorContainer: Dart_uiLibrary.Color.lerp(a.onErrorContainer, b.onErrorContainer, t),
-            surface: Dart_uiLibrary.Color.lerp(a.surface, b.surface, t)!,
-            onSurface: Dart_uiLibrary.Color.lerp(a.onSurface, b.onSurface, t)!,
-            surfaceDim: Dart_uiLibrary.Color.lerp(a.surfaceDim, b.surfaceDim, t),
-            surfaceBright: Dart_uiLibrary.Color.lerp(a.surfaceBright, b.surfaceBright, t),
-            surfaceContainerLowest: Dart_uiLibrary.Color.lerp(
+            error: DorotiUiLibrary.Color.lerp(a.error, b.error, t)!,
+            onError: DorotiUiLibrary.Color.lerp(a.onError, b.onError, t)!,
+            errorContainer: DorotiUiLibrary.Color.lerp(a.errorContainer, b.errorContainer, t),
+            onErrorContainer: DorotiUiLibrary.Color.lerp(a.onErrorContainer, b.onErrorContainer, t),
+            surface: DorotiUiLibrary.Color.lerp(a.surface, b.surface, t)!,
+            onSurface: DorotiUiLibrary.Color.lerp(a.onSurface, b.onSurface, t)!,
+            surfaceDim: DorotiUiLibrary.Color.lerp(a.surfaceDim, b.surfaceDim, t),
+            surfaceBright: DorotiUiLibrary.Color.lerp(a.surfaceBright, b.surfaceBright, t),
+            surfaceContainerLowest: DorotiUiLibrary.Color.lerp(
                 a.surfaceContainerLowest,
                 b.surfaceContainerLowest,
                 t
             ),
-            surfaceContainerLow: Dart_uiLibrary.Color.lerp(
+            surfaceContainerLow: DorotiUiLibrary.Color.lerp(
                 a.surfaceContainerLow,
                 b.surfaceContainerLow,
                 t
             ),
-            surfaceContainer: Dart_uiLibrary.Color.lerp(a.surfaceContainer, b.surfaceContainer, t),
-            surfaceContainerHigh: Dart_uiLibrary.Color.lerp(
+            surfaceContainer: DorotiUiLibrary.Color.lerp(a.surfaceContainer, b.surfaceContainer, t),
+            surfaceContainerHigh: DorotiUiLibrary.Color.lerp(
                 a.surfaceContainerHigh,
                 b.surfaceContainerHigh,
                 t
             ),
-            surfaceContainerHighest: Dart_uiLibrary.Color.lerp(
+            surfaceContainerHighest: DorotiUiLibrary.Color.lerp(
                 a.surfaceContainerHighest,
                 b.surfaceContainerHighest,
                 t
             ),
-            onSurfaceVariant: Dart_uiLibrary.Color.lerp(a.onSurfaceVariant, b.onSurfaceVariant, t),
-            outline: Dart_uiLibrary.Color.lerp(a.outline, b.outline, t),
-            outlineVariant: Dart_uiLibrary.Color.lerp(a.outlineVariant, b.outlineVariant, t),
-            shadow: Dart_uiLibrary.Color.lerp(a.shadow, b.shadow, t),
-            scrim: Dart_uiLibrary.Color.lerp(a.scrim, b.scrim, t),
-            inverseSurface: Dart_uiLibrary.Color.lerp(a.inverseSurface, b.inverseSurface, t),
-            onInverseSurface: Dart_uiLibrary.Color.lerp(a.onInverseSurface, b.onInverseSurface, t),
-            inversePrimary: Dart_uiLibrary.Color.lerp(a.inversePrimary, b.inversePrimary, t),
-            surfaceTint: Dart_uiLibrary.Color.lerp(a.surfaceTint, b.surfaceTint, t),
-            background: Dart_uiLibrary.Color.lerp(a.background, b.background, t),
-            onBackground: Dart_uiLibrary.Color.lerp(a.onBackground, b.onBackground, t),
-            surfaceVariant: Dart_uiLibrary.Color.lerp(a.surfaceVariant, b.surfaceVariant, t)
+            onSurfaceVariant: DorotiUiLibrary.Color.lerp(a.onSurfaceVariant, b.onSurfaceVariant, t),
+            outline: DorotiUiLibrary.Color.lerp(a.outline, b.outline, t),
+            outlineVariant: DorotiUiLibrary.Color.lerp(a.outlineVariant, b.outlineVariant, t),
+            shadow: DorotiUiLibrary.Color.lerp(a.shadow, b.shadow, t),
+            scrim: DorotiUiLibrary.Color.lerp(a.scrim, b.scrim, t),
+            inverseSurface: DorotiUiLibrary.Color.lerp(a.inverseSurface, b.inverseSurface, t),
+            onInverseSurface: DorotiUiLibrary.Color.lerp(a.onInverseSurface, b.onInverseSurface, t),
+            inversePrimary: DorotiUiLibrary.Color.lerp(a.inversePrimary, b.inversePrimary, t),
+            surfaceTint: DorotiUiLibrary.Color.lerp(a.surfaceTint, b.surfaceTint, t),
+            background: DorotiUiLibrary.Color.lerp(a.background, b.background, t),
+            onBackground: DorotiUiLibrary.Color.lerp(a.onBackground, b.onBackground, t),
+            surfaceVariant: DorotiUiLibrary.Color.lerp(a.surfaceVariant, b.surfaceVariant, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

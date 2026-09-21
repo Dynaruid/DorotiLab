@@ -1663,7 +1663,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 (_SegmentedControlContainerBoxParentData__sliding_segmented_control?)
                     child.parentData!
             )!;
-            double clampX = Dart_uiLibrary.clampDouble(
+            double clampX = DorotiUiLibrary.clampDouble(
                 dx,
                 childParentData.offset.dx,
                 child.size.width + childParentData.offset.dx
@@ -1824,7 +1824,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         double allowedMaxWidth = constraints.maxWidth - totalSeparatorWidth;
         double allowedMinWidth = constraints.minWidth - totalSeparatorWidth;
         double scale =
-            Dart_uiLibrary.clampDouble(totalWidth, allowedMinWidth, allowedMaxWidth) / totalWidth;
+            DorotiUiLibrary.clampDouble(totalWidth, allowedMinWidth, allowedMaxWidth) / totalWidth;
         if (scale != 1L)
         {
             for (var i = 0L; i < checked(segmentWidths.Count); i++)

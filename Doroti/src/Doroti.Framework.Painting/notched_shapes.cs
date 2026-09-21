@@ -188,7 +188,7 @@ public class AutomaticNotchedShape : NotchedShape
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             Path guestPath = this.guest!.getOuterPath(((guestRect__value6659)));
-            return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
+            return DorotiUiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
         }
         return hostPath;
         throw new InvalidOperationException("Control flow completed without returning a value.");

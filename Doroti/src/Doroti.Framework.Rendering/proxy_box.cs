@@ -1003,7 +1003,7 @@ public class RenderOpacity : RenderProxyBox
     {
         _opacity = opacity;
         _alwaysIncludeSemantics = alwaysIncludeSemantics;
-        _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(opacity);
+        _alpha = DorotiUiLibrary.Color.getAlphaFromOpacity(opacity);
         System.Diagnostics.Debug.Assert((opacity >= 0.0) && (opacity <= 1.0));
     }
 
@@ -1023,7 +1023,7 @@ public class RenderOpacity : RenderProxyBox
             bool didNeedCompositing = alwaysNeedsCompositing;
             var wasVisible = _alpha != 0L;
             _opacity = __value;
-            _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(_opacity);
+            _alpha = DorotiUiLibrary.Color.getAlphaFromOpacity(_opacity);
             if (didNeedCompositing != alwaysNeedsCompositing)
             {
                 markNeedsCompositingBitsUpdate();
@@ -1210,7 +1210,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     public virtual void _updateOpacity()
     {
         long? oldAlpha = _alpha;
-        _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(opacity.value);
+        _alpha = DorotiUiLibrary.Color.getAlphaFromOpacity(opacity.value);
         if (oldAlpha != _alpha)
         {
             bool? wasRepaintBoundary = _currentlyIsRepaintBoundary;

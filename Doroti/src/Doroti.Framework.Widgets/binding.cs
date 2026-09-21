@@ -523,7 +523,7 @@ public class WidgetsFlutterBinding
     {
         DartRuntimePrimitives.Assert(() => (cacheWidth is null) || (cacheWidth > 0L));
         DartRuntimePrimitives.Assert(() => (cacheHeight is null) || (cacheHeight > 0L));
-        return Dart_uiLibrary.instantiateImageCodecFromBuffer(
+        return DorotiUiLibrary.instantiateImageCodecFromBuffer(
             buffer,
             targetWidth: cacheWidth,
             targetHeight: cacheHeight,
@@ -537,7 +537,7 @@ public class WidgetsFlutterBinding
         Func<long, long, TargetImageSize>? getTargetSize = null
     )
     {
-        return Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
+        return DorotiUiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

@@ -227,7 +227,7 @@ public class PageMetrics : FixedScrollMetrics
         {
             return Math.Max(
                     0.0,
-                    Dart_uiLibrary.clampDouble(pixels, minScrollExtent, maxScrollExtent)
+                    DorotiUiLibrary.clampDouble(pixels, minScrollExtent, maxScrollExtent)
                 ) / Math.Max(1.0, viewportDimension * viewportFraction);
         }
     }
@@ -344,7 +344,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
                 ? (
                     _cachedPage
                     ?? (double)getPageFromPixels(
-                        Dart_uiLibrary.clampDouble(pixels, minScrollExtent, maxScrollExtent),
+                        DorotiUiLibrary.clampDouble(pixels, minScrollExtent, maxScrollExtent),
                         (viewportDimension)
                     )
                 )

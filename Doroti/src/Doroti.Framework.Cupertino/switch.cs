@@ -1490,7 +1490,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
             SwitchLibrary._kThumbRadius * 2L
         );
         double colorValue = _colorAnimation!.value;
-        Color trackColor = Dart_uiLibrary.Color.lerp(
+        Color trackColor = DorotiUiLibrary.Color.lerp(
             inactiveTrackColor,
             activeTrackColor,
             position.value
@@ -1498,12 +1498,12 @@ internal class _SwitchPainter__switch : ToggleablePainter
         Color? trackOutlineColor =
             ((inactiveTrackOutlineColor is null) || (activeTrackOutlineColor is null))
                 ? null
-                : Dart_uiLibrary.Color.lerp(
+                : DorotiUiLibrary.Color.lerp(
                     inactiveTrackOutlineColor,
                     activeTrackOutlineColor,
                     colorValue
                 );
-        double? trackOutlineWidth = Dart_uiLibrary.lerpDouble(
+        double? trackOutlineWidth = DorotiUiLibrary.lerpDouble(
             inactiveTrackOutlineWidth,
             activeTrackOutlineWidth,
             colorValue
@@ -1511,7 +1511,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         Color lerpedThumbColor = default!;
         if (!reaction.isDismissed)
         {
-            lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+            lerpedThumbColor = DorotiUiLibrary.Color.lerp(
                 inactivePressedColor,
                 activePressedColor,
                 colorValue
@@ -1521,7 +1521,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         {
             if (Equals(positionController.status, AnimationStatus.forward))
             {
-                lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                lerpedThumbColor = DorotiUiLibrary.Color.lerp(
                     inactivePressedColor,
                     activeColor,
                     colorValue
@@ -1531,7 +1531,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
             {
                 if (Equals(positionController.status, AnimationStatus.reverse))
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                    lerpedThumbColor = DorotiUiLibrary.Color.lerp(
                         inactiveColor,
                         activePressedColor,
                         colorValue
@@ -1539,7 +1539,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 }
                 else
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(
+                    lerpedThumbColor = DorotiUiLibrary.Color.lerp(
                         inactiveColor,
                         activeColor,
                         colorValue
@@ -1547,7 +1547,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 }
             }
         }
-        Color thumbColor = Dart_uiLibrary.Color.alphaBlend(lerpedThumbColor, surfaceColor);
+        Color thumbColor = DorotiUiLibrary.Color.alphaBlend(lerpedThumbColor, surfaceColor);
         Icon? thumbIcon = (currentValue < 0.5) ? inactiveIcon : activeIcon;
         IImageProvider? thumbImage = (currentValue < 0.5) ? inactiveThumbImage : activeThumbImage;
         Action<object, System.Diagnostics.StackTrace?>? thumbErrorListener =
@@ -1792,7 +1792,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
             thumbPainter.paint(canvas, thumbPaintOffset, configuration.copyWith(size: thumbSize));
             if ((thumbIcon is not null) && (thumbIcon.icon is not null))
             {
-                Color iconColor = Dart_uiLibrary.Color.lerp(
+                Color iconColor = DorotiUiLibrary.Color.lerp(
                     inactiveIconColor,
                     activeIconColor,
                     currentValue

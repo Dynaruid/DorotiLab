@@ -14,5 +14,5 @@ namespace Doroti.Framework.Widgets;
 
 internal class WebBrowserDetectionIo
 {
-    public static bool isSafari => Dart_ui_webLibrary.BrowserDetection.instance.isSafari;
+    public static bool isSafari => DorotiUiWebLibrary.BrowserDetection.instance.isSafari;
 }

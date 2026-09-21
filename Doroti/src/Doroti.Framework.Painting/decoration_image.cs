@@ -447,7 +447,7 @@ public static partial class Decoration_imageLibrary
         {
             paint.colorFilter = colorFilter;
         }
-        paint.color = Color.fromRGBO(0L, 0L, 0L, Dart_uiLibrary.clampDouble(opacity, 0.0, 1.0));
+        paint.color = Color.fromRGBO(0L, 0L, 0L, DorotiUiLibrary.clampDouble(opacity, 0.0, 1.0));
         paint.filterQuality = filterQuality;
         paint.invertColors = invertColors;
         paint.blendMode = blendMode;

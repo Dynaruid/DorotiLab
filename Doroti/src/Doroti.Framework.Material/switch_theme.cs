@@ -91,12 +91,12 @@ public class SwitchThemeData : Diagnosticable
                 a?.trackOutlineWidth,
                 b?.trackOutlineWidth,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize,
             mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor,
             overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
-            splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
+            splashRadius: DorotiUiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t),
             thumbIcon: (t < 0.5) ? a?.thumbIcon : b?.thumbIcon,
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t)
         );

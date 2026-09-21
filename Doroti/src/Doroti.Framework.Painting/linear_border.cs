@@ -27,11 +27,11 @@ public class LinearBorderEdge
         b ??= new LinearBorderEdge(alignment: a.alignment, size: 0);
         return new LinearBorderEdge(
             size: (
-                Dart_uiLibrary.lerpDouble(a.size, b.size, t)
+                DorotiUiLibrary.lerpDouble(a.size, b.size, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             alignment: (
-                Dart_uiLibrary.lerpDouble(a.alignment, b.alignment, t)
+                DorotiUiLibrary.lerpDouble(a.alignment, b.alignment, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );

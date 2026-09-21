@@ -338,7 +338,7 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DorotiUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(submission);
@@ -879,7 +879,7 @@ public sealed partial class SkiaSceneRenderer
         PublishFrameReceipt(receipt);
     }
 
-    public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation)
+    public Paragraph Layout(ParagraphRequest request, DorotiUiInvocation invocation)
     {
         var started = DorotiFrameClock.Now;
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -953,7 +953,7 @@ public sealed partial class SkiaSceneRenderer
 
     public ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     ) => DecodeSizedAsync(bytes, static (_, _) => null, false, invocation, cancellationToken);
 
@@ -961,7 +961,7 @@ public sealed partial class SkiaSceneRenderer
         ReadOnlyMemory<byte> bytes,
         Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     )
     {
@@ -1083,7 +1083,7 @@ public sealed partial class SkiaSceneRenderer
         Picture picture,
         int width,
         int height,
-        DartUiInvocation invocation,
+        DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
     )
     {
@@ -1130,7 +1130,7 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    public void SetEnabled(bool enabled, DartUiInvocation invocation)
+    public void SetEnabled(bool enabled, DorotiUiInvocation invocation)
     {
         _semanticsEnabled = enabled;
         if (!enabled)
@@ -1140,7 +1140,7 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    public void Update(SemanticsUpdate update, DartUiInvocation invocation)
+    public void Update(SemanticsUpdate update, DorotiUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (!_semanticsEnabled)
@@ -1679,7 +1679,7 @@ public sealed partial class SkiaSceneRenderer
                         throw new DorotiCapabilityException(
                             DorotiCapabilityIds.PlatformViews,
                             null,
-                            DartUiInvocation.Managed("SkiaSceneRenderer.DrawScene"),
+                            DorotiUiInvocation.Managed("SkiaSceneRenderer.DrawScene"),
                             "Native and shield commands require a host composition plan before raster replay."
                         );
                     case "pop" when restoreCounts.Count > 0:

@@ -166,7 +166,7 @@ public class InteractiveViewer : StatefulWidget
         }
         Vector3 l1P = point - l1;
         Vector3 l1L2 = l2 - l1;
-        double fraction = Dart_uiLibrary.clampDouble(l1P.dot(l1L2) / lengthSquared, 0.0, 1.0);
+        double fraction = DorotiUiLibrary.clampDouble(l1P.dot(l1L2) / lengthSquared, 0.0, 1.0);
         return l1 + (l1L2 * fraction);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -466,7 +466,7 @@ internal class _InteractiveViewerState__interactive_viewer
             currentScale * scale,
             Math.Max(_viewport.width / _boundaryRect.width, _viewport.height / _boundaryRect.height)
         );
-        double clampedTotalScale = Dart_uiLibrary.clampDouble(
+        double clampedTotalScale = DorotiUiLibrary.clampDouble(
             totalScale,
             widget.minScale,
             widget.maxScale

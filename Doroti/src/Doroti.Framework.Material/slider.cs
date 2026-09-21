@@ -578,7 +578,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                 (RectangularSliderValueIndicatorShape)valueIndicatorShapeLocal;
             valueIndicatorColorLocal =
                 sliderThemeLocal.valueIndicatorColor
-                ?? Dart_uiLibrary.Color.alphaBlend(
+                ?? DorotiUiLibrary.Color.alphaBlend(
                     theme.colorScheme.onSurface.withOpacity(0.6),
                     theme.colorScheme.surface.withOpacity(0.9)
                 );
@@ -1648,7 +1648,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
 
     internal virtual double _discretize(double value)
     {
-        double result = Dart_uiLibrary.clampDouble((value), 0.0, 1.0);
+        double result = DorotiUiLibrary.clampDouble((value), 0.0, 1.0);
         if (isDiscrete)
         {
             result =
@@ -2145,7 +2145,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         );
         double thumbPadding = (padding > (thumbPreferredSize.width / 2L)) ? (padding / 2L) : 0;
         return new Offset(
-            Dart_uiLibrary.clampDouble(
+            DorotiUiLibrary.clampDouble(
                 thumbPosition,
                 trackRect.left + thumbPadding,
                 trackRect.right - thumbPadding
@@ -2213,19 +2213,19 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         {
             config.value = semanticFormatterCallback!(_state._lerp((value)));
             config.increasedValue = semanticFormatterCallback!(
-                _state._lerp(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0))
+                _state._lerp(DorotiUiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0))
             );
             config.decreasedValue = semanticFormatterCallback!(
-                _state._lerp(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0))
+                _state._lerp(DorotiUiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0))
             );
         }
         else
         {
             config.value = $"{(value * 100L).round()}%";
             config.increasedValue =
-                $"{(Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+                $"{(DorotiUiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
             config.decreasedValue =
-                $"{(Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
+                $"{(DorotiUiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0) * 100L).round()}%";
         }
     }
 
@@ -2287,18 +2287,18 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
 
     public virtual double currentValue
     {
-        get { return Dart_uiLibrary.clampDouble(value, 0.0, 1.0); }
+        get { return DorotiUiLibrary.clampDouble(value, 0.0, 1.0); }
     }
 
     public virtual double increaseValue()
     {
-        return Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0);
+        return DorotiUiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double decreaseValue()
     {
-        return Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0);
+        return DorotiUiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -2528,7 +2528,7 @@ internal class _SliderDefaultsM3Year2023__slider : SliderThemeData
     public override Color? thumbColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
     public override Color? disabledThumbColor =>
         DartRuntimePrimitives.ConvertValue<Color>(
-            Dart_uiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface)
+            DorotiUiLibrary.Color.alphaBlend(_colors.onSurface.withOpacity(0.38), _colors.surface)
         );
     public override Color? overlayColor =>
         DartRuntimePrimitives.ConvertValue<Color>(

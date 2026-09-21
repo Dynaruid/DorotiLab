@@ -98,7 +98,7 @@ internal static class MacOSWebViewEvidence
             var owner = PlatformEffectFixtureProbe.Owner!;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(
                 DorotiCapabilityIds.PlatformViews,
-                DartUiInvocation.Managed("AppKitProbe")
+                DorotiUiInvocation.Managed("AppKitProbe")
             );
             var commands = (IWebViewHostCapability)host;
             var handle = Handle(web!);

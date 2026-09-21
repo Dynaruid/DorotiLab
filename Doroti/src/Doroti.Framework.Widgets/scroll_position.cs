@@ -484,7 +484,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 target = viewport
                     .getOffsetToReveal(@object, alignment, rect: targetRect, axis: axis)
                     .offset;
-                target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
+                target = DorotiUiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
                 break;
             }
             case ScrollPositionAlignmentPolicy.keepVisibleAtEnd:
@@ -492,7 +492,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 target = viewport
                     .getOffsetToReveal(@object, 1.0, rect: targetRect, axis: axis)
                     .offset;
-                target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
+                target = DorotiUiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
                 if (target < pixels)
                 {
                     target = pixels;
@@ -504,7 +504,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 target = viewport
                     .getOffsetToReveal(@object, 0.0, rect: targetRect, axis: axis)
                     .offset;
-                target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
+                target = DorotiUiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
                 if (target > pixels)
                 {
                     target = pixels;
@@ -544,7 +544,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             (clamp ?? throw new global::System.NullReferenceException("A required value was null."))
         )
         {
-            to = Dart_uiLibrary.clampDouble(to, minScrollExtent, maxScrollExtent);
+            to = DorotiUiLibrary.clampDouble(to, minScrollExtent, maxScrollExtent);
         }
         return base.moveTo(to, duration: duration, curve: curve);
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -747,8 +747,8 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         {
             DartRuntimePrimitives.Assert(() => minScrollExtent <= maxScrollExtent);
             return viewportDimension
-                - Dart_uiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension)
-                - Dart_uiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
+                - DorotiUiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension)
+                - DorotiUiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
         }
     }
     public virtual double extentAfter => Math.Max(maxScrollExtent - pixels, 0.0);

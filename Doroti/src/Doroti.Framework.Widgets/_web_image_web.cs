@@ -31,7 +31,7 @@ public class ImgElementPlatformViewIo : StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => !_registered);
         _registered = true;
-        Dart_ui_webLibrary.platformViewRegistry.registerViewFactory(
+        DorotiUiWebLibrary.platformViewRegistry.registerViewFactory(
             global::Doroti
                 .Framework
                 .Widgets

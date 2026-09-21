@@ -135,11 +135,11 @@ public class CupertinoTextSelectionToolbar : StatelessWidget
             - mediaQueryPadding.right
             - Text_selection_toolbarLibrary._kArrowScreenPadding;
         var anchorAboveAdjusted = new Offset(
-            Dart_uiLibrary.clampDouble(anchorAbove.dx, leftMargin, rightMargin),
+            DorotiUiLibrary.clampDouble(anchorAbove.dx, leftMargin, rightMargin),
             anchorAbove.dy - Text_selection_toolbarLibrary._kToolbarContentDistance - paddingAbove
         );
         var anchorBelowAdjusted = new Offset(
-            Dart_uiLibrary.clampDouble(anchorBelow.dx, leftMargin, rightMargin),
+            DorotiUiLibrary.clampDouble(anchorBelow.dx, leftMargin, rightMargin),
             anchorBelow.dy + Text_selection_toolbarLibrary._kToolbarContentDistance - paddingAbove
         );
         return new Padding(
@@ -418,7 +418,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         }
         bool isAbove = _isAbove(child.size.height);
         Offset localAnchor = globalToLocal(isAbove ? _anchorAbove : _anchorBelow);
-        double arrowTipX = Dart_uiLibrary.clampDouble(
+        double arrowTipX = DorotiUiLibrary.clampDouble(
             localAnchor.dx,
             Text_selection_toolbarLibrary._kToolbarBorderRadius.x
                 + (Text_selection_toolbarLibrary._kToolbarArrowSize.width / 2L),

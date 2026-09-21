@@ -382,7 +382,7 @@ public class _CupertinoTextSelectionControlsToolbarState__text_selection
         }
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-        double anchorX = Dart_uiLibrary.clampDouble(
+        double anchorX = DorotiUiLibrary.clampDouble(
             widget.selectionMidpoint.dx + widget.globalEditableRegion.left,
             Text_selectionLibrary._kArrowScreenPadding + mediaQueryPadding.left,
             MediaQuery.widthOf(context)

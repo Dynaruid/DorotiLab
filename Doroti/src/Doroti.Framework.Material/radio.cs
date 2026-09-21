@@ -757,7 +757,7 @@ internal class _RadioPainter__radio : ToggleablePainter
                 () =>
                 {
                     var __cascade = new Paint();
-                    __cascade.color = Dart_uiLibrary.Color.lerp(
+                    __cascade.color = DorotiUiLibrary.Color.lerp(
                         inactiveBackgroundColor,
                         activeBackgroundColor,
                         position.value
@@ -778,7 +778,7 @@ internal class _RadioPainter__radio : ToggleablePainter
                     {
                         var __cascade = new Paint();
                         __cascade.style = PaintingStyle.fill;
-                        __cascade.color = Dart_uiLibrary.Color.lerp(
+                        __cascade.color = DorotiUiLibrary.Color.lerp(
                             inactiveColor,
                             activeColor,
                             position.value

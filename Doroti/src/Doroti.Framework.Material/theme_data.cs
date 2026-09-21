@@ -1222,35 +1222,35 @@ public class ThemeData : Diagnosticable
             scrollbarTheme: ScrollbarThemeData.lerp(a.scrollbarTheme, b.scrollbarTheme, t),
             splashFactory: (t < 0.5) ? a.splashFactory : b.splashFactory,
             visualDensity: VisualDensity.lerp(a.visualDensity, b.visualDensity, t),
-            canvasColor: Dart_uiLibrary.Color.lerp(a.canvasColor, b.canvasColor, t)!,
-            cardColor: Dart_uiLibrary.Color.lerp(a.cardColor, b.cardColor, t)!,
+            canvasColor: DorotiUiLibrary.Color.lerp(a.canvasColor, b.canvasColor, t)!,
+            cardColor: DorotiUiLibrary.Color.lerp(a.cardColor, b.cardColor, t)!,
             colorScheme: ColorScheme.lerp(a.colorScheme, b.colorScheme, t),
-            disabledColor: Dart_uiLibrary.Color.lerp(a.disabledColor, b.disabledColor, t)!,
-            dividerColor: Dart_uiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t)!,
-            focusColor: Dart_uiLibrary.Color.lerp(a.focusColor, b.focusColor, t)!,
-            highlightColor: Dart_uiLibrary.Color.lerp(a.highlightColor, b.highlightColor, t)!,
-            hintColor: Dart_uiLibrary.Color.lerp(a.hintColor, b.hintColor, t)!,
-            hoverColor: Dart_uiLibrary.Color.lerp(a.hoverColor, b.hoverColor, t)!,
-            primaryColor: Dart_uiLibrary.Color.lerp(a.primaryColor, b.primaryColor, t)!,
-            primaryColorDark: Dart_uiLibrary.Color.lerp(a.primaryColorDark, b.primaryColorDark, t)!,
-            primaryColorLight: Dart_uiLibrary.Color.lerp(
+            disabledColor: DorotiUiLibrary.Color.lerp(a.disabledColor, b.disabledColor, t)!,
+            dividerColor: DorotiUiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t)!,
+            focusColor: DorotiUiLibrary.Color.lerp(a.focusColor, b.focusColor, t)!,
+            highlightColor: DorotiUiLibrary.Color.lerp(a.highlightColor, b.highlightColor, t)!,
+            hintColor: DorotiUiLibrary.Color.lerp(a.hintColor, b.hintColor, t)!,
+            hoverColor: DorotiUiLibrary.Color.lerp(a.hoverColor, b.hoverColor, t)!,
+            primaryColor: DorotiUiLibrary.Color.lerp(a.primaryColor, b.primaryColor, t)!,
+            primaryColorDark: DorotiUiLibrary.Color.lerp(a.primaryColorDark, b.primaryColorDark, t)!,
+            primaryColorLight: DorotiUiLibrary.Color.lerp(
                 a.primaryColorLight,
                 b.primaryColorLight,
                 t
             )!,
-            scaffoldBackgroundColor: Dart_uiLibrary.Color.lerp(
+            scaffoldBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a.scaffoldBackgroundColor,
                 b.scaffoldBackgroundColor,
                 t
             )!,
-            secondaryHeaderColor: Dart_uiLibrary.Color.lerp(
+            secondaryHeaderColor: DorotiUiLibrary.Color.lerp(
                 a.secondaryHeaderColor,
                 b.secondaryHeaderColor,
                 t
             )!,
-            shadowColor: Dart_uiLibrary.Color.lerp(a.shadowColor, b.shadowColor, t)!,
-            splashColor: Dart_uiLibrary.Color.lerp(a.splashColor, b.splashColor, t)!,
-            unselectedWidgetColor: Dart_uiLibrary.Color.lerp(
+            shadowColor: DorotiUiLibrary.Color.lerp(a.shadowColor, b.shadowColor, t)!,
+            splashColor: DorotiUiLibrary.Color.lerp(a.splashColor, b.splashColor, t)!,
+            unselectedWidgetColor: DorotiUiLibrary.Color.lerp(
                 a.unselectedWidgetColor,
                 b.unselectedWidgetColor,
                 t
@@ -1371,12 +1371,12 @@ public class ThemeData : Diagnosticable
             )!,
             tooltipTheme: TooltipThemeData.lerp(a.tooltipTheme, b.tooltipTheme, t)!,
             buttonBarTheme: ButtonBarThemeData.lerp(a.buttonBarTheme, b.buttonBarTheme, t),
-            dialogBackgroundColor: Dart_uiLibrary.Color.lerp(
+            dialogBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a.dialogBackgroundColor,
                 b.dialogBackgroundColor,
                 t
             )!,
-            indicatorColor: Dart_uiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t)!
+            indicatorColor: DorotiUiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t)!
         );
     }
 
@@ -2477,11 +2477,11 @@ public class VisualDensity : Diagnosticable
         }
         return new VisualDensity(
             horizontal: (
-                Dart_uiLibrary.lerpDouble(a.horizontal, b.horizontal, t)
+                DorotiUiLibrary.lerpDouble(a.horizontal, b.horizontal, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             vertical: (
-                Dart_uiLibrary.lerpDouble(a.vertical, b.vertical, t)
+                DorotiUiLibrary.lerpDouble(a.vertical, b.vertical, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
@@ -2492,12 +2492,12 @@ public class VisualDensity : Diagnosticable
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         return constraints.copyWith(
-            minWidth: Dart_uiLibrary.clampDouble(
+            minWidth: DorotiUiLibrary.clampDouble(
                 constraints.minWidth + baseSizeAdjustment.dx,
                 0.0,
                 constraints.maxWidth
             ),
-            minHeight: Dart_uiLibrary.clampDouble(
+            minHeight: DorotiUiLibrary.clampDouble(
                 constraints.minHeight + baseSizeAdjustment.dy,
                 0.0,
                 constraints.maxHeight

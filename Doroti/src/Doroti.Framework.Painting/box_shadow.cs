@@ -93,17 +93,17 @@ public class BoxShadow : Shadow
             return a.scale(1.0 - t);
         }
         return new BoxShadow(
-            color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!,
+            color: DorotiUiLibrary.Color.lerp(a.color, b.color, t)!,
             offset: (
-                Dart_uiLibrary.Offset.lerp(a.offset, b.offset, t)
+                DorotiUiLibrary.Offset.lerp(a.offset, b.offset, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             blurRadius: (
-                Dart_uiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)
+                DorotiUiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             spreadRadius: (
-                Dart_uiLibrary.lerpDouble(a.spreadRadius, b.spreadRadius, t)
+                DorotiUiLibrary.lerpDouble(a.spreadRadius, b.spreadRadius, t)
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             blurStyle: Equals(a.blurStyle, BlurStyle.normal) ? b.blurStyle : a.blurStyle

@@ -798,7 +798,7 @@ public class ScaffoldGeometry
             return new ScaffoldGeometry(bottomNavigationBarTop: bottomNavigationBarTop);
         }
         Rect scaledButton = (
-            Dart_uiLibrary.Rect.lerp(
+            DorotiUiLibrary.Rect.lerp(
                 (
                     floatingActionButtonArea
                     ?? throw new global::System.NullReferenceException("A required value was null.")
@@ -1123,7 +1123,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             if (extendBody && (minInsets.bottom <= bottomWidgetsHeightLocal))
             {
                 bodyMaxHeight += bottomWidgetsHeightLocal;
-                bodyMaxHeight = Dart_uiLibrary.clampDouble(
+                bodyMaxHeight = DorotiUiLibrary.clampDouble(
                     bodyMaxHeight,
                     0.0,
                     looseConstraints.maxHeight - contentTopLocal

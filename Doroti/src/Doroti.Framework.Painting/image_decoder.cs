@@ -9,7 +9,7 @@ public static partial class Image_decoderLibrary
 {
     public static async Future<Image> decodeImageFromList(Uint8List bytes)
     {
-        ImmutableBuffer buffer = await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes);
+        ImmutableBuffer buffer = await DorotiUiLibrary.ImmutableBuffer.fromUint8List(bytes);
         Codec codec = await PaintingBinding.instance.instantiateImageCodecWithSize(buffer);
         FrameInfo frameInfo = default!;
         try

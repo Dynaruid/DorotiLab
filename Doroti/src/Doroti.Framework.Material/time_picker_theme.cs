@@ -228,38 +228,38 @@ public class TimePickerThemeData : Diagnosticable
             }
         }
         return new TimePickerThemeData(
-            backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
+            backgroundColor: DorotiUiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t),
             cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t),
             confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t),
             dayPeriodBorderSide: lerpedBorderSide,
-            dayPeriodColor: Dart_uiLibrary.Color.lerp(a?.dayPeriodColor, b?.dayPeriodColor, t),
+            dayPeriodColor: DorotiUiLibrary.Color.lerp(a?.dayPeriodColor, b?.dayPeriodColor, t),
             dayPeriodShape: (
                 (OutlinedBorder?)ShapeBorder.lerp(a?.dayPeriodShape, b?.dayPeriodShape, t)
             )!,
-            dayPeriodTextColor: Dart_uiLibrary.Color.lerp(
+            dayPeriodTextColor: DorotiUiLibrary.Color.lerp(
                 a?.dayPeriodTextColor,
                 b?.dayPeriodTextColor,
                 t
             ),
             dayPeriodTextStyle: TextStyle.lerp(a?.dayPeriodTextStyle, b?.dayPeriodTextStyle, t),
-            dialBackgroundColor: Dart_uiLibrary.Color.lerp(
+            dialBackgroundColor: DorotiUiLibrary.Color.lerp(
                 a?.dialBackgroundColor,
                 b?.dialBackgroundColor,
                 t
             ),
-            dialHandColor: Dart_uiLibrary.Color.lerp(a?.dialHandColor, b?.dialHandColor, t),
-            dialTextColor: Dart_uiLibrary.Color.lerp(a?.dialTextColor, b?.dialTextColor, t),
+            dialHandColor: DorotiUiLibrary.Color.lerp(a?.dialHandColor, b?.dialHandColor, t),
+            dialTextColor: DorotiUiLibrary.Color.lerp(a?.dialTextColor, b?.dialTextColor, t),
             dialTextStyle: TextStyle.lerp(a?.dialTextStyle, b?.dialTextStyle, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
-            entryModeIconColor: Dart_uiLibrary.Color.lerp(
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            entryModeIconColor: DorotiUiLibrary.Color.lerp(
                 a?.entryModeIconColor,
                 b?.entryModeIconColor,
                 t
             ),
             helpTextStyle: TextStyle.lerp(a?.helpTextStyle, b?.helpTextStyle, t),
-            hourMinuteColor: Dart_uiLibrary.Color.lerp(a?.hourMinuteColor, b?.hourMinuteColor, t),
+            hourMinuteColor: DorotiUiLibrary.Color.lerp(a?.hourMinuteColor, b?.hourMinuteColor, t),
             hourMinuteShape: ShapeBorder.lerp(a?.hourMinuteShape, b?.hourMinuteShape, t),
-            hourMinuteTextColor: Dart_uiLibrary.Color.lerp(
+            hourMinuteTextColor: DorotiUiLibrary.Color.lerp(
                 a?.hourMinuteTextColor,
                 b?.hourMinuteTextColor,
                 t

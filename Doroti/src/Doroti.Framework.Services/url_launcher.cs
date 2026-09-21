@@ -35,7 +35,7 @@ public static class UrlLauncher
         {
             host = view.RequireCapability<IUrlLauncherHostCapability>(
                 DorotiCapabilityIds.UrlLauncher,
-                DartUiInvocation.Managed("UrlLauncher.launchUrl")
+                DorotiUiInvocation.Managed("UrlLauncher.launchUrl")
             );
         }
         catch (DorotiCapabilityException)

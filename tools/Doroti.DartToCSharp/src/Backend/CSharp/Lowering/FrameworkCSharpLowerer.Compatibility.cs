@@ -509,7 +509,7 @@ internal sealed partial class FrameworkCSharpLowerer
             && node.ElementId?.Contains("dart:ui", StringComparison.Ordinal) == true
         )
         {
-            builder.Append("Dart_uiLibrary.loadFontFromList(");
+            builder.Append("DorotiUiLibrary.loadFontFromList(");
             EmitArguments(
                 builder,
                 node.Child(CoreChildRole.argumentsOffset),
@@ -1063,7 +1063,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 ("dart:developer", "Timeline") => "Timeline",
                 ("dart:developer", "Flow") => "Flow",
                 ("dart:async", "Timer") => "global::Doroti.Runtime.Timer",
-                ("dart:ui", { } dartUiOwner) when owner is not null => "Dart_uiLibrary."
+                ("dart:ui", { } dartUiOwner) when owner is not null => "DorotiUiLibrary."
                     + SafeIdentifier(dartUiOwner),
                 _ => MapDartLibraryStaticClass(dartLibrary),
             };

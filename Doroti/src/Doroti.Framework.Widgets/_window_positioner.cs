@@ -338,8 +338,8 @@ public static partial class _window_positionerLibrary
     internal static Offset _constrainTo(Rect r, Offset p)
     {
         return new Offset(
-            Dart_uiLibrary.clampDouble(p.dx, r.left, r.right),
-            Dart_uiLibrary.clampDouble(p.dy, r.top, r.bottom)
+            DorotiUiLibrary.clampDouble(p.dx, r.left, r.right),
+            DorotiUiLibrary.clampDouble(p.dy, r.top, r.bottom)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

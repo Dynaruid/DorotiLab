@@ -31,10 +31,10 @@ public class ClampedSimulation : Simulation
     }
 
     public override double x(double time) =>
-        Dart_uiLibrary.clampDouble(simulation.x(time), xMin, xMax);
+        DorotiUiLibrary.clampDouble(simulation.x(time), xMin, xMax);
 
     public override double dx(double time) =>
-        Dart_uiLibrary.clampDouble(simulation.dx(time), dxMin, dxMax);
+        DorotiUiLibrary.clampDouble(simulation.dx(time), dxMin, dxMax);
 
     public override bool isDone(double time) => simulation.isDone(time);
 

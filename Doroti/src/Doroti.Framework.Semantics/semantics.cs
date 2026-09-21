@@ -1911,7 +1911,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     internal virtual SemanticsValidationResult _validationResult { get; set; } =
         _kEmptyConfig.validationResult;
     internal virtual SemanticsHitTestBehavior _hitTestBehavior { get; set; } =
-        Dart_uiLibrary.SemanticsHitTestBehavior.defer;
+        DorotiUiLibrary.SemanticsHitTestBehavior.defer;
     internal virtual SemanticsInputType _inputType { get; set; } = _kEmptyConfig.inputType;
     internal static SemanticsConfiguration _kEmptyConfig = new SemanticsConfiguration();
     internal static Int32List _kEmptyChildList = new Int32List(0L);
@@ -2662,7 +2662,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
                     {
                         inputTypeLocal = node._inputType;
                     }
-                    if (Equals(hitTestBehaviorLocal, Dart_uiLibrary.SemanticsHitTestBehavior.defer))
+                    if (Equals(hitTestBehaviorLocal, DorotiUiLibrary.SemanticsHitTestBehavior.defer))
                     {
                         hitTestBehaviorLocal = node._hitTestBehavior;
                     }
@@ -4250,7 +4250,7 @@ public class SemanticsConfiguration
     internal virtual SemanticsValidationResult _validationResult { get; set; } =
         SemanticsValidationResult.none;
     internal virtual SemanticsHitTestBehavior _hitTestBehavior { get; set; } =
-        Dart_uiLibrary.SemanticsHitTestBehavior.defer;
+        DorotiUiLibrary.SemanticsHitTestBehavior.defer;
     internal virtual SemanticsInputType _inputType { get; set; } = SemanticsInputType.none;
     internal virtual string? _maxValue { get; set; } = default;
     internal virtual string? _minValue { get; set; } = default;
@@ -5462,8 +5462,8 @@ public class SemanticsConfiguration
             return false;
         }
         if (
-            (!Equals(_hitTestBehavior, Dart_uiLibrary.SemanticsHitTestBehavior.defer))
-            || (!Equals(other._hitTestBehavior, Dart_uiLibrary.SemanticsHitTestBehavior.defer))
+            (!Equals(_hitTestBehavior, DorotiUiLibrary.SemanticsHitTestBehavior.defer))
+            || (!Equals(other._hitTestBehavior, DorotiUiLibrary.SemanticsHitTestBehavior.defer))
         )
         {
             return false;
@@ -5605,8 +5605,8 @@ public class SemanticsConfiguration
         _minValue ??= child._minValue;
         _maxValue ??= child._maxValue;
         if (
-            Equals(_hitTestBehavior, Dart_uiLibrary.SemanticsHitTestBehavior.defer)
-            && (!Equals(child._hitTestBehavior, Dart_uiLibrary.SemanticsHitTestBehavior.defer))
+            Equals(_hitTestBehavior, DorotiUiLibrary.SemanticsHitTestBehavior.defer)
+            && (!Equals(child._hitTestBehavior, DorotiUiLibrary.SemanticsHitTestBehavior.defer))
         )
         {
             _hitTestBehavior = child._hitTestBehavior;

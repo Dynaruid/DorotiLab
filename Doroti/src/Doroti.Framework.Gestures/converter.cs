@@ -41,7 +41,7 @@ public abstract class PointerEventConverter
     )
     {
         return data.where(
-                (datum) => !Equals(datum.signalKind, Dart_uiLibrary.PointerSignalKind.unknown)
+                (datum) => !Equals(datum.signalKind, DorotiUiLibrary.PointerSignalKind.unknown)
             )
             .map<PointerData, PointerEvent?>(
                 (datum) =>
@@ -113,13 +113,13 @@ public abstract class PointerEventConverter
                     );
                     Duration timeStampLocal = datum.timeStamp;
                     PointerDeviceKind kindLocal = datum.kind;
-                    switch (datum.signalKind ?? Dart_uiLibrary.PointerSignalKind.none)
+                    switch (datum.signalKind ?? DorotiUiLibrary.PointerSignalKind.none)
                     {
-                        case Dart_uiLibrary.PointerSignalKind.none:
+                        case DorotiUiLibrary.PointerSignalKind.none:
                         {
                             switch (datum.change)
                             {
-                                case Dart_uiLibrary.PointerChange.add:
+                                case DorotiUiLibrary.PointerChange.add:
                                 {
                                     return new PointerAddedEvent(
                                         viewId: checked((long)datum.viewId),
@@ -139,7 +139,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.hover:
+                                case DorotiUiLibrary.PointerChange.hover:
                                 {
                                     return new PointerHoverEvent(
                                         viewId: checked((long)datum.viewId),
@@ -165,7 +165,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.down:
+                                case DorotiUiLibrary.PointerChange.down:
                                 {
                                     return new PointerDownEvent(
                                         viewId: checked((long)datum.viewId),
@@ -193,7 +193,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.move:
+                                case DorotiUiLibrary.PointerChange.move:
                                 {
                                     return new PointerMoveEvent(
                                         viewId: checked((long)datum.viewId),
@@ -224,7 +224,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.up:
+                                case DorotiUiLibrary.PointerChange.up:
                                 {
                                     return new PointerUpEvent(
                                         viewId: checked((long)datum.viewId),
@@ -250,7 +250,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.cancel:
+                                case DorotiUiLibrary.PointerChange.cancel:
                                 {
                                     return new PointerCancelEvent(
                                         viewId: checked((long)datum.viewId),
@@ -275,7 +275,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.remove:
+                                case DorotiUiLibrary.PointerChange.remove:
                                 {
                                     return new PointerRemovedEvent(
                                         viewId: checked((long)datum.viewId),
@@ -292,7 +292,7 @@ public abstract class PointerEventConverter
                                         embedderId: checked((long)datum.embedderId)
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.panZoomStart:
+                                case DorotiUiLibrary.PointerChange.panZoomStart:
                                 {
                                     return new PointerPanZoomStartEvent(
                                         viewId: checked((long)datum.viewId),
@@ -304,7 +304,7 @@ public abstract class PointerEventConverter
                                         synthesized: datum.synthesized
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.panZoomUpdate:
+                                case DorotiUiLibrary.PointerChange.panZoomUpdate:
                                 {
                                     Offset panLocal =
                                         new Offset(datum.panX, datum.panY)
@@ -336,7 +336,7 @@ public abstract class PointerEventConverter
                                         synthesized: datum.synthesized
                                     );
                                 }
-                                case Dart_uiLibrary.PointerChange.panZoomEnd:
+                                case DorotiUiLibrary.PointerChange.panZoomEnd:
                                 {
                                     return new PointerPanZoomEndEvent(
                                         viewId: checked((long)datum.viewId),
@@ -351,7 +351,7 @@ public abstract class PointerEventConverter
                             }
                             break;
                         }
-                        case Dart_uiLibrary.PointerSignalKind.scroll:
+                        case DorotiUiLibrary.PointerSignalKind.scroll:
                         {
                             if (
                                 !double.IsFinite(datum.scrollDeltaX)
@@ -380,7 +380,7 @@ public abstract class PointerEventConverter
                                 onRespond: datum.respond
                             );
                         }
-                        case Dart_uiLibrary.PointerSignalKind.scrollInertiaCancel:
+                        case DorotiUiLibrary.PointerSignalKind.scrollInertiaCancel:
                         {
                             return new PointerScrollInertiaCancelEvent(
                                 viewId: checked((long)datum.viewId),
@@ -391,7 +391,7 @@ public abstract class PointerEventConverter
                                 embedderId: checked((long)datum.embedderId)
                             );
                         }
-                        case Dart_uiLibrary.PointerSignalKind.scale:
+                        case DorotiUiLibrary.PointerSignalKind.scale:
                         {
                             return new PointerScaleEvent(
                                 viewId: checked((long)datum.viewId),
@@ -403,7 +403,7 @@ public abstract class PointerEventConverter
                                 scale: datum.scale
                             );
                         }
-                        case Dart_uiLibrary.PointerSignalKind.unknown:
+                        case DorotiUiLibrary.PointerSignalKind.unknown:
                         {
                             throw new InvalidOperationException("Unreachable");
                         }

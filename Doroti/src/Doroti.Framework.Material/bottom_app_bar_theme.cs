@@ -120,16 +120,16 @@ public class BottomAppBarTheme : InheritedTheme, Diagnosticable
             return a;
         }
         return new BottomAppBarTheme(
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             shape: (t < 0.5) ? a?.shape : b?.shape,
-            height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            height: DorotiUiLibrary.lerpDouble(a?.height, b?.height, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -236,16 +236,16 @@ public class BottomAppBarThemeData : Diagnosticable
             return a;
         }
         return new BottomAppBarThemeData(
-            color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t),
-            elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
+            color: DorotiUiLibrary.Color.lerp(a?.color, b?.color, t),
+            elevation: DorotiUiLibrary.lerpDouble(a?.elevation, b?.elevation, t),
             shape: (t < 0.5) ? a?.shape : b?.shape,
-            height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t),
-            surfaceTintColor: Dart_uiLibrary.Color.lerp(
+            height: DorotiUiLibrary.lerpDouble(a?.height, b?.height, t),
+            surfaceTintColor: DorotiUiLibrary.Color.lerp(
                 a?.surfaceTintColor,
                 b?.surfaceTintColor,
                 t
             ),
-            shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
+            shadowColor: DorotiUiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t),
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");

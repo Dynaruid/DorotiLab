@@ -90,12 +90,12 @@ public interface RenderInlineChildrenContainerDefaults
                 baseline: spanLocal.baseline,
                 baselineOffset: spanLocal.alignment switch
                 {
-                    Dart_uiLibrary.PlaceholderAlignment.aboveBaseline
-                    or Dart_uiLibrary.PlaceholderAlignment.belowBaseline
-                    or Dart_uiLibrary.PlaceholderAlignment.bottom
-                    or Dart_uiLibrary.PlaceholderAlignment.middle => null,
-                    Dart_uiLibrary.PlaceholderAlignment.top => null,
-                    Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(
+                    DorotiUiLibrary.PlaceholderAlignment.aboveBaseline
+                    or DorotiUiLibrary.PlaceholderAlignment.belowBaseline
+                    or DorotiUiLibrary.PlaceholderAlignment.bottom
+                    or DorotiUiLibrary.PlaceholderAlignment.middle => null,
+                    DorotiUiLibrary.PlaceholderAlignment.top => null,
+                    DorotiUiLibrary.PlaceholderAlignment.baseline => getBaseline(
                         child,
                         childConstraints,
                         (

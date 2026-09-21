@@ -307,7 +307,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         {
             throw new NetworkImageLoadException(statusCode: request.status, uri: resolved);
         }
-        return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
+        return await decode(await DorotiUiLibrary.ImmutableBuffer.fromUint8List(bytes));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

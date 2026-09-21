@@ -466,7 +466,7 @@ public class ButtonStyle : Diagnosticable
                 a?.elevation,
                 b?.elevation,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             padding: WidgetStateProperty.lerp(a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp),
             minimumSize: WidgetStateProperty.lerp(a?.minimumSize, b?.minimumSize, t, Size.lerp),
@@ -477,7 +477,7 @@ public class ButtonStyle : Diagnosticable
                 a?.iconSize,
                 b?.iconSize,
                 t,
-                Dart_uiLibrary.lerpDouble
+                DorotiUiLibrary.lerpDouble
             ),
             iconAlignment: (t < 0.5) ? a?.iconAlignment : b?.iconAlignment,
             side: WidgetStateBorderSide.lerp(a?.side, b?.side, t),
