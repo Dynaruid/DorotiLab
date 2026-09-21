@@ -29,7 +29,7 @@ public static class DorotiWebWorkerRunner
 
         await BrowserHostRuntime.EnsureInitializedAsync();
         _timeProvider = new BrowserTimeProvider();
-        using var timeScope = global::Doroti.Runtime.DartAsyncRuntime.enterTimeProvider(
+        using var timeScope = Runtime.DartAsyncRuntime.enterTimeProvider(
             _timeProvider
         );
         var baseAddress = new Uri(BrowserHostRuntime.ResolveResourceUrl("./"));

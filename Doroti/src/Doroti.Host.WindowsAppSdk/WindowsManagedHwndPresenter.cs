@@ -48,7 +48,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
     internal bool DebugLayerEnabled { get; }
     internal override string BackendName => "D3D12";
     internal override string RuntimeEffectsBackend =>
-        Doroti.Skia.RuntimeEffects.DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend;
+        Skia.RuntimeEffects.DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend;
     internal override string DiagnosticCoverage =>
         DebugLayerEnabled ? "D3D12 debug layer" : "explicit HRESULT checks";
     internal override int Width { get; set; }

@@ -357,7 +357,7 @@ internal static class AndroidWebViewEvidence
         }
         finally
         {
-            System.IO.File.WriteAllLines(path, lines);
+            File.WriteAllLines(path, lines);
         }
     }
 }

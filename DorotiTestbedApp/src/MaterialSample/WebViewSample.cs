@@ -790,7 +790,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                         : [],
                     new Expanded(
                         child: new Padding(
-                            padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12),
+                            padding: EdgeInsetsGeometry.CreateFromLTRB(12, 0, 12, 12),
                             child: new ClipRect(child: WebViewSurface(webView))
                         )
                     ),

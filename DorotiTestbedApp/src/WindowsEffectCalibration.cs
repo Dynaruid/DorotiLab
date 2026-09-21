@@ -73,12 +73,12 @@ internal static class WindowsEffectCalibration
                     });
                     await completion.Task;
                     await Task.Delay(500);
-                    System.IO.File.WriteAllText(path + ".stage", name);
+                    File.WriteAllText(path + ".stage", name);
                     for (var i = 0; i < 200; i++)
                     {
                         if (
-                            System.IO.File.Exists(path + ".ack")
-                            && System.IO.File.ReadAllText(path + ".ack") == name
+                            File.Exists(path + ".ack")
+                            && File.ReadAllText(path + ".ack") == name
                         )
                         {
                             return;
@@ -108,11 +108,11 @@ internal static class WindowsEffectCalibration
                     await Stage("color-edge", 16, 2);
                     await Stage("color-edge-zero", 0, 2);
                 }
-                System.IO.File.WriteAllText(path + ".done", "PASS");
+                File.WriteAllText(path + ".done", "PASS");
             }
             catch (Exception error)
             {
-                System.IO.File.WriteAllText(path + ".done", "FAIL " + error);
+                File.WriteAllText(path + ".done", "FAIL " + error);
             }
         });
     }

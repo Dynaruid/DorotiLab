@@ -444,7 +444,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
 
                 if (animate)
                 {
-                    Doroti.Runtime.DartRuntimePrimitives.Ignore(
+                    DartRuntimePrimitives.Ignore(
                         _navigationBarScrollController.animateTo(
                             target,
                             duration: Duration.Create(milliseconds: 250),

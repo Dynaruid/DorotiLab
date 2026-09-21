@@ -348,7 +348,7 @@ internal static class QtWebViewEvidence
         }
         finally
         {
-            System.IO.File.WriteAllLines(path, lines);
+            File.WriteAllLines(path, lines);
         }
     }
 }
