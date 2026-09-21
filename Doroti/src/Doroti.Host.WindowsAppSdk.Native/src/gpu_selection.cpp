@@ -31,7 +31,7 @@ doroti_windows_gpu_select_adapter_v1(
   };
 
   if (preference == 0) {
-    // Match the default hardware D3D11 selection used by ANGLE, including
+    // Use the default hardware D3D11 adapter selection, including
     // system/driver policy, rather than ranking discrete vs integrated GPUs.
     ComPtr<ID3D11Device> device;
     auto result = D3D11CreateDevice(

@@ -6,9 +6,7 @@
   "nativeViewType": "Win32.ChildHwnd",
   "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Graphite-Vulkan-Composition-Swapchain",
   "defaultRenderer": "Vulkan",
-  "optionalRenderers": [
-    "AngleD3D11"
-  ],
+  "optionalRenderers": [],
   "defaultAdapter": "HwndExactCpp",
   "adapterCapabilities": [
     "HwndExactCpp"

@@ -77,10 +77,6 @@ internal interface IMauiGraphiteSurface
 
 #if ANDROID || IOS || MACCATALYST
 internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
-#if WINDOWS
-        ,
-        IMauiSynchronousResizeSurface
-#endif
 {
     private readonly SKGLView _view;
     private readonly IDisposable _nativeInput;
@@ -97,9 +93,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     private static readonly TimeSpan MacCatalystResizeQuiescence = TimeSpan.FromMilliseconds(150);
     private readonly MacCatalystNativeSubscription _macCatalystNative;
     private long _macCatalystResizePulse;
-#endif
-#if WINDOWS
-    private readonly WindowsResizeContinuityGuard _resizeContinuity;
 #endif
     private bool _disposed;
 
@@ -133,9 +126,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #endif
 #if MACCATALYST
         _macCatalystNative = new(_view, data => Pointer?.Invoke(data));
-#endif
-#if WINDOWS
-        _resizeContinuity = new(_view, PrepareSynchronousResize, CompleteSynchronousPresent);
 #endif
         _view.PaintSurface += HandlePaintSurface;
         _view.Touch += HandleTouch;
@@ -175,10 +165,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         PublishDrawableMetrics(context.PixelWidth, context.PixelHeight, context.Density);
         Paint?.Invoke(context);
     }
-
-#if WINDOWS
-    public event Action<MauiSynchronousResize>? SynchronousResize;
-#endif
 
     public void InvalidateSurface() => _view.InvalidateSurface();
 
@@ -268,12 +254,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 density
             );
 #endif
-#if WINDOWS
-            _resizeContinuity.ObserveCurrentEgl(
-                args.BackendRenderTarget.Width,
-                args.BackendRenderTarget.Height
-            );
-#endif
             var context = new MauiSkiaPaintContext(
                 args.Surface,
                 _view.GRContext,
@@ -282,9 +262,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 density,
                 0,
                 nativeType,
-#if WINDOWS
-                "WinUI3/SKSwapChainPanel/ANGLE-DirectX-Skia"
-#elif MACCATALYST
+#if MACCATALYST
                 "UIKit-MacCatalyst/SKMetalView/Metal-Skia"
 #elif IOS
                 "UIKit-iOS/SKMetalView/Metal-Skia"
@@ -293,20 +271,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #endif
             );
             var rasterStarted = DorotiFrameClock.Now;
-#if WINDOWS
-            _resizeContinuity.RecordRasterStart(
-                args.BackendRenderTarget.Width,
-                args.BackendRenderTarget.Height
-            );
-#endif
             Paint?.Invoke(context);
-#if WINDOWS
-            _resizeContinuity.RecordRasterEnd(
-                args.BackendRenderTarget.Width,
-                args.BackendRenderTarget.Height,
-                DorotiFrameClock.Now - rasterStarted
-            );
-#endif
             if (context.Completion is not { } completion)
             {
                 return;
@@ -442,30 +407,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     private void HandleUnfocused(object? sender, FocusEventArgs args) =>
         FocusChanged?.Invoke(false);
 
-#if WINDOWS
-    private void PrepareSynchronousResize(MauiSynchronousResize resize) =>
-        SynchronousResize?.Invoke(resize);
-
-    private void CompleteSynchronousPresent(MauiPaintCompletion completion) =>
-        PresentCompleted?.Invoke(completion, false);
-
-    public void RecordResizePhase(
-        string phase,
-        DorotiResizeEpoch epoch,
-        TimeSpan? duration = null,
-        string? terminal = null,
-        string? detail = null
-    ) =>
-        _resizeContinuity.Record(
-            phase,
-            epoch,
-            "maui-host-adapter",
-            duration,
-            terminal: terminal,
-            detail: detail
-        );
-#endif
-
     public void Dispose()
     {
         if (_disposed)
@@ -492,9 +433,6 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         _view.SizeChanged -= HandleSizeChanged;
         _view.Focused -= HandleFocused;
         _view.Unfocused -= HandleUnfocused;
-#if WINDOWS
-        _resizeContinuity.Dispose();
-#endif
 #if MACCATALYST
         _macCatalystNative.Dispose();
 #endif

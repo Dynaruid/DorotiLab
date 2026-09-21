@@ -227,7 +227,7 @@ Components → Communication → Progress indicators의 재생 버튼으로 애�
 
 ### Windows GPU와 Acrylic
 
-Windows App SDK의 기본 렌더러는 Vulkan이며 ANGLE을 명시적으로 선택할 수 있습니다.
+Windows App SDK의 기본 렌더러는 Vulkan입니다.
 Material 샘플은 불투명 배경으로 시작합니다. Windows 11 24H2 이상 또는 Linux에서는
 밝기 조절 옆의 **Acrylic window**로 반투명 배경을 켜고 끌 수 있습니다.
 창 너비에 따라 상단 바, 내비게이션 레일, 확장 설정에 표시됩니다. 네이티브 macOS는
@@ -239,8 +239,8 @@ Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 �
 | 환경변수 | 값 / 동작 |
 | --- | --- |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | 정확하거나 유일한 GPU 이름 일부(예: `AMD`); Vulkan에서 GPU 선호도보다 우선 |
-| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference`(기본), `LowPowerPreference`, `HighPerformancePreference`; Vulkan/ANGLE 공통 |
-| `DOROTI_WINDOWS_PRESENTER` | `Vulkan`(기본) 또는 `AngleD3D11` |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference`(기본), `LowPowerPreference`, `HighPerformancePreference`; Vulkan에 적용 |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan`(기본) |
 
 예를 들어 위 Windows 명령에 `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference`를 추가합니다.
 이전에 `$env:`로 지정했다면 `Remove-Item Env:변수이름`으로 해제한 뒤 앱을 다시 실행하세요.

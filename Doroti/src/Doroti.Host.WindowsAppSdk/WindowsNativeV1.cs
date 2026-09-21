@@ -26,7 +26,6 @@ internal static partial class WindowsNativeV1
     private static int _resolverConfigured;
     private static int _searchPolicyRestricted;
     private static string? _nativeHostPath;
-    private static string? _angleRuntimePath;
     private static string? _windowsAppRuntimePath;
 
     internal enum Status : uint
@@ -352,7 +351,7 @@ internal static partial class WindowsNativeV1
     }
 
     internal static NativeHostProvenance ConfigureAppDirectoryLoading(
-        string selectedPresenter = "AngleD3D11"
+        string selectedPresenter = "Vulkan"
     )
     {
         var auditHashes = string.Equals(
@@ -360,30 +359,20 @@ internal static partial class WindowsNativeV1
             "1",
             StringComparison.Ordinal
         );
-        // The native host imports Windows/Composition libraries, not ANGLE.
-        // A full deployment audit still verifies every shipped backend.
-        var inspectAngle = selectedPresenter == "AngleD3D11" || auditHashes;
         var baseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
         var hostPath = Path.Combine(baseDirectory, $"{LibraryName}.dll");
         var bootstrapPath = Path.Combine(
             baseDirectory,
             "Microsoft.WindowsAppRuntime.Bootstrap.dll"
         );
-        var angleRuntimePath = Path.Combine(baseDirectory, "av_libglesv2.dll");
         var windowsAppRuntimePath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.dll");
         RequireNativeFile(hostPath, "native HwndExactCpp host");
         RequireNativeFile(bootstrapPath, "Windows App Runtime bootstrap");
         ValidateX64Pe(hostPath, "native HwndExactCpp host");
         ValidateX64Pe(bootstrapPath, "Windows App Runtime bootstrap");
-        if (inspectAngle)
-        {
-            RequireNativeFile(angleRuntimePath, "ANGLE EGL/GLES runtime");
-            ValidateX64Pe(angleRuntimePath, "ANGLE EGL/GLES runtime");
-        }
         if (Interlocked.Exchange(ref _resolverConfigured, 1) == 0)
         {
             _nativeHostPath = hostPath;
-            _angleRuntimePath = angleRuntimePath;
             _windowsAppRuntimePath = File.Exists(windowsAppRuntimePath)
                 ? windowsAppRuntimePath
                 : null;
@@ -394,13 +383,11 @@ internal static partial class WindowsNativeV1
         }
         var host = new FileInfo(hostPath);
         var bootstrap = new FileInfo(bootstrapPath);
-        var angleRuntime = new FileInfo(angleRuntimePath);
         var hostHash = auditHashes ? Sha256(hostPath) : null;
         var bootstrapHash = auditHashes ? Sha256(bootstrapPath) : null;
-        var angleRuntimeHash = auditHashes ? Sha256(angleRuntimePath) : null;
         if (auditHashes)
         {
-            ValidateBuildProvenance(baseDirectory, hostHash!, bootstrapHash!, angleRuntimeHash!);
+            ValidateBuildProvenance(baseDirectory, hostHash!, bootstrapHash!);
         }
 
         return new(
@@ -413,14 +400,9 @@ internal static partial class WindowsNativeV1
             bootstrap.Length,
             bootstrap.LastWriteTimeUtc.Ticks,
             bootstrapHash,
-            angleRuntimePath,
-            inspectAngle ? angleRuntime.Length : 0,
-            inspectAngle ? angleRuntime.LastWriteTimeUtc.Ticks : 0,
-            angleRuntimeHash,
             auditHashes,
             "app-directory + DLL-load-directory + System32 + registered user directories; PATH/current-directory excluded",
-            selectedPresenter,
-            inspectAngle
+            selectedPresenter
         );
     }
 
@@ -435,8 +417,6 @@ internal static partial class WindowsNativeV1
         var path = libraryName switch
         {
             var value when value.Equals(LibraryName, StringComparison.Ordinal) => _nativeHostPath,
-            var value when value.Equals("av_libglesv2.dll", StringComparison.OrdinalIgnoreCase) =>
-                _angleRuntimePath,
             var value
                 when value.Equals(
                     "Microsoft.WindowsAppRuntime.dll",
@@ -539,8 +519,7 @@ internal static partial class WindowsNativeV1
     private static void ValidateBuildProvenance(
         string baseDirectory,
         string hostHash,
-        string bootstrapHash,
-        string angleRuntimeHash
+        string bootstrapHash
     )
     {
         var path = Path.Combine(baseDirectory, "doroti-native-provenance.json");
@@ -556,7 +535,7 @@ internal static partial class WindowsNativeV1
             )
             ?? throw new InvalidDataException($"Native provenance audit manifest is empty: {path}");
         if (
-            manifest.SchemaVersion != "doroti.windows.native-provenance/v1"
+            manifest.SchemaVersion != "doroti.windows.native-provenance/v2"
             || !string.Equals(
                 manifest.NativeHostSha256,
                 hostHash,
@@ -565,11 +544,6 @@ internal static partial class WindowsNativeV1
             || !string.Equals(
                 manifest.BootstrapSha256,
                 bootstrapHash,
-                StringComparison.OrdinalIgnoreCase
-            )
-            || !string.Equals(
-                manifest.AngleRuntimeSha256,
-                angleRuntimeHash,
                 StringComparison.OrdinalIgnoreCase
             )
         )
@@ -704,8 +678,7 @@ internal static partial class WindowsNativeV1
 internal sealed record NativeBuildProvenance(
     string SchemaVersion,
     string NativeHostSha256,
-    string BootstrapSha256,
-    string AngleRuntimeSha256
+    string BootstrapSha256
 );
 
 internal sealed record NativeHostProvenance(
@@ -718,12 +691,7 @@ internal sealed record NativeHostProvenance(
     long BootstrapLength,
     long BootstrapLastWriteUtcTicks,
     string? BootstrapSha256,
-    string AngleRuntimePath,
-    long AngleRuntimeLength,
-    long AngleRuntimeLastWriteUtcTicks,
-    string? AngleRuntimeSha256,
     bool FullHashAudit,
     string SearchPolicy,
-    string SelectedPresenter,
-    bool AngleRuntimeInspected
+    string SelectedPresenter
 );

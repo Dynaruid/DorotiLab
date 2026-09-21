@@ -51,7 +51,7 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 | Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | **Qt 6.5 or later** Core/Gui/Widgets/OpenGL/OpenGLWidgets development files, **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan development headers, and fontconfig. Runtime requires the `wayland` or `xcb` QPA plugin and a Vulkan 1.2 driver. |
 | Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | The default WebGPU path requires a browser with WebGPU and WASM threads, a hardware WebGPU adapter, and COOP/COEP isolation. Explicit `worker-direct-webgl` uses WebGL2. |
 
-Windows App SDK 2.4 and the ANGLE runtime are restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
+Windows App SDK 2.4 is restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
 
 Linux also accepts software Vulkan devices such as llvmpipe when they satisfy the API requirements. Web runners restore `Microsoft.TypeScript.MSBuild` 7.0.0; application builds do not require Node, npm, or Bun.
 
@@ -154,8 +154,8 @@ Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned
 
 | Setting | Behavior |
 | --- | --- |
-| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` by default; `AngleD3D11` explicitly selects ANGLE |
-| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` by default; `LowPowerPreference` or `HighPerformancePreference` applies to Vulkan and ANGLE |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` by default |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` by default; `LowPowerPreference` or `HighPerformancePreference` applies to Vulkan |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | Select a Vulkan device by its exact name or a unique name fragment |
 
 The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API. Synchronization and resize details are documented in the [D3D12 output report](docs/validation/windows-d3d12-output-2026-09-14.md).

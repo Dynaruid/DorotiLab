@@ -878,7 +878,7 @@ public enum WindowBackdropMode
 
     /// <summary>
     /// Requests Acrylic for this window. Windows App SDK supports this with
-    /// the Vulkan (default) and ANGLE presenters on Windows 11 24H2 or newer.
+    /// the Vulkan presenter on Windows 11 24H2 or newer.
     /// Native macOS uses an AppKit behind-window visual effect material.
     /// </summary>
     acrylic,

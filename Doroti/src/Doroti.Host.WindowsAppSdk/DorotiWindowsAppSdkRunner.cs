@@ -342,44 +342,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 );
                 EffectiveMode = RequestedMode;
             }
-            else if (acrylicRequested && RequestedPresenter != "AngleD3D11")
+            else if (acrylicRequested)
             {
                 throw new InvalidOperationException(
                     $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with Acrylic. "
-                        + "Only AngleD3D11 and Vulkan support the Acrylic topology."
+                        + "Only Vulkan supports the Acrylic topology."
                 );
-            }
-            else if (acrylicRequested)
-            {
-                try
-                {
-                    if (ShouldWriteDiagnostics())
-                    {
-                        Console.Error.WriteLine(
-                            "doroti.windows.experimental-acrylic=pre-window-probe-start"
-                        );
-                    }
-
-                    Presenter = new WindowsManagedAcrylicCompositionPresenter(
-                        ShouldWriteDiagnostics(),
-                        backdrop,
-                        Brightness.light
-                    );
-                    EffectiveMode = RequestedMode;
-                    NativeRequiredFeatures = WindowsNativeV1.ExperimentalAcrylicFeature;
-                    if (ShouldWriteDiagnostics())
-                    {
-                        Console.Error.WriteLine(
-                            "doroti.windows.experimental-acrylic=pre-window-probe-pass"
-                        );
-                    }
-                }
-                catch (Exception exception)
-                {
-                    FallbackReason = $"pre-window:{exception.GetType().Name}:{exception.Message}";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
-                    EffectiveMode = "opaque";
-                }
             }
             else
             {
@@ -414,73 +382,50 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var effectiveNative = native;
             if (Presenter.UsesCompositionTopology)
             {
-                try
+                var acrylic = Presenter as IWindowsAcrylicPresenter;
+                if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
                 {
-                    var acrylic = Presenter as IWindowsAcrylicPresenter;
-                    if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
-                    {
-                        Console.Error.WriteLine(
-                            "doroti.windows.experimental-acrylic=backdrop-topology-attach-start"
-                        );
-                    }
-
-                    if (acrylic is { AcrylicEnabled: true })
-                    {
-                        acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
-                    }
-
-                    if (Presenter is WindowsManagedVulkanPresenter vulkan)
-                    {
-                        vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
-                    }
-                    else
-                    {
-                        Presenter.AttachWindow(native.TopLevelHwnd);
-                    }
-
-                    effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
-                    if (
-                        acrylic is { AcrylicEnabled: true }
-                        && string.Equals(
-                            Environment.GetEnvironmentVariable(
-                                "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"
-                            ),
-                            "1",
-                            StringComparison.Ordinal
-                        )
-                    )
-                    {
-                        _optionSmoke = Task.Run(() =>
-                            RunAcrylicOptionSmoke(acrylic, systemMaterialOnly: false)
-                        );
-                    }
-
-                    if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
-                    {
-                        Console.Error.WriteLine(
-                            "doroti.windows.experimental-acrylic=backdrop-topology-attach-pass"
-                        );
-                    }
+                    Console.Error.WriteLine(
+                        "doroti.windows.experimental-acrylic=backdrop-topology-attach-start"
+                    );
                 }
-                catch (Exception exception)
-                    when (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
-                {
-                    acrylic.ReleaseCompositionResources();
-                    var fallback = (delegate* unmanaged[Cdecl]<nint, uint>)
-                        native.RequestOpaqueFallback;
-                    var fallbackStatus = fallback(native.HostContext);
-                    if (fallbackStatus != 0)
-                    {
-                        throw new InvalidOperationException(
-                            $"experimentalAcrylic initialization failed and opaque fallback returned {fallbackStatus}.",
-                            exception
-                        );
-                    }
 
-                    FallbackReason = $"pre-show:{exception.GetType().Name}:{exception.Message}";
-                    EffectiveMode = "opaque";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
-                    effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
+                if (acrylic is { AcrylicEnabled: true })
+                {
+                    acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
+                }
+
+                if (Presenter is WindowsManagedVulkanPresenter vulkan)
+                {
+                    vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
+                }
+                else
+                {
+                    Presenter.AttachWindow(native.TopLevelHwnd);
+                }
+
+                effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
+                if (
+                    acrylic is { AcrylicEnabled: true }
+                    && string.Equals(
+                        Environment.GetEnvironmentVariable(
+                            "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"
+                        ),
+                        "1",
+                        StringComparison.Ordinal
+                    )
+                )
+                {
+                    _optionSmoke = Task.Run(() =>
+                        RunAcrylicOptionSmoke(acrylic, systemMaterialOnly: false)
+                    );
+                }
+
+                if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
+                {
+                    Console.Error.WriteLine(
+                        "doroti.windows.experimental-acrylic=backdrop-topology-attach-pass"
+                    );
                 }
             }
             WindowsNativeV1.RestrictProcessDllSearch();
@@ -516,7 +461,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } activeAcrylic)
             {
                 messages.SetMessageHandler(
-                    WindowsManagedAcrylicCompositionPresenter.RuntimeChannel,
+                    WindowsAcrylicOptionsState.RuntimeChannel,
                     activeAcrylic.HandleRuntimeMessageAsync
                 );
             }
@@ -893,16 +838,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var dpiContextChanged = _presenterScale > 0 && _presenterScale != scale;
             if (dpiContextChanged)
             {
-                // A cross-DPI transition invalidates ANGLE, Skia, and pooled
-                // GPU state together. The move-end generation below performs
-                // one final surface-only refresh after shell geometry settles.
+                // Release Skia and pooled GPU resources on a cross-DPI transition.
                 var deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 renderer.InvalidateGpuContextResources();
-                if (Presenter is WindowsManagedAngleEglPresenter)
-                {
-                    Presenter.ResetDevice();
-                }
-                else if (deviceLost)
+                if (deviceLost)
                 {
                     Presenter.ResetDeviceAfterRendererGpuResourceRelease(deviceLost: true);
                 }
@@ -913,11 +852,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 && _presenterScale == scale
                 && Presenter.Width == width
                 && Presenter.Height == height;
-            if (stableMoveRefresh && Presenter is WindowsManagedAngleEglPresenter movePresenter)
-            {
-                renderer.InvalidateWindowSurfaceResources();
-                movePresenter.ResetWindowSurfaceAfterInteractiveMove();
-            }
             var windowSurfaceChanged = Presenter.Width != width || Presenter.Height != height;
             if (
                 windowSurfaceChanged
@@ -1637,13 +1571,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
                 null or "" => "Vulkan",
-                var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
-                    "AngleD3D11",
                 var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>
                     "Vulkan",
                 var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) => "D3D12",
                 var value => throw new InvalidOperationException(
-                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11, Vulkan, or D3D12."
+                    $"Unsupported managed Windows presenter '{value}'. Expected Vulkan or D3D12."
                 ),
             };
 
@@ -1674,7 +1606,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         ) =>
             requestedPresenter switch
             {
-                "AngleD3D11" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
                 "Vulkan" => new WindowsManagedVulkanPresenter(diagnosticsEnabled),
                 "D3D12" => CreateDiagnosticPresenter(diagnosticsEnabled),
                 _ => throw new InvalidOperationException(

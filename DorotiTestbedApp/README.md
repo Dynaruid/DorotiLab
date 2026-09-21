@@ -228,7 +228,7 @@ Add these query parameters to the sample URL only when measuring:
 
 ### Windows GPU and Acrylic
 
-Windows App SDK defaults to Graphite/Vulkan rendering with D3D12/DXGI output. Keep `DOROTI_WINDOWS_PRESENTER` unset or set to `Vulkan` for this path; ANGLE is an explicit alternative.
+Windows App SDK defaults to Graphite/Vulkan rendering with D3D12/DXGI output. Keep `DOROTI_WINDOWS_PRESENTER` unset or set to `Vulkan` for this path.
 The Material sample starts with an opaque surface. Use **Acrylic window** beside the
 brightness control to toggle a translucent surface on Windows 11 24H2+ or Linux.
 The control appears in the app bar, navigation rail, or expanded settings according
@@ -241,8 +241,8 @@ On Windows 11 24H2 or later, ordinary `WindowBackdropMode.acrylic` needs no expe
 | Environment variable | Values / behavior |
 | --- | --- |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | Exact or unique GPU name fragment (such as `AMD`); overrides GPU preference for Vulkan |
-| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` (default), `LowPowerPreference`, `HighPerformancePreference`; applies to Vulkan/ANGLE |
-| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` (default) or `AngleD3D11` |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` (default), `LowPowerPreference`, `HighPerformancePreference`; applies to Vulkan |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` (default) |
 
 For example, append `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference` to the Windows command above.
 If you previously set a variable with `$env:`, clear it with `Remove-Item Env:VARIABLE_NAME` and relaunch.

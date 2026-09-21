@@ -37,7 +37,7 @@ Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 
 | Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
 | Linux | Qt 6 `QWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Windows App SDK에서는 ANGLE/D3D11, Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현체별 검증 범위에는 차이가 있으므로 [프로젝트 상태](#프로젝트-상태)를 함께 참고하세요.
+Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현체별 검증 범위에는 차이가 있으므로 [프로젝트 상태](#프로젝트-상태)를 함께 참고하세요.
 
 ## 시작하기
 

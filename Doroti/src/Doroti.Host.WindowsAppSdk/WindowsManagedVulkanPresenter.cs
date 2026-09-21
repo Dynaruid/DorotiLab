@@ -30,6 +30,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     private const uint CompositionFrameWaitMilliseconds = 50;
     private const uint WaitObject0 = 0;
     private const uint WaitFailed = uint.MaxValue;
+    private const int LogicalEdgeBudget = 6;
+    private const int PhysicalEdgeBudget = 12;
     private const int BufferCount = 3;
     private const int CapacityQuantum = 256;
     private const int DwmwaUseHostBackdropBrush = 17;
@@ -454,8 +456,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             options.tintColor?.value,
             options.tintOpacity,
             options.luminosityOpacity,
-            WindowsManagedAcrylicCompositionPresenter.LogicalEdgeBudget,
-            WindowsManagedAcrylicCompositionPresenter.PhysicalEdgeBudget,
+            LogicalEdgeBudget,
+            PhysicalEdgeBudget,
             _maximumRegisteredPresentationSlots,
             _backingReuseCount,
             _unavailablePresentationSkipCount,

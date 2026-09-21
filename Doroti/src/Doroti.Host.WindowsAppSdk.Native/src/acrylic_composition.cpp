@@ -234,7 +234,7 @@ doroti_windows_acrylic_replace_buffer_v1(
       acrylic.device->CreateTexture2D(&description, nullptr, &slot.texture);
   if (FAILED(snapshot->texture_hresult)) return snapshot->texture_hresult;
   // Presentation can sample a narrow guard region while the framework catches
-  // up with a moving edge. Initialize that region to transparent once; ANGLE
+  // up with a moving edge. Initialize that region to transparent once; the presenter
   // renders only into the inset 1:1 viewport and never stretches its pixels.
   ComPtr<ID3D11RenderTargetView> clear_view;
   auto clear_result = acrylic.device->CreateRenderTargetView(

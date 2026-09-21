@@ -43,14 +43,6 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: generated native graphics bindings; `Doroti.Graphics.DirectX` owns Windows COM references and uses the binding-independent SkiaSharp Direct3D API
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
 
-## ANGLE Windows runtime
-
-- Upstream: https://github.com/AvaloniaUI/angle
-- Package: `Avalonia.Angle.Windows.Natives` 2.1.27548.20260419
-- Upstream package commit: `1c89805903c1482166356d3b950d474973180e61`
-- Use: x64 EGL/GLES runtime for the default Windows App SDK hardware-D3D11 presenter
-- License: BSD-style ANGLE license; the package `LICENSE` file and required binary-redistribution notice must be preserved
-
 ## Microsoft Windows App SDK
 
 - Upstream: https://github.com/microsoft/windowsappsdk

@@ -23,6 +23,7 @@ internal interface IWindowsAcrylicPresenter
 /// </summary>
 internal sealed class WindowsAcrylicOptionsState : IDisposable
 {
+    internal const string RuntimeChannel = "doroti/windows/experimental-acrylic";
     private readonly object _optionGate = new();
     private readonly ManualResetEventSlim _attached = new();
     private WindowBackdropOptions _options;

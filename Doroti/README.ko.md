@@ -51,7 +51,7 @@ SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release�
 | Linux Qt / `linux-x64` | Linux x64 | 10 / 별도 MAUI workload 없음 | **Qt 6.5 이상** Core/Gui/Widgets/OpenGL/OpenGLWidgets 개발 파일, **CMake 3.24 이상**, C/C++20 compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, Vulkan 개발 헤더, fontconfig. 실행 시 `wayland` 또는 `xcb` QPA plugin과 Vulkan 1.2 드라이버가 필요합니다. |
 | Web / `browser-wasm` | Windows, macOS 또는 Linux | 10 / `wasm-tools` | 기본 WebGPU 경로는 WebGPU·WASM threads 지원 브라우저, hardware WebGPU adapter와 COOP/COEP 격리가 필요합니다. `worker-direct-webgl`을 선택하면 WebGL2를 사용합니다. |
 
-Windows App SDK 2.4와 ANGLE runtime은 target의 NuGet 복원·배포에 포함됩니다. 별도의 machine-wide Windows App Runtime 설치는 요구하지 않습니다. Android native bridge는 저장소의 Gradle wrapper 8.10.2/AGP 8.6.1을 사용합니다. `JAVA_HOME`으로 지원 JDK를 지정하고 `adb`를 `PATH`에 추가합니다. Apple은 `xcode-select -p`와 `xcodebuild -version`으로 선택한 Xcode를 확인합니다.
+Windows App SDK 2.4는 target의 NuGet 복원·배포에 포함됩니다. 별도의 machine-wide Windows App Runtime 설치는 요구하지 않습니다. Android native bridge는 저장소의 Gradle wrapper 8.10.2/AGP 8.6.1을 사용합니다. `JAVA_HOME`으로 지원 JDK를 지정하고 `adb`를 `PATH`에 추가합니다. Apple은 `xcode-select -p`와 `xcodebuild -version`으로 선택한 Xcode를 확인합니다.
 
 Linux는 API 조건을 충족하는 llvmpipe 같은 소프트웨어 Vulkan 장치도 허용합니다. Web의 `Microsoft.TypeScript.MSBuild` 7.0.0은 Web runner가 복원하며, 앱 빌드에 Node/npm/Bun 설치는 필요하지 않습니다.
 
@@ -154,8 +154,8 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 
 | 설정 | 동작 |
 | --- | --- |
-| `DOROTI_WINDOWS_PRESENTER` | 기본값은 `Vulkan`, `AngleD3D11`로 ANGLE 선택 |
-| `DOROTI_WINDOWS_GPU_PREFERENCE` | 기본값은 `NoPreference`, `LowPowerPreference`·`HighPerformancePreference`는 Vulkan과 ANGLE에 적용 |
+| `DOROTI_WINDOWS_PRESENTER` | 기본값은 `Vulkan` |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | 기본값은 `NoPreference`, `LowPowerPreference`·`HighPerformancePreference`는 Vulkan에 적용 |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | 정확한 장치 이름 또는 유일한 이름 일부로 Vulkan 장치 선택 |
 
 기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다. 동기화와 창 크기 변경에 관한 세부 사항은 [D3D12 출력 보고서](docs/validation/windows-d3d12-output-2026-09-14.md)에 있습니다.

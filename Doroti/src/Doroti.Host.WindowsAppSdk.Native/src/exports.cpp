@@ -416,7 +416,7 @@ class ProductHost final {
                            child_, nullptr, 0, 0, static_cast<int>(width),
                            static_cast<int>(height),
                            SWP_NOZORDER | SWP_NOACTIVATE)) {
-              // Match Flutter's host_window.cc contract for ANGLE: the one
+              // Match Flutter's host_window.cc geometry contract: the one
               // visible child is exactly the top-level physical client extent,
               // and its WM_SIZE owns the bounded render transaction.
               fatal_ = true;

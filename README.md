@@ -37,7 +37,7 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 | Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
 | Linux | Qt 6 `QWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Windows App SDK also offers an explicitly selected ANGLE/D3D11 path; Web offers Ganesh/WebGL2. These implementations have different levels of validation; see [project status](#project-status).
+Web also offers an explicitly selected Ganesh/WebGL2 path. These implementations have different levels of validation; see [project status](#project-status).
 
 ## Get started
 
