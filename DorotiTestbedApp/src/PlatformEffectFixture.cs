@@ -7,6 +7,7 @@ using M = Doroti.Framework.Material;
 public static class PlatformEffectFixtureProbe
 {
     public static DorotiView? Owner { get; internal set; }
+    public static WebViewController? WebView { get; internal set; }
     public static Action<int>? SetStage { get; internal set; }
     public static Action<bool>? SetRasterSource { get; internal set; }
     public static Action<PlatformEffectStyle>? SetStyle { get; internal set; }
@@ -39,6 +40,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
         public override void dispose()
         {
             PlatformEffectFixtureProbe.Owner = null;
+            PlatformEffectFixtureProbe.WebView = null;
             PlatformEffectFixtureProbe.SetStage = null;
             PlatformEffectFixtureProbe.SetStrength = null;
             PlatformEffectFixtureProbe.SetStyle = null;
@@ -69,11 +71,11 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             PlatformEffectFixtureProbe.Owner = owner;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformEffectFixture"));
-            if (OperatingSystem.IsMacOS() || OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsLinux() && host.QuerySupport(new(0, "doroti/webview", PlatformViewComposition.InterleavedComposition)).WebViewCommands)
+            if (OperatingSystem.IsBrowser() || OperatingSystem.IsMacOS() || OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsLinux() && host.QuerySupport(new(0, "doroti/webview", PlatformViewComposition.InterleavedComposition)).WebViewCommands)
             {
-                if (_mounted) _primaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(Html)));
+                if (_mounted) _primaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(Html), Profile: OperatingSystem.IsBrowser() ? WebViewProfile.BrowserDefault : WebViewProfile.Ephemeral));
                 else if (_primaryController is { } primary) { _primaryController = null; _ = primary.DisposeAsync(); }
-                if (_mounted && _second) _secondaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(SecondHtml)));
+                if (_mounted && _second) _secondaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(SecondHtml), Profile: OperatingSystem.IsBrowser() ? WebViewProfile.BrowserDefault : WebViewProfile.Ephemeral));
                 else if (_secondaryController is { } secondary) { _secondaryController = null; _ = secondary.DisposeAsync(); }
                 if (OperatingSystem.IsWindows() && _primaryController is { } windowsWeb)
                 {
@@ -91,6 +93,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                     WindowsEffectCalibration.Start(owner, androidWeb, "DOROTI_ANDROID_EFFECT_CALIBRATION");
                 }
             }
+            PlatformEffectFixtureProbe.WebView = _primaryController;
             var request = new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.InterleavedComposition,
                 CreationParameters: Html);
             var descriptor = new PlatformViewDescriptor("doroti/webview", Html, PlatformViewStrategyPolicy.RequireRequested);

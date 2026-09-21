@@ -1,5 +1,19 @@
 # PlatformView 재구성 작업계획
 
+## Web 실행 업데이트 (2026-09-21)
+
+**Web 전체 상태는 PARTIAL이다.** 기존 DOM harness에서 실제 main DOM / managed Worker 제품 연결로 진행했다. 현재 계약은 [Web WebView](Doroti/docs/platform-views/web-webview.md), 실행/실패/잔여는 [결과 보고서](Doroti/validation/webview/web-results-2026-09-21.md)를 따른다. 아래 Web 제품 미연결 기록보다 이 절이 우선한다.
+
+- R1/R3/R5: 같은 owner coordinator·planner·controller의 iframe을 기존 DOM registry에 연결했다. stable identity·논리 배치/물리 raster 크기·raster/iframe/effect/전경/shield 순서를 연결하고 frame ACK까지 native lease를 유지한다. 늦은 resize ACK는 superseded로 처리하고 종료 중 instance를 다시 활성화하지 않는다. ACK는 BackendAccepted이며 물리 원자적 표시 승인이 아니다.
+- R6: 실제 Worker WebGPU/Graphite와 WebGL/Ganesh 제품에서 동작한다. **mixed raster는 현재 CPU Skia RGBA upload**이며 GPU 공유 multi-canvas로 부르지 않는다. 정지 iframe snapshot은 사용하지 않는다. 동등한 raster는 재사용하고 64 MiB/frame 방어 상한을 적용한다. 0-view는 기존 GPU 경로와 composition module 지연 로딩을 유지한다.
+- R4/R7: 두 WebView·전경/blur·native 클릭/shield·Doroti↔iframe text focus/자동 한글 삽입·편집값과 iframe identity 보존·10회 제거/재생성·DPR 1/1.25/1.5/2 + viewport resize의 실제 backing 크기를 검증했다. 두 DOM owner/lifetime·late factory/packet fixture는 두 전체 Doroti 제품 owner 승인과 구분한다.
+- R-E/FX3: CSS 효과 4개·isotropic sigma 0–16·채도 0–2·독립 tint를 연결했다. 실제 native/raster sigma 4/16 측정은 3.999/15.996, reset 최대 차이는 0이다. 반경 0의 채도, blue tint, live source 변경과 cross-origin 기준 캡처를 검증했다. CSS.supports만으로 승인하지 않는다.
+- 배포: Release build/publish 경고/오류 0개와 별도 정적 서버의 publish 제품 API·픽셀/수명 검증. NativeAOT는 실제 시도에서 iOS 전용 DOROTIAOT002로 거부됐다. 기본 Debug는 managed 시작 전 Mono stack-bounds assertion이 재현되어 미승인이다. 생성 템플릿을 로컬 NuGet 패키지만으로 publish/run했고 WebView JS·효과·resize identity를 확인했다. 이 과정에서 새 Release Web 앱의 없는 PDB 참조를 만드는 SDK 설정 순서를 수정했다.
+- 성능: 0/1/4-view × idle/animation/scroll/modal을 두 renderer에서 측정했다. 정적 idle 전송은 0이지만 mixed animation raster p95 약 29–32ms와 높은 CPU 복사량으로 **성능 예산 미승인**이다. 입력/scanout·GPU process memory·변경 전후 성능 승인은 별도다.
+
+잔여: GPU transport/넓은 repaint 비용, 기본 Debug 시작, 두 전체 제품 owner, 순수 DPR/실제 monitor 이동, full C1–C6/E1–E3·보호/video·다른 browser/GPU, 물리 한국어 IME/접근성, clean-machine 배포와 NativeAOT. 사용자 생략으로 처리한 항목은 없다.
+
+
 ## Linux Qt 실행 업데이트 (2026-09-20)
 
 **Linux Qt 전체 상태는 PARTIAL이다.** 이번 현재 소스 실행이 아래 9월 14일 Linux 기록보다 우선한다. [Qt 계약](Doroti/docs/platform-views/linux-qt.md), [WebView 계약](Doroti/docs/platform-views/linux-webview.md), [결과 보고서](Doroti/validation/webview/linux-results-2026-09-20.md)에 구현·근거·잔여를 나눈다.
@@ -224,7 +238,7 @@ Windows MAUI, Mac Catalyst, iOS Ganesh, Qt Widgets는 각각 별도 미연결/�
 | Linux Qt Quick | 공통 WebView controller·navigation/JS/profile/content/message, Gaussian·채도·tint, Wayland/XWayland 제품 및 relocated Release 검증 | VM 증거. full gesture/IME/Orca·two product owners/device loss·성능/clean package/NativeAOT 잔여; 위 9월 20일 절 기준 |
 | Android | 공통 WebView controller/instance·session, RenderEffect sigma/채도/tint, arm64/x64 Release 제품 build·APK | Galaxy 실제 source/기능/픽셀·자동 IME/수명 실행. GestureArena·전체 입력/성능/배포 승인은 PARTIAL; 위 9월 20일 기록 참조 |
 | AppKit | WKWebView/Core Image backdrop/Metal 공통 합성 및 명시적 macOS 27 SDK 프로필 구현 | ExactSigma 0–64, 채도 0–2, 독립 tint. 경계 확산 검증과 공통 비주얼 전체 승인은 구분; 전체 PARTIAL, [현재 macOS 계약](Doroti/docs/platform-views/macos.md) |
-| Web | protocol v2 effect adapter·CSS backdrop-filter·host 빌드, 독립 DOM harness 8개 검사 | main-DOM/worker 제품 연결·multi-canvas ACK/자원 수명·실제 iframe effect pixels 미검증 |
+| Web | main-DOM/Worker 제품 연결, stable iframe + bounded CPU raster canvas·ACK·CSS effect·controller API; Release build/publish | WebGPU/WebGL 제품·입력·수명·native/raster/cross-origin 픽셀 통과. 성능/Debug·두 제품 owner·물리/브라우저 범위는 PARTIAL; 9월 21일 실행 업데이트 참조 |
 | Windows MAUI | 공통 계약·host 빌드 | native hierarchy/WebView2 composition 결합과 runner별 효과 승인 별도 |
 | Mac Catalyst / iOS Ganesh | 별도 renderer/runner 존재 | 신규 UIKit Graphite 효과 adapter의 지원 범위에 포함되지 않음 |
 | Qt Widgets | native-child B 전용 경로의 빌드/제한 실행 | interleaving/WebEngine/effect 미지원. Qt Quick 증거 적용 불가 |

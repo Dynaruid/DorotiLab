@@ -67,8 +67,8 @@
     <AndroidEnableMarshalMethods Condition="'$(DorotiTarget)' == 'Android'">false</AndroidEnableMarshalMethods>
     <DorotiAndroidBaselineProfile Condition="'$(DorotiAndroidBaselineProfile)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.prof</DorotiAndroidBaselineProfile>
     <DorotiAndroidBaselineProfileMetadata Condition="'$(DorotiAndroidBaselineProfileMetadata)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.profm</DorotiAndroidBaselineProfileMetadata>
-    <DebugSymbols Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</DebugSymbols>
-    <DebugType Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">none</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(DorotiTarget)' == 'Windows'">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)' == 'Release' and '$(DorotiTarget)' == 'Windows'">none</DebugType>
     <CopyOutputSymbolsToPublishDirectory Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</CopyOutputSymbolsToPublishDirectory>
     <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>

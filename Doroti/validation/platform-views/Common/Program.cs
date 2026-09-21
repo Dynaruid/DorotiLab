@@ -3,6 +3,24 @@ using Doroti.Ui;
 using Doroti.Framework.Services;
 
 var passed = new List<string>();
+await Check("host receipt tracks attachment and rejects late resurrection", async () =>
+{
+    await using var owner = Owner(13);
+    var handle = await owner.CreateAsync(new PlatformViewRequest(1, "test", PlatformViewComposition.InterleavedComposition));
+    using var scene = Scene(13, handle);
+    using var first = PlatformCompositionPlanner.Build(scene, new(13, 0, 1, 0), owner);
+    Assert(owner.GetState(handle) == PlatformViewState.Ready);
+    Assert(owner.RecordPlacementReceipt(first) && owner.GetState(handle) == PlatformViewState.Attached);
+    using var hidden = PlatformCompositionPlanner.Build(Array.Empty<SceneCommand>(), new(13, 0, 2, 0), owner);
+    Assert(owner.RecordPlacementReceipt(hidden) && owner.GetState(handle) == PlatformViewState.Hidden);
+    Assert(!owner.RecordPlacementReceipt(first) && owner.GetState(handle) == PlatformViewState.Hidden);
+    using var late = PlatformCompositionPlanner.Build(scene, new(13, 0, 3, 0), owner);
+    var disposal = owner.DisposeAsync(handle).AsTask();
+    owner.RecordPlacementReceipt(late);
+    Assert(owner.GetState(handle) == PlatformViewState.Disposing && !disposal.IsCompleted);
+    first.Dispose(); hidden.Dispose(); late.Dispose();
+    await disposal.WaitAsync(TimeSpan.FromSeconds(2));
+});
 await Check("owner isolation and stale generation", async () =>
 {
     await using var a = Owner(1); await using var b = Owner(2);

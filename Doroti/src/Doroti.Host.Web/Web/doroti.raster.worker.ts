@@ -2,6 +2,9 @@ import { validateViewEnvironment } from "./doroti.web.protocol.js";
 import type { Insets, BrowserDisplayFeature } from "./doroti.web.environment.js";
 import {
   configureWorkerBridge,
+  commitPlatformFrame,
+  discardPlatformFrame,
+  drainPlatformViews,
   dispatchWorkerAnimationFrame,
   dispatchWorkerInput,
   dispatchWorkerResizeEpoch,
@@ -144,6 +147,7 @@ let lastDispatchedInputSequence = 0;
 let requestSequence = 0;
 let controlSequence = 0;
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
+const pendingControlTasks = new Set<Promise<string>>();
 let managedPort: MessagePort | null = null;
 let finishManagedRole: (() => void) | null = null;
 
@@ -492,6 +496,7 @@ async function drain(value: WorkerPresenter): Promise<void> {
 
 async function render(value: WorkerPresenter, request: PresentRequest): Promise<void> {
   try {
+    discardPlatformFrame();
     if (webgpu) await webgpu.waitForCapacity();
     if (request.terminal || runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
     if (!snapshot || snapshot.resizeEpoch.generation !== request.generation ||
@@ -511,6 +516,11 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         return;
       }
       webgpu.submitted();
+      if (!await commitPlatformFrame()) {
+        surface!.CompleteFrame(request.requestId, request.generation, "superseded", "DOM placement superseded before ACK");
+        terminal(request, "superseded", "DOM placement superseded before ACK");
+        return;
+      }
       value.frontGeneration = request.generation;
       value.frontPhysicalWidth = request.physicalWidth;
       value.frontPhysicalHeight = request.physicalHeight;
@@ -577,6 +587,11 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
       dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
     }
+    if (!await commitPlatformFrame()) {
+        surface!.CompleteFrame(request.requestId, request.generation, "superseded", "DOM placement superseded before ACK");
+        terminal(request, "superseded", "DOM placement superseded before ACK");
+        return;
+      }
     surface!.CompleteFrame(request.requestId, request.generation, "submitted",
       "exact direct visible framebuffer submitted in the worker");
     terminal(request, "submitted", "exact direct visible framebuffer submitted in the worker");
@@ -603,6 +618,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     });
     return;
   } catch (error) {
+    discardPlatformFrame();
     try { surface?.CompleteFrame(request.requestId, request.generation, "failed", String(error)); } catch { }
     terminal(request, "failed", String(error));
     if (webgpu) post("fatal", { error: String(error) });
@@ -645,10 +661,17 @@ configureWorkerBridge({
   },
   postControl(kind, payload) { post("control", { controlKind: kind, payload }); },
   requestControl(kind, payload) {
+    if (pendingControls.size >= 256) return Promise.reject(new Error("Worker control mailbox is full."));
     const correlationId = ++controlSequence;
-    const promise = new Promise<string>((resolve, reject) => pendingControls.set(correlationId, { resolve, reject }));
+    const promise = new Promise<string>((resolve, reject) => {
+      const timer = globalThis.setTimeout(() => { pendingControls.delete(correlationId); reject(new Error("Worker control ACK exceeded 30 seconds.")); }, 30000);
+      pendingControls.set(correlationId, { resolve: value => { clearTimeout(timer); resolve(value); },
+        reject: error => { clearTimeout(timer); reject(error); } });
+    });
     post("control-request", { correlationId, controlKind: kind, payload });
-    return promise;
+    const completion = promise.finally(() => pendingControlTasks.delete(completion));
+    pendingControlTasks.add(completion);
+    return completion;
   },
 });
 
@@ -750,6 +773,8 @@ function handleHostMessage(event: MessageEvent): void {
           if (webgpu) await webgpu.drainForShutdown();
           stopManagedRuntime?.();
           stopManagedRuntime = null;
+          await drainPlatformViews();
+          await Promise.allSettled([...pendingControlTasks]);
           if (webgpu) {
             await surface?.DisposeGraphite();
             post("gpu-disposed", { diagnostics: webgpu.diagnostics() });
@@ -759,7 +784,7 @@ function handleHostMessage(event: MessageEvent): void {
           if (!managedPort) managedRuntime?.exit(0);
           managedRuntime = null;
           runtimeState.transition("disposed");
-          post("disposed", { activeRequests: 0, activeReceipts: 0,
+          post("disposed", { activeRequests: pendingControlTasks.size, activeReceipts: 0,
             timers: { ...JSON.parse(captureManagedTimers?.() ?? "{}"), ...captureBrowserTimers() } });
           if (managedPort) {
             managedPort.removeEventListener("message", handleHostMessage);

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Doroti.Ui;
 
-public enum WebViewProfile { Ephemeral, SharedPersistent }
+public enum WebViewProfile { Ephemeral, SharedPersistent, BrowserDefault }
 public enum WebViewError { NotReady, Closed, Unsupported, InvalidRequest, NavigationChanged, JavaScript, ProcessFailed, Busy }
 public sealed class WebViewException(WebViewError code, string message) : Exception(message)
 {
@@ -17,14 +17,23 @@ public sealed record WebViewEvent(PlatformViewHandle Handle, long NavigationId, 
 public sealed record WebViewCommand(WebViewOperation Operation, string? Text = null, long DocumentGeneration = 0);
 public sealed record WebViewFeatures(bool Navigation, bool JavaScript, bool EphemeralProfile, bool SharedPersistentProfile,
     bool ClearAllData, bool ScriptMessages = false, bool AppContentScheme = false,
-    bool IsolatedPersistentProfile = false, bool FirstContentFrame = false);
+    bool IsolatedPersistentProfile = false, bool FirstContentFrame = false)
+{
+    public bool BrowserDefaultProfile { get; init; }
+}
 public sealed record WebViewResult(long RequestId, long NavigationId, long DocumentGeneration,
     string? Json = null, bool IsUndefined = false, string? Url = null, string? Title = null,
-    bool IsLoading = false, bool CanGoBack = false, bool CanGoForward = false, WebViewFeatures? Features = null);
+    bool IsLoading = false, bool CanGoBack = false, bool CanGoForward = false, WebViewFeatures? Features = null)
+{
+    // Additive properties preserve native backends' existing constructor/deconstruction ABI.
+    public bool HistoryKnown { get; init; } = true;
+    public bool NavigationStateKnown { get; init; } = true;
+}
 
 public sealed record WebViewResource(string ResourceKey, string MimeType);
 
 /// <summary>Copied, versioned creation settings. Default profile is private and isolated per view.
+/// Browser hosts require explicit BrowserDefault and reject native private-profile requests.
 /// Remote navigation is limited to HTTP(S). No file access, popup or external protocol launch.</summary>
 public sealed record WebViewOptions(string? Html = null, WebViewProfile Profile = WebViewProfile.Ephemeral,
     string[]? AllowedOrigins = null, Dictionary<string, WebViewResource>? Resources = null,
@@ -38,6 +47,8 @@ public sealed record WebViewOptions(string? Html = null, WebViewProfile Profile 
     }
     public void Validate()
     {
+        if (Profile == WebViewProfile.BrowserDefault && !OperatingSystem.IsBrowser())
+            throw new WebViewException(WebViewError.Unsupported, "BrowserDefault is only available in a browser host.");
         if (!Enum.IsDefined(Profile) || Encoding.UTF8.GetByteCount(Html ?? "") > 2 * 1024 * 1024)
             throw new WebViewException(WebViewError.InvalidRequest, "Invalid WebView profile or HTML larger than 2 MiB.");
         if ((Resources?.Count ?? 0) > 256 || (AllowedOrigins?.Length ?? 0) > 128 || (MessageOrigins?.Length ?? 0) > 128)

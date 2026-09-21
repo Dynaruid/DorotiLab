@@ -1,4 +1,4 @@
-/** Main-DOM ownership. This extension is not enabled in the worker protocol until runner integration. */
+/** Main-DOM ownership shared by product worker composition and adapter validation. */
 export const platformViewBatchVersion = 2 as const;
 export interface NativeIdentity { readonly owner: string; readonly id: string; readonly generation: string; }
 export interface NativeResource { readonly element: HTMLElement; dispose(): void; }
@@ -24,6 +24,7 @@ interface Entry {
   readonly identity: NativeIdentity; readonly abort: AbortController;
   readonly container: HTMLDivElement; ready: Promise<void>;
   resource?: NativeResource; removed: boolean;
+  disabled?: boolean;
   focus?: () => void;
 }
 
@@ -117,10 +118,13 @@ export class DorotiPlatformViewDomRegistry {
     this.#epoch = epoch; this.#surfaceGeneration = surfaceGeneration;
   }
   /** Validates the whole batch before synchronous style changes; does not certify raster atomicity. */
-  commit(batch: NativeBatch): void {
+  commit(batch: NativeBatch, advanceEpoch = false): void {
     this.#requireOpen();
-    if (batch.version !== platformViewBatchVersion || batch.owner !== this.owner || batch.epoch !== this.#epoch ||
-      batch.surfaceGeneration !== this.#surfaceGeneration || !Number.isSafeInteger(batch.frame) || batch.frame <= this.#frame)
+    sequence(batch.epoch); sequence(batch.surfaceGeneration);
+    const changedEpoch = batch.epoch !== this.#epoch || batch.surfaceGeneration !== this.#surfaceGeneration;
+    if (batch.version !== platformViewBatchVersion || batch.owner !== this.owner ||
+      (advanceEpoch ? batch.epoch < this.#epoch || batch.surfaceGeneration < this.#surfaceGeneration : changedEpoch) ||
+      !Number.isSafeInteger(batch.frame) || batch.frame < 0 || (!changedEpoch && batch.frame <= this.#frame))
       throw new Error("Stale/version-mismatched native DOM batch.");
     if (batch.views.length > 16 || batch.shields.length > 16) throw new Error("Native DOM overlay limit exceeded.");
     const effects = batch.effects ?? [];
@@ -142,7 +146,7 @@ export class DorotiPlatformViewDomRegistry {
       if (ids.has(placement.identity.id)) throw new Error("Duplicate native DOM placement.");
       ids.add(placement.identity.id);
       const entry = this.#entries.get(placement.identity.id);
-      if (!entry || entry.removed || !entry.resource || entry.identity.generation !== placement.identity.generation)
+      if (!entry || entry.removed || entry.disabled || !entry.resource || entry.identity.generation !== placement.identity.generation)
         throw new Error("Stale or not-ready DOM instance.");
     }
     for (const shield of batch.shields) {
@@ -198,7 +202,7 @@ export class DorotiPlatformViewDomRegistry {
       apply(element, effect.bounds, effect.clip, effect.order, true);
       setStyles(element, { "backdrop-filter": `blur(${effect.strength * 16}px) saturate(${effect.saturation})`, "background-color": effect.tint });
     }
-    this.#frame = batch.frame;
+    this.#epoch = batch.epoch; this.#surfaceGeneration = batch.surfaceGeneration; this.#frame = batch.frame;
   }
   focus(handle: NativeIdentity, focused: boolean): void {
     this.#requireOpen(); this.#validateOwner(handle);
@@ -207,8 +211,19 @@ export class DorotiPlatformViewDomRegistry {
       throw new Error("Stale native DOM focus request.");
     if (focused) {
       if (entry.container.style.display === "none" || entry.container.inert) throw new Error("Hidden native DOM view cannot take focus.");
-      entry.resource.element.focus();
+      const active = this.root.ownerDocument.activeElement;
+      if (active !== entry.resource.element && !entry.resource.element.contains(active)) entry.resource.element.focus();
     } else entry.resource.element.blur();
+  }
+  hide(handle: NativeIdentity): void {
+    this.#validateOwner(handle);
+    const entry = this.#entries.get(handle.id);
+    if (entry?.identity.generation === handle.generation) this.#hide(entry);
+  }
+  disable(handle: NativeIdentity): void {
+    this.hide(handle);
+    const entry = this.#entries.get(handle.id);
+    if (entry?.identity.generation === handle.generation) entry.disabled = true;
   }
   dispose(): Promise<void> {
     if (this.#close) return this.#close;

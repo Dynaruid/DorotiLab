@@ -135,7 +135,8 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
             manifestAssembly,
             applicationAssembly,
             Rid,
-            (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)));
+            (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)),
+            BrowserFrameworkHost.PlatformViewFactories);
     }
 
     public void Dispose()

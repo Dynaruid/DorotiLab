@@ -1,5 +1,18 @@
 # WebView 작업계획 — 재구성 PlatformView 소비자
 
+## Web 실행 업데이트 (2026-09-21)
+
+**Web 전체 상태는 PARTIAL이다.** WV-3의 iframe이 [work1](work1.md)의 실제 main DOM / managed Worker 합성과 공통 WebViewController/Widget에 연결됐다. [Web 계약](Doroti/docs/platform-views/web-webview.md)과 [결과 보고서](Doroti/validation/webview/web-results-2026-09-21.md)가 아래 Web 미연결 기록보다 우선한다.
+
+- 같은 iframe에 HTTP(S) 탐색·HTML·same-origin JSON JS/undefined/오류·reload/stop·feature/state·focus와 explicit dispose를 연결했다. 최대 32 pending, 2 MiB 명령/결과, 30초 대기, caller 취소·document 변경·pending JS 중 종료를 처리한다.
+- `BrowserDefault`를 명시해 기존 browser profile을 사용한다. default Ephemeral/네이티브 SharedPersistent 생성, 전체 browser data clear, cross-origin 임의 JS·history 및 native resource scheme은 Unsupported다. 배포한 same-origin HTTP(S) app content URL을 지원한다. unknown history/navigation 상태는 `HistoryKnown=false`, `NavigationStateKnown=false`로 표시하며 iframe load를 HTTP 성공이나 첫 content frame으로 취급하지 않는다.
+- 선택 메시지는 exact origin·실제 source window·document/nonce·단조 request ID·64 KiB JSON을 검사한다. trusted 메시지, replay/wrong nonce/stale/oversized 거부·origin command 거부·caller cancel·close를 publish 제품에서 검증했다. AllowedOrigins는 controller 명령에만 적용되며 내부 링크/redirect interception을 보장하지 않는다.
+- WebGPU/WebGL 제품의 두 WebView·effect/선명한 전경·native/shield 입력·Doroti↔iframe text focus/자동 한글 삽입·상태 보존·수명·DPR+resize를 통과했다. 실제 native/raster blur 측정과 채도/tint/live source도 통과했다. main-DOM 2-owner fixture와 두 전체 제품 owner는 별도다.
+- Testbed sample과 생성 template manifest를 연결했다. Release publish의 별도 정적 서버 실행은 통과했고 NativeAOT는 DOROTIAOT002에서 거부됐다. 기본 Debug startup, 실제 browser/물리/clean-machine 배포·성능은 미승인이다. 로컬 NuGet 패키지만 사용하는 생성 템플릿의 publish와 WebView JS·효과·resize 실행은 통과했으며 새 Web Release 앱의 PDB 자산 오류를 runner SDK에서 수정했다. mixed composition의 CPU upload와 p95 약 30ms를 공유 GPU path나 성능 PASS로 기록하지 않는다.
+
+잔여: GPU/세부 raster 전송 최적화, 두 제품 owner, 전체 정책/브라우저가 허용하지 않는 기능 차이, 물리 IME/접근성·보호 media·다른 browser/OS/GPU, 순수 DPR/monitor, clean-machine·NativeAOT. 구현되지 않은 API를 성공 no-op으로 반환하지 않는다.
+
+
 2026-09-20 Linux Qt/Android 실행 업데이트 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
 
 **WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 macOS 개정은 실제 AppKit 구현·제품 검증을 포함하며 아래 실행 업데이트가 우선한다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
@@ -116,7 +129,7 @@ Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`,
 | iOS UIKit Graphite | WKWebView+Metal+공개 animator 효과 구현, 현재 iOS 27 Simulator 픽셀/복귀/수명·보정 통과 | WV-5에서 기존 인스턴스 재사용, controller/delegate/JS/profile 기능 추가. 현행 효과 실기기/NativeAOT 미승인 |
 | Mac Catalyst / iOS Ganesh | iOS Graphite와 별도 runner | attachment/effect 지원·실행을 별도로 구현/확인. iOS 증거 전용 금지 |
 | AppKit | WKWebView/Core Image backdrop/Metal Graphite·Ganesh 제품 연결 | WV-1 초기 controller/widget·탐색/JS/profile/content/message 연결. numeric blur·채도·tint 지원, 공통 비주얼/배포/물리 입력 등 PARTIAL; 위 실행 업데이트 참조 |
-| Web | protocol v2/CSS backdrop-filter adapter·독립 DOM harness 존재 | work1 R5/FX3의 main DOM·worker multi-canvas ACK/자원 수명 제품 연결, WV-3의 iframe/협력 bridge 기능 |
+| Web | main-DOM/Worker stable iframe·bounded raster canvas·CSS effect·공통 controller 제품 연결 | WV-3 navigation/HTML/same-origin JS/협력 message·profile 제한·취소·close·publish 검증. 성능/Debug·브라우저/물리 범위는 PARTIAL; 위 실행 업데이트 참조 |
 | Linux Qt Quick | 같은 Quick item의 공개 controller·navigation/JSON JS/profile/app content/trusted message, Gaussian/채도 및 relocated Release 제품 검증 | full clear/정책·물리 입력/Orca·two product owners/device loss·성능/clean package/NativeAOT 잔여; 9월 20일 업데이트 기준 |
 
 Qt Widgets/QWebEngineView는 기존 B probe·제한 경로로 남긴다. Quick Controls C가 WebEngine Quick C를 보장하지 않는다. Qt WebView wrapper 대신 WebEngine 직접 adapter와 C ABI를 사용한다. Qt WebEngine은 Widgets/Quick 접점을 구분하므로 현재 Quick host에 맞는 접점을 검증한다. [Qt WebEngine overview](https://doc.qt.io/qt-6/qtwebengine-overview.html), [Qt WebView 문서](https://doc.qt.io/qt-6/qtwebview-index.html)

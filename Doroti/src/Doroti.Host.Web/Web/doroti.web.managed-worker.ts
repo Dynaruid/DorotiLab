@@ -84,6 +84,8 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
       DOROTI_LAYOUT_PROFILE: params.get("dorotiLayoutProfile") === "1" ? "1" : "0",
       DOROTI_WEB_DIRECT_TRACE: diagnostics ? "1" : "0", DOROTI_STAGE_TRACE: diagnostics ? "1" : "0",
+      DOROTI_WEBVIEW_COUNT: params.get("dorotiWebViewCount") ?? "1",
+      DOROTI_WEBVIEW_WORKLOAD: params.get("dorotiWebViewWorkload") ?? "idle",
       DOROTI_SAMPLE_PROGRESS_SCOPE: params.get("dorotiProgressScope") ?? "local",
     }).create() as MainRuntime;
     if (!runtime.runtimeBuildInfo.wasmEnableThreads || !(runtime.localHeapViewU8().buffer instanceof SharedArrayBuffer))

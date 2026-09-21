@@ -37,3 +37,7 @@ latency are not observed. The zero-native fast path does not generate compositio
 timings. These bounded observations are not a before/after performance acceptance.
 
 Current support and outstanding gates: [Windows contract](../../docs/platform-views/windows-webview.md).
+
+## Web (2026-09-21)
+
+[Product execution, commands and limitations](web-results-2026-09-21.md). BrowserDefault is explicit; use Release for the currently verified product runtime. WebGPU/WebGL product evidence is separate from the DOM adapter harness, physical input and NativeAOT.

@@ -15,20 +15,24 @@ internal sealed class BrowserSkiaCapabilities :
     private readonly HostBridge _bridge;
     private readonly BrowserHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+    private readonly BrowserPlatformViewHost _platform;
     private readonly object _paintGate = new();
     private readonly Dictionary<long, SkiaPaintCompletion> _pendingPaints = [];
 
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host,
         Color? backgroundColor, Color? darkBackgroundColor,
         string backendIdentity,
-        SkiaFallbackFontCollection? fallbackFonts = null)
+        SkiaFallbackFontCollection? fallbackFonts, BrowserPlatformViewHost platform)
     {
         _host = host;
+        _platform = platform;
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
             backendIdentity, host.Snapshot.Gpu.Api == "webgpu" ? DorotiSkiaRuntimeEffects.WebGraphiteBackend : DorotiSkiaRuntimeEffects.WebGpuBackend,
             host.Snapshot.Gpu.Api == "webgpu" ? "doroti-owned-canvas-graphite-dawn" :
                 "doroti-owned-canvas-webgl2-skia-gpu", fallbackFonts: fallbackFonts);
+        _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+            _platform.Draw(_renderer, canvas, commands, descriptor, width, height);
     }
 
     public event Action<SemanticsActionEvent>? Action
@@ -98,6 +102,7 @@ internal sealed class BrowserSkiaCapabilities :
 
     public void CompletePaint(long requestId, string terminal, string reason)
     {
+        _platform.Complete(terminal is "submitted" or "presented");
         SkiaPaintCompletion completion;
         lock (_paintGate)
         {
@@ -116,6 +121,7 @@ internal sealed class BrowserSkiaCapabilities :
 
     public void InvalidateGpuContext(long requestId, string reason)
     {
+        _platform.Complete();
         SkiaPaintCompletion completion;
         lock (_paintGate)
         {
@@ -172,6 +178,7 @@ internal sealed class BrowserSkiaCapabilities :
             _pendingPaints.Clear();
         }
         _renderer.Dispose();
+        _platform.Dispose();
         _bridge.Dispose();
     }
 

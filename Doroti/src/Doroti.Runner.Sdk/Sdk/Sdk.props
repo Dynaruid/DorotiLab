@@ -3,6 +3,10 @@
   <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <!-- Decide before Microsoft.Common targets compute _DebugSymbolsProduced.
+         Changing this in SDK targets leaves a nonexistent PDB in fresh Web assets. -->
+    <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">none</DebugType>
     <!-- Apple runtime selection happens while Microsoft.NET.Sdk targets are imported. -->
     <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
     <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</UseMonoRuntime>

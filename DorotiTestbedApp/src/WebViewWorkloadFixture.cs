@@ -22,7 +22,7 @@ internal sealed class WebViewWorkloadFixture : StatefulWidget
                 (_mode == "animation" ? "#box{animation:move 1s infinite alternate}@keyframes move{to{transform:translateX(160px)}}" : "") +
                 "</style><input value='Native workload'><div id=box></div><div style='height:1200px'>Live WebView</div>" +
                 (_mode == "scroll" ? "<script>setInterval(()=>scrollTo(0,(Date.now()/4)%900),16)</script>" : "");
-            for (var i = 0; i < count; i++) _controllers.Add(new(View.of(context), new(Html: html)));
+            for (var i = 0; i < count; i++) _controllers.Add(new(View.of(context), new(Html: html, Profile: OperatingSystem.IsBrowser() ? WebViewProfile.BrowserDefault : WebViewProfile.Ephemeral)));
         }
         public override Widget build(BuildContext context) => new M.Scaffold(
             appBar: new M.AppBar(title: new Text($"WebView workload: {_controllers.Count} / {_mode}")),

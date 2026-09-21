@@ -18,7 +18,6 @@ internal sealed class WebViewSample : StatefulWidget
 
 internal sealed class WebViewSampleState : State<WebViewSample>
 {
-    private const string InitialAddress = "https://www.youtube.com/watch?v=hI9HQfCAw64";
     private const string InitialHtml = """
         <!doctype html>
         <html lang="en">
@@ -33,6 +32,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             .eyebrow { color: #6650a4; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
             h1 { margin: 8px 0 12px; font-size: clamp(2rem, 6vw, 4rem); line-height: 1; }
             .card { margin-top: 28px; padding: 24px; border: 1px solid #c7c7d7; border-radius: 24px; background: #ffffffcc; box-shadow: 0 18px 50px #55447722; }
+            .video { display: block; width: min(560px, 100%); height: auto; aspect-ratio: 16 / 9; margin: auto; border: 0; border-radius: 12px; }
             label { display: grid; gap: 8px; margin: 18px 0; font-weight: 650; }
             input, button { box-sizing: border-box; border-radius: 12px; font: inherit; }
             input { width: 100%; padding: 12px 14px; color: #172033; background: white; border: 1px solid #77778a; }
@@ -51,6 +51,15 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             <h1>Web content inside Doroti</h1>
             <p>This page is live HTML. Try native text input, the counter, scrolling, and the CSS animation.</p>
             <section class="card">
+              <h2>YouTube embed</h2>
+              <!-- Keep WASM thread isolation; only this third-party embed is credentialless. -->
+              <iframe class="video" width="560" height="315"
+                src="https://www.youtube.com/embed/M7lc1UVf-VE?si=42cLngBwAWaMLim3"
+                title="YouTube video player" credentialless
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </section>
+            <section class="card">
               <label>Native text input <input value="Doroti WebView input"></label>
               <button id="counter" type="button">Count: 0</button>
               <div id="pulse" aria-label="Animated block"></div>
@@ -66,7 +75,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         </html>
         """;
 
-    private readonly TextEditingController _address = new(InitialAddress);
+    private readonly TextEditingController _address = new();
     private DorotiView? _owner;
     private WebViewController? _controller;
     private PlatformViewDescriptor? _fallback;
@@ -134,7 +143,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                 // cannot isolate transient profiles. Never silently weaken the default.
                 var profile = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_WEBVIEW_PROFILE") == "shared"
                     ? WebViewProfile.SharedPersistent : WebViewProfile.Ephemeral;
-                _controller = new WebViewController(_owner, new WebViewOptions(Html: InitialHtml, Profile: profile));
+                _controller = new WebViewController(_owner, new WebViewOptions(Html: InitialHtml, Profile: OperatingSystem.IsBrowser() ? WebViewProfile.BrowserDefault : profile));
                 _controller.Changed += WebViewChanged;
                 _ = InitializeControllerAsync(_controller);
             }
@@ -160,9 +169,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         {
             await controller.Ready.ConfigureAwait(false);
             var features = await controller.ExecuteAsync(new(WebViewOperation.Features)).ConfigureAwait(false);
-            var state = await controller.ExecuteAsync(features.Features?.Navigation == true
-                ? new(WebViewOperation.Navigate, InitialAddress)
-                : new(WebViewOperation.State)).ConfigureAwait(false);
+            var state = await controller.ExecuteAsync(new(WebViewOperation.State)).ConfigureAwait(false);
             Update(() =>
             {
                 _features = features.Features;

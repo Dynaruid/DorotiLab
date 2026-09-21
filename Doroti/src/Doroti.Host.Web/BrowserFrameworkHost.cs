@@ -7,6 +7,7 @@ namespace Doroti.Host.Web;
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
 public sealed class BrowserFrameworkHost : IDisposable
 {
+    public static IEnumerable<IPlatformViewFactory> PlatformViewFactories => BrowserPlatformViewHost.Factories;
     private readonly string _targetIdentity;
     private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
     private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)> _views = [];
@@ -36,17 +37,20 @@ public sealed class BrowserFrameworkHost : IDisposable
             throw new InvalidOperationException("The Doroti host session must be running before a browser view is created.");
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
+        var platform = new BrowserPlatformViewHost(viewId, host.HostId,
+            application?.Manifest.PlatformViews.Any(v => v.ViewType == "doroti/webview") == true, host.Snapshot.PlatformBackdrop);
         var backendIdentity = _targetIdentity == "browser-wasm/auto"
             ? $"browser-wasm/{BrowserHostRuntime.RendererIdentity}"
             : _targetIdentity;
         IBrowserGraphicsCapabilities graphics = new BrowserSkiaCapabilities(
                 viewId, host,
                 configuration.backgroundColor, configuration.darkBackgroundColor,
-                backendIdentity, _fallbackFonts);
+                backendIdentity, _fallbackFonts, platform);
         var messages = new HapticFeedbackPlatformMessageCapability(
             new BrowserPlatformMessageCapability(host), BrowserHapticFeedback.PerformAsync);
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+            .Register<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews, platform.Coordinator)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
             .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
             .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)

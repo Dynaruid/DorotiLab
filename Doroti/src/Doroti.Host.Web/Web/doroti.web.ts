@@ -1,3 +1,4 @@
+import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
 import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
 import { initializeBrowserTimers } from "./doroti.web.timers.js";
@@ -9,6 +10,7 @@ import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-hos
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
 
 interface ManagedCallbacks {
+  dispatchPlatformEvent(hostId: number, json: string): void;
   dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
   dispatchResizeEpoch(
@@ -249,6 +251,8 @@ interface DorotiAssemblyExports {
       Web: {
         BrowserTimeProvider: { DispatchTimer(id: number, generation: number): void };
         BrowserInterop: {
+          DrainPlatformViews(): Promise<void>;
+          DispatchPlatformEvent: ManagedCallbacks["dispatchPlatformEvent"];
           DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
           DispatchSnapshot: ManagedCallbacks["dispatchSnapshot"];
           DispatchResizeEpoch: ManagedCallbacks["dispatchResizeEpoch"];
@@ -271,6 +275,8 @@ const workerDisplayPresenters = new Map<string, WorkerDisplayPresenter>();
 let managed: ManagedCallbacks | null = null;
 let activeWorkerBridge: WorkerBridge | null = null;
 let directWorkerBootstrap = false;
+let drainPlatformOwners: (() => Promise<void>) | undefined;
+export async function drainPlatformViews(): Promise<void> { await drainPlatformOwners?.(); }
 
 export function configureWorkerBridge(bridge: WorkerBridge): void {
   if (typeof document !== "undefined")
@@ -301,6 +307,7 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
   const id = Number(message.hostId);
   const payload = (message.payload ?? {}) as Record<string, unknown>;
   switch (message.inputKind) {
+    case "platform": callbacks.dispatchPlatformEvent(id, String(payload.json)); break;
     case "pointer":
       callbacks.dispatchPointerBatch(
         id, Number(payload.phase), Number(payload.kind), Number(payload.pointerId),
@@ -434,6 +441,7 @@ function snapshot(host: BrowserHost): string {
   return JSON.stringify({
     ...host.environment?.value,
     canvasId: host.canvas.id,
+    platformBackdrop: globalThis.CSS?.supports("backdrop-filter", "blur(1px)") === true,
     logicalWidth: host.logicalWidth,
     logicalHeight: host.logicalHeight,
     devicePixelRatio: ratio,
@@ -804,8 +812,10 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (!runtime) throw new Error("Doroti could not resolve the active Web runtime.");
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
+  drainPlatformOwners = interop.DrainPlatformViews;
   initializeBrowserTimers(exports.Doroti.Host.Web.BrowserTimeProvider.DispatchTimer);
   configureManagedCallbacks({
+    dispatchPlatformEvent: interop.DispatchPlatformEvent,
     dispatchAnimationFrame: interop.DispatchAnimationFrame,
     dispatchSnapshot: interop.DispatchSnapshot,
     dispatchResizeEpoch: interop.DispatchResizeEpoch,
@@ -1383,7 +1393,11 @@ export function clearTextInput(hostId: number): void {
   host.input.value = "";
   host.input.hidden = true;
   rememberTextState(host, "", 0, 0, -1, -1);
-  host.canvas.focus({ preventScroll: true });
+  // A native-focus notification closes the framework connection asynchronously.
+  // Preserve the iframe's inner editable instead of taking focus back on ACK.
+  const active = document.activeElement;
+  if (!(active instanceof Element && active.closest("[data-doroti-platform-view]")))
+    host.canvas.focus({ preventScroll: true });
 }
 
 export async function launchExternalUrl(url: string): Promise<string> {
@@ -1791,6 +1805,7 @@ export async function startDorotiWorkerHost(
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
     activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload });
   configureManagedCallbacks({
+    dispatchPlatformEvent: (id, json) => postInput("platform", id, 0, { json }),
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
     dispatchSnapshot: queueWorkerSnapshot,
     dispatchResizeEpoch: queueWorkerResizeEpoch,
@@ -1814,6 +1829,24 @@ export async function startDorotiWorkerHost(
   createHost(1, canvas.id, Math.max(1, initialRect.width), Math.max(1, initialRect.height));
   directWorkerBootstrap = false;
   let host = requireHost(1);
+  let compositionPromise: Promise<BrowserPlatformComposition> | undefined;
+  const requireComposition = async (owner: string): Promise<BrowserPlatformComposition> => {
+    compositionPromise ??= import("./doroti.web.composition.js").then(({ BrowserPlatformComposition }) =>
+      new BrowserPlatformComposition(root, canvas, owner, event =>
+        {
+          if (event.focused) {
+            closeTextConnectionAfterBlur(host);
+            setViewFocus(host, true, performance.now());
+          }
+          postInput("platform", host.id, host.inputSequence, { json: JSON.stringify(event) });
+        }));
+    const composition = await compositionPromise;
+    if (composition.registry.owner !== owner) throw new Error("Foreign browser composition owner.");
+    return composition;
+  };
+  const closeComposition = (): void => {
+    void compositionPromise?.then(value => value.dispose()).catch(error => console.error("DOM owner close failed", error));
+  };
   {
     configureDirectCanvasCapacity(
       host, initialRect.width, initialRect.height, host.resizeEpoch.devicePixelRatio,
@@ -1830,8 +1863,8 @@ export async function startDorotiWorkerHost(
     rejectReady = reject;
   });
 
-  const sendControlResponse = (correlationId: number, result: string, error?: unknown): void =>
-    activeWorker.postMessage({
+  const sendControlResponse = (recipient: DorotiWorkerEndpoint, correlationId: number, result: string, error?: unknown): void =>
+    recipient.postMessage({
       protocolVersion: dorotiProtocolVersion, kind: "control-response", correlationId, result,
       error: error ? String(error) : undefined,
     });
@@ -2028,6 +2061,7 @@ export async function startDorotiWorkerHost(
           // Only "disposed" ends the renderer role and retires DOM endpoints.
           break;
         case "disposed":
+          closeComposition();
           root.dataset.dorotiWorkerRuntime = "disposed";
           if (display.pendingLeases.size !== 0)
             throw new Error(`Doroti worker disposed with ${display.pendingLeases.size} external leases.`);
@@ -2052,7 +2086,7 @@ export async function startDorotiWorkerHost(
           display.displayWidth = Number(message.displayWidth ?? message.rasterWidth);
           display.displayHeight = Number(message.displayHeight ?? message.rasterHeight);
           break;
-        case "context-lost": display.contextLost = true; break;
+        case "context-lost": display.contextLost = true; root.dataset.dorotiPlatformContextLost = "true"; break;
         case "context-restored":
           display.contextLost = false;
           display.contextGeneration = Number(message.contextGeneration);
@@ -2065,6 +2099,12 @@ export async function startDorotiWorkerHost(
           const kind = String(message.controlKind);
           const payload = (message.payload ?? {}) as Record<string, unknown>;
           void (async () => {
+            if (worker !== activeWorker) throw new Error("Retired worker request.");
+            if (kind === "platform") return (await requireComposition(String((payload.identity as { owner: string }).owner))).request(payload);
+            if (kind === "platform-frame") {
+              const packet = payload as unknown as CompositionPacket;
+              return (await requireComposition(packet.batch.owner)).commit(packet, host.resizeEpoch.generation);
+            }
             if (kind === "url-launch") return launchExternalUrl(String(payload.url));
             if (kind === "haptic-feedback") {
               await vibrate(Number(payload.durationMilliseconds));
@@ -2076,8 +2116,8 @@ export async function startDorotiWorkerHost(
               String(payload.moduleUrl), String(payload.exportName), String(payload.channel),
               String(payload.codec), String(payload.payloadBase64));
             throw new Error(`Unknown Doroti worker request '${kind}'.`);
-          })().then((result) => sendControlResponse(correlationId, result),
-            (error) => sendControlResponse(correlationId, "", error));
+          })().then((result) => sendControlResponse(worker, correlationId, result),
+            (error) => sendControlResponse(worker, correlationId, "", error));
           break;
         }
         case "fatal": {
@@ -2106,6 +2146,7 @@ export async function startDorotiWorkerHost(
             {
               const lifetimeInputSequence = host.inputSequence;
               const previousCanvas = canvas;
+              closeComposition(); compositionPromise = undefined;
               closeHost(host.id);
               canvas = createReplacementCanvas(previousCanvas);
               directWorkerBootstrap = true;
@@ -2164,6 +2205,7 @@ export async function startDorotiWorkerHost(
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
+    closeComposition();
     if (runtimeLocation === "main") {
       // Keep DOM endpoints alive until the role has drained cursor/text/frame
       // messages and acknowledged disposal. The main runtime still owns it.
@@ -2272,6 +2314,11 @@ function handleTextInputBlur(
   event: FocusEvent,
   belongsToHost: (target: EventTarget | null) => boolean): void {
   const willGainFocus = event.relatedTarget;
+  const nativeTarget = willGainFocus instanceof Element ? willGainFocus : document.activeElement;
+  if (nativeTarget instanceof Element && nativeTarget.closest("[data-doroti-platform-view]")) {
+    closeTextConnectionAfterBlur(host);
+    return;
+  }
   if (willGainFocus === null) {
     if (!document.hasFocus()) {
       if (host.pendingBlurConnectionCloseTimer !== 0)
@@ -2557,4 +2604,25 @@ function semanticsRole(node: SemanticsNode): string {
   if (flags?.image) return "img";
   if (flags?.header) return "heading";
   return "group";
+}
+
+// Staging belongs to the rendering Worker. Exactly one bounded packet may be in flight.
+let platformRasters: RasterPacket[] = [];
+let platformFrame: CompositionPacket | null = null;
+export function stagePlatformRaster(order: number, left: number, top: number, width: number, height: number,
+  pixelWidth: number, pixelHeight: number, pixels: Uint8Array): void {
+  platformRasters.push({ order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels });
+}
+export function stagePlatformFrame(json: string): void {
+  platformFrame = { batch: JSON.parse(json), rasters: platformRasters }; platformRasters = [];
+}
+export function discardPlatformFrame(): void { platformFrame = null; platformRasters = []; }
+export async function commitPlatformFrame(): Promise<boolean> {
+  const frame = platformFrame; platformFrame = null;
+  if (!frame) return true;
+  const receipt = JSON.parse(await activeWorkerBridge!.requestControl("platform-frame", frame as unknown as Record<string, unknown>));
+  return receipt.accepted === true;
+}
+export function platformViewRequest(hostId: number, json: string): Promise<string> {
+  return activeWorkerBridge!.requestControl("platform", { ...JSON.parse(json), hostId });
 }

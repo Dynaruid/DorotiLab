@@ -50,7 +50,8 @@ public sealed record BrowserHostSnapshot(
     bool HighContrast = false,
     bool InvertColors = false,
     long EnvironmentGeneration = 0,
-    IReadOnlyList<BrowserDisplayFeature>? DisplayFeatures = null);
+    IReadOnlyList<BrowserDisplayFeature>? DisplayFeatures = null,
+    bool PlatformBackdrop = false);
 
 public sealed record BrowserJavaScriptPluginDescriptor(
     string Id,
@@ -63,6 +64,10 @@ public sealed record BrowserJavaScriptPluginDescriptor(
 [SupportedOSPlatform("browser")]
 internal static partial class BrowserInterop
 {
+    [JSExport]
+    internal static void DispatchPlatformEvent(int hostId, string json) => BrowserPlatformViewHost.Dispatch(hostId, json);
+    [JSExport]
+    internal static Task DrainPlatformViews() => BrowserPlatformViewHost.DrainAsync();
     private const string Module = "doroti.web";
 
     [JSImport("createHost", Module)]

@@ -76,6 +76,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IWebV
     private long _allocatedId;
     private bool _closed;
     private Task? _closeTask;
+    private PlatformCompositionToken? _placementReceipt;
     public PlatformViewCoordinator(ulong ownerViewId, string backend, PlatformViewFactoryRegistry factories, IPlatformViewDispatcher dispatcher)
     {
         OwnerViewId = ownerViewId;
@@ -259,6 +260,31 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IWebV
     public PlatformViewState GetState(PlatformViewHandle handle)
     {
         lock (_gate) return Require(handle, false).State;
+    }
+    /// <summary>Records attachment state after a host-owned whole-frame commit, without
+    /// applying SDK placement a second time. Keep the admitted plan alive through this call.
+    /// A receipt is not physical presentation and cannot revive a retiring instance.</summary>
+    public bool RecordPlacementReceipt(PlatformCompositionPlan plan)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        if (plan.IsDisposed || !plan.IsAdmitted || plan.Token.OwnerViewId != OwnerViewId)
+            throw new InvalidOperationException("Placement receipt requires a live admitted owner plan.");
+        var placements = plan.Parts.OfType<PlatformNativeSegment>().ToDictionary(p => p.Placement.Handle, p => p.Placement);
+        lock (_gate)
+        {
+            if (_closed || _placementReceipt is { } previous &&
+                (plan.Token.ViewEpoch < previous.ViewEpoch || plan.Token.SurfaceGeneration < previous.SurfaceGeneration ||
+                 plan.Token.FrameNumber <= previous.FrameNumber)) return false;
+            foreach (var entry in _entries.Values)
+            {
+                if (!IsLive(entry.State)) continue;
+                if (placements.TryGetValue(entry.Handle, out var placement))
+                    entry.State = placement.Visible && !placement.Bounds.isEmpty ? PlatformViewState.Attached : PlatformViewState.Hidden;
+                else if (entry.State == PlatformViewState.Attached) entry.State = PlatformViewState.Hidden;
+            }
+            _placementReceipt = plan.Token;
+            return true;
+        }
     }
     private static bool IsLive(PlatformViewState state) => state is PlatformViewState.Ready or PlatformViewState.Attached or PlatformViewState.Hidden or PlatformViewState.Detached;
     private Entry Require(PlatformViewHandle handle, bool live = true)
