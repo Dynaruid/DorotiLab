@@ -6,12 +6,20 @@ namespace Doroti.Skia.Vulkan;
 // Object identities protect against reused numerical handles in old command buffers.
 internal sealed class SubmissionJournal
 {
-    internal sealed class ImageState(ulong handle, long epoch, ImageLayout layout, uint family)
+    internal sealed class ImageState(
+        ulong handle,
+        long epoch,
+        ImageLayout layout,
+        uint family,
+        uint? importedOwnerFamily
+    )
     {
         public readonly ulong Handle = handle;
         public readonly long Epoch = epoch;
         public ImageLayout Layout = layout;
         public uint Family = family;
+        public readonly uint? ImportedOwnerFamily = importedOwnerFamily;
+        public readonly uint ImportedExternalFamily = family;
         public bool Alive = true;
     }
 
@@ -45,14 +53,19 @@ internal sealed class SubmissionJournal
     public long AppliedTransitions { get; private set; }
     public int PeakOperations { get; private set; }
 
-    public ImageState Register(ulong image, ImageLayout layout, uint family)
+    public ImageState Register(
+        ulong image,
+        ImageLayout layout,
+        uint family,
+        uint? importedOwnerFamily = null
+    )
     {
         if (Images.ContainsKey(image))
         {
             throw new InvalidOperationException("Image already registered.");
         }
 
-        var state = new ImageState(image, ++_epoch, layout, family);
+        var state = new ImageState(image, ++_epoch, layout, family, importedOwnerFamily);
         Images.Add(image, state);
         return state;
     }
@@ -216,9 +229,23 @@ internal sealed class SubmissionJournal
                     throw new NotSupportedException("Partial queue ownership descriptor.");
                 }
 
+                var importedTransfer =
+                    t.Image.ImportedOwnerFamily is { } owner
+                    && t.SourceFamily == current.Family
+                    && (
+                        (
+                            t.SourceFamily == t.Image.ImportedExternalFamily
+                            && t.DestinationFamily == owner
+                        )
+                        || (
+                            t.SourceFamily == owner
+                            && t.DestinationFamily == t.Image.ImportedExternalFamily
+                        )
+                    );
                 if (
                     t.SourceFamily != Vk.QueueFamilyIgnored
                     && (t.SourceFamily != current.Family || t.DestinationFamily != current.Family)
+                    && !importedTransfer
                 )
                 {
                     throw new NotSupportedException(
@@ -226,7 +253,10 @@ internal sealed class SubmissionJournal
                     );
                 }
 
-                proposed[t.Image] = (t.New, current.Family);
+                proposed[t.Image] = (
+                    t.New,
+                    importedTransfer ? t.DestinationFamily : current.Family
+                );
                 transitions++;
             }
             active.Remove(commands);

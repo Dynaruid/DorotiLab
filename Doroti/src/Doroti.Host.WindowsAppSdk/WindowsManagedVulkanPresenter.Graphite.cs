@@ -92,6 +92,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             checked((long)DeviceGeneration + 1),
             maxFrames: 1
         );
+        _graphite.NativeTextureImporter = new VulkanNativeTextureImporter(
+            _graphite,
+            _vk,
+            _physicalDevice,
+            _device,
+            _queue,
+            _queueFamily,
+            _stockObserver,
+            Ui.NativeTexturePlatform.Windows
+        );
         RecordEvent(
             $"Graphite/Vulkan official context generation={_graphite.Generation} native={_graphiteLibraryPath}"
         );

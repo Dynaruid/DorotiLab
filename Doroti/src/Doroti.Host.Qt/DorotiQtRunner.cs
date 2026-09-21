@@ -232,7 +232,12 @@ public static unsafe partial class DorotiQtRunner
                 _viewHandle = viewHandle;
                 _hostApi = hostApi;
             }
-            Surface.ConfigureQuick(viewHandle, (hostApi.FeatureBits & QtQuickNative.Feature) != 0);
+            Surface.ConfigureQuick(
+                viewHandle,
+                (hostApi.FeatureBits & QtQuickNative.Feature) != 0,
+                (hostApi.FeatureBits & QtQuickNative.NativeTexturesFeature) != 0
+                    && Environment.GetEnvironmentVariable("DOROTI_LINUX_NATIVE_TEXTURES") == "1"
+            );
             var host = new QtHostAdapter(
                 viewHandle,
                 hostApi,
@@ -255,6 +260,8 @@ public static unsafe partial class DorotiQtRunner
                     : DorotiSkiaRuntimeEffects.QtGpuBackend,
                 enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled
             );
+            if (QtSkiaSurface.GraphiteEnabled && Surface.NativeTexturesConfigured)
+                renderer.EnableNativeTextures(NativeTexturePlatform.Linux);
             Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;
             var messages = new QtPlatformMessageCapability();
             TitlebarAppearance = new QtTitlebarAppearance(host.RequestInvalidate);
@@ -284,6 +291,7 @@ public static unsafe partial class DorotiQtRunner
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
+                .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
                 .Register<ISemanticsHostCapability>(
                     DorotiCapabilityIds.AccessibilitySemantics,

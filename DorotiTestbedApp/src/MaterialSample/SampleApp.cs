@@ -23,6 +23,7 @@ internal static class SampleConstants
         "Elevation",
         "Platform views",
         "WebView",
+        "Texture",
     ];
     internal static readonly IconData[] DestinationIcons =
     [
@@ -32,6 +33,7 @@ internal static class SampleConstants
         M.Icons.invert_colors_on_outlined,
         M.Icons.web_asset_outlined,
         M.Icons.language,
+        M.Icons.image,
     ];
     internal static readonly IconData[] SelectedDestinationIcons =
     [
@@ -41,6 +43,7 @@ internal static class SampleConstants
         M.Icons.opacity,
         M.Icons.web_asset,
         M.Icons.language,
+        M.Icons.image,
     ];
     internal static readonly (string Label, Color Color)[] Seeds =
     [
@@ -758,6 +761,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             3 => new ElevationScreen(),
             4 => new PlatformViewFixture(embedded: true),
             5 => new WebViewSample(),
+            6 => new TextureSample(),
             _ => throw new ArgumentOutOfRangeException(nameof(_destination)),
         };
         var appBar = new M.AppBar(

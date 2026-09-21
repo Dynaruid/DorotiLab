@@ -370,6 +370,21 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         ).RequestPlatformReadback(surface, info);
 
     internal bool SupportsHardwareBuffer => _window?.SupportsHardwareBuffer == true;
+    internal (long Imported, long Retired) TextureFrameCounts =>
+        (_window?.ImportedTextureFrames ?? 0, _window?.RetiredTextureFrames ?? 0);
+
+    internal void DrawHardwareBuffer(
+        SKCanvas canvas,
+        nint buffer,
+        int width,
+        int height,
+        SKRect destination,
+        SKSamplingOptions sampling,
+        Action release
+    ) =>
+        (
+            _window ?? throw new InvalidOperationException("No active Vulkan window.")
+        ).DrawHardwareBuffer(canvas, buffer, width, height, destination, sampling, release);
 
     internal VulkanSharedRaster CreateHardwareBufferRaster(nint buffer, int width, int height) =>
         (

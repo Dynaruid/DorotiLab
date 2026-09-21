@@ -23,6 +23,16 @@ public sealed class MainActivity : MauiAppCompatActivity
         if (Intent?.GetStringExtra("doroti_testbed_mode") is { } mode)
         {
             Environment.SetEnvironmentVariable("DOROTI_TESTBED_MODE", mode);
+            if (mode == "texture-native")
+            {
+                var source = Intent.GetStringExtra("doroti_texture_source") ?? "video";
+                NativeTextureFixtureProbe.Width = source == "camera" ? 640 : 320;
+                NativeTextureFixtureProbe.Height = source == "camera" ? 480 : 180;
+                NativeTextureFixtureProbe.StartProducer = entry => new AndroidTextureProbeProducer(
+                    entry,
+                    source
+                );
+            }
         }
 
         if (Intent?.GetStringExtra("doroti_platform_view_composition") is { } composition)

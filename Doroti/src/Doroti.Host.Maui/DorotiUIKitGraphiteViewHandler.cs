@@ -404,6 +404,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 _queue.Handle,
                 Math.Max(1, ++_generation)
             );
+            _session.NativeTextureImporter ??= new AppleNativeTextureImporter(
+                _session,
+                Device!.Handle
+            );
             var width = checked((int)drawable.Texture.Width);
             var height = checked((int)drawable.Texture.Height);
             frame = _session.BeginMetalFrame(width, height, drawable.Texture.Handle);

@@ -239,7 +239,7 @@ internal sealed unsafe partial class VulkanObserver(
         return (s.Layout, s.Family);
     }
 
-    internal void RegisterHostTarget(ulong image, ImageCreateInfo info)
+    internal void RegisterHostTarget(ulong image, ImageCreateInfo info, uint? initialFamily = null)
     {
         Check();
         if (Journal.Images.ContainsKey(image))
@@ -250,7 +250,10 @@ internal sealed unsafe partial class VulkanObserver(
         info.PNext = null;
         info.PQueueFamilyIndices = null;
         Images.Add(image, info);
-        RegisterTarget(image);
+        if (initialFamily is { } externalFamily)
+            Journal.Register(image, info.InitialLayout, externalFamily, family);
+        else
+            RegisterTarget(image);
     }
 
     internal void ForgetHostTarget(ulong image)

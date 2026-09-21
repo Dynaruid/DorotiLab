@@ -159,10 +159,10 @@ internal sealed unsafe class QtHostAdapter
             return;
         }
 
-        var token = unchecked(++_nextFrameToken);
+        var token = Interlocked.Increment(ref _nextFrameToken);
         if (token == 0)
         {
-            token = unchecked(++_nextFrameToken);
+            token = Interlocked.Increment(ref _nextFrameToken);
         }
 
         _hostApi.RequestFrame(_viewHandle, token);

@@ -303,6 +303,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private double _presenterScale;
         private ulong _presenterResizeGeneration;
         private ulong _lastPresentedResizeGeneration;
+        private long _lastPresentedTextureRevision;
         private bool _visibleAfterExactPresent;
         private bool _readyFileWritten;
         private readonly int _requestedDeviceResets;
@@ -457,6 +458,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 enablePictureRasterCache: Presenter.RuntimeEffectsBackend
                     != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
             );
+            if (
+                Presenter is WindowsManagedVulkanPresenter nativeTexturePresenter
+                && WindowsManagedVulkanPresenter.GraphiteEnabled
+            )
+                renderer.EnableNativeTextures(
+                    NativeTexturePlatform.Windows,
+                    () =>
+                    {
+                        var luid = nativeTexturePresenter.RasterAdapter;
+                        return ((long)luid.High << 32) | luid.Low;
+                    }
+                );
             var messages = new WindowsAppSdkPlatformMessageCapability();
             if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } activeAcrylic)
             {
@@ -484,6 +497,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
+                .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
             capabilities.Register<ISemanticsHostCapability>(
                 DorotiCapabilityIds.AccessibilitySemantics,
@@ -804,6 +818,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
             var dispatchedFrameworkFrame = host.BeginFrame(in request);
+            var textureRevision = renderer.TextureRevision;
             var requiresPresenterQualification =
                 _platformViews is { NeedsReplay: true }
                 || _completedDeviceResets < _requestedDeviceResets
@@ -812,6 +827,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (
                 !dispatchedFrameworkFrame
                 && !requiresPresenterQualification
+                && _lastPresentedTextureRevision == textureRevision
                 && _lastPresentedResizeGeneration == resizeGeneration
                 && Presenter.Width == width
                 && Presenter.Height == height
@@ -952,6 +968,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (presented)
             {
                 _lastPresentedResizeGeneration = resizeGeneration;
+                _lastPresentedTextureRevision = textureRevision;
             }
 
             if ((presented || prepared) && result.Completion is { } completion)

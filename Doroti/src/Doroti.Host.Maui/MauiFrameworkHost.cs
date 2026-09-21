@@ -184,6 +184,7 @@ public sealed class MauiFrameworkHost : IDisposable
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
             .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
+            .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
             .Register<ISemanticsHostCapability>(
                 DorotiCapabilityIds.AccessibilitySemantics,
@@ -207,6 +208,8 @@ public sealed class MauiFrameworkHost : IDisposable
         }
 #endif
 #if ANDROID
+        if (surface.Element is DorotiGraphiteView textureView)
+            graphics.AttachSurfaceTextures(textureView);
         if (
             application?.Manifest.PlatformViews.Length > 0
             && surface.Element is DorotiGraphiteView { PlatformViews: { } platformViews }

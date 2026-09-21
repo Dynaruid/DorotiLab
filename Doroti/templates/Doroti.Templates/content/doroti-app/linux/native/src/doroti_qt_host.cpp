@@ -93,7 +93,7 @@ std::atomic_bool run_active{false};
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
 #ifdef DOROTI_QT_QUICK
-    DOROTI_QT_FEATURE_QUICK_COMPOSITION |
+    DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS |
 #endif
 #ifdef DOROTI_QT_GRAPHITE
     DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION | DOROTI_QT_FEATURE_GPU_POLL | DOROTI_QT_FEATURE_PRESENT_HOOK |
@@ -199,6 +199,12 @@ class DorotiSurface final : public DorotiWindowBase {
     setVulkanInstance(&vulkan_);
     vulkan_extensions_ = vulkan_.extensions().join('\n');
 #ifdef DOROTI_QT_QUICK
+    if (qgetenv("DOROTI_LINUX_NATIVE_TEXTURES") == "1") {
+      QQuickGraphicsConfiguration configuration;
+      configuration.setDeviceExtensions({"VK_KHR_external_memory_fd", "VK_EXT_external_memory_dma_buf",
+        "VK_EXT_image_drm_format_modifier", "VK_EXT_queue_family_foreign"});
+      setGraphicsConfiguration(configuration);
+    }
     setColor(Qt::transparent);
     connect(this, &QQuickWindow::beforeSynchronizing, this, [this] {
       try { RenderVulkan(); } catch (const std::exception& e) {

@@ -4,6 +4,7 @@ namespace Doroti.Host.Qt;
 
 internal static partial class QtQuickNative
 {
+    internal const ulong NativeTexturesFeature = 1UL << 18;
     internal const ulong Feature = 1UL << 17;
 
     [StructLayout(LayoutKind.Sequential)]

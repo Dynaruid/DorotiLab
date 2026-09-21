@@ -3,6 +3,8 @@
 <plist version="1.0">
     <!-- See https://aka.ms/maui-publish-app-store#add-entitlements for more information about adding entitlements.-->
     <dict>
+        <key>com.apple.security.device.camera</key>
+        <true/>
         <!-- Local unsigned Mac Catalyst runs must not enable App Sandbox; it blocks
              DOROTI_MAUI_EVIDENCE writes and other developer-host file access.
              Re-enable this key for Mac App Store distribution. -->

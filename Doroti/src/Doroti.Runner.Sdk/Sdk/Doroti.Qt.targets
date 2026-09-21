@@ -2,6 +2,9 @@
   <PropertyGroup Condition="'$(DorotiHostKind)' == 'Qt'">
     <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
     <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native</DorotiQtNativeBuildDirectory>
+    <DorotiGStreamerTextures Condition="'$(DorotiGStreamerTextures)' == ''">false</DorotiGStreamerTextures>
+    <_DorotiGStreamerTexturesFlag Condition="'$(DorotiGStreamerTextures)' == 'true'">ON</_DorotiGStreamerTexturesFlag>
+    <_DorotiGStreamerTexturesFlag Condition="'$(DorotiGStreamerTextures)' != 'true'">OFF</_DorotiGStreamerTexturesFlag>
     <DorotiQtQuick Condition="'$(DorotiQtQuick)' == ''">false</DorotiQtQuick>
     <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == ''">false</DorotiQtWebEngine>
     <_DorotiQtWebEngineFlag Condition="'$(DorotiQtWebEngine)' == 'true'">ON</_DorotiQtWebEngineFlag>
@@ -19,7 +22,7 @@
   <Target Name="BuildDorotiQtNative" BeforeTargets="Build"
           Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
     <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
-    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag)" Timeout="1200000" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag) -DDOROTI_GSTREAMER_TEXTURES=$(_DorotiGStreamerTexturesFlag)" Timeout="1200000" />
     <PropertyGroup>
       <_DorotiQtCleanFirst Condition="'$(DorotiRebuildDependencies)' == 'true'">--clean-first</_DorotiQtCleanFirst>
     </PropertyGroup>
@@ -30,6 +33,10 @@
     <!-- Equal length/mtime does not imply equal native code (restored artifacts
          can preserve both). Always copy the library selected by this build. -->
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiGStreamerTextures)' == 'true' and '$(PublishDir)' != ''" />
+    <Delete Files="$(TargetDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true'" />
+    <Delete Files="$(PublishDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true' and '$(PublishDir)' != ''" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != ''" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />

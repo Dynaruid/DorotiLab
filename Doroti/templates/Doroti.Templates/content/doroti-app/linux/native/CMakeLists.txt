@@ -93,3 +93,13 @@ target_link_libraries(doroti_qt_host PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6
 set_target_properties(doroti_qt_host PROPERTIES OUTPUT_NAME doroti_qt_host)
 
 install(TARGETS doroti_qt_host LIBRARY DESTINATION .)
+
+# Camera/video producer is optional; no extra dependency for ordinary apps.
+option(DOROTI_GSTREAMER_TEXTURES "Build the GPU DMA-BUF camera/video adapter" OFF)
+if(DOROTI_GSTREAMER_TEXTURES)
+  pkg_check_modules(GStreamerTexture REQUIRED IMPORTED_TARGET
+    gstreamer-1.0>=1.24 gstreamer-app-1.0>=1.24 gstreamer-video-1.0>=1.24 gstreamer-allocators-1.0>=1.24)
+  add_library(doroti_texture_gstreamer SHARED src/doroti_texture_gstreamer.cpp)
+  target_link_libraries(doroti_texture_gstreamer PRIVATE PkgConfig::GStreamerTexture)
+  install(TARGETS doroti_texture_gstreamer LIBRARY DESTINATION .)
+endif()

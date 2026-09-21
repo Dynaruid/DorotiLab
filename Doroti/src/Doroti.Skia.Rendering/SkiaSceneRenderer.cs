@@ -14,6 +14,7 @@ public sealed partial class SkiaSceneRenderer
         IParagraphHostCapability,
         IFontHostCapability,
         IImageHostCapability,
+        ITextureHostCapability,
         ISemanticsHostCapability,
         IDisposable
 {
@@ -102,6 +103,8 @@ public sealed partial class SkiaSceneRenderer
     {
         _viewId = viewId;
         _host = host;
+        _textureOwnerContext = SynchronizationContext.Current;
+        _textures = new PixelTextureRegistry(RequestTextureFrame);
         _lightBackgroundColor = backgroundColor;
         _darkBackgroundColor = darkBackgroundColor;
         _targetIdentity = targetIdentity;
@@ -338,7 +341,11 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    public void Submit(ulong viewId, DorotiSceneSubmission submission, DorotiUiInvocation invocation)
+    public void Submit(
+        ulong viewId,
+        DorotiSceneSubmission submission,
+        DorotiUiInvocation invocation
+    )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(submission);
@@ -1221,6 +1228,7 @@ public sealed partial class SkiaSceneRenderer
         }
 
         _disposed = true;
+        _textures.Dispose();
         _host.SemanticsAction -= HandleSemanticsAction;
         _host.InputReceived -= HandleInput;
         _host.ConfigurationChanged -= HandleConfigurationChanged;
@@ -1469,6 +1477,9 @@ public sealed partial class SkiaSceneRenderer
                 var command = source[commandIndex];
                 switch (command.Operation)
                 {
+                    case "texture" when command.HostPayload is SceneTexturePayload texture:
+                        DrawTexture(canvas, texture);
+                        break;
                     case "picture" when command.HostPayload is ScenePicturePayload picture:
                         canvas.Save();
                         canvas.Translate((float)picture.Offset.dx, (float)picture.Offset.dy);
@@ -1606,7 +1617,9 @@ public sealed partial class SkiaSceneRenderer
                                 ),
                             RuntimeEffectBackend,
                             _contextGeneration,
-                            image.CacheKey,
+                            ContainsTexture(source, commandIndex + 1, matchingPop)
+                                ? null
+                                : image.CacheKey,
                             image.CacheGeneration,
                             out var cacheHit,
                             _runtimeEffectContextOwner

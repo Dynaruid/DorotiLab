@@ -11,6 +11,7 @@ internal interface IBrowserGraphicsCapabilities
         IParagraphHostCapability,
         IFontHostCapability,
         IImageHostCapability,
+        ITextureHostCapability,
         ISemanticsHostCapability,
         IDisposable
 {

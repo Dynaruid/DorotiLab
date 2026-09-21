@@ -88,6 +88,7 @@ public sealed class BrowserFrameworkHost : IDisposable
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
             .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
+            .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
             .Register<ISemanticsHostCapability>(
                 DorotiCapabilityIds.AccessibilitySemantics,

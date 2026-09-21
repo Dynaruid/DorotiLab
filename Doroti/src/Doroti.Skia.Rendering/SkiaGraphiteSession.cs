@@ -184,6 +184,8 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         }
 
         _context.CheckAsyncWorkCompletion();
+        NativeTextureImporter?.Dispose();
+        NativeTextureImporter = null;
         _images.Dispose();
         _recorder.Dispose();
         if (_vulkanOwner is not null)
@@ -222,6 +224,10 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         private TaskCompletionSource<SkiaGraphiteReadback>? _readback;
         private bool _readbackPending;
         private readonly VulkanTarget? _vulkanTarget;
+        private readonly SkiaGraphiteSession? _previousRecording;
+        internal readonly Dictionary<object, SkiaNativeTextureImage> NativeTextures = new(
+            ReferenceEqualityComparer.Instance
+        );
 
         internal Frame(
             SkiaGraphiteSession session,
@@ -234,6 +240,8 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             _backend = backend;
             _surface = surface;
             _vulkanTarget = vulkanTarget;
+            _previousRecording = _currentRecording;
+            _currentRecording = session;
         }
 
         public SKSurface Surface
@@ -436,6 +444,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             finally
             {
                 _session._recordingFrame = null;
+                _currentRecording = _previousRecording;
             }
         }
 
@@ -476,13 +485,16 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 );
             }
 
-            using var discarded = _session._recorder.Snap();
-            // Uploads belong to the discarded recording. A cached texture is
-            // not usable merely because its allocation survived that recording.
-            _session._images.Cancel();
-            SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: true);
-            _readback?.TrySetCanceled();
+            using (var discarded = _session._recorder.Snap())
+            {
+                // Uploads belong to the discarded recording. A cached texture is
+                // not usable merely because its allocation survived that recording.
+                _session._images.Cancel();
+                SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: true);
+                _readback?.TrySetCanceled();
+            }
             _session._recordingFrame = null;
+            _currentRecording = _previousRecording;
             Release();
         }
 
@@ -499,6 +511,9 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             }
 
             _recording?.Dispose();
+            foreach (var texture in NativeTextures.Values)
+                texture.Dispose();
+            NativeTextures.Clear();
             _session._frames.Remove(this);
             _returned = true;
         }

@@ -306,6 +306,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                     name == "VK_KHR_driver_properties"
                     || name == "VK_KHR_create_renderpass2"
                     || (
+                        OperatingSystem.IsLinux()
+                        && name is not null
+                        && VulkanNativeTextureImporter.LinuxExtensions.Contains(name)
+                    )
+                    || (
                         OperatingSystem.IsAndroid()
                         && name
                             is "VK_ANDROID_external_memory_android_hardware_buffer"
@@ -393,6 +398,20 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 1,
                 _pipelinedWindowFrames ? WindowFrameLimit : 1
             );
+            if (
+                OperatingSystem.IsLinux()
+                && VulkanNativeTextureImporter.LinuxExtensions.All(extensionNames.Contains)
+            )
+                _session.NativeTextureImporter = new VulkanNativeTextureImporter(
+                    _session,
+                    _vk,
+                    _physical,
+                    _device,
+                    _queue,
+                    _family,
+                    _stockObserver,
+                    Doroti.Ui.NativeTexturePlatform.Linux
+                );
             var poolInfo = new CommandPoolCreateInfo
             {
                 SType = StructureType.CommandPoolCreateInfo,
@@ -576,6 +595,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             {
                 raster.RecordCopy(command);
             }
+            foreach (var texture in _textureInputs.Values)
+                texture.RecordRelease(command);
 
             Barrier(
                 command,
@@ -651,6 +672,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             var copyResult = _vk.QueueSubmit(_queue, 1, &submit, slot.Fence);
             _stockObserver?.Journal.Submit([command.Handle], copyResult);
             CheckDevice(copyResult, "copy submit");
+            foreach (var texture in _textureInputs.Values)
+                texture.ReleaseSubmitted = true;
             _stockObserver?.Check();
             slot.RestoredLayout = restoreLayout;
             var copiedTime = FrameTimestamp();
@@ -663,7 +686,12 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 MaximumWindowFramesInFlight,
                 WindowFramesInFlight
             );
-            if (!_pipelinedWindowFrames || _platformReadback || _platformShared.Count != 0)
+            if (
+                !_pipelinedWindowFrames
+                || _platformReadback
+                || _platformShared.Count != 0
+                || _textureInputs.Count != 0
+            )
             {
                 // Qt has no idle completion callback yet; preserve its
                 // synchronous retirement contract until its host adopts one.
@@ -744,6 +772,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                     frame.CompleteGpuWork();
                 }
             }
+            ReleaseTextureInputs(sharedCompleted);
             // Shared outputs are immutable. Only the Vulkan producer views die
             // here; Java hardware bitmaps retain their allocations for HWUI.
             if (submitted && !sharedCompleted && _platformShared.Count != 0)
@@ -1160,6 +1189,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
         ReleaseD3D12Frame();
         DrainWindowFrames();
+        ReleaseTextureInputs(completed: true);
         foreach (var raster in _platformShared)
         {
             raster.Dispose();

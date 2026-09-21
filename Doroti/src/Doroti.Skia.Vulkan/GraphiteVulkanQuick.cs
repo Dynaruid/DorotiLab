@@ -62,7 +62,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         nint device,
         nint queue,
         uint family,
-        uint apiVersion
+        uint apiVersion,
+        bool nativeTextureExtensionsRequested = false
     )
     {
         GraphiteNativeLibrary.Configure(GraphiteNativeLibrary.GetPackagedAsset());
@@ -104,6 +105,20 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 1,
                 1
             );
+            if (
+                nativeTextureExtensionsRequested
+                && VulkanNativeTextureImporter.SupportsLinux(_vk, _physical)
+            )
+                _session.NativeTextureImporter = new VulkanNativeTextureImporter(
+                    _session,
+                    _vk,
+                    _physical,
+                    _device,
+                    _queue,
+                    _family,
+                    _observer,
+                    Doroti.Ui.NativeTexturePlatform.Linux
+                );
             var pool = new CommandPoolCreateInfo
             {
                 SType = StructureType.CommandPoolCreateInfo,

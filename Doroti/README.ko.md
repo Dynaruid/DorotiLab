@@ -212,6 +212,7 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 | AppKit | 네이티브 실행 범위와 남은 조건은 [AppKit 요약](../history/26-08-20/macos-appkit-dual-backend-summary.md)에 기록되어 있습니다. |
 | iOS | NativeAOT 빌드·배포·기기 관측 결과는 [NativeAOT 요약](../history/26-09-10/nativeaot-work2-summary.md)에 있으며, 문서에 기록된 구성에 한정됩니다. |
 | 네이티브 컨트롤·WebView | [PlatformView 지원표](docs/platform-views/support-matrix.md)에서 구현과 검증 범위를 확인하세요. |
+| Texture | [프레임 텍스처](docs/textures.md): CPU RGBA, Android Surface/AHB, Windows D3D11 GPU 입력. Windows 카메라와 AMD/NVIDIA 합성 검증 완료. iOS/macOS Metal·Linux DMA-BUF 카메라 어댑터는 코드 구성 완료, 실행 미검증. |
 
 [개발 이력](../history/)에는 특정 실행의 결과를 보관합니다. 모든 현재 기기와 구성에 대한 보장을 뜻하지 않습니다.
 

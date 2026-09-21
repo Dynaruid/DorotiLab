@@ -185,6 +185,11 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "texture-native")
+            return new Material.MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: new NativeTextureFixture()
+            );
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "webview-workload")
         {
             return new Material.MaterialApp(

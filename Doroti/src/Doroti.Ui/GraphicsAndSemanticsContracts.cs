@@ -1260,21 +1260,19 @@ public sealed class SceneBuilder
         double height = 0,
         bool freeze = false,
         FilterQuality filterQuality = FilterQuality.low
-    ) =>
-        _commands.Add(
-            new(
-                "texture",
-                new
-                {
-                    textureId,
-                    offset,
-                    width,
-                    height,
-                    freeze,
-                    filterQuality,
-                }
-            )
-        );
+    )
+    {
+        var bounds = Rect.fromLTWH(offset.dx, offset.dy, width, height);
+        if (!bounds.isFinite || width < 0 || height < 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(width),
+                "Texture bounds must be finite and nonnegative."
+            );
+        if (!Enum.IsDefined(filterQuality))
+            throw new ArgumentOutOfRangeException(nameof(filterQuality));
+        var payload = new SceneTexturePayload(textureId, bounds, freeze, filterQuality);
+        _commands.Add(new SceneCommand("texture", payload) { HostPayload = payload });
+    }
 
     private T Push<T>(T? oldLayer, string operation, object? payload, object? hostPayload = null)
         where T : EngineLayer, new()

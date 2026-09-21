@@ -15,11 +15,14 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     internal bool QuickEnabled { get; private set; }
     internal ulong QuickPeakReservedBytes { get; private set; }
     private nint _quickWindow;
+    private bool _nativeTextures;
+    internal bool NativeTexturesConfigured => !QuickEnabled || _nativeTextures;
 
-    internal void ConfigureQuick(nint window, bool enabled)
+    internal void ConfigureQuick(nint window, bool enabled, bool nativeTextures)
     {
         _quickWindow = window;
         QuickEnabled = enabled;
+        _nativeTextures = nativeTextures;
     }
 
     internal SKCanvas QuickCaptionCanvas(in QtNativeV2.Surface descriptor)
@@ -90,7 +93,8 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                     gpu.Device,
                     gpu.Queue,
                     gpu.Family,
-                    gpu.ApiVersion
+                    gpu.ApiVersion,
+                    _nativeTextures
                 );
                 QuickGpu.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
                 SoftwareVulkan = QuickGpu.IsSoftwareDevice;

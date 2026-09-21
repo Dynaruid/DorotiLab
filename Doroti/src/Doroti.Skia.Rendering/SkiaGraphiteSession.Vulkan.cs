@@ -5,6 +5,51 @@ namespace Doroti.Skia.Rendering;
 
 public sealed partial class SkiaGraphiteSession
 {
+    public VulkanImage WrapVulkanImage(
+        int width,
+        int height,
+        SKGraphiteVkTextureInfo info,
+        int layout,
+        uint family,
+        nint image,
+        SKColorType colorType = SKColorType.Rgba8888
+    )
+    {
+        CheckOwner();
+        if (_recordingFrame is null || _vulkanOwner is null || _stopping || _faulted)
+            throw new InvalidOperationException(
+                "External images require an active Vulkan recording."
+            );
+        var backend =
+            SKGraphiteBackendTexture.CreateVulkan(width, height, info, layout, family, image)
+            ?? throw new InvalidOperationException("External texture wrapping failed.");
+        try
+        {
+            using var colorSpace = SKColorSpace.CreateSrgb();
+            var wrapped =
+                SKImage.FromTexture(_recorder, backend, colorType, SKAlphaType.Premul, colorSpace)
+                ?? throw new InvalidOperationException("External Graphite image wrapping failed.");
+            return new VulkanImage(backend, wrapped);
+        }
+        catch
+        {
+            backend.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>Dispose only on the owner after all recordings using this image retire.</summary>
+    public sealed class VulkanImage(SKGraphiteBackendTexture backend, SKImage image) : IDisposable
+    {
+        public SKImage Image => image;
+
+        public void Dispose()
+        {
+            image.Dispose();
+            backend.Dispose();
+        }
+    }
+
     private SkiaGraphiteVulkanBinding? _vulkanOwner;
     private bool _hostReportedVulkanDeviceLost;
     private readonly HashSet<VulkanTarget> _vulkanTargets = [];

@@ -440,6 +440,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                     Interlocked.Increment(ref _contextGeneration)
                 );
             }
+            if (_graphite is not null)
+                _graphite.NativeTextureImporter ??= new AppleNativeTextureImporter(
+                    _graphite,
+                    _metalDevice.Handle
+                );
             if (!UseGraphite && _grContext is null)
             {
                 _grContext =

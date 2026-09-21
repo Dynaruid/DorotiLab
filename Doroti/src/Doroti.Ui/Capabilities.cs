@@ -21,6 +21,7 @@ public static class DorotiCapabilityIds
     public const string GraphicsScene = "graphics.scene";
     public const string GraphicsFont = "graphics.font";
     public const string GraphicsText = "graphics.text";
+    public const string GraphicsTexture = "graphics.texture";
     public const string GraphicsImage = "graphics.image";
     public const string AccessibilitySemantics = "accessibility.semantics";
     public const string FrameworkViewAttachment = "framework.view-attachment";

@@ -12,11 +12,13 @@ internal sealed class MauiSkiaCapabilities
         IParagraphHostCapability,
         IFontHostCapability,
         IImageHostCapability,
+        ITextureHostCapability,
         ISemanticsHostCapability,
         IDisposable
 {
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+    public TextureRegistry Textures => _renderer.Textures;
     private IMauiGraphiteSurface? _graphiteSurface;
 
     internal void AttachGraphiteLifecycle(IMauiGraphiteSurface surface)
@@ -26,6 +28,31 @@ internal sealed class MauiSkiaCapabilities
     }
 
 #if ANDROID
+    internal void AttachSurfaceTextures(DorotiGraphiteView view)
+    {
+        _renderer.SetSurfaceTextureFactory(
+            (width, height, cancellationToken) =>
+            {
+                if (!OperatingSystem.IsAndroidVersionAtLeast(33))
+                    throw new PlatformNotSupportedException(
+                        "Native surface textures currently require Android 13 / API 33 for explicit acquire fences."
+                    );
+                var surface =
+                    (view.Handler?.PlatformView as DorotiAndroidViewContainer)?.Surface
+                    ?? throw new InvalidOperationException(
+                        "The Android texture host is not attached."
+                    );
+                return AndroidSurfaceTextureEntry.CreateAsync(
+                    _renderer,
+                    surface,
+                    width,
+                    height,
+                    cancellationToken
+                );
+            }
+        );
+    }
+
     private IDisposable? _platformViewChannel;
     private AndroidPlatformViewHost? _platformViews;
 
@@ -159,6 +186,13 @@ internal sealed class MauiSkiaCapabilities
             DorotiSkiaRuntimeEffects.MauiGpuBackend,
             "skiasharp-maui-skglview-gpu"
         );
+#endif
+#if IOS || MACCATALYST
+        if (DorotiGraphiteView.Enabled)
+            _renderer.EnableNativeTextures(NativeTexturePlatform.Apple);
+#elif MACOS
+        if (DorotiMacOSMetalView.UseGraphite)
+            _renderer.EnableNativeTextures(NativeTexturePlatform.Apple);
 #endif
     }
 

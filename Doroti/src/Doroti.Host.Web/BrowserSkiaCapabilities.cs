@@ -14,6 +14,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
     private readonly HostBridge _bridge;
     private readonly BrowserHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+    public TextureRegistry Textures => _renderer.Textures;
     private readonly BrowserPlatformViewHost _platform;
     private readonly object _paintGate = new();
     private readonly Dictionary<long, SkiaPaintCompletion> _pendingPaints = [];
