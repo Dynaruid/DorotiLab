@@ -959,7 +959,14 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   });
   observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
   observe(root, "contextmenu", (event) => {
-    if (!host.contextMenuEnabled) event.preventDefault();
+    const target = event.target;
+    const nativeTextInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
+    // Canvas pixels and non-editable semantics belong to framework widgets,
+    // so the browser's page/image menu has no useful target here. Preserve
+    // native text editing menus and the explicit BrowserContextMenu switch.
+    const frameworkSurface = target === root || target instanceof HTMLCanvasElement ||
+      (target instanceof Node && semantics.contains(target) && !nativeTextInput);
+    if (!host.contextMenuEnabled || frameworkSurface) event.preventDefault();
   });
   observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;
