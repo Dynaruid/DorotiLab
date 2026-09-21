@@ -21,7 +21,7 @@ material intensity, not an exact Gaussian radius; preset tint remains. Previous
 private-filter captures in `ios/flutter-blur/managed-*` and iOS 27 Scene regression
 results are historical evidence. Current animator iOS 27 Simulator strength/theme/resume and seven functional
 scenes passed; physical-device/NativeAOT/distribution qualification remains open.
-See [work1.md](../../../work1.md) for measured gates and remaining scope.
+See the [archived PlatformView/WebView summary](../../../history/26-09-21/platformview-webview-summary.md) for recorded gates and remaining scope, and [work1 original](../../../history/26-09-21/platformview-webview/work1.original.md) for the detailed execution history.
 
 No build-only entry is a physical, accessibility, NativeAOT, or performance approval. Windows WebView and HWND scenes cannot be mixed within one owner composition frame. Current Windows effect limits are four isotropic regions, logical sigma <=32 and native physical sigma <=128. Backend/driver/OS sampling limitations are not resolved by setting the capability flag.
 

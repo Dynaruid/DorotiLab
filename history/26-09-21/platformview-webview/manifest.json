@@ -1,0 +1,29 @@
+{
+  "historyDate": "2026-09-21",
+  "archivedOn": "2026-09-22",
+  "sourceHead": "545f33ef099af1821a8f2a4a383a10260e924c94",
+  "summary": "history/26-09-21/platformview-webview-summary.md",
+  "sourceRootFilesRemoved": true,
+  "originalRelativeLinksBase": "repository root",
+  "verificationScope": "Document archival only; no product build, test or runtime verification rerun.",
+  "files": [
+    {
+      "source": "idea.md",
+      "archive": "history/26-09-21/platformview-webview/idea.original.md",
+      "bytes": 40261,
+      "sha256": "5e990c85627582ae77bfffd6a1570dbe1ae3e144617fca7b014696f030738e19"
+    },
+    {
+      "source": "work1.md",
+      "archive": "history/26-09-21/platformview-webview/work1.original.md",
+      "bytes": 79436,
+      "sha256": "d7db19b393853d4186738e6e184fcc4e959e5b2b2c035b8d0db64b812242c5a5"
+    },
+    {
+      "source": "work2.md",
+      "archive": "history/26-09-21/platformview-webview/work2.original.md",
+      "bytes": 56010,
+      "sha256": "8e278f468eb93208b13902d2a6139f5d090ca3a126dd98acfe20ed9d403682ca"
+    }
+  ]
+}

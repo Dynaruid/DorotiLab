@@ -19,7 +19,7 @@
 - Vulkan은 Graphite 렌더 이미지 R과 출력 이미지 P를 분리한다. 공개 호출 관찰기와 제출 journal이 **성공한 queue submission**의 상태를 확정하고, 같은 큐에서 R→P GPU 복사 후 R의 상태·소유권을 복사 직전 값으로 복원한다.
 - 명령 기록·제출·GPU 완료·플랫폼 표시 완료를 구분한다. GPU fence 이후 Graphite completion/frame을 회수하며, 출력 P는 플랫폼 사용 종료까지 별도로 보존한다. 정상 표시 경로에는 CPU readback을 넣지 않는다.
 - 기본 배포, Windows package-only consumer, Android APK, Linux 생성 템플릿, Apple 패키지 설정과 문서를 정리했다. 구 custom bridge/runner/source는 원문상 history로 보존했으며 사용자 native cache를 삭제하지 않았다.
-- 플랫폼 뷰 합성은 [work1.md](../../work1.md), WebView는 [work2.md](../../work2.md)의 별도 범위다. W0 전환을 미구현 기능의 완료로 해석하지 않는다.
+- 플랫폼 뷰 합성은 [work1.md 보관본](../26-09-21/platformview-webview/work1.original.md), WebView는 [work2.md 보관본](../26-09-21/platformview-webview/work2.original.md)의 별도 범위다. W0 전환을 미구현 기능의 완료로 해석하지 않는다. [통합 요약](../26-09-21/platformview-webview-summary.md)에서 후속 실행과 잔여 범위를 확인할 수 있다.
 
 ## 종료·GPU 자원 회수 계약
 

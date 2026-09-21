@@ -8,4 +8,4 @@
 - [기존 PlatformView 계획과 누적 실행 기록](work1.original.md)
 - [기존 WebView 상세 계획](work2.original.md)
 
-현재 문서는 [설계](../../../idea.md), [PlatformView 작업계획](../../../work1.md), [WebView 작업계획](../../../work2.md)이다. 새 설계의 구현 완료를 뜻하지 않는다. 과거 문서가 가리키는 일부 외부 기기/checkout 산출물은 현재 작업 폴더에서 찾을 수 없으며 새 문서에서 별도로 표시한다.
+이후 개정된 문서는 2026-09-21 이력에 [통합 요약](../../26-09-21/platformview-webview-summary.md)과 [설계 원문](../../26-09-21/platformview-webview/idea.original.md), [PlatformView 원문](../../26-09-21/platformview-webview/work1.original.md), [WebView 원문](../../26-09-21/platformview-webview/work2.original.md)으로 보관했다. 문서 보관은 새 설계의 구현 완료를 뜻하지 않는다. 과거 문서가 가리키는 일부 외부 기기/checkout 산출물은 현재 작업 폴더에서 찾을 수 없으며 후속 문서에서 별도로 표시한다.
