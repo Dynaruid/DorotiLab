@@ -199,9 +199,8 @@ public class TextFormField : FormField<string>
                         contentInsertionConfiguration: contentInsertionConfiguration,
                         clipBehavior: clipBehavior,
                         scribbleEnabled: scribbleEnabled,
-                        stylusHandwritingEnabled: DartRuntimePrimitives.RequireValue(
-                            stylusHandwritingEnabled
-                        ),
+                        stylusHandwritingEnabled: stylusHandwritingEnabled
+                            ?? EditableText.defaultStylusHandwritingEnabled,
                         canRequestFocus: canRequestFocus,
                         hintLocales: hintLocales
                     )
@@ -215,8 +214,6 @@ public class TextFormField : FormField<string>
         EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder =
             contextMenuBuilder ?? _defaultContextMenuBuilder;
-        bool __stylusHandwritingEnabled =
-            stylusHandwritingEnabled ?? EditableText.defaultStylusHandwritingEnabled;
         this.groupId = __groupId;
         this.controller = controller;
         this.onChanged = onChanged;

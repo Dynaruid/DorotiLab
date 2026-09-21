@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../../DorotiTestbedApp/assets/fonts/*" LogicalName="Fonts.%(Filename)%(Extension)" />
+    <ProjectReference Include="../../src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
+    <ProjectReference Include="../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+  </ItemGroup>
+</Project>
